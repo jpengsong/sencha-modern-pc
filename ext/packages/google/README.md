@@ -1,4 +1,4 @@
-# @extjs/ext-react-google
+# @extjs/ext-google
 --------------------------------------------------------
 This package contains the Sencha Cmd package `google@6.5.0`  
  

@@ -1,22 +1,20 @@
-/* global expect, Ext, jasmine, spyOn */
-
 topSuite("Ext.tab.Bar",
     ['Ext.tab.Panel', 'Ext.layout.container.boxOverflow.Menu'],
 function() {
     var tabBar;
-    
+
     function createTabBar(config) {
         tabBar = new Ext.tab.Bar(Ext.apply({}, config));
     }
-    
+
     function makeBar(config) {
         config = Ext.apply({
             renderTo: document.body
         }, config);
-        
+
         tabBar = new Ext.tab.Bar(config);
     }
-    
+
     function doClick(targetId, tab) {
         tabBar.onClick({
             // mock event object can go here if needed
@@ -34,11 +32,13 @@ function() {
             i, o;
 
         prop = prop || 'text';
+
         for (i = 1; i <= n; ++i) {
             o = {};
             o[prop] = 'ItemText' + i;
             tabs.push(o);
         }
+
         return tabs;
     }
 
@@ -60,17 +60,19 @@ function() {
         Ext.destroy(tabBar);
         tabBar = null;
     });
-    
+
     describe("layout", function() {
         it("should be hbox by default", function() {
             createTabBar();
             var layout = tabBar.getLayout();
+
             expect(layout.type).toBe('hbox');
         });
-        
+
         it("should have pack start by default", function() {
             createTabBar();
             var layout = tabBar.getLayout();
+
             expect(layout.pack).toBe('start');
         });
 
@@ -81,6 +83,7 @@ function() {
                 }
             });
             var layout = tabBar.getLayout();
+
             expect(layout.pack).toBe('center');
         });
 
@@ -97,7 +100,7 @@ function() {
             tabPanel.destroy();
         });
     });
-    
+
     describe("closing a tab", function() {
         var closeListener,
             destroyListener,
@@ -105,7 +108,7 @@ function() {
             item1,
             item1CloseButton,
             item2;
-        
+
         beforeEach(function() {
             closeListener = jasmine.createSpy();
             destroyListener = jasmine.createSpy();
@@ -133,52 +136,53 @@ function() {
             item1CloseButton = item1.tab.closeEl.dom;
             item2 = Ext.getCmp('item2');
         });
-        
+
         afterEach(function() {
             tabPanel.destroy();
         });
-        
+
         it("should fire 'close' event in the item", function() {
             jasmine.fireMouseEvent(item1CloseButton, 'click');
             expect(closeListener).toHaveBeenCalled();
         });
-        
+
         it("should fire 'destroy' event in the item", function() {
             jasmine.fireMouseEvent(item1CloseButton, 'click');
             expect(destroyListener).toHaveBeenCalled();
         });
-        
+
         it("should remove card from tabPanel", function() {
             jasmine.fireMouseEvent(item1CloseButton, 'click');
             expect(tabPanel.remove).toHaveBeenCalledWith(item1);
         });
-        
+
         it("should remove tab from tabBar", function() {
             // backup tab, since item will no longer have a tab after being removed
             var tab = item1.tab;
+
             jasmine.fireMouseEvent(item1CloseButton, 'click');
             expect(tabPanel.getTabBar().remove).toHaveBeenCalledWith(tab);
         });
-        
+
         it("should activate next tab", function() {
             jasmine.fireMouseEvent(item1CloseButton, 'click');
             expect(tabPanel.activeTab).toBe(item2);
         });
     });
-    
+
     xdescribe("clicking on a tab", function() {
         var tab, cardLayout;
-        
+
         describe("if the tab is enabled", function() {
             beforeEach(function() {
                 cardLayout = {
                     setActiveItem: jasmine.createSpy()
                 };
-                
+
                 createTabBar({
                     cardLayout: cardLayout
                 });
-                
+
                 tabBar.add({
                     xtype: 'tab',
                     id: 'tab1',
@@ -187,32 +191,32 @@ function() {
                     },
                     tabBar: tabBar
                 });
-                
+
                 tabBar.render(document.body);
-                
+
                 tab = tabBar.getComponent('tab1');
-                
+
                 spyOn(tabBar, 'setActiveTab').andCallThrough();
             });
-            
+
             afterEach(function() {
                 tabBar.destroy();
             });
-            
+
             it("should call setActiveTab", function() {
                 doClick('tab1', tab);
                 expect(tabBar.setActiveTab).toHaveBeenCalledWith(tab);
             });
-            
+
             it("should fire the 'change' event", function() {
                 var callFn;
-                
+
                 tabBar.on('change', callFn = jasmine.createSpy(), this);
 
                 doClick('tab1', tab);
                 expect(callFn).toHaveBeenCalled();
             });
-            
+
             xit("should set the cardLayout's card to the tab's card", function() {
                 doClick('tab1');
                 /*
@@ -223,10 +227,10 @@ function() {
                  */
                 expect(cardLayout.setActiveItem).toHaveBeenCalledWith(tab.card);
             });
-            
+
             describe("the 'change' event", function() {
                 var args;
-                
+
                 beforeEach(function() {
                     tabBar.on('change', function() {
                         args = arguments;
@@ -234,33 +238,33 @@ function() {
 
                     doClick('tab1');
                 });
-                
+
                 it("should have a reference to the tabBar", function() {
                     expect(args[0]).toEqual(tabBar);
                 });
-                
+
                 it("should have a reference to the tab", function() {
                     expect(args[1]).toEqual(tab);
                 });
-                
+
                 it("should have a reference to the tab's card", function() {
                     expect(args[2]).toEqual(tab.card);
                 });
             });
         });
-        
+
         describe("if the tab disabled config is true", function() {
             var cardLayout, tab1, tab2;
-            
+
             beforeEach(function() {
                 cardLayout = {
                     setActiveItem: jasmine.createSpy()
                 };
-                
+
                 createTabBar({
                     cardLayout: cardLayout
                 });
-                
+
                 tabBar.add({
                     xtype: 'tab',
                     id: 'tab1',
@@ -268,7 +272,7 @@ function() {
                         some: 'card'
                     },
                     tabBar: tabBar
-                },{
+                }, {
                     xtype: 'tab',
                     id: 'tab2',
                     disabled: true,
@@ -277,19 +281,19 @@ function() {
                     },
                     tabBar: tabBar
                 });
-                
+
                 tab1 = tabBar.items.items[0];
                 tab2 = tabBar.items.items[1];
             });
-            
+
             afterEach(function() {
                 tabBar.destroy();
             });
-            
-            it("should set the tab instance to disabled", function(){
+
+            it("should set the tab instance to disabled", function() {
                 expect(tabBar.getComponent('tab2').disabled).toBe(true);
             });
-            
+
             it("should not call setActiveItem on the layout", function() {
                 doClick('tab2');
                 expect(cardLayout.setActiveItem).not.toHaveBeenCalled();
@@ -317,6 +321,7 @@ function() {
             it("should default to the activeTab", function() {
                 makeScrollTabs();
                 var item = items.last();
+
                 tabBar.setActiveTab(item);
                 // Go to the front
                 tabBar.layout.overflowHandler.scrollBy(-1000, false);
@@ -328,6 +333,7 @@ function() {
             it("should accept a tab", function() {
                 makeScrollTabs();
                 var item = items.getAt(8);
+
                 expectNotVisible(item);
                 tabBar.ensureTabVisible(8);
                 expectVisible(item);
@@ -337,6 +343,7 @@ function() {
                 it("should accept 0", function() {
                     makeScrollTabs();
                     var item = items.first();
+
                     tabBar.layout.overflowHandler.scrollBy(5000, false);
                     expectNotVisible(item);
                     tabBar.ensureTabVisible(0);
@@ -346,6 +353,7 @@ function() {
                 it("should accept a non-zero index", function() {
                     makeScrollTabs();
                     var item = items.getAt(3);
+
                     tabBar.layout.overflowHandler.scrollBy(5000, false);
                     expectNotVisible(item);
                     tabBar.ensureTabVisible(3);
@@ -372,6 +380,7 @@ function() {
 
                 it("should accept a tabpanel item", function() {
                     var item = tabBar.items.last();
+
                     expectNotVisible(item);
                     tabBar.ensureTabVisible(tabPanel.items.last());
                     expectVisible(item);
@@ -379,11 +388,13 @@ function() {
 
                 it("should ignore components not in the tab panel", function() {
                     var c = new Ext.Component();
+
                     var item = tabBar.items.first();
+
                     expectVisible(item);
                     tabBar.ensureTabVisible(c);
                     expectVisible(item);
-                    
+
                     c.destroy();
                 });
             });
@@ -414,12 +425,12 @@ function() {
         it("should activate the tab when selected from the overflow menu", function() {
             var menu = tabBar.layout.overflowHandler.menu,
                 item, tab;
-            
+
             menu.show();
             item = menu.items.first();
             tab = item.masterComponent;
             jasmine.fireMouseEvent(item, 'click');
-            
+
             expect(tabBar.activeTab).toEqual(tab);
         });
 
@@ -428,11 +439,11 @@ function() {
                 menu = handler.menu,
                 trigger = handler.menuTrigger,
                 item;
-            
+
             menu.show();
             item = menu.items.first();
             jasmine.fireMouseEvent(item, 'click');
-            
+
             jasmine.expectFocused(trigger);
         });
     });
@@ -456,6 +467,7 @@ function() {
         it("should have the the active tab scrolled to", function() {
             makeScrollTabs();
             var item = items.last();
+
             tabBar.setActiveTab(item);
             expectVisible(item);
 
@@ -523,7 +535,7 @@ function() {
                         ensureActiveVisibleOnChange: true
                     });
                 });
-                
+
                 it("should move the item into full view when changing the text", function() {
                     var item = items.last(),
                         width = item.getWidth();
@@ -570,13 +582,13 @@ function() {
             });
         });
     });
-    
+
     xdescribe("setting the active tab", function() {
         var tab;
-        
+
         beforeEach(function() {
             createTabBar();
-            
+
             tabBar.add({
                 xtype: 'tab',
                 card: {
@@ -584,17 +596,17 @@ function() {
                 },
                 tabBar: tabBar
             });
-            
+
             tab = tabBar.getComponent(0);
         });
-        
+
         it("should set the activeTab property to that tab", function() {
             tabBar.setActiveTab(tab);
-            
+
             expect(tabBar.activeTab).toEqual(tab);
         });
     });
-    
+
     describe('moving tab items', function() {
         var tabPanel;
 
@@ -637,7 +649,7 @@ function() {
             expect(tabBar.getComponent(0).text).toBe('Tab 2');
             expect(tabBar.getComponent(1).text).toBe('Tab 3');
             expect(tabBar.getComponent(2).text).toBe('Tab 1');
-            
+
             tabPanel.move(0, 2);
             // Check the movemenrt of the cards has not blindly passed
             // the movement on and de-synchronized the tab items order.
@@ -646,19 +658,18 @@ function() {
             expect(tabBar.getComponent(2).text).toBe('Tab 1');
         });
     });
-    
+
     describe("FocusableContainer", function() {
         describe("no tabs", function() {
             beforeEach(function() {
                 makeBar();
             });
-            
-            
+
             it("should be inactive", function() {
                 expect(tabBar.isFocusableContainerActive()).toBeFalsy();
             });
         });
-        
+
         describe("with tabs", function() {
             beforeEach(function() {
                 makeBar({
@@ -668,20 +679,20 @@ function() {
                     }]
                 });
             });
-            
+
             it("should be active", function() {
                 expect(tabBar.isFocusableContainerActive()).toBeTruthy();
             });
-            
+
             it("should have tabbable tab", function() {
                 expect(tabBar.down('tab')).toHaveAttr('tabIndex', 0);
             });
         });
-        
+
         describe("adding tabs", function() {
             beforeEach(function() {
                 makeBar();
-                
+
                 tabBar.add({
                     items: [{
                         xtype: 'tab',
@@ -689,16 +700,16 @@ function() {
                     }]
                 });
             });
-            
+
             it("should be active", function() {
                 expect(tabBar.isFocusableContainerActive()).toBeTruthy();
             });
-            
+
             it("should have tabbable tab", function() {
                 expect(tabBar.down('tab')).toHaveAttr('tabIndex', 0);
             });
         });
-        
+
         describe("removing tabs", function() {
             beforeEach(function() {
                 makeBar({
@@ -707,11 +718,10 @@ function() {
                         text: 'foo'
                     }]
                 });
-                
+
                 tabBar.remove(0);
             });
-            
-            
+
             it("should be deactivated", function() {
                 expect(tabBar.isFocusableContainerActive()).toBeFalsy();
             });

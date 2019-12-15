@@ -23,11 +23,31 @@ Ext.define('Ext.grid.cell.Cell', {
          *         fields:['firstname', 'lastname', 'seniority', 'department'],
          *         groupField: 'department',
          *         data:[
-         *             { firstname: "Michael", lastname: "Scott",   seniority: 7, department: "Management" },
-         *             { firstname: "Dwight",  lastname: "Schrute", seniority: 2, department: "Sales" },
-         *             { firstname: "Jim",     lastname: "Halpert", seniority: 3, department: "Sales" },
-         *             { firstname: "Kevin",   lastname: "Malone",  seniority: 4, department: "Accounting" },
-         *             { firstname: "Angela",  lastname: "Martin",  seniority: 5, department: "Accounting" }
+         *             { firstname: "Michael", 
+         *               lastname: "Scott",   
+         *               seniority: 7, 
+         *               department: "Management" 
+         *             },
+         *             { firstname: "Dwight",
+         *               lastname: "Schrute",
+         *               seniority: 2,
+         *               department: "Sales"
+         *             },
+         *             { firstname: "Jim",
+         *               lastname: "Halpert",
+         *               seniority: 3,
+         *               department: "Sales" 
+         *             },
+         *             { firstname: "Kevin",
+         *               lastname: "Malone",
+         *               seniority: 4,
+         *               department: "Accounting"
+         *             },
+         *             { firstname: "Angela",
+         *               lastname: "Martin",
+         *               seniority: 5,
+         *               department: "Accounting" 
+         *             }
          *         ]
          *     });
          *
@@ -120,7 +140,7 @@ Ext.define('Ext.grid.cell.Cell', {
 
     friendly: null,
 
-    updateColumn: function (column, oldColumn) {
+    updateColumn: function(column, oldColumn) {
         var me = this,
             friendly = true,
             tpl, renderer, formatter;
@@ -143,10 +163,12 @@ Ext.define('Ext.grid.cell.Cell', {
                 me.setRenderer(renderer);
                 friendly = (typeof renderer === 'function') && renderer.length === 1;
             }
+
             if (tpl !== null) {
                 me.setTpl(tpl);
                 friendly = false;
             }
+
             if (formatter !== null) {
                 me.setFormatter(formatter);
             }
@@ -155,11 +177,11 @@ Ext.define('Ext.grid.cell.Cell', {
         }
     },
 
-    applyTpl: function (tpl) {
+    applyTpl: function(tpl) {
         return Ext.XTemplate.get(tpl);
     },
 
-    applyFormatter: function (format) {
+    applyFormatter: function(format) {
         var me = this,
             fmt = format,
             parser;
@@ -168,7 +190,8 @@ Ext.define('Ext.grid.cell.Cell', {
             parser = Ext.app.bind.Parser.fly(fmt);
             fmt = parser.compileFormat();
             parser.release();
-            return function (v) {
+
+            return function(v) {
                 return fmt(v, me.getScope() || me.resolveListenerScope());
             };
         }
@@ -181,25 +204,25 @@ Ext.define('Ext.grid.cell.Cell', {
         return fmt;
     },
 
-    updateTpl: function () {
+    updateTpl: function() {
         if (!this.isConfiguring) {
             this.refresh();
         }
     },
 
-    updateRenderer: function () {
+    updateRenderer: function() {
         if (!this.isConfiguring) {
             this.refresh();
         }
     },
 
-    updateFormatter: function () {
+    updateFormatter: function() {
         if (!this.isConfiguring) {
             this.refresh();
         }
     },
 
-    formatValue: function (v) {
+    formatValue: function(v) {
         var me = this,
             context = me.refreshContext,
             dataIndex = context.dataIndex,
@@ -229,6 +252,7 @@ Ext.define('Ext.grid.cell.Cell', {
                     }
                     else {
                         raw = renderer.call(scope || me, v, context);
+
                         if (renderer.length > 1) {
                             me.friendly = false;
                         }
@@ -264,7 +288,8 @@ Ext.define('Ext.grid.cell.Cell', {
             //      summaryCell: { tpl: '...' }
 
             if (!(data = context.data)) {
-                context.data = data = context.summary ? context.record.getData()
+                context.data = data = context.summary
+                    ? context.record.getData()
                     : context.grid.gatherData(context.record);
             }
 
@@ -273,7 +298,8 @@ Ext.define('Ext.grid.cell.Cell', {
 
         if (raw != null) {
             raw = String(raw);
-        } else {
+        }
+        else {
             raw = '';
         }
 
@@ -281,7 +307,7 @@ Ext.define('Ext.grid.cell.Cell', {
     },
 
     privates: {
-        bound: function (fields) {
+        bound: function(fields) {
             var me = this,
                 bound = !!fields[me.dataIndex],
                 column, depends, i;
@@ -291,7 +317,7 @@ Ext.define('Ext.grid.cell.Cell', {
                 depends = column && column.getDepends();
 
                 if (depends) {
-                    for (i = depends.length; !bound && i-- > 0; ) {
+                    for (i = depends.length; !bound && i-- > 0;) {
                         bound = !!fields[depends[i]];
                     }
                 }

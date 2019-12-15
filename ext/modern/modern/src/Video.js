@@ -3,8 +3,8 @@
  *
  * ## Notes
  *
- * - There are quite a few issues with the `<video>` tag on Android devices. On Android 2+, the video will
- * appear and play on first attempt, but any attempt afterwards will not work.
+ * - There are quite a few issues with the `<video>` tag on Android devices. On Android 2+,
+ *   the video will appear and play on first attempt, but any attempt afterwards will not work.
  *
  * ## Useful Properties
  *

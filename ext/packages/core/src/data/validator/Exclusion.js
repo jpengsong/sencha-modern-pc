@@ -18,6 +18,7 @@ Ext.define('Ext.data.validator.Exclusion', {
     //<debug>
     constructor: function() {
         this.callParent(arguments);
+
         if (!this.getList()) {
             Ext.raise('validator.Exclusion requires a list');
         }

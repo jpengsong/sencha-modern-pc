@@ -69,7 +69,7 @@ Ext.define('Ext.panel.DateView', {
         tabIndex: -1,
         children: [{
             tag: 'div',
-            cls: Ext.baseCSSPrefix + 'inner ' +  Ext.dom.Element.unselectableCls
+            cls: Ext.baseCSSPrefix + 'inner ' + Ext.dom.Element.unselectableCls
         }]
     },
 
@@ -290,9 +290,11 @@ Ext.define('Ext.panel.DateView', {
         if (!empty) {
             if (params.outsidePrevious) {
                 cls.push(me.outsideCls, me.prevMonthCls);
-            } else if (params.outsideNext) {
+            }
+            else if (params.outsideNext) {
                 cls.push(me.outsideCls, me.nextMonthCls);
-            } else {
+            }
+            else {
                 cls.push(me.currentMonthCls);
 
                 // Today should not be marked in previous or next month
@@ -310,25 +312,30 @@ Ext.define('Ext.panel.DateView', {
             }
 
             if (specialDates) {
-                special = specialDates.dates[ms] || (specialDates.re && specialDates.re.test(formatted));
+                special = specialDates.dates[ms] ||
+                          (specialDates.re && specialDates.re.test(formatted));
             }
 
             if (special) {
                 cls.push(me.specialDateCls);
             }
-        } else {
+        }
+        else {
             cls.push(me.emptyCls);
         }
 
         disabled = me.getParent().isDateDisabled(date);
+
         if (!empty && disabled) {
             cls.push(me.disabledDayCls);
         }
 
         cell.tabIndex = -1;
+
         if (empty) {
             html = '&#160;';
-        } else {
+        }
+        else {
             html = Ext.Date.format(date, params.dateCellFormat);
         }
 
@@ -347,12 +354,14 @@ Ext.define('Ext.panel.DateView', {
 
     ownsDate: function(d) {
         var curr = this.getMonth();
+
         return d.getFullYear() === curr.getFullYear() && d.getMonth() === curr.getMonth();
     },
 
     privates: {
         measurePaneSize: function() {
             var el = this.element.first();
+
             return el.measure('w') + el.getMargin('lr');
         }
     }

@@ -39,7 +39,7 @@ Ext.define('Ext.overrides.Progress', {
         ui: 'default'
     },
 
-    updateWidth: function (width, oldWidth) {
+    updateWidth: function(width, oldWidth) {
         var me = this;
 
         me.callParent([width, oldWidth]);

@@ -95,9 +95,11 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
 
     item: null, // Item being edited.
 
-    applyTooltip: function (tooltip) {
+    applyTooltip: function(tooltip) {
+        var config;
+
         if (tooltip) {
-            var config = Ext.apply({}, tooltip, {
+            config = Ext.apply({}, tooltip, {
                 renderer: this.defaultTooltipRenderer,
                 constrainPosition: true,
                 shrinkWrapDock: true,
@@ -112,12 +114,13 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
         return tooltip;
     },
 
-    defaultTooltipRenderer: function (tooltip, item, target, e) {
+    defaultTooltipRenderer: function(tooltip, item, target, e) {
         var parts = [];
 
         if (target.xField) {
             parts.push(target.xField + ': ' + target.xValue);
         }
+
         if (target.yField) {
             parts.push(target.yField + ': ' + target.yValue);
         }
@@ -125,7 +128,7 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
         tooltip.setHtml(parts.join('<br>'));
     },
 
-    onDragStart: function (e) {
+    onDragStart: function(e) {
         var me = this,
             chart = me.getChart(),
             item = chart.getHighlightItem();
@@ -145,7 +148,7 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
         }
     },
 
-    onDrag: function (e) {
+    onDrag: function(e) {
         var me = this,
             chart = me.getChart(),
             item = chart.getHighlightItem(),
@@ -155,13 +158,14 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
             switch (type) {
                 case 'barSeries':
                     return me.onDragBar(e);
+
                 case 'scatterSeries':
                     return me.onDragScatter(e);
             }
         }
     },
 
-    highlight: function (item) {
+    highlight: function(item) {
         var me = this,
             chart = me.getChart(),
             flipXY = chart.getFlipXY(),
@@ -176,20 +180,24 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
                 case 'barSeries':
                     if (flipXY) {
                         style.cursor = cursors.ewResize;
-                    } else {
+                    }
+                    else {
                         style.cursor = cursors.nsResize;
                     }
+
                     break;
+
                 case 'scatterSeries':
                     style.cursor = cursors.move;
                     break;
             }
-        } else {
+        }
+        else {
             chart.el.dom.style.cursor = 'default';
         }
     },
 
-    onDragBar: function (e) {
+    onDragBar: function(e) {
         var me = this,
             chart = me.getChart(),
             isRtl = chart.getInherited().rtl,
@@ -206,9 +214,11 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
 
         if (flipXY) {
             positionY = isRtl ? surfaceRect[2] - xy[0] : xy[0];
-        } else {
+        }
+        else {
             positionY = surfaceRect[3] - xy[1];
         }
+
         style = {
             x: instance.x,
             y: positionY,
@@ -224,6 +234,7 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
         if (Ext.isArray(item.series.getYField())) { // stacked bars
             positionY = positionY - instance.y - instance.height;
         }
+
         me.target = {
             index: item.index,
             yField: item.field,
@@ -236,9 +247,11 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
             item: item
         }];
         changes = Ext.callback(renderer, null, params, 0, chart);
+
         if (changes) {
             Ext.apply(style, changes);
         }
+
         // The interaction works by putting another series item instance
         // under 'itemedit' ID with a slightly different style (default) or
         // whatever style the user provided.
@@ -248,7 +261,7 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
         surface.renderFrame();
     },
 
-    onDragScatter: function (e) {
+    onDragScatter: function(e) {
         var me = this,
             chart = me.getChart(),
             isRtl = chart.getInherited().rtl,
@@ -269,31 +282,38 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
 
         if (flipXY) {
             positionY = isRtl ? surfaceRect[2] - xy[0] : xy[0];
-        } else {
+        }
+        else {
             positionY = surfaceRect[3] - xy[1];
         }
+
         if (isEditableX) {
             if (flipXY) {
                 positionX = surfaceRect[3] - xy[1];
-            } else {
+            }
+            else {
                 positionX = xy[0];
             }
-        } else {
+        }
+        else {
             positionX = instance.translationX;
         }
 
         if (isEditableX) {
             hintX = xy[0];
             hintY = xy[1];
-        } else {
+        }
+        else {
             if (flipXY) {
                 hintX = xy[0];
                 hintY = instance.translationY; // no change
-            } else {
+            }
+            else {
                 hintX = instance.translationX;
                 hintY = xy[1]; // no change
             }
         }
+
         style = {
             translationX: hintX,
             translationY: hintY,
@@ -311,6 +331,7 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
             yField: item.field,
             yValue: (positionY - matrix.getDY()) / matrix.getYY()
         };
+
         if (isEditableX) {
             Ext.apply(me.target, {
                 xField: item.series.getXField(),
@@ -324,9 +345,11 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
             item: item
         }];
         changes = Ext.callback(renderer, null, params, 0, chart);
+
         if (changes) {
             Ext.apply(style, changes);
         }
+
         // This marker acts as a visual hint while dragging.
         item.sprite.putMarker('markers', style, 'itemedit');
 
@@ -334,7 +357,7 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
         surface.renderFrame();
     },
 
-    showTooltip: function (e, target, item) {
+    showTooltip: function(e, target, item) {
         var tooltip = this.getTooltip(),
             config, chart;
 
@@ -351,13 +374,14 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
                 // If aligning to an element, it uses a currentTarget
                 // flyweight which may be attached to any DOM element.
                 tooltip.realignToTarget();
-            } else {
+            }
+            else {
                 tooltip.show();
             }
         }
     },
 
-    hideTooltip: function () {
+    hideTooltip: function() {
         var tooltip = this.getTooltip();
 
         if (tooltip && Ext.toolkit !== 'modern') {
@@ -365,7 +389,7 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
         }
     },
 
-    onDragEnd: function (e) {
+    onDragEnd: function(e) {
         var me = this,
             target = me.target,
             chart = me.getChart(),
@@ -374,19 +398,23 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
 
         if (target) {
             record = store.getAt(target.index);
+
             if (target.yField) {
                 record.set(target.yField, target.yValue, {
                     convert: false
                 });
             }
+
             if (target.xField) {
                 record.set(target.xField, target.xValue, {
                     convert: false
                 });
             }
+
             if (target.yField || target.xField) {
                 me.getChart().onDataChanged();
             }
+
             me.target = null;
         }
 
@@ -395,10 +423,11 @@ Ext.define('Ext.chart.interactions.ItemEdit', {
         if (me.item) {
             chart.fireEvent('enditemedit', chart, me, me.item, target);
         }
+
         me.highlight(me.item = null);
     },
 
-    destroy: function () {
+    destroy: function() {
         // Peek at the config, so we don't create one just to destroy it,
         // if a user has set 'tooltip' config to 'false'.
         var tooltip = this.getConfig('tooltip', true);

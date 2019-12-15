@@ -224,14 +224,14 @@ Ext.define('Ext.Media', {
     },
 
     /**
-     * Sets the URL of the media element. If the media element already exists, it is update the src attribute of the
-     * element. If it is currently playing, it will start the new video.
+     * Sets the URL of the media element. If the media element already exists, it is update the src
+     * attribute of the element. If it is currently playing, it will start the new video.
      */
     updateUrl: function(newUrl) {
         var dom = this.media.dom;
 
-        //when changing the src, we must call load:
-        //http://developer.apple.com/library/safari/#documentation/AudioVideo/Conceptual/Using_HTML5_Audio_Video/ControllingMediaWithJavaScript/ControllingMediaWithJavaScript.html
+        // when changing the src, we must call load:
+        // http://developer.apple.com/library/safari/#documentation/AudioVideo/Conceptual/Using_HTML5_Audio_Video/ControllingMediaWithJavaScript/ControllingMediaWithJavaScript.html
 
         dom.src = newUrl;
 
@@ -251,7 +251,7 @@ Ext.define('Ext.Media', {
         this.setControls(enableControls);
     },
 
-    updateControls: function (value) {
+    updateControls: function(value) {
         this.media.set({
             controls: value ? 'controls' : undefined
         });
@@ -296,7 +296,8 @@ Ext.define('Ext.Media', {
     toggle: function() {
         if (this.isPlaying()) {
             this.pause();
-        } else {
+        }
+        else {
             this.play();
         }
     },
@@ -357,7 +358,7 @@ Ext.define('Ext.Media', {
 
     doDestroy: function() {
         var me = this,
-            dom  = me.media.dom,
+            dom = me.media.dom,
             mediaEvents = me.mediaEvents;
 
         Ext.Object.each(mediaEvents, function(event, fn) {

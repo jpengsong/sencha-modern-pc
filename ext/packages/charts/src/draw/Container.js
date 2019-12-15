@@ -165,9 +165,11 @@ Ext.define('Ext.draw.Container', {
          * (fillStyle and strokeStyle, but not shadowColor) in sprites.
          * The gradients array is an array of objects with the following properties:
          * - **id** - string - The unique name of the gradient.
-         * - **type** - string, optional - The type of the gradient. Available types are: 'linear', 'radial'. Defaults to 'linear'.
+         * - **type** - string, optional - The type of the gradient. Available types are: 'linear',
+         * 'radial'. Defaults to 'linear'.
          * - **angle** - number, optional - The angle of the gradient in degrees.
-         * - **stops** - array - An array of objects with 'color' and 'offset' properties, where 'offset' is a real number from 0 to 1.
+         * - **stops** - array - An array of objects with 'color' and 'offset' properties, where
+         * 'offset' is a real number from 0 to 1.
          *
          * For example:
          *
@@ -194,7 +196,8 @@ Ext.define('Ext.draw.Container', {
          *        }]
          *     }]
          *
-         * Then the sprites can use 'gradientId1' and 'gradientId2' by setting the color attributes to those ids, for example:
+         * Then the sprites can use 'gradientId1' and 'gradientId2' by setting the color attributes
+         * to those ids, for example:
          *
          *     sprite.setAttributes({
          *         fillStyle: 'url(#gradientId1)',
@@ -245,7 +248,7 @@ Ext.define('Ext.draw.Container', {
     supportedOptions: {
         version: Ext.isNumber,
         data: Ext.isString,
-        format: function (format) {
+        format: function(format) {
             return Ext.Array.indexOf(this.supportedFormats, format) >= 0;
         },
         filename: Ext.isString,
@@ -260,83 +263,99 @@ Ext.define('Ext.draw.Container', {
         this.frameCallbackId = Ext.draw.Animator.addFrameCallback('renderFrame', this);
     },
 
-    applyDownloadServerUrl: function (url) {
+    applyDownloadServerUrl: function(url) {
         var defaultUrl = this.defaultDownloadServerUrl;
 
         if (!url) {
             url = defaultUrl;
+
             //<debug>
             // Skip this warning when unit testing.
             if (!window.jasmine) {
-                Ext.log.warn('Using Sencha\'s download server could expose your data and pose a security risk. ' +
-                    'Please see Ext.draw.Container#download method docs for more info. (component id=' +
-                    this.getId() + ')');
+                Ext.log.warn('Using Sencha\'s download server could expose your data and pose ' +
+                             'a security risk. Please see Ext.draw.Container#download method ' +
+                             'docs for more info. (component id=' + this.getId() + ')');
             }
             //</debug>
         }
+
         return url;
     },
 
-    applyGradients: function (gradients) {
+    applyGradients: function(gradients) {
         var result = [],
             i, n, gradient, offset;
+
         if (!Ext.isArray(gradients)) {
             return result;
         }
+
         for (i = 0, n = gradients.length; i < n; i++) {
             gradient = gradients[i];
+
             if (!Ext.isObject(gradient)) {
                 continue;
             }
+
             // ExtJS only supported linear gradients, so we didn't have to specify their type
             if (typeof gradient.type !== 'string') {
                 gradient.type = 'linear';
             }
+
             if (gradient.angle) {
                 gradient.degrees = gradient.angle;
                 delete gradient.angle;
             }
+
             // Convert ExtJS stops object to Touch stops array
             if (Ext.isObject(gradient.stops)) {
-                gradient.stops = (function (stops) {
-                    var result = [], stop;
+                gradient.stops = (function(stops) {
+                    var result = [],
+                        stop;
+
                     for (offset in stops) {
                         stop = stops[offset];
                         stop.offset = offset / 100;
                         result.push(stop);
                     }
+
                     return result;
                 })(gradient.stops);
             }
+
             result.push(gradient);
         }
+
         Ext.draw.gradient.GradientDefinition.add(result);
+
         return result;
     },
 
-    applySprites: function (sprites) {
+    applySprites: function(sprites) {
+        var result, surface, sprite, i, ln;
+
         // Never update.
         if (!sprites) {
             return;
         }
 
         sprites = Ext.Array.from(sprites);
+        result = [];
 
-        var ln = sprites.length,
-            result = [],
-            i, surface, sprite;
-
-        for (i = 0; i < ln; i++) {
+        for (i = 0, ln = sprites.length; i < ln; i++) {
             sprite = sprites[i];
             surface = sprite.surface;
+
             if (!(surface && surface.isSurface)) {
                 if (Ext.isString(surface)) {
                     surface = this.getSurface(surface);
                     delete sprite.surface;
-                } else {
+                }
+                else {
                     surface = this.getSurface('main');
                 }
             }
+
             sprite = surface.add(sprite);
             result.push(sprite);
         }
@@ -359,7 +378,7 @@ Ext.define('Ext.draw.Container', {
      * Triggers the {@link #resizeHandler} with the size of the draw container
      * element as the parameter.
      */
-    handleResize: function (size, instantly) {
+    handleResize: function(size, instantly) {
         // See the following:
         // Classic: Ext.draw.ContainerBase.reattachToBody
         //  Modern: Ext.draw.ContainerBase.initialize
@@ -391,6 +410,7 @@ Ext.define('Ext.draw.Container', {
 
         if (defer) {
             me.resizeTimerId = Ext.defer(me.handleResize, resizeDelay, me, [size, true]);
+
             return;
         }
 
@@ -401,21 +421,22 @@ Ext.define('Ext.draw.Container', {
         if (result !== false) {
             me.renderFrame();
         }
+
         me.lastResizeTime = Ext.Date.now();
     },
 
     /**
      * @private
      */
-    stopResizeTimer: function () {
+    stopResizeTimer: function() {
         if (this.resizeTimerId) {
             Ext.undefer(this.resizeTimerId);
             this.resizeTimerId = 0;
         }
     },
 
-    defaultResizeHandler: function (size) {
-        this.getItems().each(function (surface) {
+    defaultResizeHandler: function(size) {
+        this.getItems().each(function(surface) {
             surface.setRect([0, 0, size.width, size.height]);
         });
     },
@@ -432,15 +453,15 @@ Ext.define('Ext.draw.Container', {
      * @param {String} type
      * @return {Ext.draw.Surface}
      */
-    getSurface: function (id, type) {
-        id = id || 'main';
-        type = type || id;
-
+    getSurface: function(id, type) {
         var me = this,
             surfaces = me.getItems(),
             oldCount = surfaces.getCount(),
             zIndexes = me.getSurfaceZIndexes(),
             surface;
+
+        id = id || 'main';
+        type = type || id;
 
         surface = me.createSurface(id);
 
@@ -457,15 +478,16 @@ Ext.define('Ext.draw.Container', {
         return surface;
     },
 
-    createSurface: function (id) {
-        id = this.getId() + '-' + (id || 'main');
-
+    createSurface: function(id) {
         var me = this,
             surfaces = me.getItems(),
-            surface = surfaces.get(id);
+            surface;
+
+        id = this.getId() + '-' + (id || 'main');
+        surface = surfaces.get(id);
 
         if (!surface) {
-            surface = me.add({xclass: me.engine, id: id});
+            surface = me.add({ xclass: me.engine, id: id });
         }
 
         return surface;
@@ -474,13 +496,14 @@ Ext.define('Ext.draw.Container', {
     /**
      * Render all the surfaces in the container.
      */
-    renderFrame: function () {
+    renderFrame: function() {
         var me = this,
             surfaces = me.getItems(),
             i, ln, item;
 
         for (i = 0, ln = surfaces.length; i < ln; i++) {
             item = surfaces.items[i];
+
             if (item.isSurface) {
                 item.renderFrame();
             }
@@ -493,7 +516,7 @@ Ext.define('Ext.draw.Container', {
      * optionally sorting them by zIndex.
      * Overridden in subclasses.
      */
-    getSurfaces: function (sort) {
+    getSurfaces: function(sort) {
         var surfaces = Array.prototype.slice.call(this.items.items),
             zIndexes = this.getSurfaceZIndexes(),
             i, j, surface, zIndex;
@@ -504,10 +527,12 @@ Ext.define('Ext.draw.Container', {
                 surface = surfaces[j];
                 zIndex = zIndexes[surface.type];
                 i = j - 1;
+
                 while (i >= 0 && zIndexes[surfaces[i].type] > zIndex) {
                     surfaces[i + 1] = surfaces[i];
                     i--;
                 }
+
                 surfaces[i + 1] = surface;
             }
         }
@@ -527,7 +552,7 @@ Ext.define('Ext.draw.Container', {
      * @return {String} return.data Image element, byte stream or DataURL.
      * @return {String} return.type The type of the data (e.g. 'png' or 'svg').
      */
-    getImage: function (format) {
+    getImage: function(format) {
         var size = this.bodyElement.getSize(),
             surfaces = this.getSurfaces(true),
             surface = surfaces[0],
@@ -540,17 +565,21 @@ Ext.define('Ext.draw.Container', {
                 data: surface.toSVG(size, surfaces),
                 type: 'svg-markup'
             };
-        } else {
+        }
+        else {
             image = surface.flatten(size, surfaces);
 
             if (format === 'image') {
                 imageElement = new Image();
                 imageElement.src = image.data;
                 image.data = imageElement;
+
                 return image;
             }
+
             if (format === 'stream') {
                 image.data = image.data.replace(/^data:image\/[^;]+/, 'data:application/octet-stream');
+
                 return image;
             }
         }
@@ -645,7 +674,7 @@ Ext.define('Ext.draw.Container', {
      *
      * @return {Boolean} True if request was successfully sent to the server.
      */
-    download: function (config) {
+    download: function(config) {
         var me = this,
             inputs = [],
             markup, name, value;
@@ -656,6 +685,7 @@ Ext.define('Ext.draw.Container', {
 
         config = config || {};
         config.version = 2;
+
         if (!config.data) {
             config.data = me.getImage().data;
         }
@@ -663,6 +693,7 @@ Ext.define('Ext.draw.Container', {
         for (name in config) {
             if (config.hasOwnProperty(name)) {
                 value = config[name];
+
                 if (name in me.supportedOptions) {
                     if (me.supportedOptions[name].call(me, value)) {
                         inputs.push({
@@ -676,7 +707,8 @@ Ext.define('Ext.draw.Container', {
                     }
                     //<debug>
                     else {
-                        Ext.log.error('Invalid value for image download option "' + name + '": ' + value);
+                        Ext.log.error('Invalid value for image download option "' + name +
+                                      '": ' + value);
                     }
                     //</debug>
                 }
@@ -691,7 +723,7 @@ Ext.define('Ext.draw.Container', {
         markup = Ext.dom.Helper.markup({
             tag: 'html',
             children: [
-                {tag: 'head'},
+                { tag: 'head' },
                 {
                     tag: 'body',
                     children: [
@@ -726,7 +758,7 @@ Ext.define('Ext.draw.Container', {
      * - this method does not work on IE8.
      */
 
-    doDestroy: function () {
+    doDestroy: function() {
         var me = this,
             callbackId = me.frameCallbackId;
 
@@ -739,10 +771,13 @@ Ext.define('Ext.draw.Container', {
         me.callParent();
     }
 
-}, function () {
+}, function() {
     if (location.search.match('svg')) {
         Ext.draw.Container.prototype.engine = 'Ext.draw.engine.Svg';
-    } else if ((Ext.os.is.BlackBerry && Ext.os.version.getMajor() === 10) || (Ext.browser.is.AndroidStock4 && (Ext.os.version.getMinor() === 1 || Ext.os.version.getMinor() === 2 || Ext.os.version.getMinor() === 3))) {
+    }
+    else if ((Ext.os.is.BlackBerry && Ext.os.version.getMajor() === 10) ||
+             (Ext.browser.is.AndroidStock4 && (Ext.os.version.getMinor() === 1 ||
+             Ext.os.version.getMinor() === 2 || Ext.os.version.getMinor() === 3))) {
         // http://code.google.com/p/android/issues/detail?id=37529
         Ext.draw.Container.prototype.engine = 'Ext.draw.engine.Svg';
     }

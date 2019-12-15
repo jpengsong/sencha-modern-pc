@@ -1,7 +1,6 @@
 /**
  * @class Ext.Panel
  */
-
 Ext.define('Ext.panel.Collapsible', {
     override: 'Ext.Panel',
 
@@ -16,14 +15,24 @@ Ext.define('Ext.panel.Collapsible', {
          * @cfg {'top'/'right'/'bottom'/'left'/Boolean/Object} collapsible
          * A configuration for a {@link Ext.panel.Collapser Collapser}.
          *
-         * True to make the panel collapsible and have an expand/collapse toggle Tool added into the header tool button
-         * area.
+         * True to make the panel collapsible and have an expand/collapse toggle Tool added
+         * into the header tool button area.
          *
-         * You can also set `top`/`right`/`bottom`/`left` to directly specify the collapse direction.
+         * You can also set `top`/`right`/`bottom`/`left` to directly specify the collapse
+         * direction.
          *
          * @since 6.5.0
          */
-        collapsible: null
+        collapsible: null,
+
+        /**
+         * @cfg {Boolean} titleCollapse
+         * `true` to allow expanding and collapsing the panel (when `{@link #collapsible} = true`)
+         * by clicking anywhere in the header bar, `false` to allow it only by clicking to tool
+         * button.
+         * @since 7.0
+         */
+        titleCollapse: null
     },
 
     /**
@@ -82,6 +91,11 @@ Ext.define('Ext.panel.Collapsible', {
      */
     hasCollapsible: true,
 
+    collapsed: false,
+    collapsing: false,
+    expanded: false,
+    expanding: false,
+
     defaultCollapserCls: 'Ext.panel.Collapser',
 
     doDestroy: function() {
@@ -105,6 +119,25 @@ Ext.define('Ext.panel.Collapsible', {
         return this.getCollapsible().expand(animation);
     },
 
+    saveState: function(state, stateful) {
+        var me = this,
+            collapsible = me.getCollapsible(),
+            saved = collapsible && collapsible.getCollapsed() && collapsible.savedProps,
+            direction, property, value;
+
+        me.callParent([ state, stateful ]);
+
+        if (saved) {
+            direction = collapsible.getDirection();
+            property = (direction === 'top' || direction === 'bottom') ? 'height' : 'width';
+
+            // When we are collapsed, we save either width or height.
+            if (stateful && stateful[property] && (value = saved[property]) !== null) {
+                state.set(property, value);
+            }
+        }
+    },
+
     /**
      * @method toggleCollapsed
      * @inheritdoc Ext.panel.Collapser#method-toggleCollapsed
@@ -116,28 +149,33 @@ Ext.define('Ext.panel.Collapsible', {
     getCollapsed: function() {
         // The collapsed state should always be governed by the collapsible
         var collapsible = this.getCollapsible();
+
         return collapsible ? collapsible.getCollapsed() : false;
     },
 
     updateCollapsed: function(collapsed) {
         var collapsible = this.getCollapsible();
+
         if (collapsible) {
             collapsible.setCollapsed(collapsed);
         }
     },
 
-    applyCollapsible: function (collapsible, collapser) {
+    applyCollapsible: function(collapsible, collapser) {
         if (collapsible === true) {
             collapsible = { direction: this.getHeaderPosition() };
-        } else if (typeof collapsible === 'string') {
+        }
+        else if (typeof collapsible === 'string') {
             collapsible = { direction: collapsible };
-        } else if (!collapsible) {
+        }
+        else if (!collapsible) {
             return null;
         }
 
         if (collapser) {
             collapser.setConfig(collapsible);
-        } else {
+        }
+        else {
             collapsible = Ext.apply({
                 xclass: this.defaultCollapserCls,
                 target: this
@@ -154,6 +192,7 @@ Ext.define('Ext.panel.Collapsible', {
             if (!this.destroying) {
                 oldCollapsible.doExpandCollapse(false);
             }
+
             oldCollapsible.destroy();
         }
 
@@ -178,10 +217,15 @@ Ext.define('Ext.panel.Collapsible', {
         if (collapsible && collapsible.getCollapsed()) {
             headerPosition = collapsible.getDirection();
         }
+
         this.moveHeaderPosition(headerPosition, oldHeaderPosition);
     },
 
     privates: {
+        hasHiddenContent: function() {
+            return this.getCollapsed() || this.callParent();
+        },
+
         initCollapsible: function(collapsible) {
             this.ensureHeader();
             collapsible.initialize();
@@ -189,6 +233,7 @@ Ext.define('Ext.panel.Collapsible', {
 
         onCollapsibleRendered: function() {
             var collapsible = this.getCollapsible();
+
             if (collapsible) {
                 this.initCollapsible(collapsible);
             }
@@ -201,14 +246,14 @@ Ext.define('Ext.panel.Collapsible', {
                 bodyWrap = me.bodyWrapElement;
 
             if (bodyWrap.parent() !== el) {
-
-                 // We need to make sure the collapser node
-                 // is after the header in case the resizer
-                 // node is present. The resizer node needs
-                 // to be on top to function.
+                // We need to make sure the collapser node
+                // is after the header in case the resizer
+                // node is present. The resizer node needs
+                // to be on top to function.
                 if (header) {
                     bodyWrap.insertAfter(header.element);
-                } else {
+                }
+                else {
                     el.insertFirst(bodyWrap);
                 }
             }

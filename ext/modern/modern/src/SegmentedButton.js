@@ -1,6 +1,6 @@
 /**
- * SegmentedButton is a container for a group of {@link Ext.Button}s. Generally a SegmentedButton would be
- * a child of a {@link Ext.Toolbar} and would be used to switch between different views.
+ * SegmentedButton is a container for a group of {@link Ext.Button}s. Generally a SegmentedButton
+ * would be a child of a {@link Ext.Toolbar} and would be used to switch between different views.
  *
  * ## Example usage:
  *
@@ -21,7 +21,8 @@
  *         ],
  *         listeners: {
  *             toggle: function(container, button, pressed){
- *                 alert("User toggled the '" + button.getText() + "' button: " + (pressed ? 'on' : 'off'));
+ *                 alert("User toggled the '" + button.getText() + "' button: " +
+ *                 (pressed ? 'on' : 'off'));
  *             }
  *         }
  *     });
@@ -29,7 +30,7 @@
  */
 Ext.define('Ext.SegmentedButton', {
     extend: 'Ext.Container',
-    xtype : 'segmentedbutton',
+    xtype: 'segmentedbutton',
 
     alternateClassName: 'Ext.button.Segmented',
 
@@ -72,11 +73,11 @@ Ext.define('Ext.SegmentedButton', {
 
         /**
          * @cfg {Boolean} forceSelection
-         * If {@link #allowMultiple} is `true`, this config may be set to `true` to indicate that at least
-         * one button in the set must remain pressed at all times.
+         * If {@link #allowMultiple} is `true`, this config may be set to `true` to indicate that
+         * at least one button in the set must remain pressed at all times.
          *
-         * If no {@link #value} is configured, and no child buttons are configured `pressed`, the first child
-         * button is set `pressed: true`
+         * If no {@link #value} is configured, and no child buttons are configured `pressed`, the
+         * first child button is set `pressed: true`
          *
          * @since 6.0.2
          */
@@ -86,7 +87,8 @@ Ext.define('Ext.SegmentedButton', {
          * @cfg {Array} pressedButtons
          * The pressed buttons for this segmented button.
          *
-         * You can remove all pressed buttons by calling {@link #setPressedButtons} with an empty array.
+         * You can remove all pressed buttons by calling {@link #setPressedButtons} with an empty
+         * array.
          * @accessor
          */
         pressedButtons: null,
@@ -108,7 +110,7 @@ Ext.define('Ext.SegmentedButton', {
          * @cfg {String/Number/String[]/Number[]} value
          * @accessor
          * The value of this button.  When {@link #allowMultiple} is `false`, value is a
-         * String or Number.  When {@link #allowMultiple is `true`, value is an array
+         * String or Number.  When {@link #allowMultiple} is `true`, value is an array
          * of values.  A value corresponds to a child button's {@link Ext.Button#value
          * value}, or its index if no child button values match the given value.
          *
@@ -191,7 +193,7 @@ Ext.define('Ext.SegmentedButton', {
      * @inheritdoc
      */
     layout: {
-        type : 'box',
+        type: 'box',
         vertical: false,
         align: 'stretch'
     },
@@ -221,17 +223,17 @@ Ext.define('Ext.SegmentedButton', {
      * @param {Ext.Button} button The toggled button.
      * @param {Boolean} isPressed Boolean to indicate if the button was pressed or not.
      */
-    
+
     /**
      * @event change
      * Fires when the value changes.
      * @param {Ext.SegmentedButton} this
-     * @param {Object/Object[]} value The new value. Will be an array with {@link #allowMultiple}, 
+     * @param {Object/Object[]} value The new value. Will be an array with {@link #allowMultiple},
      * a single value if not.
-     * @param {Object/Object[]} oldValue The old value. Will be an array with {@link #allowMultiple},
-     * a single value if not.
+     * @param {Object/Object[]} oldValue The old value. Will be an array with
+     * {@link #allowMultiple}, a single value if not.
      */
-    
+
     constructor: function(config) {
         this.valueMap = {};
         this.callParent([config]);
@@ -244,7 +246,7 @@ Ext.define('Ext.SegmentedButton', {
 
         me.onAfter({
             delegate: '> button',
-            scope   : me,
+            scope: me,
             hide: 'onButtonHiddenChange',
             show: 'onButtonHiddenChange'
         });
@@ -258,13 +260,17 @@ Ext.define('Ext.SegmentedButton', {
 
         if (buttons) {
             buttons = Ext.Array.from(buttons);
+            len = buttons && buttons.length;
+
             for (i = 0; i < len; ++i) {
                 button = this.getComponent(buttons[i]);
+
                 if (button) {
                     pressedButtons.push(button);
                 }
             }
         }
+
         return pressedButtons;
     },
 
@@ -280,6 +286,7 @@ Ext.define('Ext.SegmentedButton', {
 
         for (i = 0; i < len; ++i) {
             button = items[i];
+
             if (button.getPressed()) {
                 ret.push(button);
             }
@@ -288,14 +295,14 @@ Ext.define('Ext.SegmentedButton', {
         return ret;
     },
 
-    applyValue: function (value, oldValue) {
+    applyValue: function(value, oldValue) {
         var me = this,
             buttons = me.getItems(),
             allowMultiple = me.getAllowMultiple(),
             values, i, length, button, buttonValue;
 
         if (me.isConfiguring) {
-            //if no value, look if any buttons are configured as pressed
+            // if no value, look if any buttons are configured as pressed
             if (value == null) {
                 values = [];
                 length = buttons.length;
@@ -313,7 +320,8 @@ Ext.define('Ext.SegmentedButton', {
                 }
 
                 value = values;
-            } else {
+            }
+            else {
                 value = Ext.Array.from(value);
 
                 //<debug>
@@ -324,12 +332,14 @@ Ext.define('Ext.SegmentedButton', {
                     button = me.lookupButtonByValue(values[i]);
 
                     if (!button) {
-                        Ext.raise('Invalid value "' + value + '" for segmented button: "' + me.id + '"');
+                        Ext.raise(
+                            'Invalid value "' + value + '" for segmented button: "' + me.id + '"');
                     }
                 }
                 //</debug>
             }
-        } else {
+        }
+        else {
             value = Ext.Array.from(value);
 
             //<debug>
@@ -340,7 +350,8 @@ Ext.define('Ext.SegmentedButton', {
                 button = me.lookupButtonByValue(values[i]);
 
                 if (!button) {
-                    Ext.raise('Invalid value "' + value + '" for segmented button: "' + me.id + '"');
+                    Ext.raise(
+                        'Invalid value "' + value + '" for segmented button: "' + me.id + '"');
                 }
             }
             //</debug>
@@ -365,7 +376,7 @@ Ext.define('Ext.SegmentedButton', {
         return Ext.isDefined(value) ? value : null;
     },
 
-    updateValue: function (value, oldValue) {
+    updateValue: function(value, oldValue) {
         var me = this,
             changed = [],
             newValues = Ext.Array.from(value),
@@ -380,7 +391,7 @@ Ext.define('Ext.SegmentedButton', {
             for (i = 0; i < length; i++) {
                 button = me.lookupButtonByValue(oldValues[i]);
 
-                //unpress this button if it's not in the new value
+                // unpress this button if it's not in the new value
                 if (!Ext.Array.contains(newValues, oldValues[i])) {
                     button.setPressed(false);
 
@@ -395,7 +406,7 @@ Ext.define('Ext.SegmentedButton', {
             for (i = 0; i < length; i++) {
                 button = me.lookupButtonByValue(newValues[i]);
 
-                //detect if this button was already pressed
+                // detect if this button was already pressed
                 if (!Ext.Array.contains(oldValues, newValues[i])) {
                     button.setPressed(true);
 
@@ -404,7 +415,7 @@ Ext.define('Ext.SegmentedButton', {
             }
         }
 
-        //we shouldn't fire any events on initial instantiation
+        // we shouldn't fire any events on initial instantiation
         if (!me.isConfiguring) {
             if (me.hasListeners.toggle) {
                 length = changed.length;
@@ -419,7 +430,9 @@ Ext.define('Ext.SegmentedButton', {
             }
 
             if (me.hasListeners.change) {
-                changed = me.getAllowMultiple() ? !Ext.Array.equals(value, oldValue) : value !== oldValue;
+                changed = me.getAllowMultiple()
+                    ? !Ext.Array.equals(value, oldValue)
+                    : value !== oldValue;
 
                 if (changed) {
                     me.fireEvent('change', me, value, oldValue);
@@ -431,7 +444,8 @@ Ext.define('Ext.SegmentedButton', {
     },
 
     updateAllowMultiple: function(allowMultiple) {
-        if (!this.initialized && !this.getInitialConfig().hasOwnProperty('allowDepress') && allowMultiple) {
+        if (!this.initialized && !this.getInitialConfig()
+            .hasOwnProperty('allowDepress') && allowMultiple) {
             this.setAllowDepress(true);
         }
     },
@@ -450,12 +464,13 @@ Ext.define('Ext.SegmentedButton', {
             defaultUI = me.getDefaultUI(),
             value = item.getValue();
 
-
         // Force allowDepress to be configured if needed
         me.getAllowMultiple();
+
         if (defaultUI && (item.getUi() == null)) {
             item.setUi(defaultUI);
         }
+
         if (value !== null) {
             me.valueMap[value] = item;
             me.useValueMap = true;
@@ -485,15 +500,18 @@ Ext.define('Ext.SegmentedButton', {
             current, newValue, i;
 
         me.callParent([item, index, destroying]);
+
         if (!me.destroying) {
             if (listeners) {
                 listeners.destroy();
             }
+
             me.updateFirstAndLastCls(this.getItems());
+
             if (useValueMap) {
-                value = button.getValue();
                 delete me.valueMap[value];
-            } else {
+            }
+            else {
                 value = index;
             }
 
@@ -501,27 +519,33 @@ Ext.define('Ext.SegmentedButton', {
             // it from the value collection
             if (item.getPressed()) {
                 current = me.getValue();
+
                 if (me.getAllowMultiple()) {
                     index = current.indexOf(value);
                     newValue = current.slice();
                     // If we're index mapping, get any value after the
                     // removing, since the index will shift down by 1. Note
                     // that the value is always kept in order of index.
+
                     if (!useValueMap) {
                         for (i = newValue.length - 1; i > index; --i) {
                             --newValue[i];
                         }
                     }
+
                     newValue.splice(index, 1);
-                } else {
+                }
+                else {
                     newValue = null;
                 }
 
                 me.setValue(newValue);
             }
+
             item.setEnableToggle(item.$enableToggle);
             item.setAllowDepress(item.$allowDepress);
         }
+
         item.$segmentedListeners = null;
     },
 
@@ -554,6 +578,7 @@ Ext.define('Ext.SegmentedButton', {
 
         for (i = 0; i < len; i++) {
             item = items[i];
+
             if (item.getUi() == null) {
                 item.setUi(defaultUI);
             }
@@ -562,28 +587,29 @@ Ext.define('Ext.SegmentedButton', {
     },
 
     doDestroy: function() {
-        this.destroying = true;
         this.valueMap = null;
-        this.callParent();        
+        this.callParent();
     },
 
     privates: {
         getAllPressed: function(items) {
-            items = items.items;
-
-            var len = items.length,
-                map = {},
+            var map = {},
                 pressingItem = this.pressingItem,
-                i, button, pressed;
+                len, i, button, pressed;
+
+            items = items.items;
+            len = items.length;
 
             for (i = 0; i < len; ++i) {
                 button = items[i];
+
                 // If we're currently pressing the item, the state will already
                 // be set, but for the purpose of setting the value we want to 
                 // treat it as though it's in the old state
                 if (button === pressingItem) {
                     pressed = !button.getPressed();
-                } else {
+                }
+                else {
                     pressed = button.getPressed();
                 }
 
@@ -628,16 +654,17 @@ Ext.define('Ext.SegmentedButton', {
         },
 
         onBeforePressedChange: function(button, pressed) {
-            // If we allow multiple selections, and we are forcing a selection, and we are unpressing
-            // and we only have one value, then veto this. we are not allowing the selection length
-            // to fall to zero.
+            // If we allow multiple selections, and we are forcing a selection, and we are
+            // unpressing and we only have one value, then veto this. we are not allowing the
+            // selection length to fall to zero.
             var value = this.getValue(),
                 ret;
 
             if (this.getForceSelection() && !pressed) {
                 if (this.getAllowMultiple()) {
                     ret = value.length === 1;
-                } else if (value === this.getButtonValue(button)) {
+                }
+                else if (value === this.getButtonValue(button)) {
                     ret = false;
                 }
             }
@@ -646,16 +673,17 @@ Ext.define('Ext.SegmentedButton', {
         },
 
         onPressedChange: function(button, pressed) {
+            var me, Array, allowMultiple, buttonValue, value, valueIndex;
+
             if (this.settingValue) {
                 return;
             }
 
-            var me = this,
-                Array = Ext.Array,
-                allowMultiple = me.getAllowMultiple(),
-                buttonValue = me.getButtonValue(button),
-                value = me.getValue(),
-                valueIndex;
+            me = this;
+            Array = Ext.Array;
+            allowMultiple = me.getAllowMultiple();
+            buttonValue = me.getButtonValue(button);
+            value = me.getValue();
 
             if (allowMultiple) {
                 valueIndex = Array.indexOf(value, buttonValue);
@@ -668,17 +696,20 @@ Ext.define('Ext.SegmentedButton', {
                         value = Array.slice(value);
                         value.push(buttonValue);
                     }
-                } else {
+                }
+                else {
                     value = buttonValue;
                 }
-            } else {
+            }
+            else {
                 if (allowMultiple) {
                     if (valueIndex > -1) {
                         // We must not mutate our value property here
                         value = Array.slice(value);
                         value.splice(valueIndex, 1);
                     }
-                } else if (value === buttonValue) {
+                }
+                else if (value === buttonValue) {
                     value = null;
                 }
             }
@@ -697,6 +728,7 @@ Ext.define('Ext.SegmentedButton', {
 
         sortToggleItems: function(buttons) {
             var items = this.getItems();
+
             Ext.Array.sort(buttons, function(a, b) {
                 var p1 = a.getPressed() ? 1 : 0,
                     p2 = b.getPressed() ? 1 : 0,
@@ -705,6 +737,7 @@ Ext.define('Ext.SegmentedButton', {
                 if (ret === 0) {
                     ret = items.indexOf(a) - items.indexOf(b);
                 }
+
                 return ret;
             });
         },
@@ -726,6 +759,7 @@ Ext.define('Ext.SegmentedButton', {
             }
 
             Ext.Array.sort(values, fn);
+
             return values;
         },
 
@@ -739,25 +773,27 @@ Ext.define('Ext.SegmentedButton', {
                 lastCls = basePrefix + 'last',
                 item, i;
 
-            //remove all existing classes
+            // remove all existing classes
             for (i = 0; i < ln; i++) {
                 item = items.items[i];
                 item.removeCls(firstCls);
                 item.removeCls(lastCls);
             }
 
-            //add a first cls to the first non-hidden button
+            // add a first cls to the first non-hidden button
             for (i = 0; i < ln; i++) {
                 item = items.items[i];
+
                 if (!item.isHidden()) {
                     item.addCls(firstCls);
                     break;
                 }
             }
 
-            //add a last cls to the last non-hidden button
+            // add a last cls to the last non-hidden button
             for (i = ln - 1; i >= 0; i--) {
                 item = items.items[i];
+
                 if (!item.isHidden()) {
                     item.addCls(lastCls);
                     break;

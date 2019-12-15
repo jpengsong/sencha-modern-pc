@@ -1,14 +1,17 @@
+// These conventions are for compression and not worrisome for tests:
+/* eslint-disable vars-on-top, one-var */
+
 topSuite("Ext.dataview.List", [
     'Ext.dataview.ListItem'
 ], function() {
     var defaultSize = 400,
-        list, store, selModel, paintSpy;
+        list, store, selModel;
 
     afterEach(function() {
-        paintSpy = store = list = Ext.destroy(list);
+        store = list = Ext.destroy(list);
     });
 
-    function makeData (count, start) {
+    function makeData(count, start) {
         var data = [],
             i, id, h;
 
@@ -51,9 +54,11 @@ topSuite("Ext.dataview.List", [
 
         if (list.itemTranslationMethod === 'cssposition') {
             y = item.element.getLocalY();
-        } else {
+        }
+        else {
             y = parseFloat(Ext.testHelper.parseTransform(item.element)[1]);
         }
+
         return y;
     }
 
@@ -73,8 +78,8 @@ topSuite("Ext.dataview.List", [
             makeList({
                 store: undefined,
                 data: [
-                { name: 'foo' },
-                { name: 'bar' }
+                    { name: 'foo' },
+                    { name: 'bar' }
                 ]
             });
 
@@ -87,10 +92,10 @@ topSuite("Ext.dataview.List", [
             makeList({
                 store: undefined,
                 data: [
-                { name: 'foo' },
-                { name: 'bar' }
+                    { name: 'foo' },
+                    { name: 'bar' }
                 ],
-                selectable: { 
+                selectable: {
                     mode: 'multi'
                 }
             });
@@ -120,6 +125,7 @@ topSuite("Ext.dataview.List", [
 
             it("should assign properties to the item itself", function() {
                 var item = list.mapToItem(0);
+
                 expect(item.element).toHaveCls('a');
                 expect(item.getDisabled()).toBe(false);
 
@@ -135,6 +141,7 @@ topSuite("Ext.dataview.List", [
                 });
 
                 var item = list.mapToItem(0);
+
                 expect(item.element).not.toHaveCls('a');
                 expect(item.element).toHaveCls('c');
                 expect(item.getDisabled()).toBe(true);
@@ -172,6 +179,7 @@ topSuite("Ext.dataview.List", [
             it("should assign properties to child references", function() {
                 it("should assign properties to children", function() {
                     var item = list.mapToItem(0);
+
                     expect(item.lookup('first').element).toHaveCls('a');
                     expect(item.lookup('last').getDisabled()).toBe(false);
 
@@ -187,6 +195,7 @@ topSuite("Ext.dataview.List", [
                     });
 
                     var item = list.mapToItem(0);
+
                     expect(item.lookup('first').element).not.toHaveCls('a');
                     expect(item.lookup('first').element).toHaveCls('c');
                     expect(item.lookup('last').getDisabled()).toBe(true);
@@ -198,9 +207,9 @@ topSuite("Ext.dataview.List", [
     describe('Rendered list with loaded store', function() {
         it('should immediately render records', function() {
             makeList({}, [
-                    { name: 'foo' },
-                    { name: 'bar' }
-                ]);
+                { name: 'foo' },
+                { name: 'bar' }
+            ]);
 
             // Should be two simplelistitems in the List
             var items = list.getItems().items;
@@ -208,6 +217,7 @@ topSuite("Ext.dataview.List", [
             expect(items.length).toBe(2);
 
             var rec = items[0].getRecord();
+
             expect(rec.data.name).toBe('foo');
 
             rec = items[1].getRecord();
@@ -216,7 +226,7 @@ topSuite("Ext.dataview.List", [
     });
 
     describe("infinite lists", function() {
-        function makeSuiteList (config, data) {
+        function makeSuiteList(config, data) {
             if (Ext.isArray(config)) {
                 data = config;
                 config = null;
@@ -240,40 +250,41 @@ topSuite("Ext.dataview.List", [
 
             // The bodyElement gets sized to stretch the scroll region
             var scroller = list.getScrollable();
+
             var size = scroller.getSize();
 
             expect(bodyHeight).toBe(size.y);
         });
 
-        it('should adjust rendered range due to scroll', function () {
+        it('should adjust rendered range due to scroll', function() {
             makeSuiteList();
 
             var scroller = list.getScrollable();
 
             scroller.scrollBy(0, list.rowHeight * 20);
 
-            waitsFor(function () {
+            waitsFor(function() {
                 // scrolling down 20 rows should trigger a 10 row shift
                 return list.getTopRenderedIndex() >= 10;
             });
         });
 
-        it('should auto height using maxHeight', function () {
+        it('should auto height using maxHeight', function() {
             makeSuiteList({
                 height: null,
                 maxHeight: 400
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return list.dataItems.length > 0;
             });
 
-            runs(function () {
+            runs(function() {
                 expect(list.el.getHeight()).toBe(400);
             });
         });
 
-        it("should redraw correctly with multiple refreshes where the top index doesn't change", function() {
+        it("should redraw correctly w/multiple refreshes if top index doesn't change", function() {
             function expectIds(ids) {
                 ids.forEach(function(id, index) {
                     var rec = store.getById(id),
@@ -310,13 +321,14 @@ topSuite("Ext.dataview.List", [
             });
 
             var store = list.getStore();
+
             var groupInfo = list.groupingInfo;
 
             expect(store.getCount()).toBe(3);
 
-            expect(groupInfo.headers.indices).toEqual([0, 1]);
+            expect(groupInfo.header.indices).toEqual([0, 1]);
 
-            expect(groupInfo.footers.indices).toEqual([0, 2]);
+            expect(groupInfo.footer.indices).toEqual([0, 2]);
 
             expect(store.removeAll.bind(store)).not.toThrow();
         });
@@ -356,12 +368,13 @@ topSuite("Ext.dataview.List", [
 
     describe('scrollToTopOnRefresh', function() {
         it('should not scroll to top when config is false', function() {
-            makeList({scrollToTopOnRefresh: false});
+            makeList({ scrollToTopOnRefresh: false });
 
             var scroller = list.getScrollable();
 
             scroller.scrollTo(null, 150);
             var pos = scroller.getPosition();
+
             expect(pos.y).toBe(150);
 
             list.refresh();
@@ -370,19 +383,19 @@ topSuite("Ext.dataview.List", [
         });
 
         it('should not scroll to top when adding a record', function() {
-            makeList({scrollToTopOnRefresh: true});
+            makeList({ scrollToTopOnRefresh: true });
 
             var scroller = list.getScrollable();
 
             scroller.scrollTo(null, 150);
             expect(scroller.getPosition().y).toBe(150);
 
-            list.getStore().add({name: 'New item'});
+            list.getStore().add({ name: 'New item' });
             expect(scroller.getPosition().y).toBe(150);
         });
 
         it('should not scroll to top when removing a record', function() {
-            makeList({scrollToTopOnRefresh: true});
+            makeList({ scrollToTopOnRefresh: true });
 
             var scroller = list.getScrollable();
 
@@ -394,7 +407,7 @@ topSuite("Ext.dataview.List", [
         });
 
         it('should not scroll to top when updating a record', function() {
-            makeList({scrollToTopOnRefresh: true});
+            makeList({ scrollToTopOnRefresh: true });
 
             var scroller = list.getScrollable();
 
@@ -406,7 +419,7 @@ topSuite("Ext.dataview.List", [
         });
 
         it('should scroll to top when the store is refreshed', function() {
-            makeList({scrollToTopOnRefresh: true});
+            makeList({ scrollToTopOnRefresh: true });
 
             var scroller = list.getScrollable();
 
@@ -418,7 +431,7 @@ topSuite("Ext.dataview.List", [
         });
 
         it('should scroll to top when calling the refresh() method', function() {
-            makeList({scrollToTopOnRefresh: true});
+            makeList({ scrollToTopOnRefresh: true });
 
             var scroller = list.getScrollable();
 
@@ -430,14 +443,17 @@ topSuite("Ext.dataview.List", [
         });
 
         it('should not scroll to top if the refresh event is prevented', function() {
-            makeList({scrollToTopOnRefresh: true});
+            makeList({ scrollToTopOnRefresh: true });
 
             var scroller = list.getScrollable();
 
             scroller.scrollTo(null, 150);
             expect(scroller.getPosition().y).toBe(150);
 
-            list.on('beforerefresh', function() { return false; });
+            list.on('beforerefresh', function() {
+                return false;
+            });
+
             list.refresh();
             expect(scroller.getPosition().y).toBe(150);
         });
@@ -455,6 +471,7 @@ topSuite("Ext.dataview.List", [
                 items = Ext.Array.from(list.getRenderTarget().dom.childNodes);
                 items = items.filter(function(el) {
                     var cls = el.classList;
+
                     return !(cls.contains(sizeCls) || cls.contains(paintCls));
                 });
 
@@ -561,6 +578,7 @@ topSuite("Ext.dataview.List", [
                 items = Ext.Array.from(list.getRenderTarget().dom.childNodes);
                 items = items.filter(function(el) {
                     var cls = el.classList;
+
                     return !(cls.contains(sizeCls) || cls.contains(paintCls));
                 });
 
@@ -569,6 +587,7 @@ topSuite("Ext.dataview.List", [
                 items.sort(function(a, b) {
                     a = Ext.getCmp(a.id).$position;
                     b = Ext.getCmp(b.id).$position;
+
                     return a - b;
                 });
 
@@ -603,7 +622,7 @@ topSuite("Ext.dataview.List", [
                 });
 
                 items.sort(function(a, b) {
-                    return a.$position- b.$position;
+                    return a.$position - b.$position;
                 });
 
                 items.forEach(function(c) {
@@ -613,9 +632,11 @@ topSuite("Ext.dataview.List", [
 
                     if (top < scrollTop) {
                         spaceLeft -= bottom - scrollTop;
-                    } else if (bottom > scrollBottom) {
+                    }
+                    else if (bottom > scrollBottom) {
                         spaceLeft -= bottom - scrollBottom;
-                    } else {
+                    }
+                    else {
                         spaceLeft -= h;
                     }
                 });
@@ -637,7 +658,7 @@ topSuite("Ext.dataview.List", [
                         list.hide();
                         store.insert(0, { id: 5, name: 'Item5' });
                         list.show();
-                    expectContent();
+                        expectContent();
                     });
                 });
 
@@ -675,13 +696,11 @@ topSuite("Ext.dataview.List", [
                             scrollAndWait(10000);
                             runs(function() {
                                 pos = scrollable.getPosition().y;
-                                list.hide();
                                 store.loadData(makeData(100, 100));
-                                list.show();
                                 expect(scrollable.getPosition().y).toBe(pos);
 
-                                // Wait for it to resume the scroll position and update the rendered block
-                                // to remove the first record's item
+                                // Wait for it to resume the scroll position and update
+                                // the rendered block to remove the first record's item
                                 waitsFor(function() {
                                     return list.mapToItem(store.first()) == null;
                                 });
@@ -729,7 +748,13 @@ topSuite("Ext.dataview.List", [
                     it("should render the new record", function() {
                         makeSuiteList(null, makeData(4));
                         list.hide();
-                        store.insert(0, { id: 5, name: 'Item5', height: 100, heightStyle: '100px' });
+                        store.insert(0, {
+                            id: 5,
+                            name: 'Item5',
+                            height: 100,
+                            heightStyle: '100px'
+                        });
+
                         list.show();
                         expectContent();
                     });
@@ -773,12 +798,24 @@ topSuite("Ext.dataview.List", [
                             scrollAndWait(10000);
                             runs(function() {
                                 pos = scrollable.getPosition().y;
+
                                 list.hide();
+
                                 store.loadData(makeData(100, 100));
+
                                 list.show();
+
                                 expect(scrollable.getPosition().y).toBe(pos);
-                                expect(list.mapToItem(store.first())).toBeNull();
-                                checkFilled();
+
+                                // Wait for it to resume the scroll position and update
+                                // the rendered block to remove the first record's item
+                                waitsFor(function() {
+                                    return list.mapToItem(store.first()) == null;
+                                });
+
+                                runs(function() {
+                                    checkFilled();
+                                });
                             });
                         });
                     });
@@ -808,9 +845,9 @@ topSuite("Ext.dataview.List", [
         });
     });
 
-    describe('select event', function () {
-        describe('single mode', function () {
-            it('should have single select record', function () {
+    describe('select event', function() {
+        describe('single mode', function() {
+            it('should have single select record', function() {
                 makeList();
 
                 var record = store.getAt(0),
@@ -824,9 +861,73 @@ topSuite("Ext.dataview.List", [
 
                 expect(spy).toHaveBeenCalledWith(list, record);
             });
+
+            it('should deselect row if deselectable and toggleOnClick', function() {
+                makeList({
+                    selectable: {
+                        mode: 'single',
+                        deselectable: true,
+                        toggleOnClick: true
+                    }
+                });
+
+                jasmine.fireMouseEvent(list.getItemAt(2).el.dom, 'click');
+                expect(store.getAt(2)).toBe(selModel.getSelectedRecord());
+
+                jasmine.fireMouseEvent(list.getItemAt(2).el.dom, 'click');
+                expect(store.getAt(2)).not.toBe(selModel.getSelectedRecord());
+            });
+
+            it('should not deselect row if deselectable and !toggleOnClick', function() {
+                makeList({
+                    selectable: {
+                        mode: 'single',
+                        deselectable: true,
+                        toggleOnClick: false
+                    }
+                });
+
+                jasmine.fireMouseEvent(list.getItemAt(2).el.dom, 'click');
+                expect(store.getAt(2)).toBe(selModel.getSelectedRecord());
+
+                jasmine.fireMouseEvent(list.getItemAt(2).el.dom, 'click');
+                expect(store.getAt(2)).toBe(selModel.getSelectedRecord());
+            });
+
+            it('should not deselect row selection if !deselectable and toggleOnClick', function() {
+                makeList({
+                    selectable: {
+                        mode: 'single',
+                        deselectable: false,
+                        toggleOnClick: true
+                    }
+                });
+
+                jasmine.fireMouseEvent(list.getItemAt(2).el.dom, 'click');
+                expect(store.getAt(2)).toBe(selModel.getSelectedRecord());
+
+                jasmine.fireMouseEvent(list.getItemAt(2).el.dom, 'click');
+                expect(store.getAt(2)).toBe(selModel.getSelectedRecord());
+            });
+
+            it('should not deselect row selection if !deselectable and !toggleOnClick', function() {
+                makeList({
+                    selectable: {
+                        mode: 'single',
+                        deselectable: false,
+                        toggleOnClick: false
+                    }
+                });
+
+                jasmine.fireMouseEvent(list.getItemAt(2).el.dom, 'click');
+                expect(store.getAt(2)).toBe(selModel.getSelectedRecord());
+
+                jasmine.fireMouseEvent(list.getItemAt(2).el.dom, 'click');
+                expect(store.getAt(2)).toBe(selModel.getSelectedRecord());
+            });
         });
 
-        describe('multi mode', function () {
+        describe('multi mode', function() {
             beforeEach(function() {
                 makeList({
                     selectable: {
@@ -834,8 +935,8 @@ topSuite("Ext.dataview.List", [
                     }
                 });
             });
-            
-            it('should have single select record', function () {
+
+            it('should have single select record', function() {
                 var record = store.getAt(0),
                     spy = spyOn({
                         testFn: Ext.emptyFn
@@ -848,7 +949,7 @@ topSuite("Ext.dataview.List", [
                 expect(spy).toHaveBeenCalledWith(list, [ record ]);
             });
 
-            it('should have multiple selected records', function () {
+            it('should have multiple selected records', function() {
                 var records = store.getRange(0, 2),
                     spy = spyOn({
                         testFn: Ext.emptyFn
@@ -859,6 +960,22 @@ topSuite("Ext.dataview.List", [
                 list.select(records);
 
                 expect(spy).toHaveBeenCalledWith(list, records);
+            });
+
+            it('should fire deselect', function() {
+                var records = store.getRange(0, 2),
+                    spy = spyOn({
+                        testFn: Ext.emptyFn
+                    }, 'testFn');
+
+                list.on('deselect', spy);
+
+                list.select(records);
+                // select again to toggle selection
+                list.select(records);
+
+                expect(spy).toHaveBeenCalledWith(list, records);
+
             });
 
             it("should select records with tap", function() {
@@ -886,18 +1003,20 @@ topSuite("Ext.dataview.List", [
             });
         });
 
-        describe('simple mode', function () {
-            it('should have single select record', function () {
+        describe('simple mode', function() {
+            it('should have single select record', function() {
+                var record, spy;
+
                 makeList({
                     selectable: {
                         mode: 'simple'
                     }
                 });
 
-                var record = store.getAt(0),
-                    spy = spyOn({
-                        testFn: Ext.emptyFn
-                    }, 'testFn');
+                record = store.getAt(0);
+                spy = spyOn({
+                    testFn: Ext.emptyFn
+                }, 'testFn');
 
                 list.on('select', spy);
 
@@ -906,17 +1025,19 @@ topSuite("Ext.dataview.List", [
                 expect(spy).toHaveBeenCalledWith(list, [ record ]);
             });
 
-            it('should have multiple selected records', function () {
+            it('should have multiple selected records', function() {
+                var records, spy;
+
                 makeList({
                     selectable: {
                         mode: 'simple'
                     }
                 });
 
-                var records = store.getRange(0, 2),
-                    spy = spyOn({
-                        testFn: Ext.emptyFn
-                    }, 'testFn');
+                records = store.getRange(0, 2);
+                spy = spyOn({
+                    testFn: Ext.emptyFn
+                }, 'testFn');
 
                 list.on('select', spy);
 

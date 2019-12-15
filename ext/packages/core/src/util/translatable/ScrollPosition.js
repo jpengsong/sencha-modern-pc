@@ -9,7 +9,7 @@ Ext.define('Ext.util.translatable.ScrollPosition', {
     alias: 'translatable.scrollposition', // also configures Factoryable
 
     constructor: function(config) {
-        if (config && config.element){
+        if (config && config.element) {
             this.x = config.element.getScrollLeft();
             this.y = config.element.getScrollTop();
         }
@@ -19,6 +19,7 @@ Ext.define('Ext.util.translatable.ScrollPosition', {
 
     translateAnimated: function() {
         var element = this.getElement();
+
         this.x = element.getScrollLeft();
         this.y = element.getScrollTop();
 

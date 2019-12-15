@@ -1,16 +1,16 @@
 /* global Ext, jasmine, expect */
 
 topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], function() {
-    var createGrid = function (storeCfg, gridCfg) {
+    var createGrid = function(storeCfg, gridCfg) {
             store = Ext.create('Ext.data.Store', Ext.apply({
-                storeId:'simpsonsStore',
-                fields:['name', 'email', 'phone'],
-                data:{'items':[
-                    { 'name': 'Lisa',  "email":"lisa@simpsons.com",  "phone":"555-111-1224"  },
-                    { 'name': 'Bart',  "email":"bart@simpsons.com",  "phone":"555-222-1234"  },
-                    { 'name': 'Homer', "email":"homer@simpsons.com", "phone":"555-222-1244"  },
-                    { 'name': 'Marge', "email":"marge@simpsons.com", "phone":"555-222-1254"  }
-                ]},
+                storeId: 'simpsonsStore',
+                fields: ['name', 'email', 'phone'],
+                data: { 'items': [
+                    { 'name': 'Lisa',  "email": "lisa@simpsons.com",  "phone": "555-111-1224"  },
+                    { 'name': 'Bart',  "email": "bart@simpsons.com",  "phone": "555-222-1234"  },
+                    { 'name': 'Homer', "email": "homer@simpsons.com", "phone": "555-222-1244"  },
+                    { 'name': 'Marge', "email": "marge@simpsons.com", "phone": "555-222-1254"  }
+                ] },
                 proxy: {
                     type: 'memory',
                     reader: {
@@ -39,15 +39,16 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
 
     function findCell(rowIdx, cellIdx) {
         var row = grid.mapToItem(store.getAt(rowIdx));
+
         return row.cells[cellIdx].element;
     }
 
-    afterEach(function(){
+    afterEach(function() {
         store.destroy();
         grid = store = Ext.destroy(grid);
 
         // TODO: reinstate when we have state
-        //Ext.state.Manager.clear('foo');
+        // Ext.state.Manager.clear('foo');
     });
 
     describe('column menu showing', function() {
@@ -94,8 +95,8 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
         });
     });
 
-    describe('columnManager delegations', function () {
-        it('should allow columns to call methods on the ColumnManager', function () {
+    describe('columnManager delegations', function() {
+        it('should allow columns to call methods on the ColumnManager', function() {
             var col;
 
             createGrid({}, {
@@ -109,9 +110,9 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
         });
     });
 
-    describe('gridVisibleColumns', function () {
+    describe('gridVisibleColumns', function() {
         // TODO: reinstate when we have state
-        xit('should keep track of state information for visible grid columns', function () {
+        xit('should keep track of state information for visible grid columns', function() {
             var columns = [
                 // It's necessary to pass in columns with a headerId property for this test.
                 { header: 'Name',  headerId: 'a', dataIndex: 'name', width: 100 },
@@ -147,7 +148,7 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
                 // It's necessary to pass in columns with a headerId property for this test.
                 { header: 'Name',  id: 'a', dataIndex: 'name', width: 200 },
                 { header: 'Email', id: 'b', dataIndex: 'email', width: 200 },
-                { header: 'Phone', id: 'c', dataIndex: 'phone', width: 200}
+                { header: 'Phone', id: 'c', dataIndex: 'phone', width: 200 }
             ];
 
             createGrid({}, {
@@ -158,7 +159,7 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
                 stateId: 'foo',
                 listeners: {
                     beforerender: {
-                        fn: function () {
+                        fn: function() {
                             var state = [{
                                 id: 'a'
                             }, {
@@ -180,7 +181,7 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
         });
 
         // TODO: reinstate when we have state
-        xit('should keep track of state information for visible grid columns when moved', function () {
+        xit('should keep track of state information for visible grid columns when moved', function() {
             // This spec simulates a stateful bug: EXTJSIV-10262. This bug occurs when a previously hidden
             // header is shown and then moved. The bug occurs because the gridVisibleColumns cache is created
             // from stale information. This happens when the visible grid columns are retrieved before applying
@@ -217,7 +218,7 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
         });
 
         // TODO: reinstate when we have state
-        xit('should insert new columns into their correct new ordinal position after state restoration', function () {
+        xit('should insert new columns into their correct new ordinal position after state restoration', function() {
             // Test ticket EXTJS-15690.
             var initialColumns = [
                     // It's necessary to pass in columns with a headerId property for this test.
@@ -263,11 +264,11 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
         });
     });
 
-    describe('non-column descendants of headerCt', function () {
-        describe('headerCt events', function () {
+    describe('non-column descendants of headerCt', function() {
+        describe('headerCt events', function() {
             var field;
 
-            beforeEach(function () {
+            beforeEach(function() {
                 createGrid(null, {
                     columns: [
                         { header: 'Name',  dataIndex: 'name', width: 100 },
@@ -282,18 +283,18 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
                 field = headerContainer.down('textfield');
             });
 
-            afterEach(function () {
+            afterEach(function() {
                 field = null;
             });
 
             // TODO: reistate when keyboard
-            xit('should not throw in reaction to a delegated keydown event', function () {
+            xit('should not throw in reaction to a delegated keydown event', function() {
                 // Note that unfortunately we're testing a private method since that's where it throws.
                 jasmine.fireKeyEvent(field.inputEl, 'keydown', 13);
 
-                expect(function () {
+                expect(function() {
                     var e = {
-                        getTarget: function () {
+                        getTarget: function() {
                             return field.inputEl.dom;
                         }
                     };
@@ -303,11 +304,11 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
             });
 
             // Reinstate when column headers can be containers
-            xit('should not react to keydown events delegated from the headerContainer', function () {
+            xit('should not react to keydown events delegated from the headerContainer', function() {
                 // For this test, we'll know that the event was short-circuited b/c the sortable column
                 // wasn't sorted.
                 var wasCalled = false,
-                    fn = function () {
+                    fn = function() {
                         wasCalled = true;
                     };
 
@@ -375,6 +376,7 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
             // Wait for the column show/hide menu to appear
             waitsFor(function() {
                 colMenu = colItem.getMenu();
+
                 return colMenu && colMenu.isVisible();
             }, 'column hiding menu to show');
 
@@ -405,8 +407,8 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
                     {
                         text: 'Contacts',
                         columns: [
-                            {text: 'Email', dataIndex: 'email', flex: 1},
-                            {text: 'Phone', dataIndex: 'phone', flex: 1}
+                            { text: 'Email', dataIndex: 'email', flex: 1 },
+                            { text: 'Phone', dataIndex: 'phone', flex: 1 }
                         ]
                     }
                 ]
@@ -424,14 +426,15 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
             colItem.expandMenu();
 
             // Wait for the column show/hide menu to appear
-            waitsFor(function () {
+            waitsFor(function() {
                 colMenu = colItem.getMenu();
+
                 return colMenu && colMenu.isVisible();
             }, 'column hiding menu to show');
 
             // Hide the "Contacts" column, leaving only the "Email"  and "Phone" columns visible
             // Phone is menu: false, so hiding t he name item means that the email item cannot be hidden
-            runs(function () {
+            runs(function() {
                 nameItem = colMenu.child('[text=Name]');
                 contactsItem = colMenu.child('[text=Contacts]');
                 jasmine.fireMouseEvent(contactsItem.ariaEl.dom, 'click');
@@ -439,11 +442,11 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
 
             // The "Name" column is the last visible column, so its
             // hide menu check item must be disabled.
-            waitsFor(function () {
+            waitsFor(function() {
                 return nameItem.getDisabled();
             }, 'last column hiding item to be disabled', 500);
 
-            runs(function () {
+            runs(function() {
                 menu = col.getMenu();
                 menu.hide();
             });
@@ -479,8 +482,8 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
         });
     });
 
-    describe('grid panel', function(){
-        it('should be notified when adding a column header', function(){
+    describe('grid panel', function() {
+        it('should be notified when adding a column header', function() {
             createGrid({}, { columns: [] });
 
             headerContainer.insert(0, [
@@ -500,14 +503,14 @@ topSuite('Ext.grid.HeaderContainer', ['Ext.grid.Grid', 'Ext.field.Text'], functi
         });
 
         // EXTJS-21400
-        it('should be notified when adding a group header', function(){
+        it('should be notified when adding a group header', function() {
             createGrid({}, { columns: [] });
 
-            headerContainer.insert(0, {header: 'test', columns: [
+            headerContainer.insert(0, { header: 'test', columns: [
                 { header: 'Name',  dataIndex: 'name', width: 100 },
                 { header: 'Email', dataIndex: 'email', flex: 1 },
                 { header: 'Phone', dataIndex: 'phone', flex: 1 }
-            ]});
+            ] });
 
             var c0_0 = findCell(0, 0),
                 c0_1 = findCell(0, 1),

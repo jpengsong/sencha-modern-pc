@@ -49,7 +49,7 @@ topSuite("Ext.data.schema.HasOne", [false, 'Ext.data.ArrayStore'], function() {
         MockAjaxManager.addMethods();
         Ext.data.Model.schema.setNamespace('spec');
     });
-    
+
     afterEach(function() {
         if (Avatar) {
             Ext.undefine('spec.Avatar');
@@ -64,6 +64,7 @@ topSuite("Ext.data.schema.HasOne", [false, 'Ext.data.ArrayStore'], function() {
             Ext.undefine('spec.User');
             User = null;
         }
+
         Ext.data.Model.schema.clear(true);
         MockAjaxManager.removeMethods();
     });
@@ -264,6 +265,7 @@ topSuite("Ext.data.schema.HasOne", [false, 'Ext.data.ArrayStore'], function() {
                 });
 
                 var user = User.load(1);
+
                 Ext.Ajax.mockCompleteWithData({
                     id: 1,
                     key: {
@@ -293,13 +295,13 @@ topSuite("Ext.data.schema.HasOne", [false, 'Ext.data.ArrayStore'], function() {
                     }
                 });
 
-                var user = new User({id: 1}),
-                    key = new Key({id: 101});
+                var user = new User({ id: 1 }),
+                    key = new Key({ id: 101 });
 
                 user.setKey(key);
                 user.drop();
                 expect(key.dropped).toBe(true);
-            }); 
+            });
         });
     });
 
@@ -312,8 +314,8 @@ topSuite("Ext.data.schema.HasOne", [false, 'Ext.data.ArrayStore'], function() {
                     hasOne: 'Key'
                 });
 
-                var user = new User({id: 1}),
-                    key = new Key({id: 101});
+                var user = new User({ id: 1 }),
+                    key = new Key({ id: 101 });
 
                 user.setKey(key);
                 expect(user.get('key_id')).toBe(101);
@@ -329,8 +331,8 @@ topSuite("Ext.data.schema.HasOne", [false, 'Ext.data.ArrayStore'], function() {
                     }
                 });
 
-                var user = new User({id: 1}),
-                    key = new Key({id: 101});
+                var user = new User({ id: 1 }),
+                    key = new Key({ id: 101 });
 
                 user.setKey(key);
                 expect(user.get('customField')).toBe(101);

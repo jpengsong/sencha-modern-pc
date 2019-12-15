@@ -214,6 +214,14 @@
     @include icon($tool-collapse-right-icon);
 }
 
+.#{$prefix}tool-type-edit {
+    @include icon($tool-edit-icon);
+}
+
+.#{$prefix}tool-type-trash {
+    @include icon($tool-trash-icon);
+}
+
 .#{$prefix}tool-type-scroll-right {
     @include icon($tool-scroll-right-icon);
 }

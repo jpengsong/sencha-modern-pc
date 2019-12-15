@@ -1,4 +1,9 @@
-﻿Ext.define('App.ux.utility.Config', {
+﻿/**
+ *
+ *  全局配置类
+ * 
+*/
+Ext.define('App.ux.utility.Config', {
     alternateClassName: ['config'],
     statics: {
 
@@ -85,13 +90,7 @@
         },
 
         //远程请求数据地址
-        //Url:"http://127.0.0.1:8045",
-          Url:"http://localhost:5868",
-
-
-        
-        //字段必填项
-        AfterLabelTextRequired:['<span style="color:red;font-weight:bold">*</span>']
-
+        Url:"http://localhost:65260",
+        //Url:"http://49.232.143.24:8081",
     }
 })

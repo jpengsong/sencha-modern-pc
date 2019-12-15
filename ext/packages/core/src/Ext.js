@@ -36,29 +36,33 @@
  *
  * @singleton
  */
-var Ext = Ext || {}; // jshint ignore:line
+var Ext = Ext || {};
 // @define Ext
 
+/* eslint indent: "off" */
 (function() {
     var global = this,
         objectPrototype = Object.prototype,
         toString = objectPrototype.toString,
-        enumerables = [//'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable',
-                       'valueOf', 'toLocaleString', 'toString', 'constructor'],
-        emptyFn = Ext.fireIdle = function () {},  // see GlobalEvents for true fireIdle
-        privateFn = function () {},
-        identityFn = function(o) { return o; },
+        enumerables = [
+            // 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable',
+            'valueOf', 'toLocaleString', 'toString', 'constructor'
+        ],
+        emptyFn = Ext.fireIdle = function() {}, // see GlobalEvents for true fireIdle
+        privateFn = function() {},
+        identityFn = function(o) { return o }, // eslint-disable-line
         // This is the "$previous" method of a hook function on an instance. When called, it
         // calls through the class prototype by the name of the called method.
-        callOverrideParent = function () {
+        callOverrideParent = function() {
             var method = callOverrideParent.caller.caller; // skip callParent (our caller)
+
             return method.$owner.prototype[method.$name].apply(this, arguments);
         },
         manifest = Ext.manifest || {},
-        i,
         iterableRe = /\[object\s*(?:Array|Arguments|\w*Collection|\w*List|HTML\s+document\.all\s+class)\]/,
         MSDateRe = /^\\?\/Date\(([-+])?(\d+)(?:[+-]\d{4})?\)\\?\/$/,
-        elevateArgs, elevateFn, elevateRet, elevateScope;
+        /* eslint-disable-next-line no-unused-vars */
+        elevateArgs, elevateFn, elevateRet, elevateScope, i;
 
     Ext.global = global;
     Ext.$nextIid = 0;
@@ -80,9 +84,11 @@ var Ext = Ext || {}; // jshint ignore:line
      * @member Ext
      * @since 6.0.1
      */
-    Ext.ticks = (global.performance && global.performance.now) ? function() {
-        return performance.now(); // jshint ignore:line
-    } : Ext.now;
+    Ext.ticks = (global.performance && global.performance.now)
+        ? function() {
+            return performance.now();
+        }
+        : Ext.now;
 
     Ext._startTime = Ext.ticks();
 
@@ -90,14 +96,15 @@ var Ext = Ext || {}; // jshint ignore:line
     emptyFn.$nullFn = identityFn.$nullFn = emptyFn.$emptyFn = identityFn.$identityFn =
         privateFn.$nullFn = true;
     privateFn.$privacy = 'framework';
-    
+
     // We also want to prevent these functions from being cleaned up on destroy
     emptyFn.$noClearOnDestroy = identityFn.$noClearOnDestroy = true;
     privateFn.$noClearOnDestroy = true;
 
     // These are emptyFn's in core and are redefined only in Ext JS (we use this syntax
     // so Cmd does not detect them):
-    Ext['suspendLayouts'] = Ext['resumeLayouts'] = emptyFn; // jshint ignore:line
+    /* eslint-disable-next-line dot-notation */
+    Ext['suspendLayouts'] = Ext['resumeLayouts'] = emptyFn;
 
     for (i in { toString: 1 }) {
         enumerables = null;
@@ -128,14 +135,14 @@ var Ext = Ext || {}; // jshint ignore:line
      * @return {Object} returns `object`.
      */
     Ext.apply = function(object, config, defaults) {
+        var i, j, k;
+
         if (object) {
             if (defaults) {
                 Ext.apply(object, defaults);
             }
 
             if (config && typeof config === 'object') {
-                var i, j, k;
-
                 for (i in config) {
                     object[i] = config[i];
                 }
@@ -143,6 +150,7 @@ var Ext = Ext || {}; // jshint ignore:line
                 if (enumerables) {
                     for (j = enumerables.length; j--;) {
                         k = enumerables[j];
+
                         if (config.hasOwnProperty(k)) {
                             object[k] = config[k];
                         }
@@ -172,8 +180,8 @@ var Ext = Ext || {}; // jshint ignore:line
                     value.$name = name;
                     value.$owner = owner;
 
-                    value.$previous = target.hasOwnProperty(name) ?
-                        target[name] // already hooked, so call previous hook
+                    value.$previous = target.hasOwnProperty(name)
+                        ? target[name] // already hooked, so call previous hook
                         : callOverrideParent; // calls by name on prototype
                 }
 
@@ -223,10 +231,13 @@ var Ext = Ext || {}; // jshint ignore:line
 
         /**
          * @property {String} [name='Ext']
-         * <p>The name of the property in the global namespace (The <code>window</code> in browser environments) which refers to the current instance of Ext.</p>
-         * <p>This is usually <code>"Ext"</code>, but if a sandboxed build of ExtJS is being used, this will be an alternative name.</p>
-         * <p>If code is being generated for use by <code>eval</code> or to create a <code>new Function</code>, and the global instance
-         * of Ext must be referenced, this is the name that should be built into the code.</p>
+         * The name of the property in the global namespace (The `window` in browser
+         * environments) which refers to the current instance of Ext.
+         * This is usually `"Ext"`, but if a sandboxed build of ExtJS is being used, this will be
+         * an alternative name.
+         * If code is being generated for use by `eval` or to create a `new Function`, and the
+         * global instance of Ext must be referenced, this is the name that should be built
+         * into the code.
          */
         name: Ext.sandboxName || 'Ext',
 
@@ -334,7 +345,7 @@ var Ext = Ext || {}; // jshint ignore:line
             }
         },
         //</debug>
-        
+
         /**
          * @property {Boolean} [enableAria=true] This property is provided for backward
          * compatibility with previous versions of Ext JS. Accessibility is always enabled
@@ -367,9 +378,9 @@ var Ext = Ext || {}; // jshint ignore:line
          * @deprecated 6.0.2 This property is no longer necessary, so no replacement is required.
          */
         enableAria: true,
-        
+
         startsWithHashRe: /^#/,
-        
+
         /**
          * @property {RegExp}
          * @private
@@ -382,6 +393,7 @@ var Ext = Ext || {}; // jshint ignore:line
          * URL to a 1x1 transparent gif image used by Ext to create inline icons with
          * CSS background images.
          */
+        /* eslint-disable-next-line max-len */
         BLANK_IMAGE_URL: 'data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
 
         /**
@@ -399,22 +411,25 @@ var Ext = Ext || {}; // jshint ignore:line
                 Ext.raise('Invalid id selector: "' + id + '"');
             }
             //</debug>
+
             return '#' + id;
         },
 
         /**
-        * Generates unique ids. If the object/element is passes and it already has an `id`, it is unchanged.
-        * @param {Object} [o] The object to generate an id for.
-        * @param {String} [prefix=ext-gen] (optional) The `id` prefix.
-        * @return {String} The generated `id`.
-        */
+         * Generates unique ids. If the object/element is passes and it already has an `id`, it is
+         * unchanged.
+         * @param {Object} [o] The object to generate an id for.
+         * @param {String} [prefix=ext-gen] (optional) The `id` prefix.
+         * @return {String} The generated `id`.
+         */
         id: function(o, prefix) {
             if (o && o.id) {
                 return o.id;
             }
 
+            /* eslint-disable-next-line vars-on-top */
             var id = (prefix || Ext.idPrefix) + (++Ext.idSeed);
-            
+
             if (o) {
                 o.id = id;
             }
@@ -423,8 +438,9 @@ var Ext = Ext || {}; // jshint ignore:line
         },
 
         /**
-         * A reusable function which returns the value of `getId()` called upon a single passed parameter.
-         * Useful when creating a {@link Ext.util.MixedCollection} of objects keyed by an identifier returned from a `getId` method.
+         * A reusable function which returns the value of `getId()` called upon a single passed
+         * parameter. Useful when creating a {@link Ext.util.MixedCollection} of objects keyed
+         * by an identifier returned from a `getId` method.
          */
         returnId: function(o) {
             return o.getId();
@@ -439,9 +455,10 @@ var Ext = Ext || {}; // jshint ignore:line
 
         /**
          * A zero length string which will pass a truth test. Useful for passing to methods
-         * which use a truth test to reject <i>falsy</i> values where a string value must be cleared.
+         * which use a truth test to reject <i>falsy</i> values where a string value must be
+         * cleared.
          */
-        emptyString: new String(), // jshint ignore:line
+        emptyString: new String(),
 
         /**
          * An immutable empty array if Object.freeze is supported by the browser
@@ -452,8 +469,8 @@ var Ext = Ext || {}; // jshint ignore:line
 
         /**
          * @property {String} [baseCSSPrefix='x-']
-         * The base prefix to use for all `Ext` components. To configure this property, you should use the
-         * Ext.buildSettings object before the framework is loaded:
+         * The base prefix to use for all `Ext` components. To configure this property, you should
+         * use the Ext.buildSettings object before the framework is loaded:
          *
          *     Ext.buildSettings = {
          *         baseCSSPrefix : 'abc-'
@@ -495,9 +512,11 @@ var Ext = Ext || {}; // jshint ignore:line
          * @param {Object} config The source of the properties
          * @return {Object} returns obj
          */
-        applyIf: function (object, config) {
+        applyIf: function(object, config) {
+            var property;
+
             if (object && config && typeof config === 'object') {
-                for (var property in config) {
+                for (property in config) {
                     if (object[property] === undefined) {
                         object[property] = config[property];
                     }
@@ -520,18 +539,21 @@ var Ext = Ext || {}; // jshint ignore:line
          */
         destroy: function() {
             var ln = arguments.length,
-            i, arg;
+                i, arg;
 
             for (i = 0; i < ln; i++) {
                 arg = arguments[i];
+
                 if (arg) {
                     if (Ext.isArray(arg)) {
                         this.destroy.apply(this, arg);
-                    } else if (Ext.isFunction(arg.destroy) && !arg.destroyed) {
+                    }
+                    else if (Ext.isFunction(arg.destroy) && !arg.destroyed) {
                         arg.destroy();
                     }
                 }
             }
+
             return null;
         },
 
@@ -539,9 +561,11 @@ var Ext = Ext || {}; // jshint ignore:line
          * Destroys the specified named members of the given object using `Ext.destroy`. These
          * properties will be set to `null`.
          * @param {Object} object The object who's properties you wish to destroy.
-         * @param {String...} args One or more names of the properties to destroy and remove from the object.
+         * @param {String...} args One or more names of the properties to destroy and remove from
+         * the object.
          */
-        destroyMembers: function (object) {
+        destroyMembers: function(object) {
+            /* eslint-disable-next-line vars-on-top */
             for (var ref, name, i = 1, a = arguments, len = a.length; i < len; i++) {
                 ref = object[name = a[i]];
 
@@ -586,17 +610,21 @@ var Ext = Ext || {}; // jshint ignore:line
          * @param {Object} overrides The properties to add or replace on `target`.
          * @method override
          */
-        override: function (target, overrides) {
+        override: function(target, overrides) {
             if (target.$isClass) {
                 target.override(overrides);
-            } else if (typeof target === 'function') {
+            }
+            else if (typeof target === 'function') {
                 Ext.apply(target.prototype, overrides);
-            } else {
+            }
+            else {
+                /* eslint-disable-next-line vars-on-top */
                 var owner = target.self,
                     privates;
 
                 if (owner && owner.$isClass) { // if (instance of Ext.define'd class)
                     privates = overrides.privates;
+
                     if (privates) {
                         overrides = Ext.apply({}, overrides);
                         delete overrides.privates;
@@ -604,7 +632,8 @@ var Ext = Ext || {}; // jshint ignore:line
                     }
 
                     addInstanceOverrides(target, owner, overrides);
-                } else {
+                }
+                else {
                     Ext.apply(target, overrides);
                 }
             }
@@ -613,20 +642,22 @@ var Ext = Ext || {}; // jshint ignore:line
         },
 
         /**
-         * Returns the given value itself if it's not empty, as described in {@link Ext#isEmpty}; returns the default
-         * value (second argument) otherwise.
+         * Returns the given value itself if it's not empty, as described in {@link Ext#isEmpty};
+         * returns the default value (second argument) otherwise.
          *
          * @param {Object} value The value to test.
          * @param {Object} defaultValue The value to return if the original value is empty.
-         * @param {Boolean} [allowBlank=false] `true` to allow zero length strings to qualify as non-empty.
+         * @param {Boolean} [allowBlank=false] `true` to allow zero length strings to qualify
+         * as non-empty.
          * @return {Object} value, if non-empty, else defaultValue.
          */
-        valueFrom: function(value, defaultValue, allowBlank){
+        valueFrom: function(value, defaultValue, allowBlank) {
             return Ext.isEmpty(value, allowBlank) ? defaultValue : value;
         },
 
         /**
-         * Returns true if the passed value is empty, false otherwise. The value is deemed to be empty if it is either:
+         * Returns true if the passed value is empty, false otherwise. The value is deemed to be
+         * empty if it is either:
          *
          * - `null`
          * - `undefined`
@@ -638,7 +669,8 @@ var Ext = Ext || {}; // jshint ignore:line
          * @return {Boolean}
          */
         isEmpty: function(value, allowEmptyString) {
-            return (value == null) || (!allowEmptyString ? value === '' : false) || (Ext.isArray(value) && value.length === 0);
+            return (value == null) || (!allowEmptyString ? value === '' : false) ||
+                   (Ext.isArray(value) && value.length === 0);
         },
 
         /**
@@ -648,9 +680,11 @@ var Ext = Ext || {}; // jshint ignore:line
          * @return {Boolean}
          * @method
          */
-        isArray: ('isArray' in Array) ? Array.isArray : function(value) {
-            return toString.call(value) === '[object Array]';
-        },
+        isArray: ('isArray' in Array)
+            ? Array.isArray
+            : function(value) {
+                return toString.call(value) === '[object Array]';
+            },
 
         /**
          * Returns `true` if the passed value is a JavaScript Date object, `false` otherwise.
@@ -671,6 +705,7 @@ var Ext = Ext || {}; // jshint ignore:line
             if (!Ext.isString(value)) {
                 return false;
             }
+
             return MSDateRe.test(value);
         },
 
@@ -680,14 +715,15 @@ var Ext = Ext || {}; // jshint ignore:line
          * @return {Boolean}
          * @method
          */
-        isObject: (toString.call(null) === '[object Object]') ?
-        function(value) {
-            // check ownerDocument here as well to exclude DOM nodes
-            return value != null && toString.call(value) === '[object Object]' && value.ownerDocument === undefined;
-        } :
-        function(value) {
-            return toString.call(value) === '[object Object]';
-        },
+        isObject: (toString.call(null) === '[object Object]')
+            ? function(value) {
+                // check ownerDocument here as well to exclude DOM nodes
+                return value != null && toString.call(value) === '[object Object]' &&
+                       value.ownerDocument === undefined;
+            }
+            : function(value) {
+                return toString.call(value) === '[object Object]';
+            },
 
         /**
          * @private
@@ -715,13 +751,16 @@ var Ext = Ext || {}; // jshint ignore:line
          * @method
          */
         isFunction:
-        // Safari 3.x and 4.x returns 'function' for typeof <NodeList>, hence we need to fall back to using
-        // Object.prototype.toString (slower)
-        (typeof document !== 'undefined' && typeof document.getElementsByTagName('body') === 'function') ? function(value) {
-            return !!value && toString.call(value) === '[object Function]';
-        } : function(value) {
-            return !!value && typeof value === 'function';
-        },
+        // Safari 3.x and 4.x returns 'function' for typeof <NodeList>, hence we need to fall back
+        // to using Object.prototype.toString (slower)
+        (typeof document !== 'undefined' &&
+         typeof document.getElementsByTagName('body') === 'function')
+            ? function(value) {
+                return !!value && toString.call(value) === '[object Function]';
+            }
+            : function(value) {
+                return !!value && typeof value === 'function';
+            },
 
         /**
          * Returns `true` if the passed value is a number. Returns `false` for non-finite numbers.
@@ -788,23 +827,26 @@ var Ext = Ext || {}; // jshint ignore:line
         },
 
         /**
-         * Returns `true` if the passed value is iterable, that is, if elements of it are addressable using array
-         * notation with numeric indices, `false` otherwise.
+         * Returns `true` if the passed value is iterable, that is, if elements of it are
+         * addressable using array notation with numeric indices, `false` otherwise.
          *
-         * Arrays and function `arguments` objects are iterable. Also HTML collections such as `NodeList` and `HTMLCollection'
-         * are iterable.
+         * Arrays and function `arguments` objects are iterable. Also HTML collections such as
+         * `NodeList` and `HTMLCollection' are iterable.
          *
          * @param {Object} value The value to test
          * @return {Boolean}
          */
         isIterable: function(value) {
-            // To be iterable, the object must have a numeric length property and must not be a string or function.
-            if (!value || typeof value.length !== 'number' || typeof value === 'string' || Ext.isFunction(value)) {
+            // To be iterable, the object must have a numeric length property and must not be
+            // a string or function.
+            if (!value || typeof value.length !== 'number' || typeof value === 'string' ||
+                Ext.isFunction(value)) {
                 return false;
             }
 
-            // Certain "standard" collections in IE (such as document.images) do not offer the correct
-            // Javascript Object interface; specifically, they lack the propertyIsEnumerable method.
+            // Certain "standard" collections in IE (such as document.images) do not offer
+            // the correct Javascript Object interface; specifically, they lack the
+            // propertyIsEnumerable method.
             // And the item property while it does exist is not typeof "function"
             if (!value.propertyIsEnumerable) {
                 return !!value.item;
@@ -830,25 +872,28 @@ var Ext = Ext || {}; // jshint ignore:line
          */
         isDebugEnabled:
             //<debug>
-            function (className, defaultEnabled) {
+            function(className, defaultEnabled) {
                 var debugConfig = Ext.debugConfig.hooks;
 
                 if (debugConfig.hasOwnProperty(className)) {
                     return debugConfig[className];
                 }
 
+                /* eslint-disable-next-line vars-on-top */
                 var enabled = debugConfig['*'],
                     prefixLength = 0;
 
                 if (defaultEnabled !== undefined) {
                     enabled = defaultEnabled;
                 }
+
                 if (!className) {
                     return enabled;
                 }
 
+                /* eslint-disable-next-line vars-on-top */
                 for (var prefix in debugConfig) {
-                    var value = debugConfig[prefix];
+                    var value = debugConfig[prefix]; // eslint-disable-line vars-on-top
 
                     // if prefix=='Ext' match 'Ext.foo.Bar' but not 'Ext4.foo.Bar'
                     if (className.charAt(prefix.length) === '.') {
@@ -867,9 +912,10 @@ var Ext = Ext || {}; // jshint ignore:line
             emptyFn,
 
         /**
-         * Clone simple variables including array, {}-like objects, DOM nodes and Date without keeping the old reference.
-         * A reference for the object itself is returned if it's not a direct descendant of Object. For model cloning,
-         * see {@link Ext.data.Model#copy Model.copy}.
+         * Clone simple variables including array, {}-like objects, DOM nodes and Date without
+         * keeping the old reference. A reference for the object itself is returned if it's not
+         * a direct descendant of Object. For model cloning, see
+         * {@link Ext.data.Model#copy Model.copy}.
          *
          * @param {Object} item The variable to clone
          * @param {Boolean} [cloneDom=true] `true` to clone DOM nodes.
@@ -887,6 +933,7 @@ var Ext = Ext || {}; // jshint ignore:line
                 return item.cloneNode(true);
             }
 
+            /* eslint-disable-next-line vars-on-top */
             var type = toString.call(item),
                 i, j, k, clone, key;
 
@@ -916,6 +963,7 @@ var Ext = Ext || {}; // jshint ignore:line
                 if (enumerables) {
                     for (j = enumerables.length; j--;) {
                         k = enumerables[j];
+
                         if (item.hasOwnProperty(k)) {
                             clone[k] = item[k];
                         }
@@ -959,20 +1007,24 @@ var Ext = Ext || {}; // jshint ignore:line
                 cache = me.functionFactoryCache,
                 idx, fn, ln;
 
-             if (Ext.isSandboxed) {
+            if (Ext.isSandboxed) {
                 ln = args.length;
+
                 if (ln > 0) {
                     ln--;
                     args[ln] = 'var Ext=window.' + Ext.name + ';' + args[ln];
                 }
             }
+
             idx = args.join('');
             fn = cache[idx];
+
             if (!fn) {
                 fn = Function.prototype.constructor.apply(Function.prototype, args);
 
                 cache[idx] = fn;
             }
+
             return fn;
         },
 
@@ -982,6 +1034,7 @@ var Ext = Ext || {}; // jshint ignore:line
 
             if (Ext.isSandboxed) {
                 ln = args.length;
+
                 if (ln > 0) {
                     ln--;
                     args[ln] = 'var Ext=window.' + Ext.name + ';' + args[ln];
@@ -1001,6 +1054,7 @@ var Ext = Ext || {}; // jshint ignore:line
                     if (!priority || !(priority in global.console)) {
                         priority = 'log';
                     }
+
                     message = '[' + priority.toUpperCase() + '] ' + message;
                     global.console[priority](message);
                 }
@@ -1031,7 +1085,7 @@ var Ext = Ext || {}; // jshint ignore:line
             },
             deprecate: emptyFn
         },
-        
+
         ariaWarn: function(target, msg) {
             // The checks still can be disabled by setting Ext.enableAria to false;
             // this is for backwards compatibility. Also make sure we're not running
@@ -1043,7 +1097,7 @@ var Ext = Ext || {}; // jshint ignore:line
                                  "by adding the following to application startup code:");
                     Ext.log.warn("    Ext.ariaWarn = Ext.emptyFn;");
                 }
-                
+
                 Ext.log.warn({
                     msg: msg,
                     dump: target
@@ -1064,7 +1118,7 @@ var Ext = Ext || {}; // jshint ignore:line
          */
         splitAndUnescape: (function() {
             var cache = {};
-    
+
             return function(origin, delimiter) {
                 if (!origin) {
                     return [];
@@ -1072,26 +1126,27 @@ var Ext = Ext || {}; // jshint ignore:line
                 else if (!delimiter) {
                     return [origin];
                 }
-    
+
+                /* eslint-disable-next-line vars-on-top, max-len */
                 var replaceRe = cache[delimiter] || (cache[delimiter] = new RegExp('\\\\' + delimiter, 'g')),
                     result = [],
                     parts, part;
-    
+
                 parts = origin.split(delimiter);
-    
+
                 while ((part = parts.shift()) !== undefined) {
                     // If any of the parts ends with the delimiter that means
                     // the delimiter was escaped and the split was invalid. Roll back.
                     while (part.charAt(part.length - 1) === '\\' && parts.length > 0) {
                         part = part + delimiter + parts.shift();
                     }
-    
+
                     // Now that we have split the parts, unescape the delimiter char
                     part = part.replace(replaceRe, delimiter);
-    
+
                     result.push(part);
                 }
-    
+
                 return result;
             };
         })(),
@@ -1102,7 +1157,7 @@ var Ext = Ext || {}; // jshint ignore:line
          * @since 6.5.1
          * @private
          */
-        doElevate: function () {
+        doElevate: function() {
             var fn = elevateFn,
                 args = elevateArgs,
                 scope = elevateScope;
@@ -1130,10 +1185,10 @@ var Ext = Ext || {}; // jshint ignore:line
          * @since 6.5.1
          * @private
          */
-        elevate: function (fn, scope, args
-                           //<debug>
-                           , timer
-                           //</debug>
+        elevate: function(fn, scope, args
+                          //<debug>
+                          , timer // eslint-disable-line comma-style
+                          //</debug>
         ) {
             var ret;
 
@@ -1180,23 +1235,27 @@ var Ext = Ext || {}; // jshint ignore:line
         Timer: {
             all: {},
             track: false,
+            captureStack: true,
 
-            created: function (kind, id, info) {
+            created: function(kind, id, info) {
                 if (!Ext.Timer.track) {
                     return null;
                 }
 
+                /* eslint-disable-next-line vars-on-top */
                 var timer = Ext.apply({
                     kind: kind,
                     id: id,
                     done: false,
                     firing: false,
-                    creator: new Error().stack,
+                    creator: Ext.Timer.captureStack ? new Error().stack : null,
                     tick: Ext.Timer.tick,
                     tock: Ext.Timer.tock
                 }, info);
 
+                /* eslint-disable-next-line vars-on-top, one-var */
                 var timers = Ext.Timer.all[kind] || (Ext.Timer.all[kind] = {});
+
                 timers[timer.id] = timer;
 
                 if (Ext.Timer.hook) {
@@ -1206,26 +1265,28 @@ var Ext = Ext || {}; // jshint ignore:line
                 return timer;
             },
 
-            get: function (id, kind) {
+            get: function(id, kind) {
                 kind = kind || 'timeout';
 
+                /* eslint-disable-next-line vars-on-top */
                 var timers = Ext.Timer.all[kind];
 
                 return timers && timers[id] || null;
             },
 
-            cancel: function (kind, id) {
-                var timers = Ext.Timer.all[kind];
-                var timer = timers && timers[id];
+            cancel: function(kind, id) {
+                var timers = Ext.Timer.all[kind],
+                    timer = timers && timers[id];
 
                 if (timer) {
                     timer.cancelled = true;
 
+                    timers[id] = null;
                     delete timers[id];
                 }
             },
 
-            tick: function () {
+            tick: function() {
                 if (Ext.Timer.firing) {
                     // One reason for Ext.Timer.firing to get stuck is exception thrown
                     // in timer handler. In that case the timer is never tock()ed
@@ -1236,6 +1297,8 @@ var Ext = Ext || {}; // jshint ignore:line
 
                 if (this.kind !== 'interval') {
                     this.done = true;
+
+                    Ext.Timer.all[this.kind][this.id] = null;
                     delete Ext.Timer.all[this.kind][this.id];
                 }
 
@@ -1244,7 +1307,7 @@ var Ext = Ext || {}; // jshint ignore:line
                 Ext.Timer.firing = this;
             },
 
-            tock: function () {
+            tock: function() {
                 this.firing = false;
 
                 if (Ext.Timer.firing === this) {
@@ -1271,12 +1334,15 @@ var Ext = Ext || {}; // jshint ignore:line
 
             if (value !== undefined) {
                 (expandos || (target.$expandos = {}))[id] = value;
-            } else if (expandos) {
+            }
+            else if (expandos) {
                 delete expandos[id];
             }
+
+            return value;
         }
 
-    }); // Ext.apply(Ext
+    });
 
     Ext.returnTrue.$nullFn = Ext.returnId.$nullFn = true;
 }());

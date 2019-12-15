@@ -1,9 +1,10 @@
 topSuite('Ext.chart.Caption', ['Ext.chart.*', 'Ext.data.ArrayStore'], function() {
-
     var side = 400;
 
     var titleText = 'Title';
+
     var subtitleText = 'Subtitle';
+
     var creditsText = 'Credits';
 
     var titleConfig = {
@@ -100,47 +101,56 @@ topSuite('Ext.chart.Caption', ['Ext.chart.*', 'Ext.data.ArrayStore'], function()
         credits: creditsConfig
     };
 
-    describe('cartesian layout', function () {
+    describe('cartesian layout', function() {
         var chart;
 
-        afterEach(function () {
+        afterEach(function() {
             chart = Ext.destroy(chart);
         });
 
-        it("should have default captions properly positioned and chart surface properly sized", function () {
+        it("should have default captions properly positioned and chart surface properly sized", function() {
             var layoutDone;
 
             var config = Ext.merge(Ext.clone(cartesianChartConfig), {
                 captions: Ext.clone(defaultCaptions),
                 listeners: {
-                    layout: function () {
+                    layout: function() {
                         layoutDone = true;
                     }
                 }
             });
 
-            runs(function () {
+            runs(function() {
                 chart = new Ext.chart.CartesianChart(config);
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var captions = chart.getCaptions();
+
                 var title = captions.title;
+
                 var subtitle = captions.subtitle;
+
                 var credits = captions.credits;
+
                 var chartSurface = chart.getSurface('chart');
+
                 var captionSurface = chart.getSurface(title.surfaceName);
+
                 var chartSurfaceRect = chartSurface.getRect();
+
                 var captionSurfaceRect = captionSurface.getRect();
 
                 var titleBbox = title.getSprite().getBBox();
+
                 var subtitleBbox = subtitle.getSprite().getBBox();
+
                 var creditsBBox = credits.getSprite().getBBox();
 
                 expect(titleBbox.y >= 0).toBe(true);
@@ -153,7 +163,7 @@ topSuite('Ext.chart.Caption', ['Ext.chart.*', 'Ext.data.ArrayStore'], function()
             });
         });
 
-        it("should have weighted captions properly positioned and chart surface properly sized", function () {
+        it("should have weighted captions properly positioned and chart surface properly sized", function() {
             var layoutDone;
 
             var config = Ext.merge(Ext.clone(cartesianChartConfig), {
@@ -172,34 +182,43 @@ topSuite('Ext.chart.Caption', ['Ext.chart.*', 'Ext.data.ArrayStore'], function()
                     })
                 },
                 listeners: {
-                    layout: function () {
+                    layout: function() {
                         layoutDone = true;
                     }
                 }
             });
 
-            runs(function () {
+            runs(function() {
                 chart = new Ext.chart.CartesianChart(config);
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var captions = chart.getCaptions();
+
                 var title = captions.title;
+
                 var subtitle = captions.subtitle;
+
                 var credits = captions.credits;
+
                 var chartSurface = chart.getSurface('chart');
+
                 var captionSurface = chart.getSurface(title.surfaceName);
+
                 var chartSurfaceRect = chartSurface.getRect();
+
                 var captionSurfaceRect = captionSurface.getRect();
 
                 var titleBbox = title.getSprite().getBBox();
+
                 var subtitleBbox = subtitle.getSprite().getBBox();
+
                 var creditsBBox = credits.getSprite().getBBox();
 
                 expect(subtitleBbox.y >= 0).toBe(true);
@@ -211,7 +230,7 @@ topSuite('Ext.chart.Caption', ['Ext.chart.*', 'Ext.data.ArrayStore'], function()
             });
         });
 
-        it("should have style config values proxied to sprite attributes", function () {
+        it("should have style config values proxied to sprite attributes", function() {
             var layoutDone;
 
             var config = Ext.merge(Ext.clone(cartesianChartConfig), {
@@ -237,30 +256,35 @@ topSuite('Ext.chart.Caption', ['Ext.chart.*', 'Ext.data.ArrayStore'], function()
                     })
                 },
                 listeners: {
-                    layout: function () {
+                    layout: function() {
                         layoutDone = true;
                     }
                 }
             });
 
-            runs(function () {
+            runs(function() {
                 chart = new Ext.chart.CartesianChart(config);
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var captions = chart.getCaptions();
+
                 var title = captions.title;
+
                 var subtitle = captions.subtitle;
+
                 var credits = captions.credits;
 
                 var titleSprite = title.getSprite();
+
                 var subtitleSprite = subtitle.getSprite();
+
                 var creditsSprite = credits.getSprite();
 
                 expect(titleSprite.attr.text).toBe(titleText);
@@ -279,7 +303,7 @@ topSuite('Ext.chart.Caption', ['Ext.chart.*', 'Ext.data.ArrayStore'], function()
             });
         });
 
-        it("should align properly", function () {
+        it("should align properly", function() {
             var layoutDone;
 
             var config = Ext.merge(Ext.clone(cartesianChartConfig), {
@@ -295,43 +319,50 @@ topSuite('Ext.chart.Caption', ['Ext.chart.*', 'Ext.data.ArrayStore'], function()
                     })
                 },
                 listeners: {
-                    layout: function () {
+                    layout: function() {
                         layoutDone = true;
                     }
                 }
             });
 
-            runs(function () {
+            runs(function() {
                 chart = new Ext.chart.CartesianChart(config);
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var captions = chart.getCaptions();
+
                 var title = captions.title;
+
                 var subtitle = captions.subtitle;
+
                 var credits = captions.credits;
+
                 var seriesSurface = chart.getSurface('series');
+
                 var seriesSurfaceRect = seriesSurface.getRect();
 
                 var titleBbox = title.getSprite().getBBox();
+
                 var subtitleBbox = subtitle.getSprite().getBBox();
+
                 var creditsBBox = credits.getSprite().getBBox();
 
                 var tolerance = 2; // in pixels
 
-                expect( Ext.Number.isEqual(titleBbox.x, seriesSurfaceRect[0] + seriesSurfaceRect[2] / 2 - titleBbox.width / 2, tolerance) ).toBe(true);
-                expect( Ext.Number.isEqual(subtitleBbox.x, seriesSurfaceRect[0], tolerance) ).toBe(true);
-                expect( Ext.Number.isEqual(creditsBBox.x + creditsBBox.width, seriesSurfaceRect[0] + seriesSurfaceRect[2], tolerance) ).toBe(true);
+                expect(Ext.Number.isEqual(titleBbox.x, seriesSurfaceRect[0] + seriesSurfaceRect[2] / 2 - titleBbox.width / 2, tolerance)).toBe(true);
+                expect(Ext.Number.isEqual(subtitleBbox.x, seriesSurfaceRect[0], tolerance)).toBe(true);
+                expect(Ext.Number.isEqual(creditsBBox.x + creditsBBox.width, seriesSurfaceRect[0] + seriesSurfaceRect[2], tolerance)).toBe(true);
             });
         });
 
-        it("should align to chart properly", function () {
+        it("should align to chart properly", function() {
             var layoutDone;
 
             var config = Ext.merge(Ext.clone(cartesianChartConfig), {
@@ -350,40 +381,48 @@ topSuite('Ext.chart.Caption', ['Ext.chart.*', 'Ext.data.ArrayStore'], function()
                     })
                 },
                 listeners: {
-                    layout: function () {
+                    layout: function() {
                         layoutDone = true;
                     }
                 }
             });
 
-            runs(function () {
+            runs(function() {
                 chart = new Ext.chart.CartesianChart(config);
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var captions = chart.getCaptions();
+
                 var title = captions.title;
+
                 var subtitle = captions.subtitle;
+
                 var credits = captions.credits;
+
                 var seriesSurface = chart.getSurface('series');
+
                 var chartSurface = chart.getSurface('chart');
+
                 var chartSurfaceRect = chartSurface.getRect();
 
                 var titleBbox = title.getSprite().getBBox();
+
                 var subtitleBbox = subtitle.getSprite().getBBox();
+
                 var creditsBBox = credits.getSprite().getBBox();
 
                 var tolerance = 2; // in pixels
 
-                expect( Ext.Number.isEqual(titleBbox.x, chartSurfaceRect[0] + chartSurfaceRect[2] / 2 - titleBbox.width / 2, tolerance) ).toBe(true);
-                expect( Ext.Number.isEqual(subtitleBbox.x, chartSurfaceRect[0], tolerance) ).toBe(true);
-                expect( Ext.Number.isEqual(creditsBBox.x + creditsBBox.width, chartSurfaceRect[0] + chartSurfaceRect[2], tolerance) ).toBe(true);
+                expect(Ext.Number.isEqual(titleBbox.x, chartSurfaceRect[0] + chartSurfaceRect[2] / 2 - titleBbox.width / 2, tolerance)).toBe(true);
+                expect(Ext.Number.isEqual(subtitleBbox.x, chartSurfaceRect[0], tolerance)).toBe(true);
+                expect(Ext.Number.isEqual(creditsBBox.x + creditsBBox.width, chartSurfaceRect[0] + chartSurfaceRect[2], tolerance)).toBe(true);
 
             });
         });

@@ -1,10 +1,10 @@
 topSuite("Ext.draw.sprite.Composite", ['Ext.draw.sprite.*'], function() {
     var proto = Ext.draw.sprite.Text.prototype;
 
-    describe('add', function () {
+    describe('add', function() {
         var draw;
 
-        it('should remove added sprites from their surface', function () {
+        it('should remove added sprites from their surface', function() {
             draw = new Ext.draw.Container({
                 renderTo: document.body,
                 width: 200,
@@ -30,7 +30,9 @@ topSuite("Ext.draw.sprite.Composite", ['Ext.draw.sprite.*'], function() {
                     }
                 ]
             });
+
             var mainSurface = draw.getSurface();
+
             var composite = new Ext.draw.sprite.Composite();
 
             expect(mainSurface.getItems().length).toBe(2);
@@ -41,13 +43,13 @@ topSuite("Ext.draw.sprite.Composite", ['Ext.draw.sprite.*'], function() {
             expect(mainSurface.get(0).isComposite).toBe(true);
         });
 
-        afterEach(function () {
+        afterEach(function() {
             Ext.destroy(draw);
         });
     });
 
-    describe('destroy', function () {
-        it("should destroy composite's children", function () {
+    describe('destroy', function() {
+        it("should destroy composite's children", function() {
             var composite = new Ext.draw.sprite.Composite({});
 
             composite.add({

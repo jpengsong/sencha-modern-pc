@@ -1,90 +1,119 @@
-/*
-    *
-    * 查询接口参数采用统一格式如下
-    *  var RequestData = new {
-    *      QueryItem:Object或者Array,
-    *      PagingSetting:{
-    *          PageCount:10,
-    *          PageIndex:0,
-    *          SortBy:"ASC"
-    *          SortOrder:"field"
-    *      }
-    * }
-    * 或者
-    * var RequestData = Object或者Array
+/**
+ *
+ *  绑定组件数据存在延迟，而不能立即调用，此插件用来初始化组件请求参数
+ *  分页请求 采用统一格式如下
+ *  var RequestData = {
+ *      TokenGuid:用户身份票据,
+ *      Data:{
+ *           QueryItem:Object或者Array,
+ *           PagingSetting:{
+ *               PageCount:10,
+ *               PageIndex:0,
+ *               SortBy:"ASC"
+ *               SortOrder:"field"
+ *           }
+ *      }
+ * }
+ * OR
+ *  var RequestData = {
+ *      TokenGuid:用户身份票据,
+ *      Data:{Object或者Array}
+ *  }
+ *  使用例子如下：
+ *  plugins: {
+ *      requestdata: {
+ *         autoLoad: true
+ *      }
+ *  }
 */
 Ext.define("App.ux.plugin.RequestData", {
     extend: 'Ext.plugin.Abstract',
     alias: 'plugin.requestdata',
 
-    /**
-    * 
-    * @param {Boolean} 
-    */
-    autoLoad: false,
+    config: {
 
-    /**
-    * 
-    * @param {Boolean} pagination 分页参数
-    */
-    pagination: false,
+        /**
+        * 
+        * @param {object}} 
+        */
 
-    /**
-    * 
-    * @param {Function} params 初始化参数
-    */
-    params: Ext.emptyFn,
+        grid: null,
 
-    /**
-    * @param {Object}  参数 
-    */
-    root:null,
+        /**
+        * 
+        * @param {object}} 
+        */
 
+        store: null,
+
+        /**
+        * 
+        * @param {Boolean} 
+        */
+        autoLoad: false,
+
+        /**
+        * 
+        * @param {Function} params 初始化参数
+        */
+        params: Ext.emptyFn,
+
+        /**
+        * @param {Object}  参数 
+        */
+        root: null
+    },
+    
     /**
     * init function
     */
-    init: function (scope) {
-        var me, store; me = this; scope.autoLoad = false; me.scope = scope;
-        Ext.defer(function () {
-            store = scope.store;
-            if (store != null) {
-                if (me.params != Ext.emptyFn) {
-                    App.Page.setExtraParamData(store, me.params());
-                }else{
-                    App.Page.setExtraParamData(store,{});
-                }
-                if (me.root != null) {
-                    store.setRoot(me.root);
-                }
-                store.pagination = me.pagination;
-                store.on("beforeload", me.onbeforeload);
-                store.setAutoLoad(me.autoLoad);
-            }
-        },500);
+    init: function (grid) {
+        var me, me = this; grid.autoLoad = false;
+        me.setGrid(grid);
     },
 
-    destroy: function () {
-        var me = this, scope = me.scope;
-        if (scope != null) {
-            scope.store.un("beforeload", me.onbeforeload);
-        };
+    updateGrid: function (grid, oldGrid) {
+        var me = this;
+        if (grid) {
+            grid.on({
+                storechange: 'onStoreChanged',
+                scope: me
+            });
+            me.bindStore(grid.getStore());
+        }
+    },
+
+    onStoreChanged: function (grid, store) {
+        this.bindStore(store);
+    },
+
+    bindStore: function (store) {
+        var me = this;
+        if (!store) {
+            return;
+        }
+        me.setStore(store);
+        if (me.getParams() != Ext.emptyFn) {
+            App.Page.setExtraParamData(store, me.getParams());
+        } else {
+            App.Page.setExtraParamData(store, {});
+        }
+        if (me.getRoot() != null) {
+            store.setRoot(me.getRoot());
+        }
+        store.on("beforeload", me.onbeforeload,me);
+        store.setAutoLoad(me.getAutoLoad());
     },
 
     privates: {
-        /**
-        * 
-        * @param {Boolean} 组件
-        * private
-        */
-        scope: null,
-
+ 
         /*
         * store beforeload
         * private
         */
         onbeforeload: function (store, operation, eOpts) {
             var me = this, pagingSetting = {};
-            if (me.pagination) {
+            if (me.getGrid().getPlugin("pagination")) {
                 var limit = operation.getLimit();
                 var page = operation.getPage();
                 var sorters = operation.getSorters();
@@ -100,7 +129,6 @@ Ext.define("App.ux.plugin.RequestData", {
                     pagingSetting['SortOrder'] = sortOrder.join(',');
                     pagingSetting['SortBy'] = sortBy.join(',');
                 }
-                
                 App.Page.setExtraParamData(store, { PagingSetting: pagingSetting });
             }
         }

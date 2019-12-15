@@ -1,27 +1,23 @@
-
 /**
- * 处理权限的工具类 
- */
+  * 控制组件是否具有权限
+  *      
+  * {
+  *   text: ResManager.getControlString("Public.Add"),
+  *   hidden: App.Privilege.isHide("CodeTable_New"),
+  *   scope: this
+  * }
+  * 
+  * 例子中是一个按钮控件，对应一个操作权限`CodeTable_New`，在hidden配置里调用本函数。
+  * 如果当前用户不具有此权限，按钮会隐藏。
+  * @param {String} bizCode 控件对应的业务代码
+  * @return {Boolean} 当不具有该业务代码的权限时，返回`false`
+  * @static
+*/
 Ext.define('App.ux.utility.Privilege', {
     alternateClassName: ['App.Privilege'],
 
     statics: {
-        /**
-        * 控制组件是否具有权限
-        *      
-        * {
-        *  text: ResManager.getControlString("Public.Add"),
-        *  hidden: App.Privilege.isHide("CodeTable_New"),
-        *  scope: this
-        * }
-        * 
-        * 例子中是一个按钮控件，对应一个操作权限`CodeTable_New`，在hidden配置里调用本函数。
-        * 如果当前用户不具有此权限，按钮会隐藏。
-        * 
-        * @param {String} bizCode 控件对应的业务代码
-        * @return {Boolean} 当不具有该业务代码的权限时，返回`false`
-        * @static
-        */
+        
         isHide: function (bizCode) {
             if (App.UserInfo.IsSuperUser) {
                 return false;

@@ -94,11 +94,13 @@ Ext.define('Ext.chart.series.Bar', {
         }
     },
 
-    getItemForPoint: function (x, y) {
+    getItemForPoint: function(x, y) {
+        var chart, padding, isRtl;
+
         if (this.getSprites().length) {
-            var chart = this.getChart(),
-                padding = chart.getInnerPadding(),
-                isRtl = chart.getInherited().rtl;
+            chart = this.getChart();
+            padding = chart.getInnerPadding();
+            isRtl = chart.getInherited().rtl;
 
             // Convert the coordinates because the "items" sprites that draw
             // the bars ignore the chart's InnerPadding.
@@ -109,22 +111,24 @@ Ext.define('Ext.chart.series.Bar', {
         }
     },
 
-    updateXAxis: function (xAxis) {
+    updateXAxis: function(xAxis) {
         //<debug>
         if (!this.is3D && !xAxis.isCategory) {
-            Ext.raise("'bar' series should be used with a 'category' axis. Please refer to the bar series docs.");
+            Ext.raise("'bar' series should be used with a 'category' axis. " +
+                      "Please refer to the bar series docs.");
         }
         //</debug>
+
         xAxis.setExpandRangeBy(0.5);
         this.callParent(arguments);
     },
 
-    updateHidden: function (hidden) {
+    updateHidden: function(hidden) {
         this.callParent(arguments);
         this.updateStacked();
     },
 
-    updateStacked: function (stacked) {
+    updateStacked: function(stacked) {
         var me = this,
             attributes = {},
             sprites = me.getSprites(),
@@ -144,16 +148,20 @@ Ext.define('Ext.chart.series.Bar', {
         if (me.getStacked()) {
             attributes.groupCount = 1;
             attributes.groupOffset = 0;
+
             for (i = 0; i < visibleSpriteCount; i++) {
                 visibleSprites[i].setAttributes(attributes);
             }
-        } else {
+        }
+        else {
             attributes.groupCount = visibleSpriteCount;
+
             for (i = 0; i < visibleSpriteCount; i++) {
                 attributes.groupOffset = i;
                 visibleSprites[i].setAttributes(attributes);
             }
         }
+
         me.callParent(arguments);
     }
 });

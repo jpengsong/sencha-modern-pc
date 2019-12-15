@@ -32,17 +32,20 @@ xtopSuite("Ext.dataview.plugin.ListPaging", [
 
         views[view.getId()] = view;
         view.refresh();
+
         return view;
     }
 
     function releaseView(view) {
         var id = view.getId();
+
         delete views[id];
         view.destroy();
     }
 
     function sendResponse(page, limit, total) {
         var start = (page - 1) * limit;
+
         Ext.Ajax.mockCompleteWithData({
             total: total || 25,
             data: Array.apply(null, Array(limit)).map(function(value, index) {
@@ -52,7 +55,7 @@ xtopSuite("Ext.dataview.plugin.ListPaging", [
     }
 
     function waitForLoaded(store, timeout) {
-        return new Ext.Promise(function (resolve) {
+        return new Ext.Promise(function(resolve) {
             var timer = Ext.defer(function() {
                 Ext.destroy(listener);
                 resolve(false);
@@ -77,6 +80,7 @@ xtopSuite("Ext.dataview.plugin.ListPaging", [
                 single: true,
                 fn: function(store, operation) {
                     var config = operation.getConfig();
+
                     Ext.asap(sendResponse, null, [
                         config.page,
                         config.limit,
@@ -147,6 +151,7 @@ xtopSuite("Ext.dataview.plugin.ListPaging", [
                 expect(store.getTotalCount()).toBe(128);
 
                 scroller.scrollTo(null, Infinity);
+
                 return waitForLoadingAndReply(store);
             }).then(function(loaded) {
                 expect(loaded).toBeFalsy();
@@ -179,7 +184,9 @@ xtopSuite("Ext.dataview.plugin.ListPaging", [
 
                 // scroll to item just above the buffer zone (10 - 4)
                 var el = list.getItemAt(6).element;
+
                 scroller.ensureVisible(el);
+
                 return waitForLoadingAndReply(store);
             }).then(function(loaded) {
                 expect(loaded).toBeFalsy();
@@ -189,7 +196,9 @@ xtopSuite("Ext.dataview.plugin.ListPaging", [
 
                 // scroll to item at the top of the buffer zone (10 - 3)
                 var el = list.getItemAt(7).element;
+
                 scroller.ensureVisible(el);
+
                 return waitForLoadingAndReply(store);
             }).then(function(loaded) {
                 expect(loaded).toBeTruthy();
@@ -222,8 +231,11 @@ xtopSuite("Ext.dataview.plugin.ListPaging", [
 
                 // scroll to the last "almost" bottom of the last item
                 var el = list.getItemAt(9).element;
+
                 var y = scroller.getEnsureVisibleXY(el).y - 1;
+
                 scroller.scrollTo(null, y);
+
                 return waitForLoadingAndReply(store);
             }).then(function(loaded) {
                 expect(loaded).toBeFalsy();
@@ -233,6 +245,7 @@ xtopSuite("Ext.dataview.plugin.ListPaging", [
 
                 // scroll one pixel further to reach the end of the list (bottom of the last item)
                 scroller.scrollBy(null, 1);
+
                 return waitForLoadingAndReply(store);
             }).then(function(loaded) {
                 expect(loaded).toBeTruthy();
@@ -265,6 +278,7 @@ xtopSuite("Ext.dataview.plugin.ListPaging", [
                 releaseView(list);
 
                 Ext.asap(sendResponse, null, [2, 10, 128]);
+
                 return waitForLoaded(store);
             }).then(function(loaded) {
                 expect(loaded).toBeTruthy();

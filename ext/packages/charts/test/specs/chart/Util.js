@@ -2,9 +2,10 @@ topSuite("Ext.chart.Util", ['Ext.chart.*'], function() {
 
     var defaultRange = [0, 1];
 
-    describe('expandRange', function () {
-        it('should handle nulls correctly', function () {
+    describe('expandRange', function() {
+        it('should handle nulls correctly', function() {
             var dataRange = [NaN, NaN];
+
             var data = [-800, -600, -400, null, null];
 
             Ext.chart.Util.expandRange(dataRange, data);
@@ -14,30 +15,52 @@ topSuite("Ext.chart.Util", ['Ext.chart.*'], function() {
         });
     });
 
-    describe('validateRange', function () {
-        it('should work with zero ranges', function () {
+    describe('validateRange', function() {
+        it('should work with zero ranges', function() {
             var range1 = [0, 0];
+
             var range2 = [5, 5];
+
             var range3 = [-5, -5];
+
             var range4 = [-Infinity, -Infinity];
+
             var range5 = [Infinity, Infinity];
+
             var range6 = [Ext.Number.MIN_SAFE_INTEGER, Ext.Number.MIN_SAFE_INTEGER];
+
             var range7 = [Ext.Number.MAX_SAFE_INTEGER, Ext.Number.MAX_SAFE_INTEGER];
+
             var range8 = [Ext.Number.MIN_SAFE_INTEGER - 1, Ext.Number.MIN_SAFE_INTEGER - 1];
+
             var range9 = [Ext.Number.MAX_SAFE_INTEGER + 1, Ext.Number.MAX_SAFE_INTEGER + 1];
+
             var range10 = [null, 5];
+
             var range11 = [5, null];
+
             var range12 = [NaN, 5];
+
             var range13 = [5, NaN];
+
             var range14 = [NaN, NaN];
+
             var range15 = [undefined, 5];
+
             var range16 = [5, undefined];
+
             var range17 = [undefined, undefined];
+
             var range18 = [5, Infinity];
+
             var range19 = [Infinity, 5];
+
             var range20 = [-Infinity, -5];
+
             var range21 = [-5, -Infinity];
+
             var range22 = [5, -Infinity];
+
             var range23 = [-5, Infinity];
 
             var result;

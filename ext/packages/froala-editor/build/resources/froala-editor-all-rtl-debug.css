@@ -1,0 +1,698 @@
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:36 */
+.fi:before {
+    font-family: 'Material Icons' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-align-center:before {
+    content: 'format_align_center' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-align-justify:before {
+    content: 'format_align_justify' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-align-left:before {
+    content: 'format_align_left' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-align-right:before {
+    content: 'format_align_right' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-arrow-down:before {
+    content: 'arrow_downward' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-arrow-left:before {
+    content: '\f060' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-arrow-right:before {
+    content: 'arrow_forward' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-arrow-up:before {
+    content: 'arrow_upward' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-bars:before {
+    content: 'menu' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-caret-down:before {
+    content: 'arrow_drop_down' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-caret-left:before {
+    content: 'arrow_drop_up' !important;
+    display: inline-block;
+    transform: rotate(270deg);
+    transform-origin: 50% 50%;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-caret-right:before {
+    content: 'arrow_drop_up' !important;
+    display: inline-block;
+    transform: rotate(90deg);
+    transform-origin: 50% 50%;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-caret-up:before {
+    content: 'arrow_drop_up' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-check:before {
+    content: 'check' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-chevron-down:before {
+    content: 'chevron_left' !important;
+    display: inline-block;
+    transform: rotate(270deg);
+    transform-origin: 50% 50%;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-chevron-left:before {
+    content: 'chevron_left' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-chevron-right:before {
+    content: 'chevron_right' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-chevron-up:before {
+    content: 'chevron_left' !important;
+    display: inline-block;
+    transform: rotate(90deg);
+    transform-origin: 50% 50%;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-edit:before {
+    content: 'edit' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-ellipsis-h:before {
+    content: 'more_horiz' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-ellipsis-v:before {
+    content: 'more_vert' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-filter:before {
+    content: 'filter_list' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-gear:before {
+    content: 'settings' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-group:before {
+    content: 'group' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-home:before {
+    content: 'home' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-lock:before {
+    content: 'lock' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-minus:before {
+    content: 'remove' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-pencil:before {
+    content: 'edit' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-plus:before {
+    content: 'add' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-print:before {
+    content: 'print' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-redo:before {
+    content: 'redo' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-refresh:before {
+    content: 'refresh' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-save:before {
+    content: 'save' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-search:before {
+    content: 'search' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-star:before {
+    content: 'star' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-times:before {
+    content: 'close' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-trash:before {
+    content: 'delete' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-th:before {
+    content: 'view_module' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-th-list:before {
+    content: 'list' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-undo:before {
+    content: 'undo' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-unlock:before {
+    content: 'lock_open' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/etc/font-icons.scss:11 */
+.fi-user:before {
+    content: 'person' !important;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1599 */
+.x-button-alt.x-button-decline {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1602 */
+.x-button-alt.x-button-decline .x-inner-el {
+    background-color: #c62828;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1606 */
+.x-button-alt.x-button-decline .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1610 */
+.x-button-alt.x-button-decline.x-hovered {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1613 */
+.x-button-alt.x-button-decline.x-hovered .x-inner-el {
+    background-color: #c62828;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1617 */
+.x-button-alt.x-button-decline.x-hovered .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1622 */
+.x-button-alt.x-button-decline.x-pressing,
+.x-button-alt.x-button-decline.x-pressed {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1625 */
+.x-button-alt.x-button-decline.x-pressing .x-inner-el,
+.x-button-alt.x-button-decline.x-pressed .x-inner-el {
+    background-color: #c62828;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1629 */
+.x-button-alt.x-button-decline.x-pressing .x-icon-el,
+.x-button-alt.x-button-decline.x-pressed .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1635 */
+.x-keyboard-mode .x-button-alt.x-button-decline.x-focused {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1638 */
+.x-keyboard-mode .x-button-alt.x-button-decline.x-focused .x-inner-el {
+    background-color: #c62828;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1642 */
+.x-keyboard-mode .x-button-alt.x-button-decline.x-focused .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1599 */
+.x-button-alt.x-button-confirm {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1602 */
+.x-button-alt.x-button-confirm .x-inner-el {
+    background-color: #7cb342;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1606 */
+.x-button-alt.x-button-confirm .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1610 */
+.x-button-alt.x-button-confirm.x-hovered {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1613 */
+.x-button-alt.x-button-confirm.x-hovered .x-inner-el {
+    background-color: #7cb342;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1617 */
+.x-button-alt.x-button-confirm.x-hovered .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1622 */
+.x-button-alt.x-button-confirm.x-pressing,
+.x-button-alt.x-button-confirm.x-pressed {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1625 */
+.x-button-alt.x-button-confirm.x-pressing .x-inner-el,
+.x-button-alt.x-button-confirm.x-pressed .x-inner-el {
+    background-color: #7cb342;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1629 */
+.x-button-alt.x-button-confirm.x-pressing .x-icon-el,
+.x-button-alt.x-button-confirm.x-pressed .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1635 */
+.x-keyboard-mode .x-button-alt.x-button-confirm.x-focused {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1638 */
+.x-keyboard-mode .x-button-alt.x-button-confirm.x-focused .x-inner-el {
+    background-color: #7cb342;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/Button.scss:1642 */
+.x-keyboard-mode .x-button-alt.x-button-confirm.x-focused .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1456 */
+.x-splitButton-alt.x-splitButton-decline {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1459 */
+.x-splitButton-alt.x-splitButton-decline .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1463 */
+.x-splitButton-alt.x-splitButton-decline .x-arrow-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1467 */
+.x-splitButton-alt.x-splitButton-decline .x-splitBody-el {
+    background-color: #c62828;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1477 */
+.x-splitButton-alt.x-splitButton-decline.x-arrow-align-right .x-splitArrow-el {
+    border-left: 1px solid #fff;
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1480 */
+.x-splitButton-alt.x-splitButton-decline.x-arrow-align-right .x-splitArrow-el.x-hovered {
+    border-left: 1px solid #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1484 */
+.x-splitButton-alt.x-splitButton-decline.x-arrow-align-right .x-splitArrow-el.x-focused {
+    border-left: 1px solid #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1488 */
+.x-splitButton-alt.x-splitButton-decline.x-arrow-align-right .x-splitArrow-el.x-pressing,
+.x-splitButton-alt.x-splitButton-decline.x-arrow-align-right .x-splitArrow-el.x-pressed {
+    border-left: 1px solid #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1493 */
+.x-splitButton-alt.x-splitButton-decline.x-arrow-align-bottom .x-splitArrow-el {
+    border-top: 1px solid #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1496 */
+.x-splitButton-alt.x-splitButton-decline.x-arrow-align-bottom .x-splitArrow-el.x-hovered {
+    border-top: 1px solid #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1500 */
+.x-splitButton-alt.x-splitButton-decline.x-arrow-align-bottom .x-splitArrow-el.x-focused {
+    border-top: 1px solid #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1504 */
+.x-splitButton-alt.x-splitButton-decline.x-arrow-align-bottom .x-splitArrow-el.x-pressing,
+.x-splitButton-alt.x-splitButton-decline.x-arrow-align-bottom .x-splitArrow-el.x-pressed {
+    border-top: 1px solid #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1509 */
+.x-splitButton-alt.x-splitButton-decline.x-hovered {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1512 */
+.x-splitButton-alt.x-splitButton-decline.x-hovered .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1517 */
+.x-splitButton-alt.x-splitButton-decline .x-hovered {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1520 */
+.x-splitButton-alt.x-splitButton-decline .x-hovered.x-splitBody-el {
+    background-color: #c62828;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1524 */
+.x-splitButton-alt.x-splitButton-decline .x-hovered.x-splitInner-el {
+    background-color: #c62828;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1528 */
+.x-splitButton-alt.x-splitButton-decline .x-hovered.x-splitArrow-el {
+    background-color: #c62828;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1533 */
+.x-splitButton-alt.x-splitButton-decline.x-pressing,
+.x-splitButton-alt.x-splitButton-decline.x-pressed {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1536 */
+.x-splitButton-alt.x-splitButton-decline.x-pressing .x-icon-el,
+.x-splitButton-alt.x-splitButton-decline.x-pressed .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1541 */
+.x-splitButton-alt.x-splitButton-decline .x-pressing,
+.x-splitButton-alt.x-splitButton-decline .x-pressed {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1544 */
+.x-splitButton-alt.x-splitButton-decline .x-pressing.x-splitBody-el,
+.x-splitButton-alt.x-splitButton-decline .x-pressed.x-splitBody-el {
+    background-color: #c62828;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1548 */
+.x-splitButton-alt.x-splitButton-decline .x-pressing.x-splitInner-el,
+.x-splitButton-alt.x-splitButton-decline .x-pressed.x-splitInner-el {
+    background-color: #c62828;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1552 */
+.x-splitButton-alt.x-splitButton-decline .x-pressing.x-splitArrow-el,
+.x-splitButton-alt.x-splitButton-decline .x-pressed.x-splitArrow-el {
+    background-color: #c62828;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1558 */
+.x-keyboard-mode .x-splitButton-alt.x-splitButton-decline.x-focused {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1561 */
+.x-keyboard-mode .x-splitButton-alt.x-splitButton-decline.x-focused .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1568 */
+.x-keyboard-mode .x-splitButton-alt.x-splitButton-decline .x-focused {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1571 */
+.x-keyboard-mode .x-splitButton-alt.x-splitButton-decline .x-focused.x-splitBody-el {
+    background-color: #c62828;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1575 */
+.x-keyboard-mode .x-splitButton-alt.x-splitButton-decline .x-focused.x-splitInner-el {
+    background-color: #c62828;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1579 */
+.x-keyboard-mode .x-splitButton-alt.x-splitButton-decline .x-focused.x-splitArrow-el {
+    background-color: #c62828;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1456 */
+.x-splitButton-alt.x-splitButton-confirm {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1459 */
+.x-splitButton-alt.x-splitButton-confirm .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1463 */
+.x-splitButton-alt.x-splitButton-confirm .x-arrow-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1467 */
+.x-splitButton-alt.x-splitButton-confirm .x-splitBody-el {
+    background-color: #7cb342;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1477 */
+.x-splitButton-alt.x-splitButton-confirm.x-arrow-align-right .x-splitArrow-el {
+    border-left: 1px solid #fff;
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1480 */
+.x-splitButton-alt.x-splitButton-confirm.x-arrow-align-right .x-splitArrow-el.x-hovered {
+    border-left: 1px solid #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1484 */
+.x-splitButton-alt.x-splitButton-confirm.x-arrow-align-right .x-splitArrow-el.x-focused {
+    border-left: 1px solid #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1488 */
+.x-splitButton-alt.x-splitButton-confirm.x-arrow-align-right .x-splitArrow-el.x-pressing,
+.x-splitButton-alt.x-splitButton-confirm.x-arrow-align-right .x-splitArrow-el.x-pressed {
+    border-left: 1px solid #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1493 */
+.x-splitButton-alt.x-splitButton-confirm.x-arrow-align-bottom .x-splitArrow-el {
+    border-top: 1px solid #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1496 */
+.x-splitButton-alt.x-splitButton-confirm.x-arrow-align-bottom .x-splitArrow-el.x-hovered {
+    border-top: 1px solid #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1500 */
+.x-splitButton-alt.x-splitButton-confirm.x-arrow-align-bottom .x-splitArrow-el.x-focused {
+    border-top: 1px solid #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1504 */
+.x-splitButton-alt.x-splitButton-confirm.x-arrow-align-bottom .x-splitArrow-el.x-pressing,
+.x-splitButton-alt.x-splitButton-confirm.x-arrow-align-bottom .x-splitArrow-el.x-pressed {
+    border-top: 1px solid #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1509 */
+.x-splitButton-alt.x-splitButton-confirm.x-hovered {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1512 */
+.x-splitButton-alt.x-splitButton-confirm.x-hovered .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1517 */
+.x-splitButton-alt.x-splitButton-confirm .x-hovered {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1520 */
+.x-splitButton-alt.x-splitButton-confirm .x-hovered.x-splitBody-el {
+    background-color: #7cb342;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1524 */
+.x-splitButton-alt.x-splitButton-confirm .x-hovered.x-splitInner-el {
+    background-color: #7cb342;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1528 */
+.x-splitButton-alt.x-splitButton-confirm .x-hovered.x-splitArrow-el {
+    background-color: #7cb342;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1533 */
+.x-splitButton-alt.x-splitButton-confirm.x-pressing,
+.x-splitButton-alt.x-splitButton-confirm.x-pressed {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1536 */
+.x-splitButton-alt.x-splitButton-confirm.x-pressing .x-icon-el,
+.x-splitButton-alt.x-splitButton-confirm.x-pressed .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1541 */
+.x-splitButton-alt.x-splitButton-confirm .x-pressing,
+.x-splitButton-alt.x-splitButton-confirm .x-pressed {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1544 */
+.x-splitButton-alt.x-splitButton-confirm .x-pressing.x-splitBody-el,
+.x-splitButton-alt.x-splitButton-confirm .x-pressed.x-splitBody-el {
+    background-color: #7cb342;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1548 */
+.x-splitButton-alt.x-splitButton-confirm .x-pressing.x-splitInner-el,
+.x-splitButton-alt.x-splitButton-confirm .x-pressed.x-splitInner-el {
+    background-color: #7cb342;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1552 */
+.x-splitButton-alt.x-splitButton-confirm .x-pressing.x-splitArrow-el,
+.x-splitButton-alt.x-splitButton-confirm .x-pressed.x-splitArrow-el {
+    background-color: #7cb342;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1558 */
+.x-keyboard-mode .x-splitButton-alt.x-splitButton-confirm.x-focused {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1561 */
+.x-keyboard-mode .x-splitButton-alt.x-splitButton-confirm.x-focused .x-icon-el {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1568 */
+.x-keyboard-mode .x-splitButton-alt.x-splitButton-confirm .x-focused {
+    color: #fff;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1571 */
+.x-keyboard-mode .x-splitButton-alt.x-splitButton-confirm .x-focused.x-splitBody-el {
+    background-color: #7cb342;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1575 */
+.x-keyboard-mode .x-splitButton-alt.x-splitButton-confirm .x-focused.x-splitInner-el {
+    background-color: #7cb342;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/ext/modern/theme-neptune/sass/var/SplitButton.scss:1579 */
+.x-keyboard-mode .x-splitButton-alt.x-splitButton-confirm .x-focused.x-splitArrow-el {
+    background-color: #7cb342;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/src/froala/Editor.scss:1 */
+.x-froala {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/src/froala/Editor.scss:7 */
+.x-froala .fr-wrapper {
+    flex: 1;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/src/froala/Editor.scss:12 */
+.fr-popup .fr-dropdown-list a.fr-command i.fas {
+    line-height: 200%;
+    width: 100%;
+    text-align: center;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:20 */
+.x-froala.fr-box.fr-basic .fr-wrapper {
+    background-color: #fafafa;
+    border-color: #e0e0e0;
+    border-style: solid;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:25 */
+.x-froala.fr-box.fr-basic .fr-wrapper .fr-element {
+    color: #111;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:31 */
+.x-froala .second-toolbar {
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    -ms-border-radius: 0px;
+    -o-border-radius: 0px;
+    border-radius: 0px;
+    background-color: #fafafa;
+    border-color: #e0e0e0;
+    border-style: solid;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:38 */
+.x-froala .fr-toolbar,
+.x-froala .fr-popup,
+.x-froala .fr-modal {
+    background-color: #f5f5f5;
+    border-color: #e0e0e0;
+    border-style: solid;
+    color: #111;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:46 */
+.x-froala .fr-toolbar .fr-newline,
+.x-froala .fr-popup .fr-newline,
+.x-froala .fr-modal .fr-newline {
+    background: #e0e0e0;
+    height: 2px;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:52 */
+.x-froala .fr-toolbar .fr-more-toolbar,
+.x-froala .fr-toolbar .fr-more-toolbar.fr-expanded,
+.x-froala .fr-popup .fr-more-toolbar,
+.x-froala .fr-popup .fr-more-toolbar.fr-expanded,
+.x-froala .fr-modal .fr-more-toolbar,
+.x-froala .fr-modal .fr-more-toolbar.fr-expanded {
+    background-color: #f5f5f5;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:57 */
+.x-froala .fr-toolbar .fr-command.fr-btn,
+.x-froala .fr-popup .fr-command.fr-btn,
+.x-froala .fr-modal .fr-command.fr-btn {
+    color: #2196f3;
+    font-size: 13px;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:61 */
+.x-froala .fr-toolbar .fr-command.fr-btn.fr-btn-hover:not(.fr-table-cell),
+.x-froala .fr-toolbar .fr-command.fr-btn:not(.fr-table-cell):focus,
+.x-froala .fr-toolbar .fr-command.fr-btn.fr-expanded:not(.fr-table-cell),
+.x-froala .fr-popup .fr-command.fr-btn.fr-btn-hover:not(.fr-table-cell),
+.x-froala .fr-popup .fr-command.fr-btn:not(.fr-table-cell):focus,
+.x-froala .fr-popup .fr-command.fr-btn.fr-expanded:not(.fr-table-cell),
+.x-froala .fr-modal .fr-command.fr-btn.fr-btn-hover:not(.fr-table-cell),
+.x-froala .fr-modal .fr-command.fr-btn:not(.fr-table-cell):focus,
+.x-froala .fr-modal .fr-command.fr-btn.fr-expanded:not(.fr-table-cell) {
+    background: #eee;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:67 */
+.x-froala .fr-toolbar .fr-command.fr-btn.fr-open:not(:hover):not(:focus):not(:active),
+.x-froala .fr-popup .fr-command.fr-btn.fr-open:not(:hover):not(:focus):not(:active),
+.x-froala .fr-modal .fr-command.fr-btn.fr-open:not(:hover):not(:focus):not(:active) {
+    background: #f5f5f5;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:72 */
+.x-froala .fr-toolbar .fr-command.fr-btn.fr-dropdown:after,
+.x-froala .fr-popup .fr-command.fr-btn.fr-dropdown:after,
+.x-froala .fr-modal .fr-command.fr-btn.fr-dropdown:after {
+    border-top-color: #2196f3;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:76 */
+.x-froala .fr-toolbar .fr-command.fr-btn.fr-dropdown.fr-active,
+.x-froala .fr-toolbar .fr-command.fr-btn.fr-dropdown.fr-active:hover,
+.x-froala .fr-popup .fr-command.fr-btn.fr-dropdown.fr-active,
+.x-froala .fr-popup .fr-command.fr-btn.fr-dropdown.fr-active:hover,
+.x-froala .fr-modal .fr-command.fr-btn.fr-dropdown.fr-active,
+.x-froala .fr-modal .fr-command.fr-btn.fr-dropdown.fr-active:hover {
+    background: #eee;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:80 */
+.x-froala .fr-toolbar .fr-command.fr-btn.fr-dropdown.fr-active:after,
+.x-froala .fr-popup .fr-command.fr-btn.fr-dropdown.fr-active:after,
+.x-froala .fr-modal .fr-command.fr-btn.fr-dropdown.fr-active:after {
+    border-bottom-color: #2196f3;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:85 */
+.x-froala .fr-toolbar .fr-command.fr-btn + .fr-dropdown-menu,
+.x-froala .fr-popup .fr-command.fr-btn + .fr-dropdown-menu,
+.x-froala .fr-modal .fr-command.fr-btn + .fr-dropdown-menu {
+    background: #fafafa;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:91 */
+.x-froala .fr-toolbar .fr-command.fr-btn + .fr-dropdown-menu .fr-dropdown-wrapper .fr-dropdown-content ul.fr-dropdown-list li a.fr-active,
+.x-froala .fr-toolbar .fr-command.fr-btn + .fr-dropdown-menu .fr-dropdown-wrapper .fr-dropdown-content ul.fr-dropdown-list li a:hover,
+.x-froala .fr-popup .fr-command.fr-btn + .fr-dropdown-menu .fr-dropdown-wrapper .fr-dropdown-content ul.fr-dropdown-list li a.fr-active,
+.x-froala .fr-popup .fr-command.fr-btn + .fr-dropdown-menu .fr-dropdown-wrapper .fr-dropdown-content ul.fr-dropdown-list li a:hover,
+.x-froala .fr-modal .fr-command.fr-btn + .fr-dropdown-menu .fr-dropdown-wrapper .fr-dropdown-content ul.fr-dropdown-list li a.fr-active,
+.x-froala .fr-modal .fr-command.fr-btn + .fr-dropdown-menu .fr-dropdown-wrapper .fr-dropdown-content ul.fr-dropdown-list li a:hover {
+    background: #eee;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:100 */
+.x-froala .fr-toolbar .fr-command.fr-btn i,
+.x-froala .fr-popup .fr-command.fr-btn i,
+.x-froala .fr-modal .fr-command.fr-btn i {
+    color: #2196f3;
+    font-size: 13px;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:105 */
+.x-froala .fr-toolbar .fr-command.fr-btn:hover,
+.x-froala .fr-popup .fr-command.fr-btn:hover,
+.x-froala .fr-modal .fr-command.fr-btn:hover {
+    background: rgba(17, 17, 17, 0.075);
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:110 */
+.x-froala .fr-toolbar.fr-top,
+.x-froala .fr-popup.fr-top,
+.x-froala .fr-modal.fr-top {
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    -ms-border-radius: 0px;
+    -o-border-radius: 0px;
+    border-radius: 0px;
+}
+/* /home/teamcity/buildAgent/work/ad7452ab2017f48b/sencha/packages/froala-editor/sass/var/froala/Editor.scss:116 */
+.x-froala .fr-toolbar .fr-dropdown-content .fr-command i,
+.x-froala .fr-popup .fr-dropdown-content .fr-command i,
+.x-froala .fr-modal .fr-dropdown-content .fr-command i {
+    color: #2196f3;
+    font-size: 13px;
+}

@@ -10,11 +10,11 @@ function() {
         store = new Ext.data.Store(Ext.apply({
             fields: ['name', 'email', 'phone', 'income'],
             data: [
-                { name: 'Lisa',  email:'lisa@simpsons.com',  phone:'555-111-1224', income: 1244.246 },
-                { name: 'Bart',  email:'bart@simpsons.com',  phone:'555-222-1234', income: 3444.985 },
-                { name: 'Homer', email:'homer@simpsons.com', phone:'555-222-1244', income: 2474.45 },
-                { name: 'Marge', email:'marge@simpsons.com', phone:'555-222-1254', income: 244.745 },
-                { name: 'Kid', email:'kid@simpsons.com', phone:'555-222-1254', income: 0 }
+                { name: 'Lisa',  email: 'lisa@simpsons.com',  phone: '555-111-1224', income: 1244.246 },
+                { name: 'Bart',  email: 'bart@simpsons.com',  phone: '555-222-1234', income: 3444.985 },
+                { name: 'Homer', email: 'homer@simpsons.com', phone: '555-222-1244', income: 2474.45 },
+                { name: 'Marge', email: 'marge@simpsons.com', phone: '555-222-1254', income: 244.745 },
+                { name: 'Kid', email: 'kid@simpsons.com', phone: '555-222-1254', income: 0 }
             ],
             autoDestroy: true
         }, storeCfg));
@@ -34,6 +34,7 @@ function() {
 
     function getCell(row, column, query) {
         query = query || 'gridcell';
+
         return grid.getItem(store.getAt(row)).query(query)[column];
     }
 
@@ -41,9 +42,11 @@ function() {
         // Override so that we can control asynchronous loading
         loadStore = Ext.data.ProxyStore.prototype.load = function() {
             proxyStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         };
     });
@@ -74,12 +77,13 @@ function() {
             });
             grid.getViewModel().notify();
             var col = grid.down('#col');
+
             expect(col.getInnerHtmlElement()).hasHTML('Foo');
         });
     });
 
-    describe('grids', function () {
-        it('should show the correct value in the cell', function () {
+    describe('grids', function() {
+        it('should show the correct value in the cell', function() {
             createGrid({
                 columns: [{
                     header: 'Income', dataIndex: 'income', width: 100
@@ -93,7 +97,7 @@ function() {
             expect(getCell(3, 0).el.down('.x-body-el', true).innerHTML).toBe('244.745');
         });
 
-        it('should show the correct zeroValue in the gridcell', function () {
+        it('should show the correct zeroValue in the gridcell', function() {
             createGrid({
                 columns: [{
                     header: 'Income', dataIndex: 'income', width: 100,
@@ -107,7 +111,7 @@ function() {
             expect(getCell(4, 0).el.down('.x-body-el', true).innerHTML).toBe('zero');
         });
 
-        it('should show the correct zeroValue in the textcell', function () {
+        it('should show the correct zeroValue in the textcell', function() {
             createGrid({
                 columns: [{
                     header: 'Income', dataIndex: 'income', width: 100,
@@ -122,7 +126,7 @@ function() {
             expect(getCell(4, 0, 'textcell').el.down('.x-body-el', true).innerHTML).toBe('zero');
         });
 
-        it('should apply the zeroValue of gridcell correctly from a VM', function () {
+        it('should apply the zeroValue of gridcell correctly from a VM', function() {
             var vm = new Ext.app.ViewModel({
                 data: {
                     zeroValue: 'zero'
@@ -146,7 +150,7 @@ function() {
             expect(getCell(4, 0).el.down('.x-body-el', true).innerHTML).toBe('zero');
         });
 
-        it('should apply the zeroValue of textcell correctly from a VM', function () {
+        it('should apply the zeroValue of textcell correctly from a VM', function() {
             var vm = new Ext.app.ViewModel({
                 data: {
                     zeroValue: 'zero'
@@ -171,7 +175,7 @@ function() {
             expect(getCell(4, 0, 'textcell').el.down('.x-body-el', true).innerHTML).toBe('zero');
         });
 
-        it('should apply the formatter correctly', function () {
+        it('should apply the formatter correctly', function() {
             createGrid({
                 columns: [{
                     header: 'Income', dataIndex: 'income', width: 100,
@@ -186,13 +190,13 @@ function() {
             expect(getCell(3, 0).el.down('.x-body-el', true).innerHTML).toBe('244.75');
         });
 
-        it('should apply the scoped formatter correctly', function () {
+        it('should apply the scoped formatter correctly', function() {
             createGrid({
                 columns: [{
                     header: 'Income', dataIndex: 'income', width: 100,
                     formatter: 'this.myTest("0,000.00")',
                     scope: {
-                        myTest: function(v, format){
+                        myTest: function(v, format) {
                             return Ext.util.Format.number(v, format);
                         }
                     }
@@ -206,7 +210,7 @@ function() {
             expect(getCell(3, 0).el.down('.x-body-el', true).innerHTML).toBe('244.75');
         });
 
-        it('should apply the cell formatter correctly from a VM', function () {
+        it('should apply the cell formatter correctly from a VM', function() {
             var vm = new Ext.app.ViewModel({
                 data: {
                     formatter: 'number("0,000")'
@@ -233,7 +237,7 @@ function() {
             expect(getCell(3, 0).el.down('.x-body-el', true).innerHTML).toBe('245');
         });
 
-        it('should apply the renderer correctly', function () {
+        it('should apply the renderer correctly', function() {
             createGrid({
                 columns: [{
                     header: 'Income', dataIndex: 'income', width: 100,
@@ -248,13 +252,13 @@ function() {
             expect(getCell(3, 0).el.down('.x-body-el', true).innerHTML).toBe('244.75');
         });
 
-        it('should apply the scoped renderer correctly', function () {
+        it('should apply the scoped renderer correctly', function() {
             createGrid({
                 columns: [{
                     header: 'Income', dataIndex: 'income', width: 100,
                     renderer: 'myTest',
                     scope: {
-                        myTest: function(v){
+                        myTest: function(v) {
                             return Ext.util.Format.number(v, '0,000.00');
                         }
                     }
@@ -268,7 +272,7 @@ function() {
             expect(getCell(3, 0).el.down('.x-body-el', true).innerHTML).toBe('244.75');
         });
 
-        it('should apply the cell renderer correctly from a VM', function () {
+        it('should apply the cell renderer correctly from a VM', function() {
             var vm = new Ext.app.ViewModel({
                 data: {
                     renderer: Ext.util.Format.numberRenderer("0,000")
@@ -295,7 +299,7 @@ function() {
             expect(getCell(3, 0).el.down('.x-body-el', true).innerHTML).toBe('245');
         });
 
-        it('should apply the template correctly without dataIndex', function () {
+        it('should apply the template correctly without dataIndex', function() {
             createGrid({
                 columns: [{
                     header: 'Income', width: 100,
@@ -310,14 +314,14 @@ function() {
             expect(getCell(3, 0).el.down('.x-body-el', true).innerHTML).toBe('244.75');
         });
 
-        it('should apply the scoped template correctly without dataIndex', function () {
+        it('should apply the scoped template correctly without dataIndex', function() {
             createGrid({
                 columns: [{
                     header: 'Income', width: 100,
                     tpl: [
                         '{income:this.myTest("0,000.00")}',
                         {
-                            myTest: function(v, format){
+                            myTest: function(v, format) {
                                 return Ext.util.Format.number(v, format);
                             }
                         }
@@ -332,7 +336,7 @@ function() {
             expect(getCell(3, 0).el.down('.x-body-el', true).innerHTML).toBe('244.75');
         });
 
-        it('should apply the template correctly with dataIndex', function () {
+        it('should apply the template correctly with dataIndex', function() {
             createGrid({
                 columns: [{
                     header: 'Income', dataIndex: 'income', width: 100,
@@ -347,14 +351,14 @@ function() {
             expect(getCell(3, 0).el.down('.x-body-el', true).innerHTML).toBe('244.75');
         });
 
-        it('should apply the scoped template correctly with dataIndex', function () {
+        it('should apply the scoped template correctly with dataIndex', function() {
             createGrid({
                 columns: [{
                     header: 'Income', dataIndex: 'income', width: 100,
                     tpl: [
                         '{income:this.myTest("0,000.00")}',
                         {
-                            myTest: function (v, format) {
+                            myTest: function(v, format) {
                                 return Ext.util.Format.number(v, format);
                             }
                         }
@@ -369,13 +373,13 @@ function() {
             expect(getCell(3, 0).el.down('.x-body-el', true).innerHTML).toBe('244.75');
         });
 
-        it('should apply the cell template correctly from a VM', function () {
+        it('should apply the cell template correctly from a VM', function() {
             var vm = new Ext.app.ViewModel({
                 data: {
                     template: [
                         '{income:this.myTest("0,000")}',
                         {
-                            myTest: function (v, format) {
+                            myTest: function(v, format) {
                                 return Ext.util.Format.number(v, format);
                             }
                         }
@@ -449,7 +453,7 @@ function() {
                     editor: {}
                 }, {
                     store: {
-                        fields: [{ name: 'field', type: type}]
+                        fields: [{ name: 'field', type: type }]
                     }
                 });
             }
@@ -513,10 +517,10 @@ function() {
         });
     });
 
-    describe('add non-columns', function () {
+    describe('add non-columns', function() {
         var column, component;
 
-        function doTest () {
+        function doTest() {
             var renderTarget = column.getRenderTarget();
 
             /**
@@ -530,7 +534,7 @@ function() {
             expect(column.indexOf(component)).toBe(0);
         }
 
-        it('should allow adding items via config', function () {
+        it('should allow adding items via config', function() {
             createGrid({
                 renderTo: Ext.getBody(),
                 columns: [{
@@ -544,12 +548,12 @@ function() {
             });
 
             column = grid.getColumns()[0];
-            component = column.getComponent('component')
+            component = column.getComponent('component');
 
             doTest();
         });
 
-        it('should allow adding non-column items', function () {
+        it('should allow adding non-column items', function() {
             createGrid({
                 renderTo: Ext.getBody(),
                 columns: [{
@@ -566,7 +570,7 @@ function() {
             doTest();
         });
 
-        it('should allow inserting non-column items', function () {
+        it('should allow inserting non-column items', function() {
             createGrid({
                 renderTo: Ext.getBody(),
                 columns: [{

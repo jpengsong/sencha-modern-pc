@@ -8,7 +8,7 @@ Ext.application({
     name: 'App',
 
     requires: [
-        // This will automatically load all classes in the app namespace
+        // This will automatically load all classes in the App namespace
         // so that application classes do not need to require each other.
         'App.*'
     ],

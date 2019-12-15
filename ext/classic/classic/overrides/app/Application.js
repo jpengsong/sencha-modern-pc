@@ -42,10 +42,12 @@ Ext.define('Ext.overrides.app.Application', {
         if (typeof mainView === 'string') {
             view = this.getView(mainView);
             config = {};
-        } else {
+        }
+        else {
             config = mainView;
             view = Ext.ClassManager.getByConfig(mainView);
         }
+
         proto = view.prototype;
 
         if (!proto.isViewport) {
@@ -75,7 +77,8 @@ Ext.define('Ext.overrides.app.Application', {
 
             if (viewportClass === true) {
                 viewportClass = 'Viewport';
-            } else {
+            }
+            else {
                 requires.push('Ext.plugin.Viewport');
             }
 
@@ -91,14 +94,14 @@ Ext.define('Ext.overrides.app.Application', {
             me.initQuickTips();
         }
 
-        if(autoCreateViewport) {
+        if (autoCreateViewport) {
             me.initViewport();
         }
 
         this.callParent(arguments);
     },
 
-    getViewportName: function () {
+    getViewportName: function() {
         var name = null,
             autoCreate = this.autoCreateViewport;
 

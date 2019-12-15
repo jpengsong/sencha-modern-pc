@@ -118,6 +118,7 @@ function() {
 
     function getWidget(index, col) {
         col = col || colRef[1];
+
         return col.getWidget(store.getAt(index));
     }
 
@@ -129,6 +130,7 @@ function() {
     describe("basic functionality", function() {
         it("should be able to drag", function() {
             var cell, rec;
+
             makeTree();
 
             rec = store.getById('A');
@@ -142,7 +144,7 @@ function() {
             if (jasmine.supportsTouch) {
                 waits(1500);
             }
-            
+
             runs(function() {
                 jasmine.fireMouseEvent(cell, 'mousemove', 5, 20);
                 expect(Ext.fly(dragZone.dragData.item).contains(cell)).toBe(true);
@@ -169,7 +171,7 @@ function() {
                     text: 'Grandchild',
                     leaf: true
                 }]
-            }],{
+            }], {
                 selModel: {
                     type: 'checkboxmodel'
                 }
@@ -195,15 +197,15 @@ function() {
 
     describe("with widget columns", function() {
         beforeEach(function() {
-            makeTree(null,{
+            makeTree(null, {
                 columns: [{
                     xtype: 'treecolumn',
                     dataIndex: 'text'
-                },{
-                    xtype : 'widgetcolumn',
+                }, {
+                    xtype: 'widgetcolumn',
                     dataIndex: 'secondaryId',
-                    widget : {          
-                        xtype : 'textfield'
+                    widget: {
+                        xtype: 'textfield'
                     }
                 }]
             });

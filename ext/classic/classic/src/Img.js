@@ -71,8 +71,17 @@ Ext.define('Ext.Img', {
         src: null,
 
         /**
-         * @cfg glyph
+         * @cfg glyphorig
          * @inheritdoc Ext.panel.Header#cfg-glyph
+         */
+        /**
+         * @cfg {Number/String} glyph
+         * A numeric unicode character code to serve as the image.  If this option is used
+         * The image will be rendered using a div with innerHTML set to the html entity
+         * for the given character code.  The default font-family for glyphs can be set
+         * globally using {@link Ext#setGlyphFontFamily Ext.setGlyphFontFamily()}. Alternatively,
+         * this config option accepts a string with the charCode and font-family separated by
+         * the `@` symbol. For example '65@My Font Family'.
          */
         glyph: null
     },
@@ -96,22 +105,12 @@ Ext.define('Ext.Img', {
     imgCls: '',
 
     /**
-     * @cfg {Number/String} glyph
-     * A numeric unicode character code to serve as the image.  If this option is used
-     * The image will be rendered using a div with innerHTML set to the html entity
-     * for the given character code.  The default font-family for glyphs can be set
-     * globally using {@link Ext#setGlyphFontFamily Ext.setGlyphFontFamily()}. Alternatively,
-     * this config option accepts a string with the charCode and font-family separated by
-     * the `@` symbol. For example '65@My Font Family'.
-     */
-    
-    /**
      * @property maskOnDisable
      * @inheritdoc
      */
     maskOnDisable: false,
 
-    applySrc: function (src) {
+    applySrc: function(src) {
         return src && Ext.resolveResource(src);
     },
 
@@ -128,7 +127,7 @@ Ext.define('Ext.Img', {
             config.html = glyph.character;
             config.style = config.style || {};
             config.style.fontFamily = glyph.fontFamily;
-            
+
             // A glyph is a graphic which is not an <img> tag so it should have
             // the corresponding role for Accessibility interface to recognize
             config.role = 'img';
@@ -164,7 +163,7 @@ Ext.define('Ext.Img', {
             // base-64 encoded string. :/
             // That will make the application totally unusable for blind people.
             (img || config).alt = '';
-            
+
             //<debug>
             Ext.log.warn('For WAI-ARIA compliance, IMG elements SHOULD have an alt attribute.');
             //</debug>
@@ -177,7 +176,7 @@ Ext.define('Ext.Img', {
         return config;
     },
 
-    onRender: function () {
+    onRender: function() {
         var me = this,
             autoEl = me.autoEl,
             el;
@@ -185,10 +184,11 @@ Ext.define('Ext.Img', {
         me.callParent(arguments);
 
         el = me.el;
-        
+
         if (autoEl === 'img' || (Ext.isObject(autoEl) && autoEl.tag === 'img')) {
             me.imgEl = el;
-        } else {
+        }
+        else {
             me.imgEl = el.getById(me.id + '-img');
         }
     },
@@ -202,12 +202,13 @@ Ext.define('Ext.Img', {
         if (imgEl && me.el !== imgEl) {
             imgEl.destroy();
         }
+
         me.imgEl = null;
-        
+
         me.callParent();
     },
 
-    getTitle: function () {
+    getTitle: function() {
         return this.title;
     },
 
@@ -215,7 +216,7 @@ Ext.define('Ext.Img', {
      * Updates the {@link #title} of the image.
      * @param {String} title
      */
-    setTitle: function (title) {
+    setTitle: function(title) {
         var me = this,
             imgEl = me.imgEl;
 
@@ -229,7 +230,7 @@ Ext.define('Ext.Img', {
     afterComponentLayout: function(width, height, oldWidth, oldHeight) {
         var heightModel = this.getSizeModel().height,
             h;
-                
+
         // If we have our height set, then size the glyph as requested to make image scalable.
         if ((heightModel.calculated || heightModel.configured) && height && this.glyph) {
             h = height + 'px';
@@ -238,10 +239,11 @@ Ext.define('Ext.Img', {
                 'font-size': h
             });
         }
+
         this.callParent([width, height, oldWidth, oldHeight]);
     },
 
-    getAlt: function () {
+    getAlt: function() {
         return this.alt;
     },
 
@@ -249,7 +251,7 @@ Ext.define('Ext.Img', {
      * Updates the {@link #alt} of the image.
      * @param {String} alt
      */
-    setAlt: function (alt) {
+    setAlt: function(alt) {
         var me = this,
             imgEl = me.imgEl;
 
@@ -270,7 +272,7 @@ Ext.define('Ext.Img', {
      * @return {Number} return.width The width of the image.
      * @since 6.2.0
      */
-    getNaturalSize: function () {
+    getNaturalSize: function() {
         var me = this,
             img = me.imgEl,
             naturalSize = me._naturalSize,
@@ -307,7 +309,7 @@ Ext.define('Ext.Img', {
         return naturalSize;
     },
 
-    updateSrc: function (src) {
+    updateSrc: function(src) {
         var imgEl = this.imgEl;
 
         if (imgEl) {
@@ -320,10 +322,12 @@ Ext.define('Ext.Img', {
             if (!glyph.isGlyph) {
                 glyph = new Ext.Glyph(glyph);
             }
+
             if (glyph.isEqual(oldGlyph)) {
                 glyph = undefined;
             }
         }
+
         return glyph;
     },
 

@@ -51,7 +51,7 @@ topSuite("Ext.field.Spinner", function() {
         });
 
         describe("applyValue", function() {
-            it('should show 0 as default value', function () {
+            it('should show 0 as default value', function() {
                 createField();
 
                 expect(field.getValue()).toBe(0);
@@ -181,9 +181,8 @@ topSuite("Ext.field.Spinner", function() {
             });
         });
     });
-    
-    TODO(Ext.supports.Touch).
-    describe("keyboard interaction", function() {
+
+    (Ext.supports.Touch ? xdescribe : describe)("keyboard interaction", function() {
         beforeEach(function() {
             createField({
                 renderTo: document.body,
@@ -193,34 +192,34 @@ topSuite("Ext.field.Spinner", function() {
                 stepValue: 1
             });
         });
-        
+
         it("should spin up on Up arrow key", function() {
             pressKey(field, 'up');
-            
+
             runs(function() {
                 expect(field.getValue()).toBe(11);
             });
         });
-        
+
         it("should spin down on Down arrow key", function() {
             pressKey(field, 'down');
-            
+
             runs(function() {
                 expect(field.getValue()).toBe(9);
             });
         });
-        
+
         it("should spin to min value on Home key", function() {
             pressKey(field, 'home');
-            
+
             runs(function() {
                 expect(field.getValue()).toBe(1);
             });
         });
-        
+
         it("should spin to max value on End key", function() {
             pressKey(field, 'end');
-            
+
             runs(function() {
                 expect(field.getValue()).toBe(20);
             });

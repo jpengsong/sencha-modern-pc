@@ -49,7 +49,7 @@ Ext.define('Ext.grid.cell.Text', {
         return template;
     },
 
-    formatValue: function (v) {
+    formatValue: function(v) {
         var me = this,
             context = me.refreshContext,
             column = context.column,
@@ -85,14 +85,15 @@ Ext.define('Ext.grid.cell.Text', {
 
         if (v != null) {
             v = String(v);
-        } else {
+        }
+        else {
             v = '';
         }
 
         return v;
     },
 
-    printValue: function (v) {
+    printValue: function(v) {
         var me = this,
             was = me.refreshContext,
             s;
@@ -112,21 +113,22 @@ Ext.define('Ext.grid.cell.Text', {
         return s;
     },
 
-    updateRawValue: function (rawValue) {
+    updateRawValue: function(rawValue) {
         var dom = this.bodyElement.dom,
             value = rawValue == null ? '' : rawValue;
 
         if (this.getEncodeHtml()) {
             dom.textContent = value;
-        } else {
+        }
+        else {
             dom.innerHTML = value;
         }
     },
 
-    updateValue: function () {
-            var me = this,
-                was = me.refreshContext,
-                row = me.row;
+    updateValue: function() {
+        var me = this,
+            was = me.refreshContext,
+            row = me.row;
 
         // We may be called by binding after the store has already been nullified.
         // This can happen when binding to an association store if the parent record
@@ -145,13 +147,13 @@ Ext.define('Ext.grid.cell.Text', {
         }
     },
 
-    updateZeroValue: function () {
+    updateZeroValue: function() {
         if (!this.isConfiguring) {
             this.refresh();
         }
     },
 
-    writeValue: function () {
+    writeValue: function() {
         var me = this,
             value = me.getValue();
 

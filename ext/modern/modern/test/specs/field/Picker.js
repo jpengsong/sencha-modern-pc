@@ -14,7 +14,7 @@ topSuite("Ext.field.Picker", ['Ext.Button', 'Ext.picker.Picker', 'Ext.form.Panel
         }
     }
 
-    beforeEach(function () {
+    beforeEach(function() {
         oldPlatformTags = Ext.merge({}, Ext.platformTags);
     });
 
@@ -152,7 +152,7 @@ topSuite("Ext.field.Picker", ['Ext.Button', 'Ext.picker.Picker', 'Ext.form.Panel
         });
     });
 
-    describe('showPicker', function () {
+    describe('showPicker', function() {
         beforeEach(function() {
             makeField({
                 createEdgePicker: function() {
@@ -176,7 +176,7 @@ topSuite("Ext.field.Picker", ['Ext.Button', 'Ext.picker.Picker', 'Ext.form.Panel
             });
         });
 
-        it('should set value to picker on show', function () {
+        it('should set value to picker on show', function() {
             Ext.platformTags.phone = true;
 
             field.setValue('foo');
@@ -191,10 +191,10 @@ topSuite("Ext.field.Picker", ['Ext.Button', 'Ext.picker.Picker', 'Ext.form.Panel
             });
         });
     });
-    
+
     describe("readonly on first tap", function() {
         var inputEl, button, expandSpy, collapseSpy;
-        
+
         beforeEach(function() {
             button = new Ext.Button({
                 text: 'foo',
@@ -206,9 +206,10 @@ topSuite("Ext.field.Picker", ['Ext.Button', 'Ext.picker.Picker', 'Ext.form.Panel
 
             makeField({
                 createEdgePicker: function() {
-                    return new Ext.Component({
+                    return new Ext.picker.Picker({
                         ownerField: this,
-                        where: 'edge'
+                        where: 'edge',
+                        side: 'top'
                     });
                 },
 
@@ -231,28 +232,93 @@ topSuite("Ext.field.Picker", ['Ext.Button', 'Ext.picker.Picker', 'Ext.form.Panel
         afterEach(function() {
             inputEl = button = expandSpy = collapseSpy = Ext.destroy(button);
         });
-        
-        (jasmine.supportsTouch ? describe : xdescribe)("Readonly on first tap", function() {
+
+        (jasmine.supportsTouch ? describe : xdescribe)("Expand on touch-induced focus", function() {
             describe("tap on unfocused field", function() {
                 beforeEach(function() {
-                    Ext.testHelper.tap(inputEl, { pointerType: 'touch'});
+                    Ext.testHelper.tap(inputEl, { pointerType: 'touch' });
                 });
 
                 it("should expand the picker", function() {
+                    var focusEnterEventType,
+                        focusLeaveEventType,
+                        focusEnterSpy = spyOnEvent(field, 'focusenter').andCallFake(function(field, e) {
+                            focusEnterEventType = e.type;
+                        }),
+                        focusLeaveSpy = spyOnEvent(field, 'focusleave').andCallFake(function(field, e) {
+                            focusLeaveEventType = e.type;
+                        }),
+                        focusSpy = spyOnEvent(field, 'focus'),
+                        blurSpy = spyOnEvent(field, 'blur');
+
+                    // Ensure touch mode is set
+                    Ext.testHelper.tap(inputEl);
+
                     inputEl.focus();
+
+                    // Focus comes before focusEnter
+                    waitsForSpy(focusSpy);
+
+                    // This must be next, and we collect the event type
+                    waitsForSpy(focusEnterSpy);
+
+                    runs(function() {
+                        expect(focusEnterEventType).toBe('focusenter');
+                    });
+
                     waitsForSpy(expandSpy);
+
+                    runs(function() {
+                        // The focusTrap is where focus is shifted to upon touch-induced focus
+                        expect(document.activeElement === field.getFocusTrap().dom);
+
+                        // Picker has been shown
+                        expect(field._picker.isVisible()).toBe(true);
+
+                        // Touch taps must focus the picker in order that its revertFocus
+                        // method is able to work, so it must have a tabIndex
+                        expect(field._picker.el.dom.getAttribute('tabIndex')).toBe('-1');
+
+                        // Trigger blur and focusleave
+                        button.focus();
+                    });
+
+                    // Focusout of the field when the focusTrap is the focused el should fire the
+                    // blur event.
+                    waitsForSpy(blurSpy);
+
+                    // focusLeave comes after blur and we collect the event type
+                    waitsForSpy(focusLeaveSpy);
+
+                    runs(function() {
+                        expect(focusLeaveEventType).toBe('focusleave');
+                    });
                 });
             });
         });
 
         (jasmine.supportsTouch ? xdescribe : describe)("No touch focusing", function() {
-            it("should not set to readonly on mouse-induced focus", function() {
+            it("should not expand on mouse-induced focus", function() {
+                var focusEnterSpy = spyOnEvent(field, 'focusenter'),
+                    focusSpy = spyOnEvent(field, 'focus');
+
                 jasmine.fireMouseEvent(inputEl, 'mousedown');
 
-                // None of that game playing when using a mouse
-                expect(inputEl.dom.getAttribute('readonly')).toBe(null);
+                // Focus comes before focusEnter
+                waitsForSpy(focusSpy);
 
-                jasmine.fireMouseEvent(inputEl, 'mouseup');
+                // This must be next, and we collect the event type
+                waitsForSpy(focusEnterSpy);
+
+                runs(function() {
+                    // None of that game playing when using a mouse
+                    expect(field.expanded).toBeFalsy();
+
+                    // There is no focusTrap when using the mouse
+                    expect(document.activeElement).toBe(field.inputElement.dom);
+
+                    jasmine.fireMouseEvent(inputEl, 'mouseup');
+                });
             });
         });
     });

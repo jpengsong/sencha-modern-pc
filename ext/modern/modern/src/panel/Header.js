@@ -73,12 +73,14 @@ Ext.define('Ext.panel.Header', {
          * @cfg {'auto'/'90'/'270'/'0'}
          * The rotation of the {@link #cfg-title}.
          *
-         * - `'auto'` - use the default rotation, depending on the {@link Ext.Panel#cfg-headerPosition headerPosition}.
+         * - `'auto'` - use the default rotation, depending on the
+         *  {@link Ext.Panel#cfg-headerPosition headerPosition}.
          * - `'0'` - no rotation
          * - `'90'` - rotate 90 degrees clockwise
          * - `'270'` - rotate 270 degrees clockwise
          *
-         * The default behavior of this config depends on the {@link Ext.Panel#cfg-headerPosition headerPosition}:
+         * The default behavior of this config depends on the 
+         * {@link Ext.Panel#cfg-headerPosition headerPosition}:
          *
          * - `'top'` or `'bottom'` - `'0'`
          * - `'right'` - `90`
@@ -142,7 +144,7 @@ Ext.define('Ext.panel.Header', {
 
     inheritUi: true,
 
-    addTools: function (tools) {
+    addTools: function(tools) {
         var items = Ext.Array.from(tools);
 
         if (items && items.length) {
@@ -152,23 +154,25 @@ Ext.define('Ext.panel.Header', {
         return items;
     },
 
-    applyTitle: function (newTitle, oldTitle) {
+    applyTitle: function(newTitle, oldTitle) {
         var title = oldTitle;
 
         if (title) {
             if (!newTitle || typeof newTitle === 'string') {
                 title.setText(newTitle || '');
-            } else if (newTitle) {
+            }
+            else if (newTitle) {
                 title.setConfig(newTitle);
             }
-        } else {
+        }
+        else {
             title = Ext.create(this.createTitle(newTitle));
         }
 
         return title;
     },
 
-    createTitle: function (config) {
+    createTitle: function(config) {
         var panel = this.getRefOwner();
 
         if (config && typeof config === 'string') {
@@ -220,7 +224,8 @@ Ext.define('Ext.panel.Header', {
     updateTitle: function(title, oldTitle) {
         if (oldTitle) {
             oldTitle.setConfig(title);
-        } else {
+        }
+        else {
             this.add(title);
         }
     },
@@ -242,15 +247,18 @@ Ext.define('Ext.panel.Header', {
             }
 
             owner = me.getRefOwner();
+
             //<debug>
             if (!owner) {
                 Ext.raise('Cannot use rotation auto without an owning panel.');
             }
+
             //</debug>
             if (owner) {
                 rotation = me.rotationMap[owner.getHeaderPosition()];
             }
         }
+
         me.rotateTitle(rotation);
     },
 
@@ -279,7 +287,8 @@ Ext.define('Ext.panel.Header', {
 
         if (vertical) {
             me.replaceCls(horizontalCls, verticalCls);
-        } else {
+        }
+        else {
             me.replaceCls(verticalCls, horizontalCls);
         }
 
@@ -289,11 +298,11 @@ Ext.define('Ext.panel.Header', {
     },
 
     privates: {
-        clearTools: function () {
+        clearTools: function() {
             var items = this.getItems().items,
                 c, i;
 
-            for (i = items.length; i-- > 0; ) {
+            for (i = items.length; i-- > 0;) {
                 c = items[i];
 
                 if (c.isTool && !c.$internal) {
@@ -302,7 +311,7 @@ Ext.define('Ext.panel.Header', {
             }
         },
 
-        ensureTitle: function () {
+        ensureTitle: function() {
             var me = this,
                 title = me.getTitle();
 
@@ -322,7 +331,7 @@ Ext.define('Ext.panel.Header', {
             this.ensureTitle().setRotation(rotation);
         },
 
-        sortByWeight: function (item1, item2) {
+        sortByWeight: function(item1, item2) {
             return (item1.weight || 0) - (item2.weight || 0);
         }
     },

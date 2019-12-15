@@ -1,7 +1,7 @@
 /**
- * A core util class to bring Draggable behavior to a Component. This class is specifically designed only for
- * absolutely positioned elements starting from top: 0, left: 0. The initialOffset can then be set via configuration
- * to have the elements in a different position.
+ * A core util class to bring Draggable behavior to a Component. This class is 
+ * specifically designed only for absolutely positioned elements starting from top: 0, left: 0. 
+ * The initialOffset can then be set via configuration to have the elements in a different position.
  * @deprecated 6.5.0 This class has been replaced by `Ext.drag.Source`.
  */
 Ext.define('Ext.util.Draggable', {
@@ -113,11 +113,11 @@ Ext.define('Ext.util.Draggable', {
 
         this.elementListeners = {
             dragstart: 'onDragStart',
-            drag     : 'onDrag',
-            dragend  : 'onDragEnd',
-            resize   : 'onElementResize',
-            touchstart : 'onPress',
-            touchend   : 'onRelease',
+            drag: 'onDrag',
+            dragend: 'onDragEnd',
+            resize: 'onElementResize',
+            touchstart: 'onPress',
+            touchend: 'onRelease',
             // high priority ensures that these listeners run before user listeners
             // so that draggable state is correct in user handlers
             priority: 2000,
@@ -152,7 +152,9 @@ Ext.define('Ext.util.Draggable', {
         this.mixins.observable.constructor.call(this, this.initialConfig);
     },
 
-    updateInitialOffset: function (initialOffset) {
+    updateInitialOffset: function(initialOffset) {
+        var offset, x, y;
+
         if (typeof initialOffset === 'number') {
             initialOffset = {
                 x: initialOffset,
@@ -163,8 +165,7 @@ Ext.define('Ext.util.Draggable', {
             return;
         }
 
-        var offset = this.offset,
-            x, y;
+        offset = this.offset;
 
         offset.x = x = initialOffset.x;
         offset.y = y = initialOffset.y;
@@ -177,7 +178,13 @@ Ext.define('Ext.util.Draggable', {
     },
 
     applyTranslatable: function(translatable, currentInstance) {
-        translatable = Ext.factory(translatable, Ext.util.translatable.CssTransform, currentInstance, 'translatable');
+        translatable = Ext.factory(
+            translatable,
+            Ext.util.translatable.CssTransform,
+            currentInstance,
+            'translatable'
+        );
+
         if (translatable) {
             translatable.setElement(this.getElement());
         }
@@ -229,9 +236,12 @@ Ext.define('Ext.util.Draggable', {
         }
 
         borders = container.getBorders();
+
         return {
             min: { x: 0, y: 0 },
-            max: { x: this.containerWidth - this.width - borders.beforeX - borders.afterX, y: this.containerHeight - this.height - borders.beforeY - borders.afterY }
+            max: { x: this.containerWidth - this.width - borders.beforeX - borders.afterX,
+                   y: this.containerHeight - this.height - borders.beforeY - borders.afterY
+            }
         };
     },
 
@@ -339,13 +349,19 @@ Ext.define('Ext.util.Draggable', {
     },
 
     onDrag: function(e) {
+        var startOffset;
+
         if (!this.isDragging) {
             return;
         }
 
-        var startOffset = this.dragStartOffset;
+        startOffset = this.dragStartOffset;
 
-        this.fireAction('drag', [this, e, startOffset.x + e.deltaX, startOffset.y + e.deltaY], this.doDrag);
+        this.fireAction(
+            'drag',
+            [this, e, startOffset.x + e.deltaX, startOffset.y + e.deltaY],
+            this.doDrag
+        );
     },
 
     doDrag: function(me, e, offsetX, offsetY) {
@@ -433,12 +449,14 @@ Ext.define('Ext.util.Draggable', {
 
     destroy: function() {
         var me = this,
-            translatable = me.getTranslatable();
+            translatable = me.getTranslatable(),
 
-        var element = me.getElement();
+            element = me.getElement();
+
         if (element && !element.destroyed) {
             element.removeCls(me.getCls());
         }
+
         me.setComponent(null);
 
         me.detachListeners();

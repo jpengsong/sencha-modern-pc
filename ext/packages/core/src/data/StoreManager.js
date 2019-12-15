@@ -1,7 +1,7 @@
 /**
- * Contains a collection of all stores that are created that have an identifier. An identifier can be assigned by
- * setting the {@link Ext.data.AbstractStore#storeId storeId} property. When a store is in the StoreManager, it can be
- * referred to via it's identifier:
+ * Contains a collection of all stores that are created that have an identifier. An identifier
+ * can be assigned by setting the {@link Ext.data.AbstractStore#storeId storeId} property. When
+ * a store is in the StoreManager, it can be referred to via it's identifier:
  *
  *     Ext.create('Ext.data.Store', {
  *         model: 'SomeModel',
@@ -12,8 +12,8 @@
  *
  * Also note that the {@link #lookup} method is aliased to {@link Ext#getStore} for convenience.
  *
- * If a store is registered with the StoreManager, you can also refer to the store by it's identifier when registering
- * it with any Component that consumes data from a store:
+ * If a store is registered with the StoreManager, you can also refer to the store by its
+ * identifier when registering it with any Component that consumes data from a store:
  *
  *     Ext.create('Ext.data.Store', {
  *         model: 'SomeModel',
@@ -39,19 +39,22 @@ Ext.define('Ext.data.StoreManager', {
     requires: [
         'Ext.data.ArrayStore'
     ],
-    
+
     /**
      * @cfg {Object} listeners
      * @private
      */
 
     /**
-     * Registers one or more Stores with the StoreManager. You do not normally need to register stores manually. Any
-     * store initialized with a {@link Ext.data.Store#storeId} will be auto-registered.
+     * Registers one or more Stores with the StoreManager. You do not normally need to register
+     * stores manually. Any store initialized with a {@link Ext.data.Store#storeId} will be
+     * auto-registered.
      * @param {Ext.data.Store...} stores Any number of Store instances
      */
     register: function() {
-        for (var i = 0, s; (s = arguments[i]); i++) {
+        var i, s;
+
+        for (i = 0; (s = arguments[i]); i++) {
             this.add(s);
         }
     },
@@ -61,24 +64,28 @@ Ext.define('Ext.data.StoreManager', {
      * @param {String/Object...} stores Any number of Store instances or ID-s
      */
     unregister: function() {
-        for (var i = 0, s; (s = arguments[i]); i++) {
+        var i, s;
+
+        for (i = 0; (s = arguments[i]); i++) {
             this.remove(this.lookup(s));
         }
     },
 
     /**
      * Gets a registered Store by id
-     * @param {String/Object} store The id of the Store, or a Store instance, or a store configuration
-     * @param {String} [defaultType] The store type to create when used with store configuration and there
-     * is no type specified on the config.
+     * @param {String/Object} store The id of the Store, or a Store instance, or a store
+     * configuration
+     * @param {String} [defaultType] The store type to create when used with store configuration
+     * and there is no type specified on the config.
      * @return {Ext.data.Store}
      */
     lookup: function(store, defaultType) {
+        var first, data, arrays, fields, i, len;
+
         // handle the case when we are given an array or an array of arrays.
         if (Ext.isArray(store)) {
-            var first = store[0],
-                data = store,
-                arrays, fields, i, len;
+            first = store[0];
+            data = store;
 
             if (Ext.isObject(first)) {
                 // store: [ { foo: 42, ... }, { foo: 427, ... }, ... ]
@@ -97,6 +104,7 @@ Ext.define('Ext.data.StoreManager', {
                 else {
                     // store: [ 1,2,3, ... ]
                     data = [];
+
                     for (i = 0, len = store.length; i < len; ++i) {
                         data.push([store[i]]);
                     }
@@ -111,7 +119,7 @@ Ext.define('Ext.data.StoreManager', {
                 });
             }
         }
-        
+
         if (Ext.isString(store)) {
             // store id
             return this.get(store);
@@ -124,9 +132,9 @@ Ext.define('Ext.data.StoreManager', {
 
     // getKey implementation for MixedCollection
     getKey: function(o) {
-         return o.storeId;
+        return o.storeId;
     },
-    
+
     addEmptyStore: function() {
         // A dummy empty store with a fieldless Model defined in it.
         // Just for binding to Views which are instantiated with no Store defined.
@@ -135,18 +143,22 @@ Ext.define('Ext.data.StoreManager', {
             destoryable = {
                 destroy: Ext.emptyFn
             };
-        
+
         if (!emptyStore) {
-            emptyStore = this.$emptyStore = 
+            emptyStore = this.$emptyStore =
                 Ext.regStore('ext-empty-store', { proxy: 'memory', useModelWarning: false });
-            
+
+            //<debug>
+            emptyStore.ignoreLeaked = true;
+            //</debug>
             emptyStore.isEmptyStore = true;
 
-            emptyStore.on = emptyStore.addListener = function () {
+            emptyStore.on = emptyStore.addListener = function() {
                 return destoryable;
             };
+
             emptyStore.un = emptyStore.removeListener = Ext.emptyFn;
-    
+
             //<debug>
             emptyStore.add = emptyStore.remove = emptyStore.insert = emptyStore.destroy =
                 emptyStore.loadData = function() {
@@ -154,18 +166,18 @@ Ext.define('Ext.data.StoreManager', {
                 };
             //</debug>
         }
-        
+
         this.add(emptyStore);
     },
-    
+
     clear: function() {
         this.callParent();
         this.addEmptyStore();
     }
 }, function() {
     /**
-     * Creates a new store for the given id and config, then registers it with the {@link Ext.data.StoreManager Store Manager}. 
-     * Sample usage:
+     * Creates a new store for the given id and config, then registers it with the
+     * {@link Ext.data.StoreManager Store Manager}.  Sample usage:
      *
      *     Ext.regStore('AllUsers', {
      *         model: 'User'
@@ -184,25 +196,29 @@ Ext.define('Ext.data.StoreManager', {
      * @member Ext
      * @method regStore
      */
-    Ext.regStore = function (id, config) {
+    Ext.regStore = function(id, config) {
         var store;
 
         if (Ext.isObject(id)) {
             config = id;
-        } else {
+        }
+        else {
             if (Ext.data.StoreManager.containsKey(id)) {
                 return Ext.data.StoreManager.lookup(id);
             }
+
             config.storeId = id;
         }
 
         if (config instanceof Ext.data.Store) {
             store = config;
-        } else {
+        }
+        else {
             store = new Ext.data.Store(config);
         }
 
         Ext.data.StoreManager.register(store);
+
         return store;
     };
 
@@ -215,6 +231,6 @@ Ext.define('Ext.data.StoreManager', {
     Ext.getStore = function(name) {
         return Ext.data.StoreManager.lookup(name);
     };
-    
+
     Ext.data.StoreManager.addEmptyStore();
 });

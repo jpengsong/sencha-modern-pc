@@ -1,11 +1,12 @@
 /**
- * Use this component to render a React element inside of a grid cell.  
+ * Use this component to render a React element inside of a grid cell.
  *
  *      <Grid>
  *          <Column text="Actions" dataIndex="name">
  *              <RendererCell
  *                  renderer={(value, record) => (
- *                      <Button text={`Call ${value}`} handler={this.onCallClick.bind(this, record)}/>
+ *                      <Button text={`Call ${value}`}
+ *                      handler={this.onCallClick.bind(this, record)}/>
  *                  )}
  *              />
  *          </Column>
@@ -13,10 +14,10 @@
  *
  * RendererCell is automatically used when a Column contains a renderer prop. The following
  * is equivalent to the example above:
- * 
+ *
  *      <Grid>
- *          <Column 
- *              text="Actions" 
+ *          <Column
+ *              text="Actions"
  *              dataIndex="name"
  *              renderer={(value, record) => (
  *                  <Button text={`Call ${value}`} handler={this.onCallClick.bind(this, record)}/>
@@ -32,7 +33,7 @@ Ext.define('Ext.reactor.RendererCell', {
     config: {
         /**
          * @cfg {Function} renderer
-         * A function that returns a React element or text to render. It is passed 
+         * A function that returns a React element or text to render. It is passed
          * the following arguments:
          * @cfg {Object} renderer.value The data value for the current cell.
          * @cfg {Ext.data.Model} renderer.record The record for the current row.
@@ -46,7 +47,7 @@ Ext.define('Ext.reactor.RendererCell', {
 
         /**
          * @cfg {Function} summaryRenderer
-         * A function that returns a React element or text to render in the summary 
+         * A function that returns a React element or text to render in the summary
          * row. It is passed the following arguments:
          * @cfg {Object} renderer.value The data value for the current cell.
          * @cfg {React.Element/String} renderer.return The React element or text to be
@@ -63,9 +64,9 @@ Ext.define('Ext.reactor.RendererCell', {
         forceWidth: false
     },
 
-    setValue: function (value) {
-        var me = this, 
-            context = me.refreshContext, 
+    setValue: function(value) {
+        var me = this,
+            context = me.refreshContext,
             column = context.column,
             needsSizing = false,
             scope = column.getScope(),
@@ -82,13 +83,14 @@ Ext.define('Ext.reactor.RendererCell', {
 
             if (typeof markup === 'object') {
                 // Ext.reactor.ReactDOM is set by reactor before the app is launched
-                result = Ext.reactor.ReactDOM.render(markup, me.bodyElement.dom); 
-            
+                result = Ext.reactor.ReactDOM.render(markup, me.bodyElement.dom);
+
                 if (result.isWidget) {
                     needsSizing = result !== me.widget;
                     me.widget = result;
                 }
-            } else {
+            }
+            else {
                 if (markup == null) {
                     markup = '';
                 }
@@ -105,7 +107,7 @@ Ext.define('Ext.reactor.RendererCell', {
         return me;
     },
 
-    updateWidth: function (width, oldWidth) {
+    updateWidth: function(width, oldWidth) {
         this.callParent(arguments);
 
         if (this.getForceWidth()) {
@@ -113,14 +115,14 @@ Ext.define('Ext.reactor.RendererCell', {
         }
     },
 
-    doDestroy: function () {
+    doDestroy: function() {
         this.widget = null;
         Ext.reactor.ReactDOM.unmountComponentAtNode(this.bodyElement.dom);
         this.callParent();
     },
 
     privates: {
-        setWidgetWidth: function (width) {
+        setWidgetWidth: function(width) {
             var me = this,
                 el = me.bodyElement,
                 widget, column, leftPad, rightPad;

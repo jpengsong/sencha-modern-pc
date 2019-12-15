@@ -91,7 +91,9 @@
     $separator-border-color: $menu-separator-border-color,
     $separator-background-color: $menu-separator-background-color,
     $component-margin: $menu-component-margin,
-    $component-margin-big: $menu-component-margin-big
+    $component-margin-big: $menu-component-margin-big,
+    $component-textfield-vertical-spacing: $menu-component-textfield-vertical-spacing,
+    $component-textfield-vertical-spacing-big: $menu-component-textfield-vertical-spacing-big
 );
 
 // Override default form field vertical spacing when in a menu

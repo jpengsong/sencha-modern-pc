@@ -3,7 +3,6 @@ Ext.require([
     'Ext.layout.Fit'
 ]);
 
-
 Ext.onReady(function() {
 
     Ext.viewport.Viewport.setup({
@@ -15,7 +14,6 @@ Ext.onReady(function() {
 
     });
 });
-
 
 Ext.define('SpecGenerator.MainView', {
     extend: 'Ext.Container',
@@ -88,13 +86,13 @@ Ext.define('SpecGenerator.MainController', {
 
         if (layoutSpec) {
             output = 'expect(cmp).toHaveLayout(' + JSON.stringify(layoutSpec, null, 4)
-                .replace(/"(\w+)":/g, function (p1, p2) {
+                .replace(/"(\w+)":/g, function(p1, p2) {
                     return p2 + ':';
                 })
-                .replace(/"/g, "'")
+                .replace(/"/g, "'") +
                 // .replace(/: \{\n\s+/g, ': { '  )
                 // .replace(/\n\s+\}/g, ' }')
-                + ');';
+                ');';
         }
 
         this.lookup('outputField').setValue(output);
@@ -107,7 +105,8 @@ Ext.define('SpecGenerator.MainController', {
         try {
             fn = new Function(code);
             cmp = fn();
-        } catch (e) {
+        }
+ catch (e) {
             err = e;
             cmp = Ext.create({
                 xtype: 'component',
@@ -176,10 +175,12 @@ Ext.define('SpecGenerator.MainController', {
             // coordinates or sizes because they will always be 0.
             if (!el.isVisible(true, 2)) {
                 spec.dv = false;
-            } else {
+            }
+ else {
                 spec.d = false;
             }
-        } else {
+        }
+ else {
             if (!el.isVisible(true, 2)) {
                 spec.v = false;
             }
@@ -196,6 +197,4 @@ Ext.define('SpecGenerator.MainController', {
     }
 
 });
-
-
 

@@ -684,7 +684,7 @@ $tab-active-indicator-height: dynamic(null);
  * @var {string}
  * Tab close icon
  */
-$tab-close-icon: dynamic($fa-var-close);
+$tab-close-icon: dynamic($fa-var-times);
 
 /**
  * @var {color}
@@ -820,6 +820,30 @@ $tab-close-icon-spacing: dynamic(10px);
  * in the {@link Global_CSS#$enable-big big} sizing scheme
  */
 $tab-close-icon-spacing-big: dynamic(20px);
+
+/**
+ * @var {number}
+ * Additional margin right for left rotated tabbarPosition
+ */
+$tab-rotate-left-margin-right: dynamic(4px);
+
+/**
+ * @var {number}
+ * Additional width for active indicator element for rotated tabbarPosition
+ */
+$tab-position-active-indicator-el-width: dynamic(4px);
+
+/**
+ * @var {number}
+ * Additional padding for inner element of tab buttons for rotated tabbarPosition
+ */
+$tab-rotate-text-inner-el-padding: dynamic(8px 16px);
+
+/**
+ * @var {number}
+ * Min width for button text element for rotated tabbarPosition
+ */
+$tab-rotate-text-el-min-width: dynamic(16px);
 
 /**
  * Creates a visual theme for a Tab.
@@ -1247,6 +1271,18 @@ $tab-close-icon-spacing-big: dynamic(20px);
  * @param {number} $close-icon-spacing-big
  * Additional spacing to add to the side of the tab that contains the close icon when closable
  * in the {@link Global_CSS#$enable-big big} sizing scheme
+ *
+ * @param {number} $rotate-left-margin-right
+ * Tab Left rotated margin-right
+ *
+ * @param {number} $position-active-indicator-el-width
+ * Tab active position indicator element width
+ *
+ * @param {number} $rotate-text-inner-el-padding
+ * Tab left/right rotated inner element padding
+ *
+ * @param {number} $rotate-text-el-min-width
+ * Tab left/right text element min width
  */
 @mixin tab-ui(
     $ui: null,
@@ -1384,7 +1420,11 @@ $tab-close-icon-spacing-big: dynamic(20px);
     $close-icon-margin: null,
     $close-icon-margin-big: null,
     $close-icon-spacing: null,
-    $close-icon-spacing-big: null
+    $close-icon-spacing-big: null,
+    $rotate-left-margin-right: null,
+    $position-active-indicator-el-width: null,
+    $rotate-text-inner-el-padding: null,
+    $rotate-text-el-min-width: null
 ) {
     $ui-suffix: ui-suffix($ui);
 
@@ -1513,6 +1553,40 @@ $tab-close-icon-spacing-big: dynamic(20px);
                 .#{$prefix}big & {
                     margin-right: $close-icon-spacing-big;
                 }
+            }
+        }
+    }
+
+    .#{$prefix}tab {
+        &.#{$prefix}tab-rotate-left {
+            .#{$prefix}text-el {
+                margin-right: $rotate-left-margin-right;
+            }
+        }
+
+        &.#{$prefix}tab-position-left.#{$prefix}active {
+            .#{$prefix}active-indicator-el {
+                width: $position-active-indicator-el-width;
+            }
+        }
+
+        &.#{$prefix}tab-position-right.#{$prefix}active {
+            .#{$prefix}active-indicator-el {
+                width: $position-active-indicator-el-width;
+            }
+        }
+
+        &.#{$prefix}has-text.#{$prefix}tab-rotate-left,
+        &.#{$prefix}has-text.#{$prefix}tab-rotate-right {
+            .#{$prefix}inner-el {
+                padding: $rotate-text-inner-el-padding; 
+            }
+        }
+
+        &.#{$prefix}has-text.#{$prefix}tab-rotate-left,
+        &.#{$prefix}has-text.#{$prefix}tab-rotate-right {
+            .#{$prefix}text-el {
+                min-width: $rotate-text-el-min-width;
             }
         }
     }

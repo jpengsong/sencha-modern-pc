@@ -39,8 +39,9 @@ Ext.define('Ext.chart.MarkerHolder', {
                  */
                 getBoundMarker: {
                     message: "Please use the 'getMarker' method instead.",
-                    fn: function (name) {
+                    fn: function(name) {
                         var marker = this.boundMarkers[name];
+
                         return marker ? [marker] : marker;
                     }
                 }
@@ -48,7 +49,7 @@ Ext.define('Ext.chart.MarkerHolder', {
         }
     },
 
-    constructor: function () {
+    constructor: function() {
         this.boundMarkers = {};
         this.cleanRedraw = false;
     },
@@ -58,15 +59,17 @@ Ext.define('Ext.chart.MarkerHolder', {
      * @param {String} name The name of the marker (e.g., "items", "labels", etc.).
      * @param {Ext.chart.Markers} marker
      */
-    bindMarker: function (name, marker) {
+    bindMarker: function(name, marker) {
         var me = this,
             markers = me.boundMarkers;
 
         if (marker && marker.isMarkers) {
             //<debug>
             if (markers[name] && markers[name] === marker) {
-                Ext.log.warn(me.getId(), " (MarkerHolder): the Markers instance '", marker.getId(), "' is already bound under the name '", name, "'.");
+                Ext.log.warn(me.getId(), " (MarkerHolder): the Markers instance '",
+                             marker.getId(), "' is already bound under the name '", name, "'.");
             }
+
             //</debug>
             me.releaseMarker(name);
             markers[name] = marker;
@@ -74,7 +77,7 @@ Ext.define('Ext.chart.MarkerHolder', {
         }
     },
 
-    onMarkerDestroy: function (marker) {
+    onMarkerDestroy: function(marker) {
         this.releaseMarker(marker);
     },
 
@@ -84,7 +87,7 @@ Ext.define('Ext.chart.MarkerHolder', {
      * @param marker {String/Ext.chart.Markers}
      * @return {Ext.chart.Markers} Released marker or null.
      */
-    releaseMarker: function (marker) {
+    releaseMarker: function(marker) {
         var markers = this.boundMarkers,
             name;
 
@@ -95,7 +98,8 @@ Ext.define('Ext.chart.MarkerHolder', {
                     break;
                 }
             }
-        } else {
+        }
+        else {
             name = marker;
             marker = markers[name];
             delete markers[name];
@@ -109,11 +113,11 @@ Ext.define('Ext.chart.MarkerHolder', {
      * @param {String} name The name of the marker (e.g., "items", "labels", etc.).
      * @return {Ext.chart.Markers}
      */
-    getMarker: function (name) {
+    getMarker: function(name) {
         return this.boundMarkers[name] || null;
     },
 
-    preRender: function (surface, ctx, rect) {
+    preRender: function(surface, ctx, rect) {
         var me = this,
             id = me.getId(),
             boundMarkers = me.boundMarkers,
@@ -123,14 +127,17 @@ Ext.define('Ext.chart.MarkerHolder', {
 
         if (me.surfaceMatrix) {
             matrix = me.surfaceMatrix.set(1, 0, 0, 1, 0, 0);
-        } else {
+        }
+        else {
             matrix = me.surfaceMatrix = new Ext.draw.Matrix();
         }
 
         me.cleanRedraw = !me.attr.dirty;
+
         if (!me.cleanRedraw) {
             for (name in boundMarkers) {
                 marker = boundMarkers[name];
+
                 if (marker) {
                     marker.clear(id);
                 }
@@ -144,13 +151,14 @@ Ext.define('Ext.chart.MarkerHolder', {
             matrix.prependMatrix(parent.attr.matrix);
             parent = parent.getParent();
         }
+
         // Finally, apply the transformation used by the surface.
         matrix.prependMatrix(parent.matrix);
         me.surfaceMatrix = matrix;
         me.inverseSurfaceMatrix = matrix.inverse(me.inverseSurfaceMatrix);
     },
 
-    putMarker: function (name, attr, index, bypassNormalization, keepRevision) {
+    putMarker: function(name, attr, index, bypassNormalization, keepRevision) {
         var marker = this.boundMarkers[name];
 
         if (marker) {
@@ -158,7 +166,7 @@ Ext.define('Ext.chart.MarkerHolder', {
         }
     },
 
-    getMarkerBBox: function (name, index, isWithoutTransform) {
+    getMarkerBBox: function(name, index, isWithoutTransform) {
         var marker = this.boundMarkers[name];
 
         if (marker) {
@@ -166,7 +174,7 @@ Ext.define('Ext.chart.MarkerHolder', {
         }
     },
 
-    destroy: function () {
+    destroy: function() {
         var boundMarkers = this.boundMarkers,
             name, marker;
 
@@ -175,5 +183,4 @@ Ext.define('Ext.chart.MarkerHolder', {
             marker.destroy();
         }
     }
-
 });

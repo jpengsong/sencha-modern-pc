@@ -1,6 +1,10 @@
 {
-    "name": "@extjs/ext-react-font-pictos",
-    "version": "6.5.3.57",
+    "name": "@extjs/ext-font-pictos",
+    "ext-react-name": "@extjs/ext-react-font-pictos",
+    "ext-name": "@extjs/ext-font-pictos",
+    "SenchaExtName": "@sencha/ext-font-pictos",
+    "SenchaExtReactName": "@sencha/ext-react-font-pictos",
+    "version": "7.0.0.156",
     "sencha": {
         "name": "font-pictos",
         "namespace": "Ext",
@@ -11,8 +15,8 @@
         "creator": "Sencha",
         "summary": "Package wrapper for Pictos Web Font",
         "detailedDescription": "Sencha Cmd package wrapper for Pictos Web Font (http://pictos.cc/classic)",
-        "version": "6.5.3.57",
-        "compatVersion": "6.0.0",
+        "version": "7.0.0.156",
+        "compatVersion": "7.0.0",
         "format": "1",
         "output": "${framework.dir}/build/packages/${package.name}",
         "local": true,

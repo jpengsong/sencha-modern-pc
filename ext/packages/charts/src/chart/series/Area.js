@@ -65,7 +65,7 @@ Ext.define('Ext.chart.series.Area', {
     extend: 'Ext.chart.series.StackedCartesian',
     alias: 'series.area',
     type: 'area',
-    
+
     /**
      * @property seriesType
      * @inheritdoc

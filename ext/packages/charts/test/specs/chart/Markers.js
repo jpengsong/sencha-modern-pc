@@ -1,13 +1,13 @@
 topSuite('Ext.chart.Markers', ['Ext.chart.*'], function() {
-    describe('clearAll', function () {
-        it('should clear all revisions and categories', function () {
+    describe('clearAll', function() {
+        it('should clear all revisions and categories', function() {
             var MarkerHolder = Ext.define(null, {
                 extend: 'Ext.draw.sprite.Rect',
                 mixins: {
                     markerHolder: 'Ext.chart.MarkerHolder'
                 },
 
-                render: function () {
+                render: function() {
                     var me = this,
                         attr = me.attr;
 

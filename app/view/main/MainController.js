@@ -1,7 +1,8 @@
 Ext.define("App.view.main.MainController", {
-    extend: 'Ext.app.ViewController',
+    extend: 'App.ux.app.ViewController',
     alias: 'controller.main',
     lastView: null,
+
     routes: {
 
         //跳转视图
@@ -59,14 +60,18 @@ Ext.define("App.view.main.MainController", {
 
     //user.:node 登录成功后触发
     onRouteUserChange: function (id) {
-        var me = this, refs = me.getReferences(), vm = me.getViewModel();
+        var me = this, vm = me.getViewModel(), refs = me.getReferences();
         if (!Ext.isEmpty(App.UserInfo.Token)) {
-            var store = refs.navigationTreeList.getStore();
+            var store = vm.getStore("navigationtree");
             App.Page.setExtraParamData(store, {});
             if (!store.getAutoLoad()) {
                 store.setAutoLoad(true);
             }
-            me.redirectTo("view.main");
+            me.destroyLoader();
+            refs.setting.getMenu().query("combobox[reference='menulocation']")[0].setValue(App.UserInfo.MenuLocation);
+            refs.setting.getMenu().query("togglefield[reference='darkMode']")[0].setValue(App.UserInfo.DarkMode);
+            refs.setting.getMenu().query("radiogroup[reference='theme']")[0].setValue(App.UserInfo.Theme);
+            me.redirectTo("view.main", true);
         } else {
             me.redirectTo("view.login");
         }
@@ -79,35 +84,30 @@ Ext.define("App.view.main.MainController", {
         hashTag = (hashTag || '').toLowerCase();
         //获取容器
         var mainCard = Ext.getCmp(maincard);
-        //获取容器布局
-        var mainLayout = mainCard.getLayout();
         //获取Treelist
-        var treeStore = refs.navigationTreeList.getStore();
+        var treeStore = vm.getStore("navigationtree");
         //从菜单查找routeId
         var node = treeStore == null ? treeStore : treeStore.findNode('ViewType', hashTag);
         //如果菜单和白名单没有找到，返回404
-        var view = node || vm.getStore("plist").find("ViewType", hashTag,0,false,true,true) > -1 ? hashTag : null || 'page404';
+        var view = node || vm.getStore("plist").find("ViewType", hashTag, 0, false, true, true) > -1 ? hashTag : null || 'page404';
         //当前视图
         var lastView = me.lastView;
         //查找项
         var existingItem = mainCard.child('component[routeId=' + hashTag + ']');
-        //获取当前已经存在的window窗口
-        var window = Ext.WindowManager.getActive();
+
         //新视图
         var newView;
+
         //当前视图隐藏事件
         if (lastView) {
             lastView.fireEvent("viewHide", lastView);
         }
+
         //判断如果是Window窗口 销毁
         if (lastView && lastView.isWindow) {
             lastView.destroy();
-        } else {
-            //上个视图不是Window视图窗口,当前页面有则关闭它
-            if (window && window.isWindow && !window.isToast) {
-                window.close();
-            }
         }
+
         //容器不存在显示视图项 创建
         if (!existingItem) {
             newView = Ext.create({
@@ -117,24 +117,27 @@ Ext.define("App.view.main.MainController", {
             });
 
             if (maincard == "mainTabPanel" && !Ext.isEmpty(node)) {
+
                 newView.setIconCls(node.get("IconCls"));
                 newView.setTitle(node.get("MenuName"));
+                newView.setIconAlign("left");
             }
         }
-        //新视图不存在或者非窗口
+
+        //新视图在主容器不存在或者非窗口
         if (!newView || !newView.isWindow) {
             if (existingItem) {
-                lastView = mainLayout.getActiveItem();
+                lastView = mainCard.getActiveItem();
                 if (existingItem !== lastView) {
-                    mainLayout.setActiveItem(existingItem);
+                    mainCard.setActiveItem(existingItem);
                 }
                 newView = existingItem;
             }
             else {
-                mainLayout.setActiveItem(mainCard.add(newView));
+                mainCard.setActiveItem(mainCard.add(newView));
             }
         }
-        
+
         //新视图显示事件
         if (newView) {
             newView.fireEvent("viewShow", newView);
@@ -142,9 +145,16 @@ Ext.define("App.view.main.MainController", {
 
         //将当前视图保存到lastView中
         me.lastView = newView;
+
         //导航菜单选中对应的节点
-        if (node) {
-            refs.navigationTreeList.setSelection(node);
+        try {
+            if (node && refs.navigationTreeList) {
+                refs.navigationTreeList.setSelection(node);
+            } else {
+                refs.navigationTreeList.setSelection(false);
+            }
+        } catch (error) {
+
         }
     },
 
@@ -156,14 +166,48 @@ Ext.define("App.view.main.MainController", {
         } else if (!Ext.isEmpty(App.UserInfo.Token)) {
             me.redirectTo('user.login', true);
         }
-        me.getViewModel().set("theme", Ext.manifest.profile);
     },
 
     //点击菜单项
-    onNavigationTreeListChange: function (treelist, record, eOpts) {
-        var me = this, data = record.data;
+    onSelectionchange: function (obj, record, eOpts) {
+        var me = this, data = record.getData();
         if (!Ext.isEmpty(data.ViewType) && !Ext.isEmpty(data.PageType)) {
             me.redirectTo(data.PageType + "." + data.ViewType);
+        }
+    },
+
+    //更改菜单位置
+    onMenuLocationSelect: function (obj, newValue, eOpts) {
+        var me = this, refs = me.getReferences(), value = refs.menulocation.getValue();
+        App.UserInfo.MenuLocation = value;
+        refs.navigationTreeList.setHidden(value == "left" ? false : true);
+        refs.navigationMenuList.setHidden(value == "top" ? false : true);
+        refs.micro.setHidden(value == "left" ? false : true);
+    },
+
+    //主题配色
+    onThemeChange: function () {
+        var me = this, refs = me.getReferences();
+        App.UserInfo.Theme = refs.theme.getValue();
+        Ext.theme.Material.setColors({
+            'darkMode': refs.darkMode.getValue(),
+            'base': refs.theme.getValue()
+        });
+    },
+
+    //暗黑色
+    onDarkModeChange: function () {
+        var me = this, refs = me.getReferences();
+        App.UserInfo.DarkMode = refs.darkMode.getValue();
+        Ext.theme.Material.setColors({
+            'darkMode': refs.darkMode.getValue(),
+            'base': refs.theme.getValue()
+        });
+        var all = Ext.ComponentManager.getAll();
+        for (var i = 0; i < all.length; i++) {
+            if (all[i].xtype == "echart") {
+                all[i].refreshTheme();
+            };
         }
     },
 
@@ -172,6 +216,12 @@ Ext.define("App.view.main.MainController", {
         var me = this, hash = window.location.hash.replace('#', '');
         if (hash != "tab." + newCard.xtype) {
             me.redirectTo('tab.' + newCard.xtype);
+            var all = Ext.ComponentManager.getAll();
+            for (var i = 0; i < all.length; i++) {
+                if (all[i].xtype == "echart") {
+                    all[i].onResize();
+                }
+            }
         }
     },
 
@@ -179,16 +229,16 @@ Ext.define("App.view.main.MainController", {
     onMicro: function () {
         var me = this, refs = me.getReferences(), vm = me.getViewModel(), isMicro = refs.navigationTreeList.getMicro();
         if (!isMicro) {
-            refs.logo.setWidth(50);
+            refs.logo.setWidth(60);
             refs.logo.addCls("ext-sencha");
             refs.logo.setHtml("");
-            refs.navigationTreeList.up('container').setWidth(50);
+            refs.navigationTreeList.setWidth(60);
             refs.navigationTreeList.setMicro(true);
         } else {
-            refs.logo.setWidth(220);
+            refs.logo.setWidth(250);
             refs.logo.removeCls("ext-sencha");
             refs.logo.setHtml("sencha");
-            refs.navigationTreeList.up('container').setWidth(220);
+            refs.navigationTreeList.setWidth(250);
             refs.navigationTreeList.setMicro(false);
         }
     },
@@ -201,52 +251,10 @@ Ext.define("App.view.main.MainController", {
 
     //退出登录
     onLogout: function () {
-        var me =this;
+        var me = this;
         App.UserInfo.Token = null;
         App.Cookie.DeleteCookie("TokenGuid");
         me.redirectTo('view.login', true);
-    },
-
-    //右侧弹出窗
-    onVersionWindow: function () {
-        var me = this,
-            mainCardPanel = Ext.getCmp("mainCardPanel"),
-            refs = me.getReferences(),
-            width = 400,
-            height = (mainCardPanel.getHeight() - refs.header.getHeight()),
-            y = mainCardPanel.getHeight() - height,
-            x = mainCardPanel.getWidth();
-        Ext.widget({
-            xtype: "rwindow",
-            width: width,
-            height: height,
-            y: y,
-            x: x,
-            items: [
-                { xtype: "version" }
-            ]
-        });
-    },
-
-    //选择配色
-    onThemeWindow: function () {
-        var me = this,
-            mainCardPanel = Ext.getCmp("mainCardPanel"),
-            refs = me.getReferences(),
-            width = 300,
-            height = (mainCardPanel.getHeight() - refs.header.getHeight()),
-            y = mainCardPanel.getHeight() - height,
-            x = mainCardPanel.getWidth();
-        Ext.widget({
-            xtype: "rwindow",
-            width: width,
-            height: height,
-            y: y,
-            x: x,
-            items: [
-                { xtype: "chooseskin" }
-            ]
-        });
     },
 
     //开启全屏
@@ -273,14 +281,6 @@ Ext.define("App.view.main.MainController", {
                 element.webkitRequestFullscreen();
             }
         }
-    },
-
-    //个人资料
-    onBasicInfo: function (obj) {
-        Ext.widget({
-            xtype: "basicinfo",
-            animateTarget: obj
-        })
     },
 
     //修改密码

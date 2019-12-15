@@ -1,18 +1,7 @@
-/* global expect, Ext, spyOn */
-
 topSuite("Ext.tree.TreeGrid",
     [false, 'Ext.tree.Panel', 'Ext.grid.Panel', 'Ext.grid.column.Action',
      'Ext.layout.container.Border'],
 function() {
-    function spyOnEvent(object, eventName, fn) {
-        var obj = {
-            fn: fn || Ext.emptyFn
-        },
-        spy = spyOn(obj, "fn");
-        object.addListener(eventName, obj.fn);
-        return spy;
-    }
-
     var TreeGridItem = Ext.define(null, {
             extend: 'Ext.data.Model',
             fields: ['f1', 'f2'],
@@ -156,12 +145,25 @@ function() {
         treeStoreLoad = Ext.data.TreeStore.prototype.load,
         loadStore = function() {
             treeStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         };
-    
+
+    function spyOnEvent(object, eventName, fn) {
+        var obj = {
+            fn: fn || Ext.emptyFn
+        },
+        spy = spyOn(obj, "fn");
+
+        object.addListener(eventName, obj.fn);
+
+        return spy;
+    }
+
     function makeTreeGrid(cfg, storeCfg) {
         tree = new Ext.tree.Panel(Ext.apply({
             animate: false,
@@ -192,7 +194,7 @@ function() {
         Ext.data.TreeStore.prototype.load = loadStore;
     });
 
-    afterEach(function(){
+    afterEach(function() {
         // Undo the overrides.
         Ext.data.TreeStore.prototype.load = treeStoreLoad;
 
@@ -222,21 +224,24 @@ function() {
                 return tree.view.containsFocus;
             });
             runs(function() {
-                expect(tree.view.el.findTabbableElements({skipSelf: true}).length).toBe(0);
+                expect(tree.view.el.findTabbableElements({ skipSelf: true }).length).toBe(0);
                 tree.store.first().expand();
-                expect(tree.view.el.findTabbableElements({skipSelf: true}).length).toBe(0);
+                expect(tree.view.el.findTabbableElements({ skipSelf: true }).length).toBe(0);
             });
         });
     });
-    
+
     describe('Model mutation', function() {
         it('should not have to render a whole row, it should update innerHTML of cell', function() {
+            var createRowSpy;
+
             makeTreeGrid();
 
             // Test cls config
-            expect(view.getCellByPosition({row:0, column: 0}, true)).toHaveCls('test-EXTJS-16367');
+            expect(view.getCellByPosition({ row: 0, column: 0 }, true)).toHaveCls('test-EXTJS-16367');
 
-            var createRowSpy = spyOn(view, 'createRowElement').andCallThrough();
+            createRowSpy = spyOn(view, 'createRowElement').andCallThrough();
+
             store.getAt(0).set({
                 f1: 'ploot',
                 f2: 'gronk'
@@ -246,9 +251,9 @@ function() {
             expect(createRowSpy).not.toHaveBeenCalled();
         });
     });
-    
-    describe('locking and variableRowHeight', function () {
-        beforeEach(function () {
+
+    describe('locking and variableRowHeight', function() {
+        beforeEach(function() {
             makeTreeGrid({
                 preciseHeight: true,
                 rootVisible: false,
@@ -269,7 +274,7 @@ function() {
                     renderer: function(v) {
                         return "<img height='24' width='24' src='resources/images/foo.gif' />" + v;
                     }
-                },{
+                }, {
                     text: 'F2',
                     dataIndex: 'f2',
                     variableRowHeight: true
@@ -277,13 +282,8 @@ function() {
             });
             tree.expandAll();
         });
-        
-        it('should synchronize row heights', function () {
-            function getRectHeight(el) {
-                var rect = el.getBoundingClientRect();
-                return rect.height || (rect.bottom - rect.top);
-            }
-            
+
+        it('should synchronize row heights', function() {
             var lockedTree = tree.lockedGrid,
                 normalGrid = tree.normalGrid,
                 lockedView = lockedTree.view,
@@ -292,7 +292,13 @@ function() {
                 store = tree.getStore(),
                 record, regNode, lockedNode,
                 regNodeHeight, lockedNodeHeight;
-                
+
+            function getRectHeight(el) {
+                var rect = el.getBoundingClientRect();
+
+                return rect.height || (rect.bottom - rect.top);
+            }
+
             record = store.findRecord('f1', '3.3');
             regNode = normalView.getNode(record);
             lockedNode = lockedView.getNode(record);
@@ -300,25 +306,26 @@ function() {
             scrollable.ensureVisible(regNode);
 
             waits(50);
-            runs(function () {
+            runs(function() {
                 regNodeHeight = getRectHeight(regNode);
                 lockedNodeHeight = getRectHeight(lockedNode);
-    
+
                 // This may be calculated differently between different rows that are
                 // actually the "same height" despite deviation of a few thousandths
                 // of a pixel, specifically in IE/Edge. Fix the value so it's within
                 // 1/10th of a pixel.
                 regNodeHeight = Ext.Number.toFixed(regNodeHeight, 1);
                 lockedNodeHeight = Ext.Number.toFixed(lockedNodeHeight, 1);
-                
+
                 expect(regNodeHeight).toBe(lockedNodeHeight);
             });
         });
     });
-    
+
     describe('autoloading', function() {
         it('should not autoload the store if the root is visible', function() {
             var loadCount = 0;
+
             // rootVisible defaults to true, so no autoload
             makeTreeGrid({
                 columns: [{
@@ -339,6 +346,7 @@ function() {
         });
         it('should not autoload the store if the root is visible and there is a locked column', function() {
             var loadCount = 0;
+
             // rootVisible defaults to true, so no autoload
             makeTreeGrid({
                 columns: [{
@@ -360,6 +368,7 @@ function() {
         });
         it('should autoload the store if the root is visible', function() {
             var loadCount = 0;
+
             // rootVisible set to false, so autoload so that user sees the tree content
             makeTreeGrid({
                 rootVisible: false,
@@ -382,6 +391,7 @@ function() {
         });
         it('should autoload the store if the root is visible and there is a locked column', function() {
             var loadCount = 0;
+
             // rootVisible set to false, so autoload so that user sees the tree content
             makeTreeGrid({
                 rootVisible: false,
@@ -441,7 +451,7 @@ function() {
             runs(function() {
                 expect(tree.view.getScrollable().getPosition().y).toBe(40);
             });
-            
+
             runs(function() {
                 tree.getRootNode().childNodes[1].expand();
             });
@@ -456,7 +466,7 @@ function() {
                 expect(tree.view.getScrollY()).toEqual(40);
             });
         });
-        
+
         it("should not not scroll horizontally upon node toggle", function() {
             // MUST be no scroll so that the non buffered rendering pathway is used
             // and the row count changes and a layout is triggered.
@@ -476,7 +486,7 @@ function() {
             runs(function() {
                 expect(tree.view.getScrollable().getPosition().x).toBe(40);
             });
-            
+
             runs(function() {
                 tree.getRootNode().childNodes[1].expand();
             });
@@ -507,6 +517,7 @@ function() {
 
     describe('buffered rendering with locking and rootVisible: false', function() {
         var rootNode;
+
         beforeEach(function() {
                 makeTreeGrid({
                     renderTo: Ext.getBody(),
@@ -555,7 +566,7 @@ function() {
         it('should work when inserting a node at the top', function() {
             expect(tree.lockedGrid.view.all.getCount()).toEqual(3);
             expect(tree.normalGrid.view.all.getCount()).toEqual(3);
-            rootNode.insertBefore({text:'Top'}, rootNode.childNodes[0]);
+            rootNode.insertBefore({ text: 'Top' }, rootNode.childNodes[0]);
 
             expect(tree.lockedGrid.view.all.getCount()).toEqual(4);
             expect(tree.normalGrid.view.all.getCount()).toEqual(4);
@@ -592,6 +603,7 @@ function() {
             var lockedTree = tree.lockedGrid,
                 normalGrid = tree.normalGrid,
                 viewSize = lockedTree.view.all.getCount();
+
             expect(recordCount).toEqual(31);
 
             // The view's Composite element should only contain the visible rows plus buffer zones.
@@ -611,6 +623,8 @@ function() {
             tree.getScrollable().scrollBy(0, 30);
             waits(200); // Wait for the scroll listener (deferred to next animation Frame)
             runs(function() {
+                var yPos;
+
                 expect(tree.getScrollable().getPosition().y).toEqual(30);
 
                 // Now, at 120px high, the entire tree is rendered, scrolling will not triggert action by the buffered renderer
@@ -620,7 +634,7 @@ function() {
                 normalView.setScrollY(45);
 
                 // See where we've managed to scroll it to (May not be enough content to get 45)
-                var yPos = normalView.getScrollY();
+                yPos = normalView.getScrollY();
 
                 rootNode.childNodes[2].expand();
 
@@ -642,6 +656,8 @@ function() {
     });
 
     describe('reconfigure', function() {
+        var store, store2, myTree, rt;
+
         it('should allow reconfigure', function() {
             var cols = [{
                 xtype: 'treecolumn',
@@ -689,7 +705,7 @@ function() {
                 }]
             });
 
-            var store = Ext.create('Ext.data.TreeStore', {
+            store = Ext.create('Ext.data.TreeStore', {
                 model: 'ReconfigureTestTask',
                 root: {
                     expanded: true,
@@ -715,7 +731,7 @@ function() {
                 }
             });
 
-            var store2 = Ext.create('Ext.data.TreeStore', {
+            store2 = Ext.create('Ext.data.TreeStore', {
                 model: 'ReconfigureTestNewTask',
                 root: {
                     expanded: true,
@@ -741,7 +757,7 @@ function() {
                 }
             });
 
-            var myTree = Ext.create('Ext.tree.Panel', {
+            myTree = Ext.create('Ext.tree.Panel', {
                 title: 'treegrid',
                 width: 600,
                 height: 300,
@@ -752,28 +768,28 @@ function() {
                 store: store,
                 multiSelect: true,
                 columns: cols
-            }),
-            root = myTree.getRootNode();
-            expect(root.childNodes[0].data.task).toEqual('task1');
-            expect(root.childNodes[0].data.url).toEqual('url1');
-            expect(root.childNodes[0].childNodes[0].data.task).toEqual('task1.1');
-            expect(root.childNodes[0].childNodes[0].data.url).toEqual('url1.1');
-            expect(root.childNodes[1].data.task).toEqual('task2');
-            expect(root.childNodes[1].data.url).toEqual('url2');
-            expect(root.childNodes[1].childNodes[0].data.task).toEqual('task2.1');
-            expect(root.childNodes[1].childNodes[0].data.url).toEqual('url2.1');
+            });
+            rt = myTree.getRootNode();
+            expect(rt.childNodes[0].data.task).toEqual('task1');
+            expect(rt.childNodes[0].data.url).toEqual('url1');
+            expect(rt.childNodes[0].childNodes[0].data.task).toEqual('task1.1');
+            expect(rt.childNodes[0].childNodes[0].data.url).toEqual('url1.1');
+            expect(rt.childNodes[1].data.task).toEqual('task2');
+            expect(rt.childNodes[1].data.url).toEqual('url2');
+            expect(rt.childNodes[1].childNodes[0].data.task).toEqual('task2.1');
+            expect(rt.childNodes[1].childNodes[0].data.url).toEqual('url2.1');
 
             myTree.reconfigure(store2, cols2);
-            root = myTree.getRootNode();
-            expect(root.childNodes[0].data.new_task).toEqual('new-task1');
-            expect(root.childNodes[0].data.new_url).toEqual('new-url1');
-            expect(root.childNodes[0].childNodes[0].data.new_task).toEqual('new-task1.1');
-            expect(root.childNodes[0].childNodes[0].data.new_url).toEqual('new-url1.1');
-            expect(root.childNodes[1].data.new_task).toEqual('new-task2');
-            expect(root.childNodes[1].data.new_url).toEqual('new-url2');
-            expect(root.childNodes[1].childNodes[0].data.new_task).toEqual('new-task2.1');
-            expect(root.childNodes[1].childNodes[0].data.new_url).toEqual('new-url2.1');
-            
+            rt = myTree.getRootNode();
+            expect(rt.childNodes[0].data.new_task).toEqual('new-task1');
+            expect(rt.childNodes[0].data.new_url).toEqual('new-url1');
+            expect(rt.childNodes[0].childNodes[0].data.new_task).toEqual('new-task1.1');
+            expect(rt.childNodes[0].childNodes[0].data.new_url).toEqual('new-url1.1');
+            expect(rt.childNodes[1].data.new_task).toEqual('new-task2');
+            expect(rt.childNodes[1].data.new_url).toEqual('new-url2');
+            expect(rt.childNodes[1].childNodes[0].data.new_task).toEqual('new-task2.1');
+            expect(rt.childNodes[1].childNodes[0].data.new_url).toEqual('new-url2.1');
+
             myTree.destroy();
             Ext.undefine('ReconfigureTestTask');
             Ext.undefine('ReconfigureTestNewTask');
@@ -781,36 +797,39 @@ function() {
     });
 
     describe('collapsing locked TreeGrid', function() {
+        var collapseSpy, expandSpy;
+
         it('should allow animated collapse and expand', function() {
             tree = new Ext.tree.Panel({
-                renderTo : Ext.getBody(),
+                renderTo: Ext.getBody(),
                 layout: 'border',
-                width  : 400,
-                height : 200,
-                store   : new Ext.data.TreeStore({
-                    fields : ['Name', 'Age'],
+                width: 400,
+                height: 200,
+                store: new Ext.data.TreeStore({
+                    fields: ['Name', 'Age'],
                     root: {
                         Name: 'root',
                         expanded: true,
                         children: [{
-                            Name : '1', Age : 1
+                            Name: '1', Age: 1
                         }, {
-                            Name : '2', Age : 2
+                            Name: '2', Age: 2
                         }]
                     }
                 }),
-                syncRowHeight: false, 
-                lockedGridConfig    : {
-                    collapsible : true,
+                syncRowHeight: false,
+                lockedGridConfig: {
+                    collapsible: true,
                     collapseDirection: 'left'
                 },
-                columns : [
-                    { xtype: 'treecolumn', dataIndex : 'Name', width : 100, locked : true },
-                    { dataIndex : 'Age', flex : 1 }
+                columns: [
+                    { xtype: 'treecolumn', dataIndex: 'Name', width: 100, locked: true },
+                    { dataIndex: 'Age', flex: 1 }
                 ]
             });
-            var collapseSpy = spyOnEvent(tree.lockedGrid, 'collapse'),
-                expandSpy = spyOnEvent(tree.lockedGrid, 'expand');
+
+            collapseSpy = spyOnEvent(tree.lockedGrid, 'collapse');
+            expandSpy = spyOnEvent(tree.lockedGrid, 'expand');
 
             // None of the columns have a text or title config, so the headers should be hidden.
             expect(tree.lockedGrid.headerCt.getHeight()).toBe(0);

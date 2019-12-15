@@ -25,7 +25,7 @@ Ext.define('Ext.chart.navigator.sprite.RangeMask', {
         }
     },
 
-    getBBox: function (isWithoutTransform) {
+    getBBox: function(isWithoutTransform) {
         var me = this,
             attr = me.attr,
             bbox = attr.bbox;
@@ -44,7 +44,7 @@ Ext.define('Ext.chart.navigator.sprite.RangeMask', {
         return bbox.transform || (bbox.transform = attr.matrix.transformBBox(bbox.plain));
     },
 
-    renderThumb: function (surface, ctx, x, y) {
+    renderThumb: function(surface, ctx, x, y) {
         var me = this,
             shapeSprite = me.shapeSprite,
             textureSprite = me.textureSprite,
@@ -116,7 +116,7 @@ Ext.define('Ext.chart.navigator.sprite.RangeMask', {
         ctx.restore();
     },
 
-    render: function (surface, ctx) {
+    render: function(surface, ctx) {
         var me = this,
             attr = me.attr,
             matrix = attr.matrix.elements,
@@ -129,7 +129,7 @@ Ext.define('Ext.chart.navigator.sprite.RangeMask', {
             // s_min and s_max are range values in screen coordinates (scaled and translated)
             s_min = min * sx + tx,
             s_max = max * sx + tx,
-            s_y = Math.round(.5 * sy + ty); // thumb position in screen coordinates (mid-height)
+            s_y = Math.round(0.5 * sy + ty); // thumb position in screen coordinates (mid-height)
 
         ctx.beginPath();
 

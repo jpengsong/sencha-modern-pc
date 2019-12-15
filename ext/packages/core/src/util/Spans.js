@@ -9,7 +9,7 @@
 Ext.define('Ext.util.Spans', {
     isSpans: true,
 
-    constructor: function () {
+    constructor: function() {
         this.spans = this.spans || [];
     },
 
@@ -19,6 +19,7 @@ Ext.define('Ext.util.Spans', {
      */
     clear: function() {
         this.spans.length = 0;
+
         return this;
     },
 
@@ -35,7 +36,7 @@ Ext.define('Ext.util.Spans', {
      * @return {Boolean} `true` if the new span changes this object, `false` if the
      * span was already in the set.
      */
-    add: function (begin, end) {
+    add: function(begin, end) {
         if (end === undefined) {
             if (typeof begin === 'number') {
                 end = begin + 1;
@@ -46,6 +47,7 @@ Ext.define('Ext.util.Spans', {
             }
         }
 
+        // eslint-disable-next-line vars-on-top
         var me = this,
             spans = me.spans,
             b, e, first, last, span;
@@ -84,6 +86,7 @@ Ext.define('Ext.util.Spans', {
 
         if (last < spans.length) {
             span = spans[last];
+
             // The span beyond our new span may be touching the end of the
             // new span, in which case we need to coalesce there as well.
             // Since we are removing it, we need to expand "end" to include
@@ -95,6 +98,7 @@ Ext.define('Ext.util.Spans', {
         }
 
         spans.splice(first, last - first, [begin, end]);
+
         return true;
     },
 
@@ -108,7 +112,7 @@ Ext.define('Ext.util.Spans', {
      * the length of the span.
      * @return {Boolean}
      */
-    contains: function (begin, end) {
+    contains: function(begin, end) {
         if (end === undefined) {
             if (typeof begin === 'number') {
                 end = begin + 1;
@@ -119,6 +123,7 @@ Ext.define('Ext.util.Spans', {
             }
         }
 
+        // eslint-disable-next-line vars-on-top
         var spans = this.spans,
             index = this.bisect(begin),
             ret = false,
@@ -147,6 +152,7 @@ Ext.define('Ext.util.Spans', {
 
         for (i = 0; i < len; i++) {
             span = spans[i];
+
             for (j = span[0]; j < span[1]; j++) {
                 if (fn.call(scope || this, i) === false) {
                     return;
@@ -166,7 +172,7 @@ Ext.define('Ext.util.Spans', {
      * the length of the span.
      * @return {Boolean}
      */
-    intersects: function (begin, end) {
+    intersects: function(begin, end) {
         if (end === undefined) {
             if (typeof begin === 'number') {
                 end = begin + 1;
@@ -177,6 +183,7 @@ Ext.define('Ext.util.Spans', {
             }
         }
 
+        // eslint-disable-next-line vars-on-top
         var spans = this.spans,
             index = this.bisect(begin),
             ret = false;
@@ -204,7 +211,7 @@ Ext.define('Ext.util.Spans', {
      * @return {Boolean} `true` if removing the span changes this object, `false` if the
      * span was not in the set.
      */
-    remove: function (begin, end) {
+    remove: function(begin, end) {
         if (end === undefined) {
             if (typeof begin === 'number') {
                 end = begin + 1;
@@ -215,6 +222,7 @@ Ext.define('Ext.util.Spans', {
             }
         }
 
+        // eslint-disable-next-line vars-on-top
         var me = this,
             spans = me.spans,
             first = me.bisect(begin),
@@ -230,13 +238,16 @@ Ext.define('Ext.util.Spans', {
 
                 if (end < tmp) {
                     spans.splice(first, 0, [end, tmp]);
+
                     return true;
                 }
+
                 ret = true;
             }
         }
 
         last = me.bisect(end);
+
         if (first < last) {
             ret = true;
             span = spans[last - 1];
@@ -247,6 +258,7 @@ Ext.define('Ext.util.Spans', {
             }
 
             last -= first;
+
             if (last) {
                 spans.splice(first, last);
             }
@@ -260,7 +272,7 @@ Ext.define('Ext.util.Spans', {
      * to `unstash` to restore that state.
      * @return {Object}
      */
-    stash: function () {
+    stash: function() {
         return this.spans.slice();
     },
 
@@ -269,8 +281,9 @@ Ext.define('Ext.util.Spans', {
      * state.
      * @return {Ext.util.Spans} This Spans object.
      */
-    unstash: function (pickle) {
+    unstash: function(pickle) {
         this.spans = pickle;
+
         return this;
     },
 
@@ -287,11 +300,12 @@ Ext.define('Ext.util.Spans', {
             span = spans[i];
             result += span[1] - span[0];
         }
+
         return result;
     },
 
     privates: {
-        bisect: function (value) {
+        bisect: function(value) {
             return Ext.Number.bisectTuples(this.spans, value, 0);
         }
     }

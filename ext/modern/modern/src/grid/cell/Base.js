@@ -153,7 +153,7 @@ Ext.define('Ext.grid.cell.Base', {
         return this.getHidden() ? 0 : this.getWidth();
     },
 
-    updateAlign: function (align, oldAlign) {
+    updateAlign: function(align, oldAlign) {
         var me = this,
             alignCls = me.alignCls;
 
@@ -166,6 +166,7 @@ Ext.define('Ext.grid.cell.Base', {
             if (!alignCls[align]) {
                 Ext.raise("Invalid value for align: '" + align + "'");
             }
+
             //</debug>
             me.addCls(alignCls[align]);
         }
@@ -179,7 +180,7 @@ Ext.define('Ext.grid.cell.Base', {
         }
     },
 
-    updateBodyStyle: function(style){
+    updateBodyStyle: function(style) {
         this.bodyElement.applyStyles(style);
     },
 
@@ -191,7 +192,7 @@ Ext.define('Ext.grid.cell.Base', {
         this.element.replaceCls(oldCls, cls);
     },
 
-    updateColumn: function (column) {
+    updateColumn: function(column) {
         var dataIndex = null,
             row = this.row;
 
@@ -203,17 +204,17 @@ Ext.define('Ext.grid.cell.Base', {
         this.dataIndex = dataIndex;
     },
 
-    updateRecord: function () {
+    updateRecord: function() {
         if (!this.destroyed && !this.destroying) {
             this.refresh();
         }
     },
 
-    updateSelectable: function (value) {
+    updateSelectable: function(value) {
         this.toggleCls(Ext.baseCSSPrefix + 'item-no-select', value === false);
     },
 
-    refresh: function (ctx) {
+    refresh: function(ctx) {
         var me = this,
             was = me.refreshContext,
             context, modified, value;
@@ -239,7 +240,7 @@ Ext.define('Ext.grid.cell.Base', {
         }
     },
 
-    refreshValue: function (context) {
+    refreshValue: function(context) {
         var me = this,
             record = context.record,
             dataIndex = context.dataIndex,
@@ -281,7 +282,7 @@ Ext.define('Ext.grid.cell.Base', {
 
         storeMethodRe: /^(?:average|max|min|sum)$/,
 
-        augmentToolHandler: function (tool, args) {
+        augmentToolHandler: function(tool, args) {
             // args = [ cell, tool, ev ]   ==>   [ grid, info ]
             var info = args[1] = {
                 event: args.pop(),
@@ -294,15 +295,14 @@ Ext.define('Ext.grid.cell.Base', {
             args[0] = info.grid = info.column.getGrid();
         },
 
-        beginRefresh: function (context) {
+        beginRefresh: function(context) {
             var me = this,
                 column = me.getColumn(),
                 row = me.row;
 
             // Ask our parent row or column to kick things off...
-            context = context || (row ? row.beginRefresh() : {
-                    record: me.getRecord()
-                });
+            context = context ||
+                (row ? row.beginRefresh() : { record: me.getRecord() });
 
             //<debug>
             ++me.refreshCounter; // for testing
@@ -325,11 +325,11 @@ Ext.define('Ext.grid.cell.Base', {
          * @since 6.5.1
          * @private
          */
-        bound: function (fields) {
+        bound: function(fields) {
             return !!fields[this.dataIndex];
         },
 
-        summarize: function (context) {
+        summarize: function(context) {
             var me = this,
                 column = context.column,
                 summaryType = column.getSummaryType(),
@@ -359,7 +359,7 @@ Ext.define('Ext.grid.cell.Base', {
                 }
                 else {
                     value = Ext.callback(summaryType, null,
-                        [ store.data.items.slice(), dataIndex, store ], 0, me);
+                                         [ store.data.items.slice(), dataIndex, store ], 0, me);
                 }
             }
             else if (!(summaryType = column.getSummary())) {

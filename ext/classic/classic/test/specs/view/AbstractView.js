@@ -1,17 +1,17 @@
-/* global Ext, expect, jasmine */
-
 topSuite("Ext.view.AbstractView", ['Ext.data.ArrayStore'], function() {
     var store, view,
         synchronousLoad = true,
         proxyStoreLoad = Ext.data.ProxyStore.prototype.load,
         loadStore = function() {
             proxyStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         };
-    
+
     function makeView(cfg) {
         cfg = Ext.apply({
             renderTo: Ext.getBody(),
@@ -23,7 +23,7 @@ topSuite("Ext.view.AbstractView", ['Ext.data.ArrayStore'], function() {
             itemTpl: '{field}',
             itemSelector: 'div'
         }, cfg);
-        
+
         return view = new Ext.view.AbstractView(cfg);
     }
 
@@ -43,7 +43,7 @@ topSuite("Ext.view.AbstractView", ['Ext.data.ArrayStore'], function() {
         if (view) {
             view.destroy();
         }
-        
+
         store.destroy();
         store = view = null;
     });
@@ -55,7 +55,7 @@ topSuite("Ext.view.AbstractView", ['Ext.data.ArrayStore'], function() {
                 store: store,
                 itemSelector: null
             });
-            
+
             expect(view.getSelectionModel().mode).toEqual('SINGLE');
         });
     });
@@ -68,7 +68,7 @@ topSuite("Ext.view.AbstractView", ['Ext.data.ArrayStore'], function() {
                 itemSelector: null,
                 singleSelect: true
             });
-            
+
             expect(view.getSelectionModel().mode).toEqual('SINGLE');
         });
     });
@@ -81,7 +81,7 @@ topSuite("Ext.view.AbstractView", ['Ext.data.ArrayStore'], function() {
                 itemSelector: null,
                 simpleSelect: true
             });
-            
+
             expect(view.getSelectionModel().mode).toEqual('SIMPLE');
         });
     });
@@ -94,7 +94,7 @@ topSuite("Ext.view.AbstractView", ['Ext.data.ArrayStore'], function() {
                 itemSelector: null,
                 multiSelect: true
             });
-            
+
             expect(view.getSelectionModel().mode).toEqual('MULTI');
         });
     });
@@ -123,7 +123,7 @@ topSuite("Ext.view.AbstractView", ['Ext.data.ArrayStore'], function() {
                 },
                 renderTo: document.body
             });
-            
+
             // Wait. There MUST NOT be a further, deferred layout call!
             waits(100);
             runs(function() {
@@ -134,12 +134,12 @@ topSuite("Ext.view.AbstractView", ['Ext.data.ArrayStore'], function() {
         });
 
     });
-    
+
     describe("events", function() {
         it("should fire itemadd when adding an item to an empty view", function() {
             var itemAddSpy = jasmine.createSpy(),
                 newRec;
-            
+
             view = new Ext.view.AbstractView({
                 itemTpl: '{field}',
                 store: store,
@@ -161,7 +161,7 @@ topSuite("Ext.view.AbstractView", ['Ext.data.ArrayStore'], function() {
                     field: 'a'
                 })[0],
                 item0;
-            
+
             view = new Ext.view.AbstractView({
                 itemTpl: '{field}',
                 store: store,
@@ -178,7 +178,7 @@ topSuite("Ext.view.AbstractView", ['Ext.data.ArrayStore'], function() {
 
         it("should fire focuschange when changing focus in a view", function() {
             var focuschangeFired = false;
-            
+
             var c = new Ext.view.AbstractView({
                 itemTpl: '{field}',
                 store: store,
@@ -189,6 +189,7 @@ topSuite("Ext.view.AbstractView", ['Ext.data.ArrayStore'], function() {
                     }
                 }
             });
+
             store.add({
                 field: 'a'
             });
@@ -200,78 +201,78 @@ topSuite("Ext.view.AbstractView", ['Ext.data.ArrayStore'], function() {
             c.destroy();
         });
     });
-    
+
     describe("ARIA", function() {
         describe("role", function() {
             beforeEach(function() {
                 makeView();
             });
-            
+
             it("should have listbox role", function() {
                 expect(view).toHaveAttr('role', 'listbox');
             });
         });
-        
+
         describe("aria-multiselectable", function() {
             it("should not be set when mode == SINGLE", function() {
                 makeView({ singleSelect: true });
-                
+
                 expect(view).not.toHaveAttr('aria-multiselectable');
             });
-            
+
             it("should be set to true when mode == SIMPLE", function() {
                 makeView({ simpleSelect: true });
-                
+
                 expect(view).toHaveAttr('aria-multiselectable', 'true');
             });
-            
+
             it("should be set to true when mode == MULTI", function() {
                 makeView({ multiSelect: true });
-                
+
                 expect(view).toHaveAttr('aria-multiselectable', 'true');
             });
         });
-        
+
         describe("item attributes", function() {
             var node, selModel;
-            
+
             beforeEach(function() {
                 makeView({
                     tpl: '<tpl for="."><div>{field}</div></tpl>',
                     itemTpl: null
                 });
-                
+
                 store.add({ field: 'foo' });
-                
+
                 selModel = view.getSelectionModel();
                 node = view.all.item(0);
             });
-            
+
             afterEach(function() {
                 node = selModel = null;
             });
-            
+
             describe("role", function() {
                 it("should have option role", function() {
                     expect(node).toHaveAttr('role', 'option');
                 });
             });
-            
+
             describe("aria-selected", function() {
                 it("should not set aria-selected when rendering", function() {
                     expect(node).not.toHaveAttr('aria-selected');
                 });
-                
+
                 it("should set aria-selected to true when selected", function() {
                     selModel.select(0);
-                    
+
                     expect(node).toHaveAttr('aria-selected', 'true');
                 });
-                
+
                 it("should set aria-selected to false when deselected", function() {
                     selModel.select(0);
                     selModel.deselectAll();
-                    
+
                     expect(node).toHaveAttr('aria-selected', 'false');
                 });
             });

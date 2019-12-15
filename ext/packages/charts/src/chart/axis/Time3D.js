@@ -34,24 +34,25 @@ Ext.define('Ext.chart.axis.Time3D', {
         aggregator: 'time'
     },
 
-    updateDateFormat: function (format) {
-        this.setRenderer(function (axis, date) {
+    updateDateFormat: function(format) {
+        this.setRenderer(function(axis, date) {
             return Ext.Date.format(new Date(date), format);
         });
     },
 
-    updateFromDate: function (date) {
+    updateFromDate: function(date) {
         this.setMinimum(+date);
     },
 
-    updateToDate: function (date) {
+    updateToDate: function(date) {
         this.setMaximum(+date);
     },
 
-    getCoordFor: function (value) {
+    getCoordFor: function(value) {
         if (Ext.isString(value)) {
             value = new Date(value);
         }
+
         return +value;
     }
 });

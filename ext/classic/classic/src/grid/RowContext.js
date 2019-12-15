@@ -20,6 +20,7 @@ Ext.define('Ext.grid.RowContext', {
 
         this.record = record;
         this.recordIndex = recordIndex;
+
         if (viewModel) {
             viewModel.set('record', record);
             viewModel.set('recordIndex', recordIndex);
@@ -35,6 +36,7 @@ Ext.define('Ext.grid.RowContext', {
             viewModel = me.viewModel;
 
         me.record = null;
+
         if (viewModel) {
             viewModel.set('record');
             viewModel.set('recordIndex');
@@ -44,6 +46,7 @@ Ext.define('Ext.grid.RowContext', {
         // and moved into the detached body to save them from garbage collection.
         for (widgetId in widgets) {
             widget = widgets[widgetId];
+
             // if the view is being refresh only remove widgets owned by this view
             if (view && view.refreshing && !view.el.contains(widget.el)) {
                 continue;
@@ -51,6 +54,7 @@ Ext.define('Ext.grid.RowContext', {
 
             // Focusables in a grid must not be tabbable by default when they get put back in.
             focusEl = widget.getFocusEl();
+
             if (focusEl) {
                 // Widgets are reused so we must reset their tabbable state
                 // regardless of their visibility.
@@ -69,6 +73,7 @@ Ext.define('Ext.grid.RowContext', {
                 // Force the issue here.
                 focusEl.blur();
             }
+
             widget.detachFromBody();
         }
     },
@@ -144,6 +149,7 @@ Ext.define('Ext.grid.RowContext', {
         for (id in widgets) {
             result.push(widgets[id]);
         }
+
         return result;
     },
 
@@ -153,7 +159,8 @@ Ext.define('Ext.grid.RowContext', {
         if (widget) {
             // In this particular case poking the ownerCmp doesn't really have any significance here
             // since users will typically be interacting at the grid level. However, this is more
-            // for the sake of correctness. We don't need to do anything other than poke the reference.
+            // for the sake of correctness. We don't need to do anything other
+            // than poke the reference.
             widget.ownerCmp = view;
             widget.$fromLocked = !!view.isLockedView;
         }
@@ -170,16 +177,18 @@ Ext.define('Ext.grid.RowContext', {
             widget._rowContext = null;
             widget.destroy();
         }
-        
+
         Ext.destroy(me.viewModel);
-        
+
         me.callParent();
     },
 
     privates: {
         initInheritedStateHook: function(inheritedState, inheritedStateInner) {
             var vmParent = this.$vmParent;
+
             this.self.prototype.initInheritedState.call(this, inheritedState, inheritedStateInner);
+
             if (!inheritedState.hasOwnProperty('viewModel') && vmParent) {
                 inheritedState.viewModel = vmParent;
             }
@@ -187,9 +196,11 @@ Ext.define('Ext.grid.RowContext', {
 
         lookupViewModelHook: function(skipThis) {
             var ret = skipThis ? null : this.getViewModel();
+
             if (!ret) {
                 ret = this.$vmParent || null;
             }
+
             return ret;
         }
     }

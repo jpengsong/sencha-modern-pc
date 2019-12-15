@@ -4,25 +4,26 @@ topSuite("Ext.Dialog",
 function() {
     var dialog;
 
-    function createDialog (config) {
+    function createDialog(config) {
         if (Ext.isArray(config)) {
             config = {
                 items: config
             };
-        } else {
+        }
+ else {
             config = Ext.apply({}, config);
         }
 
         dialog = new Ext.Dialog(config);
     }
 
-    function animates (comp) {
-        return new Ext.Promise(function (resolve) {
+    function animates(comp) {
+        return new Ext.Promise(function(resolve) {
             var anim = comp.activeAnimation;
 
             if (anim) {
                 anim.on({
-                    animationend: function () {
+                    animationend: function() {
                         resolve();
                     }
                 });
@@ -82,16 +83,16 @@ function() {
             expect(!!dialog.isCentered()).toBe(true);
             xy = dialog.element.getXY();
             size = dialog.getSize();
-            x = Math.round((Ext.getViewportWidth() - size.width)/2);
-            y = Math.round((Ext.getViewportHeight() - size.height)/2);
+            x = Math.round((Ext.getViewportWidth() - size.width) / 2);
+            y = Math.round((Ext.getViewportHeight() - size.height) / 2);
             expect(xy[0]).toBeWithin(1, x);
             expect(xy[1]).toBeWithin(1, y);
             expect(dialog.getFloatWrap().dom.offsetParent.id).toBe('ext-global-floatWrap');
         });
     });
 
-    describe('maximizable:true', function () {
-        beforeEach(function () {
+    describe('maximizable:true', function() {
+        beforeEach(function() {
             createDialog({
                 title: 'Test',
                 width: 300,
@@ -100,41 +101,43 @@ function() {
             });
         });
 
-        it('should have a maximize tool', function () {
+        it('should have a maximize tool', function() {
             var tool = dialog.down('tool[type=maximize]');
 
             expect(!tool).toBe(false);
         });
 
-        it('should have proper tools when maximized', function () {
-            dialog.maximize(/*animation=*/null);
+        it('should have proper tools when maximized', function() {
+            dialog.maximize(/* animation= */null);
 
             var tool = dialog.down('tool[type=restore]');
+
             expect(!tool).toBe(false);
 
             tool = dialog.down('tool[type=maximize]');
             expect(tool.getHidden()).toBe(true);
         });
 
-        it('should have proper tools when restored', function () {
-            dialog.maximize(/*animation=*/null);
-            dialog.restore(/*animation=*/null);
+        it('should have proper tools when restored', function() {
+            dialog.maximize(/* animation= */null);
+            dialog.restore(/* animation= */null);
 
             var tool = dialog.down('tool[type=restore]');
+
             expect(!tool).toBe(true);
 
             tool = dialog.down('tool[type=maximize]');
             expect(tool.getHidden()).toBe(false);
         });
 
-        it('should provide promises with maximize and restore', function (done) {
+        it('should provide promises with maximize and restore', function(done) {
             dialog.setXY(100, 100);
             dialog.show(null);
 
-            dialog.maximize().then(function () {
+            dialog.maximize().then(function() {
                 expect(dialog.hasCls('x-maximized')).toBe(true);
 
-                dialog.restore().then(function () {
+                dialog.restore().then(function() {
                     expect(dialog.hasCls('x-maximized')).toBe(false);
 
                     done();
@@ -158,13 +161,13 @@ function() {
         });
     });
 
-    describe('maximizable:false', function () {
-        beforeEach(function () {
+    describe('maximizable:false', function() {
+        beforeEach(function() {
             createDialog({
             });
         });
 
-        it('should have no tools', function () {
+        it('should have no tools', function() {
             var tool = dialog.down('tool[type=maximize]');
 
             expect(!tool).toBe(true);
@@ -173,34 +176,36 @@ function() {
             expect(!tool).toBe(true);
         });
 
-        it('should have no tools when maximized', function () {
-            dialog.maximize(/*animation=*/null);
+        it('should have no tools when maximized', function() {
+            dialog.maximize(/* animation= */null);
 
             var tool = dialog.down('tool[type=restore]');
+
             expect(!tool).toBe(true);
 
             tool = dialog.down('tool[type=maximize]');
             expect(!tool).toBe(true);
         });
 
-        it('should still have no tools when restored', function () {
-            dialog.restore(/*animation=*/null);
+        it('should still have no tools when restored', function() {
+            dialog.restore(/* animation= */null);
 
             var tool = dialog.down('tool[type=restore]');
+
             expect(!tool).toBe(true);
 
             tool = dialog.down('tool[type=maximize]');
             expect(!tool).toBe(true);
         });
 
-        it('should provide promises with maximize and restore', function (done) {
+        it('should provide promises with maximize and restore', function(done) {
             dialog.setXY(100, 100);
             dialog.show(null);
 
-            dialog.maximize().then(function () {
+            dialog.maximize().then(function() {
                 expect(dialog.hasCls('x-maximized')).toBe(true);
 
-                dialog.restore().then(function () {
+                dialog.restore().then(function() {
                     expect(dialog.hasCls('x-maximized')).toBe(false);
 
                     done();
@@ -209,8 +214,8 @@ function() {
         });
     });
 
-    describe('maximizable:false maximized:true', function () {
-        beforeEach(function () {
+    describe('maximizable:false maximized:true', function() {
+        beforeEach(function() {
             createDialog({
                 title: 'Test',
                 width: 300,
@@ -222,7 +227,7 @@ function() {
             });
         });
 
-        it('should have no tools', function () {
+        it('should have no tools', function() {
             var tool = dialog.down('tool[type=maximize]');
 
             expect(!tool).toBe(true);
@@ -231,24 +236,25 @@ function() {
             expect(!tool).toBe(true);
         });
 
-        it('should still have no tools when restored', function () {
-            dialog.restore(/*animation=*/null);
+        it('should still have no tools when restored', function() {
+            dialog.restore(/* animation= */null);
 
             var tool = dialog.down('tool[type=restore]');
+
             expect(!tool).toBe(true);
 
             tool = dialog.down('tool[type=maximize]');
             expect(!tool).toBe(true);
         });
 
-        it('should provide promises with maximize and restore', function (done) {
+        it('should provide promises with maximize and restore', function(done) {
             dialog.show(null);
 
-            dialog.restore().then(function (restored) {
+            dialog.restore().then(function(restored) {
                 expect(restored).toBe(true);
                 expect(dialog.hasCls('x-maximized')).toBe(false);
 
-                dialog.maximize().then(function (maximized) {
+                dialog.maximize().then(function(maximized) {
                     expect(maximized).toBe(true);
                     expect(dialog.hasCls('x-maximized')).toBe(true);
 
@@ -258,36 +264,38 @@ function() {
         });
     });
 
-    describe('header:false', function () {
-        describe('maximizable:true', function () {
-            beforeEach(function () {
+    describe('header:false', function() {
+        describe('maximizable:true', function() {
+            beforeEach(function() {
                 createDialog({
                     header: false,
                     maximizable: true
                 });
             });
 
-            it('should have a maximize tool', function () {
+            it('should have a maximize tool', function() {
                 var tool = dialog.down('tool[type=maximize]');
 
                 expect(!tool).toBe(true);
             });
 
-            it('should have no tools when maximized', function () {
-                dialog.maximize(/*animation=*/null);
+            it('should have no tools when maximized', function() {
+                dialog.maximize(/* animation= */null);
 
                 var tool = dialog.down('tool[type=restore]');
+
                 expect(!tool).toBe(true);
 
                 tool = dialog.down('tool[type=maximize]');
                 expect(!tool).toBe(true);
             });
 
-            it('should still have tools when restored', function () {
-                dialog.maximize(/*animation=*/null);
-                dialog.restore(/*animation=*/null);
+            it('should still have tools when restored', function() {
+                dialog.maximize(/* animation= */null);
+                dialog.restore(/* animation= */null);
 
                 var tool = dialog.down('tool[type=restore]');
+
                 expect(!tool).toBe(true);
 
                 tool = dialog.down('tool[type=maximize]');
@@ -295,14 +303,14 @@ function() {
             });
         });
 
-        describe('maximizable:false', function () {
-            beforeEach(function () {
+        describe('maximizable:false', function() {
+            beforeEach(function() {
                 createDialog({
                     header: false
                 });
             });
 
-            it('should have no tools', function () {
+            it('should have no tools', function() {
                 var tool = dialog.down('tool[type=maximize]');
 
                 expect(!tool).toBe(true);
@@ -311,20 +319,22 @@ function() {
                 expect(!tool).toBe(true);
             });
 
-            it('should have no tools when maximized', function () {
-                dialog.maximize(/*animation=*/null);
+            it('should have no tools when maximized', function() {
+                dialog.maximize(/* animation= */null);
 
                 var tool = dialog.down('tool[type=restore]');
+
                 expect(!tool).toBe(true);
 
                 tool = dialog.down('tool[type=maximize]');
                 expect(!tool).toBe(true);
             });
 
-            it('should still have no tools when restored', function () {
-                dialog.restore(/*animation=*/null);
+            it('should still have no tools when restored', function() {
+                dialog.restore(/* animation= */null);
 
                 var tool = dialog.down('tool[type=restore]');
+
                 expect(!tool).toBe(true);
 
                 tool = dialog.down('tool[type=maximize]');
@@ -332,15 +342,15 @@ function() {
             });
         });
 
-        describe('maximizable:false maximized:true', function () {
-            beforeEach(function () {
+        describe('maximizable:false maximized:true', function() {
+            beforeEach(function() {
                 createDialog({
                     header: false,
                     maximized: true
                 });
             });
 
-            it('should have no tools', function () {
+            it('should have no tools', function() {
                 var tool = dialog.down('tool[type=maximize]');
 
                 expect(!tool).toBe(true);
@@ -349,10 +359,11 @@ function() {
                 expect(!tool).toBe(true);
             });
 
-            it('should still have no tools when restored', function () {
-                dialog.restore(/*animation=*/null);
+            it('should still have no tools when restored', function() {
+                dialog.restore(/* animation= */null);
 
                 var tool = dialog.down('tool[type=restore]');
+
                 expect(!tool).toBe(true);
 
                 tool = dialog.down('tool[type=maximize]');
@@ -361,17 +372,18 @@ function() {
         });
     }); // header:false
 
-    describe('events', function () {
+    describe('events', function() {
         var events, returnValue;
 
-        function createHandler (ev) {
-            return function () {
+        function createHandler(ev) {
+            return function() {
                 events[ev].push(Ext.Array.slice(arguments));
+
                 return returnValue && returnValue[ev];
             };
         }
 
-        beforeEach(function () {
+        beforeEach(function() {
             createDialog({
                 title: 'Test',
                 x: 100,
@@ -398,11 +410,11 @@ function() {
             returnValue = null;
         });
 
-        it('should fire events for maximize and restore', function (done) {
+        it('should fire events for maximize and restore', function(done) {
             dialog.show();
 
-            animates(dialog).then(function () {
-                dialog.maximize().then(function (result) {
+            animates(dialog).then(function() {
+                dialog.maximize().then(function(result) {
                     expect(result).toBe(true);
                     expect(dialog.getMaximized()).toBe(true);
 
@@ -414,8 +426,7 @@ function() {
                     expect(events.beforemaximize[0][0]).toBe(dialog);
                     expect(events.maximize[0][0]).toBe(dialog);
 
-
-                    dialog.restore().then(function (result) {
+                    dialog.restore().then(function(result) {
                         expect(result).toBe(true);
                         expect(dialog.getMaximized()).toBe(false);
 
@@ -435,15 +446,15 @@ function() {
             });
         });
 
-        it('should abort maximize if beforemaximize returns false', function (done) {
+        it('should abort maximize if beforemaximize returns false', function(done) {
             dialog.show();
 
-            animates(dialog).then(function () {
+            animates(dialog).then(function() {
                 returnValue = {
                     beforemaximize: false
                 };
 
-                dialog.maximize().then(function (result) {
+                dialog.maximize().then(function(result) {
                     expect(result).toBe(false);
                     expect(dialog.getMaximized()).toBeFalsy();
 
@@ -458,10 +469,10 @@ function() {
             });
         });
 
-        it('should abort restore if beforerestore returns false', function (done) {
+        it('should abort restore if beforerestore returns false', function(done) {
             dialog.show();
 
-            animates(dialog).then(function () {
+            animates(dialog).then(function() {
                 dialog.maximize(null);
 
                 expect(events.beforemaximize.length).toBe(1);
@@ -476,7 +487,7 @@ function() {
                     beforerestore: false
                 };
 
-                dialog.restore().then(function (result) {
+                dialog.restore().then(function(result) {
                     expect(result).toBe(false);
                     expect(dialog.getMaximized()).toBe(true);
 
@@ -494,15 +505,15 @@ function() {
             });
         });
     });
-    
+
     describe("tab guards", function() {
         var before, after;
-        
+
         afterEach(function() {
             Ext.destroy(before, after);
             before = after = null;
         });
-        
+
         function makeDialog(config, noWaitForShow) {
             config = Ext.apply({
                 tabGuard: true,
@@ -512,55 +523,55 @@ function() {
                 hideAnimation: null,
                 showAnimation: null
             }, config);
-            
+
             createDialog(config);
-            
+
             if (!noWaitForShow) {
                 var showSpy = jasmine.createSpy('dialog show');
-                
+
                 dialog.on('show', showSpy);
                 dialog.show();
-                
+
                 waitForSpy(showSpy);
             }
-            
+
             return dialog;
         }
-        
+
         function makeButton(config, noWaitForShow) {
             var button;
-            
+
             config = Ext.apply({
                 floated: true,
                 x: 10,
                 y: 0
             }, config);
-            
+
             button = new Ext.Button(config);
-            
+
             if (!noWaitForShow) {
                 var showSpy = jasmine.createSpy(
                     (config.text || config.id || config.itemId || 'button') + ' show'
                 );
-                
+
                 button.on('show', showSpy);
                 button.show();
-                
+
                 waitForSpy(showSpy);
             }
-            
+
             return button;
         }
-        
+
         describe("initTabGuards", function() {
             function expectTabbables(numberOfEls) {
                 var tabbables = dialog.el.findTabbableElements({
                     skipSelf: true
                 });
-                
+
                 expect(tabbables.length).toBe(numberOfEls);
             }
-            
+
             describe("initially empty dialog", function() {
                 beforeEach(function() {
                     makeDialog({
@@ -568,38 +579,38 @@ function() {
                         closable: false
                     });
                 });
-                
+
                 it("should not set up tab guards", function() {
                     expectTabbables(0);
                 });
-                
+
                 it("should add tab guards when tool is added", function() {
                     dialog.addTool({ type: 'pin' });
-                    
+
                     // 2 dialog guards + 1 tabbable tool
                     expectTabbables(3);
                 });
-                
+
                 it("should add tab guards when an item is docked", function() {
                     dialog.add({
                         xtype: 'button',
                         text: 'foo',
                         docked: 'bottom'
                     });
-                    
+
                     expectTabbables(3);
                 });
-                
+
                 it("should add tab guards when a child component is added", function() {
                     dialog.add({
                         xtype: 'textfield',
                         fieldLabel: 'Throbbe'
                     });
-                    
+
                     expectTabbables(3);
                 });
             });
-            
+
             describe("dialog becoming empty", function() {
                 describe("removing items", function() {
                     it("should disarm tab guards when last item is removed", function() {
@@ -611,16 +622,16 @@ function() {
                                 text: 'frobbe'
                             }]
                         });
-                        
+
                         runs(function() {
                             var btn = dialog.down('button');
-                            
+
                             dialog.remove(btn, true);
-                            
+
                             expectTabbables(0);
                         });
                     });
-                    
+
                     it("should disarm tab guards when last docked item is removed", function() {
                         makeDialog({
                             title: 'blerg',
@@ -631,57 +642,57 @@ function() {
                                 docked: 'bottom'
                             }]
                         });
-                        
+
                         runs(function() {
                             var btn = dialog.down('button');
-                            
+
                             dialog.remove(btn, true);
-                            
+
                             expectTabbables(0);
                         });
                     });
                 });
             });
         });
-        
+
         describe("ARIA attributes", function() {
             function makeAttrSuite(position, active) {
                 describe(position + " guard", function() {
                     var guard;
-                    
+
                     beforeEach(function() {
                         guard = position === 'top' ? dialog.tabGuardBeforeEl : dialog.tabGuardAfterEl;
                     });
-                
+
                     it("should " + (active ? "" : "not ") + "have tabindex", function() {
                         expect(guard.isTabbable()).toBe(!!active);
                     });
-            
+
                     it("should have aria-hidden", function() {
                         expect(guard).toHaveAttr('aria-hidden', 'true');
                     });
-                    
+
                     // It is important that tab guards are not published
                     // to Assistive Technologies as announceable entities,
                     // hence the tests.
                     it("should have no title", function() {
                         expect(guard).not.toHaveAttr('title');
                     });
-                    
+
                     it("should not have aria-label", function() {
                         expect(guard).not.toHaveAttr('aria-label');
                     });
-                    
+
                     it("should not have aria-labelledby", function() {
                         expect(guard).not.toHaveAttr('aria-labelledby');
                     });
-                    
+
                     it("should have no aria-describedby", function() {
                         expect(guard).not.toHaveAttr('aria-describedby');
                     });
                 });
             }
-            
+
             describe("with no tabbable elements", function() {
                 beforeEach(function() {
                     makeDialog({
@@ -689,11 +700,11 @@ function() {
                         closable: false
                     });
                 });
-                
+
                 makeAttrSuite('top');
                 makeAttrSuite('bottom');
             });
-            
+
             describe("with tabbable elements", function() {
                 beforeEach(function() {
                     makeDialog({
@@ -701,12 +712,12 @@ function() {
                         closable: true
                     });
                 });
-                
+
                 makeAttrSuite('top', true);
                 makeAttrSuite('bottom', true);
             });
         });
-        
+
         // We repeat almost the same set of tests for both modal
         // and non-modal dialogs under the assumption that things
         // may not go according to plan and focus can somehow
@@ -716,27 +727,27 @@ function() {
             var pressTab = jasmine.pressTabKey,
                 expectFocused = jasmine.expectFocused,
                 tool, fooField, barField, okBtn, cancelBtn;
-            
+
             describe("tabbing with focusables inside, modal: " + modal, function() {
                 beforeEach(function() {
                     before = makeButton({
                         id: 'beforeButton',
                         text: 'before'
                     });
-                    
+
                     makeDialog({
                         title: 'foo',
-                        
+
                         modal: modal,
-                        
+
                         // This will add tools and make the header a toolbar;
                         // we need this to test that the top tab guard is indeed
                         // at the top of the tab order above the dialog header.
                         minimizable: true,
                         maximizable: true,
-                        
+
                         layout: 'form',
-                        
+
                         items: [{
                             xtype: 'textfield',
                             name: 'foo',
@@ -746,7 +757,7 @@ function() {
                             name: 'bar',
                             fieldLabel: 'bar'
                         }],
-                        
+
                         // Buttons toolbar is there to test that bottom tab guard
                         // is below it in the tab order.
                         buttons: [{
@@ -755,20 +766,20 @@ function() {
                             text: 'Cancel'
                         }]
                     });
-                    
+
                     tool = dialog.down('tool');
                     fooField = dialog.down('textfield[name=foo]');
                     barField = dialog.down('textfield[name=bar]');
                     okBtn = dialog.down('button[text=OK]');
                     cancelBtn = dialog.down('button[text=Cancel]');
-                    
+
                     after = makeButton({
                         id: 'afterButton',
                         text: 'after',
                         y: 300
                     });
                 });
-                
+
                 describe("from outside the dialog", function() {
                     it("should tab from before button to the first tool", function() {
                         pressTab(before, true);
@@ -777,7 +788,7 @@ function() {
                             expectFocused(tool);
                         });
                     });
-                    
+
                     it("should shift-tab from after button to the Cancel button", function() {
                         pressTab(after, false);
 
@@ -786,9 +797,8 @@ function() {
                         });
                     });
                 });
-                
-                TODO('Modern dialogs are not yet focusable by default').
-                describe("from dialog", function() {
+
+                xdescribe("from dialog", function() {
                     it("should tab to the first tool", function() {
                         pressTab(dialog, true);
 
@@ -797,7 +807,7 @@ function() {
                         });
                     });
                 });
-                
+
                 describe("within dialog", function() {
                     describe("forward", function() {
                         it("should tab from first tool to the foo field", function() {
@@ -807,7 +817,7 @@ function() {
                                 expectFocused(fooField);
                             });
                         });
-                        
+
                         it("should tab from foo field to bar field", function() {
                             pressTab(fooField, true);
 
@@ -815,7 +825,7 @@ function() {
                                 expectFocused(barField);
                             });
                         });
-                        
+
                         it("should tab from bar field to OK button", function() {
                             pressTab(barField, true);
 
@@ -823,7 +833,7 @@ function() {
                                 expectFocused(okBtn);
                             });
                         });
-                        
+
                         it("should tab from OK button to Cancel button", function() {
                             pressTab(okBtn, true);
 
@@ -831,7 +841,7 @@ function() {
                                 expectFocused(cancelBtn);
                             });
                         });
-                        
+
                         it("should tab from Cancel button back to the first tool", function() {
                             pressTab(cancelBtn, true);
 
@@ -840,7 +850,7 @@ function() {
                             });
                         });
                     });
-                    
+
                     describe("backward", function() {
                         it("should shift-tab from Cancel button to OK button", function() {
                             pressTab(cancelBtn, false);
@@ -849,7 +859,7 @@ function() {
                                 expectFocused(okBtn);
                             });
                         });
-                        
+
                         it("should shift-tab from Ok button to bar field", function() {
                             pressTab(okBtn, false);
 
@@ -857,7 +867,7 @@ function() {
                                 expectFocused(barField);
                             });
                         });
-                        
+
                         it("should shift-tab from bar field to foo field", function() {
                             pressTab(barField, false);
 
@@ -865,7 +875,7 @@ function() {
                                 expectFocused(fooField);
                             });
                         });
-                        
+
                         it("should shift-tab from foo field to the first tool", function() {
                             pressTab(fooField, false);
 
@@ -873,7 +883,7 @@ function() {
                                 expectFocused(tool);
                             });
                         });
-                        
+
                         it("should shift-tab from the first tool back to Cancel button", function() {
                             pressTab(tool, false);
 
@@ -884,7 +894,7 @@ function() {
                     });
                 });
             });
-            
+
             // Modal dialog will mask all elements below its own el, so tabbing
             // to and fro does not make any sense
             if (!modal) {
@@ -894,33 +904,33 @@ function() {
                             id: 'beforeButton',
                             text: 'before'
                         });
-                        
+
                         // This dialog should have no tools at all
                         makeDialog({
                             title: 'bar',
-                            
+
                             modal: modal,
                             closable: false,
                             draggable: false
                         });
-                        
+
                         after = makeButton({
                             id: 'afterButton',
                             text: 'after',
                             y: 300
                         });
                     });
-                    
+
                     describe("from outside the dialog", function() {
                         it("should tab from before button to the after button", function() {
                             pressTab(before, true);
-                            
+
                             expectFocused(after);
                         });
-                        
+
                         it("should shift-tab from after button to the before button", function() {
                             pressTab(after, false);
-                            
+
                             expectFocused(before);
                         });
                     });
@@ -935,7 +945,7 @@ function() {
     describe('centered after an animated show', function() {
         var showSpy = jasmine.createSpy();
 
-        beforeEach(function () {
+        beforeEach(function() {
             createDialog({
                 title: 'Test',
                 width: 300,

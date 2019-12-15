@@ -13,10 +13,12 @@
  * @protected
  * @since 6.2.0
  */
-Ext.define('Ext.mixin.Pluggable', function (Pluggable) { return {
+Ext.define('Ext.mixin.Pluggable', function(Pluggable) { return { // eslint-disable-line brace-style
     requires: [
         'Ext.plugin.Abstract'
     ],
+
+    mixinId: 'pluggable',
 
     config: {
         /**
@@ -115,7 +117,7 @@ Ext.define('Ext.mixin.Pluggable', function (Pluggable) { return {
      * alias to add.
      * @since 6.2.0
      */
-    addPlugin: function (plugin) {
+    addPlugin: function(plugin) {
         var me = this,
             plugins = me.getPlugins();
 
@@ -123,7 +125,8 @@ Ext.define('Ext.mixin.Pluggable', function (Pluggable) { return {
             plugin = me.createPlugin(plugin);
             plugin.init(me);
             plugins.push(plugin);
-        } else {
+        }
+        else {
             me.setPlugins(plugin);
             plugin = me.getPlugins()[0];
         }
@@ -140,7 +143,7 @@ Ext.define('Ext.mixin.Pluggable', function (Pluggable) { return {
      * @return {Ext.plugin.Abstract} plugin instance or `null` if not found.
      * @since 6.2.0
      */
-    destroyPlugin: function (plugin) {
+    destroyPlugin: function(plugin) {
         return this.removePlugin(plugin, true);
     },
 
@@ -164,7 +167,7 @@ Ext.define('Ext.mixin.Pluggable', function (Pluggable) { return {
      * @return {Ext.plugin.Abstract} plugin instance or `null` if not found.
      * @since 6.2.0
      */
-    findPlugin: function (type) {
+    findPlugin: function(type) {
         var plugins = this.getPlugins(),
             n = plugins && plugins.length,
             i, plugin, ret;
@@ -204,7 +207,7 @@ Ext.define('Ext.mixin.Pluggable', function (Pluggable) { return {
      * @return {Ext.plugin.Abstract} plugin instance or `null` if not found.
      * @since 6.2.0
      */
-    getPlugin: function (id) {
+    getPlugin: function(id) {
         var plugins = this.getPlugins(),
             n = plugins && plugins.length,
             i, plugin, ret;
@@ -231,7 +234,7 @@ Ext.define('Ext.mixin.Pluggable', function (Pluggable) { return {
      * @return {Ext.plugin.Abstract} plugin instance or `null` if not found.
      * @since 6.2.0
      */
-    removePlugin: function (plugin, destroy) {
+    removePlugin: function(plugin, destroy) {
         var plugins = this.getPlugins(),
             i = plugins && plugins.length || 0,
             p;
@@ -246,8 +249,10 @@ Ext.define('Ext.mixin.Pluggable', function (Pluggable) { return {
                     if (p.destroy) {
                         p.destroy();
                     }
-                } else if (p.detachCmp) {
+                }
+                else if (p.detachCmp) {
                     p.detachCmp();
+
                     if (p.setCmp) {
                         p.setCmp(null);
                     }
@@ -274,34 +279,35 @@ Ext.define('Ext.mixin.Pluggable', function (Pluggable) { return {
          * @private
          * @since 6.2.0
          */
-        activatePlugin: function (type) {
+        activatePlugin: function(type) {
             var me = this,
                 config = me.initialConfig,
                 plugins = config && config.plugins,
                 ret = null,
                 i, include, p;
-            
+
             if (plugins) {
                 include = me.config.plugins;
                 include = (include && typeof include === 'object') ? include : null;
 
                 plugins = Ext.plugin.Abstract.decode(plugins, 'type', include);
 
-                for (i = plugins.length; i-- > 0; ) {
+                for (i = plugins.length; i-- > 0;) {
                     p = plugins[i];
 
                     if (p === type || p.type === type) {
                         me.initialConfig = config = Ext.apply({}, config);
                         config.plugins = plugins; // switch over to our copy
-    
+
                         // Put the instance in the plugins array so it will be included in
                         // the applyPlugins loop for normal processing of plugins.
                         plugins[i] = ret = me.createPlugin(p);
+
                         break;
                     }
                 }
             }
-            
+
             return ret;
         },
 
@@ -311,7 +317,7 @@ Ext.define('Ext.mixin.Pluggable', function (Pluggable) { return {
          * @param {Ext.plugin.Abstract[]} oldPlugins The existing plugins in use.
          * @private
          */
-        applyPlugins: function (plugins, oldPlugins) {
+        applyPlugins: function(plugins, oldPlugins) {
             var me = this,
                 oldCount = oldPlugins && oldPlugins.length || 0,
                 count, i, plugin;
@@ -334,6 +340,7 @@ Ext.define('Ext.mixin.Pluggable', function (Pluggable) { return {
             // the same.
             //
             count = plugins && plugins.length || 0;
+
             for (i = 0; i < count; ++i) {
                 plugins[i] = me.createPlugin(plugins[i]); // ensure we have an instance
             }
@@ -346,7 +353,8 @@ Ext.define('Ext.mixin.Pluggable', function (Pluggable) { return {
 
                 if (plugin.$dead) { // if (it was in oldPlugins)
                     delete plugin.$dead;  // unpaint it (it's a keeper)
-                } else {
+                }
+                else {
                     plugin.init(me);  // this one is new to the party
                 }
             }
@@ -362,7 +370,7 @@ Ext.define('Ext.mixin.Pluggable', function (Pluggable) { return {
 
             return plugins;
         },
-    
+
         /**
          * Converts the provided type or config object into a plugin instance.
          * @param {String/Object/Ext.plugin.Abstract} config The plugin type, config
@@ -370,21 +378,23 @@ Ext.define('Ext.mixin.Pluggable', function (Pluggable) { return {
          * @return {Ext.plugin.Abstract}
          * @private
          */
-        createPlugin: function (config) {
+        createPlugin: function(config) {
+            var ret;
+
             if (typeof config === 'string') {
                 config = {
                     type: config
                 };
             }
-    
-            var ret = config;
-    
+
+            ret = config;
+
             if (!config.isInstance) {
                 // The owner may be needed by plugin's initConfig so provide it:
                 config.cmp = this;
-    
+
                 ret = Ext.factory(config, null, null, 'plugin');
-    
+
                 // Cleanup the user's config object:
                 delete config.cmp;
             }
@@ -392,12 +402,13 @@ Ext.define('Ext.mixin.Pluggable', function (Pluggable) { return {
             if (!ret.id) {
                 ret.id = ++Pluggable.idSeed;
             }
-    
+
             if (ret.setCmp) {
                 ret.setCmp(this);
             }
-    
+
             return ret;
         }
     }
-}});
+};
+});

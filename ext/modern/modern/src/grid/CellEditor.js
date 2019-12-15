@@ -23,6 +23,15 @@ Ext.define('Ext.grid.CellEditor', {
         autoPin: true
     },
 
+    relayedEvents: [
+        'beforestartedit',
+        'startedit',
+        'beforecomplete',
+        'complete',
+        'canceledit',
+        'specialkey'
+    ],
+
     swallowKeys: false,
 
     layout: 'fit',
@@ -44,6 +53,34 @@ Ext.define('Ext.grid.CellEditor', {
         inheritUi: true
     },
 
+    constructor: function(config) {
+        var me = this,
+            grid;
+
+        me.callParent([config]);
+
+        if (config.plugin) {
+            grid = config.plugin.getGrid();
+        }
+
+        if (grid) {
+            grid.relayEvents(me, me.relayedEvents);
+        }
+    },
+
+    beforeEdit: function(el, value) {
+        var me = this,
+            ret;
+
+        ret = me.callParent([ el, value ]);
+
+        if (ret !== false) {
+            ret = me.$activeLocation.beforeEdit(me);
+        }
+
+        return ret;
+    },
+
     /**
      * Starts editing at the passed {@link Ext.grid.Location location} using the passed value.
      * @param {Ext.grid.Location} location Where to start editing
@@ -59,6 +96,10 @@ Ext.define('Ext.grid.CellEditor', {
             cell = location.cell;
             el = cell.el;
             value = value != null ? value : location.record.get(cell.dataIndex);
+            // at this point we dont have focused el, so the location passed
+            // as first param is our best idea of a location (will only be used
+            // in the beforestart / start events).
+            me.$activeLocation = location;
 
             // VERY important for focus management.
             // We must have an upward ownership link so that onFocusLeave
@@ -77,9 +118,17 @@ Ext.define('Ext.grid.CellEditor', {
                 me.$activeRow = row = location.row;
                 me.$activeGrid = grid = row.getGrid();
                 me.editingPlugin.editing = true;
-                me.editingPlugin.location = me.$activeLocation = result = new Ext.grid.Location(grid, me.getField().getFocusEl());
+                // here we update the activeLocation to be used by the remaining events
+                me.editingPlugin.location = me.$activeLocation = result = new Ext.grid.Location(
+                    grid, me.getField().getFocusEl()
+                );
                 me.editingPlugin.activeEditor = me;
                 grid.stickItem(row, { autoPin: me.getAutoPin() });
+            }
+            else {
+                // If the event was canceled during beforestartedit,
+                // we should clear the location.
+                me.$activeLocation = null;
             }
         }
 
@@ -91,7 +140,8 @@ Ext.define('Ext.grid.CellEditor', {
         if (!this.editingPlugin.getGrid().destroying) {
             if (this.isCancelling) {
                 this.cancelEdit();
-            } else {
+            }
+            else {
                 this.completeEdit(false);
             }
         }
@@ -104,6 +154,7 @@ Ext.define('Ext.grid.CellEditor', {
         if (this.$activeLocation) {
             e.relatedTarget = e.fromElement = this.$activeLocation.getFocusEl('dom');
         }
+
         this.callParent([e]);
     },
 
@@ -123,7 +174,8 @@ Ext.define('Ext.grid.CellEditor', {
         // it will complete the edit if the cancelling flag is not set
         if (event.getKey() === event.ESC) {
             me.isCancelling = true;
-        } else {
+        }
+        else {
             me.callParent([field, event]);
         }
     },
@@ -132,7 +184,7 @@ Ext.define('Ext.grid.CellEditor', {
         var me = this,
             location = me.$activeLocation,
             value = me.getValue(),
-            record, dataIndex, row, grid;
+            record, dataIndex, row, grid, sticky;
 
         me.callParent([remainVisible, cancelling]);
 
@@ -148,7 +200,8 @@ Ext.define('Ext.grid.CellEditor', {
                 if (record) {
                     record.set(dataIndex, value);
 
-                    // The row may change due to auto sorting, so bring it into view ans refresh the location
+                    // The row may change due to auto sorting, so bring it into view 
+                    // and refresh the location
                     grid.ensureVisible(location.record);
                     location.refresh();
                 }
@@ -156,7 +209,13 @@ Ext.define('Ext.grid.CellEditor', {
 
             if (!remainVisible) {
                 row = location.row;
-                grid.stickItem(row, null);
+                sticky = !!row.$sticky;
+
+                if (sticky) {
+                    grid.stickItem(row, null);
+                    grid.ensureVisible(location.record,
+                                       { column: location.columnIndex, focus: true });
+                }
 
                 me.$stickyVisibility = me.$activeLocation = me.$activeRow = me.$activeGrid = null;
                 me.editingPlugin.editing = false;

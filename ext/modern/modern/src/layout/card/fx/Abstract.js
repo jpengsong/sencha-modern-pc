@@ -61,11 +61,13 @@ Ext.define('Ext.layout.card.fx.Abstract', {
         if (layout) {
             layout.un('beforeactiveitemchange', 'onActiveItemChange', this);
         }
+
         me.setLayout(null);
 
         if (me.observableId) {
             me.fireEvent('destroy', this);
         }
+
         me.callParent();
     }
 });

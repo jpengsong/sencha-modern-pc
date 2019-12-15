@@ -132,7 +132,11 @@ $calendar-weeks-overflow-font-family: dynamic($calendar-font-family);
 
 $calendar-weeks-day-vertical-align: dynamic(top);
 
-
+/**
+ * @var {color}
+ * The background color for a today.
+ */
+$calendar-today-highlight-background-color: dynamic($calendar-today-background-color);
 
 /**
  * Creates a visual theme for the calendar weeks view.
@@ -249,6 +253,12 @@ $calendar-weeks-day-vertical-align: dynamic(top);
             font-size: $day-number-font-size;
             font-family: $day-number-font-family;
             color: $day-number-color;
+        }
+
+        .#{$prefix}today-cell-highlight-weeks-day {
+            .#{$prefix}calendar-weeks-day-text {
+                background-color: $calendar-today-highlight-background-color;
+            }
         }
 
         .#{$prefix}calendar-weeks-outside-cell {

@@ -26,7 +26,8 @@
  *         ]
  *     });
  *
- *     Ext.Viewport.setHtml('This shows the title being centered and buttons using align <i>left</i> and <i>right</i>.');
+ *     Ext.Viewport.setHtml('This shows the title being centered and buttons using align
+ *     <i>left</i> and <i>right</i>.');
  *
  * <br />
  *
@@ -47,7 +48,8 @@
  *         ]
  *     });
  *
- *     Ext.Viewport.setHtml('This shows how the title is automatically moved to the right when one of the aligned buttons is very wide.');
+ *     Ext.Viewport.setHtml('This shows how the title is automatically moved to the right when one
+ *     of the aligned buttons is very wide.');
  *
  * <br />
  *
@@ -68,7 +70,8 @@
  *         ]
  *     });
  *
- *     Ext.Viewport.setHtml('This shows how the title and buttons will automatically adjust their size when the width of the items are too wide..');
+ *     Ext.Viewport.setHtml('This shows how the title and buttons will automatically adjust their
+ *     size when the width of the items are too wide..');
  *
  * The {@link #defaultType} of Toolbar's is {@link Ext.Button button}.
  */
@@ -187,11 +190,11 @@ Ext.define('Ext.TitleBar', {
      */
     border: false,
 
-    beforeInitialize: function () {
+    beforeInitialize: function() {
         this.applyItems = this.applyInitialItems;
     },
 
-    initialize: function () {
+    initialize: function() {
         var me = this;
 
         me.callParent();
@@ -208,7 +211,7 @@ Ext.define('Ext.TitleBar', {
         });
     },
 
-    applyInitialItems: function (items) {
+    applyInitialItems: function(items) {
         var me = this,
             titleAlign = me.getTitleAlign(),
             defaults = me.getDefaults() || {};
@@ -287,35 +290,41 @@ Ext.define('Ext.TitleBar', {
         me.doInsert = me.doBoxInsert;
     },
 
-    doBoxAdd: function (item) {
-        var me = this, titleAlign = me.getTitleAlign();
+    doBoxAdd: function(item) {
+        var me = this,
+            titleAlign = me.getTitleAlign();
 
         me.addDefaultButtonUI(item);
 
-        if (item.config.align == 'right') {
+        if (item.config.align === 'right') {
             me.rightBox.add(item);
-        } else if (me.titleComponent && titleAlign === 'left') {
+        }
+        else if (me.titleComponent && titleAlign === 'left') {
             me.leftBox.insertBefore(item, me.titleComponent);
-        } else {
+        }
+        else {
             me.leftBox.add(item);
         }
     },
 
-    doBoxRemove: function (item, destroy) {
-        if (item.config.align == 'right') {
+    doBoxRemove: function(item, destroy) {
+        if (item.config.align === 'right') {
             this.rightBox.remove(item, destroy);
-        } else {
+        }
+        else {
             this.leftBox.remove(item, destroy);
         }
     },
 
-    doBoxInsert: function (index, item) {
+    doBoxInsert: function(index, item) {
         var me = this;
+
         me.addDefaultButtonUI(item);
 
-        if (item.config.align == 'right') {
+        if (item.config.align === 'right') {
             me.rightBox.insert(index, item);
-        } else {
+        }
+        else {
             me.leftBox.insert(index, item);
         }
     },
@@ -328,39 +337,45 @@ Ext.define('Ext.TitleBar', {
                 if (item.getDefaultUI() == null) {
                     item.setDefaultUI(defaultButtonUI);
                 }
-            } else if (item.isButton && (item.getUi() == null)) {
+            }
+            else if (item.isButton && (item.getUi() == null)) {
                 item.setUi(defaultButtonUI);
             }
         }
     },
 
-    calculateMaxButtonWidth: function () {
+    calculateMaxButtonWidth: function() {
         var maxButtonWidth = this.getMaxButtonWidth();
 
-        //check if it is a percentage
+        // check if it is a percentage
         if (Ext.isString(maxButtonWidth)) {
             maxButtonWidth = parseInt(maxButtonWidth.replace('%', ''), 10);
         }
+
         maxButtonWidth = Math.round((this.element.getWidth() / 100) * maxButtonWidth);
 
         return maxButtonWidth;
     },
 
-    refreshTitlePosition: function () {
+    refreshTitlePosition: function() {
+        var titleElement,
+            leftBox, leftButton, singleButton, leftBoxWidth, maxButtonWidth,
+            spacerBox,
+            titleBox, widthDiff, titleLeft, titleRight, halfWidthDiff, leftDiff, rightDiff;
+
         if (this.destroyed) {
             return;
         }
 
-        var titleElement = this.titleComponent.renderElement;
+        titleElement = this.titleComponent.renderElement;
 
         titleElement.setWidth(null);
         titleElement.setLeft(null);
 
-        //set the min/max width of the left button
-        var leftBox = this.leftBox,
-            leftButton = leftBox.down('button'),
-            singleButton = leftBox.getItems().getCount() == 1,
-            leftBoxWidth, maxButtonWidth;
+        // set the min/max width of the left button
+        leftBox = this.leftBox;
+        leftButton = leftBox.down('button');
+        singleButton = leftBox.getItems().getCount() === 1;
 
         if (leftButton && singleButton) {
             if (leftButton.getWidth() == null) {
@@ -375,18 +390,16 @@ Ext.define('Ext.TitleBar', {
             }
         }
 
-        var spacerBox = this.spacer.renderElement.getBox();
+        spacerBox = this.spacer.renderElement.getBox();
 
         if (Ext.browser.is.IE) {
             titleElement.setWidth(spacerBox.width);
         }
 
-        var titleBox = titleElement.getBox(),
-            widthDiff = titleBox.width - spacerBox.width,
-            titleLeft = titleBox.left,
-            titleRight = titleBox.right,
-            halfWidthDiff, leftDiff, rightDiff;
-
+        titleBox = titleElement.getBox();
+        widthDiff = titleBox.width - spacerBox.width;
+        titleLeft = titleBox.left;
+        titleRight = titleBox.right;
 
         if (widthDiff > 0) {
             halfWidthDiff = widthDiff / 2;
@@ -411,7 +424,7 @@ Ext.define('Ext.TitleBar', {
     /**
      * @private
      */
-    updateTitle: function (newTitle) {
+    updateTitle: function(newTitle) {
         // ensure the items have been initialized, since the applyer creates titleComponent
         this.getItems();
         this.titleComponent.setTitle(newTitle);

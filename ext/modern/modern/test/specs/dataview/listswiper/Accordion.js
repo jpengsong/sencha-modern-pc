@@ -34,6 +34,7 @@ topSuite("Ext.dataview.listswiper.Accordion", [
         }, config || {}));
 
         view.refresh();
+
         return view;
     }
 

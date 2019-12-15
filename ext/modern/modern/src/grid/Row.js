@@ -23,6 +23,7 @@ Ext.define('Ext.grid.Row', {
 
     isGridRow: true,
     isRecordRefreshable: true,
+    hasGridCells: true,
 
     cachedConfig: {
         collapsed: true
@@ -44,10 +45,13 @@ Ext.define('Ext.grid.Row', {
 
         /**
          * @cfg {String} expandedField
-         * The name of a `boolean` field in the grid's record which is to be used to check expanded state.
-         * Note that this field should be `true` to indicate expanded, and `false` to indicate collapsed.
-         * By default the expanded state of a record is stored on the associated `grid` component allowing
-         * that record to have different expand/collapse states on a per-grid basis.
+         * The name of a `boolean` field in the grid's record which is to be used to check
+         * expanded state.
+         *
+         * Note that this field should be `true` to indicate expanded, and `false` to
+         * indicate collapsed. By default the expanded state of a record is stored on the
+         * associated `grid` component allowing that record to have different expand/collapse
+         * states on a per-grid basis.
          */
         expandedField: null,
 
@@ -80,14 +84,14 @@ Ext.define('Ext.grid.Row', {
         }]
     },
 
-    constructor: function (config) {
+    constructor: function(config) {
         this.cells = [];
         this.columnMap = {};
 
         this.callParent([config]);
     },
 
-    doDestroy: function () {
+    doDestroy: function() {
         var me = this;
 
         me.setRecord(null);
@@ -100,22 +104,22 @@ Ext.define('Ext.grid.Row', {
     /**
      * Collapses the row {@link #body}
      */
-    collapse: function () {
+    collapse: function() {
         this.setCollapsed(true);
     },
 
     /**
      * Expands the row {@link #body}
      */
-    expand: function () {
+    expand: function() {
         this.setCollapsed(false);
     },
 
-    toggleCollapsed: function () {
+    toggleCollapsed: function() {
         this.setCollapsed(!this.getCollapsed());
     },
 
-    updateCollapsed: function (collapsed) {
+    updateCollapsed: function(collapsed) {
         var me = this,
             body = me.getBody(),
             grid = me.getParent(),
@@ -131,12 +135,14 @@ Ext.define('Ext.grid.Row', {
             // field to track expanded state.
             if (expandField) {
                 record.set(expandField, !collapsed);
-            } else {
+            }
+            else {
                 recordsExpanded = grid.$recordsExpanded || (grid.$recordsExpanded = {});
 
                 if (collapsed) {
                     delete recordsExpanded[record.internalId];
-                } else {
+                }
+                else {
                     recordsExpanded[record.internalId] = true;
                 }
             }
@@ -150,7 +156,8 @@ Ext.define('Ext.grid.Row', {
             if (collapsed) {
                 body.hide();
                 me.removeCls(expandedCls);
-            } else {
+            }
+            else {
                 body.show();
                 me.addCls(expandedCls);
             }
@@ -168,11 +175,11 @@ Ext.define('Ext.grid.Row', {
     //     }
     // },
 
-    applyBody: function (config, existing) {
+    applyBody: function(config, existing) {
         return Ext.updateWidget(existing, config, this, 'createBody');
     },
 
-    createBody: function (body) {
+    createBody: function(body) {
         return Ext.merge({
             xtype: 'rowbody',
             ownerCmp: this,
@@ -181,7 +188,7 @@ Ext.define('Ext.grid.Row', {
         }, body);
     },
 
-    updateBody: function (body) {
+    updateBody: function(body) {
         var me = this,
             grid = me.getParent();
 
@@ -195,13 +202,14 @@ Ext.define('Ext.grid.Row', {
 
         if (grid) {
             grid.setVariableHeights(true);
+
             if (!grid.hasRowExpander) {
                 me.expand();
             }
         }
     },
 
-    onAdded: function (grid) {
+    onAdded: function(grid) {
         var me = this,
             cells = me.cells,
             cell, col, columns, i, k, n;
@@ -224,7 +232,7 @@ Ext.define('Ext.grid.Row', {
                         continue; // keep what we can
                     }
 
-                    for (k = cells.length; k-- > i; ) {
+                    for (k = cells.length; k-- > i; /* empty */) {
                         cell = cells[k];
                         me.removeColumn(cell.getColumn());
                     }
@@ -235,7 +243,7 @@ Ext.define('Ext.grid.Row', {
         }
     },
 
-    addColumn: function (column) {
+    addColumn: function(column) {
         this.insertColumn(this.cells.length, column);
     },
 
@@ -279,7 +287,7 @@ Ext.define('Ext.grid.Row', {
         return result;
     },
 
-    insertColumn: function (index, column) {
+    insertColumn: function(index, column) {
         var me = this,
             cells = me.cells,
             cell;
@@ -293,7 +301,8 @@ Ext.define('Ext.grid.Row', {
         if (index >= cells.length) {
             me.cellsElement.appendChild(cell.element);
             cells.push(cell);
-        } else {
+        }
+        else {
             cell.element.insertBefore(cells[index].element);
             cells.splice(index, 0, cell);
         }
@@ -320,25 +329,29 @@ Ext.define('Ext.grid.Row', {
         if (ref) {
             refCell = me.getCellByColumn(ref);
             refIndex = cells.indexOf(refCell);
-        } else {
-            refIndex = cells.length;
+        }
+        else {
+            refIndex = cells.length - (cell ? 1 : 0);
         }
 
         if (cell) {
             // Moving an existing column
             index = cells.indexOf(cell);
             Ext.Array.move(cells, index, refIndex);
+
             if (refCell) {
                 cell.element.insertBefore(refCell.element);
-            } else {
+            }
+            else {
                 me.cellsElement.appendChild(cell.element);
             }
-        } else {
+        }
+        else {
             me.insertColumn(refIndex, column);
         }
     },
 
-    removeColumn: function (column) {
+    removeColumn: function(column) {
         var me = this,
             columnMap = me.columnMap,
             columnId = column.getId(),
@@ -351,40 +364,41 @@ Ext.define('Ext.grid.Row', {
         }
     },
 
-    updateRecord: function (record) {
+    updateRecord: function(record) {
         if (!this.destroyed && !this.destroying) {
             this.refresh();
         }
     },
 
-    setColumnWidth: function (column) {
+    setColumnWidth: function(column) {
         var cell = this.getCellByColumn(column);
+
         if (cell) {
             cell.setWidth(column.getComputedWidth());
         }
     },
 
-    showColumn: function (column) {
+    showColumn: function(column) {
         this.setCellHidden(column, false);
     },
 
-    hideColumn: function (column) {
+    hideColumn: function(column) {
         this.setCellHidden(column, true);
     },
 
-    getCellByColumn: function (column) {
+    getCellByColumn: function(column) {
         return this.columnMap[column.getId()];
     },
 
-    getColumnByCell: function (cell) {
+    getColumnByCell: function(cell) {
         return cell.getColumn();
     },
 
-    updateStickyVisibility: function (value) {
+    updateStickyVisibility: function(value) {
         this.fireEvent('stickyvisiblitychange', value);
     },
 
-    refresh: function (context) {
+    refresh: function(context) {
         var me = this,
             cells = me.cells,
             body = me.getBody(),
@@ -416,10 +430,13 @@ Ext.define('Ext.grid.Row', {
                     cell.setRecord(record);
                     cell.refreshContext = null;
                 }
+
                 if (isCellSelection) {
-                    cell.toggleCls(grid.selectedCls, sm.isCellSelected(me._recordIndex, visibleIndex));
+                    cell.toggleCls(grid.selectedCls,
+                                   sm.isCellSelected(me._recordIndex, visibleIndex));
                 }
             }
+
             // Cell and column selection work on visible index.
             if (!cell.isHidden()) {
                 visibleIndex++;
@@ -433,7 +450,8 @@ Ext.define('Ext.grid.Row', {
 
             if (body.getRecord() === record) {
                 body.updateRecord(record);
-            } else {
+            }
+            else {
                 body.setRecord(record);
             }
 
@@ -461,7 +479,7 @@ Ext.define('Ext.grid.Row', {
     privates: {
         refreshContext: null,
 
-        beginRefresh: function (context) {
+        beginRefresh: function(context) {
             var me = this,
                 grid = me.getParent();
 
@@ -478,7 +496,7 @@ Ext.define('Ext.grid.Row', {
             return context;
         },
 
-        createCell: function (column) {
+        createCell: function(column) {
             var cell = column.createCell(this);
 
             cell = Ext.create(cell);
@@ -498,7 +516,7 @@ Ext.define('Ext.grid.Row', {
             return cell;
         },
 
-        setCellHidden: function (column, hidden) {
+        setCellHidden: function(column, hidden) {
             var cell = this.getCellByColumn(column);
 
             if (cell) {
@@ -506,7 +524,7 @@ Ext.define('Ext.grid.Row', {
             }
         },
 
-        getGrid: function () {
+        getGrid: function() {
             return this.getParent();  // backwards compat
         }
     }

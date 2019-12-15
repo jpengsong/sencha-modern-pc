@@ -42,7 +42,12 @@
  *
  *     <div class="foo" data-qtip="Message goes here">Hover me</div>
  *     <p>
- *     <div data-qoverflow="true" data-qalign="b-t?" data-qanchor="true" style="width:100px;text-overflow:ellipsis">
+ *     <div 
+ *      data-qoverflow="true"
+ *      data-qalign="b-t?"
+ *      data-qanchor="true" 
+ *      style="width:100px;text-overflow:ellipsis"
+ *     >
  *         Hover Me! Lorem ipsum dolor sit amet, duis dicta solet
  *         et qui. Ut mea soleat mediocritatem, blandit democritum mea ex. His id nostro
  *         conceptam dissentiet, ignota discere id mea. Qui eu virtute invenire, an per
@@ -69,9 +74,10 @@ Ext.define('Ext.tip.Manager', {
         /**
          * A configuration object to use when the shared tip instance is triggered by
          * an text-clipped element tagged with the `data-qoverflow` attribute.
-         * For example, you could change the default {@link Ext.tip.ToolTip#dismissDelay dismissDelay}
-         * to be longer, to allow long content to be read, or set {@link Ext.tip.ToolTip#autoHide autoHide}
-         * to false by setting your application's {@link Ext.app.Application#quickTips quickTips} config.
+         * For example, you could change the default 
+         * {@link Ext.tip.ToolTip#dismissDelay dismissDelay} to be longer, to allow long content 
+         * to be read, or set {@link Ext.tip.ToolTip#autoHide autoHide} to false by setting your 
+         * application's {@link Ext.app.Application#quickTips quickTips} config.
          *
          *         quickTips: {
          *             tooltip: {
@@ -97,8 +103,8 @@ Ext.define('Ext.tip.Manager', {
      * available.
      */
     interceptTitles: false,
-    
-    constructor: function (config) {
+
+    constructor: function(config) {
         var me = this,
             tip;
 
@@ -134,6 +140,7 @@ Ext.define('Ext.tip.Manager', {
      */
     disable: function() {
         var n = ++this.disabled;
+
         if (n === 1) {
             this.getTooltip().disable();
         }
@@ -144,14 +151,16 @@ Ext.define('Ext.tip.Manager', {
      */
     enable: function() {
         var n = --this.disabled;
+
         if (n === 0) {
             this.getTooltip().enable();
-        } else if (n < 0) {
+        }
+        else if (n < 0) {
             this.disabled = 0;
         }
     },
 
-    destroy: function () {
+    destroy: function() {
         var me = this;
 
         if (me.self.instance === me) {
@@ -164,7 +173,7 @@ Ext.define('Ext.tip.Manager', {
         me.callParent();
     },
 
-    createTooltip: function () {
+    createTooltip: function() {
         var me = this,
             config = me.getTooltip();
 
@@ -193,10 +202,12 @@ Ext.define('Ext.tip.Manager', {
          */
         _propertyMap: (function() {
             var numFn = function(v) {
-                return parseInt(v, 10);
-            }, boolFn = function(v) {
-                return !!v;
-            }, fn = Ext.identityFn;
+                    return parseInt(v, 10);
+                },
+                boolFn = function(v) {
+                    return !!v;
+                },
+                fn = Ext.identityFn;
 
             return {
                 ui: {
@@ -227,23 +238,23 @@ Ext.define('Ext.tip.Manager', {
                     prop: 'data-qautoHide',
                     parse: boolFn
                 },
-                cls : {
+                cls: {
                     prop: 'data-qcls',
                     parse: fn
                 },
-                axisLock : {
+                axisLock: {
                     prop: 'data-axislock',
                     parse: fn
                 },
-                align : {
+                align: {
                     prop: 'data-qalign',
                     parse: fn
                 },
-                alignDelegate : {
+                alignDelegate: {
                     prop: 'data-qaligndelegate',
                     parse: fn
                 },
-                anchor : {
+                anchor: {
                     prop: 'data-qanchor',
                     parse: fn
                 },
@@ -275,7 +286,7 @@ Ext.define('Ext.tip.Manager', {
             };
         })(),
 
-        applyOverflowTip: function (config) {
+        applyOverflowTip: function(config) {
             var phone = Ext.platformTags.phone;
 
             return Ext.apply({
@@ -288,8 +299,9 @@ Ext.define('Ext.tip.Manager', {
             }, config);
         },
 
-        delegateQuickTip: function (dom) {
+        delegateQuickTip: function(dom) {
             var qtip = this.getTipConfig(dom, 'html');
+
             return !!qtip;
         },
 
@@ -305,7 +317,7 @@ Ext.define('Ext.tip.Manager', {
             }
         },
 
-        getTipConfig: function (dom, property) {
+        getTipConfig: function(dom, property) {
             var me = this,
                 propertyMap = me._propertyMap,
                 tipDefaults = me._tipDefaults,
@@ -329,21 +341,26 @@ Ext.define('Ext.tip.Manager', {
             if (data) {
                 if (property) {
                     ret = data[property];
-                } else {
+                }
+                else {
                     ret = Ext.apply({}, tipDefaults);
                     Ext.apply(ret, data);
                 }
-            } else {
+            }
+            else {
                 if (dom.hasAttribute(textAttr)) {
                     text = dom.getAttribute(textAttr);
+
                     if (!text) {
                         text = me.interceptTitles && dom.title;
+
                         if (text) {
                             dom.setAttribute(textAttr, text);
                             dom.removeAttribute('title');
                         }
                     }
-                } else if (dom.hasAttribute('data-qoverflow')) {
+                }
+                else if (dom.hasAttribute('data-qoverflow')) {
                     text = fly.dom.innerHTML;
 
                     // If we are not just being called as a delegate selector,
@@ -365,14 +382,17 @@ Ext.define('Ext.tip.Manager', {
                 if (text) { // if there is no qtip text there is no tooltip
                     if (property === 'html') {
                         ret = text;
-                    } else if (property) {
+                    }
+                    else if (property) {
                         item = propertyMap[property];
+
                         if (item.prop) {
                             if (dom.hasAttribute(item.prop)) {
                                 ret = item.parse(dom.getAttribute(item.prop));
                             }
                         }
-                    } else {
+                    }
+                    else {
                         ret = data = {
                             html: text
                         };
@@ -381,14 +401,17 @@ Ext.define('Ext.tip.Manager', {
                             if (name !== 'html') {
                                 item = propertyMap[name];
                                 value = null;
+
                                 if (item.prop) {
                                     if (dom.hasAttribute(item.prop)) {
                                         value = item.parse(dom.getAttribute(item.prop));
                                     }
                                 }
+
                                 if (value === null) {
                                     value = tipDefaults[name];
                                 }
+
                                 data[name] = value;
                             }
                         }
@@ -407,7 +430,7 @@ Ext.define('Ext.tip.Manager', {
             return ret;
         },
 
-        onBeforeShow: function (tip) {
+        onBeforeShow: function(tip) {
             var me = this,
                 dom = tip.currentTarget.dom,
                 data, header;
@@ -430,6 +453,7 @@ Ext.define('Ext.tip.Manager', {
                 data.anchorToTarget = !!(data.align || data.anchor);
                 tip.setConfig(data);
                 header = tip.getHeader();
+
                 if (header) {
                     header.setHidden(!data.title && !data.closable);
                 }
@@ -438,7 +462,7 @@ Ext.define('Ext.tip.Manager', {
 
         priorityConfigs: ['showDelay', 'anchor', 'anchorToTarget', 'align', 'trackMouse'],
 
-        onHoverTarget: function (tip, currentTarget) {
+        onHoverTarget: function(tip, currentTarget) {
             var dom = currentTarget.dom,
                 cfg;
 
@@ -453,9 +477,11 @@ Ext.define('Ext.tip.Manager', {
         },
 
         hasTextOverflow: function(candidate) {
+            var textSize;
+
             // Filter for only elements with text-overflow:ellipsis
             if (Ext.fly(candidate).isStyle('text-overflow', 'ellipsis')) {
-                var textSize = Ext.util.TextMetrics.measure(candidate, candidate.innerHTML);
+                textSize = Ext.util.TextMetrics.measure(candidate, candidate.innerHTML);
 
                 return (textSize.width > Ext.fly(candidate).getViewRegion().width);
             }

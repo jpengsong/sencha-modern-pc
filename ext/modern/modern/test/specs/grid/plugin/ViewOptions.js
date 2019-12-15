@@ -1,7 +1,7 @@
 /* global Ext, expect, jasmine, xit */
 topSuite('Ext.grid.plugin.ViewOptions',
     ['Ext.grid.Grid', 'Ext.grid.plugin.ViewOptions'],
-function () {
+function() {
     var grid, store, plugin;
 
     jasmine.usesViewport();
@@ -11,7 +11,7 @@ function () {
         fields: ['group', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9']
     });
 
-    function makeStore (rows, storeOptions) {
+    function makeStore(rows, storeOptions) {
         var data = [],
             i;
 
@@ -19,7 +19,8 @@ function () {
             if (typeof rows !== 'number') {
                 data = rows;
             }
-        } else if (rows !== 0) {
+        }
+ else if (rows !== 0) {
             rows = 20;
         }
 
@@ -46,7 +47,7 @@ function () {
         return store;
     }
 
-    function makeGrid (colOptions, gridOptions, data, storeOptions) {
+    function makeGrid(colOptions, gridOptions, data, storeOptions) {
         gridOptions = gridOptions || {};
 
         if (!gridOptions.store) {
@@ -59,7 +60,8 @@ function () {
                     colOptions[i].text = 'F' + (i + 1);
                 }
             }
-        } else {
+        }
+ else {
             colOptions = [{
                 dataIndex: 'f1',
                 width: 100,
@@ -89,7 +91,7 @@ function () {
         }
 
         if (colOptions) {
-            colOptions.forEach(function (col, i) {
+            colOptions.forEach(function(col, i) {
                 if (!col.dataIndex) {
                     col.dataIndex = 'f' + (i + 1);
                 }
@@ -111,13 +113,13 @@ function () {
         plugin = grid.getPlugin('gridviewoptions');
     }
 
-    afterEach(function () {
+    afterEach(function() {
         store = grid = plugin =
             Ext.destroy(grid, store);
     });
 
-    describe('sheet', function () {
-        it('should not create sheet', function () {
+    describe('sheet', function() {
+        it('should not create sheet', function() {
             makeGrid();
 
             var sheet = plugin.getConfig('sheet', null, true);
@@ -125,7 +127,7 @@ function () {
             expect(sheet).toBeNull();
         });
 
-        it('should show sheet', function () {
+        it('should show sheet', function() {
             makeGrid();
 
             var sheet = plugin.getSheet();
@@ -134,18 +136,18 @@ function () {
 
             expect(plugin.doneSetup).toBeTruthy();
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return !sheet.activeAnimation;
             });
 
-            runs(function () {
+            runs(function() {
                 expect(sheet.isVisible()).toBeTruthy();
             });
         });
     });
 
-    describe('columnList', function () {
-        it('should not create columnList', function () {
+    describe('columnList', function() {
+        it('should not create columnList', function() {
             makeGrid();
 
             var columnList = plugin.getConfig('columnList', null, true);
@@ -153,7 +155,7 @@ function () {
             expect(columnList).toBeNull();
         });
 
-        it('should add to sheet', function () {
+        it('should add to sheet', function() {
             makeGrid();
 
             var sheet = plugin.getSheet(),
@@ -164,8 +166,8 @@ function () {
         });
     });
 
-    describe('RowNumberer', function () {
-        it('should not show RowNumberer column in list', function () {
+    describe('RowNumberer', function() {
+        it('should not show RowNumberer column in list', function() {
             makeGrid();
 
             var columns = grid.getColumns(),
@@ -178,11 +180,11 @@ function () {
 
             plugin.showViewOptions();
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return !sheet.activeAnimation;
             });
 
-            runs(function () {
+            runs(function() {
                 var store = columnList.getStore();
 
                 expect(store.getCount()).toBe(5); // just 5 regular columns

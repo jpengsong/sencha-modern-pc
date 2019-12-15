@@ -1,12 +1,13 @@
 /**
- * Single radio field. Similar to checkbox, but automatically handles making sure only one radio is checked
- * at a time within a group of radios with the same name.
+ * Single radio field. Similar to checkbox, but automatically handles making sure only one radio
+ * is checked at a time within a group of radios with the same name.
  *
  * # Labeling
  *
  * In addition to the {@link Ext.form.Labelable standard field labeling options}, radio buttons
- * may be given an optional {@link #boxLabel} which will be displayed immediately to the right of the input. Also
- * see {@link Ext.form.RadioGroup} for a convenient method of grouping related radio buttons.
+ * may be given an optional {@link #boxLabel} which will be displayed immediately to the right
+ * of the input. Also see {@link Ext.form.RadioGroup} for a convenient method of grouping related
+ * radio buttons.
  *
  * # Values
  *
@@ -21,9 +22,10 @@
  *
  * Any other value will uncheck it.
  *
- * In addition to the main boolean value, you may also specify a separate {@link #inputValue}. This will be sent
- * as the parameter value when the form is {@link Ext.form.Basic#submit submitted}. You will want to set this
- * value if you have multiple radio buttons with the same {@link #name}, as is almost always the case.
+ * In addition to the main boolean value, you may also specify a separate {@link #inputValue}.
+ * This will be sent as the parameter value when the form is
+ * {@link Ext.form.Basic#submit submitted}. You will want to set this value if you have multiple
+ * radio buttons with the same {@link #name}, as is almost always the case.
  *
  * # Example usage
  *
@@ -170,9 +172,10 @@
  *     });
  */
 Ext.define('Ext.form.field.Radio', {
-    extend:'Ext.form.field.Checkbox',
+    extend: 'Ext.form.field.Checkbox',
     alias: ['widget.radiofield', 'widget.radio'],
     alternateClassName: 'Ext.form.Radio',
+
     requires: ['Ext.form.RadioManager'],
 
     /**
@@ -188,7 +191,7 @@ Ext.define('Ext.form.field.Radio', {
      */
 
     inputType: 'radio',
-    
+
     formId: null,
 
     /**
@@ -214,6 +217,7 @@ Ext.define('Ext.form.field.Radio', {
         if (me.modelValue === undefined) {
             me.modelValue = me.inputValue;
         }
+
         me.callParent();
     },
 
@@ -223,6 +227,7 @@ Ext.define('Ext.form.field.Radio', {
      */
     getGroupValue: function() {
         var selected = this.getManager().getChecked(this.name, this.getFormId());
+
         return selected ? selected.inputValue : null;
     },
 
@@ -232,9 +237,10 @@ Ext.define('Ext.form.field.Radio', {
     },
 
     /**
-     * Sets either the checked/unchecked status of this Radio, or, if a string value is passed, checks a sibling Radio
-     * of the same name whose value is the value specified.
-     * @param {String/Boolean} value Checked value, or the value of the sibling radio button to check.
+     * Sets either the checked/unchecked status of this Radio, or, if a string value is passed,
+     * checks a sibling Radio of the same name whose value is the value specified.
+     * @param {String/Boolean} value Checked value, or the value of the sibling radio button
+     * to check.
      * @return {Ext.form.field.Radio} this
      */
     setValue: function(value) {
@@ -243,8 +249,10 @@ Ext.define('Ext.form.field.Radio', {
 
         if (Ext.isBoolean(value)) {
             me.callParent(arguments);
-        } else {
+        }
+        else {
             active = me.getManager().getWithValue(me.name, value, me.getFormId()).getAt(0);
+
             if (active) {
                 active.setValue(true);
             }
@@ -267,7 +275,7 @@ Ext.define('Ext.form.field.Radio', {
             r, rLen, radio, radios;
 
         me.callParent(arguments);
-        
+
         // Standard compliant browsers only fire change event on the radio button
         // that became checked so we need to update other buttons in the group.
         // See also IE8 override.
@@ -275,16 +283,16 @@ Ext.define('Ext.form.field.Radio', {
             if (newVal) {
                 radios = me.getManager().getByName(me.name, me.getFormId()).items;
                 rLen = radios.length;
-    
+
                 for (r = 0; r < rLen; r++) {
                     radio = radios[r];
-    
+
                     if (radio !== me) {
                         radio.updateValueFromDom();
                     }
                 }
             }
-    
+
             if (ownerCt && ownerCt.isRadioGroup && ownerCt.simpleValue) {
                 ownerCt.checkChange();
             }

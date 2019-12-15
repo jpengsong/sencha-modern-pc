@@ -36,28 +36,35 @@ Ext.define('Ext.chart.legend.Legend', {
     horizontalCls: Ext.baseCSSPrefix + 'legend-horizontal',
     verticalCls: Ext.baseCSSPrefix + 'legend-vertical',
 
-    toggleItem: function (index) {
+    toggleItem: function(index) {
+        var disabledCount = 0,
+            canToggle = true,
+            disabled, store, count, record, i;
+
         if (!this.getToggleable()) {
             return;
         }
-        var store = this.getStore(),
-            disabledCount = 0, disabled,
-            canToggle = true,
-            i, count, record;
+
+        store = this.getStore();
 
         if (store) {
             count = store.getCount();
+
             for (i = 0; i < count; i++) {
                 record = store.getAt(i);
+
                 if (record.get('disabled')) {
                     disabledCount++;
                 }
             }
+
             canToggle = count - disabledCount > 1;
 
             record = store.getAt(index);
+
             if (record) {
                 disabled = record.get('disabled');
+
                 if (disabled || canToggle) {
                     // This will trigger AbstractChart.onLegendStoreUpdate.
                     record.set('disabled', !disabled);
@@ -66,7 +73,7 @@ Ext.define('Ext.chart.legend.Legend', {
         }
     },
 
-    onResize: function (width, height, oldWidth, oldHeight) {
+    onResize: function(width, height, oldWidth, oldHeight) {
         var me = this,
             chart = me.chart;
 
@@ -76,5 +83,4 @@ Ext.define('Ext.chart.legend.Legend', {
             }
         }
     }
-
 });

@@ -48,6 +48,7 @@ Ext.define('Ext.panel.YearPicker', {
 
     onChildTap: function(location) {
         var rec = location.record;
+
         if (rec) {
             location.event.stopEvent();
             this.fireEvent('yeartap', this, rec.id);
@@ -58,6 +59,7 @@ Ext.define('Ext.panel.YearPicker', {
         if (!end) {
             end = (new Date()).getFullYear() + this.getDefaultOffset();
         }
+
         return end;
     },
 
@@ -69,6 +71,7 @@ Ext.define('Ext.panel.YearPicker', {
         if (!start) {
             start = (new Date()).getFullYear() - this.getDefaultOffset();
         }
+
         return start;
     },
 
@@ -98,6 +101,7 @@ Ext.define('Ext.panel.YearPicker', {
             }
 
             data = [];
+
             for (i = start; i <= end; ++i) {
                 data.push({
                     id: i,

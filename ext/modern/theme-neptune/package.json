@@ -1,6 +1,10 @@
 {
-    "name": "@extjs/ext-react-theme-neptune",
-    "version": "6.5.3.57",
+    "name": "@extjs/ext-modern-theme-neptune",
+    "ext-react-name": "@extjs/ext-react-modern-theme-neptune",
+    "ext-name": "@extjs/ext-modern-theme-neptune",
+    "SenchaExtName": "@sencha/ext-modern-theme-neptune",
+    "SenchaExtReactName": "@sencha/ext-react-modern-theme-neptune",
+    "version": "7.0.0.156",
     "sencha": {
         "name": "theme-neptune",
         "namespace": "Ext",
@@ -15,8 +19,8 @@
         "creator": "Sencha",
         "summary": "Ext JS Modern Neptune Theme",
         "detailedDescription": "The Neptune theme provides a mostly flat/borderless look.",
-        "version": "6.5.3.57",
-        "compatVersion": "6.0.0",
+        "version": "7.0.0.156",
+        "compatVersion": "7.0.0",
         "format": "1",
         "output": "${workspace.subpkg.prefix}/${package.name}",
         "local": true,

@@ -35,17 +35,17 @@ Ext.define('Ext.data.validator.Phone', {
         // optional area code
         '(?:' +
             '(?:' +
-                '(\\d{3})' + //without ()
+                '(\\d{3})' + // without ()
                 '|' +
-                '\\((\\d{3})\\)' + //with ()
-            ')?'+
+                '\\((\\d{3})\\)' + // with ()
+            ')?' +
             // optional separator
-            '[- .]?'+
+            '[- .]?' +
         ')' +
 
         // CO code (3 digit prefix)
         '(?:' +
-            '([2-9]\\d{2})'+
+            '([2-9]\\d{2})' +
             // optional separator
             '[- .]?' +
         ')' +

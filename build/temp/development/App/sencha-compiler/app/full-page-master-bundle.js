@@ -1,2 +1,2 @@
 // @tag full-page
-// @require G:\ExtJS\Project\sencha-classic\app.js
+// @require E:\ExtJS\前端\sencha-modern-pc\app.js

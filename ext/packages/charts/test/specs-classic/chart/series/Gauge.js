@@ -4,18 +4,18 @@ topSuite("Ext.chart.series.Gauge", ['Ext.chart.*', 'Ext.data.ArrayStore'], funct
         spyOn(Ext.log, 'warn');
     });
 
-    describe('series renderer', function () {
+    describe('series renderer', function() {
         var chart;
 
         afterEach(function() {
             Ext.destroy(chart);
         });
 
-        it('should be called with the right index', function () {
+        it('should be called with the right index', function() {
             var indexes = [],
                 layoutDone;
 
-            runs(function () {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'polar',
                     renderTo: Ext.getBody(),
@@ -49,28 +49,27 @@ topSuite("Ext.chart.series.Gauge", ['Ext.chart.*', 'Ext.data.ArrayStore'], funct
                             label: 'Hot',
                             color: 'tomato'
                         }],
-                        renderer: function (sprite, config, rendererData, spriteIndex) {
+                        renderer: function(sprite, config, rendererData, spriteIndex) {
                             indexes.push(spriteIndex);
                         }
                     },
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 expect(indexes[0]).toEqual(1);
                 expect(indexes[1]).toEqual(2);
                 expect(indexes[2]).toEqual(3);
             });
         });
     });
-
 });

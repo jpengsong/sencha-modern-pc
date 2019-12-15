@@ -81,7 +81,7 @@ Ext.define('Ext.grid.plugin.PagingToolbar', {
         grid.add(this.getToolbar());
     },
 
-    destroy: function(){
+    destroy: function() {
         this.setBuffer(null);
         this.setGrid(null);
         this.callParent();
@@ -90,7 +90,9 @@ Ext.define('Ext.grid.plugin.PagingToolbar', {
     updateGrid: function(grid, oldGrid) {
         var me = this;
 
-        me.gridListeners = me.storeListeners = me.scrollListeners = Ext.destroy(me.gridListeners, me.storeListeners, me.scrollListeners);
+        me.gridListeners = me.storeListeners = me.scrollListeners = Ext.destroy(
+            me.gridListeners, me.storeListeners, me.scrollListeners
+        );
 
         if (grid) {
             me.gridListeners = grid.on({
@@ -109,13 +111,13 @@ Ext.define('Ext.grid.plugin.PagingToolbar', {
         }
     },
 
-    bindStore: function(store){
+    bindStore: function(store) {
         var me = this;
 
         Ext.destroy(me.storeListeners);
         me.getToolbar().setDisabled(!!store);
 
-        if(!store){
+        if (!store) {
             return;
         }
 
@@ -139,12 +141,12 @@ Ext.define('Ext.grid.plugin.PagingToolbar', {
 
         me.cancelBufferTask();
 
-        if(store.isLoaded()){
+        if (store.isLoaded()) {
             me.onTotalCountChange(store);
         }
     },
 
-    onStoreChanged: function(grid, store){
+    onStoreChanged: function(grid, store) {
         this.bindStore(store);
     },
 
@@ -159,9 +161,9 @@ Ext.define('Ext.grid.plugin.PagingToolbar', {
             pageCount = Math.ceil(totalCount / pageSize);
 
         return {
-            totalCount : totalCount,
+            totalCount: totalCount,
             totalPages: Ext.Number.isFinite(pageCount) ? pageCount : 1,
-            currentPage : store.currentPage,
+            currentPage: store.currentPage,
             pageSize: pageSize
         };
     },
@@ -172,7 +174,8 @@ Ext.define('Ext.grid.plugin.PagingToolbar', {
             pageSize = me.getPageSize(),
             currentPage = me.getCurrentPage(),
             topVisibleIndex = grid.topVisibleIndex,
-            newPage = Math.ceil( (topVisibleIndex + pageSize) / pageSize); // on the first page topVisibleIndex is 0
+            // on the first page topVisibleIndex is 0
+            newPage = Math.ceil((topVisibleIndex + pageSize) / pageSize);
 
         if (grid.getStore() && !me.getLoadPages() && newPage > 0 && newPage !== currentPage) {
             me.preventGridScroll = true;
@@ -186,7 +189,7 @@ Ext.define('Ext.grid.plugin.PagingToolbar', {
             bufferTask = me.bufferTask;
 
         if (Ext.isNumber(buffer)) {
-            me.bufferTask = bufferTask || new Ext.util.DelayedTask(me.bufferTaskRun, me)
+            me.bufferTask = bufferTask || new Ext.util.DelayedTask(me.bufferTaskRun, me);
             me.cancelBufferTask();
         }
         else if (bufferTask) {
@@ -250,6 +253,7 @@ Ext.define('Ext.grid.plugin.PagingToolbar', {
         var me = this;
 
         me.isDragging = false;
+
         if (me.getBuffer() === 'dragend' || me.bufferTask.Id) {
             me.cancelBufferTask();
             me.loadCurrentPage();
@@ -258,6 +262,7 @@ Ext.define('Ext.grid.plugin.PagingToolbar', {
 
     onNextPageTap: function() {
         var nextPage = this.getCurrentPage() + 1;
+
         if (nextPage <= this.getTotalPages()) {
             this.setCurrentPage(nextPage);
         }
@@ -265,6 +270,7 @@ Ext.define('Ext.grid.plugin.PagingToolbar', {
 
     onPreviousPageTap: function() {
         var previousPage = this.getCurrentPage() - 1;
+
         if (previousPage > 0) {
             this.setCurrentPage(previousPage);
         }
@@ -284,16 +290,16 @@ Ext.define('Ext.grid.plugin.PagingToolbar', {
         var store = grid.getStore(),
             totalCount;
 
-        if(store && !this.getLoadPages()){
+        if (store && !this.getLoadPages()) {
             visibleCount -= 1;
             this.setPageSize(visibleCount);
             totalCount = store.getTotalCount() || store.getCount();
-            this.setTotalPages( Math.ceil(totalCount / visibleCount) );
+            this.setTotalPages(Math.ceil(totalCount / visibleCount));
         }
     },
 
     updateTotalPages: function() {
-        if(!this.isConfiguring) {
+        if (!this.isConfiguring) {
             this.syncSummary();
         }
     },
@@ -304,8 +310,8 @@ Ext.define('Ext.grid.plugin.PagingToolbar', {
             bufferTask = me.bufferTask,
             buffer = me.getBuffer();
 
-        if(!me.isConfiguring) {
-            if(me.getLoadPages()){
+        if (!me.isConfiguring) {
+            if (me.getLoadPages()) {
                 if (bufferTask && Ext.isNumber(buffer) && isDragging) {
                     bufferTask.delay(buffer);
                 }
@@ -313,14 +319,14 @@ Ext.define('Ext.grid.plugin.PagingToolbar', {
                     me.getGrid().getStore().loadPage(page);
                 }
             }
-            else{
+            else {
                 me.syncSummary();
             }
         }
     },
 
     updateTotalCount: function(totalCount) {
-        if(!this.isConfiguring) {
+        if (!this.isConfiguring) {
             this.syncSummary();
         }
     },
@@ -344,7 +350,7 @@ Ext.define('Ext.grid.plugin.PagingToolbar', {
                 totalPages = me.getTotalPages(),
                 pageTopRecord;
 
-            if(me.bulkConfigs){
+            if (me.bulkConfigs) {
                 return;
             }
 
@@ -357,6 +363,7 @@ Ext.define('Ext.grid.plugin.PagingToolbar', {
             sliderField.setDisabled(totalPages <= 1);
 
             pageTopRecord = me.getPageTopRecord(currentPage);
+
             if (grid && !me.preventGridScroll && pageTopRecord) {
                 grid.scrollToRecord(pageTopRecord);
             }

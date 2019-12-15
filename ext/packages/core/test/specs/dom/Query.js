@@ -1,3 +1,4 @@
+/* global ActiveXObject */
 topSuite("Ext.dom.Query", function() {
 
     var body = Ext.getBody().dom,
@@ -37,7 +38,7 @@ topSuite("Ext.dom.Query", function() {
             : Ext.dom.Query.jsSelect(query, element);
     }
 
-    beforeEach(function(){
+    beforeEach(function() {
         elem = document.createElement('div');
         elem.innerHTML = content;
         elem.id = 'elemNode';
@@ -45,8 +46,8 @@ topSuite("Ext.dom.Query", function() {
         targetSpan = doQuery("#myspan", elem)[0];
     });
 
-    afterEach(function(){
-        if(elem) {
+    afterEach(function() {
+        if (elem) {
             body.removeChild(elem);
             elem = targetSpan = null;
         }
@@ -55,24 +56,27 @@ topSuite("Ext.dom.Query", function() {
     describe("selectValue", function() {
         it("should return defaultValue if nothing is found", function() {
             var result = Ext.dom.Query.selectValue("testing", document, "empty");
+
             expect(result).toBe('empty');
         });
     });
-    
-    describe("jsSelect", function(){
 
-        it("should throw error for an invalid query", function(){
+    describe("jsSelect", function() {
+
+        it("should throw error for an invalid query", function() {
             try {
                 var found = Ext.dom.Query("$#@$%", elem);
-                expect(false).toBe(true);
-            } catch (ex) {
 
+                expect(false).toBe(true);
+            }
+            catch (ex) {
+                // ignore
             }
         });
 
-        describe("Standard CSS Selectors", function(){
+        describe("Standard CSS Selectors", function() {
 
-            it("should locate elements by id", function(){
+            it("should locate elements by id", function() {
                 var found = doQuery("#nn", elem),
                     len = found.length;
 
@@ -91,13 +95,14 @@ topSuite("Ext.dom.Query", function() {
                 expect(len).toBe(1);
                 expect(found[0]).toBe(targetSpan.childNodes[1]);
 
-                if(useQuerySelectorAll) {
+                if (useQuerySelectorAll) {
                     found = doQuery("#\\31 2345 + div", elem);
                     len = found.length;
 
                     expect(len).toBe(1);
                     expect(found[0]).toBe(elem.childNodes[5]);
-                } else {
+                }
+                else {
                     // technically, our regexes will match this
                     // but shouldn't, as the first character isn't
                     // supposed to be a number
@@ -110,7 +115,7 @@ topSuite("Ext.dom.Query", function() {
 
             });
 
-            it("should locate elements by class", function(){
+            it("should locate elements by class", function() {
                 var found = doQuery(".myclass", elem),
                     len = found.length;
 
@@ -134,7 +139,7 @@ topSuite("Ext.dom.Query", function() {
                 expect(found[0]).toBe(targetSpan.childNodes[1]);
             });
 
-            it("should find elements by pseudo class", function(){
+            it("should find elements by pseudo class", function() {
                 var found = doQuery(":last-child", elem),
                     len = found.length;
 
@@ -173,15 +178,15 @@ topSuite("Ext.dom.Query", function() {
 
             });
 
-            it("should find elements by attribute value", function(){
+            it("should find elements by attribute value", function() {
                 var found = doQuery('div[role="12345678"]', elem),
                     len = found.length;
 
                 expect(len).toBe(1);
                 expect(found[0]).toBe(elem.childNodes[5]);
 
-                found = doQuery('div[role]', elem),
-                    len = found.length;
+                found = doQuery('div[role]', elem);
+                len = found.length;
 
                 expect(len).toBe(3);
                 expect(found[0]).toBe(elem.childNodes[5]);
@@ -190,9 +195,9 @@ topSuite("Ext.dom.Query", function() {
             });
         });
 
-        describe("CSS Escape Sequences", function(){
+        describe("CSS Escape Sequences", function() {
 
-            it("should handle escapes sequences for IDs", function(){
+            it("should handle escapes sequences for IDs", function() {
                 var found = doQuery("#\\00006en", elem),
                     len = found.length;
 
@@ -240,7 +245,6 @@ topSuite("Ext.dom.Query", function() {
 
                 expect(len).toBe(1);
                 expect(found[0]).toBe(elem.childNodes[5]);
-
 
                 found = doQuery("#\\\\nn", elem);
                 len = found.length;
@@ -302,8 +306,8 @@ topSuite("Ext.dom.Query", function() {
                 expect(len).toBe(1);
                 expect(found[0]).toBe(elem.childNodes[5]);
             });
-            
-            it("should handle escape sequences for class names", function(){
+
+            it("should handle escape sequences for class names", function() {
                 var found = doQuery("div.\\#odd-class-name", elem),
                     len = found.length;
 
@@ -323,7 +327,7 @@ topSuite("Ext.dom.Query", function() {
                 expect(found[0]).toBe(elem.childNodes[3]);
             });
 
-            it("should handle escape sequences for psuedos", function(){
+            it("should handle escape sequences for psuedos", function() {
                 var found = doQuery('#\\:id :first-child', elem),
                     len = found.length;
 
@@ -347,7 +351,7 @@ topSuite("Ext.dom.Query", function() {
                 }
             });
 
-            it("should handle escape sequences for attributes", function(){
+            it("should handle escape sequences for attributes", function() {
                 var found, len;
 
                 if (Ext.isFF3_6) {
@@ -370,7 +374,8 @@ topSuite("Ext.dom.Query", function() {
                     expect(len).toBe(1);
                     expect(found[0]).toBe(elem.childNodes[6]);
 
-                } else {
+                }
+                else {
 
                     found = doQuery('div[role="myval\\3a ue\t"]', elem);
                     len = found.length;
@@ -390,7 +395,6 @@ topSuite("Ext.dom.Query", function() {
                     expect(len).toBe(1);
                     expect(found[0]).toBe(elem.childNodes[6]);
                 }
-
 
                 found = doQuery('div[role="my\\\\tvalue"]', elem);
                 len = found.length;
@@ -420,9 +424,10 @@ topSuite("Ext.dom.Query", function() {
                         '</a>'
                     ].join('');
 
-                    if (typeof DOMParser != 'undefined') {
+                    if (typeof DOMParser !== 'undefined') {
                         doc = (new DOMParser()).parseFromString(xml, "application/xml");
-                    } else {
+                    }
+                    else {
                         // IE doesn't have DOMParser, but fortunately, there is an ActiveX for XML
                         doc = new ActiveXObject("Microsoft.XMLDOM");
                         doc.async = false;
@@ -454,7 +459,7 @@ topSuite("Ext.dom.Query", function() {
                     expect(yResult[1].firstChild.nodeValue).toBe('y2');
                 });
             });
-            
+
             describe("selecting attributes with non-word characters", function() {
                 var doc;
 
@@ -465,9 +470,10 @@ topSuite("Ext.dom.Query", function() {
                         '</a>'
                     ].join('');
 
-                    if (typeof DOMParser != 'undefined') {
+                    if (typeof DOMParser !== 'undefined') {
                         doc = (new DOMParser()).parseFromString(xml, "application/xml");
-                    } else {
+                    }
+                    else {
                         // IE doesn't have DOMParser, but fortunately, there is an ActiveX for XML
                         doc = new ActiveXObject("Microsoft.XMLDOM");
                         doc.async = false;

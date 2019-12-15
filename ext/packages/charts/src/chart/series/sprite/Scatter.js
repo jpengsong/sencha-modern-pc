@@ -8,10 +8,12 @@ Ext.define('Ext.chart.series.sprite.Scatter', {
     alias: 'sprite.scatterSeries',
     extend: 'Ext.chart.series.sprite.Cartesian',
 
-    renderClipped: function (surface, ctx, dataClipRect, surfaceClipRect) {
+    renderClipped: function(surface, ctx, dataClipRect, surfaceClipRect) {
         if (this.cleanRedraw) {
             return;
         }
+
+        // eslint-disable-next-line vars-on-top
         var me = this,
             attr = me.attr,
             dataX = attr.dataX,
@@ -25,7 +27,8 @@ Ext.define('Ext.chart.series.sprite.Scatter', {
             yy = matrix.getYY(),
             dx = matrix.getDX(),
             dy = matrix.getDY(),
-            markerCfg = {}, changes, params,
+            markerCfg = {},
+            changes, params,
             xScalingDirection = surface.getInherited().rtl && !attr.flipXY ? -1 : 1,
             left, right, top, bottom,
             x, y, i;
@@ -35,7 +38,8 @@ Ext.define('Ext.chart.series.sprite.Scatter', {
             right = surfaceClipRect[1] + surfaceClipRect[3] + xx * xScalingDirection;
             top = surfaceClipRect[0] - yy;
             bottom = surfaceClipRect[0] + surfaceClipRect[2] + yy;
-        } else {
+        }
+        else {
             left = surfaceClipRect[0] - xx * xScalingDirection;
             right = surfaceClipRect[0] + surfaceClipRect[2] + xx * xScalingDirection;
             top = surfaceClipRect[1] - yy;
@@ -56,14 +60,17 @@ Ext.define('Ext.chart.series.sprite.Scatter', {
                         translationX: surfaceMatrix.x(x, y),
                         translationY: surfaceMatrix.y(x, y)
                     };
-                    params = [me, markerCfg, {store: me.getStore()}, i];
+                    params = [me, markerCfg, { store: me.getStore() }, i];
                     changes = Ext.callback(attr.renderer, null, params, 0, series);
                     markerCfg = Ext.apply(markerCfg, changes);
-                } else {
+                }
+                else {
                     markerCfg.translationX = surfaceMatrix.x(x, y);
                     markerCfg.translationY = surfaceMatrix.y(x, y);
                 }
+
                 me.putMarker('markers', markerCfg, i, !attr.renderer);
+
                 if (isDrawLabels && labels[i]) {
                     me.drawLabel(labels[i], x, y, i, surfaceClipRect);
                 }
@@ -71,7 +78,7 @@ Ext.define('Ext.chart.series.sprite.Scatter', {
         }
     },
 
-    drawLabel: function (text, dataX, dataY, labelId, rect) {
+    drawLabel: function(text, dataX, dataY, labelId, rect) {
         var me = this,
             attr = me.attr,
             label = me.getMarker('labels'),
@@ -87,6 +94,7 @@ Ext.define('Ext.chart.series.sprite.Scatter', {
         labelCfg.text = text;
 
         labelBox = me.getMarkerBBox('labels', labelId, true);
+
         if (!labelBox) {
             me.putMarker('labels', labelCfg, labelId);
             labelBox = me.getMarkerBBox('labels', labelId, true);
@@ -94,7 +102,8 @@ Ext.define('Ext.chart.series.sprite.Scatter', {
 
         if (flipXY) {
             labelCfg.rotationRads = Math.PI * 0.5;
-        } else {
+        }
+        else {
             labelCfg.rotationRads = 0;
         }
 
@@ -105,6 +114,7 @@ Ext.define('Ext.chart.series.sprite.Scatter', {
             case 'under':
                 labelY = dataY - halfHeight - labelOverflowPadding;
                 break;
+
             case 'rotate':
                 labelX += labelOverflowPadding;
                 labelY = dataY - labelOverflowPadding;
@@ -118,11 +128,13 @@ Ext.define('Ext.chart.series.sprite.Scatter', {
         labelCfg.y = surfaceMatrix.y(labelX, labelY);
 
         if (labelTpl.attr.renderer) {
-            params = [text, label, labelCfg, {store: me.getStore()}, labelId];
+            params = [text, label, labelCfg, { store: me.getStore() }, labelId];
             changes = Ext.callback(labelTpl.attr.renderer, null, params, 0, me.getSeries());
+
             if (typeof changes === 'string') {
                 labelCfg.text = changes;
-            } else {
+            }
+            else {
                 Ext.apply(labelCfg, changes);
             }
         }

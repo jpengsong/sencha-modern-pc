@@ -1,9 +1,10 @@
 /**
- * The slider is a way to allow the user to select a value from a given numerical range. You might use it for choosing
- * a percentage, combine two of them to get min and max values, or use three of them to specify the hex values for a
- * color. Each slider contains a single 'thumb' that can be dragged along the slider's length to change the value.
- * Sliders are equally useful inside {@link Ext.form.Panel forms} and standalone. Here's how to quickly create a
- * slider in form, in this case enabling a user to choose a percentage:
+ * The slider is a way to allow the user to select a value from a given numerical range. 
+ * You might use it for choosing a percentage, combine two of them to get min and max values, 
+ * or use three of them to specify the hex values for a color. Each slider contains a single 
+ * 'thumb' that can be dragged along the slider's length to change the value. Sliders are equally 
+ * useful inside {@link Ext.form.Panel forms} and standalone. Here's how to quickly create a slider 
+ * in form, in this case enabling a user to choose a percentage:
  *
  *     @example
  *     Ext.create('Ext.form.Panel', {
@@ -19,13 +20,15 @@
  *         ]
  *     });
  *
- * In this case we set a starting value of 50%, and defined the min and max values to be 0 and 100 respectively, giving
- * us a percentage slider. Because this is such a common use case, the defaults for {@link #minValue} and
- * {@link #maxValue} are already set to 0 and 100 so in the example above they could be removed.
+ * In this case we set a starting value of 50%, and defined the min and max values to be 0 and 
+ * 100 respectively, giving us a percentage slider. Because this is such a common use case, the 
+ * defaults for {@link #minValue} and {@link #maxValue} are already set to 0 and 100 so in the 
+ * example above they could be removed.
  *
- * It's often useful to render sliders outside the context of a form panel too. In this example we create a slider that
- * allows a user to choose the waist measurement of a pair of jeans. Let's say the online store we're making this for
- * sells jeans with waist sizes from 24 inches to 60 inches in 2 inch increments - here's how we might achieve that:
+ * It's often useful to render sliders outside the context of a form panel too. In this example 
+ * we create a slider that allows a user to choose the waist measurement of a pair of jeans. 
+ * Let's say the online store we're making this for sells jeans with waist sizes from 24 inches 
+ * to 60 inches in 2 inch increments - here's how we might achieve that:
  *
  *     @example
  *     Ext.create('Ext.form.Panel', {
@@ -42,9 +45,10 @@
  *         ]
  *     });
  *
- * Now that we've got our slider, we can ask it what value it currently has and listen to events that it fires. For
- * example, if we wanted our app to show different images for different sizes, we can listen to the {@link #change}
- * event to be informed whenever the slider is moved:
+ * Now that we've got our slider, we can ask it what value it currently has and listen 
+ * to events that it fires. For example, if we wanted our app to show different images 
+ * for different sizes, we can listen to the {@link #change} event to be informed whenever 
+ * the slider is moved:
  *
  *     slider.on('change', function(field, newValue) {
  *         if (newValue[0] > 40) {
@@ -54,9 +58,9 @@
  *         }
  *     }, this);
  *
- * Here we listened to the {@link #change} event on the slider and updated the background image of an
- * {@link Ext.Img image component} based on what size the user selected. Of course, you can use any logic inside your
- * event listener.
+ * Here we listened to the {@link #change} event on the slider and updated the background
+ * image of an {@link Ext.Img image component} based on what size the user selected. Of 
+ * course, you can use any logic inside your event listener.
  */
 Ext.define('Ext.field.Slider', {
     extend: 'Ext.field.Field',
@@ -192,7 +196,7 @@ Ext.define('Ext.field.Slider', {
      * @inheritdoc
      */
     defaultBindProperty: 'value',
-    
+
     /**
      * @cfg twoWayBindable
      * @inheritdoc
@@ -234,11 +238,11 @@ Ext.define('Ext.field.Slider', {
         });
     },
 
-    getBodyTemplate: function () {
+    getBodyTemplate: function() {
         return this.mixins.boxLabelable.getBodyTemplate.call(this);
     },
 
-    applySlider: function (slider) {
+    applySlider: function(slider) {
         if (slider && !slider.isInstance) {
             slider = this.mergeProxiedConfigs('slider', slider);
             slider.$initParent = this;
@@ -263,18 +267,23 @@ Ext.define('Ext.field.Slider', {
 
     applyValue: function(value, oldValue) {
         value = this.callParent([value, oldValue]) || 0;
+
         // If we are currently dragging, don't allow the binding
         // to push a value over the top of what the user is doing.
         if (this.dragging && this.isSyncing('value')) {
             value = undefined;
-        } else if (Ext.isArray(value)) {
+        }
+        else if (Ext.isArray(value)) {
             value = value.slice(0);
+
             if (oldValue && Ext.Array.equals(value, oldValue)) {
                 value = undefined;
             }
-        } else {
+        }
+        else {
             value = [value];
         }
+
         return value;
     },
 
@@ -303,9 +312,11 @@ Ext.define('Ext.field.Slider', {
 
     onSliderDrag: function(slider, thumb, value, e) {
         var me = this;
+
         if (me.getLiveUpdate()) {
             me.setValue(slider.getValue());
         }
+
         me.fireEvent('drag', me, slider, thumb, value, e);
     },
 
@@ -344,6 +355,7 @@ Ext.define('Ext.field.Slider', {
 
     updateMultipleState: function() {
         var value = this.getValue();
+
         if (value && value.length > 1) {
             this.addCls(Ext.baseCSSPrefix + 'slider-multiple');
         }
@@ -360,7 +372,7 @@ Ext.define('Ext.field.Slider', {
         this.callParent();
     },
 
-    getRefItems: function (deep) {
+    getRefItems: function(deep) {
         var refItems = [],
             slider = this.getSlider();
 
@@ -373,5 +385,7 @@ Ext.define('Ext.field.Slider', {
         }
 
         return refItems;
-    }
+    },
+
+    rawToValue: Ext.emptyFn
 });

@@ -5,16 +5,12 @@
  */
 Ext.define('App.Application', {
     extend: 'Ext.app.Application',
+    name: 'App',
     requires: [
-        'Ext.Img',
-        'Ext.form.Label',
-        'Ext.list.TreeItem',
-        'Ext.layout.container.Table',
-        'Ext.layout.container.Border',
-        'Ext.layout.container.Column',
-        'Ext.data.identifier.Uuid',
-        'Ext.dom.Query',
-        'Ext.ux.layout.ResponsiveColumn'
+        'Ext.list.Tree',
+        'Ext.layout.*'
     ],
-    name: 'App'
+    launch: function () {
+        var me =this;
+    }
 });

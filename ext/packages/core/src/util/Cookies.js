@@ -6,31 +6,33 @@
  */
 Ext.define('Ext.util.Cookies', {
     singleton: true,
-    
+
     /**
-     * Creates a cookie with the specified name and value. Additional settings for the cookie may be optionally specified
-     * (for example: expiration, access restriction, SSL).
+     * Creates a cookie with the specified name and value. Additional settings for the cookie
+     * may be optionally specified (for example: expiration, access restriction, SSL).
      * @param {String} name The name of the cookie to set.
      * @param {Object} value The value to set for the cookie.
-     * @param {Object} [expires] Specify an expiration date the cookie is to persist until. Note that the specified Date
-     * object will be converted to Greenwich Mean Time (GMT).
-     * @param {String} [path] Setting a path on the cookie restricts access to pages that match that path. Defaults to all
-     * pages ('/').
-     * @param {String} [domain] Setting a domain restricts access to pages on a given domain (typically used to allow
-     * cookie access across subdomains). For example, "sencha.com" will create a cookie that can be accessed from any
-     * subdomain of sencha.com, including www.sencha.com, support.sencha.com, etc.
-     * @param {Boolean} [secure] Specify true to indicate that the cookie should only be accessible via SSL on a page
-     * using the HTTPS protocol. Defaults to false. Note that this will only work if the page calling this code uses the
-     * HTTPS protocol, otherwise the cookie will be created with default options.
+     * @param {Object} [expires] Specify an expiration date the cookie is to persist until.
+     * Note that the specified Date object will be converted to Greenwich Mean Time (GMT).
+     * @param {String} [path] Setting a path on the cookie restricts access to pages that match
+     * that path. Defaults to all pages ('/').
+     * @param {String} [domain] Setting a domain restricts access to pages on a given domain
+     * (typically used to allow cookie access across subdomains). For example, "sencha.com"
+     * will create a cookie that can be accessed from any subdomain of sencha.com, including
+     * www.sencha.com, support.sencha.com, etc.
+     * @param {Boolean} [secure] Specify true to indicate that the cookie should only be accessible
+     * via SSL on a page using the HTTPS protocol. Defaults to false. Note that this will only work
+     * if the page calling this code uses the HTTPS protocol, otherwise the cookie will be created
+     * with default options.
      */
-    set : function(name, value){
+    set: function(name, value) {
         var argv = arguments,
             argc = argv.length,
             expires = (argc > 2) ? argv[2] : null,
             path = (argc > 3) ? argv[3] : '/',
             domain = (argc > 4) ? argv[4] : null,
             secure = (argc > 5) ? argv[5] : false;
-            
+
         document.cookie = name + "=" +
             escape(value) +
             ((expires === null) ? "" : ("; expires=" + expires.toUTCString())) +
@@ -40,8 +42,9 @@ Ext.define('Ext.util.Cookies', {
     },
 
     /**
-     * Retrieves cookies that are accessible by the current page. If a cookie does not exist, `get()` returns null. The
-     * following example retrieves the cookie called "valid" and stores the String value in the variable validStatus.
+     * Retrieves cookies that are accessible by the current page. If a cookie does not exist,
+     * `get()` returns null. The following example retrieves the cookie called "valid" and stores
+     * the String value in the variable validStatus.
      *
      *     var validStatus = Ext.util.Cookies.get("valid");
      *
@@ -49,7 +52,7 @@ Ext.define('Ext.util.Cookies', {
      * @return {Object} Returns the cookie value for the specified name;
      * null if the cookie name does not exist.
      */
-    get : function(name) {
+    get: function(name) {
         var parts = document.cookie.split('; '),
             len = parts.length,
             item, i, ret;
@@ -61,11 +64,14 @@ Ext.define('Ext.util.Cookies', {
         // So here we iterate over all the parts in an attempt to match the key.
         for (i = 0; i < len; ++i) {
             item = parts[i].split('=');
+
             if (item[0] === name) {
                 ret = item[1];
+
                 return ret ? unescape(ret) : '';
             }
         }
+
         return null;
     },
 
@@ -76,7 +82,7 @@ Ext.define('Ext.util.Cookies', {
      * @param {String} [path] The path for the cookie.
      * This must be included if you included a path while setting the cookie.
      */
-    clear : function(name, path){
+    clear: function(name, path) {
         if (this.get(name)) {
             path = path || '/';
             document.cookie = name + '=' + '; expires=Thu, 01-Jan-1970 00:00:01 GMT; path=' + path;

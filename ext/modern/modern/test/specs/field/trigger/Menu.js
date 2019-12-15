@@ -1,12 +1,12 @@
-topSuite('Ext.field.trigger.Menu', ['Ext.field.Text', 'Ext.viewport.Default', 'Ext.ActionSheet', 'Ext.Mask', 'Ext.ActionSheet'], function () {
+topSuite('Ext.field.trigger.Menu', ['Ext.field.Text', 'Ext.viewport.Default', 'Ext.ActionSheet', 'Ext.Mask', 'Ext.ActionSheet'], function() {
     var field, trigger;
 
-    function createField (menuTriggerCfg, cfg) {
+    function createField(menuTriggerCfg, cfg) {
         cfg = cfg || {};
 
         if (menuTriggerCfg) {
             if (!cfg.triggers) {
-                cfg.triggers = {}
+                cfg.triggers = {};
             }
 
             if (!menuTriggerCfg.type) {
@@ -25,12 +25,12 @@ topSuite('Ext.field.trigger.Menu', ['Ext.field.Text', 'Ext.viewport.Default', 'E
         return field;
     }
 
-    afterEach(function () {
+    afterEach(function() {
         field = trigger = Ext.destroy(field);
     });
 
-    describe('create menu', function () {
-        it('should be lazily created', function () {
+    describe('create menu', function() {
+        it('should be lazily created', function() {
             createField({
                 menu: [{
                     text: 'Foo'
@@ -51,7 +51,7 @@ topSuite('Ext.field.trigger.Menu', ['Ext.field.Text', 'Ext.viewport.Default', 'E
         });
 
         afterEach(function() {
-            //we need to destroy the menu before Ext.Viewport is
+            // we need to destroy the menu before Ext.Viewport is
             trigger.setMenu(null);
 
             Ext.Viewport = Ext.destroy(Ext.Viewport);
@@ -92,7 +92,7 @@ topSuite('Ext.field.trigger.Menu', ['Ext.field.Text', 'Ext.viewport.Default', 'E
             expect(trigger.getMenu().getItems().getCount()).toBe(2);
         });
 
-        it('should show menu on trigger click', function () {
+        it('should show menu on trigger click', function() {
             createField({
                 menu: [{
                     text: 'foo'
@@ -106,8 +106,8 @@ topSuite('Ext.field.trigger.Menu', ['Ext.field.Text', 'Ext.viewport.Default', 'E
             expect(trigger.getMenu().getHidden()).toBe(false);
         });
 
-        describe('action sheet', function () {
-            it('should create an action sheet', function () {
+        describe('action sheet', function() {
+            it('should create an action sheet', function() {
                 createField({
                     menu: {
                         xtype: 'actionsheet',
@@ -118,7 +118,7 @@ topSuite('Ext.field.trigger.Menu', ['Ext.field.Text', 'Ext.viewport.Default', 'E
                 expect(trigger.getMenu().$className).toBe('Ext.ActionSheet');
             });
 
-            it('should show the action sheet on button click', function () {
+            it('should show the action sheet on button click', function() {
                 createField({
                     menu: {
                         xtype: 'actionsheet',
@@ -133,15 +133,15 @@ topSuite('Ext.field.trigger.Menu', ['Ext.field.Text', 'Ext.viewport.Default', 'E
 
                 expect(menu.getDisplayed()).toBe(true);
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return !menu.isAnimating;
                 });
 
-                runs(function () {
+                runs(function() {
                     menu.setDisplayed(false);
                 });
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return !menu.isAnimating;
                 });
             });

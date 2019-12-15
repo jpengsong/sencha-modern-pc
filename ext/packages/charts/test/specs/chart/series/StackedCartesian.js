@@ -3,17 +3,17 @@ topSuite("Ext.chart.series.StackedCartesian",
         'Ext.Container', 'Ext.layout.Fit'],
 function() {
 
-    describe('sprites', function () {
+    describe('sprites', function() {
         var chart;
 
         afterEach(function() {
             Ext.destroy(chart);
         });
 
-        it('should create the right number of sprites', function () {
+        it('should create the right number of sprites', function() {
             var layoutDone;
 
-            runs(function () {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'cartesian',
 
@@ -41,18 +41,18 @@ function() {
                     }],
                     series: [],
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
-                })
+                });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 chart.setStore(new Ext.data.Store({
@@ -70,34 +70,36 @@ function() {
                     }],
 
                     listeners: {
-                        load: function () {
+                        load: function() {
                             var oldSeries = chart.getSeries();
 
                             if (oldSeries) {
                                 chart.removeSeries(oldSeries);
                             }
+
                             chart.setSeries([{
                                 type: 'bar',
                                 title: ['IE', 'Firefox', 'Chrome', 'Safari'],
                                 xField: 'month',
                                 yField: ['data1', 'data2', 'data3', 'data4'],
-                                renderer: function () {
+                                renderer: function() {
                                     return {};
                                 }
-                            }])
+                            }]);
                         }
                     }
                 }));
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var sprites = chart.getSeries()[0].getSprites();
+
                 expect(sprites.length).toBe(4);
                 expect(chart.getLegendStore().getCount()).toBe(4);
                 expect(chart.getLegend().getSprites().length).toBe(4);
@@ -105,17 +107,17 @@ function() {
         });
     });
 
-    describe('highlight', function () {
+    describe('highlight', function() {
         var chart;
 
         afterEach(function() {
             Ext.destroy(chart);
         });
 
-        it('should propagate to "items" and "markers" templates of all MarkerHolder sprites', function () {
+        it('should propagate to "items" and "markers" templates of all MarkerHolder sprites', function() {
             var layoutDone;
 
-            runs(function () {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'cartesian',
                     animation: false,
@@ -166,28 +168,31 @@ function() {
                         highlight: true
                     }],
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 var seriesList = chart.getSeries(),
                     i, j, series, sprites, sprite, items, markers, style;
 
                 for (j = 0; j < seriesList.length; j++) {
                     series = seriesList[j];
                     sprites = series.getSprites();
+
                     for (i = 0; i < sprites.length; i++) {
                         sprite = sprites[i];
+
                         if (sprite.isMarkerHolder) {
                             items = sprite.getMarker('items');
+
                             if (items) {
                                 // Bar series will have the 'items' markers, but not 'markers' markers.
                                 style = items.getTemplate().modifiers.highlight.getStyle();
@@ -196,7 +201,9 @@ function() {
                                 expect(style.fillStyle).toBe('#ffff00');
                                 expect(style.strokeStyle).toBe('#ff0000');
                             }
+
                             markers = sprite.getMarker('markers');
+
                             if (markers) {
                                 // Area series will have the 'markers' markers, but not the 'items' markers.
                                 style = markers.getTemplate().modifiers.highlight.getStyle();

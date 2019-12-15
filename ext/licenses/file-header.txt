@@ -1,13 +1,13 @@
-This file is part of Ext JS 6.5.3.57
+This file is part of Ext JS 7.0.0.156
 
-Copyright (c) 2011-2018 Sencha Inc
+Copyright (c) 2011-2019 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-This version of Sencha Ext JS 6.5.3.57 is licensed commercially for a limited period for evaluation 
+This version of Sencha Ext JS 7.0.0.156 is licensed commercially for a limited period for evaluation 
 purposes only. Production use or use beyond the applicable evaluation period is prohibited 
 under this license.
 
 If your trial has expired, please contact the sales department at http://www.sencha.com/contact.
 
-Version: 6.5.3.57 Build date: 2018-01-23 06:16:04 (79adf230ffe196c51f938f82140c44b1174dc392)
+Version: 7.0.0.156 Build date: 2019-08-28 05:11:36 (23a4f5eb33e19b67a3a5d753d762ff78e836bdf1)

@@ -75,15 +75,16 @@ Ext.define('Ext.viewport.Default', function() {
             /**
              * @private
              *
-             * Auto blur the focused element when touching on a non-input. This is used to work around Android bugs
-             * where the virtual keyboard is not hidden when tapping outside an input.
+             * Auto blur the focused element when touching on a non-input. This is used to
+             * work around Android bugs where the virtual keyboard is not hidden when tapping
+             * outside an input.
              */
             autoBlurInput: true,
 
             /**
              * @cfg {Boolean} preventZooming
-             * `true` to attempt to stop zooming when you double tap on the screen on mobile devices,
-             * typically HTC devices with HTC Sense UI.
+             * `true` to attempt to stop zooming when you double tap on the screen on mobile
+             * devices, typically HTC devices with HTC Sense UI.
              * @accessor
              */
             preventZooming: false,
@@ -159,7 +160,8 @@ Ext.define('Ext.viewport.Default', function() {
         getTemplate: function() {
             var template = this.callParent();
 
-            // Used in legacy browser that do not support matchMedia. Hidden element is used for checking of orientation
+            // Used in legacy browser that do not support matchMedia. Hidden element is used
+            // for checking of orientation
             if (!Ext.feature.has.MatchMedia) {
                 template.unshift({
                     reference: 'orientationElement',
@@ -218,14 +220,15 @@ Ext.define('Ext.viewport.Default', function() {
         fullscreenItemCls: Ext.baseCSSPrefix + 'fullscreen',
 
         constructor: function(config) {
-            var me = this;
+            var me = this,
+                scroller;
 
             me.doPreventPanning = me.doPreventPanning.bind(me);
             me.doPreventZooming = me.doPreventZooming.bind(me);
 
             me.maximizeOnEvents = [
-              'ready',
-              'orientationchange'
+                'ready',
+                'orientationchange'
             ];
 
             // set default devicePixelRatio if it is not explicitly defined
@@ -240,11 +243,17 @@ Ext.define('Ext.viewport.Default', function() {
             // We must provide a non-scrolling one if we are not configured to scroll,
             // otherwise the deferred ready listener in Scroller will create
             // one with scroll: true
-            Ext.setViewportScroller(me.getScrollable() || Ext.getViewportScroller().setConfig({
-                x: false,
-                y: false,
-                component: me
-            }));
+            scroller = me.getScrollable();
+
+            if (!scroller) {
+                scroller = Ext.getViewportScroller().setConfig({
+                    x: false,
+                    y: false
+                });
+                scroller.component = me;
+            }
+
+            Ext.setViewportScroller(scroller);
 
             // The body has to be overflow:hidden
             Ext.getBody().setStyle('overflow', 'hidden');
@@ -262,7 +271,7 @@ Ext.define('Ext.viewport.Default', function() {
             }
 
             // Tale over firing the resize event to sync the Viewport first, then fire the event.
-            Ext.GlobalEvents.on('resize', 'onWindowResize', me, {priority: 1000});
+            Ext.GlobalEvents.on('resize', 'onWindowResize', me, { priority: 1000 });
 
             Ext.onDocumentReady(me.onDomReady, me);
 
@@ -294,22 +303,25 @@ Ext.define('Ext.viewport.Default', function() {
             return result;
         },
 
-        initInheritedState: function (inheritedState, inheritedStateInner) {
+        initInheritedState: function(inheritedState, inheritedStateInner) {
             var me = this,
                 root = Ext.rootInheritedState;
 
             if (inheritedState !== root) {
                 // We need to go at this again but with the rootInheritedState object. Let
                 // any derived class poke on the proper object!
-                me.initInheritedState(me.inheritedState = root,
+                me.initInheritedState(
+                    me.inheritedState = root,
                     me.inheritedStateInner = Ext.Object.chain(root));
-            } else {
+            }
+            else {
                 me.callParent([inheritedState, inheritedStateInner]);
             }
         },
 
         onAppLaunch: function() {
             var me = this;
+
             if (!me.isReady) {
                 me.onDomReady();
             }
@@ -359,7 +371,8 @@ Ext.define('Ext.viewport.Default', function() {
             if (autoMaximize) {
                 me.on('ready', 'doAutoMaximizeOnReady', me, { single: true });
                 me.on('orientationchange', 'doAutoMaximizeOnOrientationChange', me);
-            } else {
+            }
+            else {
                 me.un('ready', 'doAutoMaximizeOnReady', me);
                 me.un('orientationchange', 'doAutoMaximizeOnOrientationChange', me);
             }
@@ -371,6 +384,7 @@ Ext.define('Ext.viewport.Default', function() {
 
         updatePreventZooming: function(preventZooming) {
             var touchstart = Ext.feature.has.TouchEvents ? 'touchstart' : 'mousedown';
+
             this.toggleWindowListener(preventZooming, touchstart, this.doPreventZooming, false);
         },
 
@@ -405,21 +419,25 @@ Ext.define('Ext.viewport.Default', function() {
         },
 
         doPreventPanning: function(e) {
-            var target = e.target, 
+            var me = this,
+                target = e.target,
                 touch;
 
-            // If we have an interaction on a WebComponent we need to check the actual shadow dom element selected
-            // to determine if it is an input before preventing default behavior
-            // Side effect to this is if the shadow input does not do anything with 'touchmove' the user could pan
-            // the screen.
-            if (this.isInteractiveWebComponentRegEx.test(target.tagName) && e.touches && e.touches.length > 0) {
+            // If we have an interaction on a WebComponent we need to check the actual shadow
+            // dom element selected to determine if it is an input before preventing default
+            // behavior.
+            // Side effect to this is if the shadow input does not do anything with touchmove
+            // the user could pan the screen.
+            if (me.isInteractiveWebComponentRegEx.test(target.tagName) && e.touches &&
+                e.touches.length > 0) {
                 touch = e.touches[0];
-                if (touch && touch.target && this.isInputRegex.test(touch.target.tagName)) {
+
+                if (touch && touch.target && me.isInputRegex.test(touch.target.tagName)) {
                     return;
                 }
             }
 
-            if (target && target.nodeType === 1 && !this.isInputRegex.test(target.tagName)) {
+            if (target && target.nodeType === 1 && !me.isInputRegex.test(target.tagName)) {
                 e.preventDefault();
             }
         },
@@ -430,12 +448,15 @@ Ext.define('Ext.viewport.Default', function() {
                 return;
             }
 
-            var target = e.target, 
+            // eslint-disable-next-line vars-on-top
+            var target = e.target,
                 inputRe = this.isInputRegex,
                 touch;
 
-            if (this.isInteractiveWebComponentRegEx.test(target.tagName) && e.touches && e.touches.length > 0) {
+            if (this.isInteractiveWebComponentRegEx.test(target.tagName) && e.touches &&
+                e.touches.length > 0) {
                 touch = e.touches[0];
+
                 if (touch && touch.target && inputRe.test(touch.target.tagName)) {
                     return;
                 }
@@ -474,18 +495,27 @@ Ext.define('Ext.viewport.Default', function() {
             // First attempt will be to use Native Orientation information
             if (me.supportsOrientation()) {
                 nativeOrientation = me.getWindowOrientation();
+
                 // 90 || -90 || 270 is landscape
                 if (Math.abs(nativeOrientation) === 90 || nativeOrientation === 270) {
                     return me.LANDSCAPE;
-                } else {
-                    return me.PORTRAIT;
                 }
-                // Second attempt will be to use MatchMedia and a media query
-            } else if (me.supportsMatchMedia()) {
-                return window.matchMedia('(orientation : landscape)').matches ? me.LANDSCAPE : me.PORTRAIT;
-                // Fall back on hidden element with media query attached to it (media query in Base Theme)
-            } else if (orientationElement) {
+
+                return me.PORTRAIT;
+            }
+
+            // Second attempt will be to use MatchMedia and a media query
+            if (me.supportsMatchMedia()) {
+                return window.matchMedia('(orientation : landscape)').matches
+                    ? me.LANDSCAPE
+                    : me.PORTRAIT;
+            }
+
+            // Fall back on hidden element with media query attached to it (media query in
+            // Base Theme)
+            if (orientationElement) {
                 visible = orientationElement.first().isVisible();
+
                 return visible ? me.LANDSCAPE : me.PORTRAIT;
             }
 
@@ -502,7 +532,8 @@ Ext.define('Ext.viewport.Default', function() {
             var me = this,
                 newSize = me.updateSize();
 
-            Ext.getBody().replaceCls(Ext.baseCSSPrefix + oldOrientation, Ext.baseCSSPrefix + newOrientation);
+            Ext.getBody().replaceCls(Ext.baseCSSPrefix + oldOrientation,
+                                     Ext.baseCSSPrefix + newOrientation);
 
             me.fireEvent('orientationchange', me, newOrientation, newSize.width, newSize.height);
         },
@@ -515,8 +546,9 @@ Ext.define('Ext.viewport.Default', function() {
             me.updateSize(width, height);
 
             // On devices that do not support native orientation we use resize.
-            // orientationchange events are only dispatched when there is an actual change in orientation value
-            // so in cases on devices with orientation change events, the setter is called an extra time, but stopped after
+            // orientationchange events are only dispatched when there is an actual change
+            // in orientation value so in cases on devices with orientation change events,
+            // the setter is called an extra time, but stopped after.
             me.setOrientation(me.determineOrientation());
 
             // Only fire the event if we have actually resized.
@@ -528,13 +560,16 @@ Ext.define('Ext.viewport.Default', function() {
         updateSize: function(width, height) {
             var lastSize = this.lastSize;
 
-            lastSize.width  = width  !== undefined ? width  : this.getWindowWidth();
+            lastSize.width = width !== undefined ? width : this.getWindowWidth();
             lastSize.height = height !== undefined ? height : this.getWindowHeight();
 
             return lastSize;
         },
 
         waitUntil: function(condition, onSatisfied, onTimeout, delay, timeoutDuration) {
+            var scope = this,
+                elapse = 0;
+
             if (!delay) {
                 delay = 50;
             }
@@ -542,9 +577,6 @@ Ext.define('Ext.viewport.Default', function() {
             if (!timeoutDuration) {
                 timeoutDuration = 2000;
             }
-
-            var scope = this,
-                elapse = 0;
 
             Ext.defer(function repeat() {
                 elapse += delay;
@@ -630,7 +662,8 @@ Ext.define('Ext.viewport.Default', function() {
         /**
          * Sets a menu for a given side of the Viewport.
          *
-         * Adds functionality to show the menu by swiping from the side of the screen from the given side.
+         * Adds functionality to show the menu by swiping from the side of the screen from
+         * the given side.
          *
          * If a menu is already set for a given side, it will be replaced by the passed menu.
          *
@@ -649,16 +682,16 @@ Ext.define('Ext.viewport.Default', function() {
          * @return {Ext.Menu} The menu set for the passed side.
          */
         setMenu: function(menu, config) {
+            var me = this,
+                side, menus, oldMenu;
+
             config = config || {};
 
             //<debug>
             if (config.reveal && config.cover) {
-                Ext.raise('[Ext.Viewport] setMenu(): Only one of reveal or cover allowed in config');
+                Ext.raise('[Ext.Viewport] setMenu(): Only one of reveal or cover is allowed');
             }
             //</debug>
-
-            var me = this,
-                side, menus, oldMenu;
 
             // Temporary workaround for body shifting issue
             if (Ext.os.is.iOS && !me.hasiOSOrientationFix) {
@@ -691,6 +724,7 @@ Ext.define('Ext.viewport.Default', function() {
             // the config in the default situation, that the menu is a Sheet,
             // or update the private property.
             oldMenu = menus[side];
+
             if (oldMenu && !oldMenu.destroyed && oldMenu !== menu) {
                 me.hideMenu(side);
                 oldMenu.setSide(null);
@@ -720,12 +754,13 @@ Ext.define('Ext.viewport.Default', function() {
             // We may be creating or reconfiguring a menu here.
             // If reconfiguring, only change configs that are present in the passed config.
             var isInstanced = menu.isComponent,
-
                 // If an instance is being reconfigured, and the config is silent about
                 // reveal, cover, or side, we must use the instance's current setting.
                 reveal = isInstanced && !('reveal' in config) ? menu.getReveal() : !!config.reveal,
-                cover  = (isInstanced && !('cover' in config)  ? menu.getCover()  : config.cover) !== false && !reveal,
-                side   = isInstanced && !('side' in config)   ? menu.getSide()   : config.side,
+                cover = (isInstanced && !('cover' in config)
+                    ? menu.getCover()
+                    : config.cover) !== false && !reveal,
+                side = isInstanced && !('side' in config) ? menu.getSide() : config.side,
                 wasFloated;
 
             //<debug>
@@ -734,7 +769,7 @@ Ext.define('Ext.viewport.Default', function() {
             }
 
             if (!sideMap[side]) {
-                Ext.raise("You must specify a valid side (left, right, top or bottom) to dock the menu.");
+                Ext.raise('Invalid side; must left, right, top or bottom.');
             }
             //</debug>
 
@@ -745,7 +780,7 @@ Ext.define('Ext.viewport.Default', function() {
                 showAnimation: null,
                 hidden: true,
                 floated: cover,
-                zIndex : cover ? null : 5,
+                zIndex: cover ? null : 5,
                 reveal: reveal,
                 cover: cover,
                 side: side
@@ -787,7 +822,8 @@ Ext.define('Ext.viewport.Default', function() {
                 menu.setConfig(config, null, {
                     strict: false
                 });
-            } else {
+            }
+            else {
                 config.xtype = 'actionsheet';
                 menu = Ext.create(Ext.apply(config, menu));
             }
@@ -827,6 +863,7 @@ Ext.define('Ext.viewport.Default', function() {
                 me.hideMenu(side, animation);
                 menu.removeCls(me.sideClsMap[side]);
             }
+
             delete menus[side];
             me.setMenus(menus);
         },
@@ -836,17 +873,27 @@ Ext.define('Ext.viewport.Default', function() {
          *
          * If no menu has been set on the passed side, nothing hapens.
          * @param {'top'/'bottom'/'left'/'right'} side The side to show the menu for.
+         * @param {Boolean} animation if false, the menu will be shown without animation.
          */
-        showMenu: function(side) {
+        showMenu: function(side, animation) {
             var me = this,
                 sideValue = sideMap[side],
                 menu = me.getMenus()[side],
                 viewportAfter = {
                     translateX: 0,
                     translateY: 0
-                }, size;
+                },
+                size;
 
             if (!menu || !menu.isHidden()) {
+                return;
+            }
+
+            if (animation === false) {
+                menu.show(false, {
+                    side: null
+                });
+
                 return;
             }
 
@@ -857,15 +904,18 @@ Ext.define('Ext.viewport.Default', function() {
 
             if (sideValue === LEFT) {
                 viewportAfter.translateX = size;
-            } else if (sideValue === RIGHT) {
+            }
+            else if (sideValue === RIGHT) {
                 viewportAfter.translateX = -size;
-            } else if (sideValue === TOP) {
+            }
+            else if (sideValue === TOP) {
                 viewportAfter.translateY = size;
-            } else if (sideValue === BOTTOM) {
+            }
+            else if (sideValue === BOTTOM) {
                 viewportAfter.translateY = -size;
             }
 
-            // Menu always animates in. Animate to an unstranslated state.
+            // Menu always animates in. Animate to an untranslated state.
             menu.translate(0, 0, {
                 duration: 200
             });
@@ -881,9 +931,9 @@ Ext.define('Ext.viewport.Default', function() {
         /**
          * Hides a menu specified by the menu's side.
          * @param {'top'/'bottom'/'left'/'right'} side The side which the menu is placed.
-         * @param {Boolean} animate if false, the menu will be hidden without animation.
+         * @param {Boolean} animation if false, the menu will be hidden without animation.
          */
-        hideMenu: function(side, animate) {
+        hideMenu: function(side, animation) {
             var me = this,
                 sideValue = sideMap[side],
                 menu = me.getMenus()[side],
@@ -893,7 +943,7 @@ Ext.define('Ext.viewport.Default', function() {
                 },
                 size;
 
-            animate = animate !== false;
+            animation = animation !== false;
 
             if (!menu || menu.isHidden()) {
                 return;
@@ -903,20 +953,23 @@ Ext.define('Ext.viewport.Default', function() {
 
             if (sideValue === LEFT) {
                 after.translateX = -size;
-            } else if (sideValue === RIGHT) {
+            }
+            else if (sideValue === RIGHT) {
                 after.translateX = size;
-            } else if (sideValue === TOP) {
+            }
+            else if (sideValue === TOP) {
                 after.translateY = -size;
-            } else if (sideValue === BOTTOM) {
+            }
+            else if (sideValue === BOTTOM) {
                 after.translateY = size;
             }
 
             // Animate menu out of view if told to
-            if (animate) {
+            if (animation) {
                 menu.revertFocus();
                 menu.translate(after.translateX, after.translateY, {
                     duration: 200,
-                    callback: function () {
+                    callback: function() {
                         if (!menu.destroyed) {
                             menu.translate(0, 0);
                             menu.setHidden(true);
@@ -933,9 +986,7 @@ Ext.define('Ext.viewport.Default', function() {
             // Viewport only has to move back into place if menu is not not floated
             // Return it to an unstranslated state
             if (!menu.getFloated()) {
-                me.translate(0, 0, animate ? {
-                    duration: 200
-                } : null);
+                me.translate(0, 0, animation ? { duration: 200 } : null);
             }
         },
 
@@ -956,7 +1007,7 @@ Ext.define('Ext.viewport.Default', function() {
          * @param {'top'/'bottom'/'left'/'right'} side Side not to hide.
          * @param {Boolean} animate if false, the menu will be hidden without animation.
          */
-        hideOtherMenus: function(side, animate){
+        hideOtherMenus: function(side, animate) {
             var menus = this.getMenus(),
                 menu;
 
@@ -972,7 +1023,7 @@ Ext.define('Ext.viewport.Default', function() {
          * @param {'top'/'bottom'/'left'/'right'} side The side which the menu is placed.
          */
         toggleMenu: function(side) {
-            var menus = this.getMenus(), 
+            var menus = this.getMenus(),
                 menu;
 
             if (menus[side]) {
@@ -982,7 +1033,7 @@ Ext.define('Ext.viewport.Default', function() {
             }
         },
 
-        applyScrollable: function (scrollable) {
+        applyScrollable: function(scrollable) {
             return this.callParent([ scrollable, Ext.getViewportScroller() ]);
         },
 
@@ -1039,26 +1090,34 @@ Ext.define('Ext.viewport.Default', function() {
 
                 me.hideOtherMenus(side);
 
-                // Ensure the menu is in place as a floated child, or programatically render it.
+                // Ensure the menu is in place as a floated child, or programmatically render it.
                 if (menu.getFloated()) {
                     me.add(menu);
-                } else {
-                    // We're going off the reservation by programatically adding to the document body
+                }
+                else {
+                    // We're going off the reservation by programmatically adding to the
+                    // document body.
                     // Usually onAdded does this stuff. We must render the menu and its modal mask.
                     Ext.getBody().insertFirst(menu.element);
+
                     if (!menu.rendered) {
                         menu.setRendered(true);
                     }
+
                     modal = menu.getModal();
+
                     if (modal) {
                         Ext.getBody().insertFirst(modal.element);
+
                         if (!modal.rendered) {
                             modal.setRendered(true);
                         }
                     }
+
                     // Must initialize the translatable config to be able to animate
                     me.translate(0, 0);
                 }
+
                 menu.removeCls(me.getLayout().itemCls);
 
                 // Now show the edge menu through the normal component show pathway
@@ -1071,20 +1130,52 @@ Ext.define('Ext.viewport.Default', function() {
 
                 if (sideValue === LEFT) {
                     before.translateX = -size;
-                } else if (sideValue === RIGHT) {
+                }
+                else if (sideValue === RIGHT) {
                     before.translateX = size;
-                } else if (sideValue === TOP) {
+                }
+                else if (sideValue === TOP) {
                     before.translateY = -size;
-                } else if (sideValue === BOTTOM) {
+                }
+                else if (sideValue === BOTTOM) {
                     before.translateY = size;
                 }
+
                 menu.translate(before.translateX, before.translateY);
+            },
+
+            /**
+             * @private
+             */
+            disableTabbing: function() {
+                if (this.tabbingDisabled) {
+                    return;
+                }
+
+                this.tabbingDisabled = true;
+
+                this.callParent();
+            },
+
+            /**
+             * @private
+             */
+            enableTabbing: function(reset) {
+                if (!this.tabbingDisabled) {
+                    return;
+                }
+
+                this.tabbingDisabled = false;
+
+                this.callParent([reset]);
             },
 
             doAddListener: function(eventName, fn, scope, options, order, caller, manager) {
                 var me = this;
+
                 if (eventName === 'ready' && me.isReady && !me.isMaximizing) {
                     fn.call(scope);
+
                     return me;
                 }
 
@@ -1095,7 +1186,7 @@ Ext.define('Ext.viewport.Default', function() {
              * Returns true if the user can zoom the viewport
              * @private
              */
-            isScalable: function () {
+            isScalable: function() {
                 var me = this,
                     metas = document.querySelectorAll('meta[name="viewport"]'),
                     // if there are multiple viewport tags the last one wins.
@@ -1150,6 +1241,7 @@ Ext.define('Ext.viewport.Default', function() {
 
                 for (menuSide in menus) {
                     checkMenu = menus[menuSide];
+
                     if (checkMenu.isVisible()) {
                         return;
                     }
@@ -1201,13 +1293,16 @@ Ext.define('Ext.viewport.Default', function() {
                 if (side === LEFT) {
                     after.translateX = movement;
                     viewportAfter.translateX = viewportMovement;
-                } else if (side === RIGHT) {
+                }
+                else if (side === RIGHT) {
                     after.translateX = -movement;
                     viewportAfter.translateX = -viewportMovement;
-                } else if (side === TOP) {
+                }
+                else if (side === TOP) {
                     after.translateY = movement;
                     viewportAfter.translateY = viewportMovement;
-                } else if (side === BOTTOM) {
+                }
+                else if (side === BOTTOM) {
                     after.translateY = -movement;
                     viewportAfter.translateY = -viewportMovement;
                 }
@@ -1231,7 +1326,8 @@ Ext.define('Ext.viewport.Default', function() {
                     after = {
                         translateX: 0,
                         translateY: 0
-                    }, viewportAfter = {
+                    },
+                    viewportAfter = {
                         translateX: 0,
                         translateY: 0
                     },
@@ -1249,15 +1345,18 @@ Ext.define('Ext.viewport.Default', function() {
                     if (velocity.x > 0) {
                         shouldRevert = true;
                     }
-                } else if (side === LEFT) {
+                }
+                else if (side === LEFT) {
                     if (velocity.x < 0) {
                         shouldRevert = true;
                     }
-                } else if (side === TOP) {
+                }
+                else if (side === TOP) {
                     if (velocity.y < 0) {
                         shouldRevert = true;
                     }
-                } else if (side === BOTTOM) {
+                }
+                else if (side === BOTTOM) {
                     if (velocity.y > 0) {
                         shouldRevert = true;
                     }
@@ -1269,13 +1368,16 @@ Ext.define('Ext.viewport.Default', function() {
                 if (side === LEFT) {
                     after.translateX = -movement;
                     viewportAfter.translateX = -viewportMovement;
-                } else if (side === RIGHT) {
+                }
+                else if (side === RIGHT) {
                     after.translateX = movement;
                     viewportAfter.translateX = viewportMovement;
-                } else if (side === TOP) {
+                }
+                else if (side === TOP) {
                     after.translateY = -movement;
                     viewportAfter.translateY = -viewportMovement;
-                } else if (side === BOTTOM) {
+                }
+                else if (side === BOTTOM) {
                     after.translateY = movement;
                     viewportAfter.translateY = viewportMovement;
                 }
@@ -1290,8 +1392,8 @@ Ext.define('Ext.viewport.Default', function() {
                     }
                 });
 
-               // Viewport only animates out of menu's way if menu is not not floated.
-               if (!menu.getFloated()) {
+                // Viewport only animates out of menu's way if menu is not not floated.
+                if (!menu.getFloated()) {
                     me.translate(viewportAfter.translateX, viewportAfter.translateY, {
                         duration: 200
                     });
@@ -1306,9 +1408,11 @@ Ext.define('Ext.viewport.Default', function() {
             sideForDirection: function(direction) {
                 if (direction === 'up') {
                     direction = 'top';
-                } else if (direction === 'down') {
+                }
+                else if (direction === 'down') {
                     direction = 'bottom';
                 }
+
                 return oppositeSide[sideMap[direction]];
             },
 
@@ -1317,17 +1421,21 @@ Ext.define('Ext.viewport.Default', function() {
              */
             sideForSwipeDirection: function(direction) {
                 if (direction === 'up') {
-                    return  'top';
-                } else if (direction === 'down') {
+                    return 'top';
+                }
+
+                if (direction === 'down') {
                     return 'bottom';
                 }
+
                 return direction;
             },
 
             toggleWindowListener: function(on, eventName, fn, capturing) {
                 if (on) {
                     this.addWindowListener(eventName, fn, capturing);
-                } else {
+                }
+                else {
                     this.removeWindowListener(eventName, fn, capturing);
                 }
             }

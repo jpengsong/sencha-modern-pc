@@ -95,6 +95,7 @@ Ext.define('Ext.drag.Constraint', {
         if (element && typeof element !== 'boolean') {
             element = Ext.get(element);
         }
+
         return element || null;
     },
 
@@ -105,6 +106,7 @@ Ext.define('Ext.drag.Constraint', {
                 y: snap
             };
         }
+
         return snap;
     },
 
@@ -131,7 +133,8 @@ Ext.define('Ext.drag.Constraint', {
             if (snap && snap.x) {
                 if (snap.xFn) {
                     x = snap.x.call(me, info, x);
-                } else {
+                }
+                else {
                     x = me.doSnap(x, initial.x, snap.x);
                 }
             }
@@ -148,7 +151,8 @@ Ext.define('Ext.drag.Constraint', {
                     x = max;
                 }
             }
-        } else {
+        }
+        else {
             x = initial.x;
         }
 
@@ -156,7 +160,8 @@ Ext.define('Ext.drag.Constraint', {
             if (snap && snap.y) {
                 if (snap.yFn) {
                     y = snap.y.call(me, info, y);
-                } else {
+                }
+                else {
                     y = me.doSnap(y, initial.y, snap.y);
                 }
             }
@@ -173,7 +178,8 @@ Ext.define('Ext.drag.Constraint', {
                     y = max;
                 }
             }
-        } else {
+        }
+        else {
             y = initial.y;
         }
 
@@ -207,12 +213,15 @@ Ext.define('Ext.drag.Constraint', {
             if (!(aNull && bNull)) {
                 if (aNull) {
                     val = b;
-                } else if (bNull) {
+                }
+                else if (bNull) {
                     val = a;
-                } else {
+                }
+                else {
                     val = resolver(a, b);
                 }
             }
+
             return val;
         },
 
@@ -232,6 +241,7 @@ Ext.define('Ext.drag.Constraint', {
                 return position;
             }
 
+            /* eslint-disable-next-line vars-on-top */
             var ratio = (position - initial) / snap,
                 floor = Math.floor(ratio);
 
@@ -239,7 +249,8 @@ Ext.define('Ext.drag.Constraint', {
             // greater than current position.
             if (ratio - floor <= 0.5) {
                 ratio = floor;
-            } else {
+            }
+            else {
                 ratio = floor + 1;
             }
 
@@ -279,15 +290,19 @@ Ext.define('Ext.drag.Constraint', {
                 if (typeof element === 'boolean') {
                     element = me.getSource().getElement().parent();
                 }
+
                 if (info.local) {
                     pos = element.getStyle('position');
+
                     if (pos === 'relative' || pos === 'absolute') {
                         size = element.getSize();
                         region = new Ext.util.Region(0, size.width, size.height, 0);
-                    } else {
+                    }
+                    else {
                         region = element.getRegion(true, true);
                     }
-                } else {
+                }
+                else {
                     region = element.getRegion(true);
                 }
             }
@@ -303,7 +318,6 @@ Ext.define('Ext.drag.Constraint', {
                     rmaxY = region.bottom - (proxyEl ? proxy.height : 0);
                 }
             }
-
 
             // The following piece sets up the numeric values for our constraint.
             // If there is an axis constraint, don't bother calculating the values since
@@ -331,6 +345,7 @@ Ext.define('Ext.drag.Constraint', {
                     minY = y[0];
                     maxY = y[1];
                 }
+
                 if (minY !== null || maxY !== null || rminY !== null || rmaxY !== null) {
                     minY = me.constrainValue(minY, rminY, Math.max);
                     maxY = me.constrainValue(maxY, rmaxY, Math.min);

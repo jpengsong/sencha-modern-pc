@@ -7,7 +7,7 @@ Ext.define('Ext.util.translatable.Component', {
     extend: 'Ext.util.translatable.CssTransform',
 
     alias: 'translatable.component', // also configures Factoryable
-    
+
     config: {
         component: null
     },
@@ -18,10 +18,12 @@ Ext.define('Ext.util.translatable.Component', {
         if (component.getFloated()) {
             component.setX(x);
             component.setY(y);
-        } else if (component.isPositioned()) {
+        }
+        else if (component.isPositioned()) {
             component.setLeft(x);
             component.setTop(y);
-        } else {
+        }
+        else {
             this.callParent([x, y]);
         }
     },
@@ -32,13 +34,17 @@ Ext.define('Ext.util.translatable.Component', {
 
         if (component.getFloated()) {
             result = [component.getX(), component.getY()];
-        } else if (component.isPositioned()) {
+        }
+        else if (component.isPositioned()) {
             result = [component.getLeft(), component.getTop()];
-        } else {
+        }
+        else {
             result = this.callParent();
         }
+
         this.x = result[0];
         this.y = result[1];
+
         return result;
     }
 });

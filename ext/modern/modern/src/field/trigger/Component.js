@@ -13,23 +13,23 @@ Ext.define('Ext.field.trigger.Component', {
         component: null
     },
 
-    doDestroy: function () {
+    doDestroy: function() {
         this.setComponent(null);
         this.callParent();
     },
 
-    applyComponent: function (config, existing) {
+    applyComponent: function(config, existing) {
         return Ext.updateWidget(existing, config, this, 'createComponent');
     },
 
-    createComponent: function (config) {
+    createComponent: function(config) {
         return Ext.apply({
             $initParent: this,
             ownerCmp: this
         }, config);
     },
 
-    updateComponent: function (component) {
+    updateComponent: function(component) {
         if (component) {
             delete component.$initParent;
             component.ownerCmp = this;

@@ -32,6 +32,7 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
             }]);
 
             var fields = fieldpanel.query('radiofield');
+
             fields.forEach(function(f) {
                 expect(f.getGroupValue()).toBe('blue');
             });
@@ -48,6 +49,7 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
             fieldpanel.items.first().check();
 
             var fields = fieldpanel.query('radiofield');
+
             fields.forEach(function(f) {
                 expect(f.getGroupValue()).toBe('red');
             });
@@ -61,6 +63,7 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
             }]);
 
             var fields = fieldpanel.query('radiofield');
+
             fields.forEach(function(f) {
                 expect(f.getGroupValue()).toBeNull();
             });
@@ -185,11 +188,12 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
                             value: 'red'
                         }, {
                             value: 'blue'
-                        }])
+                        }]);
                     });
 
                     it("should set the checked state", function() {
                         var f = fieldpanel.getAt(0);
+
                         f.setChecked(true);
                         expect(f.getChecked()).toBe(true);
                         expect(f.isChecked()).toBe(true);
@@ -197,6 +201,7 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
 
                     it("should fire change, check, not fire uncheck", function() {
                         var f = fieldpanel.getAt(0);
+
                         attachSpies(f);
 
                         f.setChecked(true);
@@ -219,11 +224,12 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
                             checked: true
                         }, {
                             value: 'blue'
-                        }])
+                        }]);
                     });
 
                     it("should set the checked state", function() {
                         var f = fieldpanel.getAt(0);
+
                         f.setChecked(true);
                         expect(f.getChecked()).toBe(true);
                         expect(f.isChecked()).toBe(true);
@@ -231,6 +237,7 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
 
                     it("should not fire any events", function() {
                         var f = fieldpanel.getAt(0);
+
                         attachSpies(f);
 
                         f.setChecked(true);
@@ -249,11 +256,12 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
                             value: 'red'
                         }, {
                             value: 'blue'
-                        }])
+                        }]);
                     });
 
                     it("should set the checked state", function() {
                         var f = fieldpanel.getAt(0);
+
                         f.setChecked(false);
                         expect(f.getChecked()).toBe(false);
                         expect(f.isChecked()).toBe(false);
@@ -261,6 +269,7 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
 
                     it("should not fire any events", function() {
                         var f = fieldpanel.getAt(0);
+
                         attachSpies(f);
 
                         f.setChecked(false);
@@ -278,11 +287,12 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
                             checked: true
                         }, {
                             value: 'blue'
-                        }])
+                        }]);
                     });
 
                     it("should set the checked state", function() {
                         var f = fieldpanel.getAt(0);
+
                         f.setChecked(false);
                         expect(f.getChecked()).toBe(false);
                         expect(f.isChecked()).toBe(false);
@@ -290,6 +300,7 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
 
                     it("should fire change, check, not fire uncheck", function() {
                         var f = fieldpanel.getAt(0);
+
                         attachSpies(f);
 
                         f.setChecked(false);
@@ -314,11 +325,12 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
                         value: 'red'
                     }, {
                         value: 'blue'
-                    }])
+                    }]);
                 });
 
                 it("should set the checked state", function() {
                     var f = fieldpanel.getAt(0);
+
                     f.check();
                     expect(f.getChecked()).toBe(true);
                     expect(f.isChecked()).toBe(true);
@@ -326,6 +338,7 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
 
                 it("should fire change, check, not fire uncheck", function() {
                     var f = fieldpanel.getAt(0);
+
                     attachSpies(f);
 
                     f.check();
@@ -348,11 +361,12 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
                         checked: true
                     }, {
                         value: 'blue'
-                    }])
+                    }]);
                 });
 
                 it("should set the checked state", function() {
                     var f = fieldpanel.getAt(0);
+
                     f.check();
                     expect(f.getChecked()).toBe(true);
                     expect(f.isChecked()).toBe(true);
@@ -360,6 +374,7 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
 
                 it("should not fire any events", function() {
                     var f = fieldpanel.getAt(0);
+
                     attachSpies(f);
 
                     f.check();
@@ -378,11 +393,12 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
                         value: 'red'
                     }, {
                         value: 'blue'
-                    }])
+                    }]);
                 });
 
                 it("should set the checked state", function() {
                     var f = fieldpanel.getAt(0);
+
                     f.uncheck();
                     expect(f.getChecked()).toBe(false);
                     expect(f.isChecked()).toBe(false);
@@ -390,6 +406,7 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
 
                 it("should not fire any events", function() {
                     var f = fieldpanel.getAt(0);
+
                     attachSpies(f);
 
                     f.uncheck();
@@ -407,11 +424,12 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
                         checked: true
                     }, {
                         value: 'blue'
-                    }])
+                    }]);
                 });
 
                 it("should set the checked state", function() {
                     var f = fieldpanel.getAt(0);
+
                     f.uncheck();
                     expect(f.getChecked()).toBe(false);
                     expect(f.isChecked()).toBe(false);
@@ -419,6 +437,7 @@ topSuite("Ext.field.Radio", ['Ext.field.Panel', 'Ext.layout.VBox'], function() {
 
                 it("should fire change, check, not fire uncheck", function() {
                     var f = fieldpanel.getAt(0);
+
                     attachSpies(f);
 
                     f.uncheck();

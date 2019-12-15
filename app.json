@@ -3,22 +3,64 @@
     "namespace": "App",
     "version": "1.0.0.0",
     "framework": "ext",
-    "toolkit": "classic",
-    "theme": "theme-crimson",
-    "requires": [
+    "toolkit": "modern",
+    "theme": "theme-material",
+
+    /**
+     * The list of required packages (with optional versions; default is "latest").
+     *
+     * For example,
+     *
+     *      "requires": [
+     *          "charts"
+     *      ]
+     */
+     "requires": [
         "font-awesome",
         "ux",
-        "locale",
-        "charts"
+        "locale"
     ],
     "locale": "zh_CN",
+
+    /**
+     * The relative path to the application's markup file (html, jsp, asp, etc.).
+     */
     "indexHtmlPath": "index.html",
+
+    /**
+     * Comma-separated string with the paths of directories or files to search. Any classes
+     * declared in these locations will be available in your class "requires" or in calls
+     * to "Ext.require". The "app.dir" variable below is expanded to the path where the
+     * application resides (the same folder in which this file is located).
+     */
     "classpath": [
         "app"
     ],
+
+    /**
+     * Comma-separated string with the paths of directories or files to search. Any classes
+     * declared in these locations will be automatically required and included in the build.
+     * If any file defines an Ext JS override (using Ext.define with an "override" property),
+     * that override will in fact only be included in the build if the target class specified
+     * in the "override" property is also included.
+     */
     "overrides": [
         "overrides"
     ],
+
+    "builds": {
+        "material": {
+            "toolkit": "modern",
+            "material" : {
+                "toolbar": {
+                    "color": "#1976d2",
+                    "dynamic": true
+                }
+            },
+            "theme": "theme-material"
+        }
+    },
+
     /**
      * Fashion build configuration properties.
      */
@@ -31,19 +73,21 @@
             "enable": false
         }
     },
+
     /**
      * Sass configuration properties.
      */
     "sass": {
         /**
          * The root namespace to use when mapping *.scss files to classes in the
-         * sass/src and sass/var directories. For example, "app.view.Foo" would
-         * map to "sass/src/view/Foo.scss". If we changed this to "app.view" then
+         * sass/src and sass/var directories. For example, "App.view.Foo" would
+         * map to "sass/src/view/Foo.scss". If we changed this to "App.view" then
          * it would map to "sass/src/Foo.scss". To style classes outside the app's
          * root namespace, change this to "". Doing so would change the mapping of
-         * "app.view.Foo" to "sass/src/app/view/Foo.scss".
+         * "App.view.Foo" to "sass/src/App/view/Foo.scss".
          */
         "namespace": "App",
+
         /**
          * Generated sass source settings
          *
@@ -58,10 +102,12 @@
          *      }
          *
          */
+
         "generated": {
             "var": "sass/save.scss",
             "src": "sass/save"
         },
+
         /**
          * Comma-separated list of files or folders containing extra Sass. These
          * files are automatically included in the Sass compilation. By default this
@@ -84,6 +130,7 @@
         "etc": [
             "sass/etc/all.scss"
         ],
+
         /**
          * Comma-separated list of folders containing Sass variable definitions
          * files. These file can also define Sass mixins for use by components.
@@ -108,6 +155,7 @@
             "sass/var/all.scss",
             "sass/var"
         ],
+
         /**
          * Comma-separated list of folders containing Sass rule files.
          *
@@ -129,6 +177,7 @@
             "sass/src"
         ]
     },
+
     /**
      * List of all JavaScript assets in the right execution order.
      *
@@ -176,21 +225,30 @@
             "includeInBundle": false
         },
         {
+            "path": "resources/webuploader/webuploader.js",
+            "includeInBundle": false
+        },
+        {
             "path": "resources/echarts/echarts.min.js",
             "includeInBundle": false
         },
         {
-            "path": "resources/webuploader/webuploader.min.js",
+            "path": "resources/echarts/dark.js",
             "includeInBundle": false
         },
         {
-            "path": "${framework.dir}/build/ext-all-debug.js"
+            "path": "resources/echarts/customed.js",
+            "includeInBundle": false
+        },
+        {
+            "path": "${framework.dir}/build/ext-modern-all-debug.js"
         },
         {
             "path": "app.js",
             "bundle": true
         }
     ],
+
     /**
      * List of all CSS assets in the right inclusion order.
      *
@@ -223,34 +281,31 @@
             // defined in .sencha/app/defaults.properties
             "path": "${build.out.css.path}",
             "bundle": true,
-            "exclude": [
-                "fashion"
-            ]
-        },
-        {
-            // "path": "resources/Site.css",
-            "includeInBundle": false
+            "exclude": ["fashion"]
         }
     ],
+
     /**
      * This option is used to configure the dynamic loader. At present these options
      * are supported.
      *
      */
-    "loader": {
-        // This property controls how the loader manages caching for requests:
-        //
-        //   - true: allows requests to receive cached responses
-        //   - false: disable cached responses by adding a random "cache buster"
-        //   - other: a string (such as the build.timestamp shown here) to allow
-        //     requests to be cached for this build.
-        //
-        "cache": false,
-        // When "cache" is not true, this value is the request parameter used
-        // to control caching.
-        //
-        "cacheParam": "_dc"
-    },
+     "loader": {
+         // This property controls how the loader manages caching for requests:
+         //
+         //   - true: allows requests to receive cached responses
+         //   - false: disable cached responses by adding a random "cache buster"
+         //   - other: a string (such as the build.timestamp shown here) to allow
+         //     requests to be cached for this build.
+         //
+         "cache": false,
+
+         // When "cache" is not true, this value is the request parameter used
+         // to control caching.
+         //
+         "cacheParam": "_dc"
+     },
+
     /**
      * Settings specific to production builds.
      */
@@ -271,10 +326,13 @@
             "type": "yui"
         }
     },
+
     /**
      * Settings specific to testing builds.
      */
-    "testing": {},
+    "testing": {
+    },
+
     /**
      * Settings specific to development builds.
      */
@@ -283,6 +341,7 @@
             "delay": 250
         }
     },
+
     /**
      * Controls the output structure of development-mode (bootstrap) artifacts. May
      * be specified by a string:
@@ -312,9 +371,11 @@
      */
     "bootstrap": {
         "base": "${app.dir}",
+
         "microloader": "bootstrap.js",
         "css": "bootstrap.css"
     },
+
     /**
      * Controls the output directory for build resources.  May be set with
      * either a string:
@@ -360,35 +421,38 @@
      *      }
      *
      */
-    "builds": {
-        "green": {
-            "green": "classic",
-            "theme": "theme-green"
-        },
-        "crimson": {
-            "crimson": "classic",
-            "theme": "theme-crimson"
-        },
-        "purple": {
-            "purple": "classic",
-            "theme": "theme-purple"
-        },
-        "skyblue": {
-            "skyblue": "classic",
-            "theme": "theme-skyblue"
-        }
-    },
+
+    // "output": {
+    //     "base": "${workspace.build.dir}/${build.environment}/${app.name}",
+    //     "appCache": {
+    //         "enable": false
+    //     }
+    // },
+
     "output": {
         "base": "${workspace.build.dir}/${build.environment}/${app.name}",
-        "appCache": {
+        "page": "index.html",
+        "manifest": "${build.id}.json",
+        "js": {
+            "path": "${build.id}/app.js",
+            "version": "ES6"
+        },
+        "framework": "${build.id}/framework.js",
+        "resources": {
+            "path": "./${build.id}/resources",
+            "images": "./${build.id}/resources/images",
+            "shared": "./resources",
+            "toolkit": "${toolkit.name}/resources",
+            "base": "."
+        },
+        "deltas": {
             "enable": false
         },
-        "resources": {
-            "path": "${build.id}/resources",
-            "shared": "resources"
-        },
-        "manifest": "${build.id}.json"
+        "appCache": {
+            "enable": false
+        }
     },
+
     /**
     * Controls for localStorage caching
     *   "cache": {
@@ -404,10 +468,12 @@
     *       "deltas": "deltas"
     *   }
     */
+
     "cache": {
         "enable": false,
         "deltas": true
     },
+
     /**
      * Used to automatically generate cache.manifest (HTML 5 application cache manifest)
      * file when you build.
@@ -430,6 +496,7 @@
          */
         "fallback": []
     },
+
     /**
      * Extra resources to be copied into the resource folder as specified in the "resources"
      * property of the "output" object. Folders specified in this list will be deeply copied.
@@ -440,31 +507,17 @@
             "output": "shared"
         }
     ],
+
     /**
      * Directory path to store all previous production builds. Note that the content
      * generated inside this directory must be kept intact for proper generation of
      * deltas between updates.
      */
+
     "archivePath": "archive",
-    /**
-     * Additional resources used during theme slicing operations
-     */
-    "slicer": {
-        "js": [
-            {
-                "path": "sass/example/custom.js",
-                "isWidgetManifest": true
-            }
-        ],
-        "output": {
-            "appCache": {
-                "enable": false
-            }
-        },
-        "cache": {
-            "enable": false
-        }
-    },
+
+    "slicer": null,
+
     /**
      * Build Profiles. This object's properties are each a "build profile". You can
      * add as many as you need to produce optimized builds for devices, themes, locales
@@ -473,6 +526,7 @@
      * names.
      *
      */
+
     /**
      * File / directory name patttern to ignore when copying to the builds. Must be a
      * valid regular expression.
@@ -480,9 +534,10 @@
     "ignore": [
         "(^|/)CVS(/?$|/.*?$)"
     ],
+
     /**
      * Uniquely generated id for this application, used as prefix for localStorage keys.
      * Normally you should never change this value.
      */
-    "id": "6a3da2d1-1004-4a55-ab28-e516eab2415b"
+    "id": "13aaf953-f655-402a-8aae-5c964cdd8755"
 }

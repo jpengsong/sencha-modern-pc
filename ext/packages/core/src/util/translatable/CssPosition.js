@@ -18,8 +18,6 @@ Ext.define('Ext.util.translatable.CssPosition', {
         if (typeof y === 'number') {
             domStyle.top = y + 'px';
         }
-
-        this.callParent([x, y]);
     },
 
     syncPosition: function() {

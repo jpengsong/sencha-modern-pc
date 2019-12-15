@@ -13,14 +13,7 @@ Ext.define('Ext.util.translatable.CssTransform', {
     posRegex: /(\d+)px[^\d]*(\d+)px/,
 
     doTranslate: function(x, y) {
-        var me = this,
-            element = me.getElement();
-
-        if (!me.destroyed && !element.destroyed) {
-            element.translate(x, y);
-        }
-
-        me.callParent([x, y]);
+        this.getElement().translate(x, y);
     },
 
     syncPosition: function() {

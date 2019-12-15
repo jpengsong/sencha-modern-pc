@@ -9,7 +9,8 @@ Ext.define('Ext.chart.series.sprite.Cartesian', {
             processors: {
                 /**
                  * @cfg {Number} [selectionTolerance=20]
-                 * The distance from the event position to the sprite's data points to trigger interactions (used for 'iteminfo', etc).
+                 * The distance from the event position to the sprite's data points to trigger
+                 * interactions (used for 'iteminfo', etc).
                  */
                 selectionTolerance: 'number',
 
@@ -52,16 +53,16 @@ Ext.define('Ext.chart.series.sprite.Cartesian', {
                 innerHeight: 'panzoom'
             },
             updaters: {
-                dataX: function (attr) {
+                dataX: function(attr) {
                     this.processDataX();
                     this.scheduleUpdater(attr, 'dataY', ['dataY']);
                 },
 
-                dataY: function () {
+                dataY: function() {
                     this.processDataY();
                 },
 
-                panzoom: function (attr) {
+                panzoom: function(attr) {
                     // dx, dy are deltas between min & max of coordinated data values.
                     var dx = attr.visibleMaxX - attr.visibleMinX,
                         dy = attr.visibleMaxY - attr.visibleMinY,
@@ -96,7 +97,7 @@ Ext.define('Ext.chart.series.sprite.Cartesian', {
 
     processDataX: Ext.emptyFn,
 
-    updatePlainBBox: function (plain) {
+    updatePlainBBox: function(plain) {
         var attr = this.attr;
 
         plain.x = attr.dataMinX;
@@ -110,26 +111,31 @@ Ext.define('Ext.chart.series.sprite.Cartesian', {
      * @param {String} key
      * @return {*}
      */
-    binarySearch: function (key) {
+    binarySearch: function(key) {
         var dx = this.attr.dataX,
             start = 0,
-            end = dx.length;
+            end = dx.length,
+            mid, val;
 
         if (key <= dx[0]) {
             return start;
         }
+
         if (key >= dx[end - 1]) {
             return end - 1;
         }
 
         while (start + 1 < end) {
-            var mid = (start + end) >> 1,
-                val = dx[mid];
+            mid = (start + end) >> 1;
+            val = dx[mid];
+
             if (val === key) {
                 return mid;
-            } else if (val < key) {
+            }
+            else if (val < key) {
                 start = mid;
-            } else {
+            }
+            else {
                 end = mid;
             }
         }
@@ -137,11 +143,12 @@ Ext.define('Ext.chart.series.sprite.Cartesian', {
         return start;
     },
 
-    render: function (surface, ctx, surfaceClipRect) {
+    render: function(surface, ctx, surfaceClipRect) {
         var me = this,
             attr = me.attr,
             margin = 1, // TODO: why do we need it?
-            inverseMatrix = attr.inverseMatrix.clone();
+            inverseMatrix = attr.inverseMatrix.clone(),
+            dataClipRect;
 
         // The sprite's `attr.matrix` is stretching/shrinking data coordinates
         // to surface coordinates.
@@ -218,15 +225,19 @@ Ext.define('Ext.chart.series.sprite.Cartesian', {
         if (attr.dataX === null || attr.dataX === undefined) {
             return;
         }
+
         if (attr.dataY === null || attr.dataY === undefined) {
             return;
         }
-        if (inverseMatrix.getXX() * inverseMatrix.getYX() || inverseMatrix.getXY() * inverseMatrix.getYY()) {
+
+        if (inverseMatrix.getXX() * inverseMatrix.getYX() ||
+            inverseMatrix.getXY() * inverseMatrix.getYY()) {
             Ext.Logger.warn('Cartesian Series sprite does not support rotation/sheering');
+
             return;
         }
 
-        var dataClipRect = inverseMatrix.transformList([
+        dataClipRect = inverseMatrix.transformList([
             [surfaceClipRect[0] - margin, surfaceClipRect[3] + margin],  // (left, height)
             [surfaceClipRect[0] + surfaceClipRect[2] + margin, -margin]  // (width, top)
         ]);
@@ -248,8 +259,10 @@ Ext.define('Ext.chart.series.sprite.Cartesian', {
      * @param {CanvasRenderingContext2D} ctx A context object that is API compatible with the native
      * [CanvasRenderingContext2D](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D).
      * @param {Number[]} dataClipRect The clip rect in data coordinates, roughly equivalent to
-     * [attr.dataMinX, attr.dataMinY, attr.dataMaxX, attr.dataMaxY] for an untranslated/unscaled surface/sprite.
-     * @param {Number[]} surfaceClipRect The clip rect in surface coordinates: [left, top, width, height].
+     * [attr.dataMinX, attr.dataMinY, attr.dataMaxX, attr.dataMaxY] for an untranslated/unscaled
+     * surface/sprite.
+     * @param {Number[]} surfaceClipRect The clip rect in surface coordinates:
+     * [left, top, width, height].
      * @method
      */
     renderClipped: Ext.emptyFn,
@@ -261,8 +274,9 @@ Ext.define('Ext.chart.series.sprite.Cartesian', {
      * @return {Number} The index
      * @deprecated 6.5.2 Use {@link #getNearestDataPoint} instead.
      */
-    getIndexNearPoint: function (x, y) {
+    getIndexNearPoint: function(x, y) {
         var result = this.getNearestDataPoint(x, y);
+
         return result ? result.index : -1;
     },
 
@@ -284,7 +298,7 @@ Ext.define('Ext.chart.series.sprite.Cartesian', {
      * @param {Number} y
      * @return {Object}
      */
-    getNearestDataPoint: function (x, y) {
+    getNearestDataPoint: function(x, y) {
         var me = this,
             attr = me.attr,
             series = me.getSeries(),
@@ -297,8 +311,7 @@ Ext.define('Ext.chart.series.sprite.Cartesian', {
             minDistance = Infinity,
             index = -1,
             result = null,
-            distance, dx, dy,
-            xy, i, ln, end, inc;
+            distance, dx, dy, xy, i, ln, end, inc, bbox;
 
         // Notes:
         // Instead of converting the given point from surface coordinates to data coordinates
@@ -317,20 +330,25 @@ Ext.define('Ext.chart.series.sprite.Cartesian', {
 
         if (items) {
             ln = dataX.length;
+
             if (series.reversedSpriteZOrder) {
                 i = ln - 1;
                 end = -1;
                 inc = -1;
-            } else {
+            }
+            else {
                 i = 0;
                 end = ln;
                 inc = 1;
             }
+
             for (; i !== end; i += inc) {
-                var bbox = me.getMarkerBBox('items', i);
+                bbox = me.getMarkerBBox('items', i);
+
                 // Transform the given surface element coordinates to logical coordinates
                 // of the surface (the ones the bbox uses).
                 xy = surface.inverseMatrix.transformPoint([x, y]);
+
                 if (Ext.draw.Draw.isPointInBBox(xy[0], xy[1], bbox)) {
                     index = i;
                     minDistance = 0;
@@ -338,7 +356,8 @@ Ext.define('Ext.chart.series.sprite.Cartesian', {
                     break;
                 }
             }
-        } else { // markers
+        }
+        else { // markers
             for (i = 0, ln = dataX.length; i < ln; i++) {
                 // Convert from data coordinates to coordinates within inner size rectangle.
                 // See `panzoom` method for more details.
@@ -374,5 +393,4 @@ Ext.define('Ext.chart.series.sprite.Cartesian', {
 
         return result;
     }
-
 });

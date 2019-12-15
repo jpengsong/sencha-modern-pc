@@ -11,9 +11,9 @@
  *         items: [{
  *             text: 'icon item',
  *             iconCls: 'add16'
- *         },{
+ *         }, {
  *             text: 'text item'
- *         },{
+ *         }, {
  *             text: 'plain item',
  *             plain: true
  *         }]
@@ -126,8 +126,8 @@ Ext.define('Ext.menu.Item', {
 
     /**
      * @cfg {String} menuAlign
-     * The default {@link Ext.util.Positionable#getAlignToXY Ext.util.Positionable.getAlignToXY} anchor position value for this
-     * item's sub-menu relative to this item's position.
+     * The default {@link Ext.util.Positionable#getAlignToXY Ext.util.Positionable.getAlignToXY}
+     * anchor position value for this item's sub-menu relative to this item's position.
      */
     menuAlign: 'tl-tr?',
 
@@ -150,8 +150,8 @@ Ext.define('Ext.menu.Item', {
 
     /**
      * @cfg {String/Object} tooltip
-     * The tooltip for the button - can be a string to be used as innerHTML (html tags are accepted) or
-     * QuickTips config object.
+     * The tooltip for the button - can be a string to be used as innerHTML (html tags are accepted)
+     * or QuickTips config object.
      */
 
     /**
@@ -159,19 +159,19 @@ Ext.define('Ext.menu.Item', {
      * The type of tooltip to use. Either 'qtip' for QuickTips or 'title' for title attribute.
      */
     tooltipType: 'qtip',
-    
+
     /**
      * @property focusable
      * @inheritdoc
      */
     focusable: true,
-    
+
     /**
      * @property ariaRole
      * @inheritdoc
      */
     ariaRole: 'menuitem',
-    
+
     /**
      * @property ariaEl
      * @inheritdoc
@@ -200,7 +200,8 @@ Ext.define('Ext.menu.Item', {
     childEls: [
         'itemEl', 'iconEl', 'textEl', 'arrowEl'
     ],
-    
+
+    /* eslint-disable indent, max-len */
     /**
      * @cfg renderTpl
      * @inheritdoc
@@ -227,8 +228,8 @@ Ext.define('Ext.menu.Item', {
                         '{[values.rightIcon ? "-right" : ""]} {iconCls}' +
                         '{childElCls} {glyphCls}" style="<tpl if="icon">background-image:url({icon});</tpl>' +
                         '<tpl if="glyph">' +
-                            '<tpl if="glyphFontFamily">'+
-                                'font-family:{glyphFontFamily};'+
+                            '<tpl if="glyphFontFamily">' +
+                                'font-family:{glyphFontFamily};' +
                             '</tpl>' +
                             '">' +
                             '{glyph}' +
@@ -248,7 +249,8 @@ Ext.define('Ext.menu.Item', {
                 '</tpl>' +
             '</a>' +
         '</tpl>',
-    
+    /* eslint-enable indent, max-len */
+
     /**
      * @cfg autoEl
      * @inheritdoc
@@ -256,7 +258,7 @@ Ext.define('Ext.menu.Item', {
     autoEl: {
         role: 'presentation'
     },
-    
+
     /**
      * @property maskOnDisable
      * @inheritdoc
@@ -272,7 +274,8 @@ Ext.define('Ext.menu.Item', {
 
     /**
      * @cfg {Function/String} handler
-     * A function called when the menu item is clicked (can be used instead of {@link #click} event).
+     * A function called when the menu item is clicked (can be used instead of {@link #click}
+     * event).
      * @cfg {Ext.menu.Item} handler.item The item that was clicked
      * @cfg {Ext.event.Event} handler.e The underlying {@link Ext.event.Event}.
      * @controllable
@@ -328,7 +331,7 @@ Ext.define('Ext.menu.Item', {
         }
 
         if (cls.length) {
-            me.cls  = cls.join(' ');
+            me.cls = cls.join(' ');
         }
 
         if (me.menu) {
@@ -342,11 +345,12 @@ Ext.define('Ext.menu.Item', {
 
     canFocus: function() {
         var me = this;
-        
+
         // This is an override of the implementation in Focusable.
         // We do not refuse focus if the Item is disabled.
         // http://www.w3.org/TR/2013/WD-wai-aria-practices-20130307/#menu
-        // "Disabled menu items receive focus but have no action when Enter or Left Arrow/Right Arrow is pressed."
+        // "Disabled menu items receive focus but have no action when Enter or
+        // Left Arrow/Right Arrow is pressed."
         // Test that deprecated canActivate config has not been set to false.
         return me.focusable && me.rendered && me.canActivate !== false &&
                !me.destroying && !me.destroyed &&
@@ -360,12 +364,14 @@ Ext.define('Ext.menu.Item', {
 
         // We do not refuse activation if the Item is disabled.
         // http://www.w3.org/TR/2013/WD-wai-aria-practices-20130307/#menu
-        // "Disabled menu items receive focus but have no action when Enter or Left Arrow/Right Arrow is pressed."
+        // "Disabled menu items receive focus but have no action when Enter or
+        // Left Arrow/Right Arrow is pressed."
         if (!me.plain) {
             me.addCls(me.activeCls);
         }
 
         me.activated = true;
+
         if (me.hasListeners.activate) {
             me.fireEvent('activate', me);
         }
@@ -379,8 +385,10 @@ Ext.define('Ext.menu.Item', {
         if (!me.plain) {
             me.removeCls(me.activeCls);
         }
+
         me.doHideMenu();
         me.activated = false;
+
         if (me.hasListeners.deactivate) {
             me.fireEvent('deactivate', me);
         }
@@ -390,6 +398,7 @@ Ext.define('Ext.menu.Item', {
         var menu = this.menu;
 
         this.cancelDeferExpand();
+
         if (menu && menu.isVisible()) {
             menu.hide();
         }
@@ -402,7 +411,10 @@ Ext.define('Ext.menu.Item', {
      * a non-floating ancestor.
      */
     deferHideParentMenus: function() {
-        for (var menu = this.getRefOwner(); menu && ((menu.isMenu && menu.floating) || menu.isMenuItem); menu = menu.getRefOwner()) {
+        var menu;
+
+        // eslint-disable-next-line max-len
+        for (menu = this.getRefOwner(); menu && ((menu.isMenu && menu.floating) || menu.isMenuItem); menu = menu.getRefOwner()) {
             if (menu.isMenu) {
                 menu.hide();
             }
@@ -415,7 +427,8 @@ Ext.define('Ext.menu.Item', {
         // An item can be focused (active), but disabled.
         // Disabled items must not action on click (or up/down arrow)
         // http://www.w3.org/TR/2013/WD-wai-aria-practices-20130307/#menu
-        // "Disabled menu items receive focus but have no action when Enter or Left Arrow/Right Arrow is pressed."
+        // "Disabled menu items receive focus but have no action when Enter or
+        // Left Arrow/Right Arrow is pressed."
         if (!me.disabled && me.activated && me.menu) {
 
             // hideOnClick makes no sense when there's a child menu
@@ -425,9 +438,11 @@ Ext.define('Ext.menu.Item', {
 
             // Allow configuration of zero to perform immediate expansion.
             delay = delay == null ? me.menuExpandDelay : delay;
+
             if (delay === 0) {
                 me.doExpandMenu(event);
-            } else {
+            }
+            else {
                 me.cancelDeferExpand();
                 // Delay can't be 0 by this point
                 me.expandMenuTimer = Ext.defer(me.doExpandMenu, delay, me, [event]);
@@ -463,10 +478,11 @@ Ext.define('Ext.menu.Item', {
             items = menu.getRefItems(deep);
             items.unshift(menu);
         }
+
         return items || [];
     },
 
-    getValue: function () {
+    getValue: function() {
         return this.value;
     },
 
@@ -475,11 +491,13 @@ Ext.define('Ext.menu.Item', {
 
         if (me.menu) {
             me.cancelDeferExpand();
-            me.hideMenuTimer = Ext.defer(me.doHideMenu, Ext.isNumber(delay) ? delay : me.menuHideDelay, me);
+            me.hideMenuTimer = Ext.defer(
+                me.doHideMenu, Ext.isNumber(delay) ? delay : me.menuHideDelay, me
+            );
         }
     },
 
-    onClick: function (e) {
+    onClick: function(e) {
         var me = this,
             clickHideDelay = me.clickHideDelay,
             browserEvent = e.browserEvent,
@@ -487,6 +505,7 @@ Ext.define('Ext.menu.Item', {
 
         if (!me.href || me.disabled) {
             e.stopEvent();
+
             if (me.disabled) {
                 return false;
             }
@@ -501,19 +520,21 @@ Ext.define('Ext.menu.Item', {
             // trigger the touch call-out menu to show.  If this is the case, the tap 
             // event object's browser event type will be 'touchcancel', and we do not 
             // want to hide the menu.
-            
+
             // items with submenus are activated by touchstart on mobile browsers, so
             // we cannot hide the menu on "tap"
             if (!clickHideDelay) {
                 me.deferHideParentMenus();
-            } else {
-                me.deferHideParentMenusTimer = Ext.defer(me.deferHideParentMenus, clickHideDelay, me);
+            }
+            else {
+                me.deferHideParentMenusTimer =
+                    Ext.defer(me.deferHideParentMenus, clickHideDelay, me);
             }
         }
 
         // Click event may have destroyed the menu, don't do anything further
         clickResult = me.fireEvent('click', me, e);
-        
+
         // Click listener could have destroyed the menu and/or item.
         if (me.destroyed) {
             return;
@@ -522,7 +543,7 @@ Ext.define('Ext.menu.Item', {
         if (clickResult !== false && me.handler) {
             Ext.callback(me.handler, me.scope, [me, e], 0, me);
         }
-        
+
         // And the handler could have done the same. We check this twice
         // because if the menu was destroyed in the click listener, the handler
         // should not have been called.
@@ -533,15 +554,18 @@ Ext.define('Ext.menu.Item', {
         // If there's an href, invoke dom.click() after we've fired the click event in case a click
         // listener wants to handle it.
         //
-        // Note that we're having to do this because the key navigation code will blindly call stopEvent()
-        // on all key events that it handles!
+        // Note that we're having to do this because the key navigation code will blindly call
+        // stopEvent() on all key events that it handles!
         //
-        // But, we need to check the browser event object that was passed to the listeners to determine if
-        // the default action has been prevented.  If so, we don't want to honor the .href config.
+        // But, we need to check the browser event object that was passed to the listeners
+        // to determine if the default action has been prevented.
+        // If so, we don't want to honor the .href config.
         if (Ext.isIE9m) {
-            // Here we need to invert the value since it's meaning is the opposite of defaultPrevented.
+            // Here we need to invert the value since it's meaning is the opposite
+            // of defaultPrevented.
             preventDefault = browserEvent.returnValue === false ? true : false;
-        } else {
+        }
+        else {
             preventDefault = !!browserEvent.defaultPrevented;
         }
 
@@ -555,6 +579,7 @@ Ext.define('Ext.menu.Item', {
         if (!me.hideOnClick && !me.hasFocus) {
             me.focus();
         }
+
         return clickResult;
     },
 
@@ -565,6 +590,7 @@ Ext.define('Ext.menu.Item', {
         if (me.activated && me.parentMenu.activeItem === me) {
             me.parentMenu.deactivateActiveItem();
         }
+
         me.callParent(arguments);
         me.parentMenu = me.ownerCmp = null;
     },
@@ -575,13 +601,13 @@ Ext.define('Ext.menu.Item', {
         if (me.rendered) {
             me.clearTip();
         }
-        
+
         me.cancelDeferExpand();
         me.cancelDeferHide();
         Ext.undefer(me.deferHideParentMenusTimer);
 
         me.setMenu(null);
-        
+
         me.callParent();
     },
 
@@ -600,7 +626,7 @@ Ext.define('Ext.menu.Item', {
         if (me.plain) {
             me.ariaEl = 'el';
         }
-        
+
         me.callParent();
 
         if (hasIcon) {
@@ -620,14 +646,16 @@ Ext.define('Ext.menu.Item', {
         if (!isOwnerPlain || (hasIcon && !rightIcon) || isCheckItem) {
             if (ownerCt.showSeparator && !isOwnerPlain) {
                 indentCls.push(me.indentCls);
-            } else {
+            }
+            else {
                 indentCls.push(me.indentNoSeparatorCls);
             }
         }
 
         if (hasMenu) {
             indentCls.push(me.indentRightArrowCls);
-        } else if (hasIcon && (rightIcon || isCheckItem)) {
+        }
+        else if (hasIcon && (rightIcon || isCheckItem)) {
             indentCls.push(me.indentRightIconCls);
         }
 
@@ -697,19 +725,19 @@ Ext.define('Ext.menu.Item', {
             if (destroyMenu === true || (destroyMenu !== false && me.destroyMenu)) {
                 Ext.destroy(oldMenu);
             }
-            
+
             if (ariaDom) {
                 ariaDom.removeAttribute('aria-haspopup');
                 ariaDom.removeAttribute('aria-owns');
             }
             else {
                 ariaAttr = (me.ariaRenderAttributes || (me.ariaRenderAttributes = {}));
-                
+
                 delete ariaAttr['aria-haspopup'];
                 delete ariaAttr['aria-owns'];
             }
         }
-        
+
         if (menu) {
             instanced = menu.isMenu;
             menu = me.menu = Ext.menu.Manager.get(menu, {
@@ -720,14 +748,14 @@ Ext.define('Ext.menu.Item', {
             // an existing menu, which means the config above won't get applied
             // during creation.
             menu.setOwnerCmp(me, instanced);
-            
+
             if (ariaDom) {
                 ariaDom.setAttribute('aria-haspopup', true);
                 ariaDom.setAttribute('aria-owns', menu.id);
             }
             else {
                 ariaAttr = (me.ariaRenderAttributes || (me.ariaRenderAttributes = {}));
-                
+
                 ariaAttr['aria-haspopup'] = true;
                 ariaAttr['aria-owns'] = menu.id;
             }
@@ -753,8 +781,8 @@ Ext.define('Ext.menu.Item', {
 
     /**
      * Sets the {@link #icon} on this item.
-     * @param {String} icon The new icon URL. If this `MenuItem` was configured with a {@link #cfg-glyph},
-     * this may be a glyph configuration. See {@link #cfg-glyph}.
+     * @param {String} icon The new icon URL. If this `MenuItem` was configured with a
+     * {@link #cfg-glyph}, this may be a glyph configuration. See {@link #cfg-glyph}.
      */
     setIcon: function(icon) {
         var me = this,
@@ -765,9 +793,11 @@ Ext.define('Ext.menu.Item', {
         if (me.glyph) {
             me.setGlyph(null);
         }
+
         if (iconEl) {
-            iconEl.setStyle('background-image', icon ? 'url(' + icon + ')': '');
+            iconEl.setStyle('background-image', icon ? 'url(' + icon + ')' : '');
         }
+
         me.icon = icon;
         me.fireEvent('iconchange', me, oldIcon, icon);
     },
@@ -785,9 +815,11 @@ Ext.define('Ext.menu.Item', {
         if (me.glyph) {
             me.setGlyph(null);
         }
+
         if (iconEl) {
             // In case it had been set to 'none' by a glyph setting.
             iconEl.setStyle('background-image', '');
+
             if (me.iconCls) {
                 iconEl.removeCls(me.iconCls);
             }
@@ -816,10 +848,11 @@ Ext.define('Ext.menu.Item', {
             el.setHtml(text || '');
             me.updateLayout();
         }
+
         me.fireEvent('textchange', me, oldText, text);
     },
 
-    getTipAttr: function(){
+    getTipAttr: function() {
         return this.tooltipType === 'qtip' ? 'data-qtip' : 'title';
     },
 
@@ -837,7 +870,8 @@ Ext.define('Ext.menu.Item', {
      *
      * @param {String/Object} tooltip This may be:
      *
-     *   - **String** : A string to be used as innerHTML (html tags are accepted) to show in a tooltip
+     *   - **String** : A string to be used as innerHTML (html tags are accepted) to show
+     *     in a tooltip
      *   - **Object** : A configuration object for {@link Ext.tip.QuickTipManager#register}.
      *
      * @param {Boolean} [initial] (private)
@@ -853,15 +887,18 @@ Ext.define('Ext.menu.Item', {
             }
 
             if (Ext.quickTipsActive && Ext.isObject(tooltip)) {
-                Ext.tip.QuickTipManager.register(Ext.apply({
-                    target: me.itemEl.id
-                },
-                tooltip));
+                Ext.tip.QuickTipManager.register(
+                    Ext.apply({
+                        target: me.itemEl.id
+                    }, tooltip)
+                );
                 me.tooltip = tooltip;
-            } else {
+            }
+            else {
                 me.itemEl.dom.setAttribute(me.getTipAttr(), tooltip);
             }
-        } else {
+        }
+        else {
             me.tooltip = tooltip;
         }
 
@@ -871,17 +908,17 @@ Ext.define('Ext.menu.Item', {
     getFocusEl: function() {
         return this.plain ? this.el : this.itemEl;
     },
-    
+
     getFocusClsEl: function() {
         return this.el;
     },
-    
+
     privates: {
         cancelDeferExpand: function() {
             window.clearTimeout(this.expandMenuTimer);
         },
 
-        cancelDeferHide: function(){
+        cancelDeferHide: function() {
             window.clearTimeout(this.hideMenuTimer);
         }
     },
@@ -891,10 +928,12 @@ Ext.define('Ext.menu.Item', {
             if (!glyph.isGlyph) {
                 glyph = new Ext.Glyph(glyph);
             }
+
             if (glyph.isEqual(oldGlyph)) {
                 glyph = undefined;
             }
         }
+
         return glyph;
     },
 
@@ -904,10 +943,12 @@ Ext.define('Ext.menu.Item', {
         if (iconEl) {
             iconEl.setStyle('background-image', 'none');
             this.icon = null;
+
             if (glyph) {
                 iconEl.dom.innerHTML = glyph.character;
                 iconEl.setStyle(glyph.getStyle());
-            } else {
+            }
+            else {
                 iconEl.dom.innerHTML = '';
             }
         }

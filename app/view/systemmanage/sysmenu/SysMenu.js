@@ -3,51 +3,21 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenu", {
     viewModel: "sysmenu",
     controller: "sysmenu",
     extend: "App.ux.page.TreePage",
-    initComponent: function () {
+    initialize: function () {
         var me = this;
-        me.initTreePanel();
+        me.initTreeGridPanel();
         me.callParent();
     },
 
-    initTreePanel: function () {
-        var me, treePanel, toolbar; me = this;
-        toolbar = Ext.create({
-            xtype: "toolbar",
-            layout: "hbox",
-            defaults:{
-                scale:"medium"
-            },
-            items: [
-                {
-                    text: '新增',
-                    reference: "addbtn",
-                    iconCls: "x-fa fa-plus",
-                    handler: "onAdd"
-                },
-                {
-                    text: '编辑',
-                    reference: "editbtn",
-                    iconCls: "x-fa fa-pencil-square-o",
-                    handler: "onEdit"
-                },
-                {
-                    text: '删除',
-                    reference: "delbtn",
-                    iconCls: "x-fa fa-trash-o",
-                    handler: "onDel"
-                }
-            ]
-        });
+    initTreeGridPanel: function () {
+        var me, treePanel; me = this;
 
-        treePanel = Ext.create({
-            xtype: "treepanel",
-            reference: "treepanel",
-            tbar: toolbar,
+        treePanel = {
+            xtype: "tree",
+            reference: "tree",
             rootVisible: false,
-            checkPropagation: 'both',
             animate: true,
             flex: 1,
-            useArrows :true,
             bind: {
                 store: '{treestore}'
             },
@@ -60,6 +30,38 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenu", {
                     }
                 }
             },
+            items: [
+                {
+                    xtype: 'toolbar',
+                    layout: "hbox",
+                    docked: 'top',
+                    defaults: {
+                        ui: "action",
+                        margin: "0 10 0 0",
+                        height:30
+                    },
+                    items: [
+                        {
+                            text: '新增',
+                            reference: "addbtn",
+                            iconCls: "x-far fa-plus",
+                            handler: "onAdd"
+                        },
+                        {
+                            text: '编辑',
+                            reference: "editbtn",
+                            iconCls: "x-far fa-edit",
+                            handler: "onEdit"
+                        },
+                        {
+                            text: '删除',
+                            reference: "delbtn",
+                            iconCls: "x-far fa-trash",
+                            handler: "onDel"
+                        }
+                    ]
+                }
+            ],
             columns: [
                 {
                     xtype: 'treecolumn',
@@ -88,6 +90,7 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenu", {
                     width: 80,
                     sortable: true,
                     align: 'center',
+                    cell: {encodeHtml: false},
                     renderer: function (value) {
                         return "<i class='" + value + "'></i>";
                     }
@@ -105,6 +108,7 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenu", {
                     width: 100,
                     sortable: true,
                     align: 'center',
+                    cell: {encodeHtml: false},
                     renderer: function (value) { return "<span style='color:" + (value == 1 ? "green" : "red") + "'>" + (value == 1 ? "是" : "否") + "</span>"; }
                 },
                 {
@@ -118,7 +122,7 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenu", {
             listeners: {
                 rowclick: "onRowclick"
             }
-        });
-        me.addTree("treePanel",treePanel,"100%");
+        };
+        me.addTree("tree",treePanel,"100%");
     }
 })

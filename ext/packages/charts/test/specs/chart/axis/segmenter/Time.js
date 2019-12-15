@@ -1,8 +1,8 @@
-topSuite("Ext.chart.axis.segmenter.Time", ['Ext.chart.*'], function() {
+topSuite("Ext.chart.axis.segmenter.Time", ['Ext.chart.*', 'Ext.data.ArrayStore'], function() {
     var proto = Ext.chart.axis.segmenter.Time.prototype;
 
-    describe('getTimeBucket', function () {
-        it('should return the right bucket', function () {
+    describe('getTimeBucket', function() {
+        it('should return the right bucket', function() {
             var result;
 
             // Note: formats like '2016-12-08', '2016-12-08T03:00:00' don't work in IE8 (will get NaN).

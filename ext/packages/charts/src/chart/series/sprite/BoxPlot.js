@@ -74,15 +74,17 @@ Ext.define('Ext.chart.series.sprite.BoxPlot', {
         }
     },
 
-    renderClipped: function (surface, ctx, dataClipRect) {
+    renderClipped: function(surface, ctx, dataClipRect) {
         if (this.cleanRedraw) {
             return;
         }
+
+        // eslint-disable-next-line vars-on-top
         var me = this,
             attr = me.attr,
             series = me.getSeries(),
             renderer = attr.renderer,
-            rendererData = {store: me.getStore()},
+            rendererData = { store: me.getStore() },
             itemCfg = {},
 
             dataX = attr.dataX,
@@ -108,7 +110,7 @@ Ext.define('Ext.chart.series.sprite.BoxPlot', {
             // `xx` essentially represents the distance between data points in surface coordinates.
             maxBoxWidth = Math.abs(xx) - attr.minGapWidth,
             minBoxWidth = Math.min(maxBoxWidth, attr.maxBoxWidth),
-            boxWidth = Math.round( Math.max(attr.minBoxWidth, minBoxWidth) ),
+            boxWidth = Math.round(Math.max(attr.minBoxWidth, minBoxWidth)),
 
             x, low, q1, median, q3, high,
             rendererParams, changes,
@@ -149,5 +151,4 @@ Ext.define('Ext.chart.series.sprite.BoxPlot', {
             me.putMarker('items', itemCfg, i, !renderer);
         }
     }
-
 });

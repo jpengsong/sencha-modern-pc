@@ -1,17 +1,15 @@
-/* global Ext, expect */
-
 topSuite("Ext.chart.legend.Legend", ['Ext.chart.*', 'Ext.data.ArrayStore'], function() {
-    describe('resize', function () {
+    describe('resize', function() {
         var chart;
 
-        afterEach(function () {
+        afterEach(function() {
             Ext.destroy(chart);
         });
 
-        it('should schedule chart layout when the legend size changes', function () {
+        it('should schedule chart layout when the legend size changes', function() {
             var layoutDone;
 
-            runs(function () {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'polar',
                     renderTo: document.body,
@@ -34,18 +32,18 @@ topSuite("Ext.chart.legend.Legend", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
                         donut: 30
                     },
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 // Add data to the chart.
@@ -70,7 +68,7 @@ topSuite("Ext.chart.legend.Legend", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
                 //
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 // If the layout is not done, we will wait forever
                 // or until the test times out.
                 return layoutDone;

@@ -1,4 +1,4 @@
-describe('Ext.data.validator.Phone', function() {
+topSuite('Ext.data.validator.Phone', function() {
     var invalid = [
             undefined,
             null,
@@ -101,32 +101,32 @@ describe('Ext.data.validator.Phone', function() {
         ],
         v;
 
-    function validate (value) {
+    function validate(value) {
         v = new Ext.data.validator.Phone();
 
         return v.validate(value);
     }
 
-    afterEach(function () {
+    afterEach(function() {
         v = null;
     });
 
-    it('should not validate if the value is not a valid phone number', function () {
+    it('should not validate if the value is not a valid phone number', function() {
         var i, len, test;
-        
+
         for (i = 0, len = invalid.length; i < len; i++) {
             test = invalid[i];
-            
+
             expect(validate(test)).toBe(v.getMessage());
         }
     });
 
     it('should validate phone numbers', function() {
         var i, len, test;
-        
+
         for (i = 0, len = valid.length; i < len; i++) {
             test = valid[i];
-            
+
             expect(validate(test)).toBe(true);
         }
     });

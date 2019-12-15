@@ -27,7 +27,8 @@ Ext.define('Ext.event.publisher.ElementSize', {
 
         if (subscribers[id]) {
             ++subscribers[id];
-        } else {
+        }
+        else {
             subscribers[id] = 1;
 
             monitors[id] = new Ext.util.SizeMonitor({
@@ -61,7 +62,7 @@ Ext.define('Ext.event.publisher.ElementSize', {
             Ext.TaskQueue.cancelRead(element.activeRead);
         }
     },
-    
+
     fireElementResize: function(element, info) {
         delete element.activeRead;
         this.fire(element, 'resize', [element, info]);
@@ -72,7 +73,7 @@ Ext.define('Ext.event.publisher.ElementSize', {
             element.activeRead = Ext.TaskQueue.requestRead(
                 'fireElementResize', this, [element, info]
                 //<debug>
-                , !!element.$skipResourceCheck
+                , !!element.$skipResourceCheck // eslint-disable-line comma-style
                 //</debug>
             );
         }
@@ -81,24 +82,26 @@ Ext.define('Ext.event.publisher.ElementSize', {
     //<debug>
     // This is useful for unit testing so we can force resizes
     // to take place synchronously when we know they have changed
-    ,privates: {
+    , privates: { // eslint-disable-line comma-style
         syncRefresh: function(elements) {
+            var el, monitor, i, len;
+
             elements = Ext.Array.from(elements);
 
-            var len = elements.length,
-                i = 0,
-                el, monitor;
-
-            for (i = 0; i < len; ++i) {
+            for (i = 0, len = elements.length; i < len; ++i) {
                 el = elements[i];
+
                 if (typeof el !== 'string') {
                     el = el.id;
                 }
+
                 monitor = this.monitors[el];
+
                 if (monitor) {
                     monitor.forceRefresh();
                 }
             }
+
             // This just pushes onto the RAF queue.
             Ext.TaskQueue.flush();
 

@@ -1,5 +1,3 @@
-/* global Ext, expect, jasmine, xit */
-
 topSuite("Ext.selection.CellModel",
     ['Ext.grid.Panel', 'Ext.app.ViewModel', 'Ext.grid.plugin.DragDrop'],
 function() {
@@ -8,10 +6,13 @@ function() {
 
     function triggerCellMouseEvent(type, rowIdx, cellIdx, button, x, y) {
         var target = findCell(rowIdx, cellIdx);
+
         jasmine.fireMouseEvent(target, type, x, y, button);
     }
+
     function triggerCellContextMenu(rowIdx, cellIdx) {
         var target = findCell(rowIdx, cellIdx);
+
         jasmine.fireMouseEvent(target, 'mousedown', 0, 0, 2);
         jasmine.doFireMouseEvent(target, 'contextmenu');
     }
@@ -22,7 +23,7 @@ function() {
             column: cellIdx
         }, true);
     }
-    
+
     function makeGrid(columns, cfg, selModelCfg) {
         Ext.define('spec.CellModel', {
             extend: 'Ext.data.Model',
@@ -38,7 +39,7 @@ function() {
         var data = [],
             defaultCols = [],
             i;
-        
+
         if (!columns) {
             for (i = 1; i <= 5; ++i) {
                 defaultCols.push({
@@ -47,7 +48,7 @@ function() {
                 });
             }
         }
-            
+
         for (i = 1; i <= 10; ++i) {
             data.push({
                 field1: i + '.' + 1,
@@ -57,12 +58,12 @@ function() {
                 field5: i + '.' + 5
             });
         }
-        
+
         store = new Ext.data.Store({
             model: spec.CellModel,
             data: data
         });
-        
+
         grid = new Ext.grid.Panel(Ext.apply({
             columns: columns || defaultCols,
             store: store,
@@ -75,15 +76,15 @@ function() {
         selModel = grid.getSelectionModel();
         colRef = grid.getColumnManager().getColumns();
     }
-    
-    afterEach(function(){
+
+    afterEach(function() {
         Ext.destroy(grid, store);
         selModel = grid = store = view = null;
         Ext.undefine('spec.CellModel');
         Ext.data.Model.schema.clear();
     });
 
-    itNotTouch('should select when right-clicking', function () {
+    itNotTouch('should select when right-clicking', function() {
         makeGrid();
         triggerCellContextMenu(0, 0);
 
@@ -107,6 +108,7 @@ function() {
                 });
                 jasmine.fireMouseEvent(view.getEl(), 'click', 800, 200);
                 var pos = selModel.getPosition();
+
                 expect(pos.record).toBe(store.getAt(0));
                 expect(pos.column).toBe(colRef[0]);
             });
@@ -126,7 +128,7 @@ function() {
             });
         });
     });
-    
+
     describe("hidden columns", function() {
         it("should take a hidden column into account on click", function() {
             makeGrid([{
@@ -138,14 +140,15 @@ function() {
                 dataIndex: 'field3'
             }]);
             triggerCellMouseEvent('click', 0, 2);
-            var pos = selModel.getPosition();    
+            var pos = selModel.getPosition();
+
             expect(pos.column).toBe(colRef[2]);
             expect(pos.record).toBe(grid.getStore().getAt(0));
-        });  
+        });
     });
-    
-    describe("store actions", function(){
-        it("should have no selection when clearing the store", function(){
+
+    describe("store actions", function() {
+        it("should have no selection when clearing the store", function() {
             makeGrid();
             selModel.selectByPosition({
                 row: 1,
@@ -153,12 +156,12 @@ function() {
             });
             store.removeAll();
             expect(selModel.getPosition()).toBeNull();
-        });  
-        
+        });
+
         it("should update the position when removing records", function() {
             makeGrid();
             var rec = store.getAt(8);
-            
+
             selModel.selectByPosition({
                 column: 1,
                 row: 8
@@ -167,16 +170,17 @@ function() {
             store.removeAt(0);
             store.removeAt(0);
             store.removeAt(0);
-            
+
             var pos = selModel.getPosition();
+
             expect(pos.column).toBe(colRef[1]);
             expect(pos.record).toBe(rec);
         });
-        
+
         it("should update the position on inserting records", function() {
             makeGrid();
             var rec = store.getAt(1);
-            
+
             selModel.selectByPosition({
                 column: 2,
                 row: 1
@@ -185,16 +189,17 @@ function() {
             store.insert(0, {});
             store.insert(0, {});
             store.insert(0, {});
-            
+
             var pos = selModel.getPosition();
+
             expect(pos.column).toBe(colRef[2]);
             expect(pos.record).toBe(rec);
         });
-        
+
         it("should update the position on moving records", function() {
             makeGrid();
             var rec = store.getAt(0);
-            
+
             selModel.selectByPosition({
                 column: 2,
                 row: 0
@@ -202,9 +207,10 @@ function() {
 
             // Move record 0 to be record 9
             store.add(rec);
-            
+
             // Cell selectino should still be consistent
             var pos = selModel.getPosition();
+
             expect(pos.column).toBe(colRef[2]);
             expect(pos.record).toBe(rec);
             expect(pos.rowIdx).toBe(9);
@@ -221,7 +227,7 @@ function() {
         }]);
 
         var col = grid.getColumnManager().getHeaderAtIndex(0);
-            
+
         expect(grid.getView().getCell(0, col)).toHaveCls('x-grid-cell-selected');
     });
 
@@ -231,6 +237,7 @@ function() {
             triggerCellMouseEvent('click', 0, 0);
             grid.headerCt.move(0, 3);
             var pos = selModel.getCurrentPosition();
+
             expect(pos.column).toBe(3);
             expect(pos.row).toBe(0);
             expect(pos.record).toBe(grid.getStore().getAt(0));
@@ -241,6 +248,7 @@ function() {
             makeGrid();
             triggerCellMouseEvent('click', 0, 0);
             var spy = jasmine.createSpy();
+
             selModel.on('selectionchange', spy);
             grid.headerCt.move(0, 3);
             expect(spy).not.toHaveBeenCalled();
@@ -267,7 +275,7 @@ function() {
             if (jasmine.supportsTouch) {
                 waits(1500);
             }
-            
+
             runs(function() {
                 jasmine.fireMouseEvent(document.body, 'mousemove', 20, 20);
             });
@@ -276,7 +284,7 @@ function() {
                 return plugin.dragZone.proxy.el.isVisible();
             });
 
-            runs (function() {
+            runs(function() {
                 var proxyInner;
 
                 // The proxy should contain the configured dragText
@@ -291,7 +299,7 @@ function() {
             });
         });
     });
-    
+
     describe("view model selection", function() {
         var viewModel, spy;
 
@@ -311,6 +319,7 @@ function() {
 
         function byName(name) {
             var index = store.findExact('name', name);
+
             return store.getAt(index);
         }
 
@@ -326,14 +335,17 @@ function() {
 
             it("should publish null by default", function() {
                 var args = spy.mostRecentCall.args;
+
                 expect(args[0]).toBeNull();
                 expect(args[1]).toBeUndefined();
             });
 
             it("should publish the value when selected", function() {
                 var rec = store.getAt(0);
+
                 selectNotify(rec);
                 var args = spy.mostRecentCall.args;
+
                 expect(args[0]).toBe(rec);
                 expect(args[1]).toBeNull();
             });
@@ -346,17 +358,20 @@ function() {
                 spy.reset();
                 selectNotify(rec2);
                 var args = spy.mostRecentCall.args;
+
                 expect(args[0]).toBe(rec2);
                 expect(args[1]).toBe(rec1);
             });
 
             it("should publish when an item is deselected", function() {
                 var rec = store.getAt(0);
+
                 selectNotify(rec);
                 spy.reset();
                 selModel.deselect(rec);
                 viewModel.notify();
                 var args = spy.mostRecentCall.args;
+
                 expect(args[0]).toBeNull();
                 expect(args[1]).toBe(rec);
             });
@@ -377,8 +392,10 @@ function() {
             describe("changing the selection", function() {
                 it("should trigger the binding when adding a selection", function() {
                     var rec = store.getAt(0);
+
                     selectNotify(rec);
                     var args = spy.mostRecentCall.args;
+
                     expect(args[0]).toBe(rec);
                     expect(args[1]).toBeUndefined();
                 });
@@ -391,17 +408,20 @@ function() {
                     spy.reset();
                     selectNotify(rec2);
                     var args = spy.mostRecentCall.args;
+
                     expect(args[0]).toBe(rec2);
                     expect(args[1]).toBe(rec1);
                 });
 
                 it("should trigger the binding when an item is deselected", function() {
                     var rec = store.getAt(0);
+
                     selectNotify(rec);
                     spy.reset();
                     selModel.deselect(rec);
                     viewModel.notify();
                     var args = spy.mostRecentCall.args;
+
                     expect(args[0]).toBeNull();
                     expect(args[1]).toBe(rec);
                 });
@@ -410,6 +430,7 @@ function() {
             describe("changing the viewmodel value", function() {
                 it("should select the record when setting the value", function() {
                     var rec = store.getAt(0);
+
                     viewModel.set('foo', rec);
                     viewModel.notify();
                     expect(selModel.isSelected(rec)).toBe(true);

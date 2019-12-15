@@ -1,21 +1,21 @@
 topSuite("Ext.app.domain.Controller", ['Ext.viewport.Viewport', 'Ext.app.Application'], function() {
     var ctrlFoo, ctrlBar, ctrlTest, handlerFoo, handlerBar;
-    
+
     beforeEach(function() {
         Ext.define('spec.AliasController', {
             extend: 'Ext.app.Controller',
             alias: 'controller.test',
             'namespace': 'spec'
         });
-        
+
         ctrlFoo = new Ext.app.Controller({ id: 'foo' });
         ctrlBar = new Ext.app.Controller({ id: 'bar' });
         ctrlTest = new spec.AliasController();
-        
+
         handlerFoo = jasmine.createSpy('event handler foo');
         handlerBar = jasmine.createSpy('event handler bar');
     });
-    
+
     afterEach(function() {
         Ext.undefine('spec.AliasController');
         ctrlTest = ctrlFoo = ctrlBar = handlerFoo = handlerBar = null;
@@ -29,12 +29,12 @@ topSuite("Ext.app.domain.Controller", ['Ext.viewport.Viewport', 'Ext.app.Applica
                 }
             }
         });
-    
+
         ctrlBar.fireEvent('FOO');
-        
+
         expect(handlerFoo).toHaveBeenCalled();
     });
-    
+
     describe("id selector", function() {
         it("listens to other Controllers' events by #id", function() {
             ctrlFoo.listen({
@@ -44,12 +44,12 @@ topSuite("Ext.app.domain.Controller", ['Ext.viewport.Viewport', 'Ext.app.Applica
                     }
                 }
             });
-        
+
             ctrlBar.fireEvent('foo');
-            
+
             expect(handlerFoo).toHaveBeenCalled();
         });
-    
+
         it("doesn't listen to other Controllers' events when selector doesn't match", function() {
             ctrlFoo.listen({
                 controller: {
@@ -61,15 +61,15 @@ topSuite("Ext.app.domain.Controller", ['Ext.viewport.Viewport', 'Ext.app.Applica
                     }
                 }
             });
-        
+
             ctrlFoo.fireEvent('bar');
-        
+
             expect(handlerFoo).toHaveBeenCalled();
             // AND
             expect(handlerBar).not.toHaveBeenCalled();
         });
     });
-    
+
     describe("alias selector", function() {
         it("should match based on alias", function() {
             ctrlFoo.listen({
@@ -80,9 +80,9 @@ topSuite("Ext.app.domain.Controller", ['Ext.viewport.Viewport', 'Ext.app.Applica
                 }
             });
             ctrlTest.fireEvent('custom');
-            expect(handlerFoo).toHaveBeenCalled();    
-        });  
-        
+            expect(handlerFoo).toHaveBeenCalled();
+        });
+
         it("should not listen when the alias does not match", function() {
             ctrlFoo.listen({
                 controller: {
@@ -92,12 +92,13 @@ topSuite("Ext.app.domain.Controller", ['Ext.viewport.Viewport', 'Ext.app.Applica
                 }
             });
             ctrlTest.fireEvent('custom');
-            expect(handlerFoo).not.toHaveBeenCalled(); 
+            expect(handlerFoo).not.toHaveBeenCalled();
         });
     });
-    
+
     describe("# selector", function() {
         var app, vp;
+
         beforeEach(function() {
             vp = Ext.viewport.Viewport.setup();
             app = new Ext.app.Application({
@@ -105,18 +106,20 @@ topSuite("Ext.app.domain.Controller", ['Ext.viewport.Viewport', 'Ext.app.Applica
                 quickTips: null
             });
         });
-        
+
         afterEach(function() {
             app.destroy();
             vp.destroy();
             app = null;
+
             try {
                 delete window.ControllerDomainSpec;
-            } catch (e) {
+            }
+ catch (e) {
                 window.ControllerDomainSpec = undefined;
             }
         });
-        
+
         it("should match an application", function() {
             ctrlFoo.listen({
                 controller: {
@@ -128,7 +131,7 @@ topSuite("Ext.app.domain.Controller", ['Ext.viewport.Viewport', 'Ext.app.Applica
             app.fireEvent('custom');
             expect(handlerFoo).toHaveBeenCalled();
         });
-        
+
         it("should not match a controller", function() {
             ctrlFoo.listen({
                 controller: {
@@ -141,7 +144,7 @@ topSuite("Ext.app.domain.Controller", ['Ext.viewport.Viewport', 'Ext.app.Applica
             expect(handlerFoo).not.toHaveBeenCalled();
         });
     });
-    
+
     describe("* selector", function() {
         it("listens to other Controllers' events when selector is '*'", function() {
             ctrlFoo.listen({
@@ -151,12 +154,12 @@ topSuite("Ext.app.domain.Controller", ['Ext.viewport.Viewport', 'Ext.app.Applica
                     }
                 }
             });
-            
+
             ctrlBar.fireEvent('baz');
-            
+
             expect(handlerFoo).toHaveBeenCalled();
         });
-        
+
         it("listens to its own events when selector is '*'", function() {
             ctrlFoo.listen({
                 controller: {
@@ -165,12 +168,12 @@ topSuite("Ext.app.domain.Controller", ['Ext.viewport.Viewport', 'Ext.app.Applica
                     }
                 }
             });
-            
+
             ctrlFoo.fireEvent('qux');
-            
+
             expect(handlerFoo).toHaveBeenCalled();
         });
-        
+
         it("passes event arguments correctly", function() {
             ctrlFoo.listen({
                 controller: {
@@ -179,9 +182,9 @@ topSuite("Ext.app.domain.Controller", ['Ext.viewport.Viewport', 'Ext.app.Applica
                     }
                 }
             });
-            
+
             ctrlBar.fireEvent('fred', 'foo', ['bar', 'baz']);
-            
+
             expect(handlerFoo).toHaveBeenCalledWith('foo', ['bar', 'baz']);
         });
     });

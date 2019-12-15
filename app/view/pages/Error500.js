@@ -13,16 +13,12 @@ Ext.define('App.view.pages.Error500', {
         items: [{
                 xtype: 'label',
                 cls: 'ux-page-dialog-top-text',
-                text: '500'
+                html: '500'
             },
             {
                 xtype: 'label',
                 cls: 'ux-page-dialog-desc',
                 html: '<div>出错啦！</div><div>返回 <a href="#view.main"> 首页 </a></div>'
-            },
-            {
-                xtype: 'tbspacer',
-                flex: 1
             }
         ]
     }]

@@ -69,8 +69,9 @@ Ext.define('Ext.field.trigger.Base', {
          * @private
          * @static
          */
-        sort: function (triggers) {
-            Ext.Array.sort(triggers, Ext.weightSortFn);
+        sort: function(triggers) {
+            Ext.sortByWeight(triggers);
+
             return triggers;
         }
     },
@@ -90,30 +91,28 @@ Ext.define('Ext.field.trigger.Base', {
         this.callParent();
     },
 
-    updateField: function (field) {
+    updateField: function(field) {
         // All Components MUST have an upward link through either parent or ownerCmp
         this.field = this.ownerCmp = field;
 
         this.doInheritUi();
     },
 
-
-    updateGroup: function (group) {
+    updateGroup: function(group) {
         if (!this.isConfiguring) {
             this.getField().syncTriggers();
         }
     },
 
-    updateSide: function () {
+    updateSide: function() {
         if (!this.isConfiguring) {
             this.getField().syncTriggers();
         }
     },
 
-    updateTriggers: function (triggers) {
+    updateTriggers: function(triggers) {
         var me = this,
             dom = me.element.dom,
-            iconElement = me.iconElement,
             i, ln;
 
         me.toggleCls(me.groupedCls, !!(triggers && triggers.length));

@@ -1,4 +1,4 @@
-describe("Ext.layout.Center", function() {
+topSuite("Ext.layout.Center", function() {
     var ct;
 
     afterEach(function() {
@@ -167,9 +167,9 @@ describe("Ext.layout.Center", function() {
                 0: {
                     el: {
                         x: 0,
-                        // Conditional expectation for IE edge due to the following bug:
+                        // Conditional expectation for IE due to the following bug:
                         // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/10547765/
-                        y: (Ext.isIE || Ext.isEdge) ? 50 : [
+                        y: (Ext.isIE) ? 50 : [
                             Math.floor((100 - scrollbarSize.height) / 2),
                             Math.ceil((100 - scrollbarSize.height) / 2)
                         ],

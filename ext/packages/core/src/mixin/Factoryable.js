@@ -29,7 +29,7 @@
  *
  * @since 5.0.0
  */
-Ext.Factory = function (type) {
+Ext.Factory = function(type) {
     var me = this;
 
     me.aliasPrefix = type + '.';
@@ -120,7 +120,7 @@ Ext.Factory.prototype = {
      *
      * @since 5.0.0
      */
-    create: function (config, defaultType) {
+    create: function(config, defaultType) {
         var me = this,
             Manager = Ext.ClassManager,
             cache = me.cache,
@@ -151,10 +151,12 @@ Ext.Factory.prototype = {
             if (!(klass = Manager.get(className))) {
                 return Manager.instantiate(className, config);
             }
-        } else {
+        }
+        else {
             if (!(suffix = suffix || defaultType || me.defaultType)) {
                 klass = me.defaultClass;
             }
+
             //<debug>
             if (!suffix && !klass) {
                 Ext.raise('No type specified for ' + me.type + '.create');
@@ -169,6 +171,7 @@ Ext.Factory.prototype = {
                 if (!(klass = className && Manager.get(className))) {
                     return Manager.instantiateByAlias(alias, config);
                 }
+
                 cache[suffix] = klass;
             }
         }
@@ -177,10 +180,10 @@ Ext.Factory.prototype = {
     },
 
     fixNameRe: /\.[a-z]/ig,
-    fixNameFn: function (match) {
+    fixNameFn: function(match) {
         return match.substring(1).toUpperCase();
     },
-    
+
     clearCache: function() {
         this.cache = {};
         this.instanceCache = {};
@@ -197,11 +200,11 @@ Ext.Factory.prototype = {
      * @private
      * @since 6.5.0
      */
-    hook: function (fn) {
+    hook: function(fn) {
         var me = this,
             original = me.create;
 
-        me.create = function (config, defaultType) {
+        me.create = function(config, defaultType) {
             var ret = fn.call(me, original, config, defaultType);
 
             if (ret === undefined) {
@@ -263,7 +266,7 @@ Ext.Factory.prototype = {
      * @return {Object} The reconfigured `instance` or a newly created one.
      * @since 6.5.0
      */
-    update: function (instance, config, creator, creatorMethod, defaultsConfig) {
+    update: function(instance, config, creator, creatorMethod, defaultsConfig) {
         var me = this,
             aliases, defaults, reuse, type;
 
@@ -309,6 +312,7 @@ Ext.Factory.prototype = {
                         // they won't be created when using them):
                         if (aliases.hasOwnProperty('alias')) {
                             aliases = aliases.alias;
+
                             if (aliases) {
                                 reuse = aliases === type || aliases.indexOf(type) > -1;
                             }
@@ -317,7 +321,7 @@ Ext.Factory.prototype = {
                 }
                 else {
                     // config = { xtype: ... }
-                    reuse = instance.isXType(type, /*shallow=*/true);
+                    reuse = instance.isXType(type, /* shallow= */ true);
                 }
             }
             else {
@@ -327,6 +331,7 @@ Ext.Factory.prototype = {
 
             if (reuse) {
                 instance.setConfig(config);
+
                 return instance;
             }
 
@@ -348,6 +353,7 @@ Ext.Factory.prototype = {
             }
 
             creatorMethod = creatorMethod || me.creator;
+
             if (creator[creatorMethod]) {
                 config = creator[creatorMethod](config);
 
@@ -386,14 +392,15 @@ Ext.Factory.prototype = {
  * @static
  * @since 5.0.0
  */
-Ext.Factory.define = function (type, config) {
+Ext.Factory.define = function(type, config) {
     var Factory = Ext.Factory,
         cacheable = config && config.cacheable,
         defaultClass, factory, fn;
 
     if (type.constructor === Object) {
         Ext.Object.each(type, Factory.define, Factory);
-    } else {
+    }
+    else {
         factory = new Ext.Factory(type);
 
         if (config) {
@@ -403,7 +410,8 @@ Ext.Factory.define = function (type, config) {
                 if (typeof(defaultClass = factory.xclass) === 'string') {
                     factory.defaultClass = Ext.ClassManager.get(defaultClass);
                 }
-            } else {
+            }
+            else {
                 factory.defaultType = config;
             }
         }
@@ -411,7 +419,7 @@ Ext.Factory.define = function (type, config) {
         /*
          *  layout = Ext.Factory.layout('hbox');
          */
-        Factory[factory.name] = fn = function (config, defaultType) {
+        Factory[factory.name] = fn = function(config, defaultType) {
             // maintain indirection through "create" name on instance to allow
             // the hook() mechanism to replace it.
             return factory.create(config, defaultType);
@@ -458,7 +466,7 @@ Ext.Factory.define = function (type, config) {
          *          }, config);
          *      }
          */
-        fn.update = function (instance, config, creator, creatorMethod, defaultsConfig) {
+        fn.update = function(instance, config, creator, creatorMethod, defaultsConfig) {
             return factory.update(instance, config, creator, creatorMethod, defaultsConfig);
         };
     }
@@ -473,13 +481,14 @@ Ext.Factory.clearCaches = function() {
     for (key in Factory) {
         item = Factory[key];
         item = item.instance;
+
         if (item) {
             item.clearCache();
         }
     }
 };
 
-Ext.Factory.on = function (name, fn) {
+Ext.Factory.on = function(name, fn) {
     Ext.Factory[name].instance.hook(fn);
 };
 
@@ -533,7 +542,7 @@ Ext.Factory.on = function (name, fn) {
 Ext.define('Ext.mixin.Factoryable', {
     mixinId: 'factoryable',
 
-    onClassMixedIn: function (targetClass) {
+    onClassMixedIn: function(targetClass) {
         var proto = targetClass.prototype,
             factoryConfig = proto.factoryConfig,
             alias = proto.alias,
@@ -541,9 +550,10 @@ Ext.define('Ext.mixin.Factoryable', {
             dot, createFn;
 
         alias = alias && alias.length && alias[0];
+
         if (alias && (dot = alias.lastIndexOf('.')) > 0) {
             config.type = alias.substring(0, dot);
-            config.defaultType = alias.substring(dot+1);
+            config.defaultType = alias.substring(dot + 1);
         }
 
         if (factoryConfig) {

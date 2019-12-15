@@ -11,7 +11,7 @@
 Ext.define('Ext.GlobalEvents', {
     extend: 'Ext.mixin.Observable',
     alternateClassName: 'Ext.globalEvents', // for compat with Ext JS 4.2 and earlier
-    
+
     requires: [
         'Ext.dom.Element'
     ],
@@ -119,13 +119,12 @@ Ext.define('Ext.GlobalEvents', {
      * Fires when a Component is shown.
      * @param {Ext.Component} component
      */
-    
+
     /**
      * @event beforebindnotify
      * Fires before a scheduled set of bindings are fired. This allows interested parties
      * to react and do any required work.
-     * @param {Ext.util.Scheduler} scheduler The scheduler triggering the bindings.
-     * 
+     *
      * @private
      * @since 5.1.0
      */
@@ -165,7 +164,7 @@ Ext.define('Ext.GlobalEvents', {
         MSPointerMove: 1,
         unload: 1
     },
-    
+
     // @private
     windowListeners: {
         resize: {
@@ -192,12 +191,12 @@ Ext.define('Ext.GlobalEvents', {
         if (pressedComponent && pressedComponent.onRelease) {
             pressedComponent.onRelease(e);
         }
-        
+
         me.pressedComponent = component;
 
         if (component) {
             me.pressedScrollStart = Ext.on({
-                scrollstart: function () {
+                scrollstart: function() {
                     me.setPressedComponent(null, e);
                 },
                 destroyable: true
@@ -214,7 +213,7 @@ Ext.define('Ext.GlobalEvents', {
             winListeners = me.windowListeners;
 
         me.onlineState = Ext.isOnline();
-        
+
         // Capture width/height to compare later in fireResize
         me.curHeight = Ext.Element.getViewportHeight();
         me.curWidth = Ext.Element.getViewportWidth();
@@ -224,18 +223,18 @@ Ext.define('Ext.GlobalEvents', {
             online: 'handleOnlineChange',
             offline: 'handleOnlineChange'
         });
-        
+
         // This function is not entirely harmless but since it is not directly related
         // to any component, element, or other destructible entity and effectively cannot
         // be cleaned up, we have to pretend it's OK for this timer to go unnoticed.
         //<debug>
         me.fireResize.$skipTimerCheck = true;
         //</debug>
-        
+
         // IE8 does its own thing
         if (winListeners) {
             winListeners.scope = me;
-            
+
             // CSS layouts only require buffering to the next animation frame
             if (Ext.isModern) {
                 winListeners.resize.onFrame = true;
@@ -243,7 +242,7 @@ Ext.define('Ext.GlobalEvents', {
             else {
                 winListeners.resize.buffer = me.resizeBuffer;
             }
-            
+
             win.on(winListeners);
         }
 
@@ -277,12 +276,12 @@ Ext.define('Ext.GlobalEvents', {
             Element = Ext.Element,
             w = Element.getViewportWidth(),
             h = Element.getViewportHeight();
-        
+
         // In IE the resize event will sometimes fire even though the w/h are the same.
         if (me.curHeight !== h || me.curWidth !== w) {
             me.curHeight = h;
             me.curWidth = w;
-            
+
             if (me.hasListeners.resize) {
                 me.fireEvent('resize', w, h);
             }
@@ -291,6 +290,7 @@ Ext.define('Ext.GlobalEvents', {
 
     handleOnlineChange: function() {
         var online = Ext.isOnline();
+
         if (online !== this.onlineState) {
             this.onlineState = online;
             this.fireEvent('onlinechange', online);
@@ -298,6 +298,8 @@ Ext.define('Ext.GlobalEvents', {
     }
 
 }, function(GlobalEvents) {
+    Ext.hasListeners = GlobalEvents.hasListeners;
+
     /**
      * @member Ext
      * @method on
@@ -338,7 +340,7 @@ Ext.define('Ext.GlobalEvents', {
      * @since 6.5.1
      * @private
      */
-    Ext.fireIdle = function () {
+    Ext.fireIdle = function() {
         if (GlobalEvents.hasListeners.idle && !Ext._suppressIdle) {
             GlobalEvents.fireEventArgs('idle');
         }

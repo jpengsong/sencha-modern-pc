@@ -37,7 +37,7 @@ topSuite("Ext.menu.RadioItem", ['Ext.menu.Menu', 'Ext.app.ViewModel'], function(
         };
     }
 
-    function makeItem (cfg, menuCfg) {
+    function makeItem(cfg, menuCfg) {
         var defaults = menuCfg && menuCfg.defaults;
 
         if (!defaults || !defaults.group) {
@@ -56,33 +56,33 @@ topSuite("Ext.menu.RadioItem", ['Ext.menu.Menu', 'Ext.app.ViewModel'], function(
     }
 
     describe("initial config", function() {
-        describe("normal", function () {
-            beforeEach(function () {
+        describe("normal", function() {
+            beforeEach(function() {
                 makeMenu();
             });
 
-            it("should have the only one checked", function () {
+            it("should have the only one checked", function() {
                 expect(radios.desktop.getChecked()).toBe(true);
                 expect(radios.tablet.getChecked()).toBeFalsy();
                 expect(radios.phone.getChecked()).toBeFalsy();
             });
 
-            describe("rendered", function () {
-                it("should have itemEl as ariaEl", function () {
+            describe("rendered", function() {
+                it("should have itemEl as ariaEl", function() {
                     expect(radios.desktop.ariaEl).toBe(radios.desktop.checkboxElement);
                 });
 
                 // TODO: Alex. Implement ARIA roles
-                xit("should have menuitemcheckbox role", function () {
+                xit("should have menuitemcheckbox role", function() {
                     expect(radios.desktop).toHaveAttr('role', 'menuitemcheckbox');
                 });
 
-                it("should not have aria-label", function () {
+                it("should not have aria-label", function() {
                     expect(radios.desktop).not.toHaveAttr('aria-label');
                 });
 
-                describe("aria-checked", function () {
-                    it("should be only one checked", function () {
+                describe("aria-checked", function() {
+                    it("should be only one checked", function() {
                         expect(radios.desktop.ariaEl).toHaveAttr('aria-checked', 'true');
                         expect(radios.tablet.ariaEl).not.toHaveAttr('aria-checked', 'true');
                         expect(radios.phone.ariaEl).not.toHaveAttr('aria-checked', 'true');
@@ -92,8 +92,8 @@ topSuite("Ext.menu.RadioItem", ['Ext.menu.Menu', 'Ext.app.ViewModel'], function(
         });
     });
 
-    describe('menu defaults', function () {
-        it('should create radio item with group in defaults', function () {
+    describe('menu defaults', function() {
+        it('should create radio item with group in defaults', function() {
             makeMenu({
                 defaults: {
                     group: 'foo'
@@ -109,7 +109,7 @@ topSuite("Ext.menu.RadioItem", ['Ext.menu.Menu', 'Ext.app.ViewModel'], function(
             expect(radios.tablet.getGroup()).toBe('foo');
         });
 
-        it('should create radio item with name in defaults', function () {
+        it('should create radio item with name in defaults', function() {
             makeMenu({
                 defaults: {
                     name: 'foo'
@@ -121,7 +121,7 @@ topSuite("Ext.menu.RadioItem", ['Ext.menu.Menu', 'Ext.app.ViewModel'], function(
             expect(radios.tablet instanceof Ext.menu.RadioItem).toBe(true);
         });
 
-        it('should create radio item with xtype in defaults', function () {
+        it('should create radio item with xtype in defaults', function() {
             makeMenu({
                 defaults: {
                     xtype: 'menuradioitem'

@@ -48,7 +48,7 @@ Ext.define('Ext.reactor.Transition', {
 
         /**
          * @cfg {String}
-         * The easing function to use for animations. Valid values are 'ease', 'linear', 
+         * The easing function to use for animations. Valid values are 'ease', 'linear',
          * ease-in', 'ease-out', 'ease-in-out', or a cubic-bezier curve as defined by CSS.
          */
         easing: 'ease',
@@ -74,12 +74,12 @@ Ext.define('Ext.reactor.Transition', {
         }
     },
 
-    initialize: function () {
+    initialize: function() {
         this.newLocation = location.href;
         this.callParent();
     },
 
-    computeDirection: function () {
+    computeDirection: function() {
         var me = this,
             newLocation, oldLocation;
 
@@ -90,18 +90,19 @@ Ext.define('Ext.reactor.Transition', {
             if (newLocation.length > oldLocation.length && !newLocation.indexOf(oldLocation)) {
                 return 'left';
             }
+
             if (newLocation.length < oldLocation.length && !oldLocation.indexOf(newLocation)) {
                 return 'right';
             }
         }
-         
+
         return me.getDirection();
     },
 
     // override add to show animation when children are added
-    add: function (items) {
+    add: function(items) {
         var me = this,
-            animations, i;
+            animations, i, originalDestroy;
 
         if (!Ext.isArray(items)) {
             items = [items];
@@ -121,26 +122,26 @@ Ext.define('Ext.reactor.Transition', {
             me.initial = false;
         }
 
-        items.forEach(function (item) { // need a closure for the RAF
+        items.forEach(function(item) { // need a closure for the RAF
             item.setStyle({ visibility: 'visible' });
             item.show(animations.showAnimation);
 
             // override destroy to first hide then destroy
-            var originalDestroy = item.destroy.bind(item);
+            originalDestroy = item.destroy.bind(item);
             item.destroy = me.destroyChild.bind(me, item, originalDestroy);
         });
     },
 
-    insert: function (index, item) {
+    insert: function(index, item) {
         // order doesn't matter since we're using a floating layout
         this.add(item);
     },
 
-    destroyChild: function (item, originalDestroy) {
+    destroyChild: function(item, originalDestroy) {
         var me = this,
             loc = location.href,
             direction, hideAnimation, type;
-        
+
         if (item.animatingDestroy) {
             return;
         }
@@ -154,9 +155,10 @@ Ext.define('Ext.reactor.Transition', {
 
         if (type === 'cover') {
             item.setZIndex(direction === 'left' || direction === 'top' ? 0 : 2);
-        } else if (type === 'reveal') {
+        }
+        else if (type === 'reveal') {
             item.setZIndex(direction === 'left' || direction === 'top' ? 2 : 0);
-        } 
+        }
 
         item.animatingDestroy = true;
 
@@ -166,13 +168,14 @@ Ext.define('Ext.reactor.Transition', {
 
         if (hideAnimation.type === 'reactor-delay') {
             Ext.defer(originalDestroy, hideAnimation.duration);
-        } else {
+        }
+        else {
             item.on('hide', originalDestroy);
             item.hide(hideAnimation);
         }
     },
 
-    addAnimationConfigs: function (child) {
+    addAnimationConfigs: function(child) {
         child.setConfig({
             zIndex: 1,
             top: 0,
@@ -186,8 +189,8 @@ Ext.define('Ext.reactor.Transition', {
         });
     },
 
-    createAnimations: function () {
-        var me = this, 
+    createAnimations: function() {
+        var me = this,
             type = me.getType(),
             duration = me.getDuration(),
             easing = me.getEasing(),
@@ -219,7 +222,7 @@ Ext.define('Ext.reactor.Transition', {
                 }
             };
         }
-        
+
         if (type === "cover") {
             if (direction === 'left' || direction === 'up') {
                 return {
@@ -261,5 +264,5 @@ Ext.define('Ext.reactor.Transition', {
                 duration: duration
             }
         };
-    }    
+    }
 });

@@ -1,5 +1,3 @@
-/* global expect, Ext, jasmine */
-
 topSuite("grid-columns",
     [false, 'Ext.grid.Panel', 'Ext.grid.column.*', 'Ext.data.ArrayStore',
      'Ext.grid.filters.*', 'Ext.form.field.Text'],
@@ -12,42 +10,46 @@ function() {
 
             function spyOnEvent(object, eventName, fn) {
                 var obj = {
-                    fn: fn || Ext.emptyFn
-                },
-                spy = spyOn(obj, "fn");
+                        fn: fn || Ext.emptyFn
+                    },
+                    spy = spyOn(obj, "fn");
+
                 object.addListener(eventName, obj.fn);
+
                 return spy;
             }
 
-            function makeGrid(numCols, gridCfg, hiddenFn, lockedFn){
+            function makeGrid(numCols, gridCfg, hiddenFn, lockedFn) {
                 var cols, col, i;
-                
+
                 gridCfg = gridCfg || {};
-                    
+
                 colRef = [];
+
                 if (!numCols || typeof numCols === 'number') {
                     cols = [];
-                    numCols = numCols || defaultColNum; 
-                
-                
+                    numCols = numCols || defaultColNum;
+
                     for (i = 0; i < numCols; ++i) {
                         col = {
                             itemId: 'col' + i,
                             text: 'Col' + i,
                             dataIndex: 'field' + i
                         };
-                        
+
                         if (hiddenFn && hiddenFn(i)) {
                             col.hidden = true;
                         }
-                    
+
                         if (lockedFn && lockedFn(i)) {
                             col.locked = true;
                         }
+
                         col = new Ext.grid.column.Column(col);
                         cols.push(col);
                     }
-                } else {
+                }
+                else {
                     cols = numCols;
                 }
 
@@ -84,12 +86,13 @@ function() {
                     row: rowIdx,
                     column: colIdx
                 }, true);
-                
+
                 return asDom ? cell : Ext.fly(cell);
             }
 
             function getCellInner(rowIdx, colIdx) {
                 var cell = getCell(rowIdx, colIdx, true);
+
                 return cell.querySelector(grid.getView().innerSelector);
             }
 
@@ -147,42 +150,42 @@ function() {
             describe('force fit columns, shrinking width to where flexes tend to zero', function() {
                 it('should work', function() {
                     makeGrid([{
-                        text      : 'Col1',
-                        dataIndex : 'foo',
-                        flex      : 1
+                        text: 'Col1',
+                        dataIndex: 'foo',
+                        flex: 1
                     },  {
-                        text      : 'Col2',
-                        columns : [{
-                            text      : 'Col21',
-                            dataIndex : 'foo2',
+                        text: 'Col2',
+                        columns: [{
+                            text: 'Col21',
+                            dataIndex: 'foo2',
                              width: 140
                         }, {
-                            text      : 'Col22',
-                            dataIndex : 'foo4',
-                            width      : 160
+                            text: 'Col22',
+                            dataIndex: 'foo4',
+                            width: 160
                         }, {
-                            text      : 'Col23',
-                            dataIndex : 'foo4',
-                            width      : 100
+                            text: 'Col23',
+                            dataIndex: 'foo4',
+                            width: 100
                         }, {
-                            text      : 'Col34',
-                            dataIndex : 'foo4',
-                            width      : 85
+                            text: 'Col34',
+                            dataIndex: 'foo4',
+                            width: 85
                         }]
                     }, {
-                        text      : 'Col3',
-                        dataIndex : 'foo3',
-                        width      : 110
+                        text: 'Col3',
+                        dataIndex: 'foo3',
+                        width: 110
                     }, {
-                        text      : 'Col4',
-                        columns : [ {
-                            text      : 'Col41',
-                            dataIndex : 'foo2',
+                        text: 'Col4',
+                        columns: [ {
+                            text: 'Col41',
+                            dataIndex: 'foo2',
                                 flex: 1
                         }, {
-                            text      : 'Col42',
-                            dataIndex : 'foo4',
-                            width      : 120
+                            text: 'Col42',
+                            dataIndex: 'foo4',
+                            width: 120
                         }]
                     }], {
                         autoScroll: true,
@@ -196,16 +199,16 @@ function() {
                 });
             });
 
-            describe('as containers', function () {
+            describe('as containers', function() {
                 var leafCls = 'x-leaf-column-header',
                     col;
 
-                afterEach(function () {
+                afterEach(function() {
                     col = null;
                 });
 
-                describe('group headers', function () {
-                    beforeEach(function () {
+                describe('group headers', function() {
+                    beforeEach(function() {
                         makeGrid([{
                             itemId: 'main1',
                             text: 'Group Header',
@@ -237,11 +240,11 @@ function() {
                         col = grid.down('#main1');
                     });
 
-                    it('should be stamped as a container', function () {
+                    it('should be stamped as a container', function() {
                         expect(col.isContainer).toBe(true);
                     });
 
-                    it('should not give the titleEl the leaf column class', function () {
+                    it('should not give the titleEl the leaf column class', function() {
                         expect(col.titleEl.hasCls(leafCls)).toBe(false);
                     });
 
@@ -279,8 +282,8 @@ function() {
                     });
                 });
 
-                describe('contains child items', function () {
-                    beforeEach(function () {
+                describe('contains child items', function() {
+                    beforeEach(function() {
                         makeGrid([{
                             text: 'Foo',
                             dataIndex: 'field0',
@@ -294,11 +297,11 @@ function() {
                         col = grid.visibleColumnManager.getHeaderByDataIndex('field0');
                     });
 
-                    it('should be stamped as a container', function () {
+                    it('should be stamped as a container', function() {
                         expect(col.isContainer).toBe(true);
                     });
 
-                    it('should not give the titleEl the leaf column class', function () {
+                    it('should not give the titleEl the leaf column class', function() {
                         expect(col.titleEl.hasCls(leafCls)).toBe(false);
                     });
 
@@ -306,16 +309,17 @@ function() {
                         expect(col.getWidth()).toBe(grid.getWidth());
                     });
 
-                    describe('focusing', function () {
+                    describe('focusing', function() {
                         // See EXTJS-15757.
-                        it('should not throw when focusing', function () {
-                            expect(function () {
+                        it('should not throw when focusing', function() {
+                            expect(function() {
                                 grid.down('#foo').onFocus();
                             }).not.toThrow();
                         });
 
-                        it('should return the items collection', function () {
+                        it('should return the items collection', function() {
                             var col = grid.visibleColumnManager.getHeaderByDataIndex('field0');
+
                             expect(col.getFocusables()).toBe(col.items.items);
                         });
                     });
@@ -434,18 +438,18 @@ function() {
                     return grid.getVisibleColumnManager();
                 }
 
-                it("should provide a getColumnManager method", function(){
+                it("should provide a getColumnManager method", function() {
                     makeGrid();
                     expect(gam().$className).toBe('Ext.grid.ColumnManager');
                 });
 
-                it("should provide a getVisibleColumnManager method", function(){
+                it("should provide a getVisibleColumnManager method", function() {
                     makeGrid();
                     expect(gvm().$className).toBe('Ext.grid.ColumnManager');
                 });
 
-                describe("simple grid", function(){
-                    beforeEach(function(){
+                describe("simple grid", function() {
+                    beforeEach(function() {
                         makeGrid();
                     });
 
@@ -453,7 +457,7 @@ function() {
                         expect(gv().length).toBe(defaultColNum);
                     });
 
-                    it("should have the correct column order", function(){
+                    it("should have the correct column order", function() {
                         var cols = gv(),
                             i = 0,
                             len = cols.length;
@@ -463,103 +467,105 @@ function() {
                         }
                     });
 
-                    it("should update the order when moving columns", function(){
+                    it("should update the order when moving columns", function() {
                         grid.headerCt.move(3, 1);
                         var cols = gv();
+
                         expect(cols[0]).toBe(colRef[0]);
                         expect(cols[1]).toBe(colRef[3]);
                         expect(cols[2]).toBe(colRef[1]);
                         expect(cols[3]).toBe(colRef[2]);
                     });
 
-                    it("should update the columns when removing a column", function(){
+                    it("should update the columns when removing a column", function() {
                         grid.headerCt.remove(1);
                         var cols = gv();
+
                         expect(cols[0]).toBe(colRef[0]);
                         expect(cols[1]).toBe(colRef[2]);
                         expect(cols[2]).toBe(colRef[3]);
                     });
-                    
-                    it("should update the columns when adding a column", function(){
+
+                    it("should update the columns when adding a column", function() {
                         grid.headerCt.add({
                             text: 'Col4'
                         });
                         expect(gv()[4].text).toBe('Col4');
                     });
-                    
+
                     describe("functions", function() {
                         describe("getHeaderIndex", function() {
                             it("should return the correct index for the header", function() {
                                 expect(gam().getHeaderIndex(colRef[3])).toBe(3);
                             });
-                            
-                            it("should return -1 if the column doesn't exist", function(){
+
+                            it("should return -1 if the column doesn't exist", function() {
                                 column = new Ext.grid.column.Column();
-                                
+
                                 expect(gam().getHeaderIndex(column)).toBe(-1);
                             });
-                        });    
-                        
-                        describe("getHeaderAtIndex", function(){
-                            it("should return the column reference", function(){
-                                expect(gam().getHeaderAtIndex(2)).toBe(colRef[2]);    
-                            });
-                            
-                            it("should return null if the index is out of bounds", function(){
-                                expect(gam().getHeaderAtIndex(10)).toBeNull();    
-                            });  
                         });
-                        
-                        describe("getHeaderById", function(){
-                            it("should return the column reference by id", function(){
+
+                        describe("getHeaderAtIndex", function() {
+                            it("should return the column reference", function() {
+                                expect(gam().getHeaderAtIndex(2)).toBe(colRef[2]);
+                            });
+
+                            it("should return null if the index is out of bounds", function() {
+                                expect(gam().getHeaderAtIndex(10)).toBeNull();
+                            });
+                        });
+
+                        describe("getHeaderById", function() {
+                            it("should return the column reference by id", function() {
                                 expect(gam().getHeaderById('col1')).toBe(colRef[1]);
                             });
-                            
+
                             it("should return null if the id doesn't exist", function() {
-                                expect(gam().getHeaderById('foo')).toBeNull();    
+                                expect(gam().getHeaderById('foo')).toBeNull();
                             });
                         });
-                        
-                        it("should return the first item", function(){
+
+                        it("should return the first item", function() {
                             expect(gam().getFirst()).toBe(colRef[0]);
                         });
-                        
-                        it("should return the last item", function(){
+
+                        it("should return the last item", function() {
                             expect(gam().getLast()).toBe(colRef[3]);
                         });
-                        
-                        describe("getNextSibling", function(){
-                            it("should return the next sibling", function(){
-                                expect(gam().getNextSibling(colRef[1])).toBe(colRef[2]);    
+
+                        describe("getNextSibling", function() {
+                            it("should return the next sibling", function() {
+                                expect(gam().getNextSibling(colRef[1])).toBe(colRef[2]);
                             });
-                            
-                            it("should return the null if the next sibling doesn't exist", function(){
-                                expect(gam().getNextSibling(colRef[3])).toBeNull();    
-                            });  
+
+                            it("should return the null if the next sibling doesn't exist", function() {
+                                expect(gam().getNextSibling(colRef[3])).toBeNull();
+                            });
                         });
-                        
-                        describe("getPreviousSibling", function(){
-                            it("should return the previous sibling", function(){
-                                expect(gam().getPreviousSibling(colRef[2])).toBe(colRef[1]);    
+
+                        describe("getPreviousSibling", function() {
+                            it("should return the previous sibling", function() {
+                                expect(gam().getPreviousSibling(colRef[2])).toBe(colRef[1]);
                             });
-                            
-                            it("should return the null if the previous sibling doesn't exist", function(){
-                                expect(gam().getPreviousSibling(colRef[0])).toBeNull();    
-                            });  
+
+                            it("should return the null if the previous sibling doesn't exist", function() {
+                                expect(gam().getPreviousSibling(colRef[0])).toBeNull();
+                            });
                         });
                     });
                 });
-                
-                describe('getHeaderIndex', function () {
+
+                describe('getHeaderIndex', function() {
                     var index, headerCtItems;
 
-                    beforeEach(function () {
+                    beforeEach(function() {
                         makeGrid([{
                             text: 'Name',
                             width: 100,
                             dataIndex: 'name',
                             hidden: true
-                        },{
+                        }, {
                             text: 'Email',
                             width: 100,
                             dataIndex: 'email'
@@ -600,20 +606,20 @@ function() {
                         headerCtItems = grid.headerCt.items;
                     });
 
-                    afterEach(function () {
+                    afterEach(function() {
                         index = headerCtItems = null;
                     });
 
-                    describe('all columns', function () {
-                        describe('when argument is a column', function () {
-                            it('should return a valid index', function () {
+                    describe('all columns', function() {
+                        describe('when argument is a column', function() {
+                            it('should return a valid index', function() {
                                 index = gam().getHeaderIndex(headerCtItems.items[0]);
 
                                 expect(index).not.toBe(-1);
                                 expect(index).toBe(0);
                             });
 
-                            it('should return the header regardless of visibility', function () {
+                            it('should return the header regardless of visibility', function() {
                                 var header;
 
                                 header = headerCtItems.items[0];
@@ -623,13 +629,13 @@ function() {
                                 expect(index).toBe(0);
                             });
 
-                            it('should return the index of the header in its owner stack - rootHeader', function () {
+                            it('should return the index of the header in its owner stack - rootHeader', function() {
                                 index = gam().getHeaderIndex(headerCtItems.items[3].items.items[0]);
 
                                 expect(index).toBe(5);
                             });
 
-                            it('should return the index of the header in its owner stack - groupHeader', function () {
+                            it('should return the index of the header in its owner stack - groupHeader', function() {
                                 // Note that this spec is using the same header as the previous spec to demonstrate the difference.
                                 var groupHeader = headerCtItems.items[3];
 
@@ -639,15 +645,15 @@ function() {
                             });
                         });
 
-                        describe('when argument is a group header', function () {
-                            it('should return a valid index', function () {
+                        describe('when argument is a group header', function() {
+                            it('should return a valid index', function() {
                                 index = gam().getHeaderIndex(headerCtItems.items[2]);
 
                                 expect(index).not.toBe(-1);
                                 expect(index).toBe(2);
                             });
 
-                            it('should return an index of the first leaf of group header', function () {
+                            it('should return an index of the first leaf of group header', function() {
                                 var colMgrHeader;
 
                                 // First, get the index from the column mgr.  It will retrieve it from the group header's column mgr.
@@ -661,7 +667,7 @@ function() {
                                 expect(colMgrHeader.dataIndex).toBe('price');
                             });
 
-                            it("should be a reference to the first leaf header in the grouped header's columnn manager", function () {
+                            it("should be a reference to the first leaf header in the grouped header's columnn manager", function() {
                                 var groupedHeader, colMgrHeader, groupHeaderFirstHeader;
 
                                 groupedHeader = headerCtItems.items[2];
@@ -677,7 +683,7 @@ function() {
                                 expect(colMgrHeader.dataIndex).toBe(groupHeaderFirstHeader.dataIndex);
                             });
 
-                            it('should return first sub-header regardless of visibility', function () {
+                            it('should return first sub-header regardless of visibility', function() {
                                 var groupedHeader, colMgrHeader, groupHeaderFirstHeader;
 
                                 groupedHeader = headerCtItems.items[3];
@@ -695,19 +701,19 @@ function() {
                         });
                     });
 
-                    describe('visible only', function () {
-                        describe('when argument is a column', function () {
+                    describe('visible only', function() {
+                        describe('when argument is a column', function() {
                             it('should return the correct index for the header', function() {
                                 expect(gvm().getHeaderIndex(headerCtItems.items[1])).toBe(0);
                             });
 
                             it("should return -1 if the column doesn't exist", function() {
                                 column = new Ext.grid.column.Column();
-                                
+
                                 expect(gvm().getHeaderIndex(column)).toBe(-1);
                             });
 
-                            it('should not return a hidden sub-header', function () {
+                            it('should not return a hidden sub-header', function() {
                                 var header;
 
                                 header = headerCtItems.items[0];
@@ -717,7 +723,7 @@ function() {
                                 expect(index).toBe(-1);
                             });
 
-                            it('should return a valid index', function () {
+                            it('should return a valid index', function() {
                                 index = gvm().getHeaderIndex(headerCtItems.items[1]);
 
                                 expect(index).not.toBe(-1);
@@ -725,13 +731,13 @@ function() {
                                 expect(index).toBe(0);
                             });
 
-                            it('should return the index of the header in its owner stack - rootHeader', function () {
+                            it('should return the index of the header in its owner stack - rootHeader', function() {
                                 index = gvm().getHeaderIndex(headerCtItems.items[3].items.items[2]);
 
                                 expect(index).toBe(4);
                             });
 
-                            it('should return the index of the header in its owner stack - groupHeader', function () {
+                            it('should return the index of the header in its owner stack - groupHeader', function() {
                                 // Note that this spec is using the same header as the previous spec to demonstrate the difference.
                                 var groupHeader = headerCtItems.items[3];
 
@@ -741,8 +747,8 @@ function() {
                             });
                         });
 
-                        describe('when argument is a group header', function () {
-                            it('should return a valid index', function () {
+                        describe('when argument is a group header', function() {
+                            it('should return a valid index', function() {
                                 index = gvm().getHeaderIndex(headerCtItems.items[2]);
 
                                 expect(index).not.toBe(-1);
@@ -750,7 +756,7 @@ function() {
                                 expect(index).toBe(1);
                             });
 
-                            it('should return an index of the first leaf of group header', function () {
+                            it('should return an index of the first leaf of group header', function() {
                                 var colMgrHeader;
 
                                 // First, get the index from the column mgr.  It will retrieve it from the group header's column mgr.
@@ -764,7 +770,7 @@ function() {
                                 expect(colMgrHeader.dataIndex).toBe('price');
                             });
 
-                            it("should be a reference to the first leaf header in the grouped header's columnn manager", function () {
+                            it("should be a reference to the first leaf header in the grouped header's columnn manager", function() {
                                 var groupedHeader, colMgrHeader, groupHeaderFirstHeader;
 
                                 groupedHeader = headerCtItems.items[2];
@@ -780,7 +786,7 @@ function() {
                                 expect(colMgrHeader.dataIndex).toBe(groupHeaderFirstHeader.dataIndex);
                             });
 
-                            it('should not return a hidden sub-header', function () {
+                            it('should not return a hidden sub-header', function() {
                                 var groupedHeader, colMgrHeader, groupHeaderFirstHeader;
 
                                 groupedHeader = headerCtItems.items[3];
@@ -799,16 +805,16 @@ function() {
                     });
                 });
 
-                describe('getHeaderAtIndex', function () {
+                describe('getHeaderAtIndex', function() {
                     var header, headerCtItems;
 
-                    beforeEach(function () {
+                    beforeEach(function() {
                         makeGrid([{
                             text: 'Name',
                             width: 100,
                             dataIndex: 'name',
                             hidden: true
-                        },{
+                        }, {
                             text: 'Email',
                             width: 100,
                             dataIndex: 'email'
@@ -849,12 +855,12 @@ function() {
                         headerCtItems = grid.headerCt.items;
                     });
 
-                    afterEach(function () {
+                    afterEach(function() {
                         header = headerCtItems = null;
                     });
 
-                    describe('all columns', function () {
-                        it('should return a valid header', function () {
+                    describe('all columns', function() {
+                        it('should return a valid header', function() {
                             header = gam().getHeaderAtIndex(0);
 
                             expect(header).not.toBe(null);
@@ -869,7 +875,7 @@ function() {
                             expect(gam().getHeaderAtIndex(50)).toBe(null);
                         });
 
-                        it('should return the header regardless of visibility', function () {
+                        it('should return the header regardless of visibility', function() {
                             var header2;
 
                             header = gam().getHeaderAtIndex(0);
@@ -882,13 +888,13 @@ function() {
                             expect(header2.hidden).toBe(false);
                         });
 
-                        it('should return the header in its owner stack - rootHeader', function () {
+                        it('should return the header in its owner stack - rootHeader', function() {
                             header = gam().getHeaderAtIndex(0);
 
                             expect(header.text).toBe('Name');
                         });
 
-                        it('should return the index of the header in its owner stack - groupHeader', function () {
+                        it('should return the index of the header in its owner stack - groupHeader', function() {
                             // Note that this spec is using the index as the previous spec to demonstrate the difference.
                             header = headerCtItems.items[3].columnManager.getHeaderAtIndex(0);
 
@@ -896,7 +902,7 @@ function() {
                         });
                     });
 
-                    describe('visible only', function () {
+                    describe('visible only', function() {
                         it('should return the correct header from the index', function() {
                             expect(gvm().getHeaderAtIndex(0).dataIndex).toBe('email');
                         });
@@ -905,26 +911,26 @@ function() {
                             expect(gvm().getHeaderAtIndex(50)).toBe(null);
                         });
 
-                        it('should not return a hidden sub-header', function () {
+                        it('should not return a hidden sub-header', function() {
                             header = gvm().getHeaderAtIndex(2);
 
                             expect(header.hidden).toBe(false);
                             expect(header.dataIndex).toBe('pctChange');
                         });
 
-                        it('should return a valid header', function () {
+                        it('should return a valid header', function() {
                             header = gvm().getHeaderAtIndex(0);
 
                             expect(header).not.toBe(null);
                             expect(header.dataIndex).toBe('email');
                         });
 
-                        it('should return the header in its owner stack - rootHeader', function () {
+                        it('should return the header in its owner stack - rootHeader', function() {
                             header = gvm().getHeaderAtIndex(0);
                             expect(header.text).toBe('Email');
                         });
 
-                        it('should return the index of the header in its owner stack - groupHeader', function () {
+                        it('should return the index of the header in its owner stack - groupHeader', function() {
                             // Note that this spec is using the same header as the previous spec to demonstrate the difference.
                             var groupHeader = headerCtItems.items[3];
 
@@ -935,18 +941,18 @@ function() {
                     });
                 });
 
-                describe('getHeaderByDataIndex', function () {
-                    beforeEach(function () {
+                describe('getHeaderByDataIndex', function() {
+                    beforeEach(function() {
                         makeGrid([{
                             text: 'Name',
                             width: 100,
                             dataIndex: 'name',
                             hidden: true
-                        },{
+                        }, {
                             text: 'Email',
                             width: 100,
                             dataIndex: 'email'
-                        },{
+                        }, {
                             xtype: 'templatecolumn',
                             text: 'Name & Email',
                             width: 100,
@@ -954,15 +960,15 @@ function() {
                         }]);
                     });
 
-                    it("should return the correct header for dataIndex", function () {
+                    it("should return the correct header for dataIndex", function() {
                         expect(gam().getHeaderByDataIndex('email').dataIndex).toBe('email');
                     });
-                        
-                    it("should return null if column doesn't exist", function () {
+
+                    it("should return null if column doesn't exist", function() {
                         expect(gam().getHeaderByDataIndex('foo')).toBe(null);
                     });
 
-                    it("should return null if invalid dataIndex is passed", function () {
+                    it("should return null if invalid dataIndex is passed", function() {
                         expect(gam().getHeaderByDataIndex(null)).toBe(null);
                         expect(gam().getHeaderByDataIndex('')).toBe(null);
                         expect(gam().getHeaderByDataIndex(undefined)).toBe(null);
@@ -971,42 +977,42 @@ function() {
 
                 describe('hidden columns', function() {
                     // Hidden at index 3/6
-                    beforeEach(function(){
-                        makeGrid(8, null, function(i){
+                    beforeEach(function() {
+                        makeGrid(8, null, function(i) {
                             return i > 0 && i % 3 === 0;
                         });
                     });
 
-                    it("should return all columns when using getColumnManager", function(){
+                    it("should return all columns when using getColumnManager", function() {
                         expect(ga().length).toBe(8);
                     });
 
-                    it("should return only visible columns when using getVisibleColumnManager", function(){
+                    it("should return only visible columns when using getVisibleColumnManager", function() {
                         expect(gv().length).toBe(6);
                     });
 
-                    it("should update the collection when hiding a column", function(){
+                    it("should update the collection when hiding a column", function() {
                         colRef[0].hide();
                         expect(gv().length).toBe(5);
                     });
 
-                    it("should update the collection when showing a column", function(){
+                    it("should update the collection when showing a column", function() {
                         colRef[3].show();
                         expect(gv().length).toBe(7);
                     });
 
-                    describe("getHeaderAtIndex", function(){
-                        it("should return the column reference", function(){
+                    describe("getHeaderAtIndex", function() {
+                        it("should return the column reference", function() {
                             expect(gvm().getHeaderAtIndex(3)).toBe(colRef[4]);
                         });
 
-                        it("should return null if the index is out of bounds", function(){
+                        it("should return null if the index is out of bounds", function() {
                             expect(gvm().getHeaderAtIndex(7)).toBeNull();
                         });
                     });
 
-                    describe("getHeaderById", function(){
-                        it("should return the column reference by id", function(){
+                    describe("getHeaderById", function() {
+                        it("should return the column reference by id", function() {
                             expect(gvm().getHeaderById('col1')).toBe(colRef[1]);
                         });
 
@@ -1015,125 +1021,125 @@ function() {
                         });
                     });
 
-                    it("should return the first item", function(){
+                    it("should return the first item", function() {
                         expect(gvm().getFirst()).toBe(colRef[0]);
                     });
 
-                    it("should return the last item", function(){
+                    it("should return the last item", function() {
                         expect(gvm().getLast()).toBe(colRef[7]);
                     });
 
-                    describe("getNextSibling", function(){
-                        it("should return the next sibling", function(){
+                    describe("getNextSibling", function() {
+                        it("should return the next sibling", function() {
                             expect(gvm().getNextSibling(colRef[2])).toBe(colRef[4]);
                         });
 
-                        it("should return the null if the next sibling doesn't exist", function(){
+                        it("should return the null if the next sibling doesn't exist", function() {
                             expect(gvm().getNextSibling(colRef[3])).toBeNull();
                         });
                     });
 
-                    describe("getPreviousSibling", function(){
-                        it("should return the previous sibling", function(){
+                    describe("getPreviousSibling", function() {
+                        it("should return the previous sibling", function() {
                             expect(gvm().getPreviousSibling(colRef[7])).toBe(colRef[5]);
                         });
 
-                        it("should return the null if the previous sibling doesn't exist", function(){
+                        it("should return the null if the previous sibling doesn't exist", function() {
                             expect(gvm().getPreviousSibling(colRef[6])).toBeNull();
                         });
                     });
                 });
 
-
-                describe("locking", function(){
+                describe("locking", function() {
                     // first 4 locked
-                    beforeEach(function(){
-                        makeGrid(10, null, null, function(i){
+                    beforeEach(function() {
+                        makeGrid(10, null, null, function(i) {
                             return i <= 3;
                         });
                     });
 
                     describe("global manager", function() {
-                        it("should return both sets of columns", function(){
+                        it("should return both sets of columns", function() {
                             expect(ga().length).toBe(10);
                         });
 
-                        it("should update the collection when adding to the locked side", function(){
+                        it("should update the collection when adding to the locked side", function() {
                             grid.lockedGrid.headerCt.add({
                                 text: 'Foo'
                             });
                             expect(ga().length).toBe(11);
                         });
 
-                        it("should update the collection when adding to the unlocked side", function(){
+                        it("should update the collection when adding to the unlocked side", function() {
                             grid.normalGrid.headerCt.add({
                                 text: 'Foo'
                             });
                             expect(ga().length).toBe(11);
                         });
 
-                        it("should update the collection when removing from the locked side", function(){
+                        it("should update the collection when removing from the locked side", function() {
                             grid.lockedGrid.headerCt.remove(0);
                             expect(ga().length).toBe(9);
                         });
 
-                        it("should update the collection when removing from the unlocked side", function(){
+                        it("should update the collection when removing from the unlocked side", function() {
                             grid.normalGrid.headerCt.remove(0);
                             expect(ga().length).toBe(9);
                         });
 
-                        it("should maintain the same size when locking an item", function(){
+                        it("should maintain the same size when locking an item", function() {
                             grid.lock(colRef[4]);
                             expect(ga().length).toBe(10);
                         });
 
-                        it("should maintain the same size when unlocking an item", function(){
+                        it("should maintain the same size when unlocking an item", function() {
                             grid.unlock(colRef[0]);
                             expect(ga().length).toBe(10);
                         });
                     });
 
-                    describe("locked side", function(){
-                        var glm = function(){
+                    describe("locked side", function() {
+                        var glm = function() {
                             return grid.lockedGrid.getColumnManager();
                         };
-                        it("should only return the columns for this side", function(){
+
+                        it("should only return the columns for this side", function() {
                             expect(glm().getColumns().length).toBe(4);
                         });
 
-                        it("should update the collection when adding an item to this side", function(){
+                        it("should update the collection when adding an item to this side", function() {
                             grid.lock(colRef[9]);
                             expect(glm().getColumns().length).toBe(5);
                         });
 
-                        it("should update the collection when removing an item from this side", function(){
+                        it("should update the collection when removing an item from this side", function() {
                             grid.unlock(colRef[0]);
                             expect(glm().getColumns().length).toBe(3);
                         });
 
-                        describe("function", function(){
+                        describe("function", function() {
                             describe("getHeaderIndex", function() {
                                 it("should return the correct index for the header", function() {
                                     expect(glm().getHeaderIndex(colRef[2])).toBe(2);
                                 });
 
-                                it("should return -1 if the column doesn't exist", function(){
+                                it("should return -1 if the column doesn't exist", function() {
                                     expect(glm().getHeaderIndex(colRef[5])).toBe(-1);
                                 });
                             });
 
-                            describe("getHeaderAtIndex", function(){
-                                it("should return the column reference", function(){
+                            describe("getHeaderAtIndex", function() {
+                                it("should return the column reference", function() {
                                     expect(glm().getHeaderAtIndex(3)).toBe(colRef[3]);
                                 });
 
-                                it("should return null if the index is out of bounds", function(){
+                                it("should return null if the index is out of bounds", function() {
                                     expect(glm().getHeaderAtIndex(6)).toBeNull();
                                 });
                             });
 
-                            describe("getHeaderById", function(){
-                                it("should return the column reference by id", function(){
+                            describe("getHeaderById", function() {
+                                it("should return the column reference by id", function() {
                                     expect(glm().getHeaderById('col1')).toBe(colRef[1]);
                                 });
 
@@ -1144,48 +1150,50 @@ function() {
                         });
                     });
 
-                    describe("unlocked side", function(){
-                        var gum = function(){
+                    describe("unlocked side", function() {
+                        var gum = function() {
                             return grid.normalGrid.getColumnManager();
                         };
-                        it("should only return the columns for this side", function(){
+
+                        it("should only return the columns for this side", function() {
                             expect(gum().getColumns().length).toBe(6);
                         });
 
-                        it("should update the collection when adding an item to this side", function(){
+                        it("should update the collection when adding an item to this side", function() {
                             grid.unlock(colRef[1]);
                             expect(gum().getColumns().length).toBe(7);
                         });
 
-                        it("should update the collection when removing an item from this side", function(){
+                        it("should update the collection when removing an item from this side", function() {
                             grid.lock(colRef[7]);
                             expect(gum().getColumns().length).toBe(5);
                         });
 
-                        describe("function", function(){
+                        describe("function", function() {
                             var offset = 4;
+
                             describe("getHeaderIndex", function() {
                                 it("should return the correct index for the header", function() {
                                     expect(gum().getHeaderIndex(colRef[offset + 2])).toBe(2);
                                 });
 
-                                it("should return -1 if the column doesn't exist", function(){
+                                it("should return -1 if the column doesn't exist", function() {
                                     expect(gum().getHeaderIndex(colRef[0])).toBe(-1);
                                 });
                             });
 
-                            describe("getHeaderAtIndex", function(){
-                                it("should return the column reference", function(){
+                            describe("getHeaderAtIndex", function() {
+                                it("should return the column reference", function() {
                                     expect(gum().getHeaderAtIndex(3)).toBe(colRef[3 + offset]);
                                 });
 
-                                it("should return null if the index is out of bounds", function(){
+                                it("should return null if the index is out of bounds", function() {
                                     expect(gum().getHeaderAtIndex(6)).toBeNull();
                                 });
                             });
 
-                            describe("getHeaderById", function(){
-                                it("should return the column reference by id", function(){
+                            describe("getHeaderById", function() {
+                                it("should return the column reference by id", function() {
                                     expect(gum().getHeaderById('col6')).toBe(colRef[6]);
                                 });
 
@@ -1210,7 +1218,7 @@ function() {
                     });
 
                     // menuDisabled=true, shouldn't have a trigger
-                    expect(colRef[0].triggerEl).toBeNull(); 
+                    expect(colRef[0].triggerEl).toBeNull();
                 });
 
                 it("should not allow menu to be shown when grid is configured with enableColumnHide: false and sortableColumns: false", function() {
@@ -1248,6 +1256,7 @@ function() {
                     }]);
                     clickHeader(colRef[0]);
                     var sorters = store.getSorters();
+
                     expect(sorters.getCount()).toBe(1);
                     expect(sorters.first().getProperty()).toBe('field0');
                     expect(sorters.first().getDirection()).toBe('ASC');
@@ -1260,6 +1269,7 @@ function() {
                     }]);
                     clickHeader(colRef[0]);
                     var sorters = store.getSorters();
+
                     clickHeader(colRef[0]);
                     expect(sorters.getCount()).toBe(1);
                     expect(sorters.first().getProperty()).toBe('field0');
@@ -1268,6 +1278,82 @@ function() {
                     expect(sorters.getCount()).toBe(1);
                     expect(sorters.first().getProperty()).toBe('field0');
                     expect(sorters.first().getDirection()).toBe('ASC');
+                });
+
+                it("should be able to initally sort a custom sorter with direction DESC", function() {
+                    makeGrid([{
+                        dataIndex: 'field0',
+                        sorter: {
+                            sorterFn: function(a, b) {
+                                a = a.get("field0");
+                                b = b.get("field0");
+
+                                return a > b ? 1 : (a === b) ? 0 : -1;
+
+                            },
+                            direction: "ASC"
+                        }
+                    }]);
+
+                    colRef[0].sort('DESC');
+
+                    expect(colRef[0].getSorter().getDirection()).toBe('DESC');
+                });
+
+                it("should be able sort to any direction when switching sorters", function() {
+                    makeGrid([{
+                        dataIndex: 'field0',
+                        sorter: {
+                            sorterFn: function(a, b) {
+                                a = a.get("field0");
+                                b = b.get("field0");
+
+                                return a > b ? 1 : (a === b) ? 0 : -1;
+
+                            },
+                            direction: "ASC"
+                        }
+                    }, {
+                        dataIndex: 'field1'
+                    }]);
+
+                    colRef[0].sort('DESC');
+                    expect(colRef[0].getSorter().getDirection()).toBe('DESC');
+
+                    colRef[1].sort('ASC');
+
+                    colRef[0].sort('ASC');
+                    expect(colRef[0].getSorter().getDirection()).toBe('ASC');
+                });
+
+                it("should not lose track of direction when sorting via header and menu with a custom sorter", function() {
+                    makeGrid([{
+                        dataIndex: 'field0',
+                        sorter: {
+                            sorterFn: function(a, b) {
+                                a = a.get("field0");
+                                b = b.get("field0");
+
+                                return a > b ? 1 : (a === b) ? 0 : -1;
+
+                            },
+                            direction: "ASC"
+                        }
+                    }]);
+                    clickHeader(colRef[0]);
+                    var sorters = store.getSorters();
+
+                    expect(sorters.getCount()).toBe(1);
+                    expect(sorters.first().getDirection()).toBe('ASC');
+
+                    Ext.testHelper.showHeaderMenu(colRef[0]);
+
+                    runs(function() {
+                        var menu = colRef[0].activeMenu;
+
+                        jasmine.fireMouseEvent(menu.items.getByKey('ascItem').el, 'click');
+                        expect(sorters.first().getDirection()).toBe('ASC');
+                    });
                 });
 
                 it("should not sort when configured with sortable false", function() {
@@ -1298,7 +1384,7 @@ function() {
                         grid.destroy();
                         grid = null;
                     }
-                    
+
                     makeGrid(cols, {
                         renderTo: null,
                         stateful: stateful,
@@ -1310,10 +1396,10 @@ function() {
                     return grid.down('#' + id);
                 }
 
-                describe('when stateful', function () {
+                describe('when stateful', function() {
                     var col;
 
-                    beforeEach(function () {
+                    beforeEach(function() {
                         new Ext.state.Provider();
 
                         makeGrid([{
@@ -1340,12 +1426,12 @@ function() {
                         });
                     });
 
-                    afterEach(function () {
+                    afterEach(function() {
                         Ext.state.Manager.getProvider().clear();
                         col = null;
                     });
 
-                    it('should work when toggling visibility on the groups', function () {
+                    it('should work when toggling visibility on the groups', function() {
                         // See EXTJS-11661.
                         col = grid.down('#main2');
                         col.hide();
@@ -1359,7 +1445,7 @@ function() {
                         expect(grid.down('#child6').hidden).toBe(false);
                     });
 
-                    it('should not show a previously hidden subheader when the visibility of its group header is toggled', function () {
+                    it('should not show a previously hidden subheader when the visibility of its group header is toggled', function() {
                         var subheader = grid.down('#child4');
 
                         subheader.hide();
@@ -1374,7 +1460,7 @@ function() {
                 describe("column visibility", function() {
                     var cells;
 
-                    afterEach(function () {
+                    afterEach(function() {
                         cells = null;
                     });
 
@@ -1409,9 +1495,9 @@ function() {
                         });
                     });
 
-                    describe('when groupheader parent is hidden', function () {
-                        describe('hidden at config time', function () {
-                            beforeEach(function () {
+                    describe('when groupheader parent is hidden', function() {
+                        describe('hidden at config time', function() {
+                            beforeEach(function() {
                                 makeGrid([{
                                     itemId: 'main1'
                                 }, {
@@ -1427,14 +1513,14 @@ function() {
                                 cells = grid.view.body.query('.x-grid-row td');
                             });
 
-                            it('should hide child columns at config time if the parent is hidden', function () {
+                            it('should hide child columns at config time if the parent is hidden', function() {
                                 expect(grid.down('#child1').getInherited().hidden).toBe(true);
                                 expect(grid.down('#child2').getInherited().hidden).toBe(true);
                                 // Check the view.
                                 expect(cells.length).toBe(1);
                             });
 
-                            it('should not explicitly hide any child columns (they will be hierarchically hidden)', function () {
+                            it('should not explicitly hide any child columns (they will be hierarchically hidden)', function() {
                                 expect(grid.down('#child1').hidden).toBe(false);
                                 expect(grid.down('#child2').hidden).toBe(false);
                                 // Check the view.
@@ -1442,8 +1528,8 @@ function() {
                             });
                         });
 
-                        describe('hidden at run time', function () {
-                            beforeEach(function () {
+                        describe('hidden at run time', function() {
+                            beforeEach(function() {
                                 makeGrid([{
                                     itemId: 'main1'
                                 }, {
@@ -1459,14 +1545,14 @@ function() {
                                 cells = grid.view.body.query('.x-grid-row td');
                             });
 
-                            it('should hide child columns at runtime if the parent is hidden', function () {
+                            it('should hide child columns at runtime if the parent is hidden', function() {
                                 expect(grid.down('#child1').getInherited().hidden).toBe(true);
                                 expect(grid.down('#child2').getInherited().hidden).toBe(true);
                                 // Check the view.
                                 expect(cells.length).toBe(1);
                             });
 
-                            it('should not explicitly hide any child columns (they will be hierarchically hidden)', function () {
+                            it('should not explicitly hide any child columns (they will be hierarchically hidden)', function() {
                                 expect(grid.down('#child1').hidden).toBe(false);
                                 expect(grid.down('#child2').hidden).toBe(false);
                                 // Check the view.
@@ -1475,9 +1561,9 @@ function() {
                         });
                     });
 
-                    describe('when groupheader parent is shown', function () {
-                        describe('shown at config time', function () {
-                            beforeEach(function () {
+                    describe('when groupheader parent is shown', function() {
+                        describe('shown at config time', function() {
+                            beforeEach(function() {
                                 makeGrid([{
                                     itemId: 'main1'
                                 }, {
@@ -1492,14 +1578,14 @@ function() {
                                 cells = grid.view.body.query('.x-grid-row td');
                             });
 
-                            it('should not hide child columns at config time if the parent is shown', function () {
+                            it('should not hide child columns at config time if the parent is shown', function() {
                                 expect(grid.down('#child1').getInherited().hidden).not.toBeDefined();
                                 expect(grid.down('#child2').getInherited().hidden).not.toBeDefined();
                                 // Check the view.
                                 expect(cells.length).toBe(3);
                             });
 
-                            it('should not explicitly hide any child columns (they will be hierarchically shown)', function () {
+                            it('should not explicitly hide any child columns (they will be hierarchically shown)', function() {
                                 expect(grid.down('#child1').hidden).toBe(false);
                                 expect(grid.down('#child2').hidden).toBe(false);
                                 // Check the view.
@@ -1507,8 +1593,8 @@ function() {
                             });
                         });
 
-                        describe('shown at run time', function () {
-                            beforeEach(function () {
+                        describe('shown at run time', function() {
+                            beforeEach(function() {
                                 makeGrid([{
                                     itemId: 'main1'
                                 }, {
@@ -1525,14 +1611,14 @@ function() {
                                 cells = grid.view.body.query('.x-grid-row td');
                             });
 
-                            it('should show child columns at runtime if the parent is shown', function () {
+                            it('should show child columns at runtime if the parent is shown', function() {
                                 expect(grid.down('#child1').getInherited().hidden).not.toBeDefined();
                                 expect(grid.down('#child2').getInherited().hidden).not.toBeDefined();
                                 // Check the view.
                                 expect(cells.length).toBe(3);
                             });
 
-                            it('should not explicitly hide any child columns (they will be hierarchically shown)', function () {
+                            it('should not explicitly hide any child columns (they will be hierarchically shown)', function() {
                                 expect(grid.down('#child1').hidden).toBe(false);
                                 expect(grid.down('#child2').hidden).toBe(false);
                                 // Check the view.
@@ -1564,7 +1650,7 @@ function() {
                             }];
                         });
 
-                        it('should not show a previously hidden subheader when the visibility of its group header is toggled', function () {
+                        it('should not show a previously hidden subheader when the visibility of its group header is toggled', function() {
                             var subheader, col;
 
                             makeGrid([{
@@ -1588,7 +1674,7 @@ function() {
                             expect(subheader.hidden).toBe(true);
                         });
 
-                        it('should allow any subheader to be reshown when all subheaders are currently hidden', function () {
+                        it('should allow any subheader to be reshown when all subheaders are currently hidden', function() {
                             // There was a bug where a subheader could not be reshown when itself and all of its fellows were curently hidden.
                             // See EXTJS-18515.
                             var subheader;
@@ -1618,7 +1704,7 @@ function() {
                             expect(subheader.hidden).toBe(false);
                         });
 
-                        it('should show the last hidden subheader if all subheaders are currently hidden when the group is reshown', function () {
+                        it('should show the last hidden subheader if all subheaders are currently hidden when the group is reshown', function() {
                             var groupheader, subheader1, subheader2, subheader3;
 
                             makeGrid([{
@@ -1713,6 +1799,7 @@ function() {
                                 createGrid(baseCols);
                                 grid.render(Ext.getBody());
                                 var count = grid.componentLayoutCounter;
+
                                 getCol('col11').hide();
                                 expect(grid.componentLayoutCounter).toBe(count + 1);
                             });
@@ -1729,7 +1816,7 @@ function() {
                             });
                         });
 
-                        describe('nested stacked columns', function () {
+                        describe('nested stacked columns', function() {
                             // Test stacked group headers where the only child is the next group header in the hierarchy.
                             // The last (lowest in the stack) group header will contain multiple child items.
                             // For example:
@@ -1755,7 +1842,7 @@ function() {
                                 }
                             }
 
-                            describe('on hide', function () {
+                            describe('on hide', function() {
                                 beforeEach(function() {
                                     baseCols = [{
                                         itemId: 'col1',
@@ -1782,7 +1869,7 @@ function() {
                                     }];
                                 });
 
-                                it('should hide every group header above the target group header', function () {
+                                it('should hide every group header above the target group header', function() {
                                     createGrid(baseCols);
                                     getCol('col4').hide();
                                     assertHiddenState(4, true);
@@ -1800,7 +1887,7 @@ function() {
                                     assertHiddenState(2, true);
                                 });
 
-                                it('should reshow every group header above the target group header when toggled', function () {
+                                it('should reshow every group header above the target group header when toggled', function() {
                                     createGrid(baseCols);
                                     getCol('col4').hide();
                                     assertHiddenState(4, true);
@@ -1824,8 +1911,8 @@ function() {
                                     assertHiddenState(2, false);
                                 });
 
-                                describe('subheaders', function () {
-                                    it('should hide all ancestor group headers when hiding all subheaders in lowest group header', function () {
+                                describe('subheaders', function() {
+                                    it('should hide all ancestor group headers when hiding all subheaders in lowest group header', function() {
                                         createGrid(baseCols);
                                         getCol('col41').hide();
                                         getCol('col42').hide();
@@ -1836,7 +1923,7 @@ function() {
                                 });
                             });
 
-                            describe('on show', function () {
+                            describe('on show', function() {
                                 beforeEach(function() {
                                     baseCols = [{
                                         itemId: 'col1',
@@ -1867,7 +1954,7 @@ function() {
                                     }];
                                 });
 
-                                it('should show every group header above the target group header', function () {
+                                it('should show every group header above the target group header', function() {
                                     // Here we're showing that a header that is explicitly shown will have every header
                                     // above it shown as well.
                                     createGrid(baseCols);
@@ -1887,7 +1974,7 @@ function() {
                                     assertHiddenState(2, false);
                                 });
 
-                                it('should show every group header in the chain no matter which group header is checked', function () {
+                                it('should show every group header in the chain no matter which group header is checked', function() {
                                     // Here we're showing that a header that is explicitly shown will have every header
                                     // in the chain shown, no matter which group header was clicked.
                                     //
@@ -1922,7 +2009,7 @@ function() {
                                     assertHiddenState(4, false);
                                 });
 
-                                it('should rehide every group header above the target group header when toggled', function () {
+                                it('should rehide every group header above the target group header when toggled', function() {
                                     createGrid(baseCols);
                                     getCol('col4').show();
                                     assertHiddenState(4, false);
@@ -1946,8 +2033,8 @@ function() {
                                     assertHiddenState(2, true);
                                 });
 
-                                describe('subheaders', function () {
-                                    it('should not show any ancestor group headers when hiding all subheaders in lowest group header', function () {
+                                describe('subheaders', function() {
+                                    it('should not show any ancestor group headers when hiding all subheaders in lowest group header', function() {
                                         createGrid(baseCols);
                                         getCol('col41').hide();
                                         getCol('col42').hide();
@@ -1956,7 +2043,7 @@ function() {
                                         assertHiddenState(4, true);
                                     });
 
-                                    it('should show all ancestor group headers when hiding all subheaders in lowest group header and then showing one', function () {
+                                    it('should show all ancestor group headers when hiding all subheaders in lowest group header and then showing one', function() {
                                         createGrid(baseCols);
                                         getCol('col41').hide();
                                         getCol('col42').hide();
@@ -1967,7 +2054,7 @@ function() {
                                         assertHiddenState(4, false);
                                     });
 
-                                    it('should remember which subheader was last checked and restore its state when its group header is rechecked', function () {
+                                    it('should remember which subheader was last checked and restore its state when its group header is rechecked', function() {
                                         var col, subheader, headerCt;
 
                                         // Let's hide the 3rd menu item.
@@ -2005,7 +2092,7 @@ function() {
                                         expect(subheader.hidden).toBe(false);
                                     });
 
-                                    it('should only show visible subheaders when all group headers are shown', function () {
+                                    it('should only show visible subheaders when all group headers are shown', function() {
                                         var col;
 
                                         createGrid(baseCols);
@@ -2115,10 +2202,10 @@ function() {
                                 itemId: 'col23'
                             }]
                         }];
-                        
+
                         createGrid(baseCols);
                     });
-                    
+
                     describe("before render", function() {
                         it("should destroy the group header when removing all columns", function() {
                             var headerCt = grid.headerCt,
@@ -2153,7 +2240,7 @@ function() {
             });
 
             describe("column operations & the view", function() {
-                describe('', function () {
+                describe('', function() {
                     beforeEach(function() {
                         makeGrid();
                     });
@@ -2191,28 +2278,28 @@ function() {
                     });
                 });
 
-                describe('toggling column visibility', function () {
+                describe('toggling column visibility', function() {
                     var refreshCounter;
 
-                    beforeEach(function () {
+                    beforeEach(function() {
                         makeGrid();
                         refreshCounter = view.refreshCounter;
                     });
 
-                    afterEach(function () {
+                    afterEach(function() {
                         refreshCounter = null;
                     });
 
-                    describe('hiding', function () {
-                        it('should update the view', function () {
+                    describe('hiding', function() {
+                        it('should update the view', function() {
                             colRef[0].hide();
 
                             expect(view.refreshCounter).toBe(refreshCounter + 1);
                         });
                     });
 
-                    describe('showing', function () {
-                        it('should update the view', function () {
+                    describe('showing', function() {
+                        it('should update the view', function() {
                             colRef[0].hide();
                             refreshCounter = view.refreshCounter;
                             colRef[0].show();
@@ -2230,6 +2317,7 @@ function() {
                 }
 
                 var failCount;
+
                 beforeEach(function() {
                     failCount = Ext.failedLayouts;
                 });
@@ -2241,7 +2329,7 @@ function() {
 
                 describe("initial", function() {
                     it("should have both sides visible", function() {
-                        makeGrid([{locked: true}, {}], {
+                        makeGrid([{ locked: true }, {}], {
                             syncTaskDelay: 0
                         });
                         expectVisible(true, true);
@@ -2256,7 +2344,7 @@ function() {
                     });
 
                     it("should have only the locked side visible if there are no normal columns", function() {
-                        makeGrid([{locked: true}, {locked: true}], {
+                        makeGrid([{ locked: true }, { locked: true }], {
                             syncTaskDelay: 0
                         });
                         expectVisible(true, false);
@@ -2338,6 +2426,7 @@ function() {
                 describe("first/last", function() {
                     it("should stamp x-grid-cell-first on the first column cell", function() {
                         var cls = grid.getView().firstCls;
+
                         expect(hasCls(getCell(0, 0), cls)).toBe(true);
                         expect(hasCls(getCell(0, 1), cls)).toBe(false);
                         expect(hasCls(getCell(0, 2), cls)).toBe(false);
@@ -2346,6 +2435,7 @@ function() {
 
                     it("should stamp x-grid-cell-last on the last column cell", function() {
                         var cls = grid.getView().lastCls;
+
                         expect(hasCls(getCell(0, 0), cls)).toBe(false);
                         expect(hasCls(getCell(0, 1), cls)).toBe(false);
                         expect(hasCls(getCell(0, 2), cls)).toBe(false);
@@ -2431,7 +2521,7 @@ function() {
                 });
             });
 
-            describe("emptyCellText config", function () {
+            describe("emptyCellText config", function() {
                 function expectEmptyText(column, rowIdx, colIdx) {
                     var cell = getCellInner(rowIdx, colIdx),
                         el = document.createElement('div');
@@ -2444,7 +2534,7 @@ function() {
                 }
 
                 describe("rendering", function() {
-                    beforeEach(function () {
+                    beforeEach(function() {
                         makeGrid([{
                             width: 100
                         }, {
@@ -2453,11 +2543,11 @@ function() {
                         }]);
                     });
 
-                    it("should use the default html entity for when there is no emptyCellText given", function () {
+                    it("should use the default html entity for when there is no emptyCellText given", function() {
                         expectEmptyText(colRef[0], 0, 0);
                     });
 
-                    it("should use the value of emptyCellText when configured", function () {
+                    it("should use the value of emptyCellText when configured", function() {
                         expectEmptyText(colRef[1], 0, 1);
                     });
                 });
@@ -2536,9 +2626,11 @@ function() {
                                     renderer: function(value, metaData, record) {
                                         if (!record.get('foo')) {
                                             metaData.tdStyle = 'background-color: red;';
-                                        } else {
+                                        }
+                                        else {
                                             metaData.tdStyle = 'text-decoration: underline;';
                                         }
+
                                         return value;
                                     }
                                 }]);
@@ -2547,21 +2639,21 @@ function() {
 
                                 // Edge returns rgb(255, 0, 0) here :(
                                 var style = cell.getStyle('background-color');
-                                
+
                                 if (style === 'rgb(255, 0, 0)') {
                                     style = 'red';
                                 }
-                                
+
                                 expect(style).toBe('red');
-                                
+
                                 store.getAt(0).set('foo', true);
-                                
+
                                 style = cell.getStyle('background-color');
-                                
+
                                 if (style === 'rgb(255, 0, 0)') {
                                     style = 'red';
                                 }
-                                
+
                                 expect(style).not.toBe('red');
                                 expect(cell.getStyle('text-decoration')).toBe(underlineStyle);
                             });
@@ -2620,6 +2712,7 @@ function() {
                         }
                     }]);
                     var field = grid.down('#foo');
+
                     expect(field.isVisible(true)).toBe(false);
                     field.ownerCt.show();
                     expect(field.isVisible(true)).toBe(true);
@@ -2664,7 +2757,7 @@ function() {
                     });
                 });
             });
-            
+
             describe('column header borders', function() {
                 it('should show header borders by default, and turn them off dynamically', function() {
                     makeGrid();
@@ -2689,7 +2782,7 @@ function() {
                     expect(colRef[2].el.getBorderWidth('r')).toBe(1);
                 });
             });
-            
+
             describe('column resize', function() {
                 it('should not fire drag events on headercontainer during resize', function() {
                     makeGrid();
@@ -2701,7 +2794,7 @@ function() {
                     expect(dragSpy).not.toHaveBeenCalled();
                 });
             });
-            
+
             describe("auto hiding headers", function() {
                 // Unit test setup defines hideHeaders as false in setup
                 // because many tests lazily use empty headers and 
@@ -2713,8 +2806,10 @@ function() {
                 afterEach(function() {
                     Ext.grid.Panel.prototype.config.hideHeaders = false;
                 });
+
                 function isHidden(theGrid) {
                     theGrid = theGrid || grid;
+
                     return theGrid.hasCls(theGrid.hiddenHeaderCls);
                 }
 
@@ -2806,7 +2901,7 @@ function() {
                                         itemId: 'empty-header'
                                     }]
                                 }]);
-                        
+
                                 var h = grid.down('#empty-header');
 
                                 // Text should be non-empty, so same line-height
@@ -3052,6 +3147,7 @@ function() {
             });
         });
     }
+
     createSuite(false);
     createSuite(true);
 });

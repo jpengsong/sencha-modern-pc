@@ -1,0 +1,136 @@
+
+//****************遮罩样式**************
+.x-mask{
+    opacity:0.9 !important;
+    background-color:transparent !important;
+    z-index:200000000;
+    .x-mask-inner{
+        border-radius:3px;
+        background-color: #000 !important;
+        .x-loading-spinner-outer{
+            background-image: url(images/loadmask/loading_1.gif);
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 70px 70px;
+            height: 60px !important;
+        }
+        .x-mask-message{
+            color: white;
+        }
+    }
+}
+
+//****************Grid 列样式**************
+.x-headercontainer {
+    border-width: 1px 0 1px !important;
+    border-style: solid;
+    border-color: #e2e2e2;
+    border-color: var(--divider-color);
+    background-color: #fafafa;
+    background-color: var(--background-color);
+}
+
+//****************textfield 文本框**************
+.x-textfield,.x-field-group-container{
+    .x-input-el{
+        color: var(--color) !important;
+    }
+
+    .x-underline-el{
+        height: 2px !important;
+        background-color: var(--faded-color) !important;
+    }
+   
+    .x-label-text-el{
+        color: var(--color) !important;
+    }
+}
+
+//****************searchfield solo****************
+.x-textfield-solo {
+    .x-trigger-solo .x-icon-el{
+        color: var(--color) !important;
+    }
+    .x-input-wrap-el{
+        background-color: var(--background-color) !important;
+    }
+}
+
+//**************Button-Toolbar-footer*****************
+.x-toolbar {
+    background-color: var(--background-color) !important;
+}
+
+//**************shadow*****************
+.x-shadow,
+.x-floated,
+.x-toolbar {
+    -webkit-box-shadow: 0px 0px 2px 0 rgba(0, 0, 0, 0.4) !important;
+    box-shadow: 0px 0px 2px 0 rgba(0, 0, 0, 0.4) !important;
+}
+
+//****************字体大小*********************
+.fa-lg:before {
+    font-size: 1.33333em !important;
+    line-height: 0.75em !important;
+    vertical-align: -0.0667em !important;
+}
+.fa-xs:before {
+    font-size: 0.75em !important;
+}
+.fa-sm:before {
+    font-size: 0.875em !important;
+}
+.fa-1x:before {
+    font-size: 1em !important;
+}
+.fa-2x:before {
+    font-size: 2em !important;
+}
+.fa-3x:before {
+    font-size: 3em !important;
+}
+.fa-4x:before {
+    font-size: 4em !important;
+}
+.fa-5x:before {
+    font-size: 5em !important;
+}
+.fa-6x:before {
+    font-size: 6em !important;
+}
+.fa-7x:before {
+    font-size: 7em !important;
+}
+.fa-8x:before {
+    font-size: 8em !important;
+}
+.fa-9x:before {
+    font-size: 9em !important;
+}
+.fa-10x:before {
+    font-size: 10em !important;
+}
+
+//****************分页组件*********************
+.x-pagingtoolbar{
+    .x-button .x-icon-el{
+        color: var(--highlight-color) !important;
+        width: 30px !important;
+        height: 30px !important;
+    }
+    
+    .x-button.x-disabled .x-icon-el{
+        color: var(--disabled-color) !important;
+        width: 30px !important;
+        height: 30px !important;
+    }
+
+    .x-component{
+        color: var(--highlight-color) !important;
+    }
+
+    .x-toolbar-body-el{
+        padding: 0px 16px;
+    }
+}

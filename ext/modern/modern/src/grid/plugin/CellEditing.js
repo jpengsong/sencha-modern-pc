@@ -31,6 +31,7 @@
  *
  * @since 6.5.0
  */
+
 Ext.define('Ext.grid.plugin.CellEditing', {
     extend: 'Ext.plugin.Abstract',
     alias: ['plugin.gridcellediting', 'plugin.cellediting'],
@@ -47,7 +48,7 @@ Ext.define('Ext.grid.plugin.CellEditing', {
         grid: null,
 
         /**
-         * @cfg {String} [triggerEvent=doubletap]
+         * @cfg {String} triggerEvent
          * An optional pointer event to trigger cell editing.
          *
          * By default, cell editing begins when actionable mode is entered by pressing
@@ -86,11 +87,16 @@ Ext.define('Ext.grid.plugin.CellEditing', {
 
         if (editor) {
             if (!editor.isCellEditor) {
+                // during the construction of the celleditor
+                // we need to pass the plugin so it can find
+                // the owner grid to relay it's own events
                 editor = Ext.create({
                     xtype: 'celleditor',
-                    field: editor
+                    field: editor,
+                    plugin: this
                 });
             }
+
             column.setEditor(editor);
             editor.editingPlugin = this;
 
@@ -145,31 +151,42 @@ Ext.define('Ext.grid.plugin.CellEditing', {
         // In this case, we return the location to indicate that it's still a successful edit.
         if (activeEditor && activeEditor.$activeLocation.cell === location.cell) {
             return activeEditor.$activeLocation;
-        } else {
+        }
+        else {
             editor = me.getEditor(location);
+
             if (editor) {
                 if (previousEditor) {
                     if (previousEditor.isCancelling) {
                         previousEditor.cancelEdit();
-                    } else {
+                    }
+                    else {
                         previousEditor.completeEdit();
                     }
                 }
 
                 result = editor.startEdit(location);
+
                 if (editor.editing) {
 
                     // Select the edit location if possible if we have been configured to do so.
                     if (me.getSelectOnEdit()) {
                         selModel = me.getGrid().getSelectable();
+
                         if (selModel.getCells()) {
                             selModel.selectCells(location, location);
-                        } else if (selModel.getRows()) {
+                        }
+                        else if (selModel.getRows()) {
                             selModel.select(location.record);
                         }
                     }
+
                     me.$previousEditor = editor;
+
                     return result;
+                }
+                else {
+                    editor.onEditComplete(false, true);
                 }
             }
         }

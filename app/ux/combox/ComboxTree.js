@@ -2,7 +2,7 @@
  * 下拉树 使用例子如下
  * {
  *   xtype: "comboxtree",
- *   fieldLabel: 'fieldText',
+ *   label: 'fieldText',
  *   name: "name",
  *   displayField: "text",
  *   valueField: "value",
@@ -10,178 +10,185 @@
  *   height: 200,
  *   rootVisible: false,
  *   bind: {
- *       defaultvalue: "{value}",
+ *       value: "{value}",
  *       store: "{store}"
  *   }
  * },
  */
 Ext.define('App.ux.combox.ComboxTree', {
-    extend: 'Ext.form.field.Picker',
+    extend: 'Ext.field.Picker',
     xtype: 'comboxtree',
+    editable: false,
     config: {
+        hideSearchfield: false,
+        treeheight: 300,
         autoLoad: true,
-        store: null,
         displayField: "text",
         valueField: "value",
-        width: "100%",
-        height: 200,
-        params:Ext.emptyFn,
+        params: null,
         rootVisible: false,
-        treepanel: null,
         querylocal: true,
-        defautvalue: ""
+        store: null
+    },
+    
+    privates: {
+        treepanel: null
+    },
+
+    setValue:function(value){
+        var me = this;
+        me._value = value,store = me.getStore(),inputValue="";
+        if(!Ext.isEmpty(store) && !Ext.isEmpty(value)){
+            if(store.count()>0){
+                var record= store.findRecord(me.getValueField(),value);
+                if(!Ext.isEmpty(record)){
+                    inputValue =  record.get(me.getDisplayField());
+                }
+            }
+        }
+        me.bodyElement.selectNode("input").value =  inputValue;
+    },
+
+    getValue:function(){
+       return this._value;
+    },
+
+    collapse: function () {
+        var picker,
+            eXt = Ext;
+        if (this.expanded) {
+            picker = this.getPicker();
+            if (this.pickerType === 'edge') {
+                eXt.Viewport.removeMenu(picker.getSide(), true);
+            }
+            else {
+                if (picker.bodyElement.dom.contains(event.target)) {
+                    this.expanded = true;
+                    picker.show();
+                } else {
+                    this.expanded = false;
+                    picker.hide();
+                }
+            }
+        }
+    },
+
+    setStore: function (store) {
+        var me = this;
+        store.scope=me;
+        me._store = store;
+        me._store.setListeners({
+            scope:me,
+            load:me.onStoreLoad
+        })
+        me.createPicker();
     },
 
     createPicker: function () {
-        var me = this;
-        me.treepanel = Ext.create({
-            xtype: "treepanel",
-            floating: true,
-            width: me.width,
-            height: me.height,
-            store: me.store,
-            rootVisible: me.rootVisible,
-            columns: [{
-                xtype: 'treecolumn',
-                flex: 1,
-                dataIndex: me.displayField,
-                renderer: function (value) {
-                    return me.rendererRegExp ? value.replace(me.rendererRegExp, '<span style="color:red;font-weight:bold">$1</span>') : value;
+        var me = this, pickerconfig, searchfield, tree;
+        pickerconfig = {
+            xtype: "container",
+            layout: {
+                type: "vbox"
+            },
+            items: []
+        };
+        if (!Ext.isEmpty(me.getHideSearchfield())) {
+            searchfield = {
+                xtype: 'searchfield',
+                ui: 'solo',
+                shadow: 'true',
+                listeners: {
+                    buffer: 500,
+                    scope:me,
+                    change: me.onSearchChange
                 }
-            }],
+            },
+            pickerconfig.items.push(searchfield);
+        }
+
+        tree = {
+            xtype: 'tree',
+            height: 300,
+            style: {
+                "border-top": "solid 1px #e1e1e1"
+            },
+            hideHeaders: true,
+            store: me.getStore(),
+            scope:me,
+            rootVisible: me.getRootVisible(),
             plugins: {
                 requestdata: {
-                    autoLoad: me.autoLoad,
-                    params:me.params,
+                    autoLoad: me.getAutoLoad(),
+                    params: me.getParams(),
                     root: {
                         expanded: true,
                         children: []
                     }
                 }
             },
-            listeners: {
-                select: function (com, record, index, eOpts) {
-                    me.setValue(record.data[me.displayField]);
-                    me.rendererRegExp = null;
-                    me.store.clearFilter();
-                    me.collapse();
-                },
-                load: function () {
-                    me.doSetValue();
+            columns: [{
+                xtype: 'treecolumn',
+                flex: 1,
+                cell: {encodeHtml: false},
+                dataIndex: me.getDisplayField(),
+                renderer: function (value) {
+                    return me.rendererRegExp ? value.replace(me.rendererRegExp, '<span style="color:red;font-weight:bold">$1</span>') : value;
                 }
-            }
-        });
-        return me.treepanel;
-    },
-
-    notifyValue: function () {
-        var me = this, viewModel = me.getBind().defautvalue.owner; path = me.getBind().defautvalue.stub.path;
-        viewModel.set(path, me.defautvalue);
-    },
-
-    setDefautvalue: function (value) {
-        var me = this;
-        me.defautvalue = Ext.isEmpty(value) ? "" : value;
-    },
-
-    setStore: function (store) {
-        var me = this;
-        me.store = store;
-        me.getPicker();
-    },
-
-    doSetValue: function () {
-        var me = this, store = me.store, record, value;
-        if (!Ext.isEmpty(store) && !Ext.isEmpty(me.defautvalue)) {
-            record = store.findNode(me.valueField, me.defautvalue);
-            if (!Ext.isEmpty(record) && !Ext.isEmpty(me.displayField)) {
-                value = record.data[me.displayField];
-                if (!Ext.isEmpty(record)) {
-                    me.setValue(value);
-                    me.defautvalue = record.data[me.valueField];
-                }
+            }],
+            listeners:{
+               select:me.onTreeSelect
             }
         }
-        if (Ext.isEmpty(value)) {
-            me.setRawValue("");
-        } else {
-            me.treepanel.getSelectionModel().select(record);
-        }
-        me.rendererRegExp = null;
+        pickerconfig.items.push(tree);
+        me.setPicker(pickerconfig);
+        me.treepanel = me.getPicker().down("component[xtype='tree']");
     },
-    
-    listeners: {
-        change: function (me, newvalue, oldvalue, eOpts) {
-            if (me.store != null) {
-                var store = me.store;
-                if (Ext.isEmpty(newvalue)) {
-                    me.treepanel.getSelectionModel().deselectAll();
-                }
-                regExp = new RegExp('.*' + newvalue + '.*');
-                me.rendererRegExp = new RegExp('(' + newvalue + ')');
-                collection = new Ext.util.MixedCollection();
-                store.clearFilter();
 
-                //正则过滤数据
-                store.filterBy(function (record, id) {
-                    if (record.childNodes.length > 0) {
-                        collection.add(record.data.sysOrgId, regExp.test(record.data[me.displayField]));
+    onSearchChange: function (me, newvalue, oldvalue, eOpts) {
+        var me = this, store = me.getStore(), treepanel = me.treepanel, displayField = me.getDisplayField();
+        if (store != null) {
+            if (Ext.isEmpty(newvalue)) {
+                treepanel.getSelectable().deselectAll();
+            }
+            regExp = new RegExp('.*' + newvalue + '.*');
+            me.rendererRegExp = new RegExp('(' + newvalue + ')');
+            collection = new Ext.util.MixedCollection();
+            store.clearFilter();
+
+            //正则过滤数据
+            store.filterBy(function (record, id) {
+                if (record.childNodes.length > 0) {
+                    collection.add(record.data.sysOrgId, regExp.test(record.data[displayField]));
+                    return true;
+                } else {
+                    var sysOrgId = record.parentNode.data.sysOrgId;
+                    if (collection.containsKey(sysOrgId) && collection.get(sysOrgId)) {
                         return true;
                     } else {
-                        var sysOrgId = record.parentNode.data.sysOrgId;
-                        if (collection.containsKey(sysOrgId) && collection.get(sysOrgId)) {
-                            return true;
-                        } else {
-                            collection.add(record.data.sysOrgId, regExp.test(record.data[me.displayField]));
-                            return regExp.test(record.data[me.displayField]);
-                        }
+                        collection.add(record.data.sysOrgId, regExp.test(record.data[displayField]));
+                        return regExp.test(record.data[displayField]);
                     }
-                })
-
-                //如果没有一项符合搜索要求的 全部返回false
-                if (collection.items.indexOf(true) === -1) {
-                    me.store.filterBy(function (record, id) {
-                        return false;
-                    })
-                };
-            }
-        },
-
-        render: function () {
-            var me = this;
-            me.inputEl.dom.onclick = function () {
-                if (!me.isExpanded) {
-                    me.expand();
-                    me.focus();
                 }
-            }
-        },
+            })
 
-        expand: function () {
-            var me = this, store = me.store;
-            if (store != null) {
-                store.clearFilter();
-            }
-        },
-
-        collapse: function () {
-            var me = this, item;
-            if (!me.isExpanded) {
-                me.store.findBy(function (record, id) {
-                    if (record.data[me.displayField] == me.getValue() && item == undefined) {
-                        item = record;
-                    }
+            //如果没有一项符合搜索要求的 全部返回false
+            if (collection.items.indexOf(true) === -1) {
+                store.filterBy(function (record, id) {
+                    return false;
                 })
-                if (item != undefined) {
-                    me.setDefautvalue(item.data[me.valueField]);
-                    me.treepanel.getSelectionModel().select(item);
-                } else {
-                    me.setDefautvalue("");
-                    me.setValue("");
-                    me.treepanel.getSelectionModel().deselectAll();
-                }
-                me.notifyValue();
-            }
+            };
         }
+    },
+
+    onTreeSelect:function(me, selected, eOpts){
+        var scope = me.scope;
+         scope.setValue(selected[0].get(scope.getValueField()));
+         scope.getPicker().hide();
+    },
+
+    onStoreLoad:function(store, records, successful, operation, node, eOpts){
+        var scope = store.scope;
+        scope.setValue(scope.getValue());
     }
 })

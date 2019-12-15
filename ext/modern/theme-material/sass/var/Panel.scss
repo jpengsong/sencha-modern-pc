@@ -1,7 +1,7 @@
-$panel-background-color: dynamic($background-color);
 $panel-border-color: dynamic($faded-color);
 $panel-border-width: dynamic(1px);
 $panel-border-style: dynamic(solid);
+$panel-body-background-color: dynamic($background-color);
 $panel-body-border-color: dynamic($panel-border-color);
 $panel-body-border-width: dynamic($panel-border-width);
 $panel-body-border-style: dynamic($panel-border-style);

@@ -11,23 +11,27 @@ Ext.define('Ext.chart.series.sprite.Aggregative', {
         def: {
             processors: {
                 /**
-                 * @cfg {Number[]} [dataHigh=null] Data items representing the high values of the aggregated data.
+                 * @cfg {Number[]} [dataHigh=null] Data items representing the high values
+                 * of the aggregated data.
                  */
                 dataHigh: 'data',
 
                 /**
-                 * @cfg {Number[]} [dataLow=null] Data items representing the low values of the aggregated data.
+                 * @cfg {Number[]} [dataLow=null] Data items representing the low values
+                 * of the aggregated data.
                  */
                 dataLow: 'data',
 
                 /**
-                 * @cfg {Number[]} [dataClose=null] Data items representing the closing values of the aggregated data.
+                 * @cfg {Number[]} [dataClose=null] Data items representing the closing values
+                 * of the aggregated data.
                  */
                 dataClose: 'data'
             },
             aliases: {
                 /**
-                 * @cfg {Number[]} [dataOpen=null] Data items representing the opening values of the aggregated data.
+                 * @cfg {Number[]} [dataOpen=null] Data items representing the opening values
+                 * of the aggregated data.
                  */
                 dataOpen: 'dataY'
             },
@@ -43,15 +47,15 @@ Ext.define('Ext.chart.series.sprite.Aggregative', {
         aggregator: {}
     },
 
-    applyAggregator: function (aggregator, oldAggr) {
+    applyAggregator: function(aggregator, oldAggr) {
         return Ext.factory(aggregator, Ext.draw.SegmentTree, oldAggr);
     },
 
-    constructor: function () {
+    constructor: function() {
         this.callParent(arguments);
     },
 
-    processDataY: function () {
+    processDataY: function() {
         var me = this,
             attr = me.attr,
             high = attr.dataHigh,
@@ -64,19 +68,21 @@ Ext.define('Ext.chart.series.sprite.Aggregative', {
 
         if (attr.dataX && open && open.length > 0) {
             aggregator = me.getAggregator();
+
             if (high) {
                 aggregator.setData(attr.dataX, attr.dataY, high, low, close);
-            } else {
+            }
+            else {
                 aggregator.setData(attr.dataX, attr.dataY);
             }
         }
     },
 
-    getGapWidth: function () {
+    getGapWidth: function() {
         return 1;
     },
 
-    renderClipped: function (surface, ctx, dataClipRect, surfaceClipRect) {
+    renderClipped: function(surface, ctx, dataClipRect, surfaceClipRect) {
         var me = this,
             min = Math.min(dataClipRect[0], dataClipRect[2]),
             max = Math.max(dataClipRect[0], dataClipRect[2]),
@@ -90,7 +96,7 @@ Ext.define('Ext.chart.series.sprite.Aggregative', {
             me.dataEnd = aggregates.data.endIdx[aggregates.end - 1];
 
             me.renderAggregates(aggregates.data, aggregates.start, aggregates.end,
-                surface, ctx, dataClipRect, surfaceClipRect);
+                                surface, ctx, dataClipRect, surfaceClipRect);
         }
     }
 });

@@ -12,9 +12,11 @@ Ext.define('Ext.dataview.BoundListLocation', {
             if (candidate.equals(me)) {
                 return;
             }
+
             candidate = candidate.nextItem(options);
             item = candidate && candidate.get();
         }
+
         return candidate;
     },
 
@@ -29,9 +31,11 @@ Ext.define('Ext.dataview.BoundListLocation', {
             if (candidate.equals(me)) {
                 return;
             }
+
             candidate = candidate.previousItem(options);
             item = candidate && candidate.get();
         }
+
         return candidate;
     }
 });

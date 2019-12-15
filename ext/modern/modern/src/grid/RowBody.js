@@ -41,7 +41,7 @@ Ext.define('Ext.grid.RowBody', {
         }
     },
 
-    applyWidget: function (widget) {
+    applyWidget: function(widget) {
         var row = this.row;
 
         if (widget) {
@@ -50,10 +50,11 @@ Ext.define('Ext.grid.RowBody', {
             }, widget);
             widget = Ext.widget(widget);
         }
+
         return widget;
     },
 
-    updateWidget: function (widget, oldWidget) {
+    updateWidget: function(widget, oldWidget) {
         if (oldWidget) {
             oldWidget.destroy();
         }
@@ -63,7 +64,7 @@ Ext.define('Ext.grid.RowBody', {
         }
     },
 
-    updateRecord: function (record, oldRecord) {
+    updateRecord: function(record, oldRecord) {
         var tpl = this.getTpl();
 
         if (tpl) {
@@ -75,7 +76,7 @@ Ext.define('Ext.grid.RowBody', {
         return this.contentElement;
     },
 
-    doDestroy: function () {
+    doDestroy: function() {
         this.setWidget(null);
         this.callParent();
     }

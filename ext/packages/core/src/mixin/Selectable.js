@@ -77,15 +77,18 @@ Ext.define('Ext.mixin.Selectable', {
          * @cfg {Boolean} pruneRemoved
          * Remove records from the selection when they are removed from the store.
          *
-         * **Important:** When using {@link Ext.toolbar.Paging paging} or a {@link Ext.data.BufferedStore},
-         * records which are cached in the Store's {@link Ext.data.Store#property-data data collection} may be removed from the Store when pages change,
-         * or when rows are scrolled out of view. For this reason `pruneRemoved` should be set to `false` when using a buffered Store.
+         * **Important:** When using {@link Ext.toolbar.Paging paging} or a
+         * {@link Ext.data.BufferedStore}, records which are cached in the Store's
+         * {@link Ext.data.Store#property-data data collection} may be removed from the Store
+         * when pages change, or when rows are scrolled out of view. For this reason `pruneRemoved`
+         * should be set to `false` when using a buffered Store.
          *
-         * Also, when previously pruned pages are returned to the cache, the records objects in the page will be
-         * *new instances*, and will not match the instances in the selection model's collection. For this reason,
-         * you MUST ensure that the Model definition's {@link Ext.data.Model#idProperty idProperty} references a unique
-         * key because in this situation, records in the Store have their **IDs** compared to records in the SelectionModel
-         * in order to re-select a record which is scrolled back into view.
+         * Also, when previously pruned pages are returned to the cache, the records objects
+         * in the page will be *new instances*, and will not match the instances in the selection
+         * model's collection. For this reason, you MUST ensure that the Model definition's
+         * {@link Ext.data.Model#idProperty idProperty} references a unique key because in this
+         * situation, records in the Store have their **IDs** compared to records in the
+         * SelectionModel in order to re-select a record which is scrolled back into view.
          */
         pruneRemoved: true,
 
@@ -155,6 +158,7 @@ Ext.define('Ext.mixin.Selectable', {
      */
     applyMode: function(mode) {
         mode = mode ? mode.toUpperCase() : 'SINGLE';
+
         // set to mode specified unless it doesnt exist, in that case
         // use single.
         return this.modes[mode] ? mode : 'SINGLE';
@@ -170,7 +174,8 @@ Ext.define('Ext.mixin.Selectable', {
         if (oldStore && Ext.isObject(oldStore) && oldStore.isStore) {
             if (oldStore.autoDestroy) {
                 oldStore.destroy();
-            } else {
+            }
+            else {
                 oldStore.un(bindEvents);
             }
         }
@@ -210,7 +215,8 @@ Ext.define('Ext.mixin.Selectable', {
 
         if (selection) {
             this.select(selection);
-        } else {
+        }
+        else {
             this.deselectAll();
         }
     },
@@ -220,6 +226,7 @@ Ext.define('Ext.mixin.Selectable', {
     selectWithEvent: function(record) {
         var me = this,
             isSelected = me.isSelected(record);
+
         switch (me.getMode()) {
             case 'MULTI':
             case 'SIMPLE':
@@ -229,21 +236,26 @@ Ext.define('Ext.mixin.Selectable', {
                 else {
                     me.select(record, true);
                 }
+
                 break;
+
             case 'SINGLE':
                 if (me.getAllowDeselect() && isSelected) {
                     // if allowDeselect is on and this record isSelected, deselect it
                     me.deselect(record);
-                } else {
+                }
+                else {
                     // select the record and do NOT maintain existing selections
                     me.select(record, false);
                 }
+
                 break;
         }
     },
 
     /**
-     * Selects a range of rows if the selection model {@link Ext.mixin.Selectable#getDisableSelection} is not locked.
+     * Selects a range of rows if the selection model
+     * {@link Ext.mixin.Selectable#getDisableSelection} is not locked.
      * All rows in between `startRecord` and `endRecord` are also selected.
      * @param {Number} startRecord The index of the first row in the range.
      * @param {Number} endRecord The index of the last row in the range.
@@ -269,13 +281,15 @@ Ext.define('Ext.mixin.Selectable', {
         for (i = startRecord; i <= endRecord; i++) {
             records.push(store.getAt(i));
         }
+
         this.doMultiSelect(records, keepExisting);
     },
 
     /**
      * Adds the given records to the currently selected set.
      * @param {Ext.data.Model/Array/Number} records The records to select.
-     * @param {Boolean} keepExisting If `true`, the existing selection will be added to (if not, the old selection is replaced).
+     * @param {Boolean} keepExisting If `true`, the existing selection will be added to
+     * (if not, the old selection is replaced).
      * @param {Boolean} suppressEvent If `true`, the `select` event will not be fired.
      */
     select: function(records, keepExisting, suppressEvent) {
@@ -294,10 +308,11 @@ Ext.define('Ext.mixin.Selectable', {
             return;
         }
 
-        if (me.getMode() == "SINGLE" && records) {
+        if (me.getMode() === "SINGLE" && records) {
             record = records.length ? records[0] : records;
             me.doSingleSelect(record, suppressEvent);
-        } else {
+        }
+        else {
             me.doMultiSelect(records, keepExisting, suppressEvent);
         }
     },
@@ -318,24 +333,25 @@ Ext.define('Ext.mixin.Selectable', {
         if (records === null || this.getDisableSelection()) {
             return;
         }
+
         records = !Ext.isArray(records) ? [records] : records;
 
+        // eslint-disable-next-line vars-on-top
         var me = this,
             selected = me.getSelected(),
             selectionCount = selected.getCount(),
+            store = me.getStore(),
             toRemove = [],
-            ln = records.length,
-            change = false,
-            i = 0,
-            record;
+            record, i, len;
 
         if (!keepExisting && selectionCount) {
             toRemove = selected.getRange();
         }
 
         // Ensure they are all records
-        for (i = 0; i < ln; i++) {
+        for (i = 0, len = records.length; i < len; i++) {
             record = records[i];
+
             if (typeof record === 'number') {
                 records[i] = store.getAt(record);
             }
@@ -350,27 +366,28 @@ Ext.define('Ext.mixin.Selectable', {
     },
 
     /**
-     * Deselects the given record(s). If many records are currently selected, it will only deselect those you pass in.
-     * @param {Number/Array/Ext.data.Model} records The record(s) to deselect. Can also be a number to reference by index.
+     * Deselects the given record(s). If many records are currently selected, it will only deselect
+     * those you pass in.
+     * @param {Number/Array/Ext.data.Model} records The record(s) to deselect. Can also be a number
+     * to reference by index.
      * @param {Boolean} suppressEvent If `true` the `deselect` event will not be fired.
      */
     deselect: function(records, suppressEvent) {
-        var me = this;
+        var me = this,
+            selected, store, record, i, len;
 
         if (me.getDisableSelection()) {
             return;
         }
 
         records = Ext.isArray(records) ? records : [records];
-
-        var selected = me.getSelected(),
-            store    = me.getStore(),
-            len        = records.length,
-            i, record;
+        selected = me.getSelected();
+        store = me.getStore();
 
         // Ensure they are all records
-        for (i = 0; i < len; i++) {
+        for (i = 0, len = records.length; i < len; i++) {
             record = records[i];
+
             if (typeof record === 'number') {
                 records[i] = store.getAt(record);
             }
@@ -423,7 +440,7 @@ Ext.define('Ext.mixin.Selectable', {
         }
     },
 
-    //\\ TODO: This is the job of a NavigationModel
+    // TODO: This is the job of a NavigationModel
     /**
      * Sets a record as the last focused record. This does NOT mean
      * that the record has been selected.
@@ -458,6 +475,7 @@ Ext.define('Ext.mixin.Selectable', {
      */
     isSelected: function(record) {
         record = Ext.isNumber(record) ? this.getStore().getAt(record) : record;
+
         return this.getSelected().indexOf(record) !== -1;
     },
 
@@ -498,7 +516,8 @@ Ext.define('Ext.mixin.Selectable', {
                         toDeselect.push(rec);
                         toReselect.push(matchingSelection);
                     }
-                } else {
+                }
+                else {
                     toDeselect.push(rec);
                 }
             }
@@ -529,13 +548,16 @@ Ext.define('Ext.mixin.Selectable', {
 
         for (i = 0; i < ln; i++) {
             record = records[i];
+
             if (selected.remove(record)) {
-                if (me.getLastSelected() == record) {
+                if (me.getLastSelected() == record) { // eslint-disable-line eqeqeq
                     me.setLastSelected(null);
                 }
-                if (me.getLastFocused() == record) {
+
+                if (me.getLastFocused() == record) { // eslint-disable-line eqeqeq
                     me.setLastFocused(null);
                 }
+
                 removed = removed || [];
                 removed.push(record);
             }
@@ -548,6 +570,7 @@ Ext.define('Ext.mixin.Selectable', {
 
     onSelectionStoreClear: function(store) {
         var records = store.getData().items;
+
         this.onSelectionStoreRemove(store, records);
     },
 
@@ -610,7 +633,8 @@ Ext.define('Ext.mixin.Selectable', {
      */
 
     /**
-     * This was an internal function accidentally exposed in 1.x and now deprecated. Calling it has no effect
+     * This was an internal function accidentally exposed in 1.x and now deprecated. Calling it
+     * has no effect
      * @member Ext.mixin.Selectable
      * @method setLastFocused
      * @deprecated 2.0.0 This method is deprecated.

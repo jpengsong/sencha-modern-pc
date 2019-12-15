@@ -13,7 +13,7 @@ $touch-theme-base: true;
  * The font-family to use for font icons throughout the theme.
  * @private
  */
-$font-icon-font-family: dynamic(FontAwesome);
+$font-icon-font-family: dynamic('Font Awesome 5 Free');
 
 //Required by charts
 $font-size: dynamic(15px);

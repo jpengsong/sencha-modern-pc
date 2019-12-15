@@ -1,5 +1,3 @@
-/* global Ext, jasmine, expect, spyOn */
-
 topSuite('grid-moving-columns',
     [false, 'Ext.grid.Panel', 'Ext.data.ArrayStore', 'Ext.form.Label'],
 function() {
@@ -35,11 +33,11 @@ function() {
     // Pass a reference to the cmp not an index!
     function dragColumn(from, to, onRight) {
         var fromBox = from.titleEl.getBox(),
-            fromMx = fromBox.x + fromBox.width/2,
-            fromMy = fromBox.y + fromBox.height/2,
+            fromMx = fromBox.x + fromBox.width / 2,
+            fromMy = fromBox.y + fromBox.height / 2,
             toBox = to.titleEl.getBox(),
             toMx = onRight ? toBox.right - 10 : toBox.left + 10,
-            toMy = toBox.y + toBox.height/2,
+            toMy = toBox.y + toBox.height / 2,
             dragThresh = onRight ? Ext.dd.DragDropManager.clickPixelThresh + 1 : -Ext.dd.DragDropManager.clickPixelThresh - 1;
 
         // Mousedown on the header to drag
@@ -70,6 +68,7 @@ function() {
 
         if (!columns) {
             columns = [];
+
             for (i = 1; i < 19; i++) {
                 columns.push({
                     dataIndex: 'field' + i,
@@ -133,7 +132,7 @@ function() {
         visibleColumns = headerCt.gridVisibleColumns || headerCt.visibleColumnManager.getColumns();
 
         // TODO: add comment here!
-        if ((typeof groupHeader !== 'number') && 
+        if ((typeof groupHeader !== 'number') &&
             (!groupHeader || (groupHeader.items && groupHeader.items.length))) {
             groupHeader = deepGroupHeader;
         }
@@ -146,6 +145,7 @@ function() {
         spy = spyOn(obj, 'fn');
 
         object.addListener(eventName, obj.fn);
+
         return spy;
     }
 
@@ -157,12 +157,12 @@ function() {
         headerText.length = 0;
 
         // Gather header texts.
-        Ext.Array.each(grid.getVisibleColumnManager().getColumns(), function (c) {
+        Ext.Array.each(grid.getVisibleColumnManager().getColumns(), function(c) {
             headerText.push(c.text);
         });
 
         // Prepend 'Field' to each number to match the header string.
-        headerString = order.replace(/(\d+,?)/g, function (a, $1) {
+        headerString = order.replace(/(\d+,?)/g, function(a, $1) {
             return 'Field' + $1;
         });
 
@@ -184,16 +184,17 @@ function() {
         rowText.length = 0;
 
         if (!locked) {
-            Ext.Array.each(view.getRow(view.all.item(0)).childNodes, function (n) {
+            Ext.Array.each(view.getRow(view.all.item(0)).childNodes, function(n) {
                 rowText.push(n.textContent || n.innerText);
             });
-        } else {
+        }
+        else {
             // For locked grids, we must loop over both views of the locking partners, lockedView first.
-            Ext.Array.each(view.getRow(view.lockedView.all.item(0)).childNodes, function (n) {
+            Ext.Array.each(view.getRow(view.lockedView.all.item(0)).childNodes, function(n) {
                 rowText.push(n.textContent || n.innerText);
             });
 
-            Ext.Array.each(view.getRow(view.normalView.all.item(0)).childNodes, function (n) {
+            Ext.Array.each(view.getRow(view.normalView.all.item(0)).childNodes, function(n) {
                 rowText.push(n.textContent || n.innerText);
             });
         }
@@ -212,15 +213,15 @@ function() {
         }
     }
 
-    afterEach(function () {
+    afterEach(function() {
         Ext.destroy(grid, store);
         grid = store = locked = visibleColumns = groupHeader = subGroupHeader = colChangeSpy = colMoveSpy = headerCtMoveSpy = headerCt = null;
         Ext.data.Model.schema.clear();
         headerText.length = rowText.length = 0;
     });
 
-    describe('destroy during column header drag', function () {
-        it('should move columns', function () {
+    describe('destroy during column header drag', function() {
+        it('should move columns', function() {
             makeGrid([{
                 dataIndex: 'field1',
                 header: 'Field1'
@@ -250,7 +251,7 @@ function() {
                 headerReorderer = grid.headerCt.findPlugin('gridheaderreorderer'),
                 proxyEl;
 
-            runs(function () {
+            runs(function() {
                 jasmine.fireMouseEvent(c0.el.dom, 'mouseover');
                 jasmine.fireMouseEvent(c0.titleEl.dom, 'mousedown');
                 jasmine.fireMouseEvent(document.body, 'mousemove', 100, 0);
@@ -259,7 +260,7 @@ function() {
             // Wait for the event to be processed
             waits(1);
 
-            runs(function () {
+            runs(function() {
                 proxyEl = headerReorderer.dragZone.proxy.el;
 
                 // The drag zone's proxy should be visible
@@ -279,14 +280,14 @@ function() {
         });
     });
 
-    describe('destroying a component in the midst of a drag operation', function () {
+    describe('destroying a component in the midst of a drag operation', function() {
         function beginColumnDrag(from, to, onRight) {
             var fromBox = from.el.getBox(),
-                fromMx = fromBox.x + fromBox.width/2,
-                fromMy = fromBox.y + fromBox.height/2,
+                fromMx = fromBox.x + fromBox.width / 2,
+                fromMy = fromBox.y + fromBox.height / 2,
                 toBox = to.el.getBox(),
                 toMx = toBox.x,
-                toMy = toBox.y + toBox.height/2,
+                toMy = toBox.y + toBox.height / 2,
                 offset = onRight ? toBox.width - 6 : 5,
                 moveOffset = toMx + offset,
                 dragThresh = onRight ? Ext.dd.DragDropManager.clickPixelThresh + 1 : -Ext.dd.DragDropManager.clickPixelThresh - 1;
@@ -318,7 +319,7 @@ function() {
         // with the id of the recently-destroyed drag zone.  The fix ensures that this call will
         // be pre-empted by checking the new .destroyed property on the dd object.
         // See EXTJSIV-11386.
-        beforeEach(function () {
+        beforeEach(function() {
             // Create the grid, start the drag and destroy the grid before the drag operation is completed.
             makeGrid();
             beginColumnDrag(visibleColumns[3], visibleColumns[1], true);
@@ -326,7 +327,7 @@ function() {
             Ext.data.Model.schema.clear();
         });
 
-        it('should not try to complete the drag operation', function () {
+        it('should not try to complete the drag operation', function() {
             var dragZone,
                 errorSpy = jasmine.createSpy(),
                 old = window.onerror;
@@ -342,7 +343,7 @@ function() {
             });
 
             dragColumn(visibleColumns[3], visibleColumns[1]);
-            
+
             expect(errorSpy).not.toHaveBeenCalled();
 
             window.onerror = old;
@@ -350,7 +351,7 @@ function() {
             expect(dragZone.onDragOut).toHaveBeenCalled();
         });
 
-        it('should not cache any references to the destroyed drop zone object in the DragDropManager', function () {
+        it('should not cache any references to the destroyed drop zone object in the DragDropManager', function() {
             makeGrid();
             dragColumn(visibleColumns[3], visibleColumns[1]);
 
@@ -358,8 +359,8 @@ function() {
         });
     });
 
-    describe('Header movement using the UI', function () {
-        it('should move columns', function () {
+    describe('Header movement using the UI', function() {
+        it('should move columns', function() {
             makeGrid([{
                 dataIndex: 'field1',
                 header: 'Field1'
@@ -414,12 +415,13 @@ function() {
             runs(function() {
                 // Tapping on a column header should still sort
                 var sortSpy = spyOn(store, 'sort');
+
                 Ext.testHelper.tap(visibleColumns[0].titleEl);
                 expect(sortSpy).toHaveBeenCalled();
             });
         });
 
-        it('should move columns to the end of the header container', function () {
+        it('should move columns to the end of the header container', function() {
             makeGrid([{
                 dataIndex: 'field1',
                 header: 'Field1'
@@ -460,7 +462,7 @@ function() {
             grid.destroy();
         });
 
-        it('should move grouped columns with subitems to the end of the header container', function () {
+        it('should move grouped columns with subitems to the end of the header container', function() {
             makeGrid([{
                 header: 'Field1',
                 columns: [{
@@ -470,7 +472,7 @@ function() {
                         xtype: 'label',
                         text: 'Foo'
                     }]
-                },{
+                }, {
                     dataIndex: 'field3',
                     header: 'Field3',
                     items: [{
@@ -478,7 +480,7 @@ function() {
                         text: 'Bar'
                     }]
                 }]
-            },{
+            }, {
                 dataIndex: 'field4',
                 header: 'Field4'
             }, {
@@ -513,7 +515,7 @@ function() {
             grid.destroy();
         });
 
-        it('should move columns to the start of the header container', function () {
+        it('should move columns to the start of the header container', function() {
             makeGrid([{
                 dataIndex: 'field1',
                 header: 'Field1'
@@ -552,7 +554,7 @@ function() {
             grid.destroy();
         });
 
-        it('should only fire columnmove once when moving columns between column groups', function () {
+        it('should only fire columnmove once when moving columns between column groups', function() {
             makeGrid([{
                 header: 'Group 1',
                 columns: [{
@@ -597,7 +599,7 @@ function() {
             grid.destroy();
         });
 
-        it('should work when columns are hidden', function () {
+        it('should work when columns are hidden', function() {
             var allColumns;
 
             makeGrid([{
@@ -658,7 +660,7 @@ function() {
             grid.destroy();
         });
 
-        it('should work moving columns across group columns', function () {
+        it('should work moving columns across group columns', function() {
             makeGrid([{
                 dataIndex: 'field1',
                 header: 'Field1'
@@ -710,7 +712,7 @@ function() {
             grid.destroy();
         });
 
-        it('should work moving group columns', function () {
+        it('should work moving group columns', function() {
             makeGrid([{
                 dataIndex: 'field1',
                 header: 'Field1'
@@ -751,14 +753,15 @@ function() {
             grid.headerCt.move(2, 3);
             // [colChange, colMove]
             testSpies([1, 1]);
+
             // Don't test the view rows b/c the above move operation will only move the headers.
-            testUI('1,2,7,3,4,5,6,8', /*testRowText*/ false);
+            testUI('1,2,7,3,4,5,6,8', /* testRowText */ false);
 
             grid.destroy();
         });
 
-        describe('moving column(s) out of a group to the root container', function () {
-            it('should work moving a column out of a group', function () {
+        describe('moving column(s) out of a group to the root container', function() {
+            it('should work moving a column out of a group', function() {
                 makeGrid([{
                     dataIndex: 'field1',
                     header: 'Field1'
@@ -818,7 +821,7 @@ function() {
                 grid.destroy();
             });
 
-            it('should work moving columns out of a group when columns are hidden before a group', function () {
+            it('should work moving columns out of a group when columns are hidden before a group', function() {
                 var allColumns;
 
                 makeGrid([{
@@ -882,7 +885,7 @@ function() {
                 grid.destroy();
             });
 
-            describe('moving the last header out of a group', function () {
+            describe('moving the last header out of a group', function() {
                 function fn(expectMore) {
                     makeGrid([{
                         dataIndex: 'field1',
@@ -927,12 +930,12 @@ function() {
                     grid.destroy();
                 }
 
-                it('should work', function () {
+                it('should work', function() {
                     fn();
                 });
 
-                it('should remove the group header when the last subheader is removed', function () {
-                    fn(function () {
+                it('should remove the group header when the last subheader is removed', function() {
+                    fn(function() {
                         expect(groupHeader.rendered).toBe(false);
                         expect(groupHeader.ownerCt).toBe(null);
                     });
@@ -940,8 +943,8 @@ function() {
             });
         });
 
-        describe('locking grids', function () {
-            it('should work when configured without any locked columns', function () {
+        describe('locking grids', function() {
+            it('should work when configured without any locked columns', function() {
                 var visibleColumnManager, column;
 
                 makeGrid(null, null, {
@@ -960,7 +963,7 @@ function() {
         });
     });
 
-    describe('nested groups', function () {
+    describe('nested groups', function() {
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!! READ THIS TO UNDERSTAND HOW TO SET UP THE TESTS !!!
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1053,7 +1056,7 @@ function() {
         //                  ],
         //                  groupHeader: 1,
         //                  subGroupHeader: 2
-        //              }, function () {
+        //              }, function() {
         //                  expect(groupHeader.ownerCt).toBe(null);
         //              });
         //
@@ -1116,7 +1119,8 @@ function() {
         function doMove() {
             if (range) {
                 dragRange();
-            } else {
+            }
+            else {
                 dragSequence();
             }
         }
@@ -1135,7 +1139,8 @@ function() {
                 for (; begin >= end; begin--) {
                     dragColumn(visibleColumns[begin], subGroupHeader, onRight);
                 }
-            } else {
+            }
+            else {
                 for (; begin <= end; begin++) {
                     dragColumn(visibleColumns[begin], subGroupHeader, onRight);
                 }
@@ -1159,38 +1164,33 @@ function() {
                 zero = pos[0];
                 one = pos[1];
 
-                from = (typeof zero === 'string') ?
-                    headers[zero] :
-                    visibleColumns[zero];
-
-                to = (typeof one === 'string') ?
-                    headers[one] :
-                    visibleColumns[one];
+                from = (typeof zero === 'string') ? headers[zero] : visibleColumns[zero];
+                to = (typeof one === 'string') ? headers[one] : visibleColumns[one];
 
                 dragColumn(from, to, pos[2]);
             }
         }
 
         function setGroupHeaders() {
-            groupHeader = (typeof groupHeader === 'number') ?
+            groupHeader = (typeof groupHeader === 'number')
                 // Use grid since we operate on locked grids, too.
-                grid.query('[isGroupHeader]')[groupHeader] :
-                groupHeader;
+                ? grid.query('[isGroupHeader]')[groupHeader]
+                : groupHeader;
 
-            subGroupHeader = (typeof subGroupHeader === 'number') ?
+            subGroupHeader = (typeof subGroupHeader === 'number')
                 // Use grid since we operate on locked grids, too.
-                grid.query('[isGroupHeader]')[subGroupHeader] :
-                groupHeader;
+                ? grid.query('[isGroupHeader]')[subGroupHeader]
+                : groupHeader;
         }
 
-        afterEach(function () {
+        afterEach(function() {
             columns = dropPosition = subGroupHeader = order = range = sequence = subGroupHeader = onRight = stateful = skipMove = null;
         });
 
-        describe('stateful', function () {
+        describe('stateful', function() {
             var columns;
 
-            beforeEach(function () {
+            beforeEach(function() {
                 columns = [{
                     dataIndex: 'field1',
                     stateId: 'foo1',
@@ -1232,12 +1232,12 @@ function() {
                 new Ext.state.Provider();
             });
 
-            afterEach(function () {
+            afterEach(function() {
                 Ext.state.Manager.getProvider().clear();
                 columns = null;
             });
 
-            it('should work when moving headers within a grouped header', function () {
+            it('should work when moving headers within a grouped header', function() {
                 runTest({
                     columns: columns,
                     order: '1,2,4,5,6,3,7,8',
@@ -1257,7 +1257,7 @@ function() {
             });
         });
 
-        describe('one nested group', function () {
+        describe('one nested group', function() {
             var columns = [{
                     dataIndex: 'field1',
                     header: 'Field1'
@@ -1287,15 +1287,15 @@ function() {
                     header: 'Field8'
                 }];
 
-            describe('dragging all subheaders out of the group', function () {
-                describe('when the targetHeader is the groupHeader', function () {
+            describe('dragging all subheaders out of the group', function() {
+                describe('when the targetHeader is the groupHeader', function() {
                     function additionalSpec() {
                         expect(groupHeader.rendered).toBe(false);
                         expect(groupHeader.ownerCt).toBe(null);
                     }
 
                     // Each spec will test that the groupHeader has been removed after the last subheader.
-                    it('should work when the move position is before the target header', function () {
+                    it('should work when the move position is before the target header', function() {
                         runTest({
                             columns: columns,
                             dropPosition: 'before',
@@ -1304,7 +1304,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the move position is before the target header, in reverse', function () {
+                    it('should work when the move position is before the target header, in reverse', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,6,5,4,3,7,8',
@@ -1317,7 +1317,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the move position is after the target header', function () {
+                    it('should work when the move position is after the target header', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,6,5,4,3,7,8',
@@ -1330,7 +1330,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the move position is after the target header, in reverse', function () {
+                    it('should work when the move position is after the target header, in reverse', function() {
                         runTest({
                             columns: columns,
                             dropPosition: 'right',
@@ -1339,7 +1339,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it("should work when the move position alternates between 'before' and 'after'", function () {
+                    it("should work when the move position alternates between 'before' and 'after'", function() {
                         runTest({
                             columns: columns,
                             order: '1,2,4,3,6,5,7,8',
@@ -1356,8 +1356,8 @@ function() {
                 });
             });
 
-            describe('when the headers are moved randomly', function () {
-                it("should work when the move position is 'before'", function () {
+            describe('when the headers are moved randomly', function() {
+                it("should work when the move position is 'before'", function() {
                     runTest({
                         columns: columns,
                         order: '6,1,3,4,2,5,7,8',
@@ -1370,7 +1370,7 @@ function() {
                     });
                 });
 
-                it("should work when the move position is 'after'", function () {
+                it("should work when the move position is 'after'", function() {
                     runTest({
                         columns: columns,
                         order: '1,6,2,3,4,7,5,8',
@@ -1383,7 +1383,7 @@ function() {
                     });
                 });
 
-                it("should work when the move position alternates between 'before' and 'after'", function () {
+                it("should work when the move position alternates between 'before' and 'after'", function() {
                     runTest({
                         columns: columns,
                         order: '6,1,4,3,2,7,5,8',
@@ -1397,8 +1397,8 @@ function() {
                 });
             });
 
-            describe('moving the group header', function () {
-                it('should move the group to the beginning of the root header container, before position', function () {
+            describe('moving the group header', function() {
+                it('should move the group to the beginning of the root header container, before position', function() {
                     runTest({
                         columns: columns,
                         order: '3,4,5,6,1,2,7,8',
@@ -1408,7 +1408,7 @@ function() {
                     });
                 });
 
-                it('should move the group to the beginning of the root header container, after position', function () {
+                it('should move the group to the beginning of the root header container, after position', function() {
                     runTest({
                         columns: columns,
                         order: '1,3,4,5,6,2,7,8',
@@ -1418,7 +1418,7 @@ function() {
                     });
                 });
 
-                it('should move the group to the end of the root header container, before position', function () {
+                it('should move the group to the end of the root header container, before position', function() {
                     runTest({
                         columns: columns,
                         order: '1,2,7,3,4,5,6,8',
@@ -1428,7 +1428,7 @@ function() {
                     });
                 });
 
-                it('should move the group to the end of the root header container, after position', function () {
+                it('should move the group to the end of the root header container, after position', function() {
                     runTest({
                         columns: columns,
                         order: '1,2,7,8,3,4,5,6',
@@ -1440,7 +1440,7 @@ function() {
             });
         });
 
-        describe('two nested groups', function () {
+        describe('two nested groups', function() {
             var columns = [{
                 dataIndex: 'field1',
                 header: 'Field1'
@@ -1488,8 +1488,8 @@ function() {
                 header: 'Field13'
             }];
 
-            describe('dragging all subheaders out of Group2', function () {
-                describe('when the targetHeader is the Group2 groupHeader (so the drag is contiguous to Group2)', function () {
+            describe('dragging all subheaders out of Group2', function() {
+                describe('when the targetHeader is the Group2 groupHeader (so the drag is contiguous to Group2)', function() {
                     // Note: in order to target the correct subgroupheader, define a subGroupHeader config
                     // and then specify 'subGroupHeader' in the sequence.
                     //
@@ -1508,7 +1508,7 @@ function() {
                         expect(subGroupHeader.rendered).toBe(false);
                     }
 
-                    it('should work when the move position is before the target header', function () {
+                    it('should work when the move position is before the target header', function() {
                         runTest({
                             columns: columns,
                             dropPosition: 'before',
@@ -1518,7 +1518,7 @@ function() {
                         });
                     });
 
-                    it('should work when the move position is before the target header, in reverse', function () {
+                    it('should work when the move position is before the target header, in reverse', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,9,8,7,6,10,11,12,13',
@@ -1532,7 +1532,7 @@ function() {
                         });
                     });
 
-                    it('should work when the move position is after the target header', function () {
+                    it('should work when the move position is after the target header', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,9,8,7,6,10,11,12,13',
@@ -1546,7 +1546,7 @@ function() {
                         });
                     });
 
-                    it('should work when the move position is after the target header, in reverse', function () {
+                    it('should work when the move position is after the target header, in reverse', function() {
                         runTest({
                             columns: columns,
                             dropPosition: 'right',
@@ -1556,7 +1556,7 @@ function() {
                         });
                     });
 
-                    it("should work when the move position alternates between 'before' and 'after'", function () {
+                    it("should work when the move position alternates between 'before' and 'after'", function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,7,9,6,8,10,11,12,13',
@@ -1570,7 +1570,7 @@ function() {
                         });
                     });
 
-                    it("should remove the group header when the last subheader is removed, 'before' move position", function () {
+                    it("should remove the group header when the last subheader is removed, 'before' move position", function() {
                         runTest({
                             columns: columns,
                             dropPosition: 'before',
@@ -1580,7 +1580,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it("should remove the group header when the last subheader is removed, 'after' move position", function () {
+                    it("should remove the group header when the last subheader is removed, 'after' move position", function() {
                         runTest({
                             columns: columns,
                             dropPosition: 'after',
@@ -1591,8 +1591,8 @@ function() {
                     });
                 });
 
-                describe('when the Group2 subheaders are dragged into Group1 (targetHeader is not Group2)', function () {
-                    it('should work when the move position is before the first subheader in Group1', function () {
+                describe('when the Group2 subheaders are dragged into Group1 (targetHeader is not Group2)', function() {
+                    it('should work when the move position is before the first subheader in Group1', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,9,8,7,6,3,4,5,10,11,12,13',
@@ -1605,7 +1605,7 @@ function() {
                         });
                     });
 
-                    it('should work when the move position is before the first subheader in Group1, in reverse', function () {
+                    it('should work when the move position is before the first subheader in Group1, in reverse', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,6,7,8,9,3,4,5,10,11,12,13',
@@ -1618,7 +1618,7 @@ function() {
                         });
                     });
 
-                    it('should work when the move position is after the last subheader in Group1', function () {
+                    it('should work when the move position is after the last subheader in Group1', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,6,7,8,9,11,12,13',
@@ -1631,7 +1631,7 @@ function() {
                         });
                     });
 
-                    it('should work when the move position is after the last subheader in Group1, in reverse', function () {
+                    it('should work when the move position is after the last subheader in Group1, in reverse', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,9,8,7,6,11,12,13',
@@ -1644,7 +1644,7 @@ function() {
                         });
                     });
 
-                    it('should work when the move position is before the subheader directly after Group2', function () {
+                    it('should work when the move position is before the subheader directly after Group2', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,9,8,7,6,10,11,12,13',
@@ -1657,7 +1657,7 @@ function() {
                         });
                     });
 
-                    it('should work when the move position is before the subheader directly after Group2, in reverse', function () {
+                    it('should work when the move position is before the subheader directly after Group2, in reverse', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,6,7,8,9,10,11,12,13',
@@ -1671,7 +1671,7 @@ function() {
                     });
                 });
 
-                describe('when the Group2 subheaders are dragged into the root header container', function () {
+                describe('when the Group2 subheaders are dragged into the root header container', function() {
                     function additionalSpec() {
                         expect(grid.down('[isGroupHeader][text=Group2]')).toBe(null);
                     }
@@ -1681,7 +1681,7 @@ function() {
                     //
                     // Note that also we're testing that Group2 has been removed after the last subheader has been
                     // dragged out.
-                    it('should work when the move position is before the first group header (Group1)', function () {
+                    it('should work when the move position is before the first group header (Group1)', function() {
                         runTest({
                             columns: columns,
                             dropPosition: 'before',
@@ -1690,7 +1690,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the move position is before the first group header (Group1), in reverse', function () {
+                    it('should work when the move position is before the first group header (Group1), in reverse', function() {
                         // Note that specifying null in a sequence and not specifying a subGroupHeader config will
                         // have the value of groupHeader default to be the first group header found, which is
                         // Group1 and the one we want.
@@ -1706,7 +1706,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the move position is after the first group header (Group1)', function () {
+                    it('should work when the move position is after the first group header (Group1)', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,9,8,7,6,11,12,13',
@@ -1719,7 +1719,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the move position is after the first group header (Group1), in reverse', function () {
+                    it('should work when the move position is after the first group header (Group1), in reverse', function() {
                         runTest({
                             columns: columns,
                             dropPosition: 'right',
@@ -1728,7 +1728,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it("should work when the move position alternates between 'before' and 'after'", function () {
+                    it("should work when the move position alternates between 'before' and 'after'", function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,7,9,6,8,10,11,12,13',
@@ -1744,9 +1744,9 @@ function() {
                 });
             });
 
-            describe('moving the group header', function () {
-                describe('Group1', function () {
-                    it('should move the group to the beginning of the root header container, before position', function () {
+            describe('moving the group header', function() {
+                describe('Group1', function() {
+                    it('should move the group to the beginning of the root header container, before position', function() {
                         runTest({
                             columns: columns,
                             order: '3,4,5,6,7,8,9,10,1,2,11,12,13',
@@ -1756,7 +1756,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the beginning of the root header container, after position', function () {
+                    it('should move the group to the beginning of the root header container, after position', function() {
                         runTest({
                             columns: columns,
                             order: '1,3,4,5,6,7,8,9,10,2,11,12,13',
@@ -1766,7 +1766,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the end of the root header container, before position', function () {
+                    it('should move the group to the end of the root header container, before position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,11,12,3,4,5,6,7,8,9,10,13',
@@ -1776,7 +1776,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the end of the root header container, after position', function () {
+                    it('should move the group to the end of the root header container, after position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,11,12,13,3,4,5,6,7,8,9,10',
@@ -1787,8 +1787,8 @@ function() {
                     });
                 });
 
-                describe('Group2', function () {
-                    it('should move the group to the beginning of the root header container, before position', function () {
+                describe('Group2', function() {
+                    it('should move the group to the beginning of the root header container, before position', function() {
                         runTest({
                             columns: columns,
                             order: '6,7,8,9,1,2,3,4,5,10,11,12,13',
@@ -1799,7 +1799,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the beginning of the root header container, after position', function () {
+                    it('should move the group to the beginning of the root header container, after position', function() {
                         runTest({
                             columns: columns,
                             order: '1,6,7,8,9,2,3,4,5,10,11,12,13',
@@ -1810,7 +1810,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the end of the root header container, before position', function () {
+                    it('should move the group to the end of the root header container, before position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,11,12,6,7,8,9,13',
@@ -1821,7 +1821,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the end of the root header container, after position', function () {
+                    it('should move the group to the end of the root header container, after position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,11,12,13,6,7,8,9',
@@ -1832,7 +1832,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the beginning of Group1', function () {
+                    it('should move the group to the beginning of Group1', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,6,7,8,9,3,4,5,10,11,12,13',
@@ -1843,7 +1843,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the end of Group1', function () {
+                    it('should move the group to the end of Group1', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,6,7,8,9,11,12,13',
@@ -1855,7 +1855,7 @@ function() {
                     });
                 });
 
-                describe('when the nested groups are stacked directly on top of each other', function () {
+                describe('when the nested groups are stacked directly on top of each other', function() {
                     var columns = [{
                         dataIndex: 'field1',
                         header: 'Field1'
@@ -1901,7 +1901,7 @@ function() {
                         expect(subGroupHeader.rendered).toBe(true);
                     }
 
-                    it('should remove the Group1 group header when Group2 is moved out of its grouping', function () {
+                    it('should remove the Group1 group header when Group2 is moved out of its grouping', function() {
                         runTest({
                             columns: columns,
                             order: '1,3,4,5,6,2,7,8,9',
@@ -1921,7 +1921,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should remove the Group1 group header when Group2 is dragged onto it, before position', function () {
+                    it('should remove the Group1 group header when Group2 is dragged onto it, before position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,6,7,8,9',
@@ -1933,7 +1933,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should remove the Group1 group header when Group2 is dragged onto it, after position', function () {
+                    it('should remove the Group1 group header when Group2 is dragged onto it, after position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,6,7,8,9',
@@ -1945,8 +1945,8 @@ function() {
                     });
                 });
 
-                describe('when the nested groups are aligned on either side', function () {
-                    describe('aligned on left', function () {
+                describe('when the nested groups are aligned on either side', function() {
+                    describe('aligned on left', function() {
                         var columns = [{
                             dataIndex: 'field1',
                             header: 'Field1'
@@ -1982,7 +1982,7 @@ function() {
                             header: 'Field9'
                         }];
 
-                        it('should work when the subgroupheader is dragged onto its ownerCt, before position', function () {
+                        it('should work when the subgroupheader is dragged onto its ownerCt, before position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,3,4,5,6,7,8,9',
@@ -1993,7 +1993,7 @@ function() {
                             });
                         });
 
-                        it('should work when the subgroupheader is dragged onto its ownerCt, after position', function () {
+                        it('should work when the subgroupheader is dragged onto its ownerCt, after position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,6,3,4,5,7,8,9',
@@ -2005,7 +2005,7 @@ function() {
                         });
                     });
 
-                    describe('aligned on right', function () {
+                    describe('aligned on right', function() {
                         var columns = [{
                             dataIndex: 'field1',
                             header: 'Field1'
@@ -2041,7 +2041,7 @@ function() {
                             header: 'Field9'
                         }];
 
-                        it('should work when the subgroupheader is dragged onto its ownerCt, before position', function () {
+                        it('should work when the subgroupheader is dragged onto its ownerCt, before position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,4,5,6,3,7,8,9',
@@ -2052,7 +2052,7 @@ function() {
                             });
                         });
 
-                        it('should work when the subgroupheader is dragged onto its ownerCt, after position', function () {
+                        it('should work when the subgroupheader is dragged onto its ownerCt, after position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,3,4,5,6,7,8,9',
@@ -2066,8 +2066,8 @@ function() {
                 });
             });
 
-            describe('when the headers are moved randomly', function () {
-                it("should work when the move position is 'before'", function () {
+            describe('when the headers are moved randomly', function() {
+                it("should work when the move position is 'before'", function() {
                     runTest({
                         columns: columns,
                         order: '6,1,9,2,3,7,4,5,8,10,11,12,13',
@@ -2080,7 +2080,7 @@ function() {
                     });
                 });
 
-                it("should work when the move position is 'after'", function () {
+                it("should work when the move position is 'after'", function() {
                     runTest({
                         columns: columns,
                         order: '1,6,2,3,4,8,5,10,11,12,9,13,7',
@@ -2093,7 +2093,7 @@ function() {
                     });
                 });
 
-                it("should work when the move position alternates between 'before' and 'after'", function () {
+                it("should work when the move position alternates between 'before' and 'after'", function() {
                     runTest({
                         columns: columns,
                         order: '1,2,9,3,6,4,7,5,8,10,11,12,13',
@@ -2108,7 +2108,7 @@ function() {
             });
         });
 
-        describe('three nested groups', function () {
+        describe('three nested groups', function() {
             var columns = [{
                 dataIndex: 'field1',
                 header: 'Field1'
@@ -2168,14 +2168,14 @@ function() {
                 header: 'Field16'
             }];
 
-            describe('dragging all subheaders out of Group3', function () {
-                describe('when the targetHeader is the Group3 groupHeader (so the drag is contiguous to Group3)', function () {
+            describe('dragging all subheaders out of Group3', function() {
+                describe('when the targetHeader is the Group3 groupHeader (so the drag is contiguous to Group3)', function() {
                     function additionalSpec() {
                         expect(subGroupHeader.ownerCt).toBe(null);
                         expect(subGroupHeader.rendered).toBe(false);
                     }
 
-                    it('should work when the move position is before the target header', function () {
+                    it('should work when the move position is before the target header', function() {
                         runTest({
                             columns: columns,
                             dropPosition: 'before',
@@ -2185,7 +2185,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the move position is before the target header, in reverse', function () {
+                    it('should work when the move position is before the target header, in reverse', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,9,8,7,6,10,11,12,13,14,15,16',
@@ -2199,7 +2199,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the move position is after the target header', function () {
+                    it('should work when the move position is after the target header', function() {
                         runTest({
                             columns: columns,
                             dropPosition: 'right',
@@ -2209,7 +2209,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the move position is after the target header, in reverse', function () {
+                    it('should work when the move position is after the target header, in reverse', function() {
                         runTest({
                             columns: columns,
                             dropPosition: 'right',
@@ -2219,7 +2219,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it("should work when the move position alternates between 'before' and 'after'", function () {
+                    it("should work when the move position alternates between 'before' and 'after'", function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,7,9,6,8,10,11,12,13,14,15,16',
@@ -2234,13 +2234,13 @@ function() {
                     });
                 });
 
-                describe('when the Group3 subheaders are dragged into Group2 (targetHeader is not Group3)', function () {
+                describe('when the Group3 subheaders are dragged into Group2 (targetHeader is not Group3)', function() {
                     function additionalSpec() {
                         expect(subGroupHeader.ownerCt).toBe(null);
                         expect(subGroupHeader.rendered).toBe(false);
                     }
 
-                    it('should work when the move position is after the last subheader in Group2', function () {
+                    it('should work when the move position is after the last subheader in Group2', function() {
                         // Even though we're not using the subGroupHeader in the move sequence, we specify it b/c
                         // we're referencing it in the additionalSpec.
                         runTest({
@@ -2256,7 +2256,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the move position is before the subheader directly after Group2', function () {
+                    it('should work when the move position is before the subheader directly after Group2', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,11,12,9,8,7,6,13,14,15,16',
@@ -2271,13 +2271,13 @@ function() {
                     });
                 });
 
-                describe('when the Group3 subheaders are dragged into Group1', function () {
+                describe('when the Group3 subheaders are dragged into Group1', function() {
                     function additionalSpec() {
                         expect(subGroupHeader.ownerCt).toBe(null);
                         expect(subGroupHeader.rendered).toBe(false);
                     }
 
-                    it('should work when the move position is after the last subheader in Group1', function () {
+                    it('should work when the move position is after the last subheader in Group1', function() {
                         // Even though we're not using the subGroupHeader in the move sequence, we specify it b/c
                         // we're referencing it in the additionalSpec.
                         runTest({
@@ -2293,7 +2293,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the move position is after the last subheader in Group1, in reverse', function () {
+                    it('should work when the move position is after the last subheader in Group1, in reverse', function() {
                         runTest({
                             columns: columns,
                             dropPosition: 'after',
@@ -2302,7 +2302,7 @@ function() {
                         });
                     });
 
-                    it('should work when the move position is before the subheader directly after Group1', function () {
+                    it('should work when the move position is before the subheader directly after Group1', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,11,12,9,8,7,6,13,14,15,16',
@@ -2316,7 +2316,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the move position is before the subheader directly after Group1, in reverse', function () {
+                    it('should work when the move position is before the subheader directly after Group1, in reverse', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,11,12,6,7,8,9,13,14,15,16',
@@ -2330,7 +2330,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the targetHeader is Group1 and the move position is before', function () {
+                    it('should work when the targetHeader is Group1 and the move position is before', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,9,8,7,6,3,4,5,10,11,12,13,14,15,16',
@@ -2344,7 +2344,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the targetHeader is Group1 and the move position is after', function () {
+                    it('should work when the targetHeader is Group1 and the move position is after', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,11,12,13,9,8,7,6,14,15,16',
@@ -2359,7 +2359,7 @@ function() {
                     });
                 });
 
-                describe('when the Group3 subheaders are dragged into the root header container', function () {
+                describe('when the Group3 subheaders are dragged into the root header container', function() {
                     // Note that not specifying a groupSubHeader with a range means that the groupHeader ref will
                     // be the first group found, which is Group1 and the one we want.
                     //
@@ -2370,7 +2370,7 @@ function() {
                         expect(subGroupHeader.ownerCt).toBe(null);
                     }
 
-                    it('should work when the move position is before the first group header (Group1)', function () {
+                    it('should work when the move position is before the first group header (Group1)', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,6,7,8,9,3,4,5,10,11,12,13,14,15,16',
@@ -2384,7 +2384,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the move position is before the first group header (Group1), in reverse', function () {
+                    it('should work when the move position is before the first group header (Group1), in reverse', function() {
                         // Note that specifying null in a sequence and not specifying a subGroupHeader config will
                         // have the value of groupHeader default to be the first group header found, which is
                         // Group1 and the one we want.
@@ -2401,7 +2401,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the move position is after the first group header (Group1)', function () {
+                    it('should work when the move position is after the first group header (Group1)', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,11,12,13,9,8,7,6,14,15,16',
@@ -2415,7 +2415,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should work when the move position is after the first group header (Group1), in reverse', function () {
+                    it('should work when the move position is after the first group header (Group1), in reverse', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,11,12,13,6,7,8,9,14,15,16',
@@ -2429,7 +2429,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it("should work when the move position alternates between 'before' and 'after'", function () {
+                    it("should work when the move position alternates between 'before' and 'after'", function() {
                         runTest({
                             columns: columns,
                             order: '1,2,7,9,3,4,5,10,11,12,13,6,8,14,15,16',
@@ -2445,9 +2445,9 @@ function() {
                 });
             });
 
-            describe('moving the group header', function () {
-                describe('Group1', function () {
-                    it('should move the group to the beginning of the root header container, before position', function () {
+            describe('moving the group header', function() {
+                describe('Group1', function() {
+                    it('should move the group to the beginning of the root header container, before position', function() {
                         runTest({
                             columns: columns,
                             order: '3,4,5,6,7,8,9,10,11,12,13,1,2,14,15,16',
@@ -2457,7 +2457,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the beginning of the root header container, after position', function () {
+                    it('should move the group to the beginning of the root header container, after position', function() {
                         runTest({
                             columns: columns,
                             order: '1,3,4,5,6,7,8,9,10,11,12,13,2,14,15,16',
@@ -2467,7 +2467,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the end of the root header container, before position', function () {
+                    it('should move the group to the end of the root header container, before position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,14,15,3,4,5,6,7,8,9,10,11,12,13,16',
@@ -2477,7 +2477,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the end of the root header container, after position', function () {
+                    it('should move the group to the end of the root header container, after position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,14,15,16,3,4,5,6,7,8,9,10,11,12,13',
@@ -2488,8 +2488,8 @@ function() {
                     });
                 });
 
-                describe('Group2', function () {
-                    it('should move the group to the beginning of the root header container, before position', function () {
+                describe('Group2', function() {
+                    it('should move the group to the beginning of the root header container, before position', function() {
                         runTest({
                             columns: columns,
                             order: '6,7,8,9,10,11,12,1,2,3,4,5,13,14,15,16',
@@ -2500,7 +2500,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the beginning of the root header container, after position', function () {
+                    it('should move the group to the beginning of the root header container, after position', function() {
                         runTest({
                             columns: columns,
                             order: '1,6,7,8,9,10,11,12,2,3,4,5,13,14,15,16',
@@ -2511,7 +2511,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the end of the root header container, before position', function () {
+                    it('should move the group to the end of the root header container, before position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,13,14,15,6,7,8,9,10,11,12,16',
@@ -2522,7 +2522,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the end of the root header container, after position', function () {
+                    it('should move the group to the end of the root header container, after position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,13,14,15,16,6,7,8,9,10,11,12',
@@ -2533,7 +2533,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the beginning of Group1', function () {
+                    it('should move the group to the beginning of Group1', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,6,7,8,9,10,11,12,3,4,5,13,14,15,16',
@@ -2544,7 +2544,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the end of Group1', function () {
+                    it('should move the group to the end of Group1', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,13,6,7,8,9,10,11,12,14,15,16',
@@ -2556,8 +2556,8 @@ function() {
                     });
                 });
 
-                describe('Group3', function () {
-                    it('should move the group to the beginning of the root header container, before position', function () {
+                describe('Group3', function() {
+                    it('should move the group to the beginning of the root header container, before position', function() {
                         runTest({
                             columns: columns,
                             order: '6,7,8,9,1,2,3,4,5,10,11,12,13,14,15,16',
@@ -2568,7 +2568,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the beginning of the root header container, after position', function () {
+                    it('should move the group to the beginning of the root header container, after position', function() {
                         runTest({
                             columns: columns,
                             order: '1,6,7,8,9,2,3,4,5,10,11,12,13,14,15,16',
@@ -2579,7 +2579,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the end of the root header container, before position', function () {
+                    it('should move the group to the end of the root header container, before position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,11,12,13,14,15,6,7,8,9,16',
@@ -2590,7 +2590,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the end of the root header container, after position', function () {
+                    it('should move the group to the end of the root header container, after position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,11,12,13,14,15,16,6,7,8,9',
@@ -2601,7 +2601,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the beginning of Group1', function () {
+                    it('should move the group to the beginning of Group1', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,6,7,8,9,3,4,5,10,11,12,13,14,15,16',
@@ -2612,7 +2612,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the end of Group1', function () {
+                    it('should move the group to the end of Group1', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,11,12,13,6,7,8,9,14,15,16',
@@ -2623,7 +2623,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the beginning of Group2', function () {
+                    it('should move the group to the beginning of Group2', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16',
@@ -2635,7 +2635,7 @@ function() {
                         });
                     });
 
-                    it('should move the group to the end of Group2', function () {
+                    it('should move the group to the end of Group2', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,10,11,12,6,7,8,9,13,14,15,16',
@@ -2648,7 +2648,7 @@ function() {
                     });
                 });
 
-                describe('when the nested groups are stacked directly on top of each other', function () {
+                describe('when the nested groups are stacked directly on top of each other', function() {
                     var columns = [{
                         dataIndex: 'field1',
                         header: 'Field1'
@@ -2703,7 +2703,7 @@ function() {
                         expect(headerCt.down('[text=Group1]')).toBe(null);
                     }
 
-                    it('should remove the Group1 group header when Group2 is moved out of its grouping', function () {
+                    it('should remove the Group1 group header when Group2 is moved out of its grouping', function() {
                         runTest({
                             columns: columns,
                             order: '1,3,4,5,6,2,7,8,9',
@@ -2723,7 +2723,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should remove both the Group1 and Group2 group headers when Group3 is moved out of its grouping', function () {
+                    it('should remove both the Group1 and Group2 group headers when Group3 is moved out of its grouping', function() {
                         runTest({
                             columns: columns,
                             order: '1,3,4,5,6,2,7,8,9',
@@ -2743,7 +2743,7 @@ function() {
                         }, nestedSpec);
                     });
 
-                    it('should remove the Group1 group header when Group2 is dragged onto it, before position', function () {
+                    it('should remove the Group1 group header when Group2 is dragged onto it, before position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,6,7,8,9',
@@ -2754,7 +2754,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should remove the Group1 group header when Group2 is dragged onto it, after position', function () {
+                    it('should remove the Group1 group header when Group2 is dragged onto it, after position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,6,7,8,9',
@@ -2765,7 +2765,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should remove both the Group1 and Group2 group headers when Group3 is dragged onto Group1, before position', function () {
+                    it('should remove both the Group1 and Group2 group headers when Group3 is dragged onto Group1, before position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,6,7,8,9',
@@ -2776,7 +2776,7 @@ function() {
                         }, nestedSpec);
                     });
 
-                    it('should remove both the Group1 and Group2 group headers when Group3 is dragged onto Group1 , after position', function () {
+                    it('should remove both the Group1 and Group2 group headers when Group3 is dragged onto Group1 , after position', function() {
                         runTest({
                             columns: columns,
                             order: '1,2,3,4,5,6,7,8,9',
@@ -2788,8 +2788,8 @@ function() {
                     });
                 });
 
-                describe('when the nested groups are aligned on either side', function () {
-                    describe('aligned on left', function () {
+                describe('when the nested groups are aligned on either side', function() {
+                    describe('aligned on left', function() {
                         var columns = [{
                             dataIndex: 'field1',
                             header: 'Field1'
@@ -2828,7 +2828,7 @@ function() {
                             header: 'Field9'
                         }];
 
-                        describe('Group2 and Group3 are aligned left with a header to the right', function () {
+                        describe('Group2 and Group3 are aligned left with a header to the right', function() {
                             //           +-----------------------------------+
                             //           |               Group 1             |
                             //           |-----------------------------------|
@@ -2860,7 +2860,7 @@ function() {
                                 expect(subGroupHeader.ownerCt).toBe(groupHeader.ownerCt);
                             }
 
-                            it('should work when Group3 is dragged onto Group2, before position', function () {
+                            it('should work when Group3 is dragged onto Group2, before position', function() {
                                 runTest({
                                     columns: columns,
                                     order: '1,2,3,4,5,6,7,8,9',
@@ -2872,7 +2872,7 @@ function() {
                                 }, test1);
                             });
 
-                            it('should work when Group3 is dragged onto Group2, after position', function () {
+                            it('should work when Group3 is dragged onto Group2, after position', function() {
                                 runTest({
                                     columns: columns,
                                     order: '1,2,3,4,5,6,7,8,9',
@@ -2884,7 +2884,7 @@ function() {
                                 }, test1);
                             });
 
-                            it('should work when Group3 is dragged onto Group1, before position', function () {
+                            it('should work when Group3 is dragged onto Group1, before position', function() {
                                 runTest({
                                     columns: columns,
                                     order: '1,2,3,4,5,6,7,8,9',
@@ -2895,7 +2895,7 @@ function() {
                                 }, test2);
                             });
 
-                            it('should work when Group3 is dragged onto Group1, after position', function () {
+                            it('should work when Group3 is dragged onto Group1, after position', function() {
                                 runTest({
                                     columns: columns,
                                     order: '1,2,6,3,4,5,7,8,9',
@@ -2906,7 +2906,7 @@ function() {
                                 }, test2);
                             });
 
-                            it('should work when Group2 is dragged onto Group1, before position', function () {
+                            it('should work when Group2 is dragged onto Group1, before position', function() {
                                 runTest({
                                     columns: columns,
                                     order: '1,2,3,4,5,6,7,8,9',
@@ -2917,7 +2917,7 @@ function() {
                                 }, test3);
                             });
 
-                            it('should work when Group2 is dragged onto Group1, after position', function () {
+                            it('should work when Group2 is dragged onto Group1, after position', function() {
                                 runTest({
                                     columns: columns,
                                     order: '1,2,6,3,4,5,7,8,9',
@@ -2930,7 +2930,7 @@ function() {
                         });
                     });
 
-                    describe('aligned on right', function () {
+                    describe('aligned on right', function() {
                         var columns = [{
                             dataIndex: 'field1',
                             header: 'Field1'
@@ -2969,7 +2969,7 @@ function() {
                             header: 'Field9'
                         }];
 
-                        describe('Group2 and Group3 are aligned right with a header to the left', function () {
+                        describe('Group2 and Group3 are aligned right with a header to the left', function() {
                             //           +-----------------------------------+
                             //           |               Group 1             |
                             //           |-----------------------------------|
@@ -3001,7 +3001,7 @@ function() {
                                 expect(subGroupHeader.ownerCt).toBe(groupHeader.ownerCt);
                             }
 
-                            it('should work when Group3 is dragged onto Group2, before position', function () {
+                            it('should work when Group3 is dragged onto Group2, before position', function() {
                                 runTest({
                                     columns: columns,
                                     order: '1,2,3,4,5,6,7,8,9',
@@ -3013,7 +3013,7 @@ function() {
                                 }, test1);
                             });
 
-                            it('should work when Group3 is dragged onto Group2, after position', function () {
+                            it('should work when Group3 is dragged onto Group2, after position', function() {
                                 runTest({
                                     columns: columns,
                                     order: '1,2,3,4,5,6,7,8,9',
@@ -3025,7 +3025,7 @@ function() {
                                 }, test1);
                             });
 
-                            it('should work when Group3 is dragged onto Group1, before position', function () {
+                            it('should work when Group3 is dragged onto Group1, before position', function() {
                                 runTest({
                                     columns: columns,
                                     order: '1,2,4,5,6,3,7,8,9',
@@ -3036,7 +3036,7 @@ function() {
                                 }, test2);
                             });
 
-                            it('should work when Group3 is dragged onto Group1, after position', function () {
+                            it('should work when Group3 is dragged onto Group1, after position', function() {
                                 runTest({
                                     columns: columns,
                                     order: '1,2,3,4,5,6,7,8,9',
@@ -3047,7 +3047,7 @@ function() {
                                 }, test2);
                             });
 
-                            it('should work when Group2 is dragged onto Group1, before position', function () {
+                            it('should work when Group2 is dragged onto Group1, before position', function() {
                                 runTest({
                                     columns: columns,
                                     order: '1,2,4,5,6,3,7,8,9',
@@ -3058,7 +3058,7 @@ function() {
                                 }, test3);
                             });
 
-                            it('should work when Group2 is dragged onto Group1, after position', function () {
+                            it('should work when Group2 is dragged onto Group1, after position', function() {
                                 runTest({
                                     columns: columns,
                                     order: '1,2,3,4,5,6,7,8,9',
@@ -3074,8 +3074,8 @@ function() {
             });
         });
 
-        describe('four nested groups', function () {
-            describe('when the nested groups are stacked directly on top of each other', function () {
+        describe('four nested groups', function() {
+            describe('when the nested groups are stacked directly on top of each other', function() {
                 var columns = [{
                     dataIndex: 'field1',
                     header: 'Field1'
@@ -3158,8 +3158,8 @@ function() {
                     expect(headerCt.down('[text=Group4]').rendered).toBe(true);
                 }
 
-                describe('when its moved out of its stacked grouping', function () {
-                    it('should remove the Group1 group header when Group2 is moved out of its grouping', function () {
+                describe('when its moved out of its stacked grouping', function() {
+                    it('should remove the Group1 group header when Group2 is moved out of its grouping', function() {
                         runTest({
                             columns: columns,
                             order: '3,4,5,6,1,2,7,8,9',
@@ -3179,7 +3179,7 @@ function() {
                         }, additionalSpec);
                     });
 
-                    it('should remove both the Group1 and Group2 group headers when Group3 is moved out of its grouping', function () {
+                    it('should remove both the Group1 and Group2 group headers when Group3 is moved out of its grouping', function() {
                         runTest({
                             columns: columns,
                             order: '1,3,4,5,6,2,7,8,9',
@@ -3199,7 +3199,7 @@ function() {
                         }, nestedSpec);
                     });
 
-                    it('should remove the Group1, Group2 and Group3 group headers when Group4 is moved out of its grouping', function () {
+                    it('should remove the Group1, Group2 and Group3 group headers when Group4 is moved out of its grouping', function() {
                         runTest({
                             columns: columns,
                             order: '1,3,4,5,6,2,7,8,9',
@@ -3220,9 +3220,9 @@ function() {
                     });
                 });
 
-                describe('when the targetHeader is an ancestor group within the stacked grouping', function () {
-                    describe('when Group1 is the targetHeader', function () {
-                        it('should remove the Group1 group header when Group2 is dragged onto it, before position', function () {
+                describe('when the targetHeader is an ancestor group within the stacked grouping', function() {
+                    describe('when Group1 is the targetHeader', function() {
+                        it('should remove the Group1 group header when Group2 is dragged onto it, before position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,3,4,5,6,7,8,9',
@@ -3233,7 +3233,7 @@ function() {
                             }, additionalSpec);
                         });
 
-                        it('should remove the Group1 group header when Group2 is dragged onto it, after position', function () {
+                        it('should remove the Group1 group header when Group2 is dragged onto it, after position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,3,4,5,6,7,8,9',
@@ -3244,7 +3244,7 @@ function() {
                             }, additionalSpec);
                         });
 
-                        it('should remove both the Group1 and Group2 group headers when Group3 is dragged onto it, before position', function () {
+                        it('should remove both the Group1 and Group2 group headers when Group3 is dragged onto it, before position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,3,4,5,6,7,8,9',
@@ -3255,7 +3255,7 @@ function() {
                             }, nestedSpec);
                         });
 
-                        it('should remove both the Group1 and Group2 group headers when Group3 is dragged onto it, after position', function () {
+                        it('should remove both the Group1 and Group2 group headers when Group3 is dragged onto it, after position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,3,4,5,6,7,8,9',
@@ -3266,7 +3266,7 @@ function() {
                             }, nestedSpec);
                         });
 
-                        it('should remove the Group1, Group2 and Group3 group headers when Group4 is dragged onto it, before position', function () {
+                        it('should remove the Group1, Group2 and Group3 group headers when Group4 is dragged onto it, before position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,3,4,5,6,7,8,9',
@@ -3277,7 +3277,7 @@ function() {
                             }, nestedSpec2);
                         });
 
-                        it('should remove the Group1, Group2 and Group3 group headers when Group4 is dragged onto it, after position', function () {
+                        it('should remove the Group1, Group2 and Group3 group headers when Group4 is dragged onto it, after position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,3,4,5,6,7,8,9',
@@ -3289,8 +3289,8 @@ function() {
                         });
                     });
 
-                    describe('when Group2 is the targetHeader', function () {
-                        it('should remove the Group2 group header when Group 3 is dragged onto it, before position', function () {
+                    describe('when Group2 is the targetHeader', function() {
+                        it('should remove the Group2 group header when Group 3 is dragged onto it, before position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,3,4,5,6,7,8,9',
@@ -3302,7 +3302,7 @@ function() {
                             }, additionalSpec);
                         });
 
-                        it('should remove the Group2 group header when Group 3 is dragged onto it, after position', function () {
+                        it('should remove the Group2 group header when Group 3 is dragged onto it, after position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,3,4,5,6,7,8,9',
@@ -3314,7 +3314,7 @@ function() {
                             }, additionalSpec);
                         });
 
-                        it('should remove the Group2 and Group3 group headers when Group4 is dragged onto it, before position', function () {
+                        it('should remove the Group2 and Group3 group headers when Group4 is dragged onto it, before position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,3,4,5,6,7,8,9',
@@ -3326,7 +3326,7 @@ function() {
                             }, nestedSpec2);
                         });
 
-                        it('should remove the Group1, Group2 and Group3 group headers when Group4 is dragged onto it, after position', function () {
+                        it('should remove the Group1, Group2 and Group3 group headers when Group4 is dragged onto it, after position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,3,4,5,6,7,8,9',
@@ -3339,7 +3339,7 @@ function() {
                         });
                     });
 
-                    describe('when Group3 is the targetHeader', function () {
+                    describe('when Group3 is the targetHeader', function() {
                         function additionalSpec() {
                             expect(groupHeader.rendered).toBe(false);
                             expect(subGroupHeader.rendered).toBe(true);
@@ -3347,7 +3347,7 @@ function() {
                             expect(headerCt.down('[text=Group2]').rendered).toBe(true);
                         }
 
-                        it('should remove the Group3 group header when Group4 is dragged onto it, before position', function () {
+                        it('should remove the Group3 group header when Group4 is dragged onto it, before position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,3,4,5,6,7,8,9',
@@ -3359,7 +3359,7 @@ function() {
                             }, additionalSpec);
                         });
 
-                        it('should remove the Group3 group header when Group4 is dragged onto it, after position', function () {
+                        it('should remove the Group3 group header when Group4 is dragged onto it, after position', function() {
                             runTest({
                                 columns: columns,
                                 order: '1,2,3,4,5,6,7,8,9',
@@ -3375,8 +3375,8 @@ function() {
             });
         });
 
-        describe('locked grids', function () {
-            describe('one nested group', function () {
+        describe('locked grids', function() {
+            describe('one nested group', function() {
                 var columns = [{
                     dataIndex: 'field1',
                     header: 'Field1',
@@ -3439,8 +3439,8 @@ function() {
                 //
                 //      grid.headerCt.query('[isGroupHeader]')[groupHeader];
                 //
-                describe('moving the group from one locked side to another', function () {
-                    it('should work moving from locked to normal', function () {
+                describe('moving the group from one locked side to another', function() {
+                    it('should work moving from locked to normal', function() {
                         // Note you don't have to specify a groupHeader here since it will default to the first one.
                         runTest({
                             columns: columns,
@@ -3452,7 +3452,7 @@ function() {
                         });
                     });
 
-                    it('should work moving from normal to locked', function () {
+                    it('should work moving from normal to locked', function() {
                         runTest({
                             columns: columns,
                             locked: true,
@@ -3465,15 +3465,15 @@ function() {
                     });
                 });
 
-                describe('moving the group from one locked side to another into another group', function () {
-                    describe('moving from locked to normal', function () {
+                describe('moving the group from one locked side to another into another group', function() {
+                    describe('moving from locked to normal', function() {
                         function additionalSpec() {
                             // TODO: better to use refs here if possible.
                             // Group2 should be the owner of Group1.
                             expect(!!headerCt.down('[text=Group2]').down('[text=Group1]')).toBe(true);
                         }
 
-                        it('should work moving before the first nested header in the target group', function () {
+                        it('should work moving before the first nested header in the target group', function() {
                             runTest({
                                 columns: columns,
                                 locked: true,
@@ -3484,7 +3484,7 @@ function() {
                             });
                         });
 
-                        it('should work moving after the last nested header in the target group', function () {
+                        it('should work moving after the last nested header in the target group', function() {
                             runTest({
                                 columns: columns,
                                 locked: true,
@@ -3495,7 +3495,7 @@ function() {
                             });
                         });
 
-                        it('should work moving into the middle of the target group', function () {
+                        it('should work moving into the middle of the target group', function() {
                             runTest({
                                 columns: columns,
                                 locked: true,
@@ -3516,14 +3516,14 @@ function() {
                         });
                     });
 
-                    describe('moving from normal to locked', function () {
+                    describe('moving from normal to locked', function() {
                         function additionalSpec() {
                             // TODO: better to use refs here if possible.
                             // Group1 should be the owner of Group2.
                             expect(!!headerCt.down('[text=Group1]').down('[text=Group2]')).toBe(true);
                         }
 
-                        it('should work moving before the first nested header in the target group', function () {
+                        it('should work moving before the first nested header in the target group', function() {
                             runTest({
                                 columns: columns,
                                 locked: true,
@@ -3535,7 +3535,7 @@ function() {
                             });
                         });
 
-                        it('should work moving after the last nested header in the target group', function () {
+                        it('should work moving after the last nested header in the target group', function() {
                             runTest({
                                 columns: columns,
                                 locked: true,
@@ -3547,7 +3547,7 @@ function() {
                             });
                         });
 
-                        it('should work moving into the middle of the target group', function () {
+                        it('should work moving into the middle of the target group', function() {
                             runTest({
                                 columns: columns,
                                 locked: true,
@@ -3572,7 +3572,7 @@ function() {
                 });
             });
 
-            describe('two nested groups', function () {
+            describe('two nested groups', function() {
                 var columns = [{
                     dataIndex: 'field1',
                     header: 'Field1',
@@ -3650,8 +3650,8 @@ function() {
                 //
                 //      grid.headerCt.query('[isGroupHeader]')[groupHeader];
                 //
-                describe('moving the group from one locked side to another', function () {
-                    it('should work moving from locked to normal, Group1 (1st nested)', function () {
+                describe('moving the group from one locked side to another', function() {
+                    it('should work moving from locked to normal, Group1 (1st nested)', function() {
                         runTest({
                             columns: columns,
                             locked: true,
@@ -3662,7 +3662,7 @@ function() {
                         });
                     });
 
-                    it('should work moving from locked to normal, Group3 (2nd nested)', function () {
+                    it('should work moving from locked to normal, Group3 (2nd nested)', function() {
                         runTest({
                             columns: columns,
                             groupHeader: 1,
@@ -3671,13 +3671,13 @@ function() {
                             sequence: [
                                 ['groupHeader', 17, true]
                             ]
-                        }, function () {
+                        }, function() {
                             // Check Group3 has indeed been moved out of its nesting.
                             expect(headerCt.down('[text=Group3]').ownerCt).not.toBe(headerCt.down('[text=Group1]'));
                         });
                     });
 
-                    it('should work moving from normal to locked, Group1 (1st nested)', function () {
+                    it('should work moving from normal to locked, Group1 (1st nested)', function() {
                         runTest({
                             columns: columns,
                             groupHeader: 2,
@@ -3689,7 +3689,7 @@ function() {
                         });
                     });
 
-                    it('should work moving from normal to locked, Group4 (2nd nested)', function () {
+                    it('should work moving from normal to locked, Group4 (2nd nested)', function() {
                         runTest({
                             columns: columns,
                             groupHeader: 3,
@@ -3698,23 +3698,23 @@ function() {
                             sequence: [
                                 ['groupHeader', 9, true]
                             ]
-                        }, function () {
+                        }, function() {
                             // Check Group4 has indeed been moved out of its nesting.
                             expect(headerCt.down('[text=Group4]').ownerCt).not.toBe(headerCt.down('[text=Group2]'));
                         });
                     });
                 });
 
-                describe('moving the group from one locked side to another into another group', function () {
-                    describe('moving from locked to normal', function () {
-                        describe('Group1', function () {
-                            describe('moving into Group2', function () {
+                describe('moving the group from one locked side to another into another group', function() {
+                    describe('moving from locked to normal', function() {
+                        describe('Group1', function() {
+                            describe('moving into Group2', function() {
                                 function additionalSpec() {
                                     // Group2 should be the owner of Group1.
                                     expect(!!headerCt.down('[text=Group2]').down('[text=Group1]')).toBe(true);
                                 }
 
-                                it('should work moving before the first nested header', function () {
+                                it('should work moving before the first nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3726,7 +3726,7 @@ function() {
                                     }, additionalSpec);
                                 });
 
-                                it('should work moving after the last nested header', function () {
+                                it('should work moving after the last nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3737,7 +3737,7 @@ function() {
                                     });
                                 }, additionalSpec);
 
-                                it('should work moving into the middle', function () {
+                                it('should work moving into the middle', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3758,12 +3758,12 @@ function() {
                                 });
                             });
 
-                            describe('moving into Group4', function () {
+                            describe('moving into Group4', function() {
                                 function additionalSpec() {
                                     expect(!!headerCt.down('[text=Group2]').down('[text=Group4]').down('[text=Group1]').down('[text=Group3]')).toBe(true);
                                 }
 
-                                it('should work moving before the first nested header', function () {
+                                it('should work moving before the first nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3774,7 +3774,7 @@ function() {
                                     }, additionalSpec);
                                 });
 
-                                it('should work moving after the last nested header', function () {
+                                it('should work moving after the last nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3785,7 +3785,7 @@ function() {
                                     }, additionalSpec);
                                 });
 
-                                it('should work moving into the middle', function () {
+                                it('should work moving into the middle', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3807,13 +3807,13 @@ function() {
                             });
                         });
 
-                        describe('Group3', function () {
-                            describe('moving into Group2', function () {
+                        describe('Group3', function() {
+                            describe('moving into Group2', function() {
                                 function additionalSpec() {
                                     expect(!!headerCt.down('[text=Group2]').down('[text=Group3]')).toBe(true);
                                 }
 
-                                it('should work moving before the first nested header', function () {
+                                it('should work moving before the first nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3826,7 +3826,7 @@ function() {
                                     }, additionalSpec);
                                 });
 
-                                it('should work moving after the last nested header', function () {
+                                it('should work moving after the last nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3838,7 +3838,7 @@ function() {
                                     }, additionalSpec);
                                 });
 
-                                it('should work moving into the middle', function () {
+                                it('should work moving into the middle', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3861,12 +3861,12 @@ function() {
                                 });
                             });
 
-                            describe('moving into Group4', function () {
+                            describe('moving into Group4', function() {
                                 function additionalSpec() {
                                     expect(!!headerCt.down('[text=Group2]').down('[text=Group4]').down('[text=Group3]')).toBe(true);
                                 }
 
-                                it('should work moving before the first nested header', function () {
+                                it('should work moving before the first nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3878,7 +3878,7 @@ function() {
                                     }, additionalSpec);
                                 });
 
-                                it('should work moving after the last nested header', function () {
+                                it('should work moving after the last nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3890,7 +3890,7 @@ function() {
                                     }, additionalSpec);
                                 });
 
-                                it('should work moving into the middle', function () {
+                                it('should work moving into the middle', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3915,14 +3915,14 @@ function() {
                         });
                     });
 
-                    describe('moving from normal to locked', function () {
-                        describe('Group2', function () {
-                            describe('moving into Group1', function () {
+                    describe('moving from normal to locked', function() {
+                        describe('Group2', function() {
+                            describe('moving into Group1', function() {
                                 function additionalSpec() {
                                     expect(!!headerCt.down('[text=Group1]').down('[text=Group2]')).toBe(true);
                                 }
 
-                                it('should work moving before the first nested header', function () {
+                                it('should work moving before the first nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3934,7 +3934,7 @@ function() {
                                     }, additionalSpec);
                                 });
 
-                                it('should work moving after the last nested header', function () {
+                                it('should work moving after the last nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3946,7 +3946,7 @@ function() {
                                     });
                                 }, additionalSpec);
 
-                                it('should work moving into the middle', function () {
+                                it('should work moving into the middle', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3971,12 +3971,12 @@ function() {
                                 });
                             });
 
-                            describe('moving into Group3', function () {
+                            describe('moving into Group3', function() {
                                 function additionalSpec() {
                                     expect(!!headerCt.down('[text=Group1]').down('[text=Group3]').down('[text=Group2]').down('[text=Group4]')).toBe(true);
                                 }
 
-                                it('should work moving before the first nested header', function () {
+                                it('should work moving before the first nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -3988,7 +3988,7 @@ function() {
                                     }, additionalSpec);
                                 });
 
-                                it('should work moving after the last nested header', function () {
+                                it('should work moving after the last nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -4000,7 +4000,7 @@ function() {
                                     }, additionalSpec);
                                 });
 
-                                it('should work moving into the middle', function () {
+                                it('should work moving into the middle', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -4024,13 +4024,13 @@ function() {
                             });
                         });
 
-                        describe('Group4', function () {
-                            describe('moving into Group1', function () {
+                        describe('Group4', function() {
+                            describe('moving into Group1', function() {
                                 function additionalSpec() {
                                     expect(!!headerCt.down('[text=Group1]').down('[text=Group4]')).toBe(true);
                                 }
 
-                                it('should work moving before the first nested header', function () {
+                                it('should work moving before the first nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -4042,7 +4042,7 @@ function() {
                                     }, additionalSpec);
                                 });
 
-                                it('should work moving after the last nested header', function () {
+                                it('should work moving after the last nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -4054,7 +4054,7 @@ function() {
                                     }, additionalSpec);
                                 });
 
-                                it('should work moving into the middle', function () {
+                                it('should work moving into the middle', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -4079,12 +4079,12 @@ function() {
                                 });
                             });
 
-                            describe('moving into Group3', function () {
+                            describe('moving into Group3', function() {
                                 function additionalSpec() {
                                     expect(!!headerCt.down('[text=Group1]').down('[text=Group3]').down('[text=Group4]')).toBe(true);
                                 }
 
-                                it('should work moving before the first nested header', function () {
+                                it('should work moving before the first nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -4096,7 +4096,7 @@ function() {
                                     }, additionalSpec);
                                 });
 
-                                it('should work moving after the last nested header', function () {
+                                it('should work moving after the last nested header', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -4108,7 +4108,7 @@ function() {
                                     }, additionalSpec);
                                 });
 
-                                it('should work moving into the middle', function () {
+                                it('should work moving into the middle', function() {
                                     runTest({
                                         columns: columns,
                                         locked: true,
@@ -4210,7 +4210,7 @@ function() {
                 Ext.Array.each(grid.getVisibleColumnManager().getColumns(), function(c) {
                     headers += c.text;
                 });
-                
+
                 expect(headers).toBe('EmailNamePhone 1Phone 2Phone 3Phone 4Phones 1Phones 2Phones 3Phones 4');
             });
         });

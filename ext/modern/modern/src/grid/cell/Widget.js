@@ -54,6 +54,7 @@ Ext.define('Ext.grid.cell.Widget', {
 
         if (widget) {
             result.push(widget);
+
             if (deep && widget.getRefItems) {
                 result.push.apply(result, widget.getRefItems(deep));
             }
@@ -62,7 +63,7 @@ Ext.define('Ext.grid.cell.Widget', {
         return result;
     },
 
-    setValue: function (value) {
+    setValue: function(value) {
         // If it's an object, its internals may have changed, but the simple
         // equality test of the config's setter will reject it, so
         // go directly to the updater.
@@ -70,7 +71,8 @@ Ext.define('Ext.grid.cell.Widget', {
             // we still need to update _value otherwise the Base cell refresh() will ignore us.
             this._value = value;
             this.updateValue(value);
-        } else {
+        }
+        else {
             if (value === undefined) {
                 // The config system doesn't do well w/setFoo(undefined)
                 value = null;
@@ -82,7 +84,7 @@ Ext.define('Ext.grid.cell.Widget', {
         return this;
     },
 
-    updateValue: function (value) {
+    updateValue: function(value) {
         var me = this,
             widget = me.getWidget(), // this may create the widget & set defaultBindCfg
             defaultBindCfg = me.defaultBindCfg;
@@ -92,7 +94,7 @@ Ext.define('Ext.grid.cell.Widget', {
         }
     },
 
-    applyWidget: function (widget) {
+    applyWidget: function(widget) {
         var me = this;
 
         if (widget) {
@@ -148,16 +150,18 @@ Ext.define('Ext.grid.cell.Widget', {
     },
 
     onWidgetChange: function(widget) {
-        if (!this.refreshContext) {
-            var me = this,
-                record = me.getRecord(),
-                defaultBindCfg = me.defaultBindCfg,
-                dataIndex = me.dataIndex,
-                value;
+        var me = this,
+            record, defaultBindCfg, dataIndex, value;
+
+        if (!me.refreshContext) {
+            record = me.getRecord();
+            defaultBindCfg = me.defaultBindCfg;
+            dataIndex = me.dataIndex;
 
             if (defaultBindCfg) {
                 value = widget[defaultBindCfg.names.get]();
-                this.setValue(value);
+                me.setValue(value);
+
                 if (record && !record.isSummaryRecord && dataIndex) {
                     record.set(dataIndex, value);
                 }
@@ -167,6 +171,7 @@ Ext.define('Ext.grid.cell.Widget', {
 
     updateWidth: function(width, oldWidth) {
         this.callParent([width, oldWidth]);
+
         if (this.getForceWidth()) {
             this.setWidgetWidth(width);
         }
@@ -196,6 +201,7 @@ Ext.define('Ext.grid.cell.Widget', {
             }
 
             widget = me.getWidget();
+
             if (widget) {
                 column = me.getColumn();
                 leftPad = parseInt(column.getCachedStyle(el, 'padding-left'), 10) || 0;

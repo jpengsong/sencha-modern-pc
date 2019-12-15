@@ -1,3 +1,6 @@
+/* global expect, Ext, jasmine, topSuite */
+/* eslint indent: off */
+
 topSuite("Ext.Container",
     ['Ext.form.Panel', 'Ext.viewport.Default', 'Ext.layout.VBox', 'Ext.app.ViewController', 'Ext.app.ViewModel', 'Ext.Toolbar'],
 function() {
@@ -13,9 +16,11 @@ function() {
                 items: cfg
             };
         }
+
         ct = new Ext.container.Container(cfg);
         items = ct.getItems().items;
         vm = ct.getViewModel();
+
         return ct;
     }
 
@@ -162,15 +167,17 @@ function() {
         describe('weighted items', function() {
             function expectOrder(order) {
                 var childNodes = ct.getRenderTarget().dom.childNodes;
+
                 order.forEach(function(id, idx) {
                     var item = items[idx];
+
                     expect(item.getItemId()).toBe(id);
                     expect(childNodes[idx]).toBe(item.element.dom);
                 });
             }
 
             describe("configuration time", function() {
-                it("should ignore weights if not weighted", function () {
+                it("should ignore weights if not weighted", function() {
                     makeContainer({
                         items: [{
                             itemId: 'a',
@@ -187,7 +194,7 @@ function() {
                 });
 
                 describe("as an object", function() {
-                    it("should create the items with itemId and respect the weight", function () {
+                    it("should create the items with itemId and respect the weight", function() {
                         makeContainer({
                             weighted: true,
                             items: {
@@ -400,8 +407,8 @@ function() {
         });
     });
 
-    describe('insert', function () {
-        beforeEach(function () {
+    describe('insert', function() {
+        beforeEach(function() {
             makeContainer([
                 { html: 'one inner' },
                 { html: 'one docked', docked: 'top' },
@@ -416,7 +423,7 @@ function() {
             ]);
         });
 
-        it('should insert inner component at specific index', function () {
+        it('should insert inner component at specific index', function() {
             var c = ct.insert(2, {
                 html: 'inserted inner'
             });
@@ -425,7 +432,7 @@ function() {
             expect(ct.getInnerItems()[1]).toBe(c);
         });
 
-        it('should insert docked component at specific index', function () {
+        it('should insert docked component at specific index', function() {
             var c = ct.insert(6, {
                 html: 'inserted docked',
                 docked: 'top'
@@ -436,7 +443,7 @@ function() {
             expect(ct.getDockedItems()[3]).toBe(c);
         });
 
-        it('should move inner component to new index', function () {
+        it('should move inner component to new index', function() {
             var c = ct.insert(2, {
                 html: 'inserted inner'
             });
@@ -450,7 +457,7 @@ function() {
             expect(ct.getInnerItems()[3]).toBe(c);
         });
 
-        it('should move docked component to new index', function () {
+        it('should move docked component to new index', function() {
             var c = ct.insert(2, {
                 html: 'inserted docked',
                 docked: 'top'
@@ -474,29 +481,29 @@ function() {
         beforeEach(function() {
             makeContainer();
         });
-        
+
         it("should return the item when adding single item", function() {
             var c = ct.add({
                 xtype: 'component'
             });
-            
+
             expect(ct.items.getAt(0)).toBe(c);
         });
-        
+
         it("should return the array of added items when passed an array", function() {
             var cs = ct.add([{ xtype: 'component' }]);
-            
+
             expect(Ext.isArray(cs)).toBe(true);
             expect(cs.length).toBe(1);
             expect(ct.items.getAt(0)).toBe(cs[0]);
         });
-        
+
         it("should return the array of added items when adding more than one", function() {
             var cs = ct.add([
                 { xtype: 'component' },
                 { xtype: 'component' }
             ]);
-            
+
             expect(Ext.isArray(cs)).toBe(true);
             expect(cs.length).toBe(2);
             expect(ct.items.getAt(0)).toBe(cs[0]);
@@ -565,10 +572,10 @@ function() {
             });
         });
     });
-    
+
     describe("remove", function() {
         var c0, c1;
-        
+
         beforeEach(function() {
             makeContainer({
                 items: [{
@@ -581,130 +588,130 @@ function() {
                     itemId: '0'
                 }]
             });
-            
+
             c0 = ct.items.getAt(0);
             c1 = ct.items.getAt(1);
         });
-        
+
         afterEach(function() {
             Ext.destroy(c0, c1);
             c0 = c1 = null;
         });
-        
+
         describe("by instance", function() {
             it("should remove an item", function() {
                 ct.remove(c0);
-                
+
                 expect(ct.items.getCount()).toBe(1);
             });
-            
+
             it("should return the removed item", function() {
                 var ret = ct.remove(c0);
-                
+
                 expect(ret).toBe(c0);
             });
-            
+
             it("should destroy the item when asked to", function() {
                 var ret = ct.remove(c0, true);
-                
+
                 expect(ret.destroyed).toBe(true);
             });
-            
+
             it("should not remove the remaining item", function() {
                 var ret = ct.remove(c0);
-                
+
                 expect(ct.items.getAt(0)).toBe(c1);
             });
         });
-        
+
         describe("by index", function() {
             it("should remove an item", function() {
                 ct.remove(0);
-                
+
                 expect(ct.items.getCount()).toBe(1);
             });
-            
+
             it("should return the removed item", function() {
                 var ret = ct.remove(0);
-                
+
                 expect(ret).toBe(c0);
             });
-            
+
             it("should destroy the item when asked to", function() {
                 var ret = ct.remove(0, true);
-                
+
                 expect(ret.destroyed).toBe(true);
             });
-            
+
             it("should not remove the remaining item", function() {
                 ct.remove(0);
-                
+
                 expect(ct.items.getAt(0)).toBe(c1);
             });
         });
-        
+
         describe("by itemId", function() {
             it("should remove an item", function() {
                 ct.remove('0');
-                
+
                 expect(ct.items.getCount()).toBe(1);
             });
-            
+
             it("should return the removed item", function() {
                 var ret = ct.remove('0');
-                
+
                 expect(ret).toBe(c1);
             });
-            
+
             it("should destroy the item when asked to", function() {
                 var ret = ct.remove('0');
-                
+
                 expect(ret.destroyed).toBe(true);
             });
-            
+
             it("should not remove the remaining item", function() {
                 ct.remove('0');
-                
+
                 expect(ct.items.getAt(0)).toBe(c0);
             });
         });
 
-        describe("autoDestroy: true", function () {
+        describe("autoDestroy: true", function() {
             var destroySpy;
 
-            beforeEach(function () {
+            beforeEach(function() {
                 destroySpy = spyOn(Ext.Component.prototype, 'destroy').andCallThrough();
             });
 
-            it("should destroy the item", function () {
+            it("should destroy the item", function() {
                 ct.remove(c0);
 
                 expect(destroySpy.callCount).toBe(1);
                 expect(destroySpy.mostRecentCall.scope).toBe(c0);
             });
 
-            it("should not destroy the item if destroy is false", function () {
+            it("should not destroy the item if destroy is false", function() {
                 ct.remove(c0, false);
 
                 expect(destroySpy.callCount).toBe(0);
             });
         });
 
-        describe("autoDestroy: false", function () {
+        describe("autoDestroy: false", function() {
             var destroySpy;
 
-            beforeEach(function () {
+            beforeEach(function() {
                 destroySpy = spyOn(Ext.Component.prototype, 'destroy').andCallThrough();
                 ct.setAutoDestroy(false);
             });
 
-            it("should not destroy the item", function () {
+            it("should not destroy the item", function() {
                 ct.remove(c0);
 
                 expect(destroySpy.callCount).toBe(0);
             });
 
-            it("should destroy the item if destroy is true", function () {
+            it("should destroy the item if destroy is true", function() {
                 ct.remove(c0, true);
 
                 expect(destroySpy.callCount).toBe(1);
@@ -712,10 +719,10 @@ function() {
             });
         });
     });
-    
+
     describe("removeAll", function() {
         var c0, c1;
-        
+
         beforeEach(function() {
             makeContainer({
                 items: [{
@@ -724,46 +731,46 @@ function() {
                     xtype: 'component'
                 }]
             });
-            
+
             c0 = ct.items.getAt(0);
             c1 = ct.items.getAt(1);
         });
-        
+
         afterEach(function() {
             Ext.destroy(c0, c1);
             c0 = c1 = null;
         });
-        
+
         it("should remove all items", function() {
             ct.removeAll();
-            
+
             expect(ct.items.getCount()).toBe(0);
         });
-        
+
         it("should return the removed items", function() {
             var ret = ct.removeAll();
-            
+
             expect(Ext.isArray(ret)).toBe(true);
             expect(ret.length).toBe(2);
             expect(ret[0]).toBe(c0);
             expect(ret[1]).toBe(c1);
         });
-        
+
         it("should destroy the items when asked", function() {
             var ret = ct.removeAll(true);
-            
+
             expect(ret[0].destroyed).toBe(true);
             expect(ret[1].destroyed).toBe(true);
         });
-        
+
         // TODO removeAll(true, true)
         xit("should remove everything", function() {
         });
     });
-    
+
     describe("removeAt", function() {
         var c0, c1;
-        
+
         beforeEach(function() {
             makeContainer({
                 items: [{
@@ -772,70 +779,70 @@ function() {
                     xtype: 'component'
                 }]
             });
-            
+
             c0 = ct.items.getAt(0);
             c1 = ct.items.getAt(1);
         });
-        
+
         afterEach(function() {
             Ext.destroy(c0, c1);
             c0 = c1 = null;
         });
-        
+
         it("should remove the item at index", function() {
             ct.removeAt(0);
-            
+
             expect(ct.items.getCount()).toBe(1);
         });
-        
+
         it("should return the removed item", function() {
             var ret = ct.removeAt(0);
-            
+
             expect(ret).toBe(c0);
         });
-        
+
         it("should not remove other items", function() {
             ct.removeAt(0);
-            
+
             expect(ct.items.getAt(0)).toBe(c1);
         });
 
-        describe("autoDestroy: true", function () {
+        describe("autoDestroy: true", function() {
             var destroySpy;
 
-            beforeEach(function () {
+            beforeEach(function() {
                 destroySpy = spyOn(Ext.Component.prototype, 'destroy').andCallThrough();
             });
 
-            it("should destroy the item", function () {
+            it("should destroy the item", function() {
                 ct.removeAt(0);
 
                 expect(destroySpy.callCount).toBe(1);
                 expect(destroySpy.mostRecentCall.scope).toBe(c0);
             });
 
-            it("should not destroy the item if destroy is false", function () {
+            it("should not destroy the item if destroy is false", function() {
                 ct.removeAt(0, false);
 
                 expect(destroySpy.callCount).toBe(0);
             });
         });
 
-        describe("autoDestroy: false", function () {
+        describe("autoDestroy: false", function() {
             var destroySpy;
 
-            beforeEach(function () {
+            beforeEach(function() {
                 destroySpy = spyOn(Ext.Component.prototype, 'destroy').andCallThrough();
                 ct.setAutoDestroy(false);
             });
 
-            it("should not destroy the item", function () {
+            it("should not destroy the item", function() {
                 ct.removeAt(0);
 
                 expect(destroySpy.callCount).toBe(0);
             });
 
-            it("should destroy the item if destroy is true", function () {
+            it("should destroy the item if destroy is true", function() {
                 ct.removeAt(0, true);
 
                 expect(destroySpy.callCount).toBe(1);
@@ -843,7 +850,7 @@ function() {
             });
         });
     });
-    
+
     // TODO Not sure what an inner item is and how to add it? - AT
     xdescribe("removeInnerAt", function() {
     });
@@ -875,7 +882,7 @@ function() {
             expect(ct.lookupName('a')).toBe(ct.down('#compA'));
             expect(ct.lookupName('foo')).toBeNull();
         });
-                
+
         it("should support deep name lookups", function() {
             makeContainer({
                 nameHolder: true,
@@ -940,6 +947,7 @@ function() {
 
         it("should support shareableName and return an array of fields with the same name", function() {
             var names;
+
             makeContainer({
                 items: {
                     xtype: 'formpanel',
@@ -977,10 +985,10 @@ function() {
                         xtype: 'component',
                         reference: 'a'
                     }
-                });    
+                });
                 expect(ct.lookupReference('foo')).toBeNull();
             });
-            
+
             it("should support a direct child", function() {
                 makeContainer({
                     referenceHolder: true,
@@ -992,7 +1000,7 @@ function() {
                 });
                 expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
             });
-            
+
             it("should support a deep child", function() {
                 makeContainer({
                     referenceHolder: true,
@@ -1013,7 +1021,7 @@ function() {
                 });
                 expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
             });
-            
+
             it("should support children at multiple depths", function() {
                 makeContainer({
                     referenceHolder: true,
@@ -1029,11 +1037,11 @@ function() {
                             reference: 'b'
                         }
                     }]
-                }); 
+                });
                 expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
                 expect(ct.lookupReference('b')).toBe(ct.down('#compB'));
             });
-            
+
             it("should support multiple children at the same depth", function() {
                 makeContainer({
                     referenceHolder: true,
@@ -1050,7 +1058,7 @@ function() {
                 expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
                 expect(ct.lookupReference('b')).toBe(ct.down('#compB'));
             });
-            
+
             it("should support multiple children down the some tree", function() {
                     makeContainer({
                     referenceHolder: true,
@@ -1074,7 +1082,7 @@ function() {
                 expect(ct.lookupReference('b')).toBe(ct.down('#compB'));
                 expect(ct.lookupReference('c')).toBe(ct.down('#compC'));
             });
-            
+
             it("should support a reference holder not being at the root", function() {
                 makeContainer({
                     items: {
@@ -1093,11 +1101,12 @@ function() {
                             }
                         }
                     }
-                });  
+                });
                 var ref = ct.down('#ref');
+
                 expect(ref.lookupReference('a')).toBe(ref.down('#compA'));
             });
-            
+
             it("should support multiple ref holders in a tree", function() {
                 makeContainer({
                     referenceHolder: true,
@@ -1121,10 +1130,11 @@ function() {
                     }
                 });
                 var ref = ct.down('#ref');
+
                 expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
                 expect(ref.lookupReference('b')).toBe(ref.down('#compB'));
             });
-            
+
             it("should hide inner references from outer holders", function() {
                 makeContainer({
                     referenceHolder: true,
@@ -1149,7 +1159,7 @@ function() {
                 });
                 expect(ct.lookupReference('b')).toBeNull();
             });
-            
+
             it("should allow a reference holder to have a reference", function() {
                 makeContainer({
                     referenceHolder: true,
@@ -1165,13 +1175,13 @@ function() {
                         }
                     }
                 });
-                
+
                 var inner = ct.down('#compA');
-                
+
                 expect(inner.lookupReference('b')).toBe(inner.down('#compB'));
                 expect(ct.lookupReference('a')).toBe(inner);
             });
-            
+
             describe("docking", function() {
                 it("should get a reference to a direct child", function() {
                     makeContainer({
@@ -1185,7 +1195,7 @@ function() {
                     });
                     expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
                 });
-                
+
                 it("should get a reference to an indirect child", function() {
                     makeContainer({
                         referenceHolder: true,
@@ -1202,7 +1212,7 @@ function() {
                     expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
                 });
             });
-            
+
             describe("chained references", function() {
                 it("should gain a reference to a deep child", function() {
                     makeContainer({
@@ -1219,7 +1229,7 @@ function() {
                     });
                     expect(ct.lookupReference('parent.a')).toBe(ct.down('#compA'));
                 });
-                
+
                 it("should strip the > from the parent reference", function() {
                     makeContainer({
                         referenceHolder: true,
@@ -1235,7 +1245,7 @@ function() {
                     });
                     expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
                 });
-                
+
                 it("should allow the parent to be reference even if there's no children", function() {
                     makeContainer({
                         referenceHolder: true,
@@ -1247,7 +1257,7 @@ function() {
                     });
                     expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
                 });
-                
+
                 it("should not setup a deep reference if the there's an intervening referenceHolder", function() {
                     makeContainer({
                         referenceHolder: true,
@@ -1263,7 +1273,7 @@ function() {
                     });
                     expect(ct.lookupReference('b')).toBeNull();
                 });
-                
+
                 it("should allow for a multiple depth reference", function() {
                     makeContainer({
                         referenceHolder: true,
@@ -1291,7 +1301,7 @@ function() {
                     });
                     expect(ct.lookupReference('a.b.c.d.e')).toBe(ct.down('#compE'));
                 });
-                
+
                 it("should isolate references by parent", function() {
                     makeContainer({
                         referenceHolder: true,
@@ -1316,7 +1326,7 @@ function() {
                     expect(ct.lookupReference('parent1.child')).toBe(ct.down('#compA'));
                     expect(ct.lookupReference('parent2.child')).toBe(ct.down('#compB'));
                 });
-                
+
                 it("should allow the reference holder to begin at any depth", function() {
                     makeContainer({
                         items: [{
@@ -1344,9 +1354,10 @@ function() {
                         }]
                     });
                     var inner = ct.down('#compC');
+
                     expect(inner.lookupReference('d.e')).toBe(ct.down('#compE'));
                 });
-                
+
                 it("should allow multiple references in the tree", function() {
                     makeContainer({
                         referenceHolder: true,
@@ -1381,8 +1392,8 @@ function() {
                     expect(ct.lookupReference('a.b.c')).toBe(ct.down('#compC'));
                     expect(ct.lookupReference('a.b.c.d')).toBeNull();
                     expect(ct.lookupReference('a.b.c.d.e')).toBeNull();
-                }); 
-                
+                });
+
                 describe("docking", function() {
                     it("should get a reference to an indirect child", function() {
                         makeContainer({
@@ -1403,7 +1414,7 @@ function() {
                 });
             });
         });
-        
+
         describe("dynamic", function() {
             describe("adding", function() {
                 it("should gain a reference to a direct child", function() {
@@ -1416,8 +1427,8 @@ function() {
                         reference: 'a'
                     });
                     expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
-                }); 
-                
+                });
+
                 it("should gain a reference to an indirect child", function() {
                     makeContainer({
                         referenceHolder: true
@@ -1432,7 +1443,7 @@ function() {
                     });
                     expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
                 });
-                
+
                 it("should gain a reference to a component inside an already constructed container", function() {
                     var local = new Ext.container.Container({
                         items: {
@@ -1440,30 +1451,30 @@ function() {
                             itemId: 'compA',
                             reference: 'a'
                         }
-                    });    
-                    
+                    });
+
                     makeContainer({
                         referenceHolder: true,
                         items: local
                     });
                     expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
                 });
-                
+
                 it("should gain a reference to a component added to containers child", function() {
                     makeContainer({
                         referenceHolder: true,
                         items: {
                             xtype: 'container'
                         }
-                    });  
+                    });
                     ct.items.first().add({
                         xtype: 'component',
                         itemId: 'compA',
                         reference: 'a'
-                    });  
+                    });
                     expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
                 });
-                
+
                 describe("chained references", function() {
                     it("should gain a reference to an indirect child", function() {
                         makeContainer({
@@ -1489,7 +1500,7 @@ function() {
                                 itemId: 'compA',
                                 reference: 'a'
                             }
-                        });    
+                        });
 
                         makeContainer({
                             referenceHolder: true,
@@ -1505,15 +1516,15 @@ function() {
                                 xtype: 'container',
                                 reference: 'parent>'
                             }
-                        });  
+                        });
                         ct.items.first().add({
                             xtype: 'component',
                             itemId: 'compA',
                             reference: 'a'
-                        });  
+                        });
                         expect(ct.lookupReference('parent.a')).toBe(ct.down('#compA'));
                     });
-                    
+
                     describe("docking", function() {
                         it("should gain a reference to an indirect child", function() {
                             makeContainer({
@@ -1541,7 +1552,7 @@ function() {
                                     itemId: 'compA',
                                     reference: 'a'
                                 }
-                            });    
+                            });
 
                             makeContainer({
                                 referenceHolder: true,
@@ -1559,17 +1570,17 @@ function() {
                                     itemId: 'docked',
                                     reference: 'parent>'
                                 }
-                            });  
+                            });
                             ct.down('#docked').add({
                                 xtype: 'component',
                                 itemId: 'compA',
                                 reference: 'a'
-                            });  
+                            });
                             expect(ct.lookupReference('parent.a')).toBe(ct.down('#compA'));
                         });
                     });
                 });
-                
+
                 describe("docking", function() {
                     it("should gain a reference to a direct child", function() {
                         makeContainer({
@@ -1582,8 +1593,8 @@ function() {
                             reference: 'a'
                         });
                         expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
-                    }); 
-                    
+                    });
+
                     it("should gain a reference to an indirect child", function() {
                         makeContainer({
                             referenceHolder: true
@@ -1599,7 +1610,7 @@ function() {
                         });
                         expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
                     });
-                    
+
                     it("should gain a reference to a component inside an already constructed container", function() {
                         var local = new Ext.container.Container({
                             docked: 'top',
@@ -1608,15 +1619,15 @@ function() {
                                 itemId: 'compA',
                                 reference: 'a'
                             }
-                        });    
-                        
+                        });
+
                         makeContainer({
                             referenceHolder: true,
                             items: local
                         });
                         expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
                     });
-                    
+
                     it("should gain a reference to a component added to containers child", function() {
                         makeContainer({
                             referenceHolder: true,
@@ -1625,17 +1636,17 @@ function() {
                                 docked: 'top',
                                 itemId: 'docked'
                             }
-                        });  
+                        });
                         ct.down('#docked').add({
                             xtype: 'component',
                             itemId: 'compA',
                             reference: 'a'
-                        });  
+                        });
                         expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
                     });
-                });   
+                });
             });
-            
+
             describe("removing", function() {
                 it("should not have a reference when removing a direct child", function() {
                     makeContainer({
@@ -1644,12 +1655,13 @@ function() {
                             xtype: 'component',
                             reference: 'a'
                         }
-                    });    
+                    });
                     var c = ct.lookupReference('a');
+
                     c.destroy();
                     expect(ct.lookupReference('a')).toBeNull();
                 });
-                
+
                 it("should not have a reference when removing an indirect child", function() {
                     makeContainer({
                         referenceHolder: true,
@@ -1660,12 +1672,13 @@ function() {
                                 reference: 'a'
                             }
                         }
-                    });    
+                    });
                     var c = ct.lookupReference('a');
+
                     c.destroy();
                     expect(ct.lookupReference('a')).toBeNull();
                 });
-                
+
                 it("should not have a reference when removing+destroying a container that has references", function() {
                     makeContainer({
                         referenceHolder: true,
@@ -1676,13 +1689,15 @@ function() {
                                 reference: 'a'
                             }
                         }
-                    });    
+                    });
                     var c = ct.lookupReference('a');
+
                     var removed = ct.remove(0);
+
                     expect(ct.lookupReference('a')).toBeNull();
                     removed.destroy();
                 });
-                
+
                 it("should not have a reference when only removing a container that has references", function() {
                     makeContainer({
                         id: 'a',
@@ -1697,13 +1712,15 @@ function() {
                             }
                         }
                     });
-                    
+
                     var c = ct.lookupReference('a');
+
                     var removed = ct.remove(0, false);
+
                     expect(ct.lookupReference('a')).toBeNull();
                     removed.destroy();
                 });
-                
+
                 describe("chained references", function() {
                     it("should not have a reference when removing an indirect child", function() {
                         makeContainer({
@@ -1716,8 +1733,9 @@ function() {
                                     reference: 'a'
                                 }
                             }
-                        });    
+                        });
                         var c = ct.lookupReference('parent.a');
+
                         c.destroy();
                         expect(ct.lookupReference('parent.a')).toBeNull();
                     });
@@ -1733,9 +1751,11 @@ function() {
                                     reference: 'a'
                                 }
                             }
-                        });    
+                        });
                         var c = ct.lookupReference('parent.a');
+
                         var removed = ct.remove(0);
+
                         expect(ct.lookupReference('parent.a')).toBeNull();
                         removed.destroy();
                     });
@@ -1751,13 +1771,15 @@ function() {
                                     reference: 'a'
                                 }
                             }
-                        });    
+                        });
                         var c = ct.lookupReference('parent.a');
+
                         var removed = ct.remove(0, false);
+
                         expect(ct.lookupReference('parent.a')).toBeNull();
                         removed.destroy();
                     });
-                    
+
                     describe("docking", function() {
                         it("should not have a reference when removing an indirect child", function() {
                             makeContainer({
@@ -1771,8 +1793,9 @@ function() {
                                         reference: 'a'
                                     }
                                 }
-                            });    
+                            });
                             var c = ct.lookupReference('parent.a');
+
                             c.destroy();
                             expect(ct.lookupReference('parent.a')).toBeNull();
                         });
@@ -1790,7 +1813,7 @@ function() {
                                         reference: 'a'
                                     }
                                 }
-                            });    
+                            });
                             var dock = ct.down('#docked');
 
                             ct.remove(dock);
@@ -1810,16 +1833,17 @@ function() {
                                         reference: 'a'
                                     }
                                 }
-                            });    
+                            });
                             var dock = ct.down('#docked');
 
                             var removed = ct.remove(dock, false);
+
                             expect(ct.lookupReference('parent.a')).toBeNull();
                             removed.destroy();
-                        }); 
+                        });
                     });
                 });
-                
+
                 describe("docking", function() {
                     it("should not have a reference when removing a direct child", function() {
                         makeContainer({
@@ -1829,12 +1853,13 @@ function() {
                                 docked: 'top',
                                 reference: 'a'
                             }
-                        });    
+                        });
                         var c = ct.lookupReference('a');
+
                         c.destroy();
                         expect(ct.lookupReference('a')).toBeNull();
                     });
-                    
+
                     it("should not have a reference when removing an indirect child", function() {
                         makeContainer({
                             referenceHolder: true,
@@ -1846,12 +1871,13 @@ function() {
                                     reference: 'a'
                                 }
                             }
-                        });    
+                        });
                         var c = ct.lookupReference('a');
+
                         c.destroy();
                         expect(ct.lookupReference('a')).toBeNull();
                     });
-                    
+
                     it("should not have a reference when removing+destroying a container that has references", function() {
                         makeContainer({
                             referenceHolder: true,
@@ -1864,13 +1890,13 @@ function() {
                                     reference: 'a'
                                 }
                             }
-                        });    
+                        });
                         var dock = ct.down('#docked');
-                            
+
                         ct.remove(dock);
                         expect(ct.lookupReference('a')).toBeNull();
                     });
-                    
+
                     xit("should not have a reference when only removing a container that has references", function() {
                         makeContainer({
                             referenceHolder: true,
@@ -1884,13 +1910,14 @@ function() {
                                 }
                             }
                         });
-                        
+
                         var dock = ct.down('#docked');
-                            
+
                         var removed = ct.remove(dock, false);
+
                         expect(ct.lookupReference('a')).toBeNull();
                         removed.destroy();
-                    });    
+                    });
                 });
             });
         });
@@ -1909,7 +1936,6 @@ function() {
                 });
 
                 var c = temp.items.first();
-
 
                 ct = new Ext.container.Container({
                     referenceHolder: true,
@@ -1932,6 +1958,7 @@ function() {
                     });
                     expect(ct.referenceHolder).toBe(true);
                     var c = ct.lookup('child');
+
                     expect(ct.items.first()).toBe(c);
 
                     ct.remove(c);
@@ -1949,19 +1976,20 @@ function() {
 
     describe("view controllers", function() {
         var Controller;
+
         beforeEach(function() {
             Controller = Ext.define('spec.TestController', {
                 extend: 'Ext.app.ViewController',
                 alias: 'controller.test'
             });
         });
-        
+
         afterEach(function() {
             Controller = null;
             Ext.undefine('spec.TestController');
             Ext.Factory.controller.instance.clearCache();
         });
-        
+
         it("should use a defined controller as a referenceHolder", function() {
             makeContainer({
                 controller: 'test',
@@ -1970,11 +1998,11 @@ function() {
                     itemId: 'compA',
                     reference: 'a'
                 }
-            });       
+            });
             expect(ct.lookupReference('a')).toBe(ct.down('#compA'));
-        });   
+        });
     });
-    
+
     describe("defaultListenerScope", function() {
         describe("static", function() {
             it("should fire on a direct parent", function() {
@@ -1990,7 +2018,7 @@ function() {
                 });
                 ct.callFn = jasmine.createSpy();
                 ct.down('#compA').fireEvent('custom');
-                expect(ct.callFn).toHaveBeenCalled();    
+                expect(ct.callFn).toHaveBeenCalled();
             });
 
             it("should fire on an indirect parent", function() {
@@ -2009,7 +2037,7 @@ function() {
                 });
                 ct.callFn = jasmine.createSpy();
                 ct.down('#compA').fireEvent('custom');
-                expect(ct.callFn).toHaveBeenCalled(); 
+                expect(ct.callFn).toHaveBeenCalled();
             });
 
             it("should fire children in the same tree", function() {
@@ -2033,7 +2061,7 @@ function() {
                 ct.callFn = jasmine.createSpy();
                 ct.down('#compA').fireEvent('custom');
                 ct.down('#compB').fireEvent('custom');
-                expect(ct.callFn.callCount).toBe(2); 
+                expect(ct.callFn.callCount).toBe(2);
             });
 
             it("should fire when the ref holder isn't at the root", function() {
@@ -2051,10 +2079,11 @@ function() {
                         }
                     }
                 });
-                var c = ct.down('#compA'); 
+                var c = ct.down('#compA');
+
                 c.callFn = jasmine.createSpy();
                 ct.down('#compB').fireEvent('custom');
-                expect(c.callFn).toHaveBeenCalled(); 
+                expect(c.callFn).toHaveBeenCalled();
             });
 
             it("should only fire the event at the closest defaultListenerScope holder", function() {
@@ -2074,15 +2103,16 @@ function() {
                     }
                 });
                 var c = ct.down('#compA');
+
                 ct.callFn = jasmine.createSpy();
                 c.callFn = jasmine.createSpy();
 
                 ct.down('#compB').fireEvent('custom');
                 expect(c.callFn).toHaveBeenCalled();
-                expect(ct.callFn).not.toHaveBeenCalled(); 
+                expect(ct.callFn).not.toHaveBeenCalled();
             });
         });
-        
+
         describe("dynamic", function() {
             it("should fire on a direct parent", function() {
                 makeContainer({
@@ -2194,7 +2224,7 @@ function() {
 
     // the intent here is not to test ComponentQuery, just that the API calls the appropriate methods
     describe("ComponentQuery", function() {
-        beforeEach(function(){
+        beforeEach(function() {
             ct = new Ext.Container({
                 items: [{
                     foo: 1,
@@ -2235,26 +2265,30 @@ function() {
             });
         });
 
-        describe("query", function(){
-            it("should return all items if the selector is empty", function(){
+        describe("query", function() {
+            it("should return all items if the selector is empty", function() {
                 var arr = [];
+
                 function buildItems(root) {
-                    root.items.each(function(item){
+                    root.items.each(function(item) {
                         arr.push(item);
                         buildItems(item);
                     });
                 }
+
                 buildItems(ct);
                 expect(ct.query()).toEqual(arr);
             });
 
-            it("should return an empty array for no matches", function(){
+            it("should return an empty array for no matches", function() {
                 var arr = ct.query('list');
+
                 expect(arr).toEqual([]);
             });
 
-            it("should return a filled array with matches", function(){
+            it("should return a filled array with matches", function() {
                 var arr = ct.query('#child1');
+
                 expect(arr).toEqual([Ext.getCmp('child1')]);
                 arr = ct.query('[foo=1] #child1');
                 expect(arr).toEqual([Ext.getCmp('child1')]);
@@ -2262,27 +2296,29 @@ function() {
 
         });
 
-        describe('child', function () {
-            it('should return the first item if the selector is empty', function () {
+        describe('child', function() {
+            it('should return the first item if the selector is empty', function() {
                 var c = ct.items.first();
+
                 expect(ct.child()).toBe(c);
             });
 
-            describe('selector is a string', function () {
-                it('should return null if no match is found', function () {
+            describe('selector is a string', function() {
+                it('should return null if no match is found', function() {
                     expect(ct.child('#foo')).toBeNull();
                 });
 
-                it('should only return direct children', function () {
+                it('should only return direct children', function() {
                     expect(ct.child('#child3')).toBeNull();
                 });
 
-                it('should return matching direct children', function () {
+                it('should return matching direct children', function() {
                     var c = ct.items.last();
+
                     expect(ct.child('component[foo="8"]')).toEqual(c);
                 });
 
-                it('should return null if component is not a direct child', function () {
+                it('should return null if component is not a direct child', function() {
                     var child1 = ct.query('#child1')[0],
                         child2 = ct.query('#child2')[0];
 
@@ -2292,8 +2328,8 @@ function() {
                 });
             });
 
-            describe('selector is a component', function () {
-                it('should return null if no match is found', function () {
+            describe('selector is a component', function() {
+                it('should return null if no match is found', function() {
                     var cmp = Ext.create('Ext.Component', {
                         renderTo: document.body
                     });
@@ -2304,7 +2340,7 @@ function() {
                     cmp = null;
                 });
 
-                it('should only return direct children', function () {
+                it('should only return direct children', function() {
                     var child0 = ct.query('#child1')[0],
                         child1 = ct.query('#child2')[0],
                         child2 = ct.query('#child3')[0];
@@ -2314,7 +2350,7 @@ function() {
                     expect(ct.child(child2)).toBeNull();
                 });
 
-                it('should return matching direct children', function () {
+                it('should return matching direct children', function() {
                     var level0 = ct.query('#top1')[0],
                         c = ct.items.last();
 
@@ -2322,7 +2358,7 @@ function() {
                     expect(ct.child(c)).toBe(c);
                 });
 
-                it('should return null if component is not a direct child', function () {
+                it('should return null if component is not a direct child', function() {
                     var top1 = ct.query('#top1')[0],
                         child1 = ct.query('#child1')[0],
                         child2 = ct.query('#child2')[0];
@@ -2333,9 +2369,9 @@ function() {
                 });
             });
 
-            describe('component ids with non alpha-numeric chars', function () {
+            describe('component ids with non alpha-numeric chars', function() {
                 var ct,
-                    makeCt = function (id1, id2) {
+                    makeCt = function(id1, id2) {
                         return new Ext.container.Container({
                             items: [{
                                 id: id1,
@@ -2349,12 +2385,12 @@ function() {
                     },
                     name1, name2, child1, child2;
 
-                afterEach(function () {
+                afterEach(function() {
                     Ext.destroy(ct);
                     ct = child1 = child2 = name1 = name2 = null;
                 });
 
-                it('should allow non alpha-numeric chars', function () {
+                it('should allow non alpha-numeric chars', function() {
                     name1 = 'a-1_23_456-';
                     name2 = 'b-------222222222______';
                     ct = makeCt(name1, name2);
@@ -2369,18 +2405,19 @@ function() {
             });
         });
 
-        describe('down', function () {
-            it('should return the first item if the selector is empty', function () {
+        describe('down', function() {
+            it('should return the first item if the selector is empty', function() {
                 var c = ct.items.first();
+
                 expect(ct.down()).toBe(c);
             });
 
-            describe('selector is a string', function () {
-                it('should return null if no match is found', function () {
+            describe('selector is a string', function() {
+                it('should return null if no match is found', function() {
                     expect(ct.down('#foo')).toBeNull();
                 });
 
-                it('should return null if component is not a descendant', function () {
+                it('should return null if component is not a descendant', function() {
                     var child1 = ct.query('#child1')[0],
                         child2 = ct.query('#child2')[0];
 
@@ -2388,19 +2425,21 @@ function() {
                     expect(child2.down('#top1')).toBeNull();
                 });
 
-                it('should return children at any level', function () {
+                it('should return children at any level', function() {
                     var c = ct.items.getAt(1).items.first();
+
                     expect(ct.down('#child3')).toEqual(c);
                 });
 
-                it('should return the first match', function () {
+                it('should return the first match', function() {
                     var c = ct.items.first();
+
                     expect(ct.down('component[foo]')).toEqual(c);
                 });
             });
 
-            describe('selector is a component', function () {
-                it('should return null if no match is found', function () {
+            describe('selector is a component', function() {
+                it('should return null if no match is found', function() {
                     var cmp = Ext.create('Ext.Component', {
                         renderTo: document.body
                     });
@@ -2411,7 +2450,7 @@ function() {
                     cmp = null;
                 });
 
-                it('should return null if component is not a descendant', function () {
+                it('should return null if component is not a descendant', function() {
                     var top1 = ct.query('#top1')[0],
                         child1 = ct.query('#child1')[0],
                         child2 = ct.query('#child2')[0];
@@ -2420,7 +2459,7 @@ function() {
                     expect(child2.down(top1)).toBeNull();
                 });
 
-                it('should return children at any level', function () {
+                it('should return children at any level', function() {
                     var top1 = ct.query('#top1')[0],
                         child1 = ct.query('#child1')[0],
                         child2 = ct.query('#child2')[0];
@@ -2431,9 +2470,9 @@ function() {
                 });
             });
 
-            describe('component ids with non alpha-numeric chars', function () {
+            describe('component ids with non alpha-numeric chars', function() {
                 var ct,
-                    makeCt = function (id1, id2) {
+                    makeCt = function(id1, id2) {
                         return new Ext.container.Container({
                             items: [{
                                 id: 'foo',
@@ -2449,12 +2488,12 @@ function() {
                     },
                     name1, name2, descendant1, descendant2;
 
-                afterEach(function () {
+                afterEach(function() {
                     Ext.destroy(ct);
                     ct = descendant1 = descendant2 = name1 = name2 = null;
                 });
 
-                it('should allow non alpha-numeric chars', function () {
+                it('should allow non alpha-numeric chars', function() {
                     name1 = 'a-1_23_456-';
                     name2 = 'b-------222222222______';
                     ct = makeCt(name1, name2);
@@ -2470,13 +2509,13 @@ function() {
         });
     });
 
-    describe("queryBy", function(){
-        it("should return no items if the container is empty", function(){
+    describe("queryBy", function() {
+        it("should return no items if the container is empty", function() {
             makeContainer();
-            expect(ct.queryBy(function(){})).toEqual([]);
+            expect(ct.queryBy(function() {})).toEqual([]);
         });
 
-        it("should default the scope to the current component", function(){
+        it("should default the scope to the current component", function() {
             var scopes = [],
                 c1 = new Ext.Component(),
                 c2 = new Ext.Component(),
@@ -2486,13 +2525,13 @@ function() {
                 items: [c1, c2, c3]
             });
 
-            ct.queryBy(function(c){
+            ct.queryBy(function(c) {
                 scopes.push(c);
             });
             expect(scopes).toEqual([c1, c2, c3]);
         });
 
-        it("should use the specified scope", function(){
+        it("should use the specified scope", function() {
             var o = {},
                 c1 = new Ext.Component(),
                 scope;
@@ -2500,14 +2539,14 @@ function() {
             makeContainer({
                 items: c1
             });
-            ct.queryBy(function(){
+            ct.queryBy(function() {
                 scope = this;
             }, o);
 
             expect(scope).toBe(o);
         });
 
-        it("should only exclude items if the return value is false", function(){
+        it("should only exclude items if the return value is false", function() {
             var c1 = new Ext.Component(),
                 c2 = new Ext.Component(),
                 c3 = new Ext.Component();
@@ -2515,12 +2554,12 @@ function() {
             makeContainer({
                 items: [c1, c2, c3]
             });
-            expect(ct.queryBy(function(c){
+            expect(ct.queryBy(function(c) {
 
             })).toEqual([c1, c2, c3]);
         });
 
-        it("should exclude items if the return value is false", function(){
+        it("should exclude items if the return value is false", function() {
             var c1 = new Ext.Component(),
                 c2 = new Ext.Component(),
                 c3 = new Ext.Component();
@@ -2528,12 +2567,12 @@ function() {
             makeContainer({
                 items: [c1, c2, c3]
             });
-            expect(ct.queryBy(function(c){
+            expect(ct.queryBy(function(c) {
                 return c !== c2;
             })).toEqual([c1, c3]);
         });
 
-        it("should retrieve items in nested containers", function(){
+        it("should retrieve items in nested containers", function() {
             var c1 = new Ext.Component(),
                 c2 = new Ext.Container({
                     items: c1
@@ -2545,16 +2584,16 @@ function() {
             makeContainer({
                 items: c3
             });
-            expect(ct.queryBy(function(c){
+            expect(ct.queryBy(function(c) {
                 return c === c1;
             })).toEqual([c1]);
         });
     });
 
-    describe('defaults', function () {
-        function createTests (name, withInstances) {
-            describe(name, function () {
-                it('should apply defaults with object', function () {
+    describe('defaults', function() {
+        function createTests(name, withInstances) {
+            describe(name, function() {
+                it('should apply defaults with object', function() {
                     var item1 = {
                             html: 'foo'
                         },
@@ -2582,12 +2621,12 @@ function() {
                     expect(item1.test).toBe('default');
                     expect(item2.test).toBe('default');
 
-                    //make sure we cleaned this up
+                    // make sure we cleaned this up
                     expect(item1.$defaultsApplied).toBe(undefined);
                     expect(item2.$defaultsApplied).toBe(undefined);
                 });
 
-                it('should not overwrite existing config with object', function () {
+                it('should not overwrite existing config with object', function() {
                     var item1 = {
                             html: 'foo'
                         },
@@ -2616,12 +2655,12 @@ function() {
                     expect(item1.test).toBe('default');
                     expect(item2.test).toBe('foo');
 
-                    //make sure we cleaned this up
+                    // make sure we cleaned this up
                     expect(item1.$defaultsApplied).toBe(undefined);
                     expect(item2.$defaultsApplied).toBe(undefined);
                 });
 
-                it('should apply defaults with a function', function () {
+                it('should apply defaults with a function', function() {
                     var item1 = {
                             html: 'foo'
                         },
@@ -2635,7 +2674,7 @@ function() {
                     }
 
                     makeContainer({
-                        defaults: function (item) {
+                        defaults: function(item) {
                             return {
                                 test: 'default'
                             };
@@ -2651,12 +2690,12 @@ function() {
                     expect(item1.test).toBe('default');
                     expect(item2.test).toBe('default');
 
-                    //make sure we cleaned this up
+                    // make sure we cleaned this up
                     expect(item1.$defaultsApplied).toBe(undefined);
                     expect(item2.$defaultsApplied).toBe(undefined);
                 });
 
-                it('should not overwrite existing config with function', function () {
+                it('should not overwrite existing config with function', function() {
                     var item1 = {
                             html: 'foo'
                         },
@@ -2671,7 +2710,7 @@ function() {
                     }
 
                     makeContainer({
-                        defaults: function (item) {
+                        defaults: function(item) {
                             return {
                                 test: 'default'
                             };
@@ -2687,7 +2726,7 @@ function() {
                     expect(item1.test).toBe('default');
                     expect(item2.test).toBe('foo');
 
-                    //make sure we cleaned this up
+                    // make sure we cleaned this up
                     expect(item1.$defaultsApplied).toBe(undefined);
                     expect(item2.$defaultsApplied).toBe(undefined);
                 });
@@ -2697,7 +2736,7 @@ function() {
         createTests('item as config');
         createTests('item as instance', true);
     });
-    
+
     describe("autoSize", function() {
         describe("rendered to page", function() {
             var renderEl;
@@ -2710,14 +2749,14 @@ function() {
                     }]
                 }, cfg));
             }
-            
-            beforeEach(function () {
+
+            beforeEach(function() {
                 renderEl = Ext.getBody().append({
                     style: 'width: 400px; height: 300px;'
                 });
             });
 
-            afterEach(function () {
+            afterEach(function() {
                 renderEl = Ext.destroy(renderEl);
             });
 
@@ -2728,7 +2767,7 @@ function() {
 
                 expect(ct.getAutoSize()).toBe(null);
                 expect(ct).toHaveLayout({
-                    el: { xywh: '0 0 400 100'},
+                    el: { xywh: '0 0 400 100' },
                     bodyElement: { xywh: '0 0 400 100' }
                 });
                 expect(ct.bodySizerElement == null).toBe(true);
@@ -2745,9 +2784,9 @@ function() {
 
                 // Container is zero height because of the absolutely positioned wrapper
                 expect(ct).toHaveLayout({
-                    el: {xywh: '0 0 400 0'},
-                    bodySizerElement: {xywh: '0 0 400 0'},
-                    bodyElement: {xywh: '0 0 400 0'}
+                    el: { xywh: '0 0 400 0' },
+                    bodySizerElement: { xywh: '0 0 400 0' },
+                    bodyElement: { xywh: '0 0 400 0' }
                 });
             });
 
@@ -2763,9 +2802,9 @@ function() {
                 expect(ct.bodySizerElement.first()).toBe(ct.bodyElement);
 
                 expect(ct).toHaveLayout({
-                    el: {xywh: '0 0 300 200'},
-                    bodySizerElement: {xywh: '0 0 300 200'},
-                    bodyElement: {xywh: '0 0 300 200'}
+                    el: { xywh: '0 0 300 200' },
+                    bodySizerElement: { xywh: '0 0 300 200' },
+                    bodyElement: { xywh: '0 0 300 200' }
                 });
 
                 expect(ct.bodyElement.getStyle('position')).toBe('absolute');
@@ -2795,8 +2834,8 @@ function() {
 
                 expect(ct.getAutoSize()).toBe(true);
                 expect(ct).toHaveLayout({
-                    el: {xywh: '0 0 200 100'},
-                    bodyElement: {xywh: '0 0 200 100'}
+                    el: { xywh: '0 0 200 100' },
+                    bodyElement: { xywh: '0 0 200 100' }
                 });
                 expect(ct.bodySizerElement == null).toBe(true);
             });
@@ -2811,13 +2850,13 @@ function() {
 
                 expect(ct.getAutoSize()).toBe(true);
                 expect(ct).toHaveLayout({
-                    el: {xywh: '0 0 200 100'},
-                    bodyElement: {xywh: '0 0 200 100'}
+                    el: { xywh: '0 0 200 100' },
+                    bodyElement: { xywh: '0 0 200 100' }
                 });
                 expect(ct.bodySizerElement == null).toBe(true);
             });
 
-            it("should force autoSize to true if the floated container is not widthed", function () {
+            it("should force autoSize to true if the floated container is not widthed", function() {
                 makeCt({
                     floated: true,
                     autoSize: false,
@@ -2828,13 +2867,13 @@ function() {
 
                 expect(ct.getAutoSize()).toBe(true);
                 expect(ct).toHaveLayout({
-                    el: {xywh: '0 0 200 150'},
-                    bodyElement: {xywh: '0 0 200 150'}
+                    el: { xywh: '0 0 200 150' },
+                    bodyElement: { xywh: '0 0 200 150' }
                 });
                 expect(ct.bodySizerElement == null).toBe(true);
             });
 
-            it("should force autoSize to true if the floated container is not heighted", function () {
+            it("should force autoSize to true if the floated container is not heighted", function() {
                 makeCt({
                     floated: true,
                     autoSize: false,
@@ -2845,8 +2884,8 @@ function() {
 
                 expect(ct.getAutoSize()).toBe(true);
                 expect(ct).toHaveLayout({
-                    el: {xywh: '0 0 300 100'},
-                    bodyElement: {xywh: '0 0 300 100'}
+                    el: { xywh: '0 0 300 100' },
+                    bodyElement: { xywh: '0 0 300 100' }
                 });
                 expect(ct.bodySizerElement == null).toBe(true);
             });
@@ -2863,16 +2902,16 @@ function() {
 
                 expect(ct.getAutoSize()).toBe(false);
                 expect(ct).toHaveLayout({
-                    el: {xywh: '0 0 300 200'},
-                    bodySizerElement: {xywh: '0 0 300 200'},
-                    bodyElement: {xywh: '0 0 300 200'}
+                    el: { xywh: '0 0 300 200' },
+                    bodySizerElement: { xywh: '0 0 300 200' },
+                    bodyElement: { xywh: '0 0 300 200' }
                 });
             });
         });
 
         describe("positioned", function() {
             var parentCt;
-            
+
             function makeCt(cfg) {
                 parentCt = new Ext.Container({
                     renderTo: Ext.getBody(),
@@ -2888,12 +2927,12 @@ function() {
 
                 ct = parentCt.items.getAt(0);
             }
-            
+
             afterEach(function() {
                 parentCt = Ext.destroy(parentCt);
             });
 
-            it("should default to autoSize: true", function () {
+            it("should default to autoSize: true", function() {
                 makeCt({
                     left: 50,
                     top: 30
@@ -2903,8 +2942,8 @@ function() {
                 expect(parentCt).toHaveLayout({
                     items: {
                         0: {
-                            el: {xywh: '50 30 200 100'},
-                            bodyElement: {xywh: '50 30 200 100'}
+                            el: { xywh: '50 30 200 100' },
+                            bodyElement: { xywh: '50 30 200 100' }
                         }
                     }
                 });
@@ -2922,15 +2961,15 @@ function() {
                 expect(parentCt).toHaveLayout({
                     items: {
                         0: {
-                            el: {xywh: '50 30 200 100'},
-                            bodyElement: {xywh: '50 30 200 100'}
+                            el: { xywh: '50 30 200 100' },
+                            bodyElement: { xywh: '50 30 200 100' }
                         }
                     }
                 });
                 expect(ct.bodySizerElement == null).toBe(true);
             });
 
-            it("should force autoSize to true if the positioned container is not widthed", function () {
+            it("should force autoSize to true if the positioned container is not widthed", function() {
                 makeCt({
                     left: 50,
                     top: 30,
@@ -2942,15 +2981,15 @@ function() {
                 expect(parentCt).toHaveLayout({
                     items: {
                         0: {
-                            el: {xywh: '50 30 200 150'},
-                            bodyElement: {xywh: '50 30 200 150'}
+                            el: { xywh: '50 30 200 150' },
+                            bodyElement: { xywh: '50 30 200 150' }
                         }
                     }
                 });
                 expect(ct.bodySizerElement == null).toBe(true);
             });
-            
-            it("should force autoSize to true if the positioned container is not heighted", function () {
+
+            it("should force autoSize to true if the positioned container is not heighted", function() {
                 makeCt({
                     left: 50,
                     top: 30,
@@ -2962,8 +3001,8 @@ function() {
                 expect(parentCt).toHaveLayout({
                     items: {
                         0: {
-                            el: {xywh: '50 30 300 100'},
-                            bodyElement: {xywh: '50 30 300 100'}
+                            el: { xywh: '50 30 300 100' },
+                            bodyElement: { xywh: '50 30 300 100' }
                         }
                     }
                 });
@@ -2985,9 +3024,9 @@ function() {
                 expect(parentCt).toHaveLayout({
                     items: {
                         0: {
-                            el: {xywh: '50 30 300 200'},
-                            bodySizerElement: {xywh: '50 30 300 200'},
-                            bodyElement: {xywh: '50 30 300 200'}
+                            el: { xywh: '50 30 300 200' },
+                            bodySizerElement: { xywh: '50 30 300 200' },
+                            bodyElement: { xywh: '50 30 300 200' }
                         }
                     }
                 });
@@ -3014,26 +3053,26 @@ function() {
                 ct = parentCt.items.getAt(0);
             }
 
-            afterEach(function () {
+            afterEach(function() {
                 parentCt = Ext.destroy(parentCt);
             });
 
-            it("should default to autoSize: true", function () {
+            it("should default to autoSize: true", function() {
                 makeCt();
 
                 expect(ct.getAutoSize()).toBe(true);
                 expect(parentCt).toHaveLayout({
                     items: {
                         0: {
-                            el: {xywh: '100 100 200 100'},
-                            bodyElement: {xywh: '100 100 200 100'}
+                            el: { xywh: '100 100 200 100' },
+                            bodyElement: { xywh: '100 100 200 100' }
                         }
                     }
                 });
                 expect(ct.bodySizerElement == null).toBe(true);
             });
 
-            it("should force autoSize to true if the centered container is not sized on either axis", function () {
+            it("should force autoSize to true if the centered container is not sized on either axis", function() {
                 makeCt({
                     autoSize: false
                 });
@@ -3042,15 +3081,15 @@ function() {
                 expect(parentCt).toHaveLayout({
                     items: {
                         0: {
-                            el: {xywh: '100 100 200 100'},
-                            bodyElement: {xywh: '100 100 200 100'}
+                            el: { xywh: '100 100 200 100' },
+                            bodyElement: { xywh: '100 100 200 100' }
                         }
                     }
                 });
                 expect(ct.bodySizerElement == null).toBe(true);
             });
 
-            it("should force autoSize to true if the centered container is not widthed", function () {
+            it("should force autoSize to true if the centered container is not widthed", function() {
                 makeCt({
                     autoSize: false,
                     height: 150
@@ -3060,15 +3099,15 @@ function() {
                 expect(parentCt).toHaveLayout({
                     items: {
                         0: {
-                            el: {xywh: '100 75 200 150'},
-                            bodyElement: {xywh: '100 75 200 150'}
+                            el: { xywh: '100 75 200 150' },
+                            bodyElement: { xywh: '100 75 200 150' }
                         }
                     }
                 });
                 expect(ct.bodySizerElement == null).toBe(true);
             });
 
-            it("should force autoSize to true if the centered container is not heighted", function () {
+            it("should force autoSize to true if the centered container is not heighted", function() {
                 makeCt({
                     autoSize: false,
                     width: 300
@@ -3078,15 +3117,15 @@ function() {
                 expect(parentCt).toHaveLayout({
                     items: {
                         0: {
-                            el: {xywh: '50 100 300 100'},
-                            bodyElement: {xywh: '50 100 300 100'}
+                            el: { xywh: '50 100 300 100' },
+                            bodyElement: { xywh: '50 100 300 100' }
                         }
                     }
                 });
                 expect(ct.bodySizerElement == null).toBe(true);
             });
 
-            it("should respect the user's autoSize config if the centered container is sized on both axes", function () {
+            it("should respect the user's autoSize config if the centered container is sized on both axes", function() {
                 makeCt({
                     autoSize: false,
                     width: 300,
@@ -3099,9 +3138,9 @@ function() {
                 expect(parentCt).toHaveLayout({
                     items: {
                         0: {
-                            el: {xywh: '50 50 300 200'},
-                            bodySizerElement: {xywh: '50 50 300 200'},
-                            bodyElement: {xywh: '50 50 300 200'}
+                            el: { xywh: '50 50 300 200' },
+                            bodySizerElement: { xywh: '50 50 300 200' },
+                            bodyElement: { xywh: '50 50 300 200' }
                         }
                     }
                 });
@@ -3111,10 +3150,54 @@ function() {
 
     describe("activeItem", function() {
         it("should set the activeItem from a component config", function() {
-           makeContainer([{html: 'Item 1'}]);
-           ct.setActiveItem({html: 'Item 2'});
+           makeContainer([{ html: 'Item 1' }]);
+           ct.setActiveItem({ html: 'Item 2' });
 
            expect(ct.getActiveItem()).toBe(items[items.length - 1]);
+        });
+    });
+
+    describe('masked', function() {
+        var ct;
+
+        afterEach(function() {
+            ct.destroy();
+        });
+
+        it("should use an Ext.LoadMask when a string is provided", function() {
+            ct = new Ext.Container({
+                renderTo: Ext.getBody(),
+                masked: 'Foo'
+            });
+
+            var mask = ct.getMasked();
+
+            expect(mask instanceof Ext.LoadMask).toBe(true);
+            expect(mask.getMessage()).toBe('Foo');
+            expect(mask.isHidden()).toBe(false);
+        });
+
+        it("should use an Ext.Mask when true is provided", function() {
+            ct = new Ext.Container({
+                renderTo: Ext.getBody(),
+                masked: true
+            });
+
+            var mask = ct.getMasked();
+
+            expect(mask.$className).toBe('Ext.Mask');
+            expect(mask.isHidden()).toBe(false);
+        });
+
+        it("should produce a hidden mask when false is provided", function() {
+            ct = new Ext.Container({
+                renderTo: Ext.getBody(),
+                masked: false
+            });
+
+            var mask = ct.getMasked();
+
+            expect(mask.isHidden()).toBe(true);
         });
     });
 });

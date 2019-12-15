@@ -232,8 +232,8 @@ Ext.define('Ext.panel.Date', {
 
         /**
          * @cfg {Number[]} [specialDays]
-         * An array of days to mark as special, 0-based. For example, [0, 6] disables Sunday and Saturday.
-         * See {@link #specialDates}.
+         * An array of days to mark as special, 0-based. For example, [0, 6] disables Sunday
+         * and Saturday. See {@link #specialDates}.
          *
          * @since 6.5.1
          */
@@ -533,7 +533,8 @@ Ext.define('Ext.panel.Date', {
 
         if (!autoConfirm) {
             me.setShowFooter(true);
-        } else {
+        }
+        else {
             me.setShowFooter(me.initialConfig.showFooter);
         }
     },
@@ -551,6 +552,7 @@ Ext.define('Ext.panel.Date', {
             return dates;
         }
 
+        // eslint-disable-next-line vars-on-top
         var cfg = {
                 dates: {}
             },
@@ -606,6 +608,7 @@ Ext.define('Ext.panel.Date', {
 
     updateHeader: function(header, oldHeader) {
         this.callParent([header, oldHeader]);
+
         header.getTitle().on({
             scope: this,
             yeartap: 'onYearTitleTap',
@@ -652,8 +655,10 @@ Ext.define('Ext.panel.Date', {
         me.getTools();
 
         tools = [];
+
         for (i = 0; i < len; ++i) {
             c = me.lookup(toolList[i]);
+
             if (c) {
                 tools.push(c);
                 ct.remove(c, false);
@@ -665,7 +670,8 @@ Ext.define('Ext.panel.Date', {
 
         if (pos === 'header') {
             me.getHeader().add(tools);
-        } else {
+        }
+        else {
             tools.push({
                 xtype: 'component',
                 flex: 1,
@@ -698,6 +704,7 @@ Ext.define('Ext.panel.Date', {
         if (count < 1) {
             Ext.raise("Cannot configure less than 1 pane for Calendar picker");
         }
+
         return count;
     },
     //</debug>
@@ -773,6 +780,7 @@ Ext.define('Ext.panel.Date', {
 
         if (oldValue) {
             cell = me.getCellByDate(oldValue);
+
             if (cell) {
                 Ext.fly(cell).removeCls(selectedCls);
             }
@@ -781,13 +789,17 @@ Ext.define('Ext.panel.Date', {
         if (!me.isConfiguring) {
             if (me.hasFocus) {
                 me.focusDate(value);
-            } else {
+            }
+            else {
                 me.setFocusableDate(value);
             }
+
             cell = me.getCellByDate(value);
+
             if (cell) {
                 Ext.fly(cell).addCls(selectedCls);
             }
+
             me.setTitleByDate(value);
 
             me.fireEvent('change', me, value, oldValue);
@@ -807,7 +819,8 @@ Ext.define('Ext.panel.Date', {
     },
 
     applyYearPicker: function(yearPicker, oldYearPicker) {
-        return Ext.updateWidget(oldYearPicker, yearPicker, this, 'createYearPicker', 'yearPickerDefaults');
+        return Ext.updateWidget(oldYearPicker, yearPicker, this, 'createYearPicker',
+                                'yearPickerDefaults');
     },
 
     updateYearPicker: function(yearPicker) {
@@ -843,10 +856,12 @@ Ext.define('Ext.panel.Date', {
         if (animate) {
             direction = increment < 0 ? 'up' : 'down';
             ret = me.animateVertical(me.carouselElement, direction, 0, cb, 'animBody');
-        } else {
+        }
+        else {
             cb();
             ret = Ext.Deferred.getCachedResolved();
         }
+
         return ret;
     },
 
@@ -903,6 +918,7 @@ Ext.define('Ext.panel.Date', {
         if (cell) {
             Ext.fly(cell).setTabIndex(tabIndex);
         }
+
         return cell;
     },
 
@@ -947,9 +963,11 @@ Ext.define('Ext.panel.Date', {
         // Assignment is intentional
         if (date.getTime() < (month = layout.getFirstVisibleItem().getMonth()).getTime()) {
             boundary = month;
-        } else if (date.getTime() > (month = layout.getLastVisibleItem().getMonth()).getTime()) {
+        }
+        else if (date.getTime() > (month = layout.getLastVisibleItem().getMonth()).getTime()) {
             boundary = month;
-        } else {
+        }
+        else {
             boundary = date;
         }
 
@@ -965,7 +983,8 @@ Ext.define('Ext.panel.Date', {
                     increment = 0;
                 }
             }
-        } else if (increment > 0) {
+        }
+        else if (increment > 0) {
             boundary = me.getMaxDate();
             prevent = !me.getShowAfterMaxDate();
 
@@ -1011,13 +1030,16 @@ Ext.define('Ext.panel.Date', {
         }
 
         me.navIncrement = me.singlePane ? 0 : increment;
+
         if (hasFocus || me.getSelectOnNavigate()) {
             me.setValue(date);
-        } else {
+        }
+        else {
             me.doFocus = hasFocus;
             me.setFocusableDate(date);
             me.doFocus = false;
         }
+
         me.navIncrement = 0;
     },
 
@@ -1043,7 +1065,9 @@ Ext.define('Ext.panel.Date', {
                 if (e.pointerType === 'touch') {
                     e.preventDefault();
                 }
+
                 focus = false;
+
                 me.fireEvent('select', me, date);
             }
         }
@@ -1056,12 +1080,12 @@ Ext.define('Ext.panel.Date', {
         }
     },
 
-    onMouseWheel: function (e) {
+    onMouseWheel: function(e) {
         var dy = e.browserEvent.deltaY;
 
         if (dy && !this.pickerVisible) {
             this.onMonthToolClick({
-                increment: Math.sign(dy)
+                increment: Ext.Number.sign(dy)
             });
         }
     },
@@ -1084,7 +1108,8 @@ Ext.define('Ext.panel.Date', {
             // This looks smoother if switchPane is used
             if (Math.abs(offset) === 1) {
                 me.switchPanes(-offset);
-            } else {
+            }
+            else {
                 me.replacePanes(-offset);
             }
         }
@@ -1162,12 +1187,13 @@ Ext.define('Ext.panel.Date', {
     },
 
     onEnterKey: function(e) {
-        var target = e.target,
+        var me = this,
+            target = e.target,
             date = target && target.date;
 
         if (date && !target.disabled) {
-            this.setValue(date);
-            this.fireEvent('select', this, target.date);
+            me.setValue(date);
+            me.fireEvent('select', me, target.date);
         }
     },
 
@@ -1223,7 +1249,8 @@ Ext.define('Ext.panel.Date', {
 
             if (me.isDateDisabled(newDate)) {
                 me.focusDate(newDate);
-            } else {
+            }
+            else {
                 me.setValue(newDate);
             }
         }
@@ -1272,7 +1299,9 @@ Ext.define('Ext.panel.Date', {
         lastNavigate: 0,
         hideFocusCls: Ext.baseCSSPrefix + 'hide-focus',
         selectedCls: Ext.baseCSSPrefix + 'selected',
-        toolList: ['navigatePrevMonth', 'navigatePrevYear', 'navigateNextYear', 'navigateNextMonth'],
+        toolList: [
+            'navigatePrevMonth', 'navigatePrevYear', 'navigateNextYear', 'navigateNextMonth'
+        ],
 
         paneWidthMap: {},
         pickerVisible: false,
@@ -1331,28 +1360,36 @@ Ext.define('Ext.panel.Date', {
                 // New date will be immediately visible, or is in same pane.
                 // Simply activate the pane and focus. Do not animate title change.
                 me.lastNavigate = navigate = Date.now();
+
                 if (!increment && (!anim || visibleItems.indexOf(toPane) > -1)) {
                     me.navigateTo(date, false);
+
                     if (focus) {
                         me.getCellByDate(date).focus();
                     }
-                } else {
+                }
+                else {
                     // Temporarily remove the focus styling while we're moving away
                     if (oldCell) {
                         Ext.fly(oldCell).addCls(cls);
                     }
+
                     p = increment ? me.navigateByIncrement(increment) : me.navigateTo(date);
+
                     p.then(function() {
                         oldCell = me.getCellByDate(oldDate);
+
                         if (oldCell) {
                             Ext.fly(oldCell).removeCls(cls);
                         }
+
                         // Make sure the frontItem hasn't changed
                         if (focus && me.lastNavigate === navigate) {
                             me.getCellByDate(date).focus();
                         }
                     });
                 }
+
                 me.updateCellTabIndex(date, me.getTabIndex());
             }
         },
@@ -1399,6 +1436,7 @@ Ext.define('Ext.panel.Date', {
                 return;
             }
 
+            // eslint-disable-next-line vars-on-top
             var panes = this.getInnerItems(),
                 setter, pane, i, len;
 
@@ -1454,7 +1492,7 @@ Ext.define('Ext.panel.Date', {
             };
         },
 
-        getPositionedItemTarget: function () {
+        getPositionedItemTarget: function() {
             return this.bodyElement;
         },
 
@@ -1463,13 +1501,13 @@ Ext.define('Ext.panel.Date', {
                 ms = date.getTime(),
                 minDate = me.getMinDate(),
                 maxDate = me.getMaxDate(),
-                disabled = false,
-                disabledDays, disabledDates, formatted, re;
+                disabled, disabledDays, disabledDates, formatted, re;
 
             disabled = (minDate && ms < minDate.getTime()) || (maxDate && ms > maxDate.getTime());
 
             if (!disabled) {
                 disabledDays = me.getDisabledDays();
+
                 if (disabledDays) {
                     disabled = disabledDays[date.getDay()];
                 }
@@ -1477,9 +1515,11 @@ Ext.define('Ext.panel.Date', {
 
             if (!disabled) {
                 disabledDates = me.getDisabledDates();
+
                 if (disabledDates) {
                     disabled = disabledDates.dates[ms];
                     re = disabledDates.re;
+
                     if (!disabled && re) {
                         formatted = Ext.Date.format(date, me.getFormat());
                         disabled = re.test(formatted);
@@ -1512,14 +1552,17 @@ Ext.define('Ext.panel.Date', {
 
             if (Math.abs(increment) === 1) {
                 ret = this.switchPanes(increment, animate);
-            } else {
+            }
+            else {
                 if (increment !== 0) {
                     ret = this.replacePanes(increment, animate);
-                } else if (!animate) {
+                }
+                else if (!animate) {
                     this.getLayout().cancelAnimation();
                     ret = Ext.Deferred.getCachedResolved();
                 }
             }
+
             return ret;
         },
 
@@ -1528,16 +1571,22 @@ Ext.define('Ext.panel.Date', {
 
             if (this.getSplitTitle()) {
                 visible = false;
-            } else {
+            }
+            else {
                 visible = !this.pickerVisible;
             }
+
             this.toggleYearPicker(visible);
         },
 
         onYearPickerTap: function(picker, year) {
             this.toggleYearPicker(false);
+
+            // eslint-disable-next-line vars-on-top
             var d = Ext.Date.clone(this.getFocusableDate());
+
             d.setFullYear(year);
+
             this.setValue(d);
         },
 
@@ -1550,6 +1599,7 @@ Ext.define('Ext.panel.Date', {
                 return;
             }
 
+            // eslint-disable-next-line vars-on-top
             var panes = this.getPanes(),
                 len = panes.length,
                 i;
@@ -1583,9 +1633,11 @@ Ext.define('Ext.panel.Date', {
 
             if (animate === undefined) {
                 titleAnim = me.getTitleAnimation();
+
                 if (titleAnim !== null) {
                     animate = titleAnim;
-                } else {
+                }
+                else {
                     animate = me.getAnimation();
                 }
             }
@@ -1600,15 +1652,19 @@ Ext.define('Ext.panel.Date', {
                     Ext.raise('Animation is not supported with title split');
                 }
                 //</debug>
+
                 direction = (oldDate || date).getTime() < date.getTime() ? 'bottom' : 'top';
+
                 me.animateVertical(title.textElement, direction, '150%', function() {
                     title.setText(text);
                 }, 'animTitle');
-            } else {
+            }
+            else {
                 if (me.getSplitTitle()) {
                     title.setYear(date.getFullYear());
                     title.setText(text);
-                } else {
+                }
+                else {
                     title.setText(text);
                 }
             }
@@ -1630,10 +1686,13 @@ Ext.define('Ext.panel.Date', {
                 if (me.getSplitTitle()) {
                     me.getHeader().getTitle().setTitleActive(!visible);
                 }
+
                 picker.setHidden(!visible);
+
                 if (visible) {
                     picker.focusYear(me.getFocusableDate().getFullYear());
                 }
+
                 me.pickerVisible = visible;
             }
         }

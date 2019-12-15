@@ -40,12 +40,13 @@ Ext.define('Ext.grid.column.Selection', {
         this.getGrid().getSelectable().toggleAll(this, e);
     },
 
-    setRecordChecked:  function(record, checked, e) {
+    setRecordChecked: function(record, checked, e) {
         var selectionModel = this.getGrid().getSelectable();
 
         if (checked) {
             selectionModel.select(record, selectionModel.getMode() !== 'single');
-        } else {
+        }
+        else {
             selectionModel.deselect(record);
         }
     },

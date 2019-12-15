@@ -56,16 +56,16 @@ Ext.define('Ext.layout.card.fx.Scroll', {
 
             newItem.show();
 
-            if (direction == 'right') {
+            if (direction === 'right') {
                 direction = 'left';
                 this.isReverse = reverse = !reverse;
             }
-            else if (direction == 'down') {
+            else if (direction === 'down') {
                 direction = 'up';
                 this.isReverse = reverse = !reverse;
             }
 
-            if (direction == 'left') {
+            if (direction === 'left') {
                 if (reverse) {
                     easing.setConfig({
                         startValue: containerWidth,
@@ -121,7 +121,7 @@ Ext.define('Ext.layout.card.fx.Scroll', {
             scroll = 'scrollTop',
             value;
 
-        if (direction == 'left' || direction == 'right') {
+        if (direction === 'left' || direction === 'right') {
             scroll = 'scrollLeft';
         }
 
@@ -141,7 +141,7 @@ Ext.define('Ext.layout.card.fx.Scroll', {
             oldItem = me.oldItem,
             newItem = me.newItem;
 
-        if (direction == 'left' || direction == 'right') {
+        if (direction === 'left' || direction === 'right') {
             scroll = 'setLeft';
         }
 

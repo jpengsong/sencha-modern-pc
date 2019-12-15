@@ -1,5 +1,5 @@
 topSuite("Ext.form.Panel",
-    ['Ext.field.*', 'Ext.layout.VBox', 'Ext.direct.RemotingProvider'],
+    ['Ext.field.*', 'Ext.layout.VBox', 'Ext.direct.RemotingProvider', 'Ext.data.validator.*'],
 function() {
     var field, panel,
         create = function(config) {
@@ -26,10 +26,11 @@ function() {
 
         function activeError(field) {
             var e = field.getError();
+
             if (e) {
                 return e[0];
             }
-            else if (e === null ){
+            else if (e === null) {
                 return null;
             }
             else {
@@ -196,7 +197,7 @@ function() {
             it("should return true if form fields are all valid", function() {
                 expect(panel.isValid()).toBe(true);
                 noname.setValue('123');
-                nonblank.setValue('0')
+                nonblank.setValue('0');
                 expect(panel.validate()).toBe(true);
             });
 
@@ -428,8 +429,8 @@ function() {
             });
         });
 
-        describe('containerfield', function () {
-            it('should get values from Ext.field.Container child fields', function () {
+        describe('containerfield', function() {
+            it('should get values from Ext.field.Container child fields', function() {
                 create({
                     items: [{
                         xtype: 'textfield',
@@ -1073,6 +1074,7 @@ function() {
                     });
 
                     var form = submitSpy.mostRecentCall.args[0];
+
                     var fields = form.querySelectorAll('[name=throbbe]');
 
                     expect(fields.length).toBe(1);
@@ -1082,20 +1084,22 @@ function() {
             });
         });
 
-        describe('standard', function () {
+        describe('standard', function() {
             var frameDom, frame, id;
 
-            beforeEach(function () {
+            beforeEach(function() {
                 frameDom = document.createElement('iframe');
                 frame = Ext.get(frameDom);
                 id = frame.id;
             });
 
-            afterEach(function () {
+            afterEach(function() {
                 frame = panel = Ext.destroy(panel, frame);
             });
 
-            it('should cause the frame to reload during submit', function () {
+            // TODO Form submission causes entire test iframe to reload and start
+            // tests anew. Fix and re-enable this spec.
+            xit('should cause the frame to reload during submit', function() {
                 var spy = jasmine.createSpy();
 
                 create({
@@ -1109,6 +1113,7 @@ function() {
                 });
 
                 document.body.appendChild(frameDom);
+
                 if (document.frames) {
                     document.frames[id].name = id;
                 }
@@ -1126,35 +1131,69 @@ function() {
                 waitsForSpy(spy, 'form to submit');
             });
         });
+
+        it("should submit when submitOnAction is 'true'", function() {
+            var fieldSpy = jasmine.createSpy(),
+                formSpy = jasmine.createSpy(),
+                submitSpy = jasmine.createSpy().andCallFake(function() { return false; });
+
+            create({
+                renderTo: document.body,
+                submitOnAction: true,
+                items: [{
+                    xtype: 'textfield',
+                    listeners: {
+                        action: fieldSpy
+                    }
+                }],
+
+                listeners: {
+                    action: formSpy,
+                    beforesubmit: submitSpy
+                }
+            });
+
+            field = panel.down('textfield');
+            field.focus();
+
+            waitsForFocus(field);
+            runs(function() {
+                jasmine.fireKeyEvent(field.inputElement, 'keyup', Ext.event.Event.ENTER);
+
+                expect(fieldSpy).toHaveBeenCalled();
+                expect(formSpy).toHaveBeenCalled();
+                expect(submitSpy).toHaveBeenCalled();
+            });
+        });
     });
 
-    describe("reset", function () {
-        beforeEach(function () {
+    describe("reset", function() {
+        beforeEach(function() {
             create({
                 items: [{
                     xtype: 'textfield',
                     name: 'name',
                     value: 'John Doe'
-                },{
+                }, {
                     xtype: 'textareafield',
                     name: 'bio',
                     value: 'lorem ipsum'
-                },{
+                }, {
                     xtype: 'checkboxfield',
                     name: 'favcolor',
                     value: 'blue',
                     checked: true
-                },{
+                }, {
                     xtype: 'checkboxfield',
                     name: 'favcolor',
                     value: 'red',
                     checked: true
-                },{
+                }, {
                     xtype: 'radiofield',
                     name: 'married',
                     value: 1,
                     checked: true
-                },{
+                }, {
                     xtype: 'radiofield',
                     name: 'married',
                     value: 0,
@@ -1163,7 +1202,7 @@ function() {
             });
         });
 
-        it("should reset the values of all form fields", function () {
+        it("should reset the values of all form fields", function() {
             var vals = {
                 name: 'Jane Doe',
                 bio: 'Bio information',
@@ -1180,9 +1219,213 @@ function() {
             expect(panel.getValues()).toEqual({
                 name: 'John Doe',
                 bio: 'lorem ipsum',
-                favcolor: ['blue','red'],
+                favcolor: ['blue', 'red'],
                 married: 1
             });
+        });
+    });
+  
+   describe("fieldDefaults", function() {
+        it("should copy properties to a sub-field if those properties are not already configured on the field", function() {
+            create({
+                fieldDefaults: {
+                    defaultConfig: 'foo'
+                },
+                renderTo: Ext.getBody()
+            });
+
+            var field = panel.add({ xtype: 'textfield', name: 'myfield' });
+
+            expect(field.defaultConfig).toBe('foo');
+        });
+
+        it("should not copy properties to a sub-field if those properties are already configured on the field", function() {
+            create({
+                fieldDefaults: {
+                    defaultConfig: 'foo'
+                }
+            });
+            var field = panel.add({ xtype: 'textfield', name: 'myfield', defaultConfig: 'bar' });
+
+            expect(field.defaultConfig).toBe('bar');
+        });
+
+        it("should copy fieldDefaults deep", function() {
+            create({
+                renderTo: Ext.getBody(),
+                fieldDefaults: {
+                    defaultConfig: 'foo',
+                    labelAlign: 'left'
+                },
+                items: {
+                    xtype: 'container',
+                    items: {
+                        xtype: 'container',
+                        items: {
+                            xtype: 'container',
+                            items: {
+                                xtype: 'textfield',
+                                itemId: 'foo'
+                            }
+                        }
+                    }
+                }
+            });
+            var field = panel.down('#foo');
+
+            expect(field.defaultConfig).toBe('foo');
+            expect(field.getLabelAlign()).toBe('left');
+        });
+    });
+
+    describe('keyboard/focus management', function () {
+        it("Should allow TAB from keyboard when panel is not masked", function () {
+                create({
+                renderTo: document.body,
+                defaults: {
+                    xtype: 'textfield'
+                },
+                items: [{
+                    label: 'First Name',
+                    name: 'firstname'
+                },
+                {
+                    label: 'Second Name',
+                    name: 'secondname'
+                },
+                {
+                    label: 'Full Name',
+                    name: 'fullname'
+                }]
+            });
+
+            var field1 = panel.getItems().getAt(0),
+                field2 = panel.getItems().getAt(1),
+                fieldInput;
+
+            expect(field1.isFocusing()).toBe(false);
+
+            runs(function () {
+                
+                fieldInput = jazzman.simulateTabKey(field1.inputElement, true);
+                expect(field1.name).toBe(fieldInput.name);
+
+                fieldInput = jazzman.simulateTabKey(field1.inputElement, true);
+                expect(field2.name).toBe(fieldInput.name);
+
+                // should shift back to the upper input field
+                fieldInput = jazzman.simulateTabKey(field2.inputElement,false);
+                expect(field1.name).toBe(fieldInput.name);
+            });
+        });
+            
+        it("Should not allow TAB from keyboard when panel has config masked:true", function () {
+            var fieldInput;
+
+            create({
+                renderTo: document.body,
+                defaults: {
+                    xtype: 'textfield'
+                },
+                items: [{
+                    label: 'First Name',
+                    name: 'firstname'
+                },
+                {
+                    label: 'Second Name',
+                    name: 'secondname'
+                },
+                {
+                    label: 'Full Name',
+                    name: 'fullname'
+                }]
+            });
+           
+            panel.setMasked(true);
+
+            runs(function () {
+                // should shift to the next input field
+                fieldInput = jazzman.simulateTabKey(null, true);
+
+                expect(fieldInput.name).toBeUndefined();
+
+                // should shift to the next input field
+                fieldInput = jazzman.simulateTabKey(null, true);
+                expect(fieldInput.name).toBeUndefined();
+
+                // should shift back to the upper input field
+               fieldInput =  jazzman.simulateTabKey(null, false);
+               expect(fieldInput.name).toBeUndefined();
+            });
+        });
+    });
+
+    describe("jsonSubmit", function() {
+        var ajaxRequestCfg;
+
+        beforeEach(function() {
+                spyOn(Ext.Ajax, 'request').andCallFake(function() {
+                    expect(arguments.length).toEqual(1);
+                    ajaxRequestCfg = arguments[0];
+                });
+            });
+
+        it("should bind the Basic form's field values to ajaxRequestCfg.jsonData", function() {
+            create({ jsonSubmit: true });
+            panel.submit();
+            expect(ajaxRequestCfg.params).toBe(undefined);
+            expect(ajaxRequestCfg.jsonData).not.toBe(undefined);
+        });
+
+        it("should not bind the form panel's field values to ajaxRequestCfg.jsonData", function() {
+            create({ jsonSubmit: false });
+            panel.submit();
+            expect(ajaxRequestCfg.params).not.toBe(undefined);
+            expect(ajaxRequestCfg.jsonData).toBe(undefined);
+        });
+
+        it("should not bind the form panel's field values to ajaxRequestCfg.params", function() {
+            create({ jsonSubmit: true });
+            panel.submit();
+            expect(ajaxRequestCfg.jsonData).not.toBe(undefined);
+            expect(ajaxRequestCfg.params).toBe(undefined);
+        });
+
+        it("should add all the form panel's field values to the ajax call parameters", function() {
+            field = Ext.create('Ext.field.Text', {
+                    name: 'test',
+                    value: 'foo'
+                });
+
+                create({
+                    items: [field],
+                    jsonSubmit: true
+                });
+            panel.submit();
+
+            expect(ajaxRequestCfg.jsonData).toEqual({ test: 'foo' });
+        });
+
+        it("should concatenate the form panel's field values with the form panel's 'baseParams' config", function() {
+            field = Ext.create('Ext.field.Text', {
+                    name: 'test',
+                    value: 'foo'
+                });
+            create({
+                jsonSubmit: true,
+                baseParams: {
+                    three: '3',
+                    four: '4'
+                },
+                items: [field]
+            });
+            panel.submit({
+               options: {
+                   params: 'one=1&two=2'
+               }
+            });
+
+            expect(ajaxRequestCfg.jsonData).toEqual({ test: 'foo', three: '3', four: '4' });
         });
     });
 });

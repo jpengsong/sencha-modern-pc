@@ -150,6 +150,7 @@ Ext.define('Ext.dataview.IndexBar', {
         bodyElement.addClsOnClick(me.pressedCls);
 
         bodyElement.on({
+            tap: 'onTap',
             touchstart: 'onTouchStart',
             touchend: 'onTouchEnd',
             mouseover: 'onMouseOver',
@@ -164,7 +165,7 @@ Ext.define('Ext.dataview.IndexBar', {
         return this.getDirection() === 'vertical';
     },
 
-    setVertical: function (vertical) {
+    setVertical: function(vertical) {
         return this.setDirection(vertical ? 'vertical' : 'horizontal');
     },
 
@@ -188,7 +189,7 @@ Ext.define('Ext.dataview.IndexBar', {
         me.callParent([parent, instanced]);
     },
 
-    onRemoved: function (destroying) {
+    onRemoved: function(destroying) {
         var me = this,
             parent = me.parent;
 
@@ -205,11 +206,11 @@ Ext.define('Ext.dataview.IndexBar', {
     privates: {
         parentListeners: null,
 
-        onDrag: function (e) {
+        onDrag: function(e) {
             this.trackMove(e, false);
         },
 
-        onDragEnd: function (e) {
+        onDragEnd: function(e) {
             var me = this,
                 indicator = me.getIndicator();
 
@@ -240,12 +241,17 @@ Ext.define('Ext.dataview.IndexBar', {
             }
         },
 
-        onPinnedFooterHeightChange: function (list, height) {
+        onPinnedFooterHeightChange: function(list, height) {
             this.setBottom(height);
         },
 
-        onPinnedHeaderHeightChange: function (list, height) {
+        onPinnedHeaderHeightChange: function(list, height) {
             this.setTop(height);
+        },
+
+        onTap: function(e) {
+            // prevent tap on the index bar from being handled by the list as an itemtap
+            e.stopPropagation();
         },
 
         onTouchStart: function(e) {
@@ -261,7 +267,7 @@ Ext.define('Ext.dataview.IndexBar', {
             }
         },
 
-        onTouchEnd: function (e) {
+        onTouchEnd: function(e) {
             var me = this;
 
             me.$isPressing = false;
@@ -273,11 +279,11 @@ Ext.define('Ext.dataview.IndexBar', {
             me.onDragEnd(e);
         },
 
-        onVerticalOverflowChange: function (list, verticalOverflow) {
-            this.setRight(verticalOverflow ? Ext.getScrollbarSize().width : 0);
+        onVerticalOverflowChange: function(list) {
+            this.setRight(list.getScrollable().getScrollbarSize().width);
         },
 
-        scrollToClosestByIndex: function (index) {
+        scrollToClosestByIndex: function(index) {
             var me = this,
                 list = me.parent,
                 key = index.toLowerCase(),
@@ -326,7 +332,7 @@ Ext.define('Ext.dataview.IndexBar', {
          * @param {'over'/'out'/'press'/'release'} trigger
          * @private
          */
-        shouldAutoHide: function (trigger) {
+        shouldAutoHide: function(trigger) {
             var me = this,
                 autoHide = me.getAutoHide(),
                 ret = false;
@@ -339,7 +345,8 @@ Ext.define('Ext.dataview.IndexBar', {
                 if (autoHide === 'pressed' || !Ext.os.is.Desktop) {
                     ret = trigger === 'press' || trigger === 'release';
                     // Automatic autohide for desktop
-                } else {
+                }
+                else {
                     // Over the index bar
                     // out of the index bar but not currently pressing down on the bar
                     // released the mouse and not hovered over the bar
@@ -352,7 +359,7 @@ Ext.define('Ext.dataview.IndexBar', {
             return ret;
         },
 
-        syncIndicatorPosition: function (point, target, isValidTarget) {
+        syncIndicatorPosition: function(point, target, isValidTarget) {
             var me = this,
                 isUsingIndicator = me.getIndicator(),
                 direction = me.getDirection(),
@@ -362,9 +369,8 @@ Ext.define('Ext.dataview.IndexBar', {
                 indicatorInner = me.indicatorInner,
                 first = bodyElement.getFirstChild(),
                 last = bodyElement.getLastChild(),
-                indexbarWidth, indexbarHeight,indicatorSpacing,
-                firstPosition, lastPosition,
-                indicatorSize;
+                indexbarWidth, indexbarHeight, indicatorSpacing,
+                firstPosition, lastPosition, indicatorSize;
 
             if (isUsingIndicator && indicator) {
                 indicator.show();
@@ -378,7 +384,8 @@ Ext.define('Ext.dataview.IndexBar', {
 
                     if (point.y < firstPosition) {
                         target = first;
-                    } else if (point.y > lastPosition) {
+                    }
+                    else if (point.y > lastPosition) {
                         target = last;
                     }
 
@@ -386,9 +393,14 @@ Ext.define('Ext.dataview.IndexBar', {
                         indicatorInner.setHtml(target.getHtml().toUpperCase());
                     }
 
-                    indicator.setTop(target.getY() - renderElement.getY() - (indicatorSize / 2) + (target.getHeight()/2));
+                    indicator.setTop(
+                        target.getY() - renderElement.getY() -
+                        (indicatorSize / 2) + (target.getHeight() / 2)
+                    );
+
                     indicator.setRight(indicatorSpacing + indexbarWidth);
-                } else {
+                }
+                else {
                     indicatorSize = indicator.getWidth();
                     indicatorSpacing = bodyElement.getMargin('tb');
                     indexbarHeight = bodyElement.getHeight();
@@ -397,11 +409,16 @@ Ext.define('Ext.dataview.IndexBar', {
 
                     if (point.x < firstPosition) {
                         target = first;
-                    } else if (point.x > lastPosition) {
+                    }
+                    else if (point.x > lastPosition) {
                         target = last;
                     }
 
-                    indicator.setLeft(target.getX() - renderElement.getX() - (indicatorSize / 2) + (target.getWidth()/2));
+                    indicator.setLeft(
+                        target.getX() - renderElement.getX() -
+                        (indicatorSize / 2) + (target.getWidth() / 2)
+                    );
+
                     indicator.setBottom(indicatorSpacing + indexbarHeight);
                 }
 
@@ -409,7 +426,7 @@ Ext.define('Ext.dataview.IndexBar', {
             }
         },
 
-        trackMove: function (event, drop) {
+        trackMove: function(event, drop) {
             var me = this,
                 el = me.bodyElement,
                 pageBox = me.pageBox || (me.pageBox = me.el.getBox()),
@@ -421,16 +438,21 @@ Ext.define('Ext.dataview.IndexBar', {
                     return;
                 }
 
-                target = Ext.Element.fromPoint(pageBox.left + (pageBox.width / 2),
+                target = Ext.Element.fromPoint(
+                    pageBox.left + (pageBox.width / 2),
                     point.y);
+
                 isValidTarget = target && target.getParent() === el;
-            } else {
+            }
+            else {
                 if (point.x > pageBox.right || point.x < pageBox.left) {
                     return;
                 }
 
-                target = Ext.Element.fromPoint(point.x,
+                target = Ext.Element.fromPoint(
+                    point.x,
                     pageBox.top + (pageBox.height / 2));
+
                 isValidTarget = target && target.getParent() === el;
             }
 
@@ -464,7 +486,8 @@ Ext.define('Ext.dataview.IndexBar', {
                 me.addCls(autoHideCls);
                 me.bodyElement.hide();
                 parentEl.removeCls(indexedNoAutoHideCls);
-            } else {
+            }
+            else {
                 me.removeCls(autoHideCls);
                 me.bodyElement.show();
                 parentEl.addCls(indexedNoAutoHideCls);
@@ -486,7 +509,8 @@ Ext.define('Ext.dataview.IndexBar', {
                 newCls = verticalCls;
                 oldIndexedCls = indexedHorizontalCls;
                 newIndexedCls = indexedVerticalCls;
-            } else {
+            }
+            else {
                 oldCls = verticalCls;
                 newCls = horizontalCls;
                 oldIndexedCls = indexedVerticalCls;
@@ -500,7 +524,7 @@ Ext.define('Ext.dataview.IndexBar', {
 
         // indicator
 
-        updateIndicator: function (indicator) {
+        updateIndicator: function(indicator) {
             var me = this,
                 config = { cls: me.indicatorCls };
 
@@ -525,7 +549,7 @@ Ext.define('Ext.dataview.IndexBar', {
 
         // letters
 
-        updateLetters: function (letters) {
+        updateLetters: function(letters) {
             var bodyElement = this.bodyElement,
                 len = letters.length,
                 i;

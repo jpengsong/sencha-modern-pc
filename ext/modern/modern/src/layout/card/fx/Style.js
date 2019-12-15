@@ -114,7 +114,7 @@ Ext.define('Ext.layout.card.fx.Style', {
         }
     },
 
-    destroy:  function () {
+    destroy: function() {
         Ext.destroy(this.getInAnimation(), this.getOutAnimation());
 
         this.callParent();

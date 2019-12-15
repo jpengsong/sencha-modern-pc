@@ -1,14 +1,14 @@
-//视图
-//弹窗基础类
+/**
+ * 视图 弹窗基础类 使用例子用于
+ * 登录页，锁定页面，空白页，404页面，500页面 ...
+ */
 Ext.define('App.ux.page.Dialog', {
-    extend: 'Ext.window.Window',
+    extend: 'Ext.Dialog',
     //引入类
     //同一项目中只需引入一次即可
-    //requires: ['Ext.toolbar.Spacer', 'Ext.form.Label'],
     cls: 'ux-page-dialog-container',
     //自动显示
-    autoShow: true,
-    //cls
+    hidden: false,
     //最大化显示
     maximized: true,
     //标题
@@ -21,11 +21,9 @@ Ext.define('App.ux.page.Dialog', {
         align: 'center',
         pack: 'center'
     },
-    listeners: {
-        show: function (obj, eOpts) {
-            for (var i = 0; i < obj.tools.length; i++) {
-                obj.tools[i].setHidden(true);
-            }
+    listeners:{
+        painted :function(){
+            this.setClosable(false);
         }
     }
 });

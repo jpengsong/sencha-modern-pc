@@ -97,13 +97,13 @@ $pagingtoolbar-padding-big: dynamic(null);
  * @var {string/list}
  * Paging toolbar "previous" icon
  */
-$pagingtoolbar-prev-icon: dynamic($fa-var-angle-left FontAwesome);
+$pagingtoolbar-prev-icon: dynamic($fa-var-angle-left 'Font Awesome 5 Free');
 
 /**
  * @var {string/list}
  * Paging toolbar "next" icon
  */
-$pagingtoolbar-next-icon: dynamic($fa-var-angle-right FontAwesome);
+$pagingtoolbar-next-icon: dynamic($fa-var-angle-right 'Font Awesome 5 Free');
 
 /**
  * Creates a visual theme for a paging toolbar.

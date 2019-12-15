@@ -16,6 +16,7 @@ Ext.define('Ext.dataview.BoundList', {
 
     tabIndex: null,
     focusEl: null,
+    focusable: false,
     itemsFocusable: false,
     navigationModel: {
         type: 'boundlist'
@@ -40,6 +41,27 @@ Ext.define('Ext.dataview.BoundList', {
     onFocusEnter: Ext.emptyFn,
     onFocusLeave: Ext.emptyFn,
 
+    afterShow: function() {
+        this.callParent();
+
+        // Our navModel uses the field's inputElement as event source,
+        // so enable navigation KeyMap on show.
+        this.getNavigationModel().enable();
+    },
+
+    afterHide: function(me) {
+        var navModel = me.getNavigationModel();
+
+        me.callParent([me]);
+
+        // Set the location to null because there's no onFocusLeave
+        // to do this because the picker does not get focused.
+        // Our navModel uses the field's inputElement as event source,
+        // so disable navigation KeyMap on hide.
+        navModel.setLocation(null);
+        navModel.disable();
+    },
+
     privates: {
         /**
          * The selection model informs the view when it refreshes itself due to store
@@ -50,7 +72,7 @@ Ext.define('Ext.dataview.BoundList', {
          * @param {Ext.data.Model[]} toDeselect Records to be removed from the selection
          * @param {Ext.data.Model[]} toReselect Records to be added to the collection.
          */
-        beforeSelectionRefresh: function (toDeselect, toReselect) {
+        beforeSelectionRefresh: function(toDeselect, toReselect) {
             var len = toDeselect.length,
                 i, rec;
 
@@ -62,7 +84,8 @@ Ext.define('Ext.dataview.BoundList', {
                 if (rec.isEntered) {
                     toDeselect.splice(i, 1);
                     len--;
-                } else {
+                }
+                else {
                     i++;
                 }
             }

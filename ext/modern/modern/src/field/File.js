@@ -1,6 +1,7 @@
 /**
- * Creates an HTML file input field on the page. This is usually used to upload files to remote server. File fields are usually
- * created inside a form like this:
+ * Creates an HTML file input field on the page. This is usually used to upload files 
+ * to remote server.
+ * File fields are usually created inside a form like this:
  *
  *     @example
  *     Ext.create('Ext.form.Panel', {
@@ -34,7 +35,7 @@ Ext.define('Ext.field.File', {
      */
     isFile: true,
 
-    proxyConfigs: {
+    proxyConfig: {
         fileButton: [
             /**
              * @cfg multiple
@@ -79,20 +80,22 @@ Ext.define('Ext.field.File', {
         me.fireEvent('change', this, value, startValue);
     },
 
-    applyName: function (name) {
+    applyName: function(name) {
         var multiple;
 
         if (name) {
             if (multiple && name.substr(-2, 2) !== "[]") {
                 name += "[]";
-            } else if ((!multiple) && name.substr(-2, 2) === "[]") {
-                name = name.substr(0, name.length - 2)
+            }
+            else if ((!multiple) && name.substr(-2, 2) === "[]") {
+                name = name.substr(0, name.length - 2);
             }
         }
+
         return name;
     },
 
-    updateName: function (name) {
+    updateName: function(name) {
         var fileTrigger = this.getTriggers().file,
             inputElement = fileTrigger && fileTrigger.getComponent().buttonElement.dom;
 
@@ -101,8 +104,9 @@ Ext.define('Ext.field.File', {
         }
     },
 
-    updateMultiple: function () {
+    updateMultiple: function() {
         var name = this.getName();
+
         if (!Ext.isEmpty(name)) {
             this.setName(name);
         }
@@ -128,14 +132,14 @@ Ext.define('Ext.field.File', {
      * Along with fileButton dom files.
      */
     reset: function() {
-        var me = this, 
+        var me = this,
             original = me.originalValue;
 
         if (original == null) {
             me.setInputValue('');
             me._value = '';
         }
-        
+
         me.getFileButton().buttonElement.dom.value = '';
     },
 
@@ -143,7 +147,7 @@ Ext.define('Ext.field.File', {
      * Returns the field files.
      * @return {FileList} List of the files selected.
      */
-    getFiles: function () {
+    getFiles: function() {
         return this.getFileButton().getFiles();
     },
 
@@ -155,10 +159,12 @@ Ext.define('Ext.field.File', {
 
             if (files) {
                 value = [];
+
                 for (i = 0, len = files.length; i < len; i++) {
                     file = files[i];
                     value.push(file.name);
                 }
+
                 value = value.join(', ');
             }
 

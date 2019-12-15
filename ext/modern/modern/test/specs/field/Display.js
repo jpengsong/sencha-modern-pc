@@ -1,8 +1,8 @@
 topSuite("Ext.field.Display", [
-], function () {
+], function() {
     var component;
 
-    function makeComponent (config) {
+    function makeComponent(config) {
         config = Ext.apply({
             name: 'fieldname',
             renderTo: Ext.getBody()
@@ -16,7 +16,7 @@ topSuite("Ext.field.Display", [
     });
 
     it("should be registered as xtype 'displayfield'", function() {
-        component = Ext.create("Ext.field.Display", {name: 'test'});
+        component = Ext.create("Ext.field.Display", { name: 'test' });
         expect(component instanceof Ext.field.Display).toBe(true);
         expect(Ext.getClass(component).xtype).toBe("displayfield");
     });
@@ -30,7 +30,6 @@ topSuite("Ext.field.Display", [
             expect(component.getEncodeHtml()).toBe(true);
         });
     });
-
 
     describe("validation", function() {
         beforeEach(function() {
@@ -49,38 +48,39 @@ topSuite("Ext.field.Display", [
     describe("value getters", function() {
         describe("getValue", function() {
             it("should return the field's value", function() {
-                makeComponent({value: 'the field value'});
+                makeComponent({ value: 'the field value' });
                 expect(component.getValue()).toEqual('the field value');
             });
 
             it("should return the same value when encodeHtml is true", function() {
-                makeComponent({value: '<p>the field value</p>', encodeHtml: true});
+                makeComponent({ value: '<p>the field value</p>', encodeHtml: true });
                 expect(component.getValue()).toEqual('<p>the field value</p>');
             });
 
             it("should keep an array value", function() {
                 var arr = [];
-                makeComponent({value: arr});
+
+                makeComponent({ value: arr });
                 expect(component.getValue()).toBe(arr);
             });
 
             it("should keep a numeric value", function() {
-                makeComponent({value: 50});
+                makeComponent({ value: 50 });
                 expect(component.getValue()).toBe(50);
             });
 
             it("should keep a boolean value", function() {
-                makeComponent({value: true});
+                makeComponent({ value: true });
                 expect(component.getValue()).toBe(true);
             });
 
             it("should keep false", function() {
-                makeComponent({value: false});
+                makeComponent({ value: false });
                 expect(component.getValue()).toBe(false);
             });
 
             it("should keep 0", function() {
-                makeComponent({value: 0});
+                makeComponent({ value: 0 });
                 expect(component.getValue()).toBe(0);
             });
         });
@@ -88,7 +88,7 @@ topSuite("Ext.field.Display", [
 
     describe("resetting", function() {
         it("should reset the value", function() {
-            makeComponent({value: 'foo'});
+            makeComponent({ value: 'foo' });
             component.setValue('bar');
 
             expect(component.getValue()).toBe('bar');
@@ -102,19 +102,19 @@ topSuite("Ext.field.Display", [
     describe("setting value", function() {
         describe("setValue", function() {
             it("should set the inputEl's innerHTML to the specified value", function() {
-                makeComponent({value: 'the field value'});
+                makeComponent({ value: 'the field value' });
                 component.setValue('the new value');
                 expect(component.inputElement.dom).hasHTML('the new value');
             });
 
             it("should html-encode the value by default", function() {
-                makeComponent({value: 'the field value'});
+                makeComponent({ value: 'the field value' });
                 component.setValue('<p>the new value</p>');
                 expect(component.inputElement.dom).hasHTML('&lt;p&gt;the new value&lt;/p&gt;');
             });
 
             it("should not html-encode the value with encodeHtml: false", function() {
-                makeComponent({value: 'the field value', encodeHtml: false});
+                makeComponent({ value: 'the field value', encodeHtml: false });
                 component.setValue('<p>the new value</p>');
                 expect(component.inputElement.dom).hasHTML('<p>the new value</p>');
             });
@@ -160,13 +160,13 @@ topSuite("Ext.field.Display", [
 
     });
 
-    describe("renderer", function(){
-        it("should set the innerHTML to the value specified by the renderer", function(){
+    describe("renderer", function() {
+        it("should set the innerHTML to the value specified by the renderer", function() {
             // component is not rendered at the time setRawValue() is called during construction
             // so this classic test fails in modern
             makeComponent({
                 value: 'foo',
-                renderer: function(v){
+                renderer: function(v) {
                     return v + 'bar';
                 },
                 renderTo: Ext.getBody()
@@ -174,13 +174,12 @@ topSuite("Ext.field.Display", [
             expect(component.inputElement.dom.innerHTML).toBe('foobar');
         });
 
-
-        it("should set the innerHTML to the value specified by changed renderer", function(){
+        it("should set the innerHTML to the value specified by changed renderer", function() {
             // component is not rendered at the time setRawValue() is called during construction
             // so this classic test fails in modern
             makeComponent({
                 value: 'foo',
-                renderer: function(v){
+                renderer: function(v) {
                     return v + 'bar';
                 },
                 renderTo: Ext.getBody()
@@ -192,38 +191,39 @@ topSuite("Ext.field.Display", [
             expect(component.inputElement.dom.innerHTML).toBe('foobaz');
         });
 
-        it("should default the scope to the field", function(){
+        it("should default the scope to the field", function() {
             var scope;
+
             makeComponent({
                 value: 'foo',
-                renderer: function(v){
+                renderer: function(v) {
                     scope = this;
                 }
             });
             expect(scope).toBe(component);
         });
 
-        it("should use the passed scope", function(){
+        it("should use the passed scope", function() {
             var o = {},
                 scope;
 
             makeComponent({
                 value: 'foo',
                 scope: o,
-                renderer: function(v){
+                renderer: function(v) {
                     scope = this;
                 }
             });
             expect(scope).toBe(o);
         });
 
-        it("should pass the raw value and the field to the renderer", function(){
+        it("should pass the raw value and the field to the renderer", function() {
             var arg1,
                 arg2;
 
             makeComponent({
                 value: 'foo',
-                renderer: function(a, b){
+                renderer: function(a, b) {
                     arg1 = a;
                     arg2 = b;
                 }
@@ -235,6 +235,7 @@ topSuite("Ext.field.Display", [
 
         it("should pass an empty string to the renderer if the value is undefined", function() {
             var arg1;
+
             makeComponent({
                 value: undefined,
                 renderer: function(a) {
@@ -264,6 +265,7 @@ topSuite("Ext.field.Display", [
                 value: 'foo'
             });
             var height = component.inputElement.getHeight();
+
             component.destroy();
             makeComponent({
                 value: 'foo<br>bar<br>baz',

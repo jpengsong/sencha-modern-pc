@@ -160,14 +160,14 @@ $menu-item-checkbox-glyph-font-size: dynamic($form-checkbox-size);
  * The glyph for {@link Ext.menu.CheckItem CheckItem} checkboxes when
  * {@link Global_CSS#$enable-font-icons} is `true`.
  */
-$menu-item-checkbox-glyph: dynamic($fa-var-square-o $menu-item-checkbox-glyph-font-size $font-icon-font-family);
+$menu-item-checkbox-glyph: dynamic($fa-var-square $menu-item-checkbox-glyph-font-size $font-icon-font-family);
 
 /**
  * @var {string/list}
  * The glyph for {@link Ext.menu.CheckItem CheckItem} checkboxes in "checked" state when
  * {@link Global_CSS#$enable-font-icons} is `true`.
  */
-$menu-item-checkbox-checked-glyph: dynamic($fa-var-check-square-o $menu-item-checkbox-glyph-font-size $font-icon-font-family);
+$menu-item-checkbox-checked-glyph: dynamic($fa-var-check-square $menu-item-checkbox-glyph-font-size $font-icon-font-family);
 
 /**
  * @var {color}

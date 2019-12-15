@@ -1,35 +1,39 @@
-﻿Ext.define("App.ux.page.Page", {
-    extend: "Ext.panel.Panel",
+﻿/**
+ * 视图 页面基础类 使用例子范围适用于
+ * 条件查询和Grid列表展示
+ */
+Ext.define("App.ux.page.Page", {
+    extend: "Ext.Panel",
     padding:"20px 20px",
     layout: {
         type: 'vbox',
         align: 'stretch'
     },
-    gridList: null,
 
-    queryList: null,
-    initComponent: function () {
+    initialize: function () {
         var me = this;
         me.defaultPageLayout();
-        me.callParent();
     },
 
     defaultPageLayout: function () {
-        var me = this, gridPanel, queryPanel; me.items = [];
+        var me = this, gridPanel,queryPanel; me.items = [];
+        
         if (me.queryList.getCount() > 0) {
             queryPanel = me.queryList.first();
+            queryPanel.shadow = true,
+            me.add(queryPanel);
         }
 
         if (me.gridList.getCount() > 0) {
             gridPanel = me.gridList.first();
             gridPanel.flex = 1;
+            gridPanel.shadow = true,
+            me.add(gridPanel);
         }
-        me.items = [queryPanel,gridPanel];
     },
 
     addQuery: function (key, query) {
         var me = this;
-
         if (me.queryList.containsKey(key)) {
             me.queryList.removeAtKey(key);
         }
@@ -49,7 +53,6 @@
 
     addGrid: function (key, grid) {
         var me = this;
-
         if (me.gridList.containsKey(key)) {
             me.gridList.removeAtKey(key);
         }

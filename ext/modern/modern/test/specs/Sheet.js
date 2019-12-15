@@ -10,6 +10,7 @@ topSuite("Ext.Sheet", [
 
     function createSheet(config) {
         sheet = Ext.create('Ext.Sheet', config || {});
+
         return sheet;
     }
 
@@ -17,6 +18,7 @@ topSuite("Ext.Sheet", [
         if (menu) {
             menu.destroy();
         }
+
         menu = null;
     }
 
@@ -54,12 +56,15 @@ topSuite("Ext.Sheet", [
 
     function makeMenu(cfg) {
         var menu = createSheet(Ext.applyIf(getMenuCfg(), cfg));
+
         menus.push(menu);
+
         return menu;
     }
 
     function makeMenuSide(side, reveal) {
         reveal = Boolean(reveal);
+
         return makeMenu({
             side: side,
             reveal: reveal,
@@ -74,11 +79,13 @@ topSuite("Ext.Sheet", [
     describe("Construction/Destruction, change side", function() {
         it("should destroy", function() {
             var menu = makeMenu();
+
             menu.destroy();
         });
 
         it("should destroy floatWrap", function() {
             var menu = makeMenuSide('left', false);
+
             menu.show();
             expect(menu.floatWrap).not.toBeFalsy();
             menu.destroy();
@@ -87,6 +94,7 @@ topSuite("Ext.Sheet", [
 
         it("should destroy side", function() {
             var menu = makeMenuSide('left');
+
             menu.destroy();
         });
 
@@ -99,6 +107,7 @@ topSuite("Ext.Sheet", [
 
         it("should change side", function() {
             var menu = makeMenuSide('left');
+
             expect(getMenu('left')).toBe(menu);
             menu.setSide('right');
             expect(getMenu('left')).toBeFalsy();
@@ -109,6 +118,7 @@ topSuite("Ext.Sheet", [
     describe("No Ext.Viewport API", function() {
         it("should silently execute setDisplayed", function() {
             var menu = makeMenuSide('left');
+
             menu.setDisplayed(true);
         });
 
@@ -199,6 +209,7 @@ topSuite("Ext.Sheet", [
 
         it("should showMenu left", function() {
             var menu = makeMenu();
+
             Ext.Viewport.setMenu(menu, {
                 side: 'left',
                 reveal: true
@@ -210,6 +221,7 @@ topSuite("Ext.Sheet", [
 
         it("should hideMenu left", function() {
             var menu = makeMenu();
+
             Ext.Viewport.setMenu(menu, {
                 side: 'left',
                 reveal: false
@@ -230,6 +242,7 @@ topSuite("Ext.Sheet", [
 
         it("should showMenu right", function() {
             var menu = makeMenu();
+
             Ext.Viewport.setMenu(menu, {
                 side: 'right',
                 reveal: true
@@ -241,6 +254,7 @@ topSuite("Ext.Sheet", [
 
         it("should hideMenu right", function() {
             var menu = makeMenu();
+
             Ext.Viewport.setMenu(menu, {
                 side: 'right',
                 reveal: false
@@ -261,6 +275,7 @@ topSuite("Ext.Sheet", [
 
         it("should showMenu top", function() {
             var menu = makeMenu();
+
             Ext.Viewport.setMenu(menu, {
                 side: 'top',
                 reveal: true
@@ -272,6 +287,7 @@ topSuite("Ext.Sheet", [
 
         it("should hideMenu top", function() {
             var menu = makeMenu();
+
             Ext.Viewport.setMenu(menu, {
                 side: 'top',
                 reveal: false
@@ -292,6 +308,7 @@ topSuite("Ext.Sheet", [
 
         it("should showMenu bottom", function() {
             var menu = makeMenu();
+
             Ext.Viewport.setMenu(menu, {
                 side: 'bottom',
                 reveal: true
@@ -303,6 +320,7 @@ topSuite("Ext.Sheet", [
 
         it("should hideMenu bottom", function() {
             var menu = makeMenu();
+
             Ext.Viewport.setMenu(menu, {
                 side: 'bottom',
                 reveal: false
@@ -323,6 +341,7 @@ topSuite("Ext.Sheet", [
 
         it("should hideAllMenus left", function() {
             var menu = makeMenu();
+
             Ext.Viewport.setMenu(menu, {
                 side: 'left',
                 reveal: false
@@ -344,10 +363,12 @@ topSuite("Ext.Sheet", [
         it("should allow multiple menus", function() {
             function make(side) {
                 var m = makeMenu();
+
                 Ext.Viewport.setMenu(m, {
                     side: side,
                     reveal: false
                 });
+
                 return m;
             }
             var left = make('left'),
@@ -364,10 +385,12 @@ topSuite("Ext.Sheet", [
         it("should hideOther menus when a menu is shown", function() {
             function make(side) {
                 var m = makeMenu();
+
                 Ext.Viewport.setMenu(m, {
                     side: side,
                     reveal: false
                 });
+
                 return m;
             }
             var left = make('left'),
@@ -397,7 +420,7 @@ topSuite("Ext.Sheet", [
         describe("configurations", function() {
             describe("stretchX", function() {
                 it("should set the floatable property", function() {
-                    createSheet({stretchX: true});
+                    createSheet({ stretchX: true });
 
                     expect(sheet.getLeft()).toEqual(0);
                     expect(sheet.getRight()).toEqual(0);
@@ -407,7 +430,7 @@ topSuite("Ext.Sheet", [
             describe("stretchY", function() {
 
                 it("should set the floatable property", function() {
-                    createSheet({stretchY: true});
+                    createSheet({ stretchY: true });
 
                     expect(sheet.getTop()).toEqual(0);
                     expect(sheet.getBottom()).toEqual(0);
@@ -435,7 +458,7 @@ topSuite("Ext.Sheet", [
                 });
                 runs(function() {
                     // translate must be all 0px
-                    expect(sheet.translate.mostRecentCall.args.slice(0,2)).toEqual([0, 0]);
+                    expect(sheet.translate.mostRecentCall.args.slice(0, 2)).toEqual([0, 0]);
                 });
             });
         });

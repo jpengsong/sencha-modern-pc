@@ -4,7 +4,7 @@ topSuite("Ext.dataview.IndexBar", [
     'Ext.data.Store'
 ], function() {
     var defaultSize = 600,
-        defaultGroups = (function () {
+        defaultGroups = (function() {
             var groups = [],
                 i = 'a'.charCodeAt(0),
                 finish = 'z'.charCodeAt(0);
@@ -22,15 +22,15 @@ topSuite("Ext.dataview.IndexBar", [
         fields: ['name', 'group']
     });
 
-    function expectScrollPosition (y, x) {
-        waitsFor(function () {
+    function expectScrollPosition(y, x) {
+        waitsFor(function() {
             var position = scroller.getPosition();
 
             return (y == null || position.y === y) &&
                    (x == null || position.x === x);
         }, 'Never scrolled to correct position');
 
-        runs(function () {
+        runs(function() {
             var position = scroller.getPosition();
 
             if (y != null) {
@@ -43,14 +43,14 @@ topSuite("Ext.dataview.IndexBar", [
         });
     }
 
-    function createData (options) {
+    function createData(options) {
         options = options || {};
 
         var groups = options.groups || defaultGroups,
             base = options.base || 0,
             data = [];
 
-        Ext.Array.forEach(groups, function (group) {
+        Ext.Array.forEach(groups, function(group) {
             var total = options.total || 10,
                 i, id;
 
@@ -68,7 +68,7 @@ topSuite("Ext.dataview.IndexBar", [
         return data;
     }
 
-    function createStore (data) {
+    function createStore(data) {
         var cfg = Array.isArray(data) ? {} : data;
 
         if (data !== false && !Array.isArray(data)) {
@@ -103,7 +103,7 @@ topSuite("Ext.dataview.IndexBar", [
         scroller = list.getScrollable();
     }
 
-    function getItem (index) {
+    function getItem(index) {
         if (typeof index === 'string') {
             index = defaultGroups.indexOf(index);
         }
@@ -119,9 +119,9 @@ topSuite("Ext.dataview.IndexBar", [
         indexBar = list = scroller = store = Ext.destroy(list, store);
     });
 
-    describe('click', function () {
-        describe('infinite: false', function () {
-            it('should scroll to item', function () {
+    describe('click', function() {
+        describe('infinite: false', function() {
+            it('should scroll to item', function() {
                 var item;
 
                 createList();
@@ -133,7 +133,7 @@ topSuite("Ext.dataview.IndexBar", [
                 expectScrollPosition(3850);
             });
 
-            it('should scroll to item without animation', function () {
+            it('should scroll to item without animation', function() {
                 var item;
 
                 createList({
@@ -149,11 +149,11 @@ topSuite("Ext.dataview.IndexBar", [
                 expectScrollPosition(3850);
             });
 
-            it('should scroll to closest group', function () {
+            it('should scroll to closest group', function() {
                 var groups = defaultGroups.slice(),
                     item;
 
-                groups.splice(7, 1); //remove 'h'
+                groups.splice(7, 1); // remove 'h'
 
                 createList(null, {
                     groups: groups
@@ -163,16 +163,16 @@ topSuite("Ext.dataview.IndexBar", [
 
                 jasmine.fireMouseEvent(item, 'click');
 
-                //should show 'i' group
+                // should show 'i' group
 
                 expectScrollPosition(1925);
             });
 
-            it('should scroll to closest group without animation', function () {
+            it('should scroll to closest group without animation', function() {
                 var groups = defaultGroups.slice(),
                     item;
 
-                groups.splice(7, 1); //remove 'h'
+                groups.splice(7, 1); // remove 'h'
 
                 createList({
                     indexBar: {
@@ -186,14 +186,14 @@ topSuite("Ext.dataview.IndexBar", [
 
                 jasmine.fireMouseEvent(item, 'click');
 
-                //should show 'i' group
+                // should show 'i' group
 
                 expectScrollPosition(1925);
             });
         });
 
-        describe('infinite: true', function () {
-            it('should scroll to item', function () {
+        describe('infinite: true', function() {
+            it('should scroll to item', function() {
                 var item;
 
                 createList({
@@ -207,7 +207,7 @@ topSuite("Ext.dataview.IndexBar", [
                 expectScrollPosition(4586);
             });
 
-            it('should scroll to item with pinHeaders: false', function () {
+            it('should scroll to item with pinHeaders: false', function() {
                 var item;
 
                 createList({
@@ -222,11 +222,11 @@ topSuite("Ext.dataview.IndexBar", [
                 expectScrollPosition(2293);
             });
 
-            it('should scroll to closest group', function () {
+            it('should scroll to closest group', function() {
                 var groups = defaultGroups.slice(),
                     item;
 
-                groups.splice(12, 1); //remove 'm'
+                groups.splice(12, 1); // remove 'm'
 
                 createList(
                     {
@@ -241,7 +241,7 @@ topSuite("Ext.dataview.IndexBar", [
 
                 jasmine.fireMouseEvent(item, 'click');
 
-                //should show 'n' group
+                // should show 'n' group
 
                 expectScrollPosition(3060);
             });

@@ -7,10 +7,10 @@ function() {
         chart = Ext.destroy(chart);
     });
 
-    describe('background', function () {
+    describe('background', function() {
         var panel;
 
-        beforeEach(function () {
+        beforeEach(function() {
             panel = Ext.create({
                 xtype: 'panel',
                 width: 400,
@@ -25,9 +25,10 @@ function() {
             panel = Ext.destroy(panel);
         });
 
-        it("should be white after layout end", function () {
+        it("should be white after layout end", function() {
             var layoutDone;
-            runs(function () {
+
+            runs(function() {
                 chart = new Ext.chart.CartesianChart({
                     engine: 'Ext.draw.engine.Canvas',
                     store: {
@@ -65,25 +66,28 @@ function() {
                         type: 'sprite'
                     },
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
                 panel.setItems([chart]);
             });
-            waitsFor(function () {
+
+            waitsFor(function() {
                 return layoutDone;
             });
-            runs(function () {
+
+            runs(function() {
                 // Fetch the first pixel and check if it's white.
                 // That should be enough
-                var imageData = chart.getSurface('background').contexts[0].getImageData(0,0,1,1);
+                var imageData = chart.getSurface('background').contexts[0].getImageData(0, 0, 1, 1);
+
                 var data = imageData.data;
+
                 for (var i = 0; i < data.length; i++) {
                     expect(data[i]).toBe(255);
                 }
-
             });
         });
     });

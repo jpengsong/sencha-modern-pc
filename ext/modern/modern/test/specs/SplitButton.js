@@ -457,7 +457,7 @@ topSuite("Ext.SplitButton", function() {
         });
     });
 
-    describe("with arrowHandler", function() {
+    (Ext.os.is.iOS || Ext.os.is.Android ? xdescribe : describe)("with arrowHandler", function() {
         var pressKey = jasmine.pressKey,
             clickSpy, enterSpy, downSpy, handlerSpy, fooItem;
 

@@ -1,5 +1,6 @@
 /**
- * A Column subclass which renders a checkbox in each column cell which toggles the truthiness of the associated data field on click.
+ * A Column subclass which renders a checkbox in each column cell which toggles the truthiness 
+ * of the associated data field on click.
  */
 Ext.define('Ext.grid.column.Check', {
     extend: 'Ext.grid.column.Column',
@@ -58,7 +59,7 @@ Ext.define('Ext.grid.column.Check', {
          *
          * Clicking the checkbox will check/uncheck all records.
          */
-        headerCheckbox: null
+        headerCheckbox: false
     },
 
     /**
@@ -110,7 +111,7 @@ Ext.define('Ext.grid.column.Check', {
         ]
     }],
 
-    onColumnTap: function (e) {
+    onColumnTap: function(e) {
         var me = this;
 
         if ((e.target === me.checkboxElement.dom) && !me.getDisabled()) {
@@ -140,7 +141,7 @@ Ext.define('Ext.grid.column.Check', {
         });
     },
 
-    setRecordChecked: function (record, checked, e) {
+    setRecordChecked: function(record, checked, e) {
         checked = !!checked;
 
         this.doSetRecordChecked(record, checked);
@@ -148,7 +149,8 @@ Ext.define('Ext.grid.column.Check', {
         // Must clear the "all checked" status in the column header
         if (checked) {
             this.updateHeaderState();
-        } else {
+        }
+        else {
             this.setHeaderStatus(checked);
         }
     },
@@ -157,7 +159,7 @@ Ext.define('Ext.grid.column.Check', {
         var dataIndex = this.getDataIndex();
 
         // Only proceed if we NEED to change
-        if (record.get(dataIndex) != checked) {
+        if (record.get(dataIndex) !== checked) {
             record.set(dataIndex, checked);
         }
     },
@@ -170,16 +172,18 @@ Ext.define('Ext.grid.column.Check', {
         if (store && !store.isVirtualStore && store.getCount() > 0) {
             records = store.getData().items;
             len = records.length;
+
             for (i = 0; i < len; ++i) {
                 if (!me.isRecordChecked(records[i])) {
                     return false;
                 }
             }
+
             return true;
         }
     },
 
-    isRecordChecked: function (record) {
+    isRecordChecked: function(record) {
         return record.get(this.getDataIndex());
     },
 
@@ -218,7 +222,7 @@ Ext.define('Ext.grid.column.Check', {
         }
     },
 
-    updateHeaderCheckboxAlign: function (align, oldAlign) {
+    updateHeaderCheckboxAlign: function(align, oldAlign) {
         var me = this,
             checkboxAlignCls = me.checkboxAlignCls;
 
@@ -231,6 +235,7 @@ Ext.define('Ext.grid.column.Check', {
             if (!checkboxAlignCls[align]) {
                 Ext.raise("Invalid value for checkboxAlign: '" + align + "'");
             }
+
             //</debug>
             me.addCls(checkboxAlignCls[align]);
         }
@@ -241,7 +246,7 @@ Ext.define('Ext.grid.column.Check', {
             grid = me.getGrid();
 
         me.el.toggleCls(me.noHeaderCheckboxCls, !headerCheckbox);
-        me.setSortable(!headerCheckbox);
+        me.setSortable(me.getSortable() && !headerCheckbox);
 
         // May be called in initialization before we are added to a grid.
         if (grid) {
@@ -251,7 +256,7 @@ Ext.define('Ext.grid.column.Check', {
         }
     },
 
-    updateText: function (text) {
+    updateText: function(text) {
         // Override: We do not want &nbsp; because it uncenters the checkbox.
         this.setHtml(text);
         this.toggleCls(this.hasTextCls, !!text);

@@ -94,6 +94,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     listeners[key] = hasListeners[key];
                 }
             }
+
             return listeners;
         }
 
@@ -117,10 +118,10 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         model: Model
                     }
                 }, true);
-                
+
                 // Make sure the store gets destroyed
                 store = list.getStore();
-                
+
                 expect(store.$className).toBe('Ext.data.TreeStore');
                 expect(store.getStoreId()).toBe('storeWithId');
             });
@@ -138,10 +139,10 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         model: Model
                     }
                 }, true);
-                
+
                 // Ditto
                 store = list.getStore();
-                
+
                 expect(store.$className).toBe('spec.CustomTreeStore');
                 expect(store.getStoreId()).toBe('storeWithId');
 
@@ -182,7 +183,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     });
 
                     store = list.getStore();
-                
+
                     expect(store.$className).toBe('Ext.data.TreeStore');
                     expect(store.getStoreId()).toBe('storeWithId');
                 });
@@ -200,7 +201,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     });
 
                     store = list.getStore();
-                
+
                     expect(store.$className).toBe('spec.CustomTreeStore');
                     expect(store.getStoreId()).toBe('storeWithId');
 
@@ -251,7 +252,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     expect(list.getStore().$className).toBe('Ext.data.TreeStore');
                     expect(list.getStore().getStoreId()).toBe('storeWithId');
                     expect(getListeners()).toEqual(listeners);
-                    
+
                     // Stores with ID are not destroyed automatically
                     list.getStore().destroy();
                 });
@@ -270,7 +271,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     expect(list.getStore().$className).toBe('spec.CustomTreeStore');
                     expect(list.getStore().getStoreId()).toBe('storeWithId');
                     expect(getListeners()).toEqual(listeners);
-                    
+
                     list.getStore().destroy();
                     Ext.undefine('spec.CustomTreeStore');
                 });
@@ -279,6 +280,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     var newStore = new Ext.data.TreeStore({
                         model: Model
                     });
+
                     list.setStore(newStore);
                     expect(list.getStore()).toBe(newStore);
                     expect(getListeners()).toEqual(listeners);
@@ -313,6 +315,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
             it("should unbind any listeners", function() {
                 var listeners = getListeners();
+
                 makeList();
                 list.destroy();
                 expect(getListeners()).toEqual(listeners);
@@ -353,7 +356,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                 itemcollapse: collapseSpy
             });
         }
-        
+
         beforeAll(function() {
             // We create this first to prevent the inconsistency with the way configs behave
             // when using cached: true. After the first instance, the behaviour will remain the same
@@ -370,7 +373,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                 constructor: function(config) {
                     this.$noClearOnDestroy = (this.$noClearOnDestroy || {});
                     this.$noClearOnDestroy.logs = true;
-                    
+
                     this.logs = {
                         expandable: [],
                         expanded: [],
@@ -390,25 +393,26 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     };
                     this.callParent([config]);
                 },
-                
+
                 doDestroy: function() {
                     if (this.toolElement) {
                         this.toolElement.destroy();
                     }
-                    
+
                     this.callParent();
                 },
 
                 getToolElement: function() {
                     if (!this.toolElement) {
                         this.toolElement = this.element.createChild();
-                    }   
+                    }
+
                     return this.toolElement;
                 },
 
                 insertItem: function(item, refItem) {
                     this.logs.insertItem.push([item, refItem]);
-                },  
+                },
 
                 removeItem: function(item) {
                     this.logs.removeItem.push(item);
@@ -463,8 +467,9 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     this.logs.text.push(text);
                 }
             });
-            
+
             var temp = new spec.treelist.CustomItem();
+
             temp.destroy();
         });
 
@@ -507,6 +512,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should set expanded", function() {
                         makeCustomList();
                         var item = getItem('i1');
+
                         expect(item.logs.expanded).toEqual([]);
                         expect(item.getExpanded()).toBe(false);
                     });
@@ -514,6 +520,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should set expandable", function() {
                         makeCustomList();
                         var item = getItem('i1');
+
                         expect(item.logs.expandable).toEqual([true]);
                         expect(item.getExpandable()).toBe(true);
                     });
@@ -521,6 +528,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should set leaf", function() {
                         makeCustomList();
                         var item = getItem('i1');
+
                         expect(item.logs.leaf).toEqual([false]);
                         expect(item.getLeaf()).toBe(false);
                     });
@@ -529,6 +537,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         sampleData[0].iconCls = 'iconA';
                         makeCustomList();
                         var item = getItem('i1');
+
                         expect(item.logs.iconCls).toEqual(['iconA']);
                         expect(item.getIconCls()).toBe('iconA');
                     });
@@ -541,6 +550,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             }
                         });
                         var item = getItem('i1');
+
                         expect(item.logs.iconCls).toEqual([]);
                         expect(item.getIconCls()).toBe('');
                     });
@@ -548,6 +558,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should set the text if a textProperty is specified", function() {
                         makeCustomList();
                         var item = getItem('i1');
+
                         expect(item.logs.text).toEqual(['Item 1']);
                         expect(item.getText()).toBe('Item 1');
                     });
@@ -559,6 +570,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             }
                         });
                         var item = getItem('i1');
+
                         expect(item.logs.text).toEqual([]);
                         expect(item.getText()).toBe('');
                     });
@@ -566,6 +578,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should insert the child nodes", function() {
                         makeCustomList();
                         var item = getItem('i1');
+
                         expect(item.logs.insertItem).toEqual([
                             [getItem('i11'), null],
                             [getItem('i12'), null]
@@ -575,6 +588,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should not call any template methods", function() {
                         makeCustomList();
                         var item = getItem('i1');
+
                         expect(item.logs.onNodeCollapse).toEqual([]);
                         expect(item.logs.onNodeExpand).toEqual([]);
                         expect(item.logs.onNodeInsert).toEqual([]);
@@ -592,6 +606,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should have the node, list and parent set", function() {
                         makeCustomList();
                         var item = getItem('i1');
+
                         expect(item.getNode()).toBe(byId('i1'));
                         expect(item.getParentItem()).toBeNull();
                         expect(item.getOwner()).toBe(list);
@@ -604,6 +619,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             }
                         });
                         var item = getItem('i1');
+
                         expect(item.getTestConfig()).toBe(12);
                     });
                 });
@@ -612,6 +628,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should set expanded", function() {
                         makeCustomList();
                         var item = getItem('i2');
+
                         expect(item.logs.expanded).toEqual([]);
                         expect(item.getExpanded()).toBe(false);
                     });
@@ -619,13 +636,15 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should set expandable", function() {
                         makeCustomList();
                         var item = getItem('i2');
-                        expect(item.logs.expandable).toEqual([]); 
+
+                        expect(item.logs.expandable).toEqual([]);
                         expect(item.getExpandable()).toBe(false);
                     });
 
                     it("should set leaf", function() {
                         makeCustomList();
                         var item = getItem('i2');
+
                         expect(item.logs.leaf).toEqual([false]);
                         expect(item.getLeaf()).toBe(false);
                     });
@@ -634,6 +653,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         sampleData[1].iconCls = 'iconA';
                         makeCustomList();
                         var item = getItem('i2');
+
                         expect(item.logs.iconCls).toEqual(['iconA']);
                         expect(item.getIconCls()).toBe('iconA');
                     });
@@ -646,6 +666,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             }
                         });
                         var item = getItem('i2');
+
                         expect(item.logs.iconCls).toEqual([]);
                         expect(item.getIconCls()).toBe('');
                     });
@@ -653,6 +674,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should set the text if a textProperty is specified", function() {
                         makeCustomList();
                         var item = getItem('i2');
+
                         expect(item.logs.text).toEqual(['Item 2']);
                         expect(item.getText()).toBe('Item 2');
                     });
@@ -664,6 +686,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             }
                         });
                         var item = getItem('i2');
+
                         expect(item.logs.text).toEqual([]);
                         expect(item.getText()).toBe('');
                     });
@@ -671,12 +694,14 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should not insert child nodes", function() {
                         makeCustomList();
                         var item = getItem('i2');
+
                         expect(item.logs.insertItem).toEqual([]);
                     });
 
                     it("should not call any template methods", function() {
                         makeCustomList();
                         var item = getItem('i2');
+
                         expect(item.logs.onNodeCollapse).toEqual([]);
                         expect(item.logs.onNodeExpand).toEqual([]);
                         expect(item.logs.onNodeInsert).toEqual([]);
@@ -694,6 +719,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should have the node, list and parent set", function() {
                         makeCustomList();
                         var item = getItem('i2');
+
                         expect(item.getNode()).toBe(byId('i2'));
                         expect(item.getParentItem()).toBeNull();
                         expect(item.getOwner()).toBe(list);
@@ -706,6 +732,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             }
                         });
                         var item = getItem('i2');
+
                         expect(item.getTestConfig()).toBe(12);
                     });
                 });
@@ -718,6 +745,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should set expanded", function() {
                         makeCustomList();
                         var item = getItem('i3');
+
                         expect(item.logs.expanded).toEqual([]);
                         expect(item.getExpanded()).toBe(false);
                     });
@@ -725,13 +753,15 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should set expandable", function() {
                         makeCustomList();
                         var item = getItem('i3');
-                        expect(item.logs.expandable).toEqual([]); 
+
+                        expect(item.logs.expandable).toEqual([]);
                         expect(item.getExpandable()).toBe(false);
                     });
 
                     it("should set leaf", function() {
                         makeCustomList();
                         var item = getItem('i3');
+
                         expect(item.logs.leaf).toEqual([]);
                         expect(item.getLeaf()).toBe(true);
                     });
@@ -740,6 +770,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         sampleData[2].iconCls = 'iconA';
                         makeCustomList();
                         var item = getItem('i3');
+
                         expect(item.logs.iconCls).toEqual(['iconA']);
                         expect(item.getIconCls()).toBe('iconA');
                     });
@@ -752,6 +783,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             }
                         });
                         var item = getItem('i3');
+
                         expect(item.logs.iconCls).toEqual([]);
                         expect(item.getIconCls()).toBe('');
                     });
@@ -759,6 +791,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should set the text if a textProperty is specified", function() {
                         makeCustomList();
                         var item = getItem('i3');
+
                         expect(item.logs.text).toEqual(['Item 3']);
                         expect(item.getText()).toBe('Item 3');
                     });
@@ -770,6 +803,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             }
                         });
                         var item = getItem('i3');
+
                         expect(item.logs.text).toEqual([]);
                         expect(item.getText()).toBe('');
                     });
@@ -777,12 +811,14 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should not insert child nodes", function() {
                         makeCustomList();
                         var item = getItem('i3');
+
                         expect(item.logs.insertItem).toEqual([]);
                     });
 
                     it("should not call any template methods", function() {
                         makeCustomList();
                         var item = getItem('i3');
+
                         expect(item.logs.onNodeCollapse).toEqual([]);
                         expect(item.logs.onNodeExpand).toEqual([]);
                         expect(item.logs.onNodeInsert).toEqual([]);
@@ -800,6 +836,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should have the node, list and parent set", function() {
                         makeCustomList();
                         var item = getItem('i3');
+
                         expect(item.getNode()).toBe(byId('i3'));
                         expect(item.getParentItem()).toBeNull();
                         expect(item.getOwner()).toBe(list);
@@ -812,6 +849,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             }
                         });
                         var item = getItem('i3');
+
                         expect(item.getTestConfig()).toBe(12);
                     });
                 });
@@ -820,6 +858,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should set expanded", function() {
                         makeCustomList();
                         var item = getItem('i4');
+
                         expect(item.logs.expanded).toEqual([true]);
                         expect(item.getExpanded()).toBe(true);
                     });
@@ -827,14 +866,16 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should set expandable", function() {
                         makeCustomList();
                         var item = getItem('i4');
-                        expect(item.logs.expandable).toEqual([true]); 
+
+                        expect(item.logs.expandable).toEqual([true]);
                         expect(item.getExpandable()).toBe(true);
                     });
 
                     it("should set leaf", function() {
                         makeCustomList();
                         var item = getItem('i4');
-                        expect(item.logs.leaf).toEqual([false]); 
+
+                        expect(item.logs.leaf).toEqual([false]);
                         expect(item.getLeaf()).toBe(false);
                     });
 
@@ -842,6 +883,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         sampleData[3].iconCls = 'iconA';
                         makeCustomList();
                         var item = getItem('i4');
+
                         expect(item.logs.iconCls).toEqual(['iconA']);
                         expect(item.getIconCls()).toBe('iconA');
                     });
@@ -854,6 +896,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             }
                         });
                         var item = getItem('i4');
+
                         expect(item.logs.iconCls).toEqual([]);
                         expect(item.getIconCls()).toBe('');
                     });
@@ -861,6 +904,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should set the text if a textProperty is specified", function() {
                         makeCustomList();
                         var item = getItem('i4');
+
                         expect(item.logs.text).toEqual(['Item 4']);
                         expect(item.getText()).toBe('Item 4');
                     });
@@ -872,6 +916,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             }
                         });
                         var item = getItem('i4');
+
                         expect(item.logs.text).toEqual([]);
                         expect(item.getText()).toBe('');
                     });
@@ -879,6 +924,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should insert the child nodes", function() {
                         makeCustomList();
                         var item = getItem('i4');
+
                         expect(item.logs.insertItem).toEqual([
                             [getItem('i41'), null],
                             [getItem('i42'), null],
@@ -889,6 +935,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should not call any template methods", function() {
                         makeCustomList();
                         var item = getItem('i4');
+
                         expect(item.logs.onNodeCollapse).toEqual([]);
                         expect(item.logs.onNodeExpand).toEqual([]);
                         expect(item.logs.onNodeInsert).toEqual([]);
@@ -906,6 +953,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should have the node, list and parent set", function() {
                         makeCustomList();
                         var item = getItem('i4');
+
                         expect(item.getNode()).toBe(byId('i4'));
                         expect(item.getParentItem()).toBeNull();
                         expect(item.getOwner()).toBe(list);
@@ -918,11 +966,12 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             }
                         });
                         var item = getItem('i4');
+
                         expect(item.getTestConfig()).toBe(12);
                     });
                 });
             });
-            
+
             describe("child level nodes", function() {
                 describe("parent expanded: false", function() {
                     it("should set expanded", function() {
@@ -1263,6 +1312,39 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
             });
         });
 
+        describe("Load store", function() {
+
+            beforeEach(function() {
+                var cfg;
+
+                store = Ext.create('Ext.data.TreeStore', {
+                    data: [{
+                        text: 'node',
+                        leaf: true
+                    }]
+                });
+
+                list = new Ext.list.Tree(Ext.apply({
+                    store: store,
+                    animation: false
+                }, cfg));
+                list.render(Ext.getBody());
+
+                if (list.getStore()) {
+                    root = list.getStore().getRoot();
+                }
+            });
+
+            it("should not append items on store load", function() {
+                var itemsLen = Object.keys(list.rootItem.itemMap).length;
+
+                store.load();
+
+                // Length of items should be equal before and after load
+                expect(Object.keys(list.rootItem.itemMap).length).toEqual(itemsLen);
+            });
+        });
+
         describe("dynamic store modifications", function() {
             describe("filtering", function() {
                 it("should react to the store being filtered", function() {
@@ -1270,6 +1352,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     store.filterer = 'bottomup';
                     store.filterBy(function(rec) {
                         var s = rec.data.text;
+
                         return s === 'Item 1.1' || s === 'Item 4.2';
                     });
                     byId('i1').expand();
@@ -1294,6 +1377,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     byId('i1').expand();
                     store.filterBy(function(rec) {
                         var s = rec.data.text;
+
                         return s === 'Item 1.1' || s === 'Item 4.2';
                     });
                     store.getFilters().removeAll();
@@ -1325,6 +1409,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         byId('i1').expand();
                         store.filterBy(function(rec) {
                             var s = rec.data.text;
+
                             return s === 'Item 1.1' || s === 'Item 4.2';
                         });
                         expect(spy.callCount).toBe(1);
@@ -1344,6 +1429,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         store.filterer = 'bottomup';
                         store.filterBy(function(rec) {
                             var s = rec.data.text;
+
                             return s === 'Item 1.1' || s === 'Item 4.2';
                         });
                         expect(spy).not.toHaveBeenCalled();
@@ -1377,16 +1463,19 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
                         it("should create the item type", function() {
                             var item = getItem('i9');
+
                             expect(item.xtype).toBe('spec_treelist_customitem');
                         });
 
                         it("should set the itemConfig", function() {
                             var item = getItem('i9');
+
                             expect(item.getTestConfig()).toBe(200);
                         });
 
                         it("should have the node, list and parent set", function() {
                             var item = getItem('i9');
+
                             expect(item.getNode()).toBe(node);
                             expect(item.getParentItem()).toBeNull();
                             expect(item.getOwner()).toBe(list);
@@ -1395,6 +1484,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         // We can test the DOM here because root is a special subclass
                         it("should insert the item before the passed item", function() {
                             var item = getItem('i9');
+
                             expect(item.el.next()).toBe(getItem('i1').el);
                         });
 
@@ -1490,16 +1580,19 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
                             it("should create the item type", function() {
                                 var item = getItem('i9');
+
                                 expect(item.xtype).toBe('spec_treelist_customitem');
                             });
 
                             it("should set the itemConfig", function() {
                                 var item = getItem('i9');
+
                                 expect(item.getTestConfig()).toBe(200);
                             });
 
                             it("should have the node, list and parent set", function() {
                                 var item = getItem('i9');
+
                                 expect(item.getNode()).toBe(node);
                                 expect(item.getParentItem()).toBe(getItem('i1'));
                                 expect(item.getOwner()).toBe(list);
@@ -1512,11 +1605,13 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             describe("template methods", function() {
                                 it("should call insertItem", function() {
                                     var item = getItem('i1');
+
                                     expect(item.logs.insertItem).toEqual([[getItem('i9'), getItem('i12')]]);
                                 });
 
                                 it("should call onNodeInsert", function() {
                                     var item = getItem('i1');
+
                                     expect(item.logs.onNodeInsert).toEqual([[byId('i9'), byId('i12')]]);
                                 });
                             });
@@ -1612,16 +1707,19 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
                             it("should create the item type", function() {
                                 var item = getItem('i9');
+
                                 expect(item.xtype).toBe('spec_treelist_customitem');
                             });
 
                             it("should set the itemConfig", function() {
                                 var item = getItem('i9');
+
                                 expect(item.getTestConfig()).toBe(200);
                             });
 
                             it("should have the node, list and parent set", function() {
                                 var item = getItem('i9');
+
                                 expect(item.getNode()).toBe(node);
                                 expect(item.getParentItem()).toBe(getItem('i4'));
                                 expect(item.getOwner()).toBe(list);
@@ -1634,11 +1732,13 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             describe("template methods", function() {
                                 it("should call insertItem", function() {
                                     var item = getItem('i4');
+
                                     expect(item.logs.insertItem).toEqual([[getItem('i9'), getItem('i43')]]);
                                 });
 
                                 it("should call onNodeInsert", function() {
                                     var item = getItem('i4');
+
                                     expect(item.logs.onNodeInsert).toEqual([[byId('i9'), byId('i43')]]);
                                 });
                             });
@@ -1717,6 +1817,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         sampleData[2].children = [];
                         makeCustomList();
                         var item = getItem('i3');
+
                         expect(item.logs.expandable).toEqual([]);
                         byId('i3').insertBefore({
                             id: 'i9',
@@ -1755,21 +1856,25 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             describe("template methods", function() {
                                 it("should call onNodeInsert", function() {
                                     var item = getItem('i4');
+
                                     expect(item.logs.onNodeInsert).toEqual([[byId('i43'), byId('i41')]]);
                                 });
 
                                 it("should call insertItem", function() {
                                     var item = getItem('i4');
+
                                     expect(item.logs.insertItem).toEqual([[getItem('i43'), getItem('i41')]]);
                                 });
 
                                 it("should call removeItem", function() {
                                     var item = getItem('i4');
+
                                     expect(item.logs.removeItem).toEqual([getItem('i43')]);
                                 });
 
                                 it("should not call onNodeRemove", function() {
                                     var item = getItem('i4');
+
                                     expect(item.logs.onNodeRemove).toEqual([]);
                                 });
                             });
@@ -1828,21 +1933,25 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             describe("template methods", function() {
                                 it("should call onNodeInsert", function() {
                                     var item = getItem('i1');
+
                                     expect(item.logs.onNodeInsert).toEqual([[byId('i43'), byId('i11')]]);
                                 });
 
                                 it("should call insertItem", function() {
                                     var item = getItem('i1');
+
                                     expect(item.logs.insertItem).toEqual([[getItem('i43'), getItem('i11')]]);
                                 });
 
                                 it("should call removeItem", function() {
                                     var item = getItem('i4');
+
                                     expect(item.logs.removeItem).toEqual([getItem('i43')]);
                                 });
 
                                 it("should not call onNodeRemove", function() {
                                     var item = getItem('i4');
+
                                     expect(item.logs.onNodeRemove).toEqual([]);
                                 });
                             });
@@ -1886,16 +1995,19 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
                         it("should create the item type", function() {
                             var item = getItem('i9');
+
                             expect(item.xtype).toBe('spec_treelist_customitem');
                         });
 
                         it("should set the itemConfig", function() {
                             var item = getItem('i9');
+
                             expect(item.getTestConfig()).toBe(200);
                         });
 
                         it("should have the node, list and parent set", function() {
                             var item = getItem('i9');
+
                             expect(item.getNode()).toBe(node);
                             expect(item.getParentItem()).toBeNull();
                             expect(item.getOwner()).toBe(list);
@@ -1904,6 +2016,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         // We can test the DOM here because root is a special subclass
                         it("should insert the item at the end", function() {
                             var item = getItem('i9');
+
                             expect(item.el.prev()).toBe(getItem('i5').el);
                         });
 
@@ -1999,16 +2112,19 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
                             it("should create the item type", function() {
                                 var item = getItem('i9');
+
                                 expect(item.xtype).toBe('spec_treelist_customitem');
                             });
 
                             it("should set the itemConfig", function() {
                                 var item = getItem('i9');
+
                                 expect(item.getTestConfig()).toBe(200);
                             });
 
                             it("should have the node, list and parent set", function() {
                                 var item = getItem('i9');
+
                                 expect(item.getNode()).toBe(node);
                                 expect(item.getParentItem()).toBe(getItem('i1'));
                                 expect(item.getOwner()).toBe(list);
@@ -2021,11 +2137,13 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             describe("template methods", function() {
                                 it("should call insertItem", function() {
                                     var item = getItem('i1');
-                                    expect(item.logs.insertItem).toEqual([[getItem('i9'),null]]);
+
+                                    expect(item.logs.insertItem).toEqual([[getItem('i9'), null]]);
                                 });
 
                                 it("should call onNodeInsert", function() {
                                     var item = getItem('i1');
+
                                     expect(item.logs.onNodeInsert).toEqual([[byId('i9'), null]]);
                                 });
                             });
@@ -2121,16 +2239,19 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
                             it("should create the item type", function() {
                                 var item = getItem('i9');
+
                                 expect(item.xtype).toBe('spec_treelist_customitem');
                             });
 
                             it("should set the itemConfig", function() {
                                 var item = getItem('i9');
+
                                 expect(item.getTestConfig()).toBe(200);
                             });
 
                             it("should have the node, list and parent set", function() {
                                 var item = getItem('i9');
+
                                 expect(item.getNode()).toBe(node);
                                 expect(item.getParentItem()).toBe(getItem('i4'));
                                 expect(item.getOwner()).toBe(list);
@@ -2143,11 +2264,13 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             describe("template methods", function() {
                                 it("should call insertItem", function() {
                                     var item = getItem('i4');
-                                    expect(item.logs.insertItem).toEqual([[getItem('i9'),null]]);
+
+                                    expect(item.logs.insertItem).toEqual([[getItem('i9'), null]]);
                                 });
 
                                 it("should call onNodeInsert", function() {
                                     var item = getItem('i4');
+
                                     expect(item.logs.onNodeInsert).toEqual([[byId('i9'), null]]);
                                 });
                             });
@@ -2226,6 +2349,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         sampleData[2].children = [];
                         makeCustomList();
                         var item = getItem('i3');
+
                         expect(item.logs.expandable).toEqual([]);
                         byId('i3').appendChild({
                             id: 'i9',
@@ -2264,21 +2388,25 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             describe("template methods", function() {
                                 it("should call onNodeInsert", function() {
                                     var item = getItem('i4');
+
                                     expect(item.logs.onNodeInsert).toEqual([[byId('i41'), null]]);
                                 });
 
                                 it("should call insertItem", function() {
                                     var item = getItem('i4');
+
                                     expect(item.logs.insertItem).toEqual([[getItem('i41'), null]]);
                                 });
 
                                 it("should call removeItem", function() {
                                     var item = getItem('i4');
+
                                     expect(item.logs.removeItem).toEqual([getItem('i41')]);
                                 });
 
                                 it("should not call onNodeRemove", function() {
                                     var item = getItem('i4');
+
                                     expect(item.logs.onNodeRemove).toEqual([]);
                                 });
                             });
@@ -2337,21 +2465,25 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             describe("template methods", function() {
                                 it("should call onNodeInsert", function() {
                                     var item = getItem('i1');
+
                                     expect(item.logs.onNodeInsert).toEqual([[byId('i43'), null]]);
                                 });
 
                                 it("should call insertItem", function() {
                                     var item = getItem('i1');
+
                                     expect(item.logs.insertItem).toEqual([[getItem('i43'), null]]);
                                 });
 
                                 it("should call removeItem", function() {
                                     var item = getItem('i4');
+
                                     expect(item.logs.removeItem).toEqual([getItem('i43')]);
                                 });
 
                                 it("should not call onNodeRemove", function() {
                                     var item = getItem('i4');
+
                                     expect(item.logs.onNodeRemove).toEqual([]);
                                 });
                             });
@@ -2381,12 +2513,14 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
                 it("should destroy the item", function() {
                     var item = getItem('i3');
+
                     root.removeChild(byId('i3'));
                     expect(item.destroyed).toBe(true);
                 });
 
                 it("should not be accessible via getItem", function() {
                     var node = byId('i3');
+
                     root.removeChild(node);
                     expect(list.getItem(node)).toBeNull();
                 });
@@ -2404,6 +2538,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
                 it("should call setExpandable: false if removing the last child item", function() {
                     var item = getItem('i4');
+
                     byId('i4').removeChild(byId('i41'));
                     expect(item.logs.expandable).toEqual([true]);
                     byId('i4').removeChild(byId('i42'));
@@ -2431,6 +2566,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
                     it("should not call template methods for nested children", function() {
                         var item = getItem('i4');
+
                         root.removeChild(byId('i4'));
 
                         expect(item.logs.removeItem).toEqual([]);
@@ -2441,6 +2577,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                 describe("events", function() {
                     it("should fire the remove event", function() {
                         var item = getItem('i41');
+
                         byId('i4').removeChild(item.getNode());
                         expect(removeSpy.callCount).toBe(1);
                         expect(removeSpy.mostRecentCall.args[0]).toBe(list);
@@ -2450,6 +2587,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
                     it("should only for the remove event for the top level item", function() {
                         var item = getItem('i4');
+
                         root.removeChild(item.getNode());
                         expect(removeSpy.callCount).toBe(1);
                         expect(removeSpy.mostRecentCall.args[0]).toBe(list);
@@ -2575,6 +2713,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
                         it("should set loaded when the node is expanding", function() {
                             var item = getItem('i3');
+
                             expect(item.logs.loading).toEqual([]);
                             expect(item.getLoading()).toBe(false);
 
@@ -2591,6 +2730,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
                         it("should not fire the itemexpand event until loading completes", function() {
                             var item = getItem('i3');
+
                             expect(expandSpy).not.toHaveBeenCalled();
                             byId('i3').expand();
                             expect(expandSpy).not.toHaveBeenCalled();
@@ -2636,6 +2776,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should call setText when updating the text with a textProperty", function() {
                         makeCustomList();
                         var item = getItem('i2');
+
                         expect(item.logs.text).toEqual(['Item 2']);
                         byId('i2').set('text', 'Foo');
                         expect(item.logs.text).toEqual(['Item 2', 'Foo']);
@@ -2648,6 +2789,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             }
                         });
                         var item = getItem('i2');
+
                         expect(item.logs.text).toEqual([]);
                         byId('i2').set('text', 'Foo');
                         expect(item.logs.text).toEqual([]);
@@ -2668,6 +2810,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     it("should call setIconCls when updating the iconCls with an iconClsProperty", function() {
                         makeCustomList();
                         var item = getItem('i2');
+
                         expect(item.logs.iconCls).toEqual([]);
                         byId('i2').set('iconCls', 'foo');
                         expect(item.logs.iconCls).toEqual(['foo']);
@@ -2680,6 +2823,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             }
                         });
                         var item = getItem('i2');
+
                         expect(item.logs.iconCls).toEqual([]);
                         byId('i2').set('iconCls', 'foo');
                         expect(item.logs.iconCls).toEqual([]);
@@ -2701,6 +2845,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         it("should call setExpandable(false)", function() {
                             makeCustomList();
                             var item = getItem('i4');
+
                             expect(item.logs.expandable).toEqual([true]);
                             byId('i4').set('expandable', false);
                             expect(item.logs.expandable).toEqual([true, false]);
@@ -2721,6 +2866,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             sampleData[0].expandable = false;
                             makeCustomList();
                             var item = getItem('i1');
+
                             expect(item.logs.expandable).toEqual([]);
                             byId('i1').set('expandable', true);
                             expect(item.logs.expandable).toEqual([true]);
@@ -2835,7 +2981,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                 id: 'j22',
                                 text: 'XItem 2.2'
                             }]
-                        }]
+                        }];
                     });
 
                     afterEach(function() {
@@ -2855,6 +3001,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should set expanded", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j1');
+
                                 expect(item.logs.expanded).toEqual([]);
                                 expect(item.getExpanded()).toBe(false);
                             });
@@ -2862,14 +3009,16 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should set expandable", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j1');
-                                expect(item.logs.expandable).toEqual([true]); 
+
+                                expect(item.logs.expandable).toEqual([true]);
                                 expect(item.getExpandable()).toBe(true);
                             });
 
                             it("should set leaf", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j1');
-                                expect(item.logs.leaf).toEqual([false]); 
+
+                                expect(item.logs.leaf).toEqual([false]);
                                 expect(item.getLeaf()).toBe(false);
                             });
 
@@ -2877,6 +3026,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                 newData[0].iconCls = 'iconA';
                                 makeAndSetRoot();
                                 var item = getItem('j1');
+
                                 expect(item.logs.iconCls).toEqual(['iconA']);
                                 expect(item.getIconCls()).toBe('iconA');
                             });
@@ -2889,6 +3039,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                     }
                                 });
                                 var item = getItem('j1');
+
                                 expect(item.logs.iconCls).toEqual([]);
                                 expect(item.getIconCls()).toBe('');
                             });
@@ -2896,6 +3047,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should set the text if a textProperty is specified", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j1');
+
                                 expect(item.logs.text).toEqual(['XItem 1']);
                                 expect(item.getText()).toBe('XItem 1');
                             });
@@ -2907,6 +3059,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                     }
                                 });
                                 var item = getItem('j1');
+
                                 expect(item.logs.text).toEqual([]);
                                 expect(item.getText()).toBe('');
                             });
@@ -2914,6 +3067,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should insert the child nodes", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j1');
+
                                 expect(item.logs.insertItem).toEqual([
                                     [getItem('j11'), null]
                                 ]);
@@ -2922,6 +3076,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should not call any template methods", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j1');
+
                                 expect(item.logs.onNodeCollapse).toEqual([]);
                                 expect(item.logs.onNodeExpand).toEqual([]);
                                 expect(item.logs.onNodeInsert).toEqual([]);
@@ -2939,6 +3094,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should have the node, list and parent set", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j1');
+
                                 expect(item.getNode()).toBe(byId('j1'));
                                 expect(item.getParentItem()).toBeNull();
                                 expect(item.getOwner()).toBe(list);
@@ -2951,6 +3107,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                     }
                                 });
                                 var item = getItem('j1');
+
                                 expect(item.getTestConfig()).toBe(12);
                             });
                         });
@@ -2959,6 +3116,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should set expanded", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j2');
+
                                 expect(item.logs.expanded).toEqual([true]);
                                 expect(item.getExpanded()).toBe(true);
                             });
@@ -2966,14 +3124,16 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should set expandable", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j2');
-                                expect(item.logs.expandable).toEqual([true]); 
+
+                                expect(item.logs.expandable).toEqual([true]);
                                 expect(item.getExpandable()).toBe(true);
                             });
 
                             it("should set leaf", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j2');
-                                expect(item.logs.leaf).toEqual([false]); 
+
+                                expect(item.logs.leaf).toEqual([false]);
                                 expect(item.getLeaf()).toBe(false);
                             });
 
@@ -2981,6 +3141,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                 newData[1].iconCls = 'iconA';
                                 makeAndSetRoot();
                                 var item = getItem('j2');
+
                                 expect(item.logs.iconCls).toEqual(['iconA']);
                                 expect(item.getIconCls()).toBe('iconA');
                             });
@@ -2993,6 +3154,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                     }
                                 });
                                 var item = getItem('j2');
+
                                 expect(item.logs.iconCls).toEqual([]);
                                 expect(item.getIconCls()).toBe('');
                             });
@@ -3000,6 +3162,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should set the text if a textProperty is specified", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j2');
+
                                 expect(item.logs.text).toEqual(['XItem 2']);
                                 expect(item.getText()).toBe('XItem 2');
                             });
@@ -3011,6 +3174,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                     }
                                 });
                                 var item = getItem('j2');
+
                                 expect(item.logs.text).toEqual([]);
                                 expect(item.getText()).toBe('');
                             });
@@ -3018,6 +3182,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should insert the child nodes", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j2');
+
                                 expect(item.logs.insertItem).toEqual([
                                     [getItem('j21'), null],
                                     [getItem('j22'), null]
@@ -3027,6 +3192,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should not call any template methods", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j2');
+
                                 expect(item.logs.onNodeCollapse).toEqual([]);
                                 expect(item.logs.onNodeExpand).toEqual([]);
                                 expect(item.logs.onNodeInsert).toEqual([]);
@@ -3044,6 +3210,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should have the node, list and parent set", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j2');
+
                                 expect(item.getNode()).toBe(byId('j2'));
                                 expect(item.getParentItem()).toBeNull();
                                 expect(item.getOwner()).toBe(list);
@@ -3056,6 +3223,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                     }
                                 });
                                 var item = getItem('j2');
+
                                 expect(item.getTestConfig()).toBe(12);
                             });
                         });
@@ -3066,6 +3234,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should set expanded", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j11');
+
                                 expect(item.logs.expanded).toEqual([]);
                                 expect(item.getExpanded()).toBe(false);
                             });
@@ -3073,14 +3242,16 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should set expandable", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j11');
-                                expect(item.logs.expandable).toEqual([]); 
+
+                                expect(item.logs.expandable).toEqual([]);
                                 expect(item.getExpandable()).toBe(false);
                             });
 
                             it("should set leaf", function() {
                                 makeAndSetRoot();
                                 var item = getItem('j11');
-                                expect(item.logs.leaf).toEqual([]); 
+
+                                expect(item.logs.leaf).toEqual([]);
                                 expect(item.getLeaf()).toBe(true);
                             });
 
@@ -3393,7 +3564,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                 id: 'j22',
                                 text: 'XItem 2.2'
                             }]
-                        }]
+                        }];
                     });
 
                     afterEach(function() {
@@ -3417,6 +3588,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should set expanded", function() {
                                 makeAndSetStore();
                                 var item = getItem('j1');
+
                                 expect(item.logs.expanded).toEqual([]);
                                 expect(item.getExpanded()).toBe(false);
                             });
@@ -3424,14 +3596,16 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should set expandable", function() {
                                 makeAndSetStore();
                                 var item = getItem('j1');
-                                expect(item.logs.expandable).toEqual([true]); 
+
+                                expect(item.logs.expandable).toEqual([true]);
                                 expect(item.getExpandable()).toBe(true);
                             });
 
                             it("should set leaf", function() {
                                 makeAndSetStore();
                                 var item = getItem('j1');
-                                expect(item.logs.leaf).toEqual([false]); 
+
+                                expect(item.logs.leaf).toEqual([false]);
                                 expect(item.getLeaf()).toBe(false);
                             });
 
@@ -3439,6 +3613,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                 newData[0].iconCls = 'iconA';
                                 makeAndSetStore();
                                 var item = getItem('j1');
+
                                 expect(item.logs.iconCls).toEqual(['iconA']);
                                 expect(item.getIconCls()).toBe('iconA');
                             });
@@ -3451,6 +3626,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                     }
                                 });
                                 var item = getItem('j1');
+
                                 expect(item.logs.iconCls).toEqual([]);
                                 expect(item.getIconCls()).toBe('');
                             });
@@ -3458,6 +3634,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should set the text if a textProperty is specified", function() {
                                 makeAndSetStore();
                                 var item = getItem('j1');
+
                                 expect(item.logs.text).toEqual(['XItem 1']);
                                 expect(item.getText()).toBe('XItem 1');
                             });
@@ -3469,6 +3646,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                     }
                                 });
                                 var item = getItem('j1');
+
                                 expect(item.logs.text).toEqual([]);
                                 expect(item.getText()).toBe('');
                             });
@@ -3476,6 +3654,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should insert the child nodes", function() {
                                 makeAndSetStore();
                                 var item = getItem('j1');
+
                                 expect(item.logs.insertItem).toEqual([
                                     [getItem('j11'), null]
                                 ]);
@@ -3484,6 +3663,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should not call any template methods", function() {
                                 makeAndSetStore();
                                 var item = getItem('j1');
+
                                 expect(item.logs.onNodeCollapse).toEqual([]);
                                 expect(item.logs.onNodeExpand).toEqual([]);
                                 expect(item.logs.onNodeInsert).toEqual([]);
@@ -3501,6 +3681,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should have the node, list and parent set", function() {
                                 makeAndSetStore();
                                 var item = getItem('j1');
+
                                 expect(item.getNode()).toBe(byId('j1'));
                                 expect(item.getParentItem()).toBeNull();
                                 expect(item.getOwner()).toBe(list);
@@ -3513,6 +3694,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                     }
                                 });
                                 var item = getItem('j1');
+
                                 expect(item.getTestConfig()).toBe(12);
                             });
                         });
@@ -3521,6 +3703,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should be set expanded", function() {
                                 makeAndSetStore();
                                 var item = getItem('j2');
+
                                 expect(item.logs.expanded).toEqual([true]);
                                 expect(item.getExpanded()).toBe(true);
                             });
@@ -3528,14 +3711,16 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should set expandable", function() {
                                 makeAndSetStore();
                                 var item = getItem('j2');
-                                expect(item.logs.expandable).toEqual([true]); 
+
+                                expect(item.logs.expandable).toEqual([true]);
                                 expect(item.getExpandable()).toBe(true);
                             });
 
                             it("should set leaf", function() {
                                 makeAndSetStore();
                                 var item = getItem('j2');
-                                expect(item.logs.leaf).toEqual([false]); 
+
+                                expect(item.logs.leaf).toEqual([false]);
                                 expect(item.getLeaf()).toBe(false);
                             });
 
@@ -3543,6 +3728,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                 newData[1].iconCls = 'iconA';
                                 makeAndSetStore();
                                 var item = getItem('j2');
+
                                 expect(item.logs.iconCls).toEqual(['iconA']);
                                 expect(item.getIconCls()).toBe('iconA');
                             });
@@ -3555,6 +3741,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                     }
                                 });
                                 var item = getItem('j2');
+
                                 expect(item.logs.iconCls).toEqual([]);
                                 expect(item.getIconCls()).toBe('');
                             });
@@ -3562,6 +3749,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should set the text if a textProperty is specified", function() {
                                 makeAndSetStore();
                                 var item = getItem('j2');
+
                                 expect(item.logs.text).toEqual(['XItem 2']);
                                 expect(item.getText()).toBe('XItem 2');
                             });
@@ -3573,6 +3761,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                     }
                                 });
                                 var item = getItem('j2');
+
                                 expect(item.logs.text).toEqual([]);
                                 expect(item.getText()).toBe('');
                             });
@@ -3580,6 +3769,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should insert the child nodes", function() {
                                 makeAndSetStore();
                                 var item = getItem('j2');
+
                                 expect(item.logs.insertItem).toEqual([
                                     [getItem('j21'), null],
                                     [getItem('j22'), null]
@@ -3589,6 +3779,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should not call any template methods", function() {
                                 makeAndSetStore();
                                 var item = getItem('j2');
+
                                 expect(item.logs.onNodeCollapse).toEqual([]);
                                 expect(item.logs.onNodeExpand).toEqual([]);
                                 expect(item.logs.onNodeInsert).toEqual([]);
@@ -3606,6 +3797,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should have the node, list and parent set", function() {
                                 makeAndSetStore();
                                 var item = getItem('j2');
+
                                 expect(item.getNode()).toBe(byId('j2'));
                                 expect(item.getParentItem()).toBeNull();
                                 expect(item.getOwner()).toBe(list);
@@ -3618,6 +3810,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                     }
                                 });
                                 var item = getItem('j2');
+
                                 expect(item.getTestConfig()).toBe(12);
                             });
                         });
@@ -3628,6 +3821,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should set expanded", function() {
                                 makeAndSetStore();
                                 var item = getItem('j11');
+
                                 expect(item.logs.expanded).toEqual([]);
                                 expect(item.getExpanded()).toBe(false);
                             });
@@ -3635,14 +3829,16 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             it("should set expandable", function() {
                                 makeAndSetStore();
                                 var item = getItem('j11');
-                                expect(item.logs.expandable).toEqual([]); 
+
+                                expect(item.logs.expandable).toEqual([]);
                                 expect(item.getExpandable()).toBe(false);
                             });
 
                             it("should set leaf", function() {
                                 makeAndSetStore();
                                 var item = getItem('j11');
-                                expect(item.logs.leaf).toEqual([]); 
+
+                                expect(item.logs.leaf).toEqual([]);
                                 expect(item.getLeaf()).toBe(true);
                             });
 
@@ -3821,7 +4017,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                                 expect(item2.logs.text).toEqual([]);
 
                                 expect(item1.getText()).toBe('');
-                                expect(item2.getText()).toBe('')
+                                expect(item2.getText()).toBe('');
                             });
 
                             it("should not call any template methods", function() {
@@ -3879,7 +4075,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                     });
                 });
             });
-        });          
+        });
 
         describe("micro mode", function() {
             describe("at construction", function() {
@@ -3888,6 +4084,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         micro: true
                     });
                     var toolNodes = list.toolsElement.dom.childNodes;
+
                     expect(toolNodes[0]).toBe(getItem('i1').getToolElement().dom);
                     expect(toolNodes[1]).toBe(getItem('i2').getToolElement().dom);
                     expect(toolNodes[2]).toBe(getItem('i3').getToolElement().dom);
@@ -3926,6 +4123,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             id: 'foo'
                         });
                         var toolNodes = list.toolsElement.dom.childNodes;
+
                         expect(toolNodes.length).toBe(1);
                         expect(toolNodes[0]).toBe(getItem('foo').getToolElement().dom);
                     });
@@ -3943,6 +4141,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                             id: 'foo'
                         });
                         var toolNodes = list.toolsElement.dom.childNodes;
+
                         expect(toolNodes.length).toBe(6);
                         expect(toolNodes[5]).toBe(getItem('foo').getToolElement().dom);
                     });
@@ -3967,9 +4166,11 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
                     it("should handle removal", function() {
                         var root = store.getRoot();
+
                         root.removeChild(root.getChildAt(1));
 
                         var toolNodes = list.toolsElement.dom.childNodes;
+
                         expect(toolNodes.length).toBe(4);
 
                         expect(toolNodes[0]).toBe(getItem('i1').getToolElement().dom);
@@ -3990,6 +4191,8 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
         describe("at construction", function() {
             describe("starting as micro: true", function() {
+                var itNotTouch = Ext.supports.Touch ? xit : it;
+
                 beforeEach(function() {
                     makeList({
                         micro: true
@@ -4006,20 +4209,37 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                 });
 
                 // https://sencha.jira.com/browse/EXTJS-20210
-                if (!jasmine.supportsTouch) {
-                    it('should hide the icon on float', function() {
-                        var rec0 = store.getAt(0),
-                            item0 = list.getItem(rec0);
+                itNotTouch('should hide the icon on float', function() {
+                    var rec0 = store.getAt(0),
+                        item0 = list.getItem(rec0);
 
-                        // Icon element begins visible
-                        expect(item0.iconElement.isVisible()).toBe(true);
+                    // Icon element begins visible
+                    expect(item0.iconElement.isVisible()).toBe(true);
 
-                        jasmine.fireMouseEvent(item0.toolElement, 'mouseover');
+                    jasmine.fireMouseEvent(item0.toolElement, 'mouseover');
 
-                        // When floated, it should be hidden
-                        expect(item0.iconElement.isVisible()).toBe(false);
-                    });
-                }
+                    // When floated, it should be hidden
+                    expect(item0.iconElement.isVisible()).toBe(false);
+                });
+
+                // https://sencha.jira.com/browse/EXTJS-27536
+                // This test case is written only to satify the above mentioned JIRA ticket
+                itNotTouch('should not throw error on leaf node click', function() {
+                    var rec0 = store.getAt(0),
+                        leafRec0 = rec0.childNodes[0],
+                        item0 = list.getItem(rec0),
+                        leafItem0 = list.getItem(leafRec0);
+
+                    jasmine.fireMouseEvent(item0.toolElement, 'mouseover');
+
+                    expect(leafItem0.el.isVisible()).toBe(true);
+
+                    runs(function() {
+                        expect(function() {
+                            jasmine.fireMouseEvent(leafItem0.el, 'click');
+                        }).not.toThrow();
+                     });
+                 });
             });
 
             describe("starting micro: false", function() {
@@ -4075,18 +4295,18 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
             });
         });
 
-        describe('menu', function () {
+        describe('menu', function() {
             beforeEach(function() {
                 makeList({
                     micro: true
                 });
             });
 
-            function makeShowMenuSpecs (event) {
-                describe(event, function () {
+            function makeShowMenuSpecs(event) {
+                describe(event, function() {
                     var isClick = event === 'click';
 
-                    it('should show menu of items', function () {
+                    it('should show menu of items', function() {
                         var node = byId('i1'),
                             item = list.getItem(node);
 
@@ -4096,7 +4316,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         expect(item.getFloated()).toBe(true);
                     });
 
-                    it('should ' + (isClick ? 'not ' : '') + 'show menu for leaf node', function () {
+                    it('should ' + (isClick ? 'not ' : '') + 'show menu for leaf node', function() {
                         var node = byId('i5'),
                             item = list.getItem(node);
 
@@ -4105,7 +4325,8 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
                         if (isClick) {
                             expect(list.activeFloater).toBeFalsy();
                             expect(item.getFloated()).toBeFalsy();
-                        } else {
+                        }
+                        else {
                             expect(list.activeFloater).toBeTruthy();
                             expect(item.getFloated()).toBe(true);
                         }
@@ -4113,7 +4334,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
                     if (isClick) {
                         // only click event can prevent floating leaf items
-                        it('should show menu for leaf node', function () {
+                        it('should show menu for leaf node', function() {
                             var node = byId('i5'),
                                 item = list.getItem(node);
 
@@ -4163,20 +4384,23 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
             it("should return null after an item was removed", function() {
                 var node = byId('i4');
+
                 root.removeChild(node);
                 expect(list.getItem(node)).toBeNull();
             });
 
             it("should return null for a child when the parent was removed", function() {
                 var node = byId('i41');
+
                 root.removeChild(byId('i4'));
                 expect(list.getItem(node)).toBeNull();
             });
 
             it("should return newly added items", function() {
                 var node = root.appendChild({
-                    id: 'i9'
-                }), item = list.getItem(node);
+                        id: 'i9'
+                    }),
+                    item = list.getItem(node);
 
                 expect(item.getNode()).toBe(node);
                 expect(item.xtype).toBe(list.getDefaults().xtype);
@@ -4184,11 +4408,12 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
             it("should return children of newly added items", function() {
                 var node = root.appendChild({
-                    id: 'i9',
-                    children: [{
-                        id: 'i91'
-                    }]
-                }), item = list.getItem(node.firstChild);
+                        id: 'i9',
+                        children: [{
+                            id: 'i91'
+                        }]
+                    }),
+                    item = list.getItem(node.firstChild);
 
                 expect(item.getNode()).toBe(node.firstChild);
                 expect(item.xtype).toBe(list.getDefaults().xtype);
@@ -4461,6 +4686,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
             it("should collapse nodes before expanding", function() {
                 var order = [];
+
                 list.on('itemexpand', function(list, item) {
                     order.push(['e', item.getNode().id]);
                 });
@@ -4547,6 +4773,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
         it("should update when a node is added", function() {
             var h = c.getHeight();
+
             root.appendChild({
                 id: 'i9',
                 text: 'Foo'
@@ -4558,6 +4785,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
         it("should update when a node is removed", function() {
             var h = c.getHeight();
+
             root.removeChild(byId('i1'));
             expect(c.getHeight()).toBeGreaterThan(h);
             expect(c.getHeight()).toBe(600 - listHeight());
@@ -4572,6 +4800,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
 
         it("should not fire itemremove events", function() {
             var spy = jasmine.createSpy();
+
             list.on('itemremove', spy);
             list.destroy();
             expect(spy).not.toHaveBeenCalled();
@@ -4583,14 +4812,14 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
         });
     });
 
-    describe('selection', function () {
+    describe('selection', function() {
         beforeEach(function() {
             makeList({
                 selection: 'i11'
             });
         });
 
-        it('should select leaf node', function () {
+        it('should select leaf node', function() {
             var node = byId('i11'),
                 item = list.getItem(node);
 
@@ -4598,7 +4827,7 @@ topSuite("Ext.list.Tree", ['Ext.data.TreeStore'], function() {
             expect(node.parentNode.isExpanded()).toBe(true);
         });
 
-        it('should collapse parent of selected leaf', function () {
+        it('should collapse parent of selected leaf', function() {
             var node = byId('i11'),
                 parentNode = node.parentNode,
                 item = list.getItem(node),

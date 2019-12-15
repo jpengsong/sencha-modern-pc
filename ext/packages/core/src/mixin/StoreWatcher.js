@@ -21,7 +21,7 @@ Ext.define('Ext.mixin.StoreWatcher', {
          */
         ownerListeners: {
             destroyable: true,
-            storechange: 'onStoreChange'
+            storechange: 'onOwnerStoreChange'
         },
 
         /**
@@ -44,7 +44,7 @@ Ext.define('Ext.mixin.StoreWatcher', {
         storeListeners: null
     },
 
-    afterClassMixedIn: function (targetClass) {
+    afterClassMixedIn: function(targetClass) {
         var configurator = this.getConfigurator(),
             prototype = targetClass.prototype,
             config = {},
@@ -63,21 +63,7 @@ Ext.define('Ext.mixin.StoreWatcher', {
         targetClass.addConfig(config);
     },
 
-    onFilterChange: function (store) {
-        var source;
-
-        if (!store) {
-            source = null;
-        } else if (store.getDataSource) {
-            source = store.getDataSource();
-        } else {
-            source = store.getData();
-        }
-
-        this.setDataSource(source);
-    },
-
-    onStoreChange: function (comp, store) {
+    onOwnerStoreChange: function(comp, store) {
         this.setStore(store);
     },
 
@@ -85,32 +71,56 @@ Ext.define('Ext.mixin.StoreWatcher', {
 
     // dataSource
 
-    updateDataSource: function (source) {
+    updateDataSource: function(source) {
         this.syncListeners(source, '$sourceListeners', 'getSourceListeners');
     },
 
     // owner
 
-    updateOwner: function (owner) {
-        this.syncListeners(owner, '$ownerListeners', 'getOwnerListeners');
+    updateOwner: function(owner) {
+        var me = this,
+            ownerProperty = me.ownerProperty;
 
-        this.setStore(owner ? owner.getStore() : null);
+        if (ownerProperty) {
+            me[ownerProperty] = owner;
+        }
+
+        me.syncListeners(owner, '$ownerListeners', 'getOwnerListeners');
+
+        me.setStore(owner ? owner.getStore() : null);
     },
 
     // store
 
-    applyStore: function (store) {
+    applyStore: function(store) {
         return (store && !store.isEmptyStore) ? store : null;
     },
 
-    updateStore: function (store) {
+    updateStore: function(store) {
         this.syncListeners(store, '$storeListeners', 'getStoreListeners');
 
-        this.onFilterChange(store);
+        this.syncDataSource();
     },
 
     privates: {
-        syncListeners: function (instance, token, listeners) {
+        syncDataSource: function() {
+            var store = this.getStore(),
+                source;
+
+            if (!store) {
+                source = null;
+            }
+            else if (store.getDataSource) {
+                source = store.getDataSource();
+            }
+            else {
+                source = store.getData();
+            }
+
+            this.setDataSource(source);
+        },
+
+        syncListeners: function(instance, token, listeners) {
             var me = this,
                 old = me[token];
 

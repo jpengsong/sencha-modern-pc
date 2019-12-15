@@ -1,9 +1,9 @@
 /* global Ext, expect */
 
 topSuite("Ext.Toast", ["Ext.Toast"], function() {
-    describe("Ext.Toast", function () {
-        it("should only queue up maxQueue toasts", function () {
-            Ext.toast('one')
+    describe("Ext.Toast", function() {
+        it("should only queue up maxQueue toasts", function() {
+            Ext.toast('one');
             Ext.toast('two');
             Ext.toast('three');
             Ext.toast('four');

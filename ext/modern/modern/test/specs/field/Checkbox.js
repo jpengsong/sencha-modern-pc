@@ -6,9 +6,11 @@ function() {
 
     function makeField(cfg) {
         field = new Ext.field.Checkbox(cfg);
+
         if (field.getFloated()) {
             field.show();
-        } else {
+        }
+ else {
             field.render(Ext.getBody());
         }
     }
@@ -32,7 +34,7 @@ function() {
                         name: 'status',
                         value: 'Closed'
                     }]
-                },{
+                }, {
                     xtype: 'fieldset',
                     title: 'Alt Item',
                     items: [{
@@ -62,7 +64,7 @@ function() {
             }]
         });
         container.render(Ext.getBody());
-    } 
+    }
 
     function makeFieldset() {
         container = new Ext.Container({
@@ -103,6 +105,7 @@ function() {
         describe("publish with reference", function() {
             it("should publish the checked state if checked: false", function() {
                 var vm;
+
                 makeField({
                     reference: 'fooField',
                     viewModel: {}
@@ -115,6 +118,7 @@ function() {
 
             it("should publish the checked state if checked: true", function() {
                 var vm;
+
                 makeField({
                     reference: 'fooField',
                     checked: true,
@@ -131,6 +135,7 @@ function() {
         describe("retrieving descendant components", function() {
             it("should return fields with the same name within the parent form", function() {
                 var form, radio, children;
+
                 makeForm();
 
                 form = container.down('#form1');
@@ -142,7 +147,7 @@ function() {
             });
 
             it("should return only the checkboxes/radio fields", function() {
-                var types=[],
+                var types = [],
                     form, radio, children;
 
                 makeForm();
@@ -152,7 +157,7 @@ function() {
 
                 children = radio.getSameGroupFields();
                 children.forEach(function(child) {
-                    types.push(child.xtype); 
+                    types.push(child.xtype);
                 });
 
                 expect(types).toEqual(['radiofield', 'radiofield', 'radiofield', 'radiofield']);
@@ -201,7 +206,7 @@ function() {
         });
 
         describe("labeled", function() {
-            it('should layout with boxLabelAlign: after', function () {
+            it('should layout with boxLabelAlign: after', function() {
                 makeField({
                     inline: true,
                     label: 'Foo',
@@ -220,7 +225,7 @@ function() {
                 });
             });
 
-            it('should layout with boxLabelAlign: before', function () {
+            it('should layout with boxLabelAlign: before', function() {
                 makeField({
                     inline: true,
                     label: 'Foo',
@@ -239,6 +244,18 @@ function() {
                     boxLabelElement: { xywh: '100 0 54 24' }
                 });
             });
+        });
+    });
+
+    describe('getRawValue', function() {
+
+        it('should return the checked state of the checkbox', function(){
+            makeField();
+
+            expect(field.getRawValue()).toBe(false);
+
+            field.setChecked(true);
+            expect(field.getRawValue()).toBe(true);
         });
     });
 });

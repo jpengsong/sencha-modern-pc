@@ -1,7 +1,9 @@
 /**
  * This {@link Ext.grid.Panel grid} plugin adds clipboard support to a grid.
  *
- * *Note that the grid must use the {@link Ext.grid.selection.SpreadsheetModel spreadsheet selection model} to utilize this plugin.*
+ * *Note that the grid must use the
+ * {@link Ext.grid.selection.SpreadsheetModel spreadsheet selection model}
+ * to utilize this plugin.*
  *
  * This class supports the following `{@link Ext.plugin.AbstractClipboard#formats formats}`
  * for grid data:
@@ -17,8 +19,8 @@
  */
 Ext.define('Ext.grid.plugin.Clipboard', {
     extend: 'Ext.plugin.AbstractClipboard',
-
     alias: 'plugin.clipboard',
+
     requires: [
         'Ext.util.Format',
         'Ext.util.TSV'
@@ -41,7 +43,7 @@ Ext.define('Ext.grid.plugin.Clipboard', {
         render: 'onCmpReady'
     },
 
-    getCellData: function (format, erase) {
+    getCellData: function(format, erase) {
         var cmp = this.getCmp(),
             selection = cmp.getSelectionModel().getSelected(),
             ret = [],
@@ -50,10 +52,10 @@ Ext.define('Ext.grid.plugin.Clipboard', {
             viewNode,
             cell, data, dataIndex, lastRecord, column, record, row, view;
 
-        if(selection) {
-            selection.eachCell(function (cellContext) {
-                column = cellContext.column,
-                    view = cellContext.column.getView();
+        if (selection) {
+            selection.eachCell(function(cellContext) {
+                column = cellContext.column;
+                view = cellContext.column.getView();
                 record = cellContext.record;
 
                 // Do not copy the check column or row numberer column
@@ -75,7 +77,8 @@ Ext.define('Ext.grid.plugin.Clipboard', {
                     // Try to access the view node.
                     viewNode = view.all.item(cellContext.rowIdx);
 
-                    // If we could not, it's because it's outside of the rendered block - recreate it.
+                    // If we could not, it's because it's outside of the rendered block -
+                    // recreate it.
                     if (!viewNode) {
                         viewNode = Ext.fly(view.createRowElement(record, cellContext.rowIdx));
                     }
@@ -100,15 +103,16 @@ Ext.define('Ext.grid.plugin.Clipboard', {
         return Ext.util.TSV.encode(ret, undefined, null);
     },
 
-    getCells: function (format, erase) {
+    getCells: function(format, erase) {
         var cmp = this.getCmp(),
             selection = cmp.getSelectionModel().getSelected(),
             ret = [],
             dataIndex, lastRecord, record, row;
 
-        if(selection) {
-            selection.eachCell(function (cellContext) {
+        if (selection) {
+            selection.eachCell(function(cellContext) {
                 record = cellContext.record;
+
                 if (lastRecord !== record) {
                     lastRecord = record;
                     ret.push(row = {
@@ -133,11 +137,11 @@ Ext.define('Ext.grid.plugin.Clipboard', {
         return ret;
     },
 
-    getTextData: function (format, erase) {
+    getTextData: function(format, erase) {
         return this.getCellData(format, erase);
     },
 
-    putCellData: function (data, format) {
+    putCellData: function(data, format) {
         // We pass null as field quote here to override default TSV decoding behavior
         // that will try to unquote fields and break if double quote character is
         // encountered in the data. TSV format does not support any kind of field quoting
@@ -159,20 +163,26 @@ Ext.define('Ext.grid.plugin.Clipboard', {
 
         // If the view is not focused, use the first cell of the selection as the destination.
         if (!destination && selected) {
-            selected.eachCell(function(c){
+            selected.eachCell(function(c) {
                 destination = c;
+
                 return false;
             });
         }
 
         if (destination) {
             // Create a new Context based upon the outermost View.
-            // NavigationModel works on local views. TODO: remove this step when NavModel is fixed to use outermost view in locked grid.
+            // NavigationModel works on local views.
+            // TODO: remove this step when NavModel is fixed to use outermost view in locked grid.
             // At that point, we can use navModel.getPosition()
-            destination = new Ext.grid.CellContext(view).setPosition(destination.record, destination.column);
-        } else {
+            destination = new Ext.grid.CellContext(view).setPosition(
+                destination.record, destination.column
+            );
+        }
+        else {
             destination = new Ext.grid.CellContext(view).setPosition(0, 0);
         }
+
         destinationStartColumn = destination.colIdx;
 
         for (sourceRowIdx = 0; sourceRowIdx < recCount; sourceRowIdx++) {
@@ -181,6 +191,7 @@ Ext.define('Ext.grid.plugin.Clipboard', {
             // Collect new values in dataObject
             for (sourceColIdx = 0; sourceColIdx < colCount; sourceColIdx++) {
                 dataIndex = destination.column.dataIndex;
+
                 if (dataIndex) {
                     switch (format) {
                         // Raw field values
@@ -198,10 +209,12 @@ Ext.define('Ext.grid.plugin.Clipboard', {
                             break;
                     }
                 }
+
                 // If we are at the end of the destination row, break the column loop.
                 if (destination.colIdx === maxColIdx) {
                     break;
                 }
+
                 destination.setColumn(destination.colIdx + 1);
             }
 
@@ -218,7 +231,7 @@ Ext.define('Ext.grid.plugin.Clipboard', {
         }
     },
 
-    putTextData: function (data, format) {
+    putTextData: function(data, format) {
         this.putCellData(data, format);
     },
 
@@ -226,8 +239,8 @@ Ext.define('Ext.grid.plugin.Clipboard', {
         return comp.body;
     },
 
-    privates : {
-        validateAction : function(event) {
+    privates: {
+        validateAction: function(event) {
             var view = this.getCmp().getView();
 
             if (view.actionableMode) {

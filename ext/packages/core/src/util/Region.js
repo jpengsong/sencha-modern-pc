@@ -6,26 +6,32 @@
  */
 Ext.define('Ext.util.Region', function() {
     var ExtUtil = Ext.util,
+        // eslint-disable-next-line no-useless-escape
         constrainRe = /([^\?!]*)(!|\?)?$/,
         alignRe = /^(?:(?:([trbl])(\d+))|(tl|t|tc|tr|l|c|r|bl|b|bc|br))(?:-(?:(?:([trbl])(\d+))|(tl|t|tc|tr|l|c|r|bl|b|bc|br)))?$/i,
         // Each side has the first letter as the main align side, so [tlbr]
-        // The next optional component is a offset factor, so [tb] may be followed by [lr] and vice versa
+        // The next optional component is a offset factor, so [tb] may be followed by [lr]
+        // and vice versa
         // The offset factor may also be a number along that edge from 0 to 100.
         // So 'tl-br' is equal to 't0-b100'.
         // The offset factor defaults to 'c' or 50 meaning the 't-b' is equivalent to
         // 't50-b50' or 'tc-bc'
-        
-        LTROffsetFactors =  {l:0, r:100, t:0, b: 100, c: 50},
-        RTLOffsetFactors =  {l:100, r:0, t:0, b: 100, c: 50},
-        relativePositions = {b: 0, l:1, t: 2, r: 3},
-        alignMap =    {"tl-tr": "l0-r0", "tl-r": "l0-r50", "bl-r": "l100-r50", "bl-br": "l100-r100",
-                       "tr-tl": "r0-l0", "tr-l": "r0-l50", "br-l": "r100-l50", "br-bl": "r100-l100"},
-        rtlAlignMap = {"tl-tr": "r0-l0", "tl-r": "r0-l50", "bl-r": "r100-l50", "bl-br": "r100-l100",
-                       "tr-tl": "l0-r0", "tr-l": "l0-r50", "br-l": "l100-r50", "br-bl": "l100-r100"},
+
+        LTROffsetFactors = { l: 0, r: 100, t: 0, b: 100, c: 50 },
+        RTLOffsetFactors = { l: 100, r: 0, t: 0, b: 100, c: 50 },
+        relativePositions = { b: 0, l: 1, t: 2, r: 3 },
+        alignMap = {
+            "tl-tr": "l0-r0", "tl-r": "l0-r50", "bl-r": "l100-r50", "bl-br": "l100-r100",
+            "tr-tl": "r0-l0", "tr-l": "r0-l50", "br-l": "r100-l50", "br-bl": "r100-l100"
+        },
+        rtlAlignMap = {
+            "tl-tr": "r0-l0", "tl-r": "r0-l50", "bl-r": "r100-l50", "bl-br": "r100-l100",
+            "tr-tl": "l0-r0", "tr-l": "l0-r50", "br-l": "l100-r50", "br-bl": "l100-r100"
+        },
         adjustParams = [],
         zeroOffset = new ExtUtil.Offset(0, 0),
 
-        parseRegion = function (box) {
+        parseRegion = function(box) {
             var Region = ExtUtil.Region,
                 type = typeof box,
                 top, right, bottom, left;
@@ -33,9 +39,11 @@ Ext.define('Ext.util.Region', function() {
             if (box == null) {
                 return Region.EMPTY;
             }
+
             if (box.isRegion) {
                 return box;
             }
+
             if (box.isElement || box.nodeType === 1) {
                 return this.getRegion(box);
             }
@@ -55,10 +63,10 @@ Ext.define('Ext.util.Region', function() {
                         box[3] = box[1];
                 }
 
-                top    = parseInt(box[0], 10) || 0;
-                right  = parseInt(box[1], 10) || 0;
+                top = parseInt(box[0], 10) || 0;
+                right = parseInt(box[1], 10) || 0;
                 bottom = parseInt(box[2], 10) || 0;
-                left   = parseInt(box[3], 10) || 0;
+                left = parseInt(box[3], 10) || 0;
             }
             else if (type === 'number') {
                 top = right = bottom = left = box;
@@ -70,7 +78,8 @@ Ext.define('Ext.util.Region', function() {
                 if (typeof box.right === 'number') {
                     right = box.right;
                     bottom = box.bottom;
-                } else {
+                }
+                else {
                     right = left + box.width;
                     bottom = top + box.height;
                 }
@@ -85,18 +94,19 @@ Ext.define('Ext.util.Region', function() {
         },
 
         magnitude = [-1, 1, 1, -1],
-        
+
         // Depending on the "relativePosition" which will be 0,1,2 or 3 for T,R,B,L
         // extend the adjacent edge of the target to account for the offset.
         // Also, shrink the adjacent edge to create overlap for the anchor to center in.
         addAnchorOffset = function(target, anchorSize, relativePosition) {
             // Expand the adjacent edge by the anchor HEIGHT.
-            if (relativePosition != null && anchorSize) {                
+            if (relativePosition != null && anchorSize) {
                 adjustParams[0] = adjustParams[1] = adjustParams[2] = adjustParams[3] = 0;
                 adjustParams[relativePosition] = anchorSize.y * magnitude[relativePosition];
                 target = ExtUtil.Region.from(target);
                 target.adjust.apply(target, adjustParams);
             }
+
             return target;
         },
 
@@ -152,14 +162,19 @@ Ext.define('Ext.util.Region', function() {
 
                     isBefore = relativePosition === 3;
                     x = isBefore ? result.right : result.left;
+
+                    // eslint-disable-next-line max-len
                     overlapLine = new ExtUtil.Region(Math.max(result.top, target.top), x, Math.min(result.bottom, target.bottom), x);
 
                     // Align to the centre of the overlap line, wherever that may be
-                    anchorPos = new ExtUtil.Region(0, 0, 0, 0).setWidth(anchorSize.y).setHeight(anchorWidth).alignTo({
-                        target: overlapLine,
-                        align: isBefore ? 'l-r' : 'r-l',
-                        overlap: true
-                    });
+                    anchorPos = new ExtUtil.Region(0, 0, 0, 0)
+                                           .setWidth(anchorSize.y)
+                                           .setHeight(anchorWidth)
+                                           .alignTo({
+                                               target: overlapLine,
+                                               align: isBefore ? 'l-r' : 'r-l',
+                                               overlap: true
+                                           });
 
                     // Coerce the anchor into the bounds of the result.
                     anchorPos.setPosition(anchorPos.x, Math.min(Math.max(anchorPos.y, min), max));
@@ -186,23 +201,30 @@ Ext.define('Ext.util.Region', function() {
                     // If there is not enough overlap. coerce the result to create enough overlap
                     isBefore = relativePosition === 0;
                     y = isBefore ? result.bottom : result.top;
+
+                    // eslint-disable-next-line max-len
                     overlapLine = new ExtUtil.Region(y, Math.min(result.right, target.right), y, Math.max(result.left, target.left));
 
                     // Align to the centre of the overlap line, wherever that may be
-                    anchorPos = new ExtUtil.Region(0, 0, 0, 0).setWidth(anchorWidth).setHeight(anchorSize.y).alignTo({
-                        target: overlapLine,
-                        align: isBefore ? 't-b' : 'b-t',
-                        overlap: true
-                    });
+                    anchorPos = new ExtUtil.Region(0, 0, 0, 0)
+                                           .setWidth(anchorWidth)
+                                           .setHeight(anchorSize.y)
+                                           .alignTo({
+                                               target: overlapLine,
+                                               align: isBefore ? 't-b' : 'b-t',
+                                               overlap: true
+                                           });
 
                     // Coerce the anchor into the bounds of the result.
                     anchorPos.setPosition(Math.min(Math.max(anchorPos.x, min), max), anchorPos.y);
                     anchorPos.position = isBefore ? 'bottom' : 'top';
                 }
+
                 // If anchor is outside constrain region it cannot be shown.
                 if (inside && !inside.contains(anchorPos)) {
                     return;
                 }
+
                 result.anchor = anchorPos;
                 result.anchor.align = relativePosition;
             }
@@ -213,7 +235,8 @@ Ext.define('Ext.util.Region', function() {
             if (minHeight && inside) {
                 // Overflows the bottom of the target
                 if (result.top >= target.bottom && result.bottom > inside.bottom) {
-                    result.setHeight(Math.max(result.getHeight() + inside.bottom - result.bottom, minHeight));
+                    result.setHeight(Math.max(result.getHeight() + inside.bottom - result.bottom,
+                                              minHeight));
                     result.constrainHeight = true;
                 }
                 // Overflows the top of the target
@@ -236,7 +259,8 @@ Ext.define('Ext.util.Region', function() {
             if (minWidth && inside) {
                 // Overflows the right of the target
                 if (result.left >= target.right && result.right > inside.right) {
-                    result.setWidth(Math.max(result.getWidth() + inside.right - result.right, minWidth));
+                    result.setWidth(Math.max(result.getWidth() + inside.right - result.right,
+                                             minWidth));
                     result.constrainWidth = true;
                 }
                 // Overflows the left of the target
@@ -254,6 +278,7 @@ Ext.define('Ext.util.Region', function() {
             }
         };
 
+    /* eslint-disable indent */
     return {
     requires: ['Ext.util.Offset'],
 
@@ -263,7 +288,8 @@ Ext.define('Ext.util.Region', function() {
         /**
          * @static
          * Retrieves an Ext.util.Region for a particular element.
-         * @param {String/HTMLElement/Ext.dom.Element} el An element ID, htmlElement or Ext.Element representing an element in the document.
+         * @param {String/HTMLElement/Ext.dom.Element} el An element ID, htmlElement or Ext.Element
+         * representing an element in the document.
          * @return {Ext.util.Region} region
          */
         getRegion: function(el) {
@@ -272,7 +298,8 @@ Ext.define('Ext.util.Region', function() {
 
         /**
          * @static
-         * Creates a Region from a "box" Object which contains four numeric properties `top`, `right`, `bottom` and `left`.
+         * Creates a Region from a "box" Object which contains four numeric properties `top`,
+         * `right`, `bottom` and `left`.
          * @param {Object} o An object with `top`, `right`, `bottom` and `left` properties.
          * @return {Ext.util.Region} region The Region constructed based on the passed object
          */
@@ -305,9 +332,11 @@ Ext.define('Ext.util.Region', function() {
             constrain = constrainRe.exec(align);
             align = constrain[1];
 
-            // Convert left to right alignments which are specified using top/bottom corner definitions.
+            // Convert left to right alignments which are specified using top/bottom
+            // corner definitions.
             align = (rtl ? rtlAlignMap : alignMap)[align] || align;
-            
+
+            // eslint-disable-next-line vars-on-top
             var offsetFactors = rtl ? RTLOffsetFactors : LTROffsetFactors,
                 constrain,
                 parts = alignRe.exec(align),
@@ -337,13 +366,16 @@ Ext.define('Ext.util.Region', function() {
             if (parts[3]) {
                 result.myEdge = parts[3][0];
                 result.myOffset = offsetFactors[parts[3][1]];
+
                 if (result.myOffset == null) {
                     result.myOffset = 50;
                 }
             }
+
             if (parts[6]) {
                 result.otherEdge = parts[6][0];
                 result.otherOffset = offsetFactors[parts[6][1]];
+
                 if (result.otherOffset == null) {
                     result.otherOffset = 50;
                 }
@@ -351,6 +383,7 @@ Ext.define('Ext.util.Region', function() {
 
             // TOP=0, RIGHT=1, BOTTOM=2, LEFT=3, INSIDE=undefined
             result.position = relativePositions[result.myEdge];
+
             return result;
         }
     },
@@ -363,8 +396,9 @@ Ext.define('Ext.util.Region', function() {
      * @param {Number} bottom The bottom pixel of the Region.
      * @param {Number} left The leftmost pixel of the Region.
      */
-    constructor : function(top, right, bottom, left) {
+    constructor: function(top, right, bottom, left) {
         var me = this;
+
         me.y = me.top = me[1] = top;
         me.right = right;
         me.bottom = bottom;
@@ -406,9 +440,10 @@ Ext.define('Ext.util.Region', function() {
     /**
      * Checks if this region intersects the region passed in.
      * @param {Ext.util.Region} region
-     * @return {Ext.util.Region/Boolean} Returns the intersected region or false if there is no intersection.
+     * @return {Ext.util.Region/Boolean} Returns the intersected region or false
+     * if there is no intersection.
      */
-    intersect : function(region) {
+    intersect: function(region) {
         var me = this,
             t = Math.max(me.y, region.y),
             r = Math.min(me.right, region.right),
@@ -428,7 +463,7 @@ Ext.define('Ext.util.Region', function() {
      * @param {Ext.util.Region} region
      * @return {Ext.util.Region} a new region
      */
-    union : function(region) {
+    union: function(region) {
         var me = this,
             t = Math.min(me.y, region.y),
             r = Math.max(me.right, region.right),
@@ -443,15 +478,17 @@ Ext.define('Ext.util.Region', function() {
      * @param {Ext.util.Region} targetRegion
      * @return {Ext.util.Region} this
      */
-    constrainTo : function(targetRegion) {
+    constrainTo: function(targetRegion) {
         var me = this,
             constrain = Ext.Number.constrain;
+
         me.top = me.y = constrain(me.top, targetRegion.y, targetRegion.bottom);
         me.bottom = constrain(me.bottom, targetRegion.y, targetRegion.bottom);
         me.left = me.x = constrain(me.left, targetRegion.x, targetRegion.right);
         me.right = constrain(me.right, targetRegion.x, targetRegion.right);
         me.height = me.bottom - me.top;
         me.width = me.right - me.left;
+
         return me;
     },
 
@@ -463,14 +500,16 @@ Ext.define('Ext.util.Region', function() {
      * @param {Number} left Left offset
      * @return {Ext.util.Region} this
      */
-    adjust : function(top, right, bottom, left) {
+    adjust: function(top, right, bottom, left) {
         var me = this;
-        me.top = me.y += top||0;
-        me.left = me.x += left||0;
-        me.right += right||0;
-        me.bottom += bottom||0;
+
+        me.top = me.y += top || 0;
+        me.left = me.x += left || 0;
+        me.right += right || 0;
+        me.bottom += bottom || 0;
         me.height = me.bottom - me.top;
         me.width = me.right - me.left;
+
         return me;
     },
 
@@ -481,17 +520,23 @@ Ext.define('Ext.util.Region', function() {
      * @return {Ext.util.Offset}
      */
     getOutOfBoundOffset: function(axis, p) {
+        var d;
+
         if (!Ext.isObject(axis)) {
             if (axis === 'x') {
                 return this.getOutOfBoundOffsetX(p);
-            } else {
+            }
+            else {
                 return this.getOutOfBoundOffsetY(p);
             }
-        } else {
+        }
+        else {
             p = axis;
-            var d = new ExtUtil.Offset();
+            d = new ExtUtil.Offset();
+
             d.x = this.getOutOfBoundOffsetX(p.x);
             d.y = this.getOutOfBoundOffsetY(p.y);
+
             return d;
         }
     },
@@ -504,7 +549,8 @@ Ext.define('Ext.util.Region', function() {
     getOutOfBoundOffsetX: function(p) {
         if (p <= this.x) {
             return this.x - p;
-        } else if (p >= this.right) {
+        }
+        else if (p >= this.right) {
             return this.right - p;
         }
 
@@ -519,7 +565,8 @@ Ext.define('Ext.util.Region', function() {
     getOutOfBoundOffsetY: function(p) {
         if (p <= this.y) {
             return this.y - p;
-        } else if (p >= this.bottom) {
+        }
+        else if (p >= this.bottom) {
             return this.bottom - p;
         }
 
@@ -536,11 +583,14 @@ Ext.define('Ext.util.Region', function() {
         if (!Ext.isObject(axis)) {
             if (axis === 'x') {
                 return this.isOutOfBoundX(p);
-            } else {
+            }
+            else {
                 return this.isOutOfBoundY(p);
             }
-        } else {
+        }
+        else {
             p = axis;
+
             return (this.isOutOfBoundX(p.x) || this.isOutOfBoundY(p.y));
         }
     },
@@ -572,9 +622,9 @@ Ext.define('Ext.util.Region', function() {
      * @private
      */
     restrict: function(axis, p, factor) {
-        if (Ext.isObject(axis)) {
-            var newP;
+        var newP;
 
+        if (Ext.isObject(axis)) {
             factor = p;
             p = axis;
 
@@ -590,11 +640,14 @@ Ext.define('Ext.util.Region', function() {
 
             newP.x = this.restrictX(p.x, factor);
             newP.y = this.restrictY(p.y, factor);
+
             return newP;
-        } else {
+        }
+        else {
             if (axis === 'x') {
                 return this.restrictX(p, factor);
-            } else {
+            }
+            else {
                 return this.restrictY(p, factor);
             }
         }
@@ -607,7 +660,7 @@ Ext.define('Ext.util.Region', function() {
      * @return {Number}
      * @private
      */
-    restrictX : function(p, factor) {
+    restrictX: function(p, factor) {
         if (!factor) {
             factor = 1;
         }
@@ -618,6 +671,7 @@ Ext.define('Ext.util.Region', function() {
         else if (p >= this.right) {
             p -= (p - this.right) * factor;
         }
+
         return p;
     },
 
@@ -628,7 +682,7 @@ Ext.define('Ext.util.Region', function() {
      * @return {Number}
      * @private
      */
-    restrictY : function(p, factor) {
+    restrictY: function(p, factor) {
         if (!factor) {
             factor = 1;
         }
@@ -639,6 +693,7 @@ Ext.define('Ext.util.Region', function() {
         else if (p >= this.bottom) {
             p -= (p - this.bottom) * factor;
         }
+
         return p;
     },
 
@@ -687,7 +742,8 @@ Ext.define('Ext.util.Region', function() {
      *          align: 't-b',  // align comp's top/center to el's bottom/center
      *          target: el.getRegion(),
      *          anchorSize: new Ext.util.Point(10, 10),
-     *          inside: new Ext.util.Region(0, Ext.Element.getViewportWidth(), Ext.Element.getViewportHeight(), 0)
+     *          inside: new Ext.util.Region(0, Ext.Element.getViewportWidth(),
+     *                                      Ext.Element.getViewportHeight(), 0)
      *      });
      *
      * @param {Object} options The alignment options.
@@ -700,9 +756,11 @@ Ext.define('Ext.util.Region', function() {
      * 
      * @param {Array/Ext.util.Position} [options.position] The position at which to place the
      * resulting region before being excluded from the target area and aligned to the closest
-     * edge which allows conformity with any passed `inside` option. Used instead of the `align` option.
+     * edge which allows conformity with any passed `inside` option. Used instead of the `align`
+     * option.
      * @param {Ext.util.Offset/Number[]} [options.offset] An offset by which to adjust the result.
-     * @param {Ext.util.Offset/Number[]} [options.anchorSize] The width and height of any external anchor
+     * @param {Ext.util.Offset/Number[]} [options.anchorSize] The width and height of any external
+     * anchor
      * element. This is used to calculate the true bounds of the Region inclusive of the anchor.
      * The `x` dimension is the height of the arrow in all orientations, and the `y` dimension
      * is the width of the baseline of the arrow in all dimensions.
@@ -725,7 +783,7 @@ Ext.define('Ext.util.Region', function() {
      * a `minHeight` option was passed, and alignment is either above or below the target,
      * the Region might be reduced to fit within the space.
      */
-    alignTo: function (options) {
+    alignTo: function(options) {
         var me = this,
             Region = me.self,
             Offset = ExtUtil.Offset,
@@ -745,25 +803,29 @@ Ext.define('Ext.util.Region', function() {
 
         if (offset) {
             offset = Offset.fromObject(offset);
+
             //<debug>
             if (!(offset instanceof Offset)) {
                 Ext.raise('offset option must be an Ext.util.Offset');
             }
             //</debug>
         }
+
         if (anchorSize) {
             anchorSize = Offset.fromObject(anchorSize);
+
             //<debug>
             if (!(anchorSize instanceof Offset)) {
                 Ext.raise('anchorSize option must be an Ext.util.Offset');
             }
             //</debug>
         }
-    
+
         if (inside && !inside.isRegion) {
             if (Ext.getDom(inside) === document.body) {
                 inside = new Region(0, Element.getDocumentWidth(), Element.getDocumentHeight(), 0);
-            } else {
+            }
+            else {
                 inside = Ext.fly(inside).getRegion();
             }
         }
@@ -778,7 +840,8 @@ Ext.define('Ext.util.Region', function() {
 
             // Calculate the unconstrained position.
             result = new Region().copyFrom(me).setPosition(position.x, position.y);
-        } else {
+        }
+        else {
             // Convert string align spec to informational object
             align = me.getAlignInfo(align, rtl);
 
@@ -787,24 +850,29 @@ Ext.define('Ext.util.Region', function() {
             if (inside) {
                 if (target.x >= inside.right) {
                     target.setPosition(inside.right - 1, target.y);
+
                     if (align.position !== 3) {
                         align = me.getAlignInfo('r-l', rtl);
                     }
                 }
                 else if (target.right < inside.x) {
                     target.setPosition(inside.x - target.getWidth() + 1, target.y);
+
                     if (align.position !== 1) {
                         align = me.getAlignInfo('l-r', rtl);
                     }
                 }
+
                 if (target.y >= inside.bottom) {
                     target.setPosition(target.x, inside.bottom - 1);
+
                     if (align.position !== 0) {
                         align = me.getAlignInfo('b-t', rtl);
                     }
                 }
                 else if (target.bottom < inside.y) {
                     target.setPosition(target.x, inside.y - target.getHeight() + 1);
+
                     if (align.position !== 2) {
                         align = me.getAlignInfo('t-b', rtl);
                     }
@@ -812,19 +880,25 @@ Ext.define('Ext.util.Region', function() {
             }
 
             // Adjust the adjacent edge to account for the anchor height.
-            targetPlusAnchorOffset = anchorSize ? addAnchorOffset(target, anchorSize, align.position) : target;
+            targetPlusAnchorOffset = anchorSize
+                ? addAnchorOffset(target, anchorSize, align.position)
+                : target;
 
             // Start with requested position.
-            result = Region.from(me).translateBy(me.getAlignToVector(targetPlusAnchorOffset, align));
+            result =
+                Region.from(me).translateBy(me.getAlignToVector(targetPlusAnchorOffset, align));
 
-            // If they ASKED for it to intersect (eg: c-c, tl-c). we must honour that, and not exclude it.
+            // If they ASKED for it to intersect (eg: c-c, tl-c). we must honour that,
+            // and not exclude it.
             overlap = !!result.intersect(targetPlusAnchorOffset);
+
             if (offset && (overlap || !anchorSize)) {
                 result.translateBy(offset);
             }
 
             // Calculate the anchor position.
-            // This also forces the adjacent edges to overlap enough to create space for the anchor arrow.
+            // This also forces the adjacent edges to overlap enough to create space
+            // for the anchor arrow.
             if (anchorSize) {
                 calculateAnchorPosition(target, result, align.position, anchorSize, inside);
             }
@@ -839,6 +913,7 @@ Ext.define('Ext.util.Region', function() {
                 result.translateBy(inside.left - result.left, 0);
                 wasConstrained = true;
             }
+
             // If it overflows right, and there is space to move it left, then do so.
             if (result.right > inside.right && result.left > inside.left) {
                 result.translateBy(inside.right - result.right, 0);
@@ -850,6 +925,7 @@ Ext.define('Ext.util.Region', function() {
                 result.translateBy(0, inside.top - result.top);
                 wasConstrained = true;
             }
+
             // If it overflows bottom, and there is space to move it up, then do so.
             if (result.bottom > inside.bottom && result.top > inside.top) {
                 result.translateBy(0, inside.bottom - result.bottom);
@@ -872,7 +948,8 @@ Ext.define('Ext.util.Region', function() {
                 if (options.axisLock) {
                     if (align.position & 1) {
                         allowYTranslate = false;
-                    } else {
+                    }
+                    else {
                         allowXTranslate = false;
                     }
                 }
@@ -906,22 +983,27 @@ Ext.define('Ext.util.Region', function() {
                             anchorHeight: anchorSize ? anchorSize.y : 0,
                             centerOnSideChange: !!anchorSize
                         });
-                    } else if (options.minWidth && result.getWidth() > inside.getWidth()) {
+                    }
+                    else if (options.minWidth && result.getWidth() > inside.getWidth()) {
                         result.setPosition(0, result.y);
                         result.setWidth(Math.max(inside.getWidth(), options.minWidth));
                         result.constrainWidth = true;
-                    } else if (options.minHeight && result.getHeight() > inside.getHeight()) {
+                    }
+                    else if (options.minHeight && result.getHeight() > inside.getHeight()) {
                         result.setPosition(result.x, 0);
                         result.setHeight(Math.max(inside.getHeight(), options.minHeight));
                         result.constrainHeight = true;
                     }
+
                     result.align = align;
 
                     if (inside.contains(result)) {
                         // Calculate the anchor position.
-                        // This also forces the adjacent edges to overlap enough to create space for the anchor arrow.
+                        // This also forces the adjacent edges to overlap enough to create space
+                        // for the anchor arrow.
                         if (anchorSize) {
-                            calculateAnchorPosition(target, result, align.position, anchorSize, inside);
+                            calculateAnchorPosition(target, result, align.position, anchorSize,
+                                                    inside);
                         }
                     }
                     // We tried everything, but couldn't fit in the "inside" region.
@@ -946,7 +1028,8 @@ Ext.define('Ext.util.Region', function() {
      * @param {Object} options Object of options passed to exclude.
      * @param {Region} options.inside A Region into which the other Region must be constrained.
      * @param {Number} [options.minHeight] If passed, indicates that the height may be reduced up
-     * to a point to fit the "other" region below or above the target but within the "inside" Region.
+     * to a point to fit the "other" region below or above the target but within the "inside"
+     * Region.
      * @param {Boolean} [options.allowX=true] Pass `false` to disallow translation along the X axis.
      * @param {Boolean} [options.allowY=true] Pass `false` to disallow translation along the Y axis.
      * @return {Number} The edge it is now aligned to, 0=top, 1=right, 2=bottom, 3=left.
@@ -954,6 +1037,7 @@ Ext.define('Ext.util.Region', function() {
     exclude: function(other, options) {
         options = options || {};
 
+        // eslint-disable-next-line vars-on-top
         var me = this,
             initialPosition = options.initialPosition || other,
             inside = options.inside,
@@ -977,18 +1061,24 @@ Ext.define('Ext.util.Region', function() {
         // Calculate vectors to move the "other" region by to fully clear this region.
         // Store the total moved distance, (element [4]) as the distance from the initially
         // desired position, not the constrained, overlapped position.
+        /* eslint-disable max-len */
         if (allowY) {
             translations.push([0, me.top - other.bottom - anchorHeight + offset.y, 'b-t', 0, Math.abs(me.top - initialPosition.bottom - anchorHeight + offset.y)]);
             translations.push([0, me.bottom - other.top + anchorHeight + offset.y, 't-b', 2, Math.abs(me.bottom - initialPosition.top + anchorHeight + offset.y)]);
-        } else {
+        }
+        else {
             centerOnSideChange = false;
         }
+
         if (allowX) {
             translations.push([me.left - other.right - anchorHeight + offset.x, 0, 'r-l', 3, Math.abs(me.left - initialPosition.right - anchorHeight + offset.x)]);
             translations.push([me.right - other.left + anchorHeight + offset.x, 0, 'l-r', 1, Math.abs(me.right - initialPosition.left + anchorHeight + offset.x)]);
-        } else {
+        }
+        else {
             centerOnSideChange = false;
         }
+
+        /* eslint-enable max-len */
 
         // Sort the exclusion vectors into order, shortest first
         Ext.Array.sort(translations, function(l, r) {
@@ -999,10 +1089,12 @@ Ext.define('Ext.util.Region', function() {
                 if (l[3] === defaultPosition) {
                     return -1;
                 }
+
                 if (r[3] === defaultPosition) {
                     return 1;
                 }
             }
+
             return result;
         });
 
@@ -1023,6 +1115,7 @@ Ext.define('Ext.util.Region', function() {
                         position: t[3],
                         distance: t[4]
                     };
+
                     break;
                 }
 
@@ -1031,20 +1124,9 @@ Ext.define('Ext.util.Region', function() {
                 // to which we can fall back if no translations are fully successful.
                 if (minHeight) {
                     checkMinHeight(minHeight, testRegion, me, inside);
+
                     if (inside.contains(testRegion)) {
-                        if (!sizeConstrainedSolution || testRegion.getArea() > sizeConstrainedSolution.region.getArea()) {
-                            sizeConstrainedSolution = {
-                                region: testRegion,
-                                align: t[2],
-                                position: t[3],
-                                distance: t[4]
-                            };
-                        }
-                    }
-                }
-                if (minWidth) {
-                    checkMinWidth(minWidth, testRegion, me, inside);
-                    if (inside.contains(testRegion)) {
+                        // eslint-disable-next-line max-len
                         if (!sizeConstrainedSolution || testRegion.getArea() > sizeConstrainedSolution.region.getArea()) {
                             sizeConstrainedSolution = {
                                 region: testRegion,
@@ -1056,12 +1138,31 @@ Ext.define('Ext.util.Region', function() {
                     }
                 }
 
-                // If all else fails, keep track of the translation which yields the largest intersection
-                // with the "inside" region. If there's no translation which satisfies the constraint, 
-                // use this least bad one.
+                if (minWidth) {
+                    checkMinWidth(minWidth, testRegion, me, inside);
+
+                    if (inside.contains(testRegion)) {
+                        // eslint-disable-next-line max-len
+                        if (!sizeConstrainedSolution || testRegion.getArea() > sizeConstrainedSolution.region.getArea()) {
+                            sizeConstrainedSolution = {
+                                region: testRegion,
+                                align: t[2],
+                                position: t[3],
+                                distance: t[4]
+                            };
+                        }
+                    }
+                }
+
+                // If all else fails, keep track of the translation which yields the largest
+                // intersection with the "inside" region. If there's no translation which satisfies
+                // the constraint,  use this least bad one.
                 intersection = inside.intersect(testRegion);
+
                 if (intersection) {
                     intersection = intersection.getArea();
+
+                        // eslint-disable-next-line max-len
                     if (!leastBadSolution || (intersection && leastBadSolution.area < intersection)) {
                         leastBadSolution = {
                             region: testRegion,
@@ -1088,6 +1189,7 @@ Ext.define('Ext.util.Region', function() {
                     result = leastBadSolution;
                 }
             }
+
             if (result) {
                 // The exclude switched align axis (t/b to l/r), flip it to a center align on
                 // the new side.
@@ -1103,11 +1205,13 @@ Ext.define('Ext.util.Region', function() {
                             minHeight: options.minHeight,
                             minWidth: options.minWidth
                         });
+
                         if (inside.contains(t)) {
                             other.setPosition(t.x, t.y);
                         }
                     }
                 }
+
                 return result.position;
             }
         }
@@ -1115,8 +1219,10 @@ Ext.define('Ext.util.Region', function() {
         else {
             // Move by the shortest path
             other.translateBy.apply(other, translations[0]);
+
             return translations[0][3];
         }
+
         return defaultPosition;
     },
 
@@ -1138,6 +1244,7 @@ Ext.define('Ext.util.Region', function() {
     getAlignToVector: function(target, align, rtl) {
         align = (typeof align === 'string') ? this.getAlignInfo(align, rtl) : align;
 
+        // eslint-disable-next-line vars-on-top
         var myAnchorPoint = this['getAnchorPoint_' + align.myEdge](align.myOffset),
             targetAnchorPoint = target['getAnchorPoint_' + align.otherEdge](align.otherOffset);
 
@@ -1150,28 +1257,33 @@ Ext.define('Ext.util.Region', function() {
     getAnchorPoint_t: function(offset) {
         return [this.x + Math.round(this.getWidth() * (offset / 100)), this.y];
     },
+
     getAnchorPoint_b: function(offset) {
         return [this.x + Math.round(this.getWidth() * (offset / 100)), this.bottom];
     },
+
     getAnchorPoint_l: function(offset) {
         return [this.x, this.y + Math.round(this.getHeight() * (offset / 100))];
     },
+
     getAnchorPoint_r: function(offset) {
         return [this.right, this.y + Math.round(this.getHeight() * (offset / 100))];
     },
+
     getAnchorPoint_c: function() {
-        return [this.x + Math.round(this.getWidth() / 2), this.y + Math.round(this.getHeight() / 2)];
+        return [this.x + Math.round(this.getWidth() / 2),
+                this.y + Math.round(this.getHeight() / 2)];
     },
 
-    getCenter: function () {
+    getCenter: function() {
         return [ this.x + this.width / 2, this.y + this.height / 2 ];
     },
 
-    getHeight: function () {
+    getHeight: function() {
         return this.bottom - this.y;
     },
 
-    getWidth: function () {
+    getWidth: function() {
         return this.right - this.x;
     },
 
@@ -1182,12 +1294,14 @@ Ext.define('Ext.util.Region', function() {
     setHeight: function(h) {
         this.height = h;
         this.bottom = this.top + h;
+
         return this;
     },
 
     setWidth: function(w) {
         this.width = w;
         this.right = this.left + w;
+
         return this;
     },
 
@@ -1203,12 +1317,13 @@ Ext.define('Ext.util.Region', function() {
         };
     },
 
-    setSize: function (w, h) {
+    setSize: function(w, h) {
         if (h === undefined) {
             h = w;
         }
 
         this.setWidth(w);
+
         return this.setHeight(h);
     },
 
@@ -1227,6 +1342,7 @@ Ext.define('Ext.util.Region', function() {
      */
     copyFrom: function(p) {
         var me = this;
+
         me.top = me.y = me[1] = p.y;
         me.right = p.right;
         me.bottom = p.bottom;
@@ -1251,6 +1367,8 @@ Ext.define('Ext.util.Region', function() {
      * @return {Ext.util.Region} this This Region
      */
     translateBy: function(x, y) {
+        var me = this;
+
         if (x.length) {
             y = x[1];
             x = x[0];
@@ -1259,7 +1377,7 @@ Ext.define('Ext.util.Region', function() {
             y = x.y;
             x = x.x;
         }
-        var me = this;
+
         me.top = me.y += y;
         me.right += x;
         me.bottom += y;
@@ -1274,6 +1392,7 @@ Ext.define('Ext.util.Region', function() {
      */
     round: function() {
         var me = this;
+
         me.top = me.y = Math.round(me.y);
         me.right = Math.round(me.right);
         me.bottom = Math.round(me.bottom);
@@ -1288,7 +1407,8 @@ Ext.define('Ext.util.Region', function() {
      * @return {Boolean}
      */
     equals: function(region) {
-        return (this.top === region.top && this.right === region.right && this.bottom === region.bottom && this.left === region.left);
+        return (this.top === region.top && this.right === region.right &&
+                this.bottom === region.bottom && this.left === region.left);
     },
 
     /**
@@ -1307,25 +1427,24 @@ Ext.define('Ext.util.Region', function() {
     }
 
     //<debug>
-    ,highlight: function() {
+    , highlight: function() { // eslint-disable-line comma-style
         var highlightEl = Ext.getBody().createChild({
             style: 'background-color:#52a0db;opacity:0.4;position:absolute;z-index:9999999'
         });
 
         highlightEl.setBox(this);
-        
+
         Ext.defer(function() {
             highlightEl.destroy();
         }, 5000);
-        
+
         return highlightEl;
     }
     //</debug>
 };
-},
-function (Region) {
+}, function(Region) {
     Region.prototype.getAlignInfo = Region.getAlignInfo;
-    Region.EMPTY = new Region(0,0,0,0);
+    Region.EMPTY = new Region(0, 0, 0, 0);
 
     //<debug>
     if (Object.freeze) {

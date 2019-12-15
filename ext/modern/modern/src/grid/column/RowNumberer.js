@@ -115,7 +115,8 @@ Ext.define('Ext.grid.column.RowNumberer', {
                         me.doCheckWidth();
                     }
                 });
-            } else {
+            }
+            else {
                 me.doCheckWidth();
             }
         },

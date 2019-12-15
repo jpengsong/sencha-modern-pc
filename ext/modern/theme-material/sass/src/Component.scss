@@ -9,6 +9,7 @@
     --base-light-color: export;
     --base-dark-color: export;
     --base-pressed-color: export;
+    --base-focused-color: export;
     --base-invisible-color: export;
     --base-foreground-color: export;
     --accent-color: export;
@@ -22,22 +23,24 @@
     --alert-color: export;
     --alert-pressed-color: export;
     --color: export;
+    --reverse-color: export;
     --highlight-color: export;
     --disabled-color: export;
+    --reverse-disabled-color: export;
     --divider-color: export;
     --selected-background-color: export;
     --hovered-background-color: export;
     --header-background-color: export;
-    --reverse-color: export;
-    --reverse-disabled-color: export;
+    --faded-color: export;
     --background-color: export;
     --alt-background-color: export;
     --reverse-background-color: export;
     --reverse-alt-background-color: export;
-    --faded-color: export;
     --overlay-color: export;
     --content-padding: export;
     --listitem-selected-background-color: export;
+    --reverse-border-color: export;
+    --reverse-alt-border-color: export;
   }
 }
 

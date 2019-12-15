@@ -25,10 +25,13 @@ $splitButton-font-size-big: dynamic(14px);
 $splitButton-font-weight: dynamic(600);
 $splitButton-line-height: dynamic(16px);
 $splitButton-line-height-big: dynamic(24px);
+$splitButton-text-transform: dynamic(uppercase);
 $splitButton-padding: dynamic(8px 16px);
 $splitButton-padding-big: dynamic(6px 16px);
 $splitButton-pressed-icon-color: dynamic($splitButton-pressed-color);
-$splitButton-disabled-opacity: dynamic(.25);
+$splitButton-disabled-opacity: dynamic(null);
+$splitButton-disabled-color: dynamic(rgba(0,0,0,0.26));
+$splitButton-disabled-background-color: dynamic(null);
 $splitButton-arrow-icon: dynamic('arrow_drop_down');
 $splitButton-arrow-icon-font-size: dynamic(17px);
 
@@ -36,18 +39,21 @@ $splitButton-raised-ui: dynamic((
     box-shadow-transition: (opacity 0.15s),
     box-shadow: (1px 2px 5px 0 rgba(0, 0, 0, 0.2)),
     pressed-box-shadow: (0 5px 10px 0 rgba(0, 0, 0, 0.3)),
-    disabled-box-shadow: unset
+    disabled-box-shadow: none,
+    disabled-background-color: rgba(0,0,0,0.12)
 ));
 
 $splitButton-action-ui: dynamic((
     color: $base-foreground-color,
-    background-color: $base-color
+    background-color: $base-color,
+    disabled-background-color: rgba(0,0,0,0.12),
 ));
 
 $splitButton-alt-ui: dynamic((
     color: $base-foreground-color,
     background-color: transparent,
-    pressed-background-color: transparent
+    pressed-background-color: transparent,
+    disabled-background-color: rgba(0,0,0,0.12)
 ));
 
 $splitButton-confirm-ui: dynamic((

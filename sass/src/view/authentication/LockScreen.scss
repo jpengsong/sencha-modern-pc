@@ -1,33 +1,28 @@
 .authentication-lockscreen{
-    .authentication-lockscreen-inner-container {
-        margin-top: -50px;
-    }
 
-    .x-window-body-default {
+    .x-dialog-body-el {
         background-image: url('images/authentication/lock-screen-background.jpg');
         background-size: cover;
         color:#fff;
     }
 
-    &.x-window-default {
-        border: none;
+    .form-backgroundcolor{
+        background-color: rgba(255, 255, 255, 0.3);
     }
 
-    .x-window-body-default .x-btn .x-btn-icon-el:before{ 
-        right: 10px;
-        font-size: 18px;
-        position: absolute;
+    .form-title{
+        line-height: 50px;
+        text-align: center;
+        font-size: 20px;
+        color: #111;
     }
-
-    .x-window-body-default .lock-icon{ 
-        font: 26px/30px FontAwesome;
-        vertical-align:middle;
+    .form-content{
+        padding: 30px 30px;
+        .x-formpanel-body-el{
+            background: transparent;
+        }
     }
-
-    .x-window-body-default .link-forgot-password {
-        line-height: 32px;
+    .link-forgot-password{
         color: $base-color;
-        text-decoration: none;
-        margin-left: 5px;
     }
 }

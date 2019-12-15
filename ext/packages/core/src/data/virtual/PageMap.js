@@ -44,7 +44,7 @@ Ext.define('Ext.data.virtual.PageMap', {
 
     store: null,
 
-    constructor: function (config) {
+    constructor: function(config) {
         var me = this;
 
         me.prefetchSortFn = me.prefetchSortFn.bind(me);
@@ -54,7 +54,7 @@ Ext.define('Ext.data.virtual.PageMap', {
         me.clear();
     },
 
-    destroy: function () {
+    destroy: function() {
         this.clear(true);
         this.callParent();
     },
@@ -66,7 +66,7 @@ Ext.define('Ext.data.virtual.PageMap', {
         return pageCount === null || end < pageCount;
     },
 
-    clear: function (destroy) {
+    clear: function(destroy) {
         var me = this,
             alive = !destroy || null,
             pages = me.pages,
@@ -133,7 +133,7 @@ Ext.define('Ext.data.virtual.PageMap', {
         }
     },
 
-    getPage: function (number, autoCreate) {
+    getPage: function(number, autoCreate) {
         var me = this,
             pageCount = me.getPageCount(),
             pages = me.pages,
@@ -166,14 +166,14 @@ Ext.define('Ext.data.virtual.PageMap', {
         return Math.floor(index / this.store.getPageSize());
     },
 
-    getPageOf: function (index, autoCreate) {
+    getPageOf: function(index, autoCreate) {
         var pageSize = this.store.getPageSize(),
             n = Math.floor(index / pageSize);
 
         return this.getPage(n, autoCreate);
     },
 
-    getPages: function (begin, end) {
+    getPages: function(begin, end) {
         var pageSize = this.store.getPageSize(),
             // Convert record indices into page numbers:
             first = Math.floor(begin / pageSize),
@@ -188,7 +188,7 @@ Ext.define('Ext.data.virtual.PageMap', {
         return ret;
     },
 
-    flushNextLoad: function () {
+    flushNextLoad: function() {
         var me = this,
             queueTimer = me.queueTimer;
 
@@ -200,7 +200,13 @@ Ext.define('Ext.data.virtual.PageMap', {
     },
 
     indexOf: function(record) {
-        var ret = this.indexMap[record.internalId];
+        var ret;
+
+        // return indexMap if record is not null/undefined
+        if (record) {
+            ret = this.indexMap[record.internalId];
+        }
+
         return (ret || ret === 0) ? ret : -1;
     },
 
@@ -210,13 +216,14 @@ Ext.define('Ext.data.virtual.PageMap', {
 
         if (index || index === 0) {
             page = this.pages[Math.floor(index / this.store.getPageSize())];
+
             if (page) {
                 return page.records[index - page.begin];
             }
         }
     },
 
-    updatePageCount: function (pageCount, oldPageCount) {
+    updatePageCount: function(pageCount, oldPageCount) {
         var pages = this.pages,
             pageNumber, page;
 
@@ -224,6 +231,7 @@ Ext.define('Ext.data.virtual.PageMap', {
             // Safe to delete during a for in
             for (pageNumber in pages) {
                 page = pages[pageNumber];
+
                 if (page.number >= pageCount) {
                     this.clearPage(page);
                     this.destroyPage(page);
@@ -247,6 +255,7 @@ Ext.define('Ext.data.virtual.PageMap', {
 
             A.remove(loadQueues.active, page);
             A.remove(loadQueues.prefetch, page);
+
             if (!fromCache) {
                 Ext.Array.remove(me.cache, page);
             }
@@ -257,7 +266,7 @@ Ext.define('Ext.data.virtual.PageMap', {
             page.destroy();
         },
 
-        loadNext: function () {
+        loadNext: function() {
             var me = this,
                 concurrency = me.getConcurrentLoading(),
                 loading = me.loading,
@@ -278,7 +287,7 @@ Ext.define('Ext.data.virtual.PageMap', {
             }
         },
 
-        onPageLoad: function (page) {
+        onPageLoad: function(page) {
             var me = this,
                 store = me.store,
                 activeRanges = store.activeRanges,
@@ -302,7 +311,7 @@ Ext.define('Ext.data.virtual.PageMap', {
             me.flushNextLoad();
         },
 
-        onPageLockChange: function (page, state, oldState) {
+        onPageLockChange: function(page, state, oldState) {
             var me = this,
                 cache = me.cache,
                 loadQueues = me.loadQueues,
@@ -341,7 +350,7 @@ Ext.define('Ext.data.virtual.PageMap', {
             else {
                 cache.push(page); // put MRU item at the end
 
-                for (cacheSize = me.getCacheSize(); cache.length > cacheSize; ) {
+                for (cacheSize = me.getCacheSize(); cache.length > cacheSize;) {
                     page = cache.shift();
                     me.clearPage(page, true); // remove LRU item
                     store.onPageEvicted(page);
@@ -354,6 +363,7 @@ Ext.define('Ext.data.virtual.PageMap', {
             a = a.number;
             b = b.number;
 
+            /* eslint-disable-next-line vars-on-top */
             var M = Math,
                 firstPage = this.sortFirstPage,
                 lastPage = this.sortLastPage,
@@ -364,16 +374,20 @@ Ext.define('Ext.data.virtual.PageMap', {
 
             a = aDir ? M.abs(firstPage - a) : M.abs(lastPage - a);
             b = bDir ? M.abs(firstPage - b) : M.abs(lastPage - b);
+
             if (a === b) {
                 ret = aDir ? direction : -direction;
-            } else {
+            }
+            else {
                 ret = a - b;
             }
+
             return ret;
         },
 
         prioritizePrefetch: function(direction, firstPage, lastPage) {
             var me = this;
+
             me.sortDirection = direction;
             me.sortFirstPage = firstPage;
             me.sortLastPage = lastPage;

@@ -1,15 +1,15 @@
-/* global Ext, xit, it, spyOn, jasmine, expect */
-topSuite("grid-widgets", 
+topSuite("grid-widgets",
     [false, 'Ext.grid.Panel', 'Ext.grid.column.Widget', 'Ext.ProgressBarWidget',
      'Ext.slider.Widget', 'Ext.sparkline.*', 'Ext.Button'],
 function() {
-
-    var grid, view, store, testIt = Ext.isWebKit ? it : xit,
+    var testIt = Ext.isWebKit ? it : xit,
+        itNotIE8 = !Ext.isIE8 ? it : xit,
+        grid, view, store,
         GridModel = Ext.define(null, {
             extend: 'Ext.data.Model',
             fields: [
-               {name: 'name'},
-               {name: 'progress', type: 'float'},
+               { name: 'name' },
+               { name: 'progress', type: 'float' },
                'sequence1',
                'sequence2',
                'sequence3',
@@ -34,35 +34,41 @@ function() {
                 if (count == null) {
                     count = 20;
                 }
+
                 if (min == null) {
                     min = -10;
                 }
+
                 if (max == null) {
                     max = 10;
                 }
+
                 for (j = 0; j < count; j++) {
                     sequence.push(Ext.Number.randomInt(min, max));
                 }
+
                 return sequence;
             };
 
         for (i = 0; i < (recordCount || 20); i++) {
             result.push(['Record ' + (i + 1), Ext.Number.randomInt(0, 100) / 100, generateSequence(), generateSequence(), generateSequence(), generateSequence(20, 1, 10), generateSequence(4, 10, 20), generateSequence(), generateSequence(20, -1, 1)]);
         }
+
         return result;
     }
 
     function spyOnEvent(object, eventName, fn) {
         var obj = {
-            fn: fn || Ext.emptyFn
-        },
-        spy = spyOn(obj, "fn");
+                fn: fn || Ext.emptyFn
+            },
+            spy = spyOn(obj, "fn");
+
         object.addListener(eventName, obj.fn);
+
         return (object[eventName] = spy);
     }
 
     function makeGrid(recordCount, cfg, columns, useLocking) {
-
         if (!columns) {
             columns = [{
                 text: 'Button',
@@ -74,9 +80,9 @@ function() {
                     xtype: 'button'
                 }
             }, {
-                text     : 'Progress',
-                xtype    : 'widgetcolumn',
-                width    : 120,
+                text: 'Progress',
+                xtype: 'widgetcolumn',
+                width: 120,
                 dataIndex: 'progress',
                 widget: {
                     xtype: 'progressbarwidget',
@@ -85,9 +91,9 @@ function() {
                     ]
                 }
             }, {
-                text     : 'Slider',
-                xtype    : 'widgetcolumn',
-                width    : 120,
+                text: 'Slider',
+                xtype: 'widgetcolumn',
+                width: 120,
                 dataIndex: 'progress',
                 widget: {
                     xtype: 'sliderwidget',
@@ -154,16 +160,16 @@ function() {
                 }
             }];
         }
-        
+
         if (useLocking) {
             columns[0].locked = columns[1].locked = columns[2].locked = true;
         }
-        
+
         store = new Ext.data.ArrayStore({
             model: GridModel,
             data: generateData(recordCount)
         });
-        
+
         grid = new Ext.grid.Panel(Ext.apply({
             columns: columns,
             store: store,
@@ -181,9 +187,10 @@ function() {
             },
             renderTo: Ext.getBody()
         }, cfg));
+
         view = useLocking ? grid.normalGrid.getView() : grid.getView();
     }
-    
+
     afterEach(function() {
         Ext.destroy(grid, store);
         grid = store = null;
@@ -218,9 +225,8 @@ function() {
     });
 
     describe("buffered rendering", function() {
-        it('should not create new widgets when scrolling', function() {
+        itNotIE8('should not create new widgets when scrolling', function() {
             var widgetCount,
-                lockedView,
                 normalView,
                 lastRow,
                 timer,
@@ -234,16 +240,16 @@ function() {
             runs(function() {
                 widgetCount = Ext.Object.getSize(Ext.ComponentMgr.all);
                 normalView = grid.normalGrid.getView();
-                lockedView = grid.lockedGrid.getView();
                 lastRow = normalView.bufferedRenderer.getLastVisibleRowIndex();
             });
-            
+
             jasmine.waitsForScroll(grid.getScrollable(), function scrollIt(scroller, x, y) {
                 if (view.all.endIndex >= 100) {
                     Ext.undefer(timer);
+
                     return true;
                 }
-                
+
                 // Only scroll again when both have caught up with rendering..
                 if (readyToScroll) {
                     readyToScroll = 0;
@@ -275,8 +281,8 @@ function() {
         });
     });
 
-    describe('widget focus', function () {
-        it('should not focus the cell on mousedown', function () {
+    describe('widget focus', function() {
+        it('should not focus the cell on mousedown', function() {
             var view, pos, btn;
 
             makeGrid(5, {}, [{

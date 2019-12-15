@@ -1,6 +1,7 @@
 /**
  * @class Ext.Manifest
- * **This is not a real JavaScript class and cannot be created. This is for documentation purposes only.**
+ * **This is not a real JavaScript class and cannot be created. This is for documentation purposes
+ * only.**
  *
  * This documentation is for {@link Ext#manifest Ext.manifest}
  * @since 5.0.0

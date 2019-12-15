@@ -20,9 +20,11 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
 
     function startEditWithTarget(value) {
         makeTarget();
+
         if (arguments.length) {
             editor.startEdit(target, value);
-        } else {
+        }
+        else {
             editor.startEdit(target);
         }
     }
@@ -99,7 +101,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
             it("should focus the field", function() {
                 makeEditor();
                 startEditWithTarget();
-                
+
                 runs(function() {
                     expectFocused(field);
                 });
@@ -130,6 +132,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
                 });
                 startEditWithTarget();
                 var size = target.getSize();
+
                 expect(editor.getXY()).toEqual([size.width, size.height]);
             });
 
@@ -150,6 +153,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
                 });
                 startEditWithTarget();
                 var size = target.getSize();
+
                 expect(editor.getXY()).toEqual([size.width + 20, size.height + 30]);
             });
         });
@@ -192,6 +196,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
 
             it("should retain the type of the passed value", function() {
                 var d = new Date();
+
                 makeEditor({
                     field: 'datefield'
                 });
@@ -205,6 +210,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
             it("should not fire the change event", function() {
                 makeEditor();
                 var spy = jasmine.createSpy();
+
                 field.on('change', spy);
                 startEditWithTarget();
                 expect(spy).not.toHaveBeenCalled();
@@ -252,6 +258,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
                 startEditWithTarget();
                 expect(spy).toHaveBeenCalled();
                 var args = spy.mostRecentCall.args;
+
                 expect(args[0]).toBe(editor);
                 expect(args[1]).toBe(target);
                 expect(args[2]).toBe('Sample Text');
@@ -263,6 +270,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
                 startEditWithTarget();
                 expect(spy).toHaveBeenCalled();
                 var args = spy.mostRecentCall.args;
+
                 expect(args[0]).toBe(editor);
                 expect(args[1]).toBe(target);
                 expect(args[2]).toBe('Sample Text');
@@ -270,6 +278,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
 
             it("should not show or set to editing if it returns false", function() {
                 var editSpy = jasmine.createSpy();
+
                 makeEditor();
                 makeTarget();
                 editor.on('beforestartedit', spy.andReturn(false));
@@ -279,20 +288,20 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
                 expect(editor.editing).toBe(false);
                 expect(editSpy).not.toHaveBeenCalled();
             });
-            
+
             it("should allow the value to be changed in beforestartedit", function() {
                 spy.andCallFake(function(editor) {
                     editor.context = editor.context || {};
                     editor.context.value = 'blergo';
                 });
-                
+
                 makeEditor();
                 makeTarget();
-                
+
                 editor.on('beforestartedit', spy);
-                
+
                 editor.startEdit(target);
-                
+
                 expect(editor.field.getValue()).toBe('blergo');
             });
         });
@@ -312,7 +321,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
             editor.completeEdit();
             expect(editor.isVisible()).toBe(false);
             expect(editor.editing).toBe(false);
-        })
+        });
 
         describe("validity", function() {
             describe("with revertInvalid: false", function() {
@@ -371,7 +380,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
                 });
                 startEditWithTarget('');
                 editor.completeEdit();
-                expect(target.isVisible()).toBe(true); 
+                expect(target.isVisible()).toBe(true);
             });
 
             it("should show the boundEl if complete is successful", function() {
@@ -383,7 +392,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
                 });
                 startEditWithTarget('Foo');
                 editor.completeEdit();
-                expect(target.isVisible()).toBe(true); 
+                expect(target.isVisible()).toBe(true);
             });
         });
 
@@ -443,7 +452,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
                 }, "Field never focused");
                 runs(function() {
                     // Programmatic blur fails on IEs. Focus then remove an input field
-                    Ext.getBody().createChild({tag: 'input', type: 'text'}).focus().remove();
+                    Ext.getBody().createChild({ tag: 'input', type: 'text' }).focus().remove();
                 });
                 waitsFor(function() {
                     return !field.hasFocus;
@@ -464,7 +473,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
                 }, "Field never focused");
                 runs(function() {
                     // Programmatic blur fails on IEs. Focus then remove an input field
-                    Ext.getBody().createChild({tag: 'input', type: 'text'}).focus().remove();
+                    Ext.getBody().createChild({ tag: 'input', type: 'text' }).focus().remove();
                 });
                 waitsFor(function() {
                     return !field.hasFocus;
@@ -529,6 +538,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
                 editor.completeEdit();
                 expect(spy).toHaveBeenCalled();
                 var args = spy.mostRecentCall.args;
+
                 expect(args[0]).toBe(editor);
                 expect(args[1]).toBe('ASDF');
                 expect(args[2]).toBe('Sample Text');
@@ -542,6 +552,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
                 editor.completeEdit();
                 expect(spy).toHaveBeenCalled();
                 var args = spy.mostRecentCall.args;
+
                 expect(args[0]).toBe(editor);
                 expect(args[1]).toBe('ASDF');
                 expect(args[2]).toBe('Sample Text');
@@ -558,6 +569,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
             describe("vetoing beforecomplete", function() {
                 it("should not fire complete", function() {
                     var completeSpy = jasmine.createSpy();
+
                     makeEditor();
                     editor.on('beforecomplete', spy.andReturn(false));
                     editor.on('complete', completeSpy);
@@ -619,6 +631,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
 
                 it("should fire beforecomplete/complete if the value did not change with ignoreNoChange: true", function() {
                     var completeSpy = jasmine.createSpy();
+
                     makeEditor({
                         ignoreNoChange: false
                     });
@@ -654,6 +667,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
             startEditWithTarget();
             editor.setValue('Foo');
             var spy = jasmine.createSpy();
+
             field.on('change', spy);
             editor.cancelEdit();
             expect(editor.getValue()).toBe('Sample Text');
@@ -664,7 +678,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
             it("should not update the boundEl", function() {
                 makeEditor();
                 startEditWithTarget();
-                editor.setValue('Foo')
+                editor.setValue('Foo');
                 editor.cancelEdit();
                 expect(target.getHtml()).toBe('Sample Text');
             });
@@ -726,6 +740,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
         describe("events", function() {
             it("should fire canceledit and pass the editor, current value & start value", function() {
                 var spy = jasmine.createSpy();
+
                 makeEditor();
                 startEditWithTarget();
                 editor.setValue('foo');
@@ -733,6 +748,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
                 editor.cancelEdit();
                 expect(spy).toHaveBeenCalled();
                 var args = spy.mostRecentCall.args;
+
                 expect(args[0]).toBe(editor);
                 expect(args[1]).toBe('foo');
                 expect(args[2]).toBe('Sample Text');
@@ -740,6 +756,7 @@ topSuite("Ext.Editor", ['Ext.form.field.*'], function() {
 
             it("should not fire canceledit if not editing", function() {
                 var spy = jasmine.createSpy();
+
                 makeEditor();
                 editor.on('canceledit', spy);
                 editor.cancelEdit();

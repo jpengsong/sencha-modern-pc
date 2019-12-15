@@ -18,9 +18,10 @@ Ext.define('Ext.dataview.Location', {
     /**
      * @property {Boolean} isDataViewLocation
      * @readonly
-     * `true` in this class to identify an object as an instantiated dataview Location, or subclass thereof.
+     * `true` in this class to identify an object this type, or subclass thereof.
      */
     isDataViewLocation: true,
+    isLocation: true,
 
     /**
      * @property {Ext.Component/Ext.dom.Element} child
@@ -106,15 +107,18 @@ Ext.define('Ext.dataview.Location', {
             Ext.raise('DataView Locations cannot be modified');
         }
         //</debug>
+
         if (source.isEvent) {
             me.event = source;
             sourceElement = source.target;
         }
+
         if (source.isElement || source.nodeType === 1) {
             sourceElement = source;
         }
 
         me.source = source;
+
         if (source.isWidget) {
             sourceElement = source.getFocusEl();
             source = source.element;
@@ -126,12 +130,15 @@ Ext.define('Ext.dataview.Location', {
 
             // If the view is not yet bound to a store, we cannot find the record
             record = store && store.getAt(source);
-        } else {
+        }
+        else {
             if (source.isModel) {
                 record = source;
-            } else {
+            }
+            else {
                 record = view.mapToRecord(source);
             }
+
             child = view.mapToItem(source);
 
             // If the view is not yet bound to a store, we cannot find the record
@@ -190,7 +197,8 @@ Ext.define('Ext.dataview.Location', {
      *
      * @param {"dom"/"el"} [as=el] Pass `"dom"` to always return the item's `HTMLElement`.
      * Pass `"el"` to return the item's `Ext.dom.Element`.
-     * @return {HTMLElement/Ext.dom.Element} The item focusable *element* referenced by this location.
+     * @return {HTMLElement/Ext.dom.Element} The item focusable *element* referenced by
+     * this location.
      */
     getFocusEl: function(as) {
         var item = this.get(),
@@ -264,9 +272,11 @@ Ext.define('Ext.dataview.Location', {
             // The most important anchor is the record. Try to access its corresponding
             // item first. Failing that, try our item directly, and if that has gone,
             // fall back to our recorded viewIndex.
-            newSource = view.mapToItem(me.record) ||
-                (view.items.contains(item) ? item
-                    : view.mapToItem(Math.min(me.viewIndex, view.dataItems.length - 1)));
+            newSource = view.mapToItem(me.record) || (
+                view.items.contains(item)
+                    ? item
+                    : view.mapToItem(Math.min(me.viewIndex, view.dataItems.length - 1))
+            );
 
         return new this.self(view, newSource);
     },
@@ -344,10 +354,12 @@ Ext.define('Ext.dataview.Location', {
         if (view.isLastItem(item)) {
             if (wrap) {
                 nextItem = view.getFirstItem();
-            } else {
+            }
+            else {
                 return null;
             }
-        } else {
+        }
+        else {
             nextItem = view.nextItem(item);
         }
 
@@ -369,13 +381,46 @@ Ext.define('Ext.dataview.Location', {
         if (view.isFirstItem(item)) {
             if (wrap) {
                 prevItem = view.getLastItem();
-            } else {
+            }
+            else {
                 return null;
             }
-        } else {
+        }
+        else {
             prevItem = view.previousItem(item);
         }
 
         return new this.self(view, prevItem);
+    },
+
+    privates: {
+        as: function(item, as) {
+            if (item) {
+                if (item.isWidget) {
+                    if (as === 'cmp') {
+                        return item;
+                    }
+
+                    item = item.el;
+                }
+
+                if (as === 'dom') {
+                    item = item.dom || item;
+                }
+                else if (as === 'el') {
+                    if (!item.dom) {
+                        item = Ext.get(item);
+                    }
+                }
+                //<debug>
+                else {
+                    // We don't try to promote elements to components
+                    Ext.raise('Expected "as" to be "dom" or "el"');
+                }
+                //</debug>
+            }
+
+            return item || null;
+        }
     }
 });

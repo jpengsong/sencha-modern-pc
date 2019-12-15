@@ -15,6 +15,7 @@ topSuite("Ext.layout.overflow.Scroller", [
                 text: 'Text' + i
             });
         }
+
         return ret;
     }
 
@@ -46,6 +47,7 @@ topSuite("Ext.layout.overflow.Scroller", [
 
             runs(function() {
                 var overflow = ct.getLayout().getOverflow();
+
                 ct.destroy();
                 expect(overflow.destroyed).toBe(true);
                 expect(Ext.ComponentManager.getCount()).toBe(count);

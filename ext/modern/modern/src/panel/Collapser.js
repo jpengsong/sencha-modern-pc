@@ -10,6 +10,10 @@ Ext.define('Ext.panel.Collapser', {
         'Ext.Deferred'
     ],
 
+    mixins: [
+        'Ext.mixin.ConfigProxy'
+    ],
+
     config: {
         /**
          * @cfg {Boolean/Object} [animation]
@@ -54,6 +58,7 @@ Ext.define('Ext.panel.Collapser', {
          * @cfg {Object} [drawer]
          * The configuration for the drawer component that can display the collapsed
          * component contents without expanding.
+         * when {@link Ext.Panel#titleCollapse} `false`
          */
         drawer: {
             xtype: 'panel',
@@ -119,8 +124,28 @@ Ext.define('Ext.panel.Collapser', {
          * @cfg {Boolean} [useDrawer]
          * True to enable the {@link #drawer} to display from user interaction.
          */
-        useDrawer: true
+        useDrawer: true,
+
+        /**
+         * @cfg {"collapsed"/"collapsing"/"expanded"/"expanding"} state
+         * @since 7.0
+         * @private
+         */
+        state: 'expanded'
     },
+
+    proxyConfig: {
+        target: [
+            'titleCollapse'
+        ]
+    },
+
+    collapsed: false,
+    collapsing: false,
+    expanded: false,
+    expanding: false,
+    extraSpace: 0,
+    $unanimated: false,
 
     constructor: function(config) {
         this.initConfig(config);
@@ -132,10 +157,12 @@ Ext.define('Ext.panel.Collapser', {
         me.rendered = true;
         me.ensureCollapseTool();
         me.initialized = true;
+
         if (me.getCollapsed()) {
             me.doExpandCollapse(true, true);
         }
-        me.setupDrawerListeners();
+
+        me.setupHeaderListeners();
     },
 
     destroy: function() {
@@ -144,6 +171,7 @@ Ext.define('Ext.panel.Collapser', {
             task = me.drawerTask;
 
         me.destroying = true;
+
         if (task) {
             task.cancel();
         }
@@ -157,15 +185,15 @@ Ext.define('Ext.panel.Collapser', {
             me.reattachBodyWrap();
         }
 
+        Ext.destroy(me.headerListeners, me.drawerListeners, me.drawer, me.collapsibleTool);
 
-        Ext.destroy(me.drawerHeaderListener, me.drawerListeners, me.drawer, me.collapsibleTool);
-        me.destroying = false;
         me.callParent();
     },
 
     /**
-     * Collapses the panel body so that the body becomes hidden. Fires the {@link Ext.Panel#beforecollapse} event which will cancel the
-     * collapse action if it returns false.
+     * Collapses the panel body so that the body becomes hidden. Fires the 
+     * {@link Ext.Panel#beforecollapse} event which will cancel the collapse action 
+     * if it returns false.
      *
      * It also fires the {@link Ext.Panel#collapse} event after the panel body is collapsed.
      *
@@ -180,8 +208,8 @@ Ext.define('Ext.panel.Collapser', {
     },
 
     /**
-     * Expands the panel body so that it becomes visible. Fires the {@link Ext.Panel#beforeexpand} event which will
-     * cancel the expand action if it returns false.
+     * Expands the panel body so that it becomes visible. Fires the {@link Ext.Panel#beforeexpand} 
+     * event which will cancel the expand action if it returns false.
      *
      * It also fires the {@link Ext.Panel#expand} event after the panel is expanded.
      *
@@ -212,17 +240,25 @@ Ext.define('Ext.panel.Collapser', {
         }
 
         animation = me.parseAnimation(false, animation);
+
         if (animation) {
             me.getTarget().element.addCls(me.slidingCls);
 
             ret = me.doAnimation(false,
-                    me.getSlideOutCfg(me.getDirection(), me.afterDrawerHide, animation));
+                                 me.getSlideOutCfg(
+                                     me.getDirection(),
+                                     me.afterDrawerHide,
+                                     animation
+                                 )
+            );
 
             me.isSliding = true;
-        } else {
+        }
+        else {
             me.afterDrawerHide();
             ret = Ext.Promise.resolve();
         }
+
         return ret;
     },
 
@@ -276,11 +312,13 @@ Ext.define('Ext.panel.Collapser', {
             if (endDirection[direction]) {
                 drawer.setLeft(null);
                 drawer.setRight(headerSize);
-            } else {
+            }
+            else {
                 drawer.setRight(null);
                 drawer.setLeft(headerSize);
             }
-        } else {
+        }
+        else {
             w = '100%';
             h = savedProps.measuredHeight || me.defaultSize;
 
@@ -290,13 +328,15 @@ Ext.define('Ext.panel.Collapser', {
             if (endDirection[direction]) {
                 drawer.setTop(null);
                 drawer.setBottom(headerSize);
-            } else {
+            }
+            else {
                 drawer.setBottom(null);
                 drawer.setTop(headerSize);
             }
 
             if (target.getHeader() && target.getHeaderPosition() === direction) {
                 header = drawer.ensureHeader();
+
                 if (header) {
                     header.hide();
                 }
@@ -314,7 +354,8 @@ Ext.define('Ext.panel.Collapser', {
             animation.preserveEndState = true;
             me.getTarget().element.addCls(me.slidingCls);
             ret = me.doAnimation(false, animation);
-        } else {
+        }
+        else {
             me.afterDrawerShow();
             ret = Ext.Promise.resolve();
         }
@@ -334,31 +375,49 @@ Ext.define('Ext.panel.Collapser', {
         var me = this,
             target = me.getTarget(),
             current = me.getCollapsed(),
-            event, ret;
+            event, info, ret;
+
+        if (me.activeOperation) {
+            // End animation before collapse/expand on continuous tap
+            me.activeOperation.anim.end();
+            current = me.getCollapsed();
+        }
 
         if (collapsed === current) {
             return Ext.Promise.resolve();
         }
 
-        event = 'before' + (collapsed ? 'collapse' : 'expand');
-
-        if (me.initialized && target.hasListeners[event] &&
-                target.fireEvent(event, target) === false) {
-            return Ext.Promise.resolve();
+        if (me.$unanimated) {
+            me.$unanimated = animation = false;
+        }
+        else if (me.rendered) {
+            animation = me.parseAnimation(collapsed, animation);
+        }
+        else {
+            animation = null;
         }
 
-        if (me.rendered) {
-            animation = me.parseAnimation(collapsed, animation);
-        } else {
-            animation = null;
+        event = 'before' + (collapsed ? 'collapse' : 'expand');
+
+        if (me.initialized && target.hasListeners[event]) {
+            info = {
+                animation: animation
+            };
+
+            if (target.fireEvent(event, target, info) === false) {
+                return Ext.Promise.resolve();
+            }
+
+            animation = info.animation;
         }
 
         me.hideDrawer(false);
 
         if (animation) {
             ret = me.doExpandCollapseAnimated(collapsed, animation);
-        } else {
-           ret = me.doExpandCollapse(collapsed);
+        }
+        else {
+            ret = me.doExpandCollapse(collapsed);
         }
 
         return ret;
@@ -381,6 +440,9 @@ Ext.define('Ext.panel.Collapser', {
             // operation completes
             me._collapsed = !collapsed;
             me.toggleCollapsed(collapsed);
+        }
+        else {
+            me.setState(collapsed ? 'collapsed' : 'expanded');
         }
     },
 
@@ -417,9 +479,28 @@ Ext.define('Ext.panel.Collapser', {
         this.setToolTextIf(text, !this.getCollapsed());
     },
 
+    updateState: function(state, oldState) {
+        var me = this,
+            target = me.getTarget();
+
+        if (oldState) {
+            me[oldState] = target[oldState] = false;
+        }
+
+        if (state) {
+            me[state] = target[state] = true;
+        }
+    },
+
+    updateTitleCollapse: function() {
+        if (this.rendered) {
+            this.setupHeaderListeners();
+        }
+    },
+
     updateUseDrawer: function() {
         if (this.rendered) {
-            this.setupDrawerListeners();
+            this.setupHeaderListeners();
         }
     },
 
@@ -509,8 +590,12 @@ Ext.define('Ext.panel.Collapser', {
                 };
 
                 drawerListeners = [
-                    Ext.on('mousedown', 'handleGlobalDrawerEvent', me, { destroyable: true}),
-                    Ext.getDoc().on('mousemove', 'handleGlobalDrawerEvent', me, { destroyable: true}),
+                    Ext.on('mousedown', 'handleGlobalDrawerEvent', me, {
+                        destroyable: true
+                    }),
+                    Ext.getDoc().on('mousemove', 'handleGlobalDrawerEvent', me, {
+                        destroyable: true
+                    }),
                     me.drawer.element.on(listenerCfg)
                 ];
 
@@ -535,7 +620,7 @@ Ext.define('Ext.panel.Collapser', {
                 active = me.activeOperation,
                 target = me.getTarget(),
                 cls = active.animCls,
-                header, bodyWrap;
+                anim, header, bodyWrap;
 
             if (!me.destroying) {
                 header = target.getHeader();
@@ -557,7 +642,18 @@ Ext.define('Ext.panel.Collapser', {
                 }
 
                 if (active.restore) {
+                    anim = active.anim.config;
+
+                    if (anim.to.height) {
+                        anim.element.setHeight(null);
+                    }
+
+                    if (anim.to.width) {
+                        anim.element.setWidth(null);
+                    }
+
                     me.restoreProps();
+
                     bodyWrap = target.bodyWrapElement;
                     bodyWrap.setWidth(null).setHeight(null);
 
@@ -586,18 +682,31 @@ Ext.define('Ext.panel.Collapser', {
 
             if (types[headerPosition].indexOf(direction) < 0) {
                 target.moveHeaderPosition(collapsed ? direction : headerPosition,
-                        !collapsed ? direction : headerPosition);
+                                          !collapsed ? direction : headerPosition);
             }
 
+            me.setState(collapsed ? 'collapsed' : 'expanded');
+
             me.preventUpdate = true;
-            me.setCollapsed(collapsed);
+            // Ensure the panel's collapsed config is maintained (so it can be stateful but
+            // also just to be correct if user calls getCollapsed):
+            target._collapsed = !collapsed;
+            target.setCollapsed(collapsed);
             me.preventUpdate = false;
 
             me.ensureCollapseTool();
 
+            target.toggleCls(me.expandedCls, !collapsed);
+
             if (me.initialized && target.hasListeners[event]) {
                 target.fireEvent(event, target);
             }
+
+            // This is largely going to be a no-op, since the target will
+            // essentially just call collapser.setCollapsed, however this allows
+            // consumers the ability to override updateCollapsed to detect changes
+            // in state
+            target.setCollapsed(collapsed);
         },
 
         createDrawer: function() {
@@ -640,10 +749,12 @@ Ext.define('Ext.panel.Collapser', {
         },
 
         doAnimation: function(collapsed, animation, activeOperation) {
+            var deferred, anim;
+
             activeOperation = activeOperation || {};
 
-            var deferred = activeOperation.deferred || new Ext.Deferred(),
-                anim = new Ext.fx.Animation(animation);
+            deferred = activeOperation.deferred || new Ext.Deferred();
+            anim = new Ext.fx.Animation(animation);
 
             activeOperation.anim = anim;
             activeOperation.deferred = deferred;
@@ -652,6 +763,7 @@ Ext.define('Ext.panel.Collapser', {
             this.activeOperation = activeOperation;
 
             Ext.Animator.run(anim);
+
             return deferred.promise;
         },
 
@@ -668,10 +780,12 @@ Ext.define('Ext.panel.Collapser', {
 
                     if (direction === 'top' || direction === 'bottom') {
                         target.setHeight(null);
-                    } else {
+                    }
+                    else {
                         target.setWidth(null);
                     }
-                } else {
+                }
+                else {
                     me.reattachBodyWrap();
                     me.restoreProps();
                 }
@@ -683,11 +797,15 @@ Ext.define('Ext.panel.Collapser', {
         },
 
         doExpandCollapseAnimated: function(collapsed, animation) {
-            if (this.isDynamic()) {
-                return this.doExpandCollapseDynamic(collapsed, animation);
+            var me = this;
+
+            me.setState(collapsed ? 'collapsing' : 'expanding');
+
+            if (me.isDynamic()) {
+                return me.doExpandCollapseDynamic(collapsed, animation);
             }
 
-            return this.doExpandCollapsePlaceholder(collapsed, animation);
+            return me.doExpandCollapsePlaceholder(collapsed, animation);
         },
 
         doExpandCollapseDynamic: function(collapsed, animation) {
@@ -705,7 +823,10 @@ Ext.define('Ext.panel.Collapser', {
                 headerVertical = headerPosition === 'top' || headerPosition === 'bottom',
                 headerSize = me.getHeaderSize(),
                 headerDifferent = headerPosition !== direction,
+                extraSpace = me.extraSpace,
                 height, width, savedProps, size;
+
+            me.extraSpace = 0;
 
             if (collapsed) {
                 savedProps = me.saveProps();
@@ -724,7 +845,8 @@ Ext.define('Ext.panel.Collapser', {
 
                     target.setHeight(null);
                     target.setMinHeight(null);
-                } else {
+                }
+                else {
                     me.measureAndSet(bodyWrap, 'Width');
 
                     if (headerDifferent) {
@@ -737,8 +859,10 @@ Ext.define('Ext.panel.Collapser', {
                     target.setWidth(null);
                     target.setMinWidth(null);
                 }
+
                 target.setFlex(null);
-            } else {
+            }
+            else {
                 headerDifferent = headerPosition !== direction;
                 me.reattachBodyWrap();
 
@@ -746,20 +870,30 @@ Ext.define('Ext.panel.Collapser', {
                 // The size could be influenced by a css size, so restoring may end up doing nothing
                 if (directionVertical) {
                     targetEl.setHeight(null);
-                } else {
+                }
+                else {
                     targetEl.setWidth(null);
                 }
 
                 me.restoreProps(true);
 
                 if (headerDifferent) {
-                    target.moveHeaderPosition(collapsed ? direction : headerPosition, !collapsed ? direction : headerPosition);
+                    target.moveHeaderPosition(
+                        collapsed
+                            ? direction
+                            : headerPosition,
+                        !collapsed
+                            ? direction
+                            : headerPosition
+                    );
                 }
 
                 bodyWrap.show();
+
                 if (headerEl) {
                     headerEl.setWidth(null).setHeight(null);
                 }
+
                 me.measureAndSet(bodyWrap, directionVertical ? 'Height' : 'Width', true);
 
                 size = targetEl.measure();
@@ -772,12 +906,13 @@ Ext.define('Ext.panel.Collapser', {
 
                 if (directionVertical) {
                     from.height = headerSize;
-                    to.height = height;
+                    to.height = height + extraSpace;
 
                     target.setHeight(null);
-                } else {
+                }
+                else {
                     from.width = headerSize;
-                    to.width = width;
+                    to.width = width + extraSpace;
 
                     target.setWidth(null);
                 }
@@ -807,8 +942,8 @@ Ext.define('Ext.panel.Collapser', {
                 header = target.getHeader(),
                 headerDifferent = directionVertical !== headerVertical,
                 containerBox = me.getContainerTarget().getBox(),
-                height, width, drawer, anim, animCls, 
-                restoreHeaderVis, savedProps, size;
+                height, width, drawer, anim, animCls,
+                restoreHeaderVis, savedProps, size, active;
 
             drawer = me.createDrawer();
 
@@ -816,7 +951,8 @@ Ext.define('Ext.panel.Collapser', {
                 savedProps = me.saveProps();
                 height = savedProps.measuredHeight;
                 width = savedProps.measuredWidth;
-            } else {
+            }
+            else {
                 me.reattachBodyWrap();
                 me.restoreProps(true);
                 size = targetEl.measure();
@@ -832,7 +968,8 @@ Ext.define('Ext.panel.Collapser', {
             if (directionVertical) {
                 target.setHeight(null);
                 target.setMinHeight(null);
-            } else {
+            }
+            else {
                 target.setWidth(null);
                 target.setMinWidth(null);
             }
@@ -841,7 +978,14 @@ Ext.define('Ext.panel.Collapser', {
 
             if (collapsed) {
                 if (headerDifferent && types[headerPosition].indexOf(direction) < 0) {
-                    target.moveHeaderPosition(collapsed ? direction : headerPosition, !collapsed ? direction : headerPosition);
+                    target.moveHeaderPosition(
+                        collapsed
+                            ? direction
+                            : headerPosition,
+                        !collapsed
+                            ? direction
+                            : headerPosition
+                    );
                 }
 
                 if (header) {
@@ -854,7 +998,7 @@ Ext.define('Ext.panel.Collapser', {
                         return;
                     }
 
-                    var active = me.activeOperation;
+                    active = me.activeOperation;
 
                     drawer.hide();
 
@@ -870,11 +1014,13 @@ Ext.define('Ext.panel.Collapser', {
                             scope: me,
                             callback: me.afterExpandCollapseAnimation
                         }, active);
-                    } else {
+                    }
+                    else {
                         me.afterExpandCollapseAnimation();
                     }
                 }, animation);
-            } else {
+            }
+            else {
                 anim = me.getSlideInCfg(direction, me.afterExpandCollapseAnimation, animation);
 
                 if (me.endDirection[direction]) {
@@ -918,13 +1064,15 @@ Ext.define('Ext.panel.Collapser', {
 
                 tool.setType(collapsed ? types[pos][1] : types[pos][0]);
                 tool.setTooltip(collapsed ? me.getExpandToolText() : me.getCollapseToolText());
-            } else {
+            }
+            else {
                 me.collapsibleTool = Ext.destroy(tool);
             }
         },
 
         getAnimationFor: function(collapsed) {
             var anim = collapsed ? this.getCollapseAnimation() : this.getExpandAnimation();
+
             return anim || this.getAnimation();
         },
 
@@ -1000,18 +1148,21 @@ Ext.define('Ext.panel.Collapser', {
 
             if (target.owns(e) || drawer.owns(e)) {
                 task.cancel();
-            } else {
+            }
+            else {
                 task.delay(me.getDrawerHideDelay());
             }
         },
 
         measureAndSet: function(el, dimension, clear) {
+            var setter, getter;
+
             if (!el) {
                 return;
             }
 
-            var setter = 'set' + dimension,
-                getter = 'get' + dimension;
+            setter = 'set' + dimension;
+            getter = 'get' + dimension;
 
             if (clear) {
                 el[setter](null);
@@ -1022,14 +1173,20 @@ Ext.define('Ext.panel.Collapser', {
 
         onHeaderTap: function(e) {
             var me = this,
-                tool = me.collapsibleTool;
+                titleCollapse = me.getTitleCollapse(),
+                collapsed = me.getCollapsed(),
+                cmp = Ext.Component.from(e);
 
-            if (me.getCollapsed() && !me.isDynamic() && !(tool && tool.owns(e))) {
-                if (me.drawerVisible) {
-                    me.hideDrawer();
-                } else {
-                    me.showDrawer();
-                }
+            // Return on click of tools on header
+            if (!(cmp.isPanelTitle || cmp.isPanelHeader)) {
+                return;
+            }
+
+            if (titleCollapse) {
+                me.toggleCollapsed(!collapsed);
+            }
+            else if (me.getUseDrawer() && collapsed && !me.isDynamic()) {
+                me[me.drawerVisible ? 'hideDrawer' : 'showDrawer']();
             }
         },
 
@@ -1040,10 +1197,12 @@ Ext.define('Ext.panel.Collapser', {
         parseAnimation: function(collapsed, animation) {
             if (animation === undefined) {
                 animation = this.getAnimationFor(collapsed);
-            } else if (animation) {
+            }
+            else if (animation) {
                 if (typeof animation === 'boolean') {
                     animation = {};
                 }
+
                 animation = Ext.apply({}, animation, this.getAnimationFor(collapsed));
             }
 
@@ -1058,8 +1217,9 @@ Ext.define('Ext.panel.Collapser', {
         },
 
         restoreProps: function(keep) {
-            var target = this.getTarget(),
-                savedProps = this.savedProps,
+            var me = this,
+                target = me.getTarget(),
+                savedProps = me.savedProps,
                 prop;
 
             if (savedProps) {
@@ -1073,19 +1233,20 @@ Ext.define('Ext.panel.Collapser', {
                 target.setMinWidth(savedProps.minWidth);
                 target.setHeight(savedProps.height);
                 target.setWidth(savedProps.width);
-            }
 
-            if (!keep) {
-                this.savedProps = null;
+                if (!keep) {
+                    me.savedProps = null;
+                }
             }
         },
 
         saveProps: function() {
             var me = this,
                 target = me.getTarget(),
-                size = target.element.measure();
+                size = target.element.measure(),
+                props;
 
-            me.savedProps = {
+            me.savedProps = props = {
                 flex: target.getFlex(),
                 minHeight: target.getMinHeight(),
                 minWidth: target.getMinWidth(),
@@ -1095,7 +1256,7 @@ Ext.define('Ext.panel.Collapser', {
                 measuredHeight: size.height
             };
 
-            return me.savedProps;
+            return props;
         },
 
         setToolTextIf: function(text, doSet) {
@@ -1106,19 +1267,30 @@ Ext.define('Ext.panel.Collapser', {
             }
         },
 
-        setupDrawerListeners: function() {
+        setupHeaderListeners: function() {
             var me = this,
                 header = me.getTarget().getHeader();
 
-            me.drawerHeaderListener = Ext.destroy(me.drawerHeaderListener);
+            me.headerListeners = Ext.destroy(me.headerListeners);
 
-            if (header && me.getUseDrawer()) {
-                me.drawerHeaderListener = header.element.on({
+            if (header && (me.getUseDrawer() || me.getTitleCollapse())) {
+                me.headerListeners = header.element.on({
                     destroyable: true,
                     scope: me,
                     tap: 'onHeaderTap'
                 });
             }
+        },
+
+        unanimated: function(fn) {
+            this.$unanimated = true;
+
+            if (fn) {
+                fn(this);
+                this.$unanimated = false;
+            }
+
+            return this;
         }
     }
 });

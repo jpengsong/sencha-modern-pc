@@ -37,22 +37,26 @@ Ext.define('Ext.data.field.Integer', {
             return this.getNumber(v);
         }
 
+        /* eslint-disable-next-line vars-on-top */
         var empty = v == null || v === '',
             allowNull = this.allowNull,
             out;
 
         if (empty) {
             out = allowNull ? null : 0;
-        }  else {
+        }
+        else {
             out = this.parse(v);
+
             if (allowNull && isNaN(out)) {
                 out = null;
             }
         }
+
         return out;
     },
 
-    getNumber: function (v) {
+    getNumber: function(v) {
         return parseInt(v, 10);
     },
 
@@ -64,7 +68,7 @@ Ext.define('Ext.data.field.Integer', {
         return parseInt(String(v).replace(this.stripRe, ''), 10);
     },
 
-    sortType: function (s) {
+    sortType: function(s) {
         // If allowNull, null values needed to be sorted last.
         if (s == null) {
             s = Infinity;

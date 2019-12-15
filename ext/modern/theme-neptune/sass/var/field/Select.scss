@@ -3,8 +3,8 @@
  */
 
 /**
- * @var {color} $selectfield-selected-item-icon-color
+ * @var {number/list}
+ * Padding value for the inline {@link Ext.dataview.ChipView} used to present
+ * multiple selected values.
  */
-$selectfield-selected-item-icon-color: dynamic($color);
-
-$selectfield-selected-item-icon: dynamic($fa-var-check);
+$selectfield-chipview-padding: 0 0 0 4px;

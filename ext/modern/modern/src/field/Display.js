@@ -1,10 +1,11 @@
 /**
- * A display-only text field which is not validated and not submitted. This is useful for when you want to display a
- * value from a form's loaded data but do not want to allow the user to edit or submit that * value. The value can
- * be optionally {@link #htmlEncode HTML encoded} if it contains HTML markup that you do not want * to be rendered.
+ * A display-only text field which is not validated and not submitted. This is useful for when you
+ * want to display a value from a form's loaded data but do not want to allow the  user to edit or 
+ * submit that * value. The value can be optionally {@link #htmlEncode HTML encoded} if it contains 
+ * HTML markup that you do not want * to be rendered.
  *
- * If you have more complex content, or need to include components within the displayed content, also consider using a
- * {@link Ext.field.Container} instead.
+ * If you have more complex content, or need to include components within the displayed content,
+ * also consider using a {@link Ext.field.Container} instead.
  *
  * Example:
  *
@@ -129,8 +130,10 @@ Ext.define('Ext.field.Display', {
 
     isValid: Ext.returnTrue,
 
+    rawToValue: Ext.emptyFn,
+
     privates: {
-        getDisplayValue: function () {
+        getDisplayValue: function() {
             var me = this,
                 value = Ext.valueFrom(me.getValue(), ''),
                 renderer = me.getRenderer();
@@ -142,7 +145,7 @@ Ext.define('Ext.field.Display', {
             return value;
         },
 
-        syncDom: function () {
+        syncDom: function() {
             var me = this,
                 dom = me.inputElement.dom,
                 value;
@@ -152,7 +155,8 @@ Ext.define('Ext.field.Display', {
 
                 if (me.getEncodeHtml()) {
                     dom.textContent = value;
-                } else {
+                }
+                else {
                     dom.innerHTML = value;
                 }
             }

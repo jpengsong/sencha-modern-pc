@@ -13,7 +13,7 @@ Ext.define('Ext.grid.NavigationModel', {
     ],
 
     locationClass: 'Ext.grid.Location',
-    
+
     statics: {
         /**
          * We should ignore keydown events for certain keys pressed in an input field
@@ -63,14 +63,18 @@ Ext.define('Ext.grid.NavigationModel', {
                     column: location[0],
                     record: location[1]
                 };
-            } else if (typeof location === 'number') {
+            }
+            else if (typeof location === 'number') {
                 location = view.store.getAt(location);
             }
+
             location = me.createLocation(location);
+
             if (event) {
                 location.event = event;
             }
         }
+
         return me.callParent([location, options]);
     },
 
@@ -81,9 +85,11 @@ Ext.define('Ext.grid.NavigationModel', {
         if (me.location) {
             me.previousLocation = me.location;
             item = me.location.sourceElement;
+
             if (item) {
                 Ext.fly(item).removeCls(me.focusedCls);
             }
+
             me.location = null;
         }
     },
@@ -97,8 +103,8 @@ Ext.define('Ext.grid.NavigationModel', {
         if (!Ext.Array.contains(actionables, actionable)) {
             actionables.push(actionable);
             triggerEvent = actionable.getTriggerEvent();
-            if (triggerEvent) {
 
+            if (triggerEvent) {
                 // create {click: triggerActionable, scope: me, args:[theActionable]}
                 listeners = {
                     scope: me,
@@ -137,6 +143,7 @@ Ext.define('Ext.grid.NavigationModel', {
             // non-data items. We revert to the current location.
             if (e.toElement === view.el.dom && location) {
                 me.clearLocation();
+
                 return me.setLocation(location);
             }
 
@@ -156,7 +163,7 @@ Ext.define('Ext.grid.NavigationModel', {
             var me = this,
                 view = me.getView(),
                 cell = view.mapToCell(e);
-            
+
             if (Ext.fly(e.target).isInputField() && me.self.ignoreInputFieldKeys[e.getKeyName()]) {
                 return false;
             }
@@ -196,7 +203,8 @@ Ext.define('Ext.grid.NavigationModel', {
             // Not a navigable child - do not disturb focus
             if (location.header || location.footer) {
                 e.preventDefault();
-            } else {
+            }
+            else {
                 // Only react if we already have a location that is elsewhere in the grid,
                 // so that we can move.
                 //
@@ -219,7 +227,8 @@ Ext.define('Ext.grid.NavigationModel', {
             if (!this.location.actionable) {
                 if (this.location) {
                     this.moveUp(e);
-                } else {
+                }
+                else {
                     this.setLocation(0);
                 }
             }
@@ -232,7 +241,8 @@ Ext.define('Ext.grid.NavigationModel', {
             if (!this.location.actionable) {
                 if (this.location) {
                     this.moveDown(e);
-                } else {
+                }
+                else {
                     this.setLocation(0);
                 }
             }
@@ -247,7 +257,11 @@ Ext.define('Ext.grid.NavigationModel', {
                 e.preventDefault();
 
                 // On an expanded non-leaf tree cell.
-                if (location.isTreeLocation && !location.record.isLeaf() && location.record.isExpanded()) {
+                if (
+                    location.isTreeLocation &&
+                    !location.record.isLeaf() &&
+                    location.record.isExpanded()
+                ) {
 
                     // If a simple Tree (just one column), or its a ctrl+RIGHT
                     // expand the node.
@@ -278,7 +292,11 @@ Ext.define('Ext.grid.NavigationModel', {
                 e.preventDefault();
 
                 // On a collapsed non-leaf tree cell.
-                if (location.isTreeLocation && !location.record.isLeaf() && !location.record.isExpanded()) {
+                if (
+                    location.isTreeLocation &&
+                    !location.record.isLeaf() &&
+                    !location.record.isExpanded()
+                ) {
 
                     // If a simple Tree (just one column), or its a ctrl+RIGHT
                     // expand the node.
@@ -306,7 +324,8 @@ Ext.define('Ext.grid.NavigationModel', {
             // If the target *is* the cell, it's navigation mode.
             if (this.location.actionable) {
                 this.onKeyEsc();
-            } else {
+            }
+            else {
                 this.activateCell(this.location);
             }
         },
@@ -321,7 +340,6 @@ Ext.define('Ext.grid.NavigationModel', {
 
         onKeyTab: function(e) {
             var me = this,
-                view = me.getView(),
                 location = me.location,
                 navigate;
 
@@ -329,17 +347,8 @@ Ext.define('Ext.grid.NavigationModel', {
                 navigate = function() {
                     me.location = e.shiftKey ? location.previous() : location.next();
                 };
-                // Now ensure that item is visible beore tabbing.
-                view.ensureVisible(location.record).then(function() {
-                    // TODO: ensureVisible does not ensure the item is present - it just scrolls
-                    // and does not wait for the resulting List adjustment.
-                    // TODO: workaround is a 100ms delay. Remove this when ensureVisible guarantees item presence.
-                    if (view.mapToItem(location.record)) {
-                        navigate();
-                    } else {
-                        Ext.defer(navigate, 100);
-                    }
-                });
+
+                navigate();
             }
             // Navigation mode - return true to *not* stop the event
             else {
@@ -348,14 +357,21 @@ Ext.define('Ext.grid.NavigationModel', {
         },
 
         onKeyPageDown: function(e) {
+            var me = this,
+                view, y, candidate;
+
             // Do not scroll
             e.preventDefault();
 
-            if (!this.location.actionable) {
-                var me = this,
-                    view = me.getView(),
-                    y = (view.infinite ? view.getItemTop(me.location.child) : me.location.child.el.dom.offsetTop) + view.getVisibleHeight(),
-                    candidate = view.getRecordIndexFromPoint(0, y);
+            if (!me.location.actionable) {
+                view = me.getView();
+                y = (
+                    view.infinite
+                        ? view.getItemTop(me.location.child)
+                        : me.location.child.el.dom.offsetTop
+                ) + view.getVisibleHeight();
+
+                candidate = view.getRecordIndexFromPoint(0, y);
 
                 view.ensureVisible(candidate).then(function() {
                     candidate = new Ext.grid.Location(view, {
@@ -365,9 +381,13 @@ Ext.define('Ext.grid.NavigationModel', {
 
                     // Might have landed on a non-focusable item.
                     // The up method moves to a focusable location.
-                    if (!(candidate.sourceElement && Ext.fly(candidate.sourceElement).isFocusable())) {
+                    if (!(
+                        candidate.sourceElement &&
+                        Ext.fly(candidate.sourceElement).isFocusable())
+                    ) {
                         candidate = candidate.up();
                     }
+
                     // Go down by the visible page size
                     me.setLocation(candidate, {
                         event: e
@@ -377,14 +397,22 @@ Ext.define('Ext.grid.NavigationModel', {
         },
 
         onKeyPageUp: function(e) {
+            var me = this,
+                view, y, candidate;
+
             // Do not scroll
             e.preventDefault();
 
-            if (!this.location.actionable) {
-                var me = this,
-                    view = me.getView(),
-                    y = (view.infinite ? view.getItemTop(me.location.child) : me.location.child.el.dom.offsetTop) - view.getVisibleHeight(),
-                    candidate = view.getRecordIndexFromPoint(0, y);
+            if (!me.location.actionable) {
+                view = me.getView();
+
+                y = (
+                    view.infinite
+                        ? view.getItemTop(me.location.child)
+                        : me.location.child.el.dom.offsetTop
+                ) - view.getVisibleHeight();
+
+                candidate = view.getRecordIndexFromPoint(0, y);
 
                 view.ensureVisible(candidate).then(function() {
                     candidate = new Ext.grid.Location(view, {
@@ -394,9 +422,13 @@ Ext.define('Ext.grid.NavigationModel', {
 
                     // Might have landed on a non-focusable item.
                     // The down method advances to a focusable location.
-                    if (!(candidate.sourceElement && Ext.fly(candidate.sourceElement).isFocusable())) {
+                    if (!(
+                        candidate.sourceElement &&
+                        Ext.fly(candidate.sourceElement).isFocusable())
+                    ) {
                         candidate = candidate.down();
                     }
+
                     // Go up by the visible page size
                     me.setLocation(candidate, {
                         event: e
@@ -468,6 +500,7 @@ Ext.define('Ext.grid.NavigationModel', {
 
             if (!this.location.actionable) {
                 focusables = this.location.getFocusables();
+
                 if (focusables.length) {
                     events = Ext.get(focusables[0]).events;
                 }
@@ -477,7 +510,8 @@ Ext.define('Ext.grid.NavigationModel', {
             else {
                 if (target.isInputField()) {
                     result = true;
-                } else {
+                }
+                else {
                     events = target.events;
                 }
             }
@@ -487,10 +521,12 @@ Ext.define('Ext.grid.NavigationModel', {
                 if (events.tap) {
                     events.tap.fire(e);
                 }
+
                 if (events.click) {
                     events.click.fire(e);
                 }
             }
+
             return result;
         },
 
@@ -507,7 +543,8 @@ Ext.define('Ext.grid.NavigationModel', {
                 // Enter on a CheckNode, toggles it.
                 if (l.isTreeLocation && l.record.data.checked != null) {
                     l.record.set('checked', !l.record.data.checked);
-                } else {
+                }
+                else {
                     this.activateCell(l);
                 }
             }
@@ -533,6 +570,7 @@ Ext.define('Ext.grid.NavigationModel', {
 
             if (location) {
                 location = location.up();
+
                 if (location) {
                     this.setLocation(location, {
                         event: e
@@ -546,6 +584,7 @@ Ext.define('Ext.grid.NavigationModel', {
 
             if (location) {
                 location = location.down();
+
                 if (location) {
                     this.setLocation(location, {
                         event: e

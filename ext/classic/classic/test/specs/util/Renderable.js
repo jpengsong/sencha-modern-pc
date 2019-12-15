@@ -5,16 +5,17 @@ function() {
         var comp,
             styleEl;
 
-        afterEach(function () {
+        afterEach(function() {
             Ext.destroy(comp);
             comp = null;
+
             if (styleEl) {
                 styleEl.destroy();
                 styleEl = null;
             }
         });
 
-        function createComp (framing) {
+        function createComp(framing) {
             var supportsBorderRadius = Ext.supports.CSS3BorderRadius,
                 CSS = Ext.util.CSS;
 
@@ -31,7 +32,7 @@ function() {
 
             comp = new Ext.Component({
                 frame: true,
-                getStyleProxy: function () {
+                getStyleProxy: function() {
                     return styleEl;
                 }
             });
@@ -40,7 +41,7 @@ function() {
             CSS.removeStyleSheet('renderable-test-stylesheet');
             Ext.supports.CSS3BorderRadius = supportsBorderRadius;
         }
-        
+
         describe("getFrameInfo", function() {
             it('should return framing info', function() {
                 createComp('dh-1-2-3-4');
@@ -59,15 +60,15 @@ function() {
                 expect(frameInfo.height).toBe(4);
             });
         });
-        
+
         describe("getFrameRenderData", function() {
             beforeEach(function() {
                 createComp('dh-1-2-3-4');
             });
-            
+
             it("should include id in frame render data", function() {
                 var data = comp.getFrameRenderData();
-                
+
                 expect(data.id).toBe(comp.id);
             });
         });
@@ -88,19 +89,20 @@ function() {
             // Temporarily pull all content out of the document.
             // We need to put it back in case any of it is being left erroneously to be picked up by Jasmine
             previousNodes = document.createDocumentFragment();
+
             for (i = 0; i < len; i++) {
                 previousNodes.appendChild(n[0]);
             }
         });
         afterEach(function() {
             viewport.destroy();
-            
+
             existingElement = Ext.destroy(existingElement);
-            
+
             // Restore previous state of document
             document.body.appendChild(previousNodes);
         });
-        
+
         it('should incorporate existing DOM into the Component tree', function() {
             Ext.getBody().createChild({
                 tag: 'div',
@@ -132,14 +134,15 @@ function() {
                     html: "test"
                 }]
             });
-            
+
             // Compare to known, correct DOM structure without possibly variable
             // style and class and role and data-ref attributes
             var htmlRe = /\s*(class|style|role|data-ref|aria-\w+)=(?:"[^"]*"|[^> ]+\b)/g,
                 have = viewport.el.dom.innerHTML.replace(htmlRe, '')
                                                 .replace(/\s{2,}/g, ' ');
-            
-            var want = (Ext.isIE8 ? [
+
+            var want = (Ext.isIE8
+                ? [
                     '<DIV id=existing-element> ',
                         '<UL> ',
                             '<LI>',
@@ -159,7 +162,8 @@ function() {
                             '</DIV>',
                         '</DIV>',
                     '</DIV>'
-                ] : [
+                ]
+                : [
                     '<div id="existing-element">',
                         '<ul>',
                             '<li>',
@@ -180,33 +184,33 @@ function() {
                         '</div>',
                     '</div>'
                 ]).join('');
-            
+
             if (Ext.isIE8) {
                 want = want.replace(/(<\/?)div/g, '$1DIV')
                            .replace(/(<\/?)ul/g, '$1UL')
                            .replace(/(<\/?)li/g, '$1LI')
                            .replace(/(<\/?)a/g, '$1A');
             }
-            
+
             expect(have).toBe(want);
         });
     });
-    
+
     describe("Accessibility", function() {
         var c, ariaEl, ariaDom;
-        
+
         function makeCmp(config) {
             config = Ext.apply({
                 renderTo: Ext.getBody(),
                 width: 100,
                 height: 100,
-                
+
                 maskOnDisable: false,
-                
+
                 style: {
                     'background-color': 'green'
                 },
-                
+
                 // Note no childEls by default
                 renderTpl: [
                     '<div id="{id}-wrapEl" data-ref="wrapEl" {ariaAttributes:attributes}>',
@@ -215,15 +219,15 @@ function() {
                     '</div>'
                 ]
             }, config);
-            
+
             c = new Ext.Component(config);
-            
+
             ariaEl = c.ariaEl;
             ariaDom = ariaEl.dom;
-            
+
             return c;
         }
-        
+
         afterEach(function() {
             if (c) {
                 Ext.destroy(
@@ -231,36 +235,36 @@ function() {
                     Ext.get(c.id + '-descEl'),
                     Ext.get(c.id + '-wrapEl')
                 );
-                
+
                 c.destroy();
             }
-            
+
             c = ariaEl = ariaDom = null;
         });
-        
+
         describe("ariaEl", function() {
             it("should be defined before rendering", function() {
                 makeCmp({ renderTo: undefined });
-            
+
                 expect(c.ariaEl).toBeDefined();
             });
-        
+
             it("should default to main el", function() {
                 makeCmp();
-                
+
                 expect(ariaEl).toBe(c.el);
             });
-            
+
             it("should resolve ariaEl after rendering", function() {
                 makeCmp({
                     childEls: ['wrapEl'],
                     ariaEl: 'wrapEl'
                 });
-                
+
                 expect(ariaEl).toBe(c.wrapEl);
             });
         });
-        
+
         describe("attributes", function() {
             function makeAttrSuite(desc, defaultConfig) {
                 describe(desc, function() {
@@ -268,90 +272,90 @@ function() {
                                     defaultConfig.ariaEl === 'el',
                         shouldMain = onMainEl ? "should" : "should not",
                         shouldWrap = onMainEl ? "should not" : "should",
-                        el, dom, wrapEl, wrapDom, expectMain, expectWrap, attrIt;
-                    
+                        el, dom, wrapEl, wrapDom, expectMain, expectWrap;
+
                     function makeC(config) {
                         config = Ext.apply({}, config, defaultConfig);
-                        
+
                         makeCmp(config);
-                        
+
                         el = c.el;
                         dom = el.dom;
-                        
+
                         wrapEl = c.wrapEl;
                         wrapDom = wrapEl.dom;
                     }
-                    
+
                     function attrIt(desc, attr, want) {
                         it(shouldMain + " " + desc + " on main el", function() {
                             expectMain(attr, want);
                         });
-                        
+
                         it(shouldWrap + " " + desc + " on wrapEl", function() {
                             expectWrap(attr, want);
                         });
                     }
-                    
+
                     beforeEach(function() {
                         expectMain = function(attr, want) {
                             if (typeof want === 'function') {
                                 want = want();
                             }
-                            
+
                             if (onMainEl) {
                                 var have = c.el.dom.getAttribute(attr);
-                                
+
                                 expect(have).toBe(want);
                             }
                             else {
                                 expect(c.el.dom.hasAttribute(attr)).toBe(false);
                             }
-                        }
-                        
+                        };
+
                         expectWrap = function(attr, want) {
                             if (typeof want === 'function') {
                                 want = want();
                             }
-                            
+
                             if (!onMainEl) {
                                 var have = c.wrapEl.dom.getAttribute(attr);
-                                
+
                                 expect(have).toBe(want);
                             }
                             else {
                                 expect(c.wrapEl.dom.hasAttribute(attr)).toBe(false);
                             }
-                        }
+                        };
                     });
-                    
+
                     afterEach(function() {
                         el = dom = wrapEl = wrapDom = null;
                     });
-                    
+
                     describe("basic", function() {
                         describe("role undefined", function() {
                             beforeEach(function() {
                                 makeC();
                             });
-                            
+
                             it("should not render role on el", function() {
                                 expect(ariaDom.hasAttribute('role')).toBe(false);
                             });
-                            
+
                             it("should not render role on wrapEl", function() {
                                 expect(wrapDom.hasAttribute('role')).toBe(false);
                             });
                         });
-                        
+
                         describe("role defined", function() {
                             beforeEach(function() {
                                 makeC({ ariaRole: 'foo' });
                             });
-                            
+
                             attrIt("render role", 'role', 'foo');
                         });
                     });
-                    
+
                     describe("static roles", function() {
                         function makeSuite(role) {
                             describe(role, function() {
@@ -363,19 +367,19 @@ function() {
                                         'data-blerg'
                                     ],
                                     i, len, attr;
-                                
+
                                 function shouldntHaveIt(attr) {
                                     describe(attr, function() {
                                         it("should not render on main el", function() {
                                             expect(dom.hasAttribute(attr)).toBe(false);
                                         });
-                                        
+
                                         it("should not render on wrap el", function() {
                                             expect(wrapDom.hasAttribute(attr)).toBe(false);
                                         });
                                     });
                                 }
-                                
+
                                 beforeEach(function() {
                                     makeC({
                                         ariaRole: role,
@@ -389,30 +393,30 @@ function() {
                                         }
                                     });
                                 });
-                                
+
                                 describe("role", function() {
                                     attrIt("render " + role + " role", 'role', role);
                                 });
-                                
+
                                 for (i = 0, len = undesiredAttrs.length; i < len; i++) {
                                     attr = undesiredAttrs[i];
-                                    
+
                                     shouldntHaveIt(attr);
                                 }
                             });
                         }
-                        
+
                         makeSuite('presentation');
                         makeSuite('document');
                     });
-                    
+
                     describe("widget roles", function() {
                         function shouldHaveIt(attr, value) {
                             describe(attr, function() {
                                 attrIt('render ' + attr, attr, value);
                             });
                         }
-                        
+
                         describe("collapsible component", function() {
                             var attr, value,
                                 desiredAttrs = {
@@ -422,7 +426,7 @@ function() {
                                     'aria-label': 'sploosh!',
                                     'aria-expanded': 'true'
                                 };
-                            
+
                             beforeEach(function() {
                                 makeC({
                                     ariaRole: 'throbbe',
@@ -430,18 +434,18 @@ function() {
                                     collapsible: true
                                 });
                             });
-                            
+
                             for (attr in desiredAttrs) {
                                 value = desiredAttrs[attr];
-                                
+
                                 shouldHaveIt(attr, value);
                             }
-                            
+
                             it("should null ariaRenderAttributes", function() {
                                 expect(c.ariaRenderAttributes).toBe(null);
                             });
                         });
-                        
+
                         describe("collapsible panel", function() {
                             var attr, value,
                                 desiredAttrs = {
@@ -453,7 +457,7 @@ function() {
                                     'data-baz': 'qux',
                                     'data-fred': 'frob'
                                 };
-                            
+
                             beforeEach(function() {
                                 makeC({
                                     collapsible: true,
@@ -467,19 +471,19 @@ function() {
                                     }
                                 });
                             });
-                            
+
                             for (attr in desiredAttrs) {
                                 value = desiredAttrs[attr];
-                                
+
                                 shouldHaveIt(attr, value);
                             }
-                            
+
                             it("should null ariaRenderAttributes", function() {
                                 expect(c.ariaRenderAttributes).toBe(null);
                             });
                         });
                     });
-                    
+
                     describe("component state", function() {
                         describe("hidden", function() {
                             beforeEach(function() {
@@ -488,10 +492,10 @@ function() {
                                     hidden: true
                                 });
                             });
-                            
+
                             attrIt('render aria-hidden', 'aria-hidden', 'true');
                         });
-                        
+
                         describe("disabled", function() {
                             beforeEach(function() {
                                 makeC({
@@ -499,10 +503,10 @@ function() {
                                     disabled: true
                                 });
                             });
-                            
+
                             attrIt('render aria-disabled', 'aria-disabled', 'true');
                         });
-                        
+
                         describe("collapsed", function() {
                             beforeEach(function() {
                                 makeC({
@@ -511,10 +515,10 @@ function() {
                                     collapsed: true
                                 });
                             });
-                            
+
                             attrIt('render aria-expanded', 'aria-expanded', 'false');
                         });
-                        
+
                         describe("expanded", function() {
                             beforeEach(function() {
                                 makeC({
@@ -523,17 +527,17 @@ function() {
                                     collapsed: false
                                 });
                             });
-                            
+
                             attrIt('render aria-expanded', 'aria-expanded', 'true');
                         });
                     });
                 });
             }
-            
+
             makeAttrSuite("on main el", {
                 childEls: ['wrapEl']
             });
-            
+
             makeAttrSuite("on child el", {
                 ariaUsesMainElement: false,
                 ariaEl: 'wrapEl',

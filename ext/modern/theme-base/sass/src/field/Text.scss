@@ -70,6 +70,14 @@
         display: flex;
     }
 
+    // The default flex value in IE is not enforcing container to take width from children
+    // Need to explicitly set flex value to none
+    .#{$prefix}ie11 & {
+        .#{$prefix}before-input-el, .#{$prefix}after-input-el {
+            flex: none;
+        }
+    }
+
     &.#{$prefix}label-align-placeholder .#{$prefix}label-el {
         position: relative;
         z-index: 2;
@@ -107,6 +115,7 @@
         }
     }
 }
+
 
 
 

@@ -93,10 +93,10 @@ topSuite("Ext.field.Toggle", function() {
         });
     });
 
-    describe('boxLabel', function () {
+    describe('boxLabel', function() {
         var boxLabel = '<div style="width:50px;background:green;">&nbsp;</div>';
 
-        it('should layout with boxLabelAlign: after', function () {
+        it('should layout with boxLabelAlign: after', function() {
             createField({
                 inline: true,
                 boxLabel: boxLabel
@@ -113,7 +113,7 @@ topSuite("Ext.field.Toggle", function() {
             });
         });
 
-        it('should layout with boxLabelAlign: before', function () {
+        it('should layout with boxLabelAlign: before', function() {
             createField({
                 inline: true,
                 boxLabel: boxLabel,
@@ -131,8 +131,8 @@ topSuite("Ext.field.Toggle", function() {
             });
         });
 
-        describe("labeled", function () {
-            it('should layout with boxLabelAlign: after', function () {
+        describe("labeled", function() {
+            it('should layout with boxLabelAlign: after', function() {
                 createField({
                     inline: true,
                     label: 'Foo',
@@ -150,7 +150,7 @@ topSuite("Ext.field.Toggle", function() {
                 });
             });
 
-            it('should layout with boxLabelAlign: before', function () {
+            it('should layout with boxLabelAlign: before', function() {
                 createField({
                     inline: true,
                     label: 'Foo',

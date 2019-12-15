@@ -2,7 +2,7 @@ topSuite("Ext.TitleBar", function() {
     var toolbar,
         createToolbar = function(config) {
             config = Ext.apply(config, {
-                
+
             });
 
             toolbar = Ext.create('Ext.TitleBar', config);

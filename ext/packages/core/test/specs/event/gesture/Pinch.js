@@ -1,4 +1,4 @@
-// describe("Ext.event.gesture.Pinch", function () {});
+// describe("Ext.event.gesture.Pinch", function() {});
 // The above appeases Cmd's parser to associate spec run results with files.
 
 (jasmine.supportsTouch ? topSuite : xtopSuite)("Ext.event.gesture.Pinch", function() {
@@ -69,6 +69,7 @@
 
     it("should fire pinchstart, pinch, and pinchend", function() {
         var distance, startDistance;
+
         runs(function() {
             start({ id: 1, x: 100, y: 102 });
             start({ id: 2, x: 200, y: 198 });
@@ -117,6 +118,7 @@
 
     it("should fire pinchcancel and not pinchend if the first touch is canceled", function() {
         var distance, startDistance;
+
         runs(function() {
             start({ id: 1, x: 100, y: 102 });
             start({ id: 2, x: 200, y: 198 });
@@ -155,6 +157,7 @@
 
     it("should fire pinchcancel if the second touch is canceled", function() {
         var distance, startDistance;
+
         runs(function() {
             start({ id: 1, x: 100, y: 102 });
             start({ id: 2, x: 200, y: 198 });

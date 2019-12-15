@@ -18,7 +18,7 @@
 }
 
 .#{$prefix}column-header-checkbox {
-    border-color: $grid-header-background-color;
+    border-color: $grid-header-border-color;
     .#{$prefix}column-header-text {
         overflow: visible;
     }
@@ -75,7 +75,8 @@
     }
 }
 
-// Firefox needs pointer-events: none on the checkbox span to work around focusing issues
-.#{$prefix}gecko .#{$prefix}selmodel-checkbox .#{$prefix}grid-checkcolumn {
-    pointer-events: none;
+.#{$prefix}selmodel-checkbox, .#{$prefix}selmodel-column {
+    .#{$prefix}grid-checkcolumn {
+        pointer-events: none;
+    }
 }

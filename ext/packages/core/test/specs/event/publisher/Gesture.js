@@ -1,5 +1,3 @@
-/* global Ext, expect, xdescribe, xit */
-
 topSuite("Ext.event.publisher.Gesture", function() {
     var helper = Ext.testHelper,
         targetEl;
@@ -42,7 +40,8 @@ topSuite("Ext.event.publisher.Gesture", function() {
             if (collected) {
                 expect('target' in Ext.cache).toBe(false);
                 expect(targetEl.clearListeners).toHaveBeenCalled();
-            } else {
+            }
+            else {
                 expect('target' in Ext.cache).toBe(true);
                 expect(targetEl.clearListeners).not.toHaveBeenCalled();
             }
@@ -88,7 +87,7 @@ topSuite("Ext.event.publisher.Gesture", function() {
                     result.push([this.$className, this.priority]);
                 };
 
-            Ext.testHelper.touchStart(document.body, {id: 1, x: 100, y: 100});
+            Ext.testHelper.touchStart(document.body, { id: 1, x: 100, y: 100 });
 
             expect(result[0]).toEqual(['Ext.event.gesture.Drag', 100]);
             expect(result[1]).toEqual(['Ext.event.gesture.Tap', 200]);
@@ -98,7 +97,7 @@ topSuite("Ext.event.publisher.Gesture", function() {
             expect(result[5]).toEqual(['Ext.event.gesture.Swipe', 600]);
             expect(result[6]).toEqual(['Ext.event.gesture.Pinch', 700]);
             expect(result[7]).toEqual(['Ext.event.gesture.Rotate', 800]);
-            
+
             Ext.testHelper.touchEnd(document.body);
 
             delete Drag.onStart;
@@ -111,7 +110,7 @@ topSuite("Ext.event.publisher.Gesture", function() {
             delete Rotate.onStart;
         });
     });
-    
+
     // window.onerror method of catching exceptions in synthetic event handlers
     // doesn't work in IE8 for some reason :(
     (Ext.isIE8m ? xdescribe : describe)("exceptions in recognizers", function() {
@@ -122,20 +121,20 @@ topSuite("Ext.event.publisher.Gesture", function() {
                 throw new Error("This error is caught but will show in console IE");
             });
         });
-        
+
         it("should not allow the exception to propagate", function() {
             expect(function() {
                 helper.touchStart(targetEl, { id: 1, x: 1, y: 1 });
                 helper.touchEnd(targetEl, { id: 1, x: 1, y: 1 });
             }).toThrow('This error is caught but will show in console IE');
         });
-        
+
         it("should finish gesture when an exception is thrown in recognizer", function() {
             expect(function() {
                 helper.touchStart(targetEl, { id: 1, x: 1, y: 1 });
                 helper.touchEnd(targetEl, { id: 1, x: 1, y: 1 });
             }).toThrow('This error is caught but will show in console IE');
-            
+
             expect(gesture.isStarted).toBe(false);
         });
     });
@@ -170,10 +169,10 @@ topSuite("Ext.event.publisher.Gesture", function() {
             targetEl.on(listeners);
             childEl.on(listeners);
 
-            helper.touchStart(childEl, {id: 1, x: 10, y: 15});
-            helper.touchMove(childEl, {id: 1, x: 20, y: 35});
-            helper.touchMove(childEl, {id: 1, x: 30, y: 45});
-            helper.touchEnd(childEl, {id: 1, x: 30, y: 45});
+            helper.touchStart(childEl, { id: 1, x: 10, y: 15 });
+            helper.touchMove(childEl, { id: 1, x: 20, y: 35 });
+            helper.touchMove(childEl, { id: 1, x: 30, y: 45 });
+            helper.touchEnd(childEl, { id: 1, x: 30, y: 45 });
 
             expect(out).toEqual([
                 'child-touchstart',
@@ -208,6 +207,7 @@ topSuite("Ext.event.publisher.Gesture", function() {
                     if (e.type === 'touchmove') {
                         e.stopPropagation();
                     }
+
                     out.push(e.currentTarget.id + '-' + e.type);
                 },
                 listeners = {
@@ -226,10 +226,10 @@ topSuite("Ext.event.publisher.Gesture", function() {
             targetEl.on(listeners);
             childEl.on(listeners);
 
-            helper.touchStart(childEl, {id: 1, x: 10, y: 15});
-            helper.touchMove(childEl, {id: 1, x: 50, y: 15});
-            helper.touchMove(childEl, {id: 1, x: 200, y: 15});
-            helper.touchEnd(childEl, {id: 1, x: 200, y: 15});
+            helper.touchStart(childEl, { id: 1, x: 10, y: 15 });
+            helper.touchMove(childEl, { id: 1, x: 50, y: 15 });
+            helper.touchMove(childEl, { id: 1, x: 200, y: 15 });
+            helper.touchEnd(childEl, { id: 1, x: 200, y: 15 });
 
             expect(out).toEqual([
                 'child-touchstart',
@@ -266,6 +266,7 @@ topSuite("Ext.event.publisher.Gesture", function() {
                     if (e.type === 'drag') {
                         e.stopPropagation();
                     }
+
                     out.push(e.currentTarget.id + '-' + e.type);
                 },
                 listeners = {
@@ -284,10 +285,10 @@ topSuite("Ext.event.publisher.Gesture", function() {
             targetEl.on(listeners);
             childEl.on(listeners);
 
-            helper.touchStart(childEl, {id: 1, x: 10, y: 15});
-            helper.touchMove(childEl, {id: 1, x: 50, y: 15});
-            helper.touchMove(childEl, {id: 1, x: 200, y: 15});
-            helper.touchEnd(childEl, {id: 1, x: 200, y: 15});
+            helper.touchStart(childEl, { id: 1, x: 10, y: 15 });
+            helper.touchMove(childEl, { id: 1, x: 50, y: 15 });
+            helper.touchMove(childEl, { id: 1, x: 200, y: 15 });
+            helper.touchEnd(childEl, { id: 1, x: 200, y: 15 });
 
             expect(out).toEqual([
                 'child-touchstart',
@@ -353,10 +354,10 @@ topSuite("Ext.event.publisher.Gesture", function() {
             targetEl.on(listeners);
             childEl.on(listeners);
 
-            helper.touchStart(childEl, {id: 1, x: 10, y: 15});
-            helper.touchMove(childEl, {id: 1, x: 50, y: 15});
-            helper.touchMove(childEl, {id: 1, x: 200, y: 15});
-            helper.touchEnd(childEl, {id: 1, x: 200, y: 15});
+            helper.touchStart(childEl, { id: 1, x: 10, y: 15 });
+            helper.touchMove(childEl, { id: 1, x: 50, y: 15 });
+            helper.touchMove(childEl, { id: 1, x: 200, y: 15 });
+            helper.touchEnd(childEl, { id: 1, x: 200, y: 15 });
 
             expect(out).toEqual([
                 'child-touchstart',
@@ -397,6 +398,7 @@ topSuite("Ext.event.publisher.Gesture", function() {
                         e.claimGesture();
                         claimed = true;
                     }
+
                     out.push(e.currentTarget.id + '-' + e.type);
                 },
                 listeners = {
@@ -415,10 +417,10 @@ topSuite("Ext.event.publisher.Gesture", function() {
             targetEl.on(listeners);
             childEl.on(listeners);
 
-            helper.touchStart(childEl, {id: 1, x: 10, y: 15});
-            helper.touchMove(childEl, {id: 1, x: 50, y: 15});
-            helper.touchMove(childEl, {id: 1, x: 200, y: 15});
-            helper.touchEnd(childEl, {id: 1, x: 200, y: 15});
+            helper.touchStart(childEl, { id: 1, x: 10, y: 15 });
+            helper.touchMove(childEl, { id: 1, x: 50, y: 15 });
+            helper.touchMove(childEl, { id: 1, x: 200, y: 15 });
+            helper.touchEnd(childEl, { id: 1, x: 200, y: 15 });
 
             expect(out).toEqual([
                 'child-touchstart',
@@ -458,6 +460,7 @@ topSuite("Ext.event.publisher.Gesture", function() {
                         e.claimGesture();
                         claimed = true;
                     }
+
                     out.push(e.currentTarget.id + '-' + e.type);
                 },
                 listeners = {
@@ -476,10 +479,10 @@ topSuite("Ext.event.publisher.Gesture", function() {
             targetEl.on(listeners);
             childEl.on(listeners);
 
-            helper.touchStart(childEl, {id: 1, x: 10, y: 15});
-            helper.touchMove(childEl, {id: 1, x: 50, y: 15});
-            helper.touchMove(childEl, {id: 1, x: 200, y: 15});
-            helper.touchEnd(childEl, {id: 1, x: 200, y: 15});
+            helper.touchStart(childEl, { id: 1, x: 10, y: 15 });
+            helper.touchMove(childEl, { id: 1, x: 50, y: 15 });
+            helper.touchMove(childEl, { id: 1, x: 200, y: 15 });
+            helper.touchEnd(childEl, { id: 1, x: 200, y: 15 });
 
             // swipe comes after drag in priority ranking.
             // therefore we expect drag events to fire prior to the swipestart listener
@@ -520,6 +523,7 @@ topSuite("Ext.event.publisher.Gesture", function() {
                         e.claimGesture();
                         claimed = true;
                     }
+
                     out.push(e.currentTarget.id + '-' + e.type);
                 },
                 listeners = {
@@ -538,10 +542,10 @@ topSuite("Ext.event.publisher.Gesture", function() {
             targetEl.on(listeners);
             childEl.on(listeners);
 
-            helper.touchStart(childEl, {id: 1, x: 10, y: 15});
-            helper.touchMove(childEl, {id: 1, x: 50, y: 15});
-            helper.touchMove(childEl, {id: 1, x: 200, y: 15});
-            helper.touchEnd(childEl, {id: 1, x: 200, y: 15});
+            helper.touchStart(childEl, { id: 1, x: 10, y: 15 });
+            helper.touchMove(childEl, { id: 1, x: 50, y: 15 });
+            helper.touchMove(childEl, { id: 1, x: 200, y: 15 });
+            helper.touchEnd(childEl, { id: 1, x: 200, y: 15 });
 
             // swipe comes after drag in priority ranking.
             // therefore we expect drag events to fire prior to the swipestart listener
@@ -570,6 +574,7 @@ topSuite("Ext.event.publisher.Gesture", function() {
                         e.claimGesture();
                         claimed = true;
                     }
+
                     out.push(e.currentTarget.id + '-' + e.type);
                 },
                 listeners = {
@@ -588,13 +593,13 @@ topSuite("Ext.event.publisher.Gesture", function() {
             targetEl.on(listeners);
             childEl.on(listeners);
 
-            helper.touchStart(childEl, {id: 1, x: 10, y: 15});
-            helper.touchMove(childEl, {id: 1, x: 50, y: 15});
+            helper.touchStart(childEl, { id: 1, x: 10, y: 15 });
+            helper.touchMove(childEl, { id: 1, x: 50, y: 15 });
 
             claimNext = true;
 
-            helper.touchMove(childEl, {id: 1, x: 200, y: 15});
-            helper.touchEnd(childEl, {id: 1, x: 200, y: 15});
+            helper.touchMove(childEl, { id: 1, x: 200, y: 15 });
+            helper.touchEnd(childEl, { id: 1, x: 200, y: 15 });
 
             expect(out).toEqual([
                 'child-touchstart',
@@ -627,15 +632,15 @@ topSuite("Ext.event.publisher.Gesture", function() {
         });
     });
 
-    describe("keeping e.touches up to date", function () {
-        it("should update touches on start", function () {
+    describe("keeping e.touches up to date", function() {
+        it("should update touches on start", function() {
             var e;
 
             targetEl.on('touchstart', function(ev) {
                 e = ev;
             });
 
-            helper.touchStart(targetEl, {id: 1, x: 10, y: 11});
+            helper.touchStart(targetEl, { id: 1, x: 10, y: 11 });
 
             expect(e.touches.length).toBe(1);
             expect(e.touches[0].identifier).toBe(1);
@@ -643,19 +648,19 @@ topSuite("Ext.event.publisher.Gesture", function() {
             expect(e.touches[0].pageY).toBe(11);
             expect(e.touches[0].target).toBe(targetEl.dom);
 
-            helper.touchEnd(targetEl, {id: 1, x: 10, y: 11});
+            helper.touchEnd(targetEl, { id: 1, x: 10, y: 11 });
         });
 
-        it("should update touches on move", function () {
+        it("should update touches on move", function() {
             var e;
 
-            targetEl.on('touchmove', function (ev) {
+            targetEl.on('touchmove', function(ev) {
                 e = ev;
             });
 
-            helper.touchStart(targetEl, {id: 1, x: 10, y: 11});
+            helper.touchStart(targetEl, { id: 1, x: 10, y: 11 });
 
-            helper.touchMove(targetEl, {id: 1, x: 12, y: 15});
+            helper.touchMove(targetEl, { id: 1, x: 12, y: 15 });
 
             expect(e.touches.length).toBe(1);
             expect(e.touches[0].identifier).toBe(1);
@@ -663,19 +668,19 @@ topSuite("Ext.event.publisher.Gesture", function() {
             expect(e.touches[0].pageY).toBe(15);
             expect(e.touches[0].target).toBe(targetEl.dom);
 
-            helper.touchEnd(targetEl, {id: 1, x: 12, y: 15});
+            helper.touchEnd(targetEl, { id: 1, x: 12, y: 15 });
         });
 
-        it("should update touches on second start", function () {
+        it("should update touches on second start", function() {
             var e;
 
-            targetEl.on('touchstart', function (ev) {
+            targetEl.on('touchstart', function(ev) {
                 e = ev;
             });
 
-            helper.touchStart(targetEl, {id: 1, x: 10, y: 11});
+            helper.touchStart(targetEl, { id: 1, x: 10, y: 11 });
 
-            helper.touchStart(targetEl, {id: 2, x: 12, y: 15});
+            helper.touchStart(targetEl, { id: 2, x: 12, y: 15 });
 
             if (Ext.supports.TouchEvents || Ext.supports.MSPointerEvents || Ext.supports.PointerEvents) {
                 expect(e.touches.length).toBe(2);
@@ -689,7 +694,8 @@ topSuite("Ext.event.publisher.Gesture", function() {
                 expect(e.touches[1].pageX).toBe(12);
                 expect(e.touches[1].pageY).toBe(15);
                 expect(e.touches[1].target).toBe(targetEl.dom);
-            } else {
+            }
+            else {
                 expect(e.touches.length).toBe(1);
 
                 expect(e.touches[0].identifier).toBe(1);
@@ -698,28 +704,28 @@ topSuite("Ext.event.publisher.Gesture", function() {
                 expect(e.touches[0].target).toBe(targetEl.dom);
             }
 
-            helper.touchEnd(targetEl, {id: 2, x: 12, y: 15});
-            
-            helper.touchEnd(targetEl, {id: 1, x: 10, y: 11});
+            helper.touchEnd(targetEl, { id: 2, x: 12, y: 15 });
+
+            helper.touchEnd(targetEl, { id: 1, x: 10, y: 11 });
         });
 
-        it("should update touches on move when start propagation was stopped", function () {
+        it("should update touches on move when start propagation was stopped", function() {
             var e;
 
             targetEl.on({
-                touchstart: function (ev) {
+                touchstart: function(ev) {
                     ev.stopPropagation();
                 },
                 delegated: false
             });
 
-            targetEl.on('touchmove', function (ev) {
+            targetEl.on('touchmove', function(ev) {
                 e = ev;
             });
 
-            helper.touchStart(targetEl, {id: 1, x: 10, y: 11});
+            helper.touchStart(targetEl, { id: 1, x: 10, y: 11 });
 
-            helper.touchMove(targetEl, {id: 1, x: 12, y: 15});
+            helper.touchMove(targetEl, { id: 1, x: 12, y: 15 });
 
             if (Ext.supports.TouchEvents || Ext.supports.MSPointerEvents || Ext.supports.PointerEvents) {
                 expect(e.touches.length).toBe(1);
@@ -727,39 +733,41 @@ topSuite("Ext.event.publisher.Gesture", function() {
                 expect(e.touches[0].pageX).toBe(12);
                 expect(e.touches[0].pageY).toBe(15);
                 expect(e.touches[0].target).toBe(targetEl.dom);
-            } else {
+            }
+            else {
                 expect(e.touches).toBeUndefined();
             }
 
-            helper.touchEnd(targetEl, {id: 1, x: 12, y: 15});
+            helper.touchEnd(targetEl, { id: 1, x: 12, y: 15 });
         });
 
-        it("should update touches on end when start and move propagation were stopped", function () {
+        it("should update touches on end when start and move propagation were stopped", function() {
             var e;
 
             targetEl.on({
-                touchstart: function (ev) {
+                touchstart: function(ev) {
                     ev.stopPropagation();
                 },
-                touchmove: function (ev) {
+                touchmove: function(ev) {
                     ev.stopPropagation();
                 },
                 delegated: false
             });
 
-            targetEl.on('touchend', function (ev) {
+            targetEl.on('touchend', function(ev) {
                 e = ev;
             });
 
-            helper.touchStart(targetEl, {id: 1, x: 10, y: 11});
+            helper.touchStart(targetEl, { id: 1, x: 10, y: 11 });
 
-            helper.touchMove(targetEl, {id: 1, x: 12, y: 15});
+            helper.touchMove(targetEl, { id: 1, x: 12, y: 15 });
 
-            helper.touchEnd(targetEl, {id: 1, x: 12, y: 15});
+            helper.touchEnd(targetEl, { id: 1, x: 12, y: 15 });
 
             if (e.pointerType === 'mouse') {
                 expect(e.touches).toBeUndefined();
-            } else {
+            }
+            else {
                 expect(e.touches.length).toBe(0);
             }
         });
@@ -770,7 +778,7 @@ topSuite("Ext.event.publisher.Gesture", function() {
             e.stopPropagation();
         }
 
-        it("should cancel gesture recognition when stopPropagation is called on the start event", function () {
+        it("should cancel gesture recognition when stopPropagation is called on the start event", function() {
             var touchstart = jasmine.createSpy(),
                 tap = jasmine.createSpy(),
                 tapcancel = jasmine.createSpy();
@@ -788,18 +796,18 @@ topSuite("Ext.event.publisher.Gesture", function() {
                 delegated: false
             });
 
-            helper.touchStart(targetEl, {id: 1, x: 10, y: 10});
+            helper.touchStart(targetEl, { id: 1, x: 10, y: 10 });
 
-            helper.touchMove(targetEl, {id: 1, x: 11, y: 11});
+            helper.touchMove(targetEl, { id: 1, x: 11, y: 11 });
 
-            helper.touchEnd(targetEl, {id: 1, x: 11, y: 11});
+            helper.touchEnd(targetEl, { id: 1, x: 11, y: 11 });
 
             expect(touchstart).not.toHaveBeenCalled();
             expect(tapcancel).not.toHaveBeenCalled();
             expect(tap).not.toHaveBeenCalled();
         });
 
-        it("should cancel gesture recognition when stopPropagation is called on the move event", function () {
+        (Ext.isIE8 ? xit : it)("should cancel gesture recognition when stopPropagation is called on the move event", function() {
             var dragstart = jasmine.createSpy(),
                 drag = jasmine.createSpy(),
                 dragend = jasmine.createSpy(),
@@ -814,9 +822,9 @@ topSuite("Ext.event.publisher.Gesture", function() {
 
             targetEl.setTouchAction('none');
 
-            helper.touchStart(targetEl, {id: 1, x: 10, y: 10});
+            helper.touchStart(targetEl, { id: 1, x: 10, y: 10 });
 
-            helper.touchMove(targetEl, {id: 1, x: 20, y: 20});
+            helper.touchMove(targetEl, { id: 1, x: 20, y: 20 });
 
             expect(dragstart.callCount).toBe(1);
 
@@ -827,17 +835,17 @@ topSuite("Ext.event.publisher.Gesture", function() {
                 delegated: false
             });
 
-            helper.touchMove(targetEl, {id: 1, x: 30, y: 30});
+            helper.touchMove(targetEl, { id: 1, x: 30, y: 30 });
 
             expect(drag.callCount).toBe(1);
             expect(dragcancel.callCount).toBe(1);
 
-            helper.touchEnd(targetEl, {id: 1, x: 30, y: 30});
+            helper.touchEnd(targetEl, { id: 1, x: 30, y: 30 });
 
             expect(dragend.callCount).toBe(0);
         });
 
-        it("should cancel gesture recognition when stopPropagation is called on the end event", function () {
+        (Ext.isIE8 ? xit : it)("should cancel gesture recognition when stopPropagation is called on the end event", function() {
             var dragstart = jasmine.createSpy(),
                 drag = jasmine.createSpy(),
                 dragend = jasmine.createSpy(),
@@ -852,9 +860,9 @@ topSuite("Ext.event.publisher.Gesture", function() {
 
             targetEl.setTouchAction('none');
 
-            helper.touchStart(targetEl, {id: 1, x: 10, y: 10});
+            helper.touchStart(targetEl, { id: 1, x: 10, y: 10 });
 
-            helper.touchMove(targetEl, {id: 1, x: 30, y: 30});
+            helper.touchMove(targetEl, { id: 1, x: 30, y: 30 });
 
             expect(dragstart.callCount).toBe(1);
 
@@ -865,7 +873,7 @@ topSuite("Ext.event.publisher.Gesture", function() {
                 delegated: false
             });
 
-            helper.touchEnd(targetEl, {id: 1, x: 30, y: 30});
+            helper.touchEnd(targetEl, { id: 1, x: 30, y: 30 });
 
             expect(drag.callCount).toBe(1);
             expect(dragcancel.callCount).toBe(1);

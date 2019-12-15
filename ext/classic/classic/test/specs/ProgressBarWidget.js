@@ -28,6 +28,5 @@ topSuite("Ext.ProgressBarWidget", function() {
             c.setValue(null);
             expect(c.getValue()).toBe(0);
         });
-    }); 
-
+    });
 });

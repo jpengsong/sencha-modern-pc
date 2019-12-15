@@ -67,7 +67,7 @@ Ext.define('Ext.chart.sprite.Label', {
             },
 
             updaters: {
-                hidden: function (attr) {
+                hidden: function(attr) {
                     attr.hidden = (attr.display === 'none');
                 }
             }
@@ -118,32 +118,36 @@ Ext.define('Ext.chart.sprite.Label', {
         hideLessThan: 20
     },
 
-    applyCalloutLine: function (calloutLine) {
+    applyCalloutLine: function(calloutLine) {
         if (calloutLine) {
             return Ext.apply({}, calloutLine);
         }
+
+        return calloutLine;
     },
 
-    createModifiers: function () {
+    createModifiers: function() {
         var me = this,
             mods = me.callParent(arguments);
 
-        mods.callout = new Ext.chart.modifier.Callout({sprite: me});
+        mods.callout = new Ext.chart.modifier.Callout({ sprite: me });
         mods.animation.setUpper(mods.callout);
         mods.callout.setUpper(mods.target);
     },
 
-    render: function (surface, ctx) {
+    render: function(surface, ctx) {
         var me = this,
             attr = me.attr,
             calloutColor = attr.calloutColor;
 
         ctx.save();
         ctx.globalAlpha *= attr.callout;
+
         if (ctx.globalAlpha > 0 && attr.calloutHasLine) {
             if (calloutColor && calloutColor.isGradient) {
                 calloutColor = calloutColor.getStops()[0].color;
             }
+
             ctx.strokeStyle = calloutColor;
             ctx.fillStyle = calloutColor;
             ctx.lineWidth = attr.calloutWidth;
@@ -153,13 +157,16 @@ Ext.define('Ext.chart.sprite.Label', {
             ctx.stroke();
 
             ctx.beginPath();
-            ctx.arc(me.attr.calloutStartX, me.attr.calloutStartY, 1 * attr.calloutWidth, 0, 2 * Math.PI, true);
+            ctx.arc(me.attr.calloutStartX, me.attr.calloutStartY, 1 * attr.calloutWidth,
+                    0, 2 * Math.PI, true);
             ctx.fill();
 
             ctx.beginPath();
-            ctx.arc(me.attr.calloutEndX, me.attr.calloutEndY, 1 * attr.calloutWidth, 0, 2 * Math.PI, true);
+            ctx.arc(me.attr.calloutEndX, me.attr.calloutEndY, 1 * attr.calloutWidth,
+                    0, 2 * Math.PI, true);
             ctx.fill();
         }
+
         ctx.restore();
 
         Ext.draw.sprite.Text.prototype.render.apply(me, arguments);

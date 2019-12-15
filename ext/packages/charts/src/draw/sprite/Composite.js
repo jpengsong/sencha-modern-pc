@@ -18,7 +18,7 @@ Ext.define('Ext.draw.sprite.Composite', {
         sprites: []
     },
 
-    constructor: function (config) {
+    constructor: function(config) {
         this.sprites = [];
         this.map = {};
         this.callParent([config]);
@@ -29,21 +29,24 @@ Ext.define('Ext.draw.sprite.Composite', {
      * @param {Ext.draw.sprite.Sprite/Ext.draw.sprite.Sprite[]/Object/Object[]} sprite
      * @return {Ext.draw.sprite.Sprite/Ext.draw.sprite.Sprite[]}
      */
-    addSprite: function (sprite) {
+    addSprite: function(sprite) {
         var i = 0,
-            results;
+            attr, results, oldTransformations;
 
         if (Ext.isArray(sprite)) {
             results = [];
+
             while (i < sprite.length) {
                 results.push(this.addSprite(sprite[i++]));
             }
+
             return results;
         }
 
         if (sprite && sprite.type && !sprite.isSprite) {
             sprite = Ext.create('sprite.' + sprite.type, sprite);
         }
+
         if (!sprite || !sprite.isSprite || sprite.isComposite) {
             return null;
         }
@@ -51,15 +54,16 @@ Ext.define('Ext.draw.sprite.Composite', {
         sprite.setSurface(null);
         sprite.setParent(this);
 
-        var attr = this.attr,
-            oldTransformations = sprite.applyTransformations;
+        attr = this.attr;
+        oldTransformations = sprite.applyTransformations;
 
-        sprite.applyTransformations = function (force) {
+        sprite.applyTransformations = function(force) {
             if (sprite.attr.dirtyTransform) {
                 attr.dirtyTransform = true;
                 attr.bbox.plain.dirty = true;
                 attr.bbox.transform.dirty = true;
             }
+
             oldTransformations.call(sprite, force);
         };
 
@@ -74,11 +78,11 @@ Ext.define('Ext.draw.sprite.Composite', {
     /**
      * @deprecated 6.2.1 Use {@link #addSprite} instead.
      */
-    add: function (sprite) {
+    add: function(sprite) {
         return this.addSprite(sprite);
     },
 
-    removeSprite: function (sprite, isDestroy) {
+    removeSprite: function(sprite, isDestroy) {
         var me = this,
             id, isOwnSprite;
 
@@ -86,12 +90,15 @@ Ext.define('Ext.draw.sprite.Composite', {
             if (sprite.charAt) { // is String
                 sprite = me.map[sprite];
             }
+
             if (!sprite || !sprite.isSprite) {
                 return null;
             }
+
             if (sprite.destroyed || sprite.destroying) {
                 return sprite;
             }
+
             id = sprite.getId();
             isOwnSprite = me.map[id];
             delete me.map[id];
@@ -99,9 +106,11 @@ Ext.define('Ext.draw.sprite.Composite', {
             if (isDestroy) {
                 sprite.destroy();
             }
+
             if (!isOwnSprite) {
                 return sprite;
             }
+
             sprite.setParent(null);
             // sprite.setSurface(null);
             Ext.Array.remove(me.sprites, sprite);
@@ -118,11 +127,13 @@ Ext.define('Ext.draw.sprite.Composite', {
      * Adds a list of sprites to the composite.
      * @param {Ext.draw.sprite.Sprite[]|Object[]|Ext.draw.sprite.Sprite|Object} sprites
      */
-    addAll: function (sprites) {
+    addAll: function(sprites) {
+        var i = 0;
+
         if (sprites.isSprite || sprites.type) {
             this.add(sprites);
-        } else if (Ext.isArray(sprites)) {
-            var i = 0;
+        }
+        else if (Ext.isArray(sprites)) {
             while (i < sprites.length) {
                 this.add(sprites[i++]);
             }
@@ -130,9 +141,10 @@ Ext.define('Ext.draw.sprite.Composite', {
     },
 
     /**
-     * Updates the bounding box of the composite, which contains the bounding box of all sprites in the composite.
+     * Updates the bounding box of the composite, which contains the bounding box of all sprites
+     * in the composite.
      */
-    updatePlainBBox: function (plain) {
+    updatePlainBBox: function(plain) {
         var me = this,
             left = Infinity,
             right = -Infinity,
@@ -144,26 +156,31 @@ Ext.define('Ext.draw.sprite.Composite', {
             sprite = me.sprites[i];
             sprite.applyTransformations();
             bbox = sprite.getBBox();
+
             if (left > bbox.x) {
                 left = bbox.x;
             }
+
             if (right < bbox.x + bbox.width) {
                 right = bbox.x + bbox.width;
             }
+
             if (top > bbox.y) {
                 top = bbox.y;
             }
+
             if (bottom < bbox.y + bbox.height) {
                 bottom = bbox.y + bbox.height;
             }
         }
+
         plain.x = left;
         plain.y = top;
         plain.width = right - left;
         plain.height = bottom - top;
     },
 
-    isVisible: function () {
+    isVisible: function() {
         // Override the abstract Sprite's method.
         // Composite uses a simpler check, because it has no fill or stroke
         // style of its own, it just houses other sprites.
@@ -178,7 +195,7 @@ Ext.define('Ext.draw.sprite.Composite', {
     /**
      * Renders all sprites contained in the composite to the surface.
      */
-    render: function (surface, ctx, rect) {
+    render: function(surface, ctx, rect) {
         var me = this,
             attr = me.attr,
             mat = me.attr.matrix,
@@ -187,13 +204,18 @@ Ext.define('Ext.draw.sprite.Composite', {
             i = 0;
 
         mat.toContext(ctx);
+
         for (; i < ln; i++) {
             surface.renderSprite(sprites[i], rect);
         }
+
         //<debug>
+        // eslint-disable-next-line vars-on-top
         var debug = attr.debug || me.statics().debug || Ext.draw.sprite.Sprite.debug;
+
         if (debug) {
             attr.inverseMatrix.toContext(ctx);
+
             if (debug.bbox) {
                 me.renderBBox(surface, ctx);
             }
@@ -201,7 +223,7 @@ Ext.define('Ext.draw.sprite.Composite', {
         //</debug>
     },
 
-    destroy: function () {
+    destroy: function() {
         var me = this,
             sprites = me.sprites,
             ln = sprites.length,
@@ -215,5 +237,4 @@ Ext.define('Ext.draw.sprite.Composite', {
 
         me.callParent();
     }
-
 });

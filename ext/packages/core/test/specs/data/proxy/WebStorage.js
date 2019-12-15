@@ -3,6 +3,11 @@ topSuite("Ext.data.proxy.WebStorage",
 function() {
     var proxy, config;
 
+    var fakeScope = {
+        id: "fakeScope",
+        fakeScope: true
+    };
+
     var fakeStorageObject = {
         items: {},
         getItem: function(key) {
@@ -23,22 +28,22 @@ function() {
         Ext.define('spec.User', {
             extend: 'Ext.data.Model',
             fields: [
-                {name: 'id',   type: 'int'},
-                {name: 'name', type: 'string'},
-                {name: 'age', type: 'int'},
-                {name: 'hired', type: 'date', dateFormat: 'd/m/Y'}
+                { name: 'id',   type: 'int' },
+                { name: 'name', type: 'string' },
+                { name: 'age', type: 'int' },
+                { name: 'hired', type: 'date', dateFormat: 'd/m/Y' }
             ]
         });
-        
+
         Ext.define('spec.Storage', {
             extend: 'Ext.data.proxy.WebStorage',
             getStorageObject: function() {
                 return fakeStorageObject;
-            }    
+            }
         });
     });
-    
-    afterEach(function(){
+
+    afterEach(function() {
         fakeStorageObject.clear();
         Ext.undefine('spec.User');
         Ext.undefine('spec.Storage');
@@ -83,7 +88,7 @@ function() {
                 spec.User = Ext.define(null, {
                     extend: 'Ext.data.Model',
                     fields: [
-                        {name: 'id',   type: 'string'}
+                        { name: 'id',   type: 'string' }
                     ]
                 });
 
@@ -131,7 +136,7 @@ function() {
                 spec.User = Ext.define(null, {
                     extend: 'Ext.data.Model',
                     fields: [
-                        {name: 'id',   type: 'string'}
+                        { name: 'id',   type: 'string' }
                     ]
                 });
 
@@ -156,7 +161,7 @@ function() {
             proxy = new spec.Storage(config);
         });
 
-        describe("instantiation", function(){
+        describe("instantiation", function() {
             it("should set id", function() {
                 expect(proxy.getId()).toEqual('User');
             });
@@ -165,9 +170,8 @@ function() {
                 expect(proxy.superclass.superclass).toEqual(Ext.data.proxy.Client.prototype);
             });
 
-
             it("should test getStorageObject in constructor", function() {
-               expect(proxy.getStorageObject()).toBe(fakeStorageObject); 
+               expect(proxy.getStorageObject()).toBe(fakeStorageObject);
             });
         });
 
@@ -179,15 +183,15 @@ function() {
                     Ext.define('spec.Human', {
                         extend: 'Ext.data.Model',
                         fields: [
-                            {name: 'name',  type: 'string'},
-                            {name: 'age',   type: 'int'},
-                            {name: 'planet', type: 'string', defaultValue: 'Earth'}
+                            { name: 'name',  type: 'string' },
+                            { name: 'age',   type: 'int' },
+                            { name: 'planet', type: 'string', defaultValue: 'Earth' }
                         ]
                     });
                     nicolas = new spec.Human({
                         id: 1,
                         name: 'Nicolas',
-                        age : 27
+                        age: 27
                     });
                 });
 
@@ -206,18 +210,18 @@ function() {
             });
 
             describe("getRecordCounterKey", function() {
-                it("should return the unique key used to store the current record counter for this proxy", function () {
+                it("should return the unique key used to store the current record counter for this proxy", function() {
                     expect(proxy.getRecordCounterKey()).toEqual("User-counter");
                 });
             });
 
             describe("getTreeKey", function() {
-                it("should return the unique key used to store the tree indicator for this proxy", function () {
+                it("should return the unique key used to store the tree indicator for this proxy", function() {
                     expect(proxy.getTreeKey()).toEqual("User-tree");
                 });
             });
 
-            describe("getStorageObject", function(){
+            describe("getStorageObject", function() {
                 it("should throw an error on getStorageObject", function() {
                     expect(Ext.data.proxy.WebStorage.prototype.getStorageObject).toThrow();
                 });
@@ -245,7 +249,7 @@ function() {
 
         beforeEach(function() {
             proxy = new spec.Storage({
-                id  : 'lsTest'
+                id: 'lsTest'
             });
 
             store = new Ext.data.Store({
@@ -253,7 +257,7 @@ function() {
                 proxy: proxy
             });
 
-            store.add({name: 'Ed'}, {name: 'Abe'}, {name: 'Aaron'}, {name: 'Tommy'});
+            store.add({ name: 'Ed' }, { name: 'Abe' }, { name: 'Aaron' }, { name: 'Tommy' });
             store.sync();
         });
 
@@ -285,7 +289,7 @@ function() {
             store.remove([store.getAt(1), store.getAt(2)]);
             store.sync();
 
-            expect(proxy.getIds()).toEqual([1,4]);
+            expect(proxy.getIds()).toEqual([1, 4]);
         });
     });
 
@@ -294,14 +298,14 @@ function() {
 
         beforeEach(function() {
             proxy = new spec.Storage({
-                id  : 'tree-test'
+                id: 'tree-test'
             });
 
             spec.User = Ext.define(null, {
                 extend: 'Ext.data.TreeModel',
                 fields: [
-                    {name: 'id',   type: 'int'},
-                    {name: 'name', type: 'string'}
+                    { name: 'id',   type: 'int' },
+                    { name: 'name', type: 'string' }
                 ],
                 proxy: proxy
             });
@@ -318,12 +322,12 @@ function() {
                 }
             });
 
-            node1 = new spec.User({name: 'Abe'});
-            node2 = new spec.User({name: 'Sue'});
-            node3 = new spec.User({name: 'Phil'});
-            node4 = new spec.User({name: 'Don'});
-            node5 = new spec.User({name: 'Ed'});
-            node6 = new spec.User({name: 'Nico'});
+            node1 = new spec.User({ name: 'Abe' });
+            node2 = new spec.User({ name: 'Sue' });
+            node3 = new spec.User({ name: 'Phil' });
+            node4 = new spec.User({ name: 'Don' });
+            node5 = new spec.User({ name: 'Ed' });
+            node6 = new spec.User({ name: 'Nico' });
             node2.appendChild([node3, node4]);
             node1.appendChild([node2, node5]);
 
@@ -352,7 +356,7 @@ function() {
             expect(proxy.getRecord(4)).toBeNull();
             expect(proxy.getRecord(5)).toBeNull();
         });
-        
+
         it("should remove the ids for the node and its descendants", function() {
             node1.erase();
 
@@ -398,7 +402,7 @@ function() {
         describe("if the records are phantoms", function() {
 
             beforeEach(function() {
-                record = new spec.User({name: 'Ed'});
+                record = new spec.User({ name: 'Ed' });
                 createOperation();
             });
 
@@ -422,6 +426,7 @@ function() {
 
                 record = new uniqueModel();
                 var id = record.getId();
+
                 createOperation();
                 proxy.create(operation);
                 expect(record.getId()).toBe(id);
@@ -490,7 +495,7 @@ function() {
 
         describe("if the records are not phantoms", function() {
             beforeEach(function() {
-                record = new spec.User({id: 20, name: 'Ed'});
+                record = new spec.User({ id: 20, name: 'Ed' });
                 createOperation();
             });
 
@@ -516,7 +521,7 @@ function() {
         describe("if the records are decorated with NodeInterface", function() {
             beforeEach(function() {
                 Ext.data.NodeInterface.decorate(spec.User);
-                record = new spec.User({name: 'Phil'});
+                record = new spec.User({ name: 'Phil' });
                 createOperation();
             });
 
@@ -545,8 +550,7 @@ function() {
 
             spyOn(proxy, 'setRecord').andCallThrough();
 
-
-            record = new spec.User({id: 100, name: 'Ed'});
+            record = new spec.User({ id: 100, name: 'Ed' });
 
             operation = new Ext.data.operation.Update({
                 records: [record]
@@ -630,7 +634,7 @@ function() {
                 id: 'someId'
             });
 
-            record = new spec.User({id: 100, name: 'Ed', hired: '31/05/2010'});
+            record = new spec.User({ id: 100, name: 'Ed', hired: '31/05/2010' });
         });
 
         describe("if a new id is passed", function() {
@@ -666,8 +670,9 @@ function() {
         it("should json encode the data", function() {
             var data = Ext.clone(record.data),
                 decodedData;
-            delete data.id; 
-            
+
+            delete data.id;
+
             proxy.setRecord(record);
             decodedData = Ext.decode(fakeStorageObject.getItem(proxy.getRecordKey(100)));
 
@@ -682,7 +687,7 @@ function() {
     describe("reading", function() {
         var f, operation;
 
-        beforeEach(function() {            
+        beforeEach(function() {
             config = {
                 id: 'User',
                 model: spec.User
@@ -699,9 +704,11 @@ function() {
                     id: 1,
                     name: 'Foo'
                 });
+
                 rec.save();
 
                 var user = spec.User.load(1);
+
                 expect(user.getId()).toBe(1);
                 expect(user.get('name')).toBe('Foo');
             });
@@ -711,7 +718,7 @@ function() {
             var fakeRecord;
 
             beforeEach(function() {
-                fakeRecord = {id: 100, name: 'Phil'};
+                fakeRecord = { id: 100, name: 'Phil' };
 
                 spyOn(proxy, 'getRecord').andReturn(fakeRecord);
 
@@ -768,6 +775,7 @@ function() {
 
             it("should call the recordCreator function to create the record", function() {
                 var recordCreator = jasmine.createSpy();
+
                 operation.setRecordCreator(recordCreator);
 
                 proxy.read(operation);
@@ -810,6 +818,7 @@ function() {
 
             it("should call the recordCreator function to create the records", function() {
                 var recordCreator = jasmine.createSpy();
+
                 operation.setRecordCreator(recordCreator);
 
                 proxy.read(operation);
@@ -1040,7 +1049,7 @@ function() {
 
             });
             it("should get tree data", function() {
-                spyOn(proxy, 'getTreeData').andReturn([new spec.User({id: 1, name: 'Phil'})]);
+                spyOn(proxy, 'getTreeData').andReturn([new spec.User({ id: 1, name: 'Phil' })]);
 
                 proxy.read(operation);
 
@@ -1146,7 +1155,7 @@ function() {
 
             proxy.clear();
         });
-        
+
         it("should remove all the records", function() {
             expect(fakeStorageObject.getItem('clear-test-1')).toBeNull();
             expect(fakeStorageObject.getItem('clear-test-2')).toBeNull();

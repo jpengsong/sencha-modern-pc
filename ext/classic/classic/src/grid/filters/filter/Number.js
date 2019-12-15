@@ -100,7 +100,7 @@ Ext.define('Ext.grid.filters.filter.Number', {
         showSeparator: false
     },
 
-    createMenu: function () {
+    createMenu: function() {
         var me = this,
             listeners = {
                 scope: me,
@@ -124,6 +124,7 @@ Ext.define('Ext.grid.filters.filter.Number', {
 
         for (i = 0, len = menuItems.length; i < len; i++) {
             key = menuItems[i];
+
             if (key !== '-') {
                 field = fields[key];
 
@@ -144,15 +145,18 @@ Ext.define('Ext.grid.filters.filter.Number', {
                 item.filter = me.filter[key];
                 item.filterKey = key;
                 item.on(listeners);
-            } else {
+            }
+            else {
                 me.menu.add(key);
             }
         }
     },
 
-    getValue: function (field) {
+    getValue: function(field) {
         var value = {};
+
         value[field.filterKey] = field.getValue();
+
         return value;
     },
 
@@ -161,7 +165,7 @@ Ext.define('Ext.grid.filters.filter.Number', {
      * Handler method called when there is a spin event on a NumberField
      * item of this menu.
      */
-    onInputSpin: function (field, direction) {
+    onInputSpin: function(field, direction) {
         var value = {};
 
         value[field.filterKey] = field.getValue();

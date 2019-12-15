@@ -103,7 +103,7 @@ Ext.define('Ext.draw.plugin.SpriteEvents', {
         spritemouseout: true
     },
 
-    init: function (drawContainer) {
+    init: function(drawContainer) {
         var handleEvent = 'handleEvent';
 
         this.drawContainer = drawContainer;
@@ -122,7 +122,7 @@ Ext.define('Ext.draw.plugin.SpriteEvents', {
         });
     },
 
-    hasSpriteMouseMoveListeners: function () {
+    hasSpriteMouseMoveListeners: function() {
         var listeners = this.drawContainer.hasListeners,
             name;
 
@@ -131,16 +131,18 @@ Ext.define('Ext.draw.plugin.SpriteEvents', {
                 return true;
             }
         }
+
         return false;
     },
 
-    hitTestEvent: function (e) {
+    hitTestEvent: function(e) {
         var items = this.drawContainer.getItems(),
             surface, sprite, i;
 
         for (i = items.length - 1; i >= 0; i--) {
             surface = items.get(i);
             sprite = surface.hitTestEvent(e);
+
             if (sprite) {
                 return sprite;
             }
@@ -149,7 +151,7 @@ Ext.define('Ext.draw.plugin.SpriteEvents', {
         return null;
     },
 
-    handleEvent: function (e) {
+    handleEvent: function(e) {
         var me = this,
             drawContainer = me.drawContainer,
             isMouseMoveEvent = e.type in me.mouseMoveEvents,
@@ -166,6 +168,7 @@ Ext.define('Ext.draw.plugin.SpriteEvents', {
             if (lastSprite) {
                 drawContainer.fireEvent('spritemouseout', lastSprite, e);
             }
+
             if (sprite) {
                 drawContainer.fireEvent('spritemouseover', sprite, e);
             }

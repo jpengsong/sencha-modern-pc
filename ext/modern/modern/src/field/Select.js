@@ -36,12 +36,16 @@ Ext.define('Ext.field.Select', {
         'Ext.picker.Tablet',
         'Ext.data.Store',
         'Ext.data.StoreManager',
-        'Ext.dataview.BoundList'
+        'Ext.data.ChainedStore',
+        'Ext.dataview.BoundList',
+        'Ext.dataview.ChipView',
+        'Ext.field.ChipViewNavigationModel',
+        'Ext.picker.SelectPicker'
     ],
 
     /**
      * @property {Boolean} isSelectField
-     * `true` to identify an object as an instance of this class, or a subclass thereof.
+     * `true` in this class to identify an object this type, or subclass thereof.
      */
     isSelectField: true,
 
@@ -87,7 +91,9 @@ Ext.define('Ext.field.Select', {
          * @private
          * @since 6.5.0
          */
-        valueCollection: true,
+        valueCollection: {
+            rootProperty: 'data'
+        },
 
         /**
          * @cfg {String/Number} valueField
@@ -105,6 +111,12 @@ Ext.define('Ext.field.Select', {
          * generated to display the {@link #cfg!displayField} if not specified.
          */
         itemTpl: false,
+
+        /**
+         * @cfg {String} itemCls
+         * An additional CSS class to apply to items within the picker list.
+         */
+        itemCls: null,
 
         /**
          * @cfg {String/String[]/Ext.XTemplate} displayTpl
@@ -237,7 +249,93 @@ Ext.define('Ext.field.Select', {
          * @cfg {Boolean} selectOnTab
          * Whether the Tab key should select the currently highlighted item.
          */
-        selectOnTab: true
+        selectOnTab: true,
+
+        /**
+         * @cfg {Boolean} multiSelect
+         * Configure as `true` to allow selection of multiple items from the picker. This
+         * results in each selected item being represented by a "chip" in the input area.
+         *
+         * When `true`, the field's {@link #cfg!value} will be an array containing the
+         * {@link #cfg!valueField} values of all selected records or `null` when there is
+         * no selection.
+         */
+        multiSelect: null,
+
+        /**
+         * @cfg {String} delimiter
+         * The character(s) used to separate new values to be added when {@link #createNewOnEnter}
+         * or {@link #createNewOnBlur} are set.
+         *
+         * Only meaningful when {@link #cfg!multiSelect} is `true`.
+         */
+        delimiter: ',',
+
+        /*
+         * @cfg {Boolean} filterPickList
+         * True to hide the currently selected values from the drop down list.
+         *
+         * Setting this option to `true` is not recommended for accessible applications.
+         *
+         * - `true` to hide currently selected values from the drop down pick list
+         * - `false` to keep the item in the pick list as a selected item
+         */
+        filterPickList: false,
+
+        /**
+         * @cfg {Boolean} [collapseOnSelect=false]
+         * Has no effect if {@link #cfg!multiSelect} is `false`
+         *
+         * Configure as true to automatically hide the picker after a selection is made.
+         */
+        collapseOnSelect: null,
+
+        /**
+         * A configuration object which may be specified to configure the
+         * {@link Ext.dataview.ChipView} used to display "tags" representing selected items
+         * when {@link #cfg!multiSelect} is `true`.
+         * @since 6.7.0
+         */
+        chipView: {
+            $value: {
+                xtype: 'chipview',
+                tabIndex: null,
+                focusable: false,
+                itemsFocusable: false,
+                focusedCls: '',
+                navigationModel: 'fieldchipview',
+                selectable: {
+                    mode: 'multi'
+                },
+                closable: true,
+                closeHandler: 'up.onChipCloseTap'
+            },
+            lazy: true
+        },
+
+        /**
+         * @cfg {Function/String} recordCreator
+         * @cfg {String} recordCreator.value The typed value to be converted into a new record.
+         * @cfg {ObExt.data.Model} recordCreator.model This field's {@link #cfg!store}'s
+         * {@link Ext.data.Store#cfg!model Model}.
+         * @cfg {Ext.field.Select} recordCreator.field This SelectField.
+         *
+         * A function, or a method name in this class, or in a ViewController to be used to
+         * create a record from a typed value when {@link #cfg!forceSelection} is `false`.
+         *
+         * This gives app developers a chance to create a full featured record, or to veto the
+         * record creation by returning `null`.
+         * @since 6.6.0
+         */
+        recordCreator: null,
+
+        /**
+         * @cfg {Object} recordCreatorScope
+         * The scope (`this` reference) in which the configured {@link #cfg!recordCreator}
+         * will be executed, unless the recordCreator is a ViewController method name.
+         * @since 6.6.0
+         */
+        recordCreatorScope: null
     },
 
     /**
@@ -271,7 +369,7 @@ Ext.define('Ext.field.Select', {
      * @inheritdoc
      */
     edgePicker: {
-        xtype: 'picker',
+        xtype: 'selectpicker',
         cover: true
     },
 
@@ -280,6 +378,8 @@ Ext.define('Ext.field.Select', {
      * @inheritdoc
      */
     classCls: Ext.baseCSSPrefix + 'selectfield',
+
+    multiSelectCls: Ext.baseCSSPrefix + 'multiselect',
 
     /**
      * @cfg twoWayBindable
@@ -325,7 +425,7 @@ Ext.define('Ext.field.Select', {
      * @template
      * @since 6.5.1
      */
-    createSelectionRecord: function (data) {
+    createSelectionRecord: function(data) {
         var Model = this.getStore().getModel();
 
         return new Model(data);
@@ -340,14 +440,33 @@ Ext.define('Ext.field.Select', {
         }
     },
 
+    getRefItems: function(deep) {
+        var me = this,
+            result = me.callParent([deep]),
+            chipView = me.chipView;
+
+        // Return our ChipView.
+        if (chipView) {
+            result.push(chipView);
+
+            // And, if deep, the ChipView's refItems
+            if (deep) {
+                Ext.Array.push(result, chipView.getRefItems(deep));
+            }
+        }
+
+        return result;
+    },
+
     /**
      * @private
      */
     maybeCollapse: function(event) {
         var record = event.to && event.to.record,
+            multi = this.getMultiSelect(),
             selection = this.getSelection();
 
-        if (record === selection) {
+        if (!multi && record === selection) {
             this.collapse();
         }
     },
@@ -357,45 +476,95 @@ Ext.define('Ext.field.Select', {
      * Respond to deselection. Call the onItemDeselect template method
      */
     onCollectionRemove: function(valueCollection, chunk) {
-        var selection = valueCollection.getRange();
+        var me = this,
+            selection = valueCollection.getRange();
 
         // If this remove is part of a splice, wait until the collection add to sync the selection.
         if (!chunk.replacement) {
+            // Prevent updateSelection from attempting to mutate the valueCollection
+            // because we are responding to the valueCollection's own mutation notification.
+            me.processingCollectionMutation = true;
+
             // Must ensure that null is passed if the valueCollection is empty
-            this.setSelection(selection.length ? selection[0] : null);
+            me.setSelection(
+                selection.length ? (me.getMultiSelect() ? selection : selection[0]) : null
+            );
+
+            me.processingCollectionMutation = false;
         }
     },
 
     /**
      * @private
-     * Respond to selection. Call the onItemSelect template method
+     * Respond to selection. Update the selection.
      */
     onCollectionAdd: function(valueCollection, adds) {
         var selection = valueCollection.getRange();
 
-        this.setSelection(selection[0]);
+        // Prevent updateSelection from attempting to mutate the valueCollection
+        // because we are responding to the valueCollection's own mutation notification.
+        this.processingCollectionMutation = true;
+
+        this.setSelection(this.getMultiSelect() ? selection : selection[0]);
+        this.processingCollectionMutation = false;
     },
 
-    clearValue: function () {
+    /**
+     * @private
+     * Respond to the end of mutation of the value collection.
+     */
+    onCollectionEndUpdate: function() {
+        var me = this,
+            pickerStore = me._pickerStore,
+            chipView, chipViewNavModel;
+
+        // If the "focused" (it does not actually focus the element) chip record is ever
+        // removed, clear the ChipView's location.
+        if (me.getMultiSelect()) {
+            chipView = me.chipView;
+            chipViewNavModel = chipView.getNavigationModel();
+
+            if (chipViewNavModel.location &&
+                !me.getValueCollection().contains(chipViewNavModel.location.record)) {
+                chipViewNavModel.clearLocation();
+            }
+
+            chipView.getSelectable().refreshSelection();
+        }
+        // Update the textual input whenever the valueCollection changes.
+        // The ChipView's store observes the valueCollection, so and fires
+        // mutation events which views use to keep themselves up to date.
+        else {
+            me.setFieldDisplay();
+        }
+
+        // Ensure the picker store is filtered correctly
+        if (pickerStore && me.getFilterPickList()) {
+            pickerStore.getData().onFilterChange();
+        }
+    },
+
+    clearValue: function() {
         var me = this;
 
         // We clear things differently vs superclass. The value of Select fields depends
         // upon the value collection.
-        me.forceInputChange = true;
-        me.setValue(null);
-        me.forceInputChange = false;
+        me.forceSetValue(null);
 
         me.syncEmptyState();
     },
 
-    /* TODO fixup these docs and move to value config
+    /*
+     * TODO fixup these docs and move to value config
      * Sets the value of the field.
      * @param {Mixed/Ext.data.Model} newValue The new value. This may be specified as either
      * an existing store record, or the required {@link #cfg!valueField} value.
      *
-     * Either way, both {@link #cfg!valueField} value *and* the associated record will be ascertained.
+     * Either way, both {@link #cfg!valueField} value *and* the associated record will be
+     * ascertained.
      *
-     * The {@link #cfg!valueField} value is published to the ViewModel as is the {@link #cfg-selection associated record}.
+     * The {@link #cfg!valueField} value is published to the ViewModel as is the
+     * {@link #cfg-selection associated record}.
      *
      * The record published to the selection property will be `null` if the value did not
      * match a record, and the field is not configured to create new records for unmatched
@@ -403,11 +572,13 @@ Ext.define('Ext.field.Select', {
      */
 
     applyValue: function(value, oldValue) {
-        // Ensure that a store is formed from any options before we get the store.
-        this.getOptions();
-
         var me = this,
-            store = me.getStore();
+            store;
+
+        // Ensure that a store is formed from any options before we get the store.
+        me.getOptions();
+
+        store = me.getStore();
 
         // syncValue must now prioritize the value over the inputValue
         me.syncMode = 'value';
@@ -415,7 +586,16 @@ Ext.define('Ext.field.Select', {
         // We were passed a record.
         // Set the selection which updates the value from the valueField.
         if (value && value.isEntity) {
+            // If the upstream, untiltered data source does not contain the value record,
+            // then the developer is adding an "isEntered" record. It must be flagged as
+            // such so that it does not get evicted from the value collection upon
+            // store refresh.
+            if (!store || !store.getDataSource().contains(value)) {
+                value.isEntered = true;
+            }
+
             me.setSelection(value);
+
             return;
         }
 
@@ -437,32 +617,50 @@ Ext.define('Ext.field.Select', {
     },
 
     updateValue: function(value, oldValue) {
-        this.syncValue();
+        var me = this;
+
+        me.syncValue();
 
         // Note that we must not invoke superclass updateValue because that updates the
         // field UI in ways that SelectFields cannot handle.
         // We must directly invoke the base class's updateValue. That fires the change
         // event and validates the value which we still need to happen.
-        Ext.field.Field.prototype.updateValue.call(this, value, oldValue);
+        //
+        // Do value change checks here
+        if (me.getMultiSelect()
+            ? (!value || !oldValue || !Ext.Array.equals(value, oldValue))
+            : value !== oldValue) {
+            Ext.field.Field.prototype.updateValue.call(this, value, oldValue);
+        }
     },
 
-    transformValue: function (value) {
+    transformValue: function(value) {
         if (value == null || value === '') {
             value = this.getForceSelection() ? null : '';
+        }
+        else if (this.getMultiSelect()) {
+            value = Ext.Array.from(value);
+        }
+        else {
+            if (Ext.isIterable(value)) {
+                value = value[0];
+            }
         }
 
         return value;
     },
 
     /**
-     * Finds the record in the {@link #cfg!store}, or the {@link #cfg!valueCollection} which has the {@link #cfg!valueField}
-     * matching the passed value.
+     * Finds the record in the {@link #cfg!store}, or the {@link #cfg!valueCollection}
+     * which has the {@link #cfg!valueField} matching the passed value.
      *
      * The {@link #cfg!valueCollection} is included because of the {@link #cfg!createNewOnEnter},
-     * {@link #cfg!createNewOnBlur}, and {@link #cfg!forceSelection} configs which allow for insertion into the
-     * {@link #cfg!valueCollection} of newly created records which are not in the configured {@link #cfg!store}.
+     * {@link #cfg!createNewOnBlur}, and {@link #cfg!forceSelection} configs which allow
+     * for insertion into the {@link #cfg!valueCollection} of newly created records which
+     * are not in the configured {@link #cfg!store}.
      *
-     * Also, a currently selected value may be filtered out of visibility in the configured {@link #cfg!store}
+     * Also, a currently selected value may be filtered out of visibility in the
+     * configured {@link #cfg!store}.
      *
      * @param {String} value The value to match the {@link #valueField} against.
      * @return {Ext.data.Model} The matched record or null.
@@ -492,6 +690,7 @@ Ext.define('Ext.field.Select', {
                 return record.get(valueField) === value;
             });
         }
+
         return ret;
     },
 
@@ -507,12 +706,103 @@ Ext.define('Ext.field.Select', {
 
         if (store) {
             result = store.byText.get(value);
+
             // If there are duplicate keys, tested behaviour is to return the *first* match.
             if (result) {
                 ret = result[0] || result;
             }
         }
+
         return ret;
+    },
+
+    applyChipView: function(chipView, existingChipView) {
+        return Ext.updateWidget(existingChipView, chipView, this, 'createChipView');
+    },
+
+    updateChipView: function(chipView) {
+        if (chipView) {
+            chipView.on({
+                element: 'bodyElement',
+                touchstart: 'onChipBodyTouchStart',
+                tap: 'onChipBodyTap',
+                scope: this,
+                // Now that this is not configured in, listener is added later.
+                // We must see this event before any close handler.
+                priority: 1000
+            });
+        }
+
+        this.chipView = chipView;
+    },
+
+    applySelection: function(selection, oldSelection) {
+        var multiValues = selection && this.getMultiSelect();
+
+        selection = multiValues ? Ext.Array.from(selection) : selection;
+
+        if (multiValues
+            ? (!oldSelection || !Ext.Array.equals(selection, oldSelection))
+            : selection !== oldSelection) {
+            return selection || null;
+        }
+    },
+
+    updateMultiSelect: function(multiSelect) {
+        var me = this,
+            picker = me.getConfig('picker', false, true),
+            chipView = me.chipView,
+            valueCollection = me.getValueCollection(),
+            selection = valueCollection.last(),
+            selectable;
+
+        if (multiSelect) {
+            if (chipView) {
+                chipView.show();
+            }
+            else {
+                // Create the ChipView from the lazy config.
+                me.getChipView();
+
+                // Render in place of the inputElement
+                me.chipView.render(me.inputWrapElement.dom, me.inputElement.dom);
+            }
+
+            // Append inputElement inside chipview body
+            // The inputElement floats at the end of the chip items
+            // by means of its theme flexbox order property being 999999
+            me.chipView.bodyElement.dom.appendChild(me.inputElement.dom);
+            me.setInputValue('');
+
+            // Convert our selection into an array.
+            if (selection) {
+                me.setSelection([selection]);
+            }
+        }
+        else {
+            if (chipView) {
+                // Move inputElement back into place in the inputWrap
+                // before callParent destroys the chipView
+                me.inputWrapElement.dom.insertBefore(me.inputElement.dom, me.afterInputElement.dom);
+                chipView.hide();
+            }
+
+            // Cut back our value collection to the last one added.
+            if (selection) {
+                valueCollection.splice(0, 1e99, [selection]);
+            }
+        }
+
+        // Reconfigure the selection model of the picker if it's already been created.
+        if (picker) {
+            selectable = picker.getSelectable();
+            selectable.setConfig({
+                deselectable: multiSelect,
+                mode: multiSelect ? 'multi' : 'single'
+            });
+        }
+
+        me.el.toggleCls(me.multiSelectCls, multiSelect);
     },
 
     /**
@@ -524,6 +814,7 @@ Ext.define('Ext.field.Select', {
     updateSelection: function(selection, oldSelection) {
         var me = this,
             isNull = selection == null,
+            multiSelect = me.getMultiSelect(),
             valueCollection = me.getValueCollection(),
             valueField = me.getValueField(),
             oldValue = me._value,
@@ -534,35 +825,54 @@ Ext.define('Ext.field.Select', {
             return;
         }
 
-        if (isNull || !valueCollection.containsAll(selection)) {
-            spliceArgs = [0, valueCollection.getCount()];
+        // If we are updating the selection becuse of a mutation fire from the valueCollection
+        // then we do not have to update the valueCollection
+        if (!me.processingCollectionMutation) {
+            if (isNull || (oldSelection && selection.length < oldSelection.length) ||
+                !valueCollection.containsAll(selection)) {
+                spliceArgs = [0, valueCollection.getCount()];
 
-            // If the selection isNull, do not append the final "toAdd" argument.
-            // That would attempt to add null which would throw an error.
-            if (!isNull) {
-                spliceArgs.push(selection);
-            }
+                // If the selection isNull, do not append the final "toAdd" argument.
+                // That would attempt to add null which would throw an error.
+                if (!isNull) {
+                    spliceArgs.push(selection);
+                }
 
-            // Replace all valueCollection content with the new selection.
-            // We are an observer of the valueCollection.
-            //
-            // This will feed through to our onCollectionRemove, which will only
-            // push through to the selection property if there's no upcoming add.
-            //
-            // If there's an add, then our onCollectionAdd will be called
-            // which will push the valueCollection's data through to
-            // our selection property.
-            valueCollection.splice.apply(valueCollection, spliceArgs);
+                // Replace all valueCollection content with the new selection.
+                // We are an observer of the valueCollection.
+                //
+                // This will feed through to our onCollectionRemove, which will only
+                // push through to the selection property if there's no upcoming add.
+                //
+                // If there's an add, then our onCollectionAdd will be called
+                // which will push the valueCollection's data through to
+                // our selection property.
+                valueCollection.splice.apply(valueCollection, spliceArgs);
 
-            // In case splice user event handler destroyed us.
-            if (me.destroyed) {
-                return;
+                // In case splice user event handler destroyed us.
+                if (me.destroyed) {
+                    return;
+                }
             }
         }
 
         if (selection) {
             if (valueField) {
-                newValue = selection.get(valueField);
+                // Multi select. Pull an array or the valueField out.
+                if (multiSelect) {
+                    newValue = valueCollection.collect(valueField, 'data');
+
+                    //<debug>
+                    if (newValue.length !== valueCollection.length) {
+                        Ext.raise('The valueField of a combobox must be unique');
+                    }
+                    //</debug>
+                }
+                // Single select. Pull the valueField out.
+                else {
+                    newValue = selection.get(valueField);
+                }
+
                 me.setValue(newValue);
             }
 
@@ -581,35 +891,32 @@ Ext.define('Ext.field.Select', {
             return;
         }
 
-        // Update the field's input UI.
-        // Note that this may be a DOM <input> value, but may also
-        // be a UI like a TagField which is produced from the
-        // selected record(s)
-        me.setFieldDisplay(selection);
-
         // Only get the picker if it has been created.
         picker = me.getConfig('picker', false, true);
 
         // If the picker has been created, either collapse it,
         // or scroll to the latest selection.
         if (picker && picker.isVisible()) {
-            // The setter's equality test cannot tell if the single selected record
-            // is in effect unchanged. We only need to collapse if a *new* value has
-            // been set, that is, the user has selected a record with a different id.
-            // We can get here when the selection is refreshed due to record add/remove
-            // when the record *instance* is renewed, but it is the same id.
-            // In that case, all we need is a refresh of the data in case the record's
-            // data payload changed.
-            //
-            // If unchanged, it's possible that other data in the record may have changed
-            // which could affect the BoundList, so refresh that
-            if (selection && oldSelection && selection.id === oldSelection.id) {
-                picker.refresh();
-            } else {
-                // If it's a single select, dynamically created record, this is due
-                // to typing, so do not collapse.
-                if (!(selection && selection.isEntered)) {
-                    me.collapse();
+            if (!multiSelect || me.getCollapseOnSelect() || !me.getStore().getCount()) {
+                // The setter's equality test cannot tell if the single selected record
+                // is in effect unchanged. We only need to collapse if a *new* value has
+                // been set, that is, the user has selected a record with a different id.
+                // We can get here when the selection is refreshed due to record add/remove
+                // when the record *instance* is renewed, but it is the same id.
+                // In that case, all we need is a refresh of the data in case the record's
+                // data payload changed.
+                //
+                // If unchanged, it's possible that other data in the record may have changed
+                // which could affect the BoundList, so refresh that
+                if (!multiSelect && selection && oldSelection && selection.id === oldSelection.id) {
+                    picker.refresh();
+                }
+                else {
+                    // If it's a single select, dynamically created record, this is due
+                    // to typing, so do not collapse.
+                    if (!(selection && selection.isEntered)) {
+                        me.collapse();
+                    }
                 }
             }
         }
@@ -630,16 +937,18 @@ Ext.define('Ext.field.Select', {
 
     createFloatedPicker: function() {
         var me = this,
+            multiSelect = me.getMultiSelect(),
             result = Ext.merge({
                 ownerCmp: me,
                 store: me._pickerStore || me.getStore(),
                 selectable: {
                     selected: me.getValueCollection(),
                     selectedRecord: me.getSelection(),
-                    mode: 'single',
-                    deselectable: false
+                    deselectable: !!multiSelect,
+                    mode: multiSelect ? 'multi' : 'single'
                 },
-                itemTpl: me.getItemTpl()
+                itemTpl: me.getItemTpl(),
+                itemCls: me.getItemCls()
             }, me.getFloatedPicker());
 
         // Allow SPACE to navigate unless it's needed
@@ -650,29 +959,23 @@ Ext.define('Ext.field.Select', {
     },
 
     createEdgePicker: function() {
-        var me = this;
-
         return Ext.merge({
-            ownerCmp: me,
-            slots: [{
-                align: me.getPickerSlotAlign(),
-                name: me.getValueField(),
-                valueField: me.getValueField(),
-                displayField: me.getDisplayField(),
-                value: me.getValue(),
-                store: me._pickerStore || me.getStore()
-            }],
-            listeners: {
-                change: me.onPickerChange,
-                scope: me
-            },
-            setStore: function(store) {
-                this.child('pickerslot').setStore(store);
-            },
-            deselectAll: function() {
-                this.child('pickerslot').deselectAll();
+            ownerCmp: this
+        }, this.getEdgePicker());
+    },
+
+    realignFloatedPicker: function(picker) {
+        picker = picker || this.getConfig('picker', false, true);
+
+        if (picker && picker.isVisible()) {
+
+            // If we have dropped to no items and the store is not loading, collapse field.
+            if (!picker.getItemCount() && !picker.getStore().hasPendingLoad()) {
+                this.collapse();
             }
-        }, me.getEdgePicker());
+
+            this.callParent([picker]);
+        }
     },
 
     setPickerLocation: function(fromKeyboard) {
@@ -681,13 +984,9 @@ Ext.define('Ext.field.Select', {
             store, location;
 
         if (picker && me.expanded) {
-            // If an edge picker, access the slot which is a List
-            if (picker.isPicker) {
-                picker = picker.innerItems[0];
-            }
             store = picker.getStore();
 
-            if (picker.getViewItems().length) {
+            if (picker.getItemCount()) {
                 // If there's a selection, we always move focus to it
                 location = picker.getSelectable().getLastSelected();
 
@@ -697,21 +996,40 @@ Ext.define('Ext.field.Select', {
                 if (!location || !store.contains(location)) {
                     if (fromKeyboard || me.getAutoFocusLast()) {
                         location = picker.getNavigationModel().lastLocation;
+
                         if (location) {
                             location = location.refresh();
                         }
                     }
+
                     if (!location && (fromKeyboard || me.getAutoFocus())) {
                         location = store.getAt(0);
                     }
                 }
 
                 picker.getNavigationModel().setLocation(location);
+
+                // If the location has been set, they need to see it.
+                // Otherwise cicking the trigger will not appear to work.
+                // BoundLists *always* show location.
+                if (!fromKeyboard) {
+                    Ext.setKeyboardMode(true);
+                }
             }
         }
     },
 
-    updatePickerValue: function (picker, value) {
+    updatePicker: function(picker, oldPicker) {
+        var filterPickList = this.getFilterPickList();
+
+        if (picker && filterPickList) {
+            picker.getSelectable().addIgnoredFilter(filterPickList);
+        }
+
+        this.callParent([picker, oldPicker]);
+    },
+
+    updatePickerValue: function(picker, value) {
         var name = this.getValueField(),
             pickerValue = {};
 
@@ -724,56 +1042,27 @@ Ext.define('Ext.field.Select', {
         picker.setValue(pickerValue);
     },
 
-    onPickerShow: function(picker) {
-        this.callParent([picker]);
-
-        // Enable the picker's key mappings in this field's KeyMap,
-        // unless it's an edge picker that doesn't support keyboard
-        if (this.pickerType === 'floated') {
-            picker.getNavigationModel().enable();
-        }
-    },
-
-    onPickerHide: function(picker) {
-        var navModel;
-        
-        this.callParent([picker]);
-
-        // Set the location to null because there's no onFocusLeave
-        // to do this because the picker does not get focused.
-        // Disable the picker's key mappings in this field's KeyMap
-        if (!picker.destroying && this.pickerType === 'floated') {
-            navModel = picker.getNavigationModel();
-
-            navModel.setLocation(null);
-            navModel.disable();
-        }
-    },
-
-    /**
-     * @private
-     * Used when the edge picker is used.
-     */
-    onPickerChange: function(picker, value) {
-        this.setValue(this.findRecordByValue(value[this.getValueField()]));
-    },
-
-    applyItemTpl: function (itemTpl) {
+    applyItemTpl: function(itemTpl) {
         if (itemTpl === false) {
-            itemTpl = '<span class="x-list-label">{' + this.getDisplayField() + ':htmlEncode}</span>';
+            itemTpl = '<span class="x-list-label">{' +
+                this.getDisplayField() +
+                ':htmlEncode}</span>';
         }
+
         return itemTpl;
     },
 
-    applyDisplayTpl: function (displayTpl) {
+    applyDisplayTpl: function(displayTpl) {
         if (displayTpl && !displayTpl.isTemplate) {
             displayTpl = new Ext.XTemplate(displayTpl);
         }
+
         return displayTpl;
     },
 
     applyOptions: function(options) {
         if (options) {
+            // eslint-disable-next-line vars-on-top
             var len = options.length,
                 valueField = this.getValueField(),
                 displayField = this.getDisplayField(),
@@ -781,12 +1070,15 @@ Ext.define('Ext.field.Select', {
 
             // Convert an array of primitives to record data objects
             options = Ext.Array.slice(options);
+
             for (i = 0; i < len; i++) {
                 value = options[i];
+
                 if (Ext.isPrimitive(value)) {
                     options[i] = option = {};
                     option.id = value;
                     option[valueField] = value;
+
                     if (displayField && displayField !== valueField) {
                         option[displayField] = value;
                     }
@@ -798,13 +1090,15 @@ Ext.define('Ext.field.Select', {
                 data: options
             });
         }
+
         return options;
     },
 
     updateOptions: function(options, oldOptions) {
         if (options) {
             this.setStore(options);
-        } else {
+        }
+        else {
             if (oldOptions === this.getStore()) {
                 this.setStore(null);
             }
@@ -828,18 +1122,19 @@ Ext.define('Ext.field.Select', {
         if (oldStore) {
             if (oldStore.getAutoDestroy()) {
                 oldStore.destroy();
-            } else {
+            }
+            else {
                 oldStore.byValue = oldStore.byText = Ext.destroy(oldStore.byValue, oldStore.byText);
             }
         }
 
         if (store) {
-            // Add a byValue index to the store so that we can efficiently look up records by the value field
-            // when setValue passes string value(s).
-            // The two indices (Ext.util.CollectionKeys) are configured unique: false, so that if duplicate keys
-            // are found, they are all returned by the get call.
-            // This is so that findByText and findByValue are able to return the *FIRST* matching value. By default,
-            // if unique is true, CollectionKey keeps the *last* matching value.
+            // Add a byValue index to the store so that we can efficiently look up records by the
+            // value field when setValue passes string value(s).
+            // The two indices (Ext.util.CollectionKeys) are configured unique: false, so that if
+            // duplicate keys are found, they are all returned by the get call.
+            // This is so that findByText and findByValue are able to return the *FIRST* matching
+            // value. By default, if unique is true, CollectionKey keeps the *last* matching value.
             extraKeySpec = {
                 byValue: {
                     rootProperty: 'data',
@@ -847,6 +1142,7 @@ Ext.define('Ext.field.Select', {
                     property: valueField
                 }
             };
+
             if (displayField !== valueField) {
                 extraKeySpec.byText = {
                     rootProperty: 'data',
@@ -854,6 +1150,7 @@ Ext.define('Ext.field.Select', {
                     property: displayField
                 };
             }
+
             store.setExtraKeys(extraKeySpec);
 
             // If display and value fields are the same, the same index goes by both names.
@@ -871,7 +1168,9 @@ Ext.define('Ext.field.Select', {
                 load: {
                     fn: 'onStoreLoad',
                     priority: -1
-                }
+                },
+
+                refresh: 'onStoreRefresh'
             });
 
             // If the store is already loaded, fix up any value we may have.
@@ -884,8 +1183,8 @@ Ext.define('Ext.field.Select', {
             // If not loaded, and there's a value waiting to be matched
             // and we should autoload on value, load the store and onStoreLoad
             // will match it up.
-            else if (me.getValue() != null && me.getAutoLoadOnValue() && 
-                     !store.isLoaded() && !store.hasPendingLoad()) {
+            else if (me.getValue() != null && me.getAutoLoadOnValue() && !store.isLoaded() &&
+                !store.hasPendingLoad()) {
                 store.load();
             }
         }
@@ -901,6 +1200,7 @@ Ext.define('Ext.field.Select', {
         if (valueField == null) {
             valueField = this.getDisplayField();
         }
+
         return valueField;
     },
 
@@ -926,6 +1226,7 @@ Ext.define('Ext.field.Select', {
         if (displayField == null) {
             displayField = this.getValueField();
         }
+
         return displayField;
     },
 
@@ -951,34 +1252,33 @@ Ext.define('Ext.field.Select', {
      * the setValue machinery. Upon initialization, there may be a cached initial value.
      * Otherwise use the current value.
      */
-    onStoreLoad: function (store, records, success) {
-        var filtering = this.isFiltering;
-        
-        this.isFiltering = false;
-        
+    onStoreLoad: function(store, records, success) {
+        var me = this,
+            filtering = me.isFiltering;
+
+        me.isFiltering = false;
+
         if (success) {
-            // The isFilering flag is set in doFilter if the store
-            // if using remote filters and the primaryFilter has a value.
-            this.syncMode = filtering ? 'filter' : 'store';
-            this.syncValue();
+            // The isFiltering flag is set in Ext.field.ComboBox#doFilter if the store
+            // is using remote filters and the primaryFilter has a value.
+            me.syncMode = filtering ? 'filter' : 'store';
+            me.syncValue();
         }
     },
 
     syncValue: function() {
         var me = this,
             store = me.getStore(),
-            valueField = me.getValueField(),
-            displayField = me.getDisplayField(),
             forceSelection = me.getForceSelection(),
             valueNotFoundText = me.getValueNotFoundText(),
-            is, isCleared, isInput, value, matchedRecord, dataObj;
+            is, isCleared, isInput, value, matchedRecord;
 
         // If we are not ready to reconcile values for any reason.
         //   We are in the middle of value syncing
         //   Store has not arrived from bind
         //   Store has not been loaded
         //   Store is currently loading
-        // Then we cannot recconcile values now, this will be called later
+        // Then we cannot reconcile values now, this will be called later
         // when the store arrives, or is loaded.
         if (me.reconcilingValue || !store || !store.isLoaded() || store.hasPendingLoad()) {
             return;
@@ -990,11 +1290,15 @@ Ext.define('Ext.field.Select', {
 
         is = {};
         is[me.syncMode] = true;
-        value = (isInput = is.input || is.filter) ? me.getInputValue() : me.getValue();
+        value = ((isInput = is.input || is.filter)) ? me.getInputValue() : me.getValue();
         isCleared = value == null || value === '';
 
         // Get the record that matches our input value
         if (!isCleared) {
+            if (me.getMultiSelect()) {
+                return me.syncMultiValues(Ext.Array.from(value));
+            }
+
             matchedRecord = (isInput ? store.byText : store.byValue).get(value);
 
             if (matchedRecord) {
@@ -1017,15 +1321,7 @@ Ext.define('Ext.field.Select', {
         // to a value which has no match in the store, and we are not forceSelection: true.
         // We create a new record.
         if (!isCleared && !matchedRecord && !forceSelection) {
-            dataObj = {};
-            dataObj[displayField] = value;
-
-            if (valueField && displayField !== valueField) {
-                dataObj[valueField] = value;
-            }
-
-            matchedRecord = me.createSelectionRecord(dataObj);
-            matchedRecord.isEntered = true;
+            matchedRecord = me.createEnteredRecord(value);
         }
         else {
             // Not in an record.isEntered situation.
@@ -1052,7 +1348,8 @@ Ext.define('Ext.field.Select', {
                         if (me.getAutoSelect() === 'initial') {
                             me.setAutoSelect(false);
                         }
-                    } else {
+                    }
+                    else {
                         me.setSelection(null);
                     }
                 }
@@ -1071,18 +1368,82 @@ Ext.define('Ext.field.Select', {
         me.reconcilingValue = false;
     },
 
+    syncMultiValues: function(values) {
+        var me = this,
+            matchedRecords = [],
+            valueArray = [],
+            forceSelection = me.getForceSelection(),
+            valueField = me.getValueField(),
+            valueCollection = me.getValueCollection(),
+            val, record, len, i, key;
+
+        // Loop through values, matching each from the Store, and collecting matched records
+        for (i = 0, len = values.length; i < len; i++) {
+            record = val = values[i];
+
+            // Set value was a key, look up in the store by that key
+            if (!record || !record.isEntity) {
+                record = me.findRecordByValue(key = record);
+
+                // The value might be in a new record created from an unknown value
+                // (if !me.forceSelection).
+                // Or it could be a picked record which is filtered out of the main store.
+                // Or it could be a setValue(record) passed to an empty store with autoLoadOnValue
+                // and added above.
+                if (!record) {
+                    record = valueCollection.find(valueField, key);
+                }
+            }
+
+            // record was not found, this could happen because
+            // store is not loaded or they set a value not in the store
+            if (!record) {
+                // If we are allowing insertion of values not represented in the Store, then push
+                // the value and create a new record to push as a display value for use by the
+                // displayTpl
+                if (!forceSelection) {
+                    // We are allowing added values to create their own records.
+                    // Only if the value is not empty.
+                    if (!record && val) {
+                        record = me.createEnteredRecord(val);
+                    }
+                }
+            }
+
+            // record found, select it.
+            if (record) {
+                matchedRecords.push(record);
+                valueArray.push(record.get(valueField));
+            }
+        }
+
+        if (matchedRecords.length) {
+            me._value = valueArray;
+            me.setSelection(matchedRecords);
+        }
+        else {
+            me._value = null;
+            me.setSelection();
+        }
+
+        me.reconcilingValue = false;
+    },
+
     /**
      * @private
      * Called when the internal {@link #store}'s data has changed.
      */
-    onStoreDataChanged: function () {
-        if (this.getForceSelection()) {
-            var value = this.getValue();
+    onStoreDataChanged: function() {
+        var me = this,
+            value;
+
+        if (me.getForceSelection()) {
+            value = me.getValue();
 
             // Push the textual value from the selected record through applyValue
             // to match with a new record from the new data.
             if (value != null) {
-                this.setValue(value);
+                me.setValue(value);
             }
         }
     },
@@ -1090,11 +1451,90 @@ Ext.define('Ext.field.Select', {
     /**
      * @private
      * Called when a internal {@link #store}'s record has been mutated.
-     * Keep the field UI synced
+     * Keep the field UI synced if we are not multiselect.
+     *
+     * If we *are* multiselect, the ChipView's store observes the valueCollection
+     * and will fire mutation events to keep the view synced.
      */
     onStoreRecordUpdated: function(store, record) {
+        // In case the valueField has been mutated.
+        // updateSelection will call setValue with the value(s) from the selection.
         if (this.getValueCollection().contains(record)) {
             this.updateSelection(this.getSelection());
+        }
+
+        // The ChipView will update itself when the valueCollection mutates an item.
+        // If we are single select, we have to do this programmatically here.
+        if (!this.getMultiSelect()) {
+            this.setFieldDisplay();
+        }
+    },
+
+    /**
+     * @private
+     * This method resopnds to store `refresh` events. The purpose is to respond to
+     * filtering and evict from the {@link #cfg!valueCollection}, records which are
+     * filtered out of the store. *Unless the filtering out is the result only
+     * of the {@link #cfg!primaryFilter} or {@link #cfg!filterPickList}*
+     *
+     * @param store This field's primary store which has just been refreshed.
+     */
+    onStoreRefresh: function(store) {
+        var me = this,
+            picker = me.getConfig('picker', false, true),
+            valueCollection = me.getValueCollection(),
+            selectionModelCollection, ignoredFilters, filterPickList, pickerNavModel,
+            pickerLocation;
+
+        // If we have created a picker, extract the collection which the picker's selection
+        // model is using to store selections.
+        if (picker) {
+            selectionModelCollection = picker.getSelectable().getSelected();
+            pickerNavModel = picker.getNavigationModel();
+            pickerLocation = pickerNavModel.getLocation();
+
+            // If the picker's location record has been filtered out, clear the location
+            // so that it does not refresh the location at the same *index* as dataview
+            // Locations are designed to do to preserve focus.
+            if (pickerLocation && !picker.getStore().contains(pickerLocation.record)) {
+                pickerNavModel.clearLocation();
+            }
+        }
+
+        // If the pickers selection model is *not* sharing our value collection
+        // for use as the selection storage, then its up to us to refresh the
+        // value collection in response to filter events which cause store refresh.
+        // We have to evict records which are filtered out, and replace records
+        // who's IDs are still present, but the instance has changed due to a store
+        // reload.
+        if (selectionModelCollection !== valueCollection) {
+            ignoredFilters = [];
+
+            if (me.getPrimaryFilter) {
+                ignoredFilters.push(me.getPrimaryFilter());
+            }
+
+            filterPickList = me.getFilterPickList();
+
+            if (filterPickList) {
+                ignoredFilters.push(filterPickList);
+            }
+
+            // This static method of SelectionModel removes from the passed valueCollection
+            // any records which are no longer in the second parametsr collection, EXCEPTING
+            // those which were filtered out by the "ignoredFilters" parameter.
+            // this allows records filtered out by typing, and by filterPickList to remain.
+            Ext.dataview.selection.Model.refreshCollection(
+                valueCollection,
+                store.getData(),
+                ignoredFilters,
+
+                // The beforeSelectionRefresh gives an observer the chance to
+                // "repreive" records from eviction. BoundList implements this
+                // to allow "isEntered" records that were added as a result of
+                // forceSelection:false to remain in the selection.
+                Ext.dataview.BoundList.prototype.beforeSelectionRefresh
+            );
         }
     },
 
@@ -1112,31 +1552,127 @@ Ext.define('Ext.field.Select', {
         if (me.getAutoSelect()) {
             store = me.getStore();
             record = (record != null) ? record : store && store.getAt(0);
-        } else {
+        }
+        else {
             if (picker) {
                 picker.deselectAll();
             }
         }
 
         me.setValue(record);
+
         return me;
     },
 
     doDestroy: function() {
-        var store = this.getStore();
+        var me = this,
+            store = me.getStore();
 
         if (store && !store.destroyed && store.getAutoDestroy()) {
             store.destroy();
         }
-        this.destroyMembers('options');
 
-        this.callParent();
+        me.destroyMembers('options', 'chipView');
+
+        me.callParent();
     },
 
     privates: {
         syncMode: null,
 
-        mustAutoSelect: function () {
+        createChipView: function(chipView) {
+            var me = this,
+                chipViewCfg = Ext.merge({
+                    ownerField: me,
+                    ownerCmp: me,
+                    store: {
+                        data: me.getValueCollection()
+                    }
+                }, chipView);
+
+            // Only pass our displayField down if there's no displayTpl or displayField
+            if (!(chipViewCfg.displayField || chipViewCfg.displayTpl)) {
+                chipViewCfg.displayField = me.getDisplayField();
+            }
+
+            return chipViewCfg;
+        },
+
+        /**
+         * This is used by the field to create a new record if {@link #cfg!forceSelection}
+         * is `false`.
+         * @param value
+         * @return {Ext.data.Model} The created record, if it can be created from the passed value.
+         * @private
+         */
+        createEnteredRecord: function(value) {
+            var me = this,
+                recordCreator = me.getRecordCreator(),
+                displayField = me.getDisplayField(),
+                valueField = me.getValueField(),
+                dataObj, result;
+
+            if (recordCreator) {
+                result = Ext.callback(recordCreator, me.getRecordCreatorScope(), [
+                    value, me.getStore().getModel(), me
+                ], 0, me);
+            }
+            else {
+                dataObj = {};
+                dataObj[displayField] = value;
+
+                if (valueField && displayField !== valueField) {
+                    dataObj[valueField] = value;
+                }
+
+                result = me.createSelectionRecord(dataObj);
+            }
+
+            if (result) {
+                result.isEntered = true;
+            }
+
+            return result;
+        },
+
+        hasValue: function() {
+            return this.callParent() || this.getValueCollection().getCount();
+        },
+
+        onChipCloseTap: function(chipView, location) {
+            var record = location.record;
+
+            chipView.getNavigationModel().clearLocation();
+            chipView.getSelectable().deselect(record);
+            this.getValueCollection().remove(record);
+
+            location.event.stopEvent();
+
+            return false;
+        },
+
+        onChipBodyTouchStart: function(e) {
+            // Mousedown focuses
+            if (e.pointerType !== 'touch' && !this.containsFocus) {
+                this.inputElement.focus();
+                e.preventDefault();
+            }
+        },
+
+        onChipBodyTap: function(e) {
+            // Touch taps focus
+            if (e.pointerType === 'touch' && !this.containsFocus) {
+                this.inputElement.focus();
+                e.preventDefault();
+            }
+
+            // Emulate an inputElement tap on tap in empty space of the ChipView
+            if (!e.getTarget('.' + Ext.Chip.prototype.classCls)) {
+                this.onInputElementClick(e);
+            }
+        },
+
+        mustAutoSelect: function() {
             var me = this,
                 autoSelect = me.getAutoSelect();
 
@@ -1147,10 +1683,64 @@ Ext.define('Ext.field.Select', {
             return !!autoSelect;
         },
 
+        applyFilterPickList: function(filterPickList, oldFilterPickerList) {
+            var me = this,
+                pickerStore = me._pickerStore;
+
+            // Remove old filter
+            if (oldFilterPickerList && oldFilterPickerList.isFilter && pickerStore) {
+                pickerStore.removeFilter(oldFilterPickerList);
+            }
+
+            if (filterPickList) {
+                filterPickList = new Ext.util.Filter({
+                    scope: me,
+                    filterFn: me.filterPicked
+                });
+            }
+
+            return filterPickList;
+        },
+
+        updateFilterPickList: function(filterPickList, oldFilterPickList) {
+            var picker = this.getConfig('picker', false, true);
+
+            // Ensure the picker's selection model reacts in the correct way
+            // when the pickerStore is reconfigured. It must NOT evict
+            // from the selection currently picked records.
+            if (picker) {
+                if (filterPickList) {
+                    picker.getSelectable().addIgnoredFilter(filterPickList);
+                }
+                else if (oldFilterPickList) {
+                    picker.getSelectable().removeIgnoredFilter(oldFilterPickList);
+                }
+            }
+
+            this.updatePickerStore();
+
+            if (picker) {
+                // If we are filtering selected items from the pick list
+                // there's no point in showing space for the selected icon.
+                picker.setDisableSelection(filterPickList);
+            }
+        },
+
+        /**
+         * Filter function to implement {@link #cfg!filterPickList}. Filter out records
+         * which are in the valueCollection.
+         * @param {Ext.data.Model} record The record to test for presence in the
+         * {@link #cfg!valueCollection}.
+         */
+        filterPicked: function(record) {
+            return !this.getValueCollection().contains(record);
+        },
+
         /**
          * Returns ths Store used to drive the BoundList.
          *
-         * When the supplied store is `queryMode: 'local'`, this will be a ChainedStore sources from the
+         * When the supplied store is `queryMode: 'local'`, or if `multiSelect` is `true`
+         * is used with filterPickList:true` this will be a ChainedStore sources from the
          * configured store.
          * @private
          */
@@ -1158,24 +1748,38 @@ Ext.define('Ext.field.Select', {
             var me = this,
                 picker = me.getConfig('picker', false, true),
                 store = me.getStore(),
-                localFiltering = me.getQueryMode && me.getQueryMode() === 'local',
-                result = store;
+                filterPickList = me.getFilterPickList() || undefined,
+                localFiltering = me.getQueryMode && me.getQueryMode() === 'local' || filterPickList,
+                result = store,
+                filters;
 
             // If we need to be adding local filters, then we need to chain off a store based
             // on the supplied store so that we can own the filtering.
             if (localFiltering) {
+                filters = [];
+
+                if (me.getPrimaryFilter) {
+                    filters.push(me.getPrimaryFilter());
+                }
+
+                if (filterPickList) {
+                    filters.push(filterPickList);
+                }
+
                 // Already got a ChainedStore - just reconfigure it.
                 if (me._pickerStore && me._pickerStore.isChainedStore) {
-                    me._pickerStore.setConfig({
-                        source: store
+                    result = me._pickerStore.setConfig({
+                        source: store,
+                        filters: filters
                     });
                 }
                 // Create a ChainedStore based on our store
                 else {
-                    me._pickerStore = result = Ext.data.StoreManager.lookup({
+                    me._pickerStore = result = Ext.Factory.store({
                         type: 'chained',
-                        source: store
-                    }, null, me);
+                        source: store,
+                        filters: filters
+                    });
                 }
             }
             // The _pickerStore is the base store.
@@ -1193,27 +1797,43 @@ Ext.define('Ext.field.Select', {
         /**
          * Updates the fields input UI according to the current selection.
          *
-         * @param selection
+         * In the case of single selection, simply updates the input field's value.
+         *
+         * For multiSelection, a more complex input UI is needed.
          * @private
          */
-        setFieldDisplay: function (selection) {
+        setFieldDisplay: function() {
             var me = this,
+                selection,
                 inputValue = '',
                 displayTpl;
 
-            if (selection) {
-                displayTpl = me.getDisplayTpl();
-                if (displayTpl) {
-                    inputValue = displayTpl.apply(me.getRecordDisplayData(selection));
-                } else {
-                    inputValue = selection.get(me.getDisplayField());
+            // This is called from onCollectionEndUpdate
+            // We only update the inputValue if we're single select.
+            // The ChipView's store observes the valueCollection, so and fires
+            // mutation events which views use to keep themselves up to date.
+            // The ChipView's store observes the valueCollection so will
+            if (!me.getMultiSelect()) {
+                selection = me.getValueCollection().first();
+
+                if (selection) {
+                    displayTpl = me.getDisplayTpl();
+
+                    if (displayTpl) {
+                        inputValue = displayTpl.apply(me.getRecordDisplayData(selection));
+                    }
+                    else {
+                        inputValue = selection.get(me.getDisplayField());
+                    }
                 }
+
+                me.setInputValue(inputValue);
+
+                // Ensure clear icon is synced
+                me.syncEmptyState();
             }
-
-            me.setInputValue(inputValue);
-
-            // Ensure clear icon is synced
-            me.syncEmptyState();
         }
-    }
+    },
+
+    rawToValue: Ext.emptyFn
 });

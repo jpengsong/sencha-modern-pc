@@ -6,12 +6,12 @@ Ext.define('Ext.draw.ContainerBase', {
     extend: 'Ext.panel.Panel',
 
     requires: ['Ext.window.Window'],
-    
+
     /**
      * @cfg {String} previewTitleText The text to place in Preview Chart window title.
      */
     previewTitleText: 'Chart Preview',
-    
+
     /**
      * @cfg {String} previewAltText The text to place in the Preview image alt attribute.
      */
@@ -22,20 +22,21 @@ Ext.define('Ext.draw.ContainerBase', {
     // Adds a listener to this draw container's element. If the element does not yet exist
     // addition of the listener will be deferred until onRender.  Useful when listeners
     // need to be attached during initConfig.
-    addElementListener: function () {
+    addElementListener: function() {
         var me = this,
             args = arguments;
 
         if (me.rendered) {
             me.el.on.apply(me.el, args);
-        } else {
-            me.on('render', function () {
+        }
+        else {
+            me.on('render', function() {
                 me.el.on.apply(me.el, args);
             });
         }
     },
 
-    removeElementListener: function () {
+    removeElementListener: function() {
         var me = this;
 
         if (me.rendered) {
@@ -43,12 +44,12 @@ Ext.define('Ext.draw.ContainerBase', {
         }
     },
 
-    afterRender: function () {
+    afterRender: function() {
         this.callParent(arguments);
         this.initAnimator();
     },
 
-    getItems: function () {
+    getItems: function() {
         var me = this,
             items = me.items;
 
@@ -62,18 +63,19 @@ Ext.define('Ext.draw.ContainerBase', {
         return me.items;
     },
 
-    onRender: function () {
+    onRender: function() {
         this.callParent(arguments);
         this.element = this.el;
         this.bodyElement = this.body;
     },
 
-    setItems: function (items) {
+    setItems: function(items) {
         this.items = items;
+
         return items;
     },
 
-    setSurfaceSize: function (width, height) {
+    setSurfaceSize: function(width, height) {
         this.resizeHandler({
             width: width,
             height: height
@@ -81,14 +83,14 @@ Ext.define('Ext.draw.ContainerBase', {
         this.renderFrame();
     },
 
-    onResize: function (width, height, oldWidth, oldHeight) {
+    onResize: function(width, height, oldWidth, oldHeight) {
         this.handleResize({
             width: width,
             height: height
         }, !this.size); // First resize should be performed without any delay.
     },
 
-    preview: function (image) {
+    preview: function(image) {
         var items;
 
         if (Ext.isIE8) {
@@ -102,7 +104,8 @@ Ext.define('Ext.draw.ContainerBase', {
                 xtype: 'container',
                 html: image.data
             };
-        } else {
+        }
+        else {
             items = {
                 xtype: 'image',
                 mode: 'img',
@@ -110,20 +113,23 @@ Ext.define('Ext.draw.ContainerBase', {
                 alt: this.previewAltText,
                 src: image.data,
                 listeners: {
-                    afterrender: function () {
+                    afterrender: function() {
                         var me = this,
                             img = me.imgEl.dom,
+                            // eslint-disable-next-line dot-notation
                             ratio = image.type === 'svg' ? 1 : (window['devicePixelRatio'] || 1),
                             size;
 
                         if (!img.naturalWidth || !img.naturalHeight) {
-                            img.onload = function () {
+                            img.onload = function() {
                                 var width = img.naturalWidth,
                                     height = img.naturalHeight;
+
                                 me.setWidth(Math.floor(width / ratio));
                                 me.setHeight(Math.floor(height / ratio));
-                            }
-                        } else {
+                            };
+                        }
+                        else {
                             size = me.getSize();
                             me.setWidth(Math.floor(size.width / ratio));
                             me.setHeight(Math.floor(size.height / ratio));
@@ -154,16 +160,18 @@ Ext.define('Ext.draw.ContainerBase', {
     },
 
     privates: {
-        getTargetEl: function () {
+        getTargetEl: function() {
             return this.bodyElement;
         },
 
-        reattachToBody: function () {
+        reattachToBody: function() {
             // This is to ensure charts work properly as grid column widgets.
             var me = this;
+
             if (me.pendingDetachSize) {
                 me.handleResize();
             }
+
             me.pendingDetachSize = false;
             me.callParent();
         }

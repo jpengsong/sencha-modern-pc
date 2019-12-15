@@ -37,12 +37,14 @@ Ext.define('Ext.chart.sprite.BoxPlot', {
                 x: 'number',
 
                 /**
-                 * @cfg {Number} [low=-20] The y-coordinate of the whisker that represents the minimum.
+                 * @cfg {Number} [low=-20] The y-coordinate of the whisker that represents
+                 * the minimum.
                  */
                 low: 'number',
 
                 /**
-                 * @cfg {Number} [q1=-10] The y-coordinate of the box edge that represents the 1-st quartile.
+                 * @cfg {Number} [q1=-10] The y-coordinate of the box edge that represents
+                 * the 1-st quartile.
                  */
                 q1: 'number',
 
@@ -52,12 +54,14 @@ Ext.define('Ext.chart.sprite.BoxPlot', {
                 median: 'number',
 
                 /**
-                 * @cfg {Number} [q3=10] The y-coordinate of the box edge that represents the 3-rd quartile.
+                 * @cfg {Number} [q3=10] The y-coordinate of the box edge that represents
+                 * the 3-rd quartile.
                  */
                 q3: 'number',
 
                 /**
-                 * @cfg {Number} [high=20] The y-coordinate of the whisker that represents the maximum.
+                 * @cfg {Number} [high=20] The y-coordinate of the whisker that represents
+                 * the maximum.
                  */
                 high: 'number',
 
@@ -67,16 +71,18 @@ Ext.define('Ext.chart.sprite.BoxPlot', {
                 boxWidth: 'number',
 
                 /**
-                 * @cfg {Number} [whiskerWidth=0.5] The length of the lines at the ends of the whiskers, as a ratio of `boxWidth`.
+                 * @cfg {Number} [whiskerWidth=0.5] The length of the lines at the ends
+                 * of the whiskers, as a ratio of `boxWidth`.
                  */
                 whiskerWidth: 'number',
 
                 /**
-                 * @cfg {Boolean} [crisp=true] Whether to snap the rendered lines to the pixel grid of not.
-                 * Generally, it's best to have this set to `true` (which is the default) fox pixel perfect
-                 * results (especially on non-HiDPI displays), but for boxplots with small `boxWidth`
-                 * visible artifacts caused by pixel grid snapping may become noticeable, and setting this
-                 * to `false` can be a remedy at the expense of clarity.
+                 * @cfg {Boolean} [crisp=true] Whether to snap the rendered lines to the pixel grid
+                 * of not. Generally, it's best to have this set to `true` (which is the default)
+                 * for pixel perfect results (especially on non-HiDPI displays), but for boxplots
+                 * with small `boxWidth` visible artifacts caused by pixel grid snapping may become
+                 * noticeable, and setting this to `false` can be a remedy at the expense
+                 * of clarity.
                  */
                 crisp: 'bool'
             },
@@ -110,7 +116,7 @@ Ext.define('Ext.chart.sprite.BoxPlot', {
         }
     },
 
-    updatePlainBBox: function (plain) {
+    updatePlainBBox: function(plain) {
         var me = this,
             attr = me.attr,
             halfLineWidth = attr.lineWidth / 2,
@@ -125,7 +131,7 @@ Ext.define('Ext.chart.sprite.BoxPlot', {
         plain.height = height;
     },
 
-    render: function (surface, ctx) {
+    render: function(surface, ctx) {
         var me = this,
             attr = me.attr;
 
@@ -133,18 +139,24 @@ Ext.define('Ext.chart.sprite.BoxPlot', {
 
         if (attr.crisp) {
             me.crispRender(surface, ctx);
-        } else {
+        }
+        else {
             me.softRender(surface, ctx);
         }
 
         //<debug>
+        // eslint-disable-next-line vars-on-top, one-var
         var debug = attr.debug || this.statics().debug || Ext.draw.sprite.Sprite.debug;
+
         if (debug) {
             // This assumes no part of the sprite is rendered after this call.
             // If it is, we need to re-apply transformations.
             // But the bounding box should always be rendered as is, untransformed.
             this.attr.inverseMatrix.toContext(ctx);
-            debug.bbox && this.renderBBox(surface, ctx);
+
+            if (debug.bbox) {
+                this.renderBBox(surface, ctx);
+            }
         }
         //</debug>
     },
@@ -156,7 +168,7 @@ Ext.define('Ext.chart.sprite.BoxPlot', {
      * @param surface
      * @param ctx
      */
-    softRender: function (surface, ctx) {
+    softRender: function(surface, ctx) {
         var me = this,
             attr = me.attr,
 
@@ -204,7 +216,7 @@ Ext.define('Ext.chart.sprite.BoxPlot', {
         ctx.stroke();
     },
 
-    alignLine: function (x, lineWidth) {
+    alignLine: function(x, lineWidth) {
         lineWidth = lineWidth || this.attr.lineWidth;
 
         x = Math.round(x);
@@ -225,7 +237,7 @@ Ext.define('Ext.chart.sprite.BoxPlot', {
      * @param surface
      * @param ctx
      */
-    crispRender: function (surface, ctx) {
+    crispRender: function(surface, ctx) {
         var me = this,
             attr = me.attr,
 
@@ -276,5 +288,4 @@ Ext.define('Ext.chart.sprite.BoxPlot', {
         ctx.lineTo(whiskerRight, high);
         ctx.stroke();
     }
-
 });

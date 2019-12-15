@@ -1,5 +1,3 @@
-/* global Ext, expect, spyOn, jasmine, xit, MockAjaxManager */
-
 topSuite("grid-general-buffered-no-preserve-scroll",
     [false, 'Ext.grid.Panel', 'Ext.data.ArrayStore', 'Ext.data.BufferedStore'],
 function() {
@@ -24,9 +22,11 @@ function() {
         }),
         loadStore = function() {
             proxyStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         },
         view, bufferedRenderer;
@@ -42,6 +42,7 @@ function() {
                 title: 'Title' + i
             });
         }
+
         return recs;
     }
 
@@ -147,6 +148,7 @@ function() {
 
             waitsFor(function() {
                 satisfyRequests();
+
                 return scrollDone;
             }, 'scroll to finish');
 
@@ -162,6 +164,7 @@ function() {
 
             waitsFor(function() {
                 satisfyRequests();
+
                 return refreshed;
             }, 'store to reload');
 
@@ -202,7 +205,7 @@ function() {
                 height: 300,
                 border: false,
                 viewConfig: {
-                    preserveScrollOnReload: false,
+                    preserveScrollOnReload: false
                 },
                 renderTo: document.body
             });

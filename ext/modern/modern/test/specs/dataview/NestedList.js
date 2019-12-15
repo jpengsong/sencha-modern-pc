@@ -1,11 +1,12 @@
-describe('Ext.dataview.NestedList', function () {
+topSuite('Ext.dataview.NestedList', function() {
     var nestedlist, store;
 
-    function createNestedList (cfg, nodes) {
+    function createNestedList(cfg, nodes) {
         if (Ext.isArray(cfg)) {
             nodes = cfg;
             cfg = null;
-        } else if (!nodes) {
+        }
+ else if (!nodes) {
             nodes = [{
                 id: '/ford',
                 text: 'Ford',
@@ -36,19 +37,19 @@ describe('Ext.dataview.NestedList', function () {
         store = nestedlist.getStore();
     }
 
-    function getTitle () {
+    function getTitle() {
         if (nestedlist) {
             return nestedlist.getToolbar().getTitle();
         }
     }
 
-    afterEach(function () {
+    afterEach(function() {
         nestedlist = store = Ext.destroy(nestedlist);
     });
 
     describe('configuration', function() {
         it('should be able to set toolbar to false', function() {
-            createNestedList({ toolbar: false});
+            createNestedList({ toolbar: false });
 
             expect(function() {
                 nestedlist.show();
@@ -59,15 +60,15 @@ describe('Ext.dataview.NestedList', function () {
     });
 
     describe('events', function() {
-        describe('back', function () {
-            it('should be preventable', function () {
+        describe('back', function() {
+            it('should be preventable', function() {
                 createNestedList(
                     {
                         detailCard: {
                             html: 'Ford Mustang GT'
                         },
                         listeners: {
-                            back: function () {
+                            back: function() {
                                 return false;
                             }
                         }
@@ -91,14 +92,14 @@ describe('Ext.dataview.NestedList', function () {
                 expect(spy).not.toHaveBeenCalled();
             });
 
-            it('should go to node within back event', function () {
+            it('should go to node within back event', function() {
                 createNestedList(
                     {
                         detailCard: {
                             html: 'Ford Mustang GT'
                         },
                         listeners: {
-                            back: function () {
+                            back: function() {
                                 var mustang_node = store.getNodeById('/ford/mustang');
 
                                 nestedlist.goToNode(mustang_node);
@@ -155,6 +156,7 @@ describe('Ext.dataview.NestedList', function () {
                 });
 
                 var gt_node = store.getNodeById('/ford/mustang/gt');
+
                 nestedlist.goToLeaf(gt_node);
 
                 nestedlist.getActiveItem().select(gt_node);
@@ -173,6 +175,7 @@ describe('Ext.dataview.NestedList', function () {
                 });
 
                 var gt_node = store.getNodeById('/ford/mustang/gt');
+
                 nestedlist.goToLeaf(gt_node);
 
                 nestedlist.getActiveItem().select(gt_node);
@@ -193,8 +196,8 @@ describe('Ext.dataview.NestedList', function () {
                 });
 
                 var gt_node = store.getNodeById('/ford/mustang/gt');
-                nestedlist.goToLeaf(gt_node);
 
+                nestedlist.goToLeaf(gt_node);
 
                 nestedlist.getActiveItem().select(gt_node);
                 expect(spy).toHaveBeenCalled();

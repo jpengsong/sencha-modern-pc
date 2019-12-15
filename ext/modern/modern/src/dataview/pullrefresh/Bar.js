@@ -52,7 +52,8 @@ Ext.define('Ext.dataview.pullrefresh.Bar', {
 
         /**
          * @cfg {String} releaseText
-         * The text that will be shown after you have pulled down enough to show the release message.
+         * The text that will be shown after you have pulled down enough to show 
+         * the release message.
          * @locale
          */
         releaseText: 'Release to refresh...'
@@ -109,17 +110,20 @@ Ext.define('Ext.dataview.pullrefresh.Bar', {
 
         updateLastUpdated: function(value) {
             var me = this,
-                lastUpdated = value ? me.getLastUpdatedText() +
-                    Ext.util.Format.date(value, me.getLastUpdatedDateFormat()) : value;
+                lastUpdated = value
+                    ? me.getLastUpdatedText() + Ext.util.Format.date(
+                        value, me.getLastUpdatedDateFormat()
+                    )
+                    : value;
 
             me.infoUpdatedEl.setText(lastUpdated);
         },
 
-        updateMode: function (value, oldValue) {
+        updateMode: function(value, oldValue) {
             this.el.replaceCls(oldValue, value, this.modeCls);
         },
 
-        updateState: function (state) {
+        updateState: function(state) {
             var me = this,
                 fn = me.textMap[state],
                 text = fn && me[fn]();

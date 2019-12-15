@@ -47,13 +47,14 @@
  * @private
  * @since 5.1.0
  */
-(function (LRU, fn, Cache) {
+/* eslint-disable indent */
+(function(LRU, fn, Cache) {
 // @require Ext.util.LRU
 // @define Ext.util.Cache
 
     // NOTE: We have to implement this class old-school because it is used by the
     // platformConfig class processor (so Ext.define is not yet ready for action).
-    Ext.util.Cache = Cache = function (config) {
+    Ext.util.Cache = Cache = function(config) {
         LRU.call(this, config);
     };
 
@@ -82,7 +83,7 @@
         /**
          * Removes all items from this cache.
          */
-        clear: function () {
+        clear: function() {
             LRU.prototype.clear.call(this, this.evict);
         },
 
@@ -95,7 +96,7 @@
          * @param {Object...} args Arguments for the `miss` method should it be needed.
          * @return {Object} The cached object.
          */
-        get: function (key) {
+        get: function(key) {
             var me = this,
                 entry = me.map[key],
                 value;
@@ -104,7 +105,8 @@
                 value = entry.value;
 
                 me.touch(key);
-            } else {
+            }
+            else {
                 value = me.miss.apply(me, arguments);
 
                 me.add(key, value);
@@ -130,4 +132,4 @@
          */
         evict: Ext.emptyFn
     });
-}(Ext.util.LRU, function () {}));
+}(Ext.util.LRU, function() {}));

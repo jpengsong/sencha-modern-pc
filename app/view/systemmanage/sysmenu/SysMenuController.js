@@ -4,9 +4,9 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenuController", {
 
     //新增
     onAdd: function () {
-        var me = this, refs = me.getReferences(), model = Ext.create("App.model.systemmanage.SysMenuButtonDetail"), selRecords = refs.treepanel.getSelectionModel().getSelection();
-        if (selRecords.length == 1) {
-            model.set("ParentId", selRecords[0].get("SysMenuId"));
+        var me = this, refs = me.getReferences(), model = Ext.create("App.model.systemmanage.SysMenuButtonDetail"), selRecord = refs.tree.getSelectable().getSelectedRecord();
+        if (!Ext.isEmpty(selRecord)) {
+            model.set("ParentId", selRecord.get("SysMenuId"));
             Ext.widget({
                 title: "新增菜单",
                 xtype: "sysmenuedit",
@@ -16,7 +16,7 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenuController", {
                     data: {
                         fieldlabelName: "菜单名称",
                         model: model,
-                        selNode: selRecords[0],
+                        selNode: selRecord,
                         typeValue: 0,
                         typeStore: Ext.create("Ext.data.Store", {
                             fields: ['id', 'name'],
@@ -36,15 +36,14 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenuController", {
                 }
             });
         } else {
-            App.Msg.Warning("请选择数据");
+            Ext.Msg.alert("提示","请选择数据");
         }
     },
 
     //编辑
     onEdit: function () {
-        var me = this,refs = me.getReferences(), selRecords = refs.treepanel.getSelectionModel().getSelection();
-        if (selRecords.length == 1) {
-            console.info(selRecords[0]);
+        var me = this,refs = me.getReferences(), selRecord = refs.tree.getSelectable().getSelectedRecord();
+        if (!Ext.isEmpty(selRecord)) {
             Ext.widget({
                 title: "编辑菜单",
                 xtype: "sysmenuedit",
@@ -53,9 +52,9 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenuController", {
                 viewModel: {
                     data: {
                         fieldlabelName: "菜单名称",
-                        model: selRecords[0].clone(),
-                        selNode: selRecords[0],
-                        typeValue: selRecords[0].get("Type"),
+                        model: selRecord.clone(),
+                        selNode: selRecord,
+                        typeValue: selRecord.get("Type"),
                         typeStore: Ext.create("Ext.data.Store", {
                             fields: ['id', 'name'],
                             data: [
@@ -74,17 +73,17 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenuController", {
                 }
             });
         } else {
-            App.Msg.Warning("请选择数据");
+            Ext.Msg.alert("提示","请选择数据");
         }
     },
 
     //删除
     onDel: function () {
-        var me = this, refs = me.getReferences(), tree = refs.treepanel, selRecords, idArray = [], url;
+        var me = this, refs = me.getReferences(), tree = refs.tree, selRecord, idArray = [], url;
         if (App.Page.selectionModel(tree, true)) {
-            selRecords = tree.getSelectionModel().getSelection();
-            idArray.push(selRecords[0].get("SysMenuId"));
-            url = selRecords[0].get("Type") == "0" ? "/api/SystemManage/SysMenu/DeleteSysMenu" : "/api/SystemManage/SysMenuButton/DeleteSysMenuButton";
+            selRecord = tree.getSelectable().getSelectedRecord();
+            idArray.push(selRecord.get("SysMenuId"));
+            url = selRecord.get("Type") == "0" ? "/api/SystemManage/SysMenu/DeleteSysMenu" : "/api/SystemManage/SysMenuButton/DeleteSysMenuButton";
             Ext.Msg.confirm("提示", "确认删除选中的" + idArray.length + "项数据项吗？",
                 function (btn) {
                     if (btn == "yes") {
@@ -97,11 +96,11 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenuController", {
                             maskmsg: "正在删除...",
                             params: idArray.join(','),
                             success: function (data) {
-                                App.Msg.Info("删除成功");
-                                selRecords[0].remove();
+                                Ext.Msg.alert("提示","删除成功");
+                                selRecord.remove();
                             },
                             error: function (data) {
-                                App.Msg.Error("删除失败");
+                                Ext.Msg.alert("提示","删除失败");
                             }
                         })
                     }

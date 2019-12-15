@@ -145,10 +145,12 @@ Ext.define('Ext.menu.Menu', {
      * This allows submenus not to be collapsed while hovering other menu items.
      */
     mouseLeaveDelay: 50,
-    
+
     defaultType: 'menuitem',
 
     autoSize: null,
+
+    twoWayBindable: 'groups',
 
     keyMap: {
         scope: 'this',
@@ -222,6 +224,7 @@ Ext.define('Ext.menu.Menu', {
         if (Ext.supports.Touch) {
             listeners.pointerdown = me.onMouseOver;
         }
+
         me.element.on(listeners);
 
         // Child item mouseovers are handled on a delay so that
@@ -241,13 +244,13 @@ Ext.define('Ext.menu.Menu', {
         // Menu can be destroyed while shown;
         // we should notify the Manager
         Ext.menu.Manager.onHide(me);
-        
+
         me.parentMenu = me.ownerCmp = null;
 
         if (me.rendered) {
             me.el.un(me.mouseMonitor);
         }
-        
+
         me.callParent();
     },
 
@@ -262,6 +265,7 @@ Ext.define('Ext.menu.Menu', {
         me.callParent([e]);
 
         me.mixins.focusablecontainer.onFocusEnter.call(me, e);
+
         if (me.getFloated()) {
             hierarchyState = me.getInherited();
 
@@ -287,7 +291,7 @@ Ext.define('Ext.menu.Menu', {
 
     onFocusLeave: function(e) {
         this.callParent([e]);
-        
+
         if (this.getAutoHide() !== false) {
             this.hide();
         }
@@ -330,17 +334,18 @@ Ext.define('Ext.menu.Menu', {
         var me = this,
             ariaDom = me.ariaEl.dom;
 
-        me.callParent(arguments);
+        me.callParent();
         Ext.menu.Manager.onShow(me);
 
         if (me.getFloated() && ariaDom) {
             ariaDom.setAttribute('aria-expanded', true);
         }
-        
+
         // Restore configured maxHeight
         if (me.getFloated()) {
             me.maxHeight = me.savedMaxHeight;
         }
+
         if (me.autoFocus) {
             me.focus();
         }
@@ -368,7 +373,8 @@ Ext.define('Ext.menu.Menu', {
         if (typeof cfg === 'string' && cfg[0] !== '@') {
             if (cfg === '-') {
                 cfg = { xtype: 'menuseparator' };
-            } else {
+            }
+            else {
                 cfg = {};
             }
         }
@@ -396,7 +402,7 @@ Ext.define('Ext.menu.Menu', {
     },
 
     privates: {
-        applyItemDefaults: function (item) {
+        applyItemDefaults: function(item) {
             item = this.callParent([item]);
 
             if (!item.isComponent && !item.xtype && !item.xclass) {
@@ -413,34 +419,34 @@ Ext.define('Ext.menu.Menu', {
             return item;
         },
 
-        applyGroups: function (groups, oldGroups) {
+        applyGroups: function(groups, oldGroups) {
             var me = this,
                 currentGroups = Ext.apply({}, oldGroups),
                 isConfiguring = me.isConfiguring,
                 groupName, members, len, i, item, value, oldValue;
 
             if (groups) {
+                me.updatingGroups = true;
+
                 for (groupName in groups) {
                     oldValue = currentGroups[groupName];
                     currentGroups[groupName] = value = groups[groupName];
 
                     if (!isConfiguring) {
                         members = me.lookupName(groupName);
+
                         for (i = 0, len = members.length; i < len; i++) {
                             item = members[i];
 
                             // Set checked state depending on whether the value is the group's value
                             item.setChecked(item.getValue() === value);
                         }
+
                         me.fireEvent('groupchange', me, groupName, value, oldValue);
                     }
                 }
 
-                // Creates a bindable updater on first call after configuration is done.
-                // We only want one if this menu *has* RadioItem groups.
-                if (!isConfiguring) {
-                    me.addBindableUpdater('groups');
-                }
+                me.updatingGroups = false;
             }
 
             return currentGroups;
@@ -451,8 +457,19 @@ Ext.define('Ext.menu.Menu', {
                 item;
 
             // FocusableContainer ignores events from input fields.
-            // In Menus we have a special case. The ESC key, or arrow from <input type="checkbox"> must be handled.
-            if (keyCode === e.ESC || (Ext.fly(e.target).is('input[type=checkbox]') && (keyCode === e.LEFT || keyCode === e.RIGHT || keyCode === e.UP || keyCode === e.DOWN))) {
+            // In Menus we have a special case. The ESC key, or arrow from 
+            // <input type="checkbox"> must be handled.
+            if (
+                keyCode === e.ESC ||
+                (
+                    Ext.fly(e.target).is('input[type=checkbox]') && (
+                        keyCode === e.LEFT ||
+                        keyCode === e.RIGHT ||
+                        keyCode === e.UP ||
+                        keyCode === e.DOWN
+                    )
+                )
+            ) {
                 e.preventDefault();
                 // TODO: we should never modify the "target" property of an event
                 item = this.getItemFromEvent(e);
@@ -464,13 +481,16 @@ Ext.define('Ext.menu.Menu', {
                 // TODO: we should never modify the "target" property of an event
                 item = this.getItemFromEvent(e);
                 e.target = item && item.focusEl.dom;
+
                 if (e.shiftKey) {
                     e.shiftKey = false;
                     e.keyCode = e.UP;
-                } else {
+                }
+                else {
                     e.keyCode = e.DOWN;
                 }
-            } else {
+            }
+            else {
                 return this.callParent([e]);
             }
 
@@ -525,6 +545,7 @@ Ext.define('Ext.menu.Menu', {
             }
 
             clickedItem = me.getItemFromEvent(e);
+
             if (clickedItem && clickedItem.isMenuItem) {
                 if (!clickedItem.getMenu() || !me.ignoreParentClicks) {
                     clickResult = clickedItem.onClick(e);
@@ -539,10 +560,15 @@ Ext.define('Ext.menu.Menu', {
                 }
 
                 // SPACE and ENTER invokes the menu
-                if (clickedItem.getMenu() && clickResult !== false && (isKeyEvent || isTouchEvent)) {
+                if (
+                    clickedItem.getMenu() &&
+                    clickResult !== false &&
+                    (isKeyEvent || isTouchEvent)
+                ) {
                     clickedItem.expandMenu(e);
                 }
             }
+
             // Click event may be fired without an item, so we need a second check
             if (!clickedItem || clickedItem.getDisabled()) {
                 clickedItem = undefined;
@@ -578,14 +604,16 @@ Ext.define('Ext.menu.Menu', {
                 mouseEnter, overItem, el;
 
             if (!me.getDisabled()) {
-                
+
                 // If triggered by a touchstart, mouseenter is declared
                 // if focus does not already reside within the menu.
                 if (isTouch) {
                     mouseEnter = !me.el.contains(document.activeElement);
-                } else {
+                }
+                else {
                     mouseEnter = !me.el.contains(e.getRelatedTarget());
                 }
+
                 overItem = me.getItemFromEvent(e);
 
                 // Focus the item in time specified by mouseLeaveDelay.
@@ -594,20 +622,29 @@ Ext.define('Ext.menu.Menu', {
                     // pointerdown is routed to mouseover, handle pointerdown without delay
                     if (isTouch) {
                         me.handleItemOver(e, overItem);
-                    } else {
+                    }
+                    else {
                         // ignore events on elements outside the bodyElement of menu items
                         // this ensures we don't apply mouseover styling when hovering the
                         // "separator" of a menu item, and we don't fire the menu item's
                         // handler when the separator is clicked.
                         el = overItem.isMenuItem ? overItem.bodyElement : overItem.el;
+
                         if (!el.contains(e.getRelatedTarget())) {
-                            me.itemOverTask.delay(activeItemExpanded ? me.mouseLeaveDelay : 0, null, null, [e, overItem]);
+                            me.itemOverTask.delay(
+                                activeItemExpanded ? me.mouseLeaveDelay : 0,
+                                null,
+                                null,
+                                [e, overItem]
+                            );
                         }
                     }
                 }
+
                 if (mouseEnter) {
                     me.fireEvent('mouseenter', me, e);
                 }
+
                 me.fireEvent('mouseover', me, overItem, e);
             }
         },
@@ -624,6 +661,7 @@ Ext.define('Ext.menu.Menu', {
             if (!item.containsFocus && (isMouseover || item.isMenuItem)) {
                 item.focus();
             }
+
             // Only expand the menu on real mouseover events.
             if (item.expandMenu && isMouseover) {
                 item.expandMenu(e);
@@ -668,7 +706,7 @@ Ext.define('Ext.menu.Menu', {
             var indented = item.isMenuItem ? item.getIndented() : item.indented;
 
             item.toggleCls(this.indentedCls,
-                !!(indented || (this.getIndented() && (indented !== false))));
+                           !!(indented || (this.getIndented() && (indented !== false))));
         }
     },
 
@@ -682,10 +720,12 @@ Ext.define('Ext.menu.Menu', {
          */
         create: function(menu, config) {
             if (Ext.isArray(menu)) { // array of menu items
-                menu = Ext.apply({xtype: 'menu', items: menu}, config);
-            } else {
-                menu = Ext.apply({xtype: 'menu'}, menu, config);
+                menu = Ext.apply({ xtype: 'menu', items: menu }, config);
             }
+            else {
+                menu = Ext.apply({ xtype: 'menu' }, menu, config);
+            }
+
             return Ext.create(menu);
         }
     },
@@ -702,5 +742,5 @@ Ext.define('Ext.menu.Menu', {
             }
         }
     }
-    
+
 });

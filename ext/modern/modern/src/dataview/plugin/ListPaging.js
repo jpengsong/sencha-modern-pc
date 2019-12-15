@@ -53,9 +53,10 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
         loadMoreText: 'Load More...',
 
         /**
-         * @cfg {String} noMoreRecordsText The text used as the label of the Load More button when the Store's
-         * {@link Ext.data.Store#totalCount totalCount} indicates that all of the records available on the server are
-         * already loaded
+         * @cfg {String} noMoreRecordsText The text used as the label of the Load More 
+         * button when the Store's
+         * {@link Ext.data.Store#totalCount totalCount} indicates that all of the records 
+         * available on the server are already loaded
          *
          * @locale
          */
@@ -75,19 +76,20 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
 
         /**
          * @private
-         * @cfg {Boolean} loading True if the plugin has initiated a Store load that has not yet completed
+         * @cfg {Boolean} loading True if the plugin has initiated a Store load that has 
+         * not yet completed.
          */
         loading: false
     },
 
     loadTpl:
-        '<div class="'+Ext.baseCSSPrefix+'loading-spinner">' +
-             '<span class="'+Ext.baseCSSPrefix+'loading-top"></span>' +
-             '<span class="'+Ext.baseCSSPrefix+'loading-right"></span>' +
-             '<span class="'+Ext.baseCSSPrefix+'loading-bottom"></span>' +
-             '<span class="'+Ext.baseCSSPrefix+'loading-left"></span>' +
+        '<div class="' + Ext.baseCSSPrefix + 'loading-spinner">' +
+             '<span class="' + Ext.baseCSSPrefix + 'loading-top"></span>' +
+             '<span class="' + Ext.baseCSSPrefix + 'loading-right"></span>' +
+             '<span class="' + Ext.baseCSSPrefix + 'loading-bottom"></span>' +
+             '<span class="' + Ext.baseCSSPrefix + 'loading-left"></span>' +
         '</div>' +
-        '<div class="'+Ext.baseCSSPrefix+'message">{message}</div>',
+        '<div class="' + Ext.baseCSSPrefix + 'message">{message}</div>',
 
     /**
      * @private
@@ -116,7 +118,8 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
         if (enabled) {
             scroller.on(listeners);
             this.ensureBufferZone();
-        } else {
+        }
+        else {
             scroller.un(listeners);
         }
     },
@@ -135,6 +138,7 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
             };
 
         me._storeListeners = Ext.destroy(me._storeListeners);
+
         if (store) {
             me._storeListeners = store.on(listeners);
         }
@@ -142,21 +146,25 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
 
     /**
      * @private
-     * Removes the List/DataView's loading mask because we show our own in the plugin. The logic here disables the
-     * loading mask immediately if the store is autoloading. If it's not autoloading, allow the mask to show the first
-     * time the Store loads, then disable it and use the plugin's loading spinner.
+     * Removes the List/DataView's loading mask because we show our own in the plugin. 
+     * The logic here disables the loading mask immediately if the store is autoloading. 
+     * If it's not autoloading, allow the mask to show the first time the Store loads, 
+     * then disable it and use the plugin's loading spinner.
      * @param {Ext.data.Store} store The store that is bound to the DataView
      */
     disableDataViewMask: function() {
         var list = this.cmp;
-            this._listMask = list.getLoadingText();
+
+        this._listMask = list.getLoadingText();
 
         list.setLoadingText(null);
     },
 
     enableDataViewMask: function() {
+        var list;
+
         if (this._listMask) {
-            var list = this.cmp;
+            list = this.cmp;
 
             list.setLoadingText(this._listMask);
             delete this._listMask;
@@ -166,11 +174,11 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
     /**
      * @private
      */
-    applyLoadMoreCmp: function (config, instance) {
+    applyLoadMoreCmp: function(config, instance) {
         return Ext.updateWidget(instance, config, this, 'createLoadMoreCmp');
     },
 
-    createLoadMoreCmp: function (config) {
+    createLoadMoreCmp: function(config) {
         return Ext.apply({
             html: this.getLoadTpl().apply({
                 message: this.getLoadMoreText()
@@ -178,7 +186,7 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
         }, config);
     },
 
-    updateLoadMoreCmp: function (loadMoreCmp, old) {
+    updateLoadMoreCmp: function(loadMoreCmp, old) {
         Ext.destroy(old);
 
         if (loadMoreCmp) {
@@ -191,7 +199,8 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
 
     /**
      * @private
-     * If we're using autoPaging and detect that the user has scrolled to the bottom, kick off loading of the next page
+     * If we're using autoPaging and detect that the user has scrolled to the bottom, 
+     * kick off loading of the next page.
      */
     onScroll: function() {
         this.ensureBufferZone();
@@ -214,9 +223,9 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
 
     /**
      * @private
-     * If the Store is just about to load but it's currently empty, we hide the load more button because this is
-     * usually an outcome of setting a new Store on the List so we don't want the load more button to flash while
-     * the new Store loads
+     * If the Store is just about to load but it's currently empty, we hide the load more 
+     * button because this is usually an outcome of setting a new Store on the List so we 
+     * don't want the load more button to flash while the new Store loads.
      */
     onStoreBeforeLoad: function(store) {
         if (store.getCount() === 0) {
@@ -227,7 +236,7 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
     /**
      * @private
      */
-    onStoreLoad: function () {
+    onStoreLoad: function() {
         this.syncState();
     },
 
@@ -252,13 +261,13 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
 
     /**
      * @private
-     * Returns true if the Store is detected as being fully loaded, or the server did not return a total count, which
-     * means we're in 'infinite' mode
+     * Returns true if the Store is detected as being fully loaded, or the server did not return a 
+     * total count, which means we're in 'infinite' mode
      * @return {Boolean}
      */
     storeFullyLoaded: function() {
         var store = this.cmp.getStore(),
-            total = store? store.getTotalCount() : null;
+            total = store ? store.getTotalCount() : null;
 
         return total !== null ? total <= (store.currentPage * store.getPageSize()) : false;
     },
@@ -291,6 +300,7 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
             if (list.isPainted()) {
                 me.ensureBufferZone = me.doEnsureBufferZone;
                 me.doEnsureBufferZone();
+
                 return;
             }
 
@@ -324,6 +334,7 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
             index = Math.min(Math.max(0, count - bufferZone), count - 1);
             item = list.mapToItem(store.getAt(index));
             box = item && item.element.getBox();
+
             if (!box) {
                 return;
             }
@@ -333,6 +344,7 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
             // 0, loading the next page should happen when the first row of pixels of the
             // leading buffer zone item appears in the view.
             y = bufferZone > 0 ? box.top + 1 : box.bottom;
+
             if (y > scroller.getElement().getBox().bottom) {
                 return;
             }
@@ -344,7 +356,7 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
             return Ext.XTemplate.getTpl(this, 'loadTpl');
         },
 
-        syncState: function () {
+        syncState: function() {
             var me = this,
                 list = me.cmp,
                 loadCmp = me.getLoadMoreCmp(),
@@ -358,7 +370,7 @@ Ext.define('Ext.dataview.plugin.ListPaging', {
 
             me.setLoading(false);
 
-            //if we've reached the end of the data set, switch to the noMoreRecordsText
+            // if we've reached the end of the data set, switch to the noMoreRecordsText
             loadCmp.setHtml(me.getLoadTpl().apply({
                 message: message
             }));

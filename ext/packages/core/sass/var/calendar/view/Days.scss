@@ -207,6 +207,12 @@ $calendar-days-selection-background-color: dynamic($calendar-selection-color);
 $calendar-days-selection-opacity: dynamic(0.3);
 
 /**
+ * @var {color}
+ * The background color for a today.
+ */
+$calendar-today-highlight-background-color: dynamic($calendar-today-background-color);
+
+/**
  * Creates a visual theme for the calendar days view.
  *
  * @param {string} $ui
@@ -343,6 +349,10 @@ $calendar-days-selection-opacity: dynamic(0.3);
     $selection-opacity: null
 ) {
     $ui-suffix: ui-suffix($ui);
+
+    .#{$prefix}today-cell-highlight-day {
+        background-color: $calendar-today-highlight-background-color;
+    }
 
     .#{$prefix}calendar-days#{$ui-suffix} {
 

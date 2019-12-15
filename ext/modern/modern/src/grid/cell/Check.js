@@ -20,7 +20,7 @@ Ext.define('Ext.grid.cell.Check', {
     innerTemplate: [{
         reference: 'checkboxElement',
         tabIndex: -1,
-        cls:Ext.baseCSSPrefix + 'checkbox-el ' + Ext.baseCSSPrefix + 'font-icon'
+        cls: Ext.baseCSSPrefix + 'checkbox-el ' + Ext.baseCSSPrefix + 'font-icon'
     }],
 
     classCls: Ext.baseCSSPrefix + 'checkcell',
@@ -47,12 +47,13 @@ Ext.define('Ext.grid.cell.Check', {
         // Keep column header state up to date.
         if (value) {
             column.updateHeaderState();
-        } else {
+        }
+        else {
             column.setHeaderStatus(value);
         }
     },
 
-    updateColumn: function (column, oldColumn) {
+    updateColumn: function(column, oldColumn) {
         this.callParent([ column, oldColumn ]);
 
         if (column) {
@@ -72,7 +73,7 @@ Ext.define('Ext.grid.cell.Check', {
      * Disables this CheckCell
      */
     disable: function() {
-       this.setDisabled(true);
+        this.setDisabled(true);
     },
 
     /**
@@ -91,11 +92,19 @@ Ext.define('Ext.grid.cell.Check', {
 
         if (record) {
             checked = !column.isRecordChecked(record);
+
             if (me.getDisabled()) {
                 return;
             }
 
-            if (column.fireEvent('beforecheckchange', me, recordIndex, checked, record, e) !== false) {
+            if (
+                column.fireEvent('beforecheckchange',
+                                 me,
+                                 recordIndex,
+                                 checked,
+                                 record,
+                                 e) !== false
+            ) {
                 if (me.getColumn().getStopSelection()) {
                     e.stopSelection = true;
                 }
@@ -103,6 +112,7 @@ Ext.define('Ext.grid.cell.Check', {
                 if (record) {
                     column.setRecordChecked(record, checked, e);
                 }
+
                 if (column.hasListeners.checkchange) {
                     column.fireEvent('checkchange', me, recordIndex, checked, record, e);
                 }

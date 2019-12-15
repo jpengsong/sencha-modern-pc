@@ -1,485 +1,175 @@
+//******************************************************Toolbar样式******************************************************
 
-//***************************************************************************Theme-green***************************************************************************
+/*
+    头部 toolbar
+*/
+@include toolbar-ui  (
+    $ui:"main-toolbar",
+    $padding:0px 0px,
+    $padding-big:0px 0px
+);
 
 /*
     头部 logo
 */
-.x-container-main-logo-green{
-    background-color : $base-color;
+.x-container-main-toolbar-logo{
+    background-color :$base-color;
     text-align:center;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--base-foreground-color);
     font-size: 22px;
-    line-height: 50px
+    font-weight: 400;
+    line-height: 70px;
 };
 
 /*
-    头部 toolbar
+    头部 按钮颜色
 */
-@include extjs-toolbar-ui  (
-    $ui:"main-toolbar-green",
-    $background-color : $base-color
+@include button-ui(
+    $ui:"main-toolbar-button",
+    $color:var(--highlight-color),
+    $hovered-color :var(--highlight-color),
+    $pressed-color :var(--highlight-color),
+    $icon-color:var(--highlight-color),
+    $hovered-icon-color var(--highlight-color),
+    $pressed-icon-color :var(--highlight-color),
+    $background-color :transparent,
+    $hovered-background-color:transparent,
+    $pressed-background-color:transparent,
+    $pressed-hovered-background-color :transparent,
+    $focused-background-color : transparent,
+    $focused-hovered-background-color:transparent
 );
 
-/*
-    头部 toolbar button
-*/
-@include extjs-button-small-ui (
-    $ui:"main-toolbar-button-green",
-    $border-width : 0,
-    $color:rgba(255,255,255,.7),
-    $background-color:transparent
+
+//********************************************************Navigation-Menu样式*******************************************************
+.x-container-main-menu {
+    .x-button{
+        font:400 14px/18px Roboto, sans-serif;
+    }
+    border-radius: 0px !important;
+    border-bottom-color:var(--divider-color);
+    border-bottom-width: 1px;
+    border-bottom-style: solid; 
+}
+
+@include button-ui(
+    $ui:"main-menu-button",
+    $color:var(--color),
+    $hovered-color :var(--color),
+    $pressed-color :var(--color),
+    $icon-color:var(--color),
+    $hovered-icon-color var(--color),
+    $pressed-icon-color :var(--color),
+    $background-color :transparent,
+    $hovered-background-color:transparent,
+    $pressed-background-color:transparent,
+    $pressed-hovered-background-color :transparent,
+    $focused-background-color : transparent,
+    $focused-hovered-background-color:transparent
 );
 
+.x-button-main-menu-button .x-icon-el{
+    width: 30px !important;
+}
+
+@include menuitem-ui (
+    $ui:"main-menu-menuitem",
+    $color:var(--color),
+    $icon-color :var(--color),
+    $height :50px,
+    $active-color:$base-color,
+);
+
+
+//******************************************************Navigation-TreeList样式******************************************************
 /*
     左侧菜单
 */
 @include treelist-ui(
-    $ui:"main-navigation-green",
+    $ui:"navigation",
+    $row-over-transition:0.3s,
     $padding:0px 0px,                                             //TreeList边距
-    $background-color:#28333E,                                  //背景颜色
-    $item-text-color:rgba(255,255,255,.7),                      //文本颜色
-    $item-text-over-color:#fff,                                 //悬浮文本颜色
-    $item-text-font-size:15px,                                    //文本字体大小
-    $row-selected-background-color:transparent,                   //选中行颜色
-    $row-over-background-color:transparent,                       //悬浮行颜色
-    $item-expander-color:#fff,                                  //箭头颜色
+    $item-text-font-size:14px,                                    //文本字体大小
     $item-expander-width :20px,                                   //箭头宽度
-    $item-expanded-child-background-color:rgba(0,0,0,.3),       //展开子节点颜色    
-    $item-line-height:45px,                                       //行高
-    $item-icon-color:rgba(255,255,255,.7),                      //图标颜色
-    $item-icon-over-color:#fff,                                 //图标悬浮颜色
-    $item-icon-width:20px,                                        //图标宽度
-    $row-indicator-selected-color : transparent,                  //选中某一项伪类
-    $row-indicator-selected-over-color :transparent,              //悬浮选中某一项伪类
-    $row-indicator-over-color :lighten($base-color, 10%),         //悬浮某一项伪类  
-    $row-indicator-width :5px,                                    //伪类宽 
-    $toolstrip-background-color:#28333E,                        //折叠后背景颜色
-    $tool-indicator-selected-color : lighten($base-color, 10%),   //折叠选中某一项伪类颜色
-    $tool-indicator-selected-width :5px                           //折叠选中某一项伪类宽度
+    $item-line-height:50px,                                       //行高
+    $item-icon-width:20px                                         //图标宽度
 );
 
-.x-treelist-main-navigation-green{
-    .x-treelist-item-expanded > .x-treelist-row{
-        background-color:rgba(0,0,0,.3) !important;
-    }
+.x-treelist-navigation{
     
-    .x-treelist-item-collapsed > .x-treelist-row{
-        background-color:#28333E !important;
+    border-right-color:var(--divider-color);
+    border-right-width: 1px;
+    border-right-style: solid;
+
+    //菜单选择项颜色
+    .x-treelist-item-selected  > .x-treelist-row> .x-treelist-item-wrap{
+        .x-treelist-item-text{
+            color: $base-color;
+        }
+    };
+
+    //菜单箭头图标右浮动
+    .x-treelist-item-expander {
+        left: auto;
+        right:0 !important;
+    };
+
+    .x-treelist-root-container{
+        .x-treelist-item-text{
+            margin-left: 50px;
+        };
     }
+  
+    .x-treelist-toolstrip {
+        .x-treelist-item-tool{
+            padding-left: 16px;
+            padding-right: 44px;
+        }
+    };
 
-    .x-treelist-item-selected > .x-treelist-row{
-        background-color: #475360;
+    .x-treelist-item-floated > * > * > .x-treelist-item-text{
+        margin-left:20px;
     }
-
-    //一级菜单项目图标
-    .x-treelist-root-container > .x-treelist-item > .x-treelist-row > .x-treelist-item-wrap > .x-treelist-item-icon,.x-treelist-item-tool{
-        left:0px;
-        padding-left: 18px;
-        padding-right: 32px;
-    };
-
-    //一级菜单项内边距
-    .x-treelist-root-container > .x-treelist-item > .x-treelist-row{
-        padding: 5px 0px !important;
-    };
-
-    //菜单项文本左外边距 50px为图标宽度
-    .x-treelist-item-text{
-        margin-left:50px;
-    };
-
-    //折叠后一级菜单项
-    .x-treelist-item-tool{
-        line-height: 50px;
-    };
-    
-    //折叠后一级菜单项距左边边距
-    .x-treelist-item-floated  .x-treelist-item-text{
-        margin-left: 10px;
-    };
-}
-
-//左侧菜单容器背景颜色
-.x-container-green {
-    background-color: #28333E;
-}
-
-
-
-
-//***************************************************************************Theme-purple***************************************************************************
-
-/*
-    头部logo
-*/
-.x-container-main-logo-purple{
-    background-color : #462c44;
-    text-align:center;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 22px;
-    line-height: 50px
 };
 
-/*
-    头部 toolbar
-*/
-@include extjs-toolbar-ui  (
-    $ui:"main-toolbar-purple",
-    $background-color : $base-color
-);
-
-/*
-    头部 toolbar button
-*/
-@include extjs-button-small-ui (
-    $ui:"main-toolbar-button-purple",
-    $border-width : 0,
-    $color:rgba(255,255,255,.7),
-    $background-color:transparent
-);
-
-
-/*
-    左侧菜单
-*/
-@include treelist-ui(
-    $ui:"main-navigation-purple",
-    $padding:0px 0px,                                             //TreeList边距
-    $background-color:#50314f,                                  //背景颜色
-    $item-text-color:rgba(255,255,255,.7),                      //文本颜色
-    $item-text-over-color:#fff,                                 //悬浮文本颜色
-    $item-text-font-size:15px,                                    //文本字体大小
-    $row-selected-background-color:lighten($base-color, 4%),      //选中行颜色
-    $row-over-background-color:transparent,                       //悬浮行颜色
-    $item-expander-color:#fff,                                  //箭头颜色
-    $item-expander-width :20px,                                   //箭头宽度
-    $item-expanded-child-background-color:rgba(0,0,0,.3),       //展开子节点颜色    
-    $item-line-height:45px,                                       //行高
-    $item-icon-color:rgba(255,255,255,.7),                      //图标颜色
-    $item-icon-over-color:#fff,                                 //图标悬浮颜色
-    $item-icon-width:20px,                                        //图标宽度
-    $row-indicator-selected-color : transparent,                  //选中某一项伪类
-    $row-indicator-selected-over-color :transparent,              //悬浮选中某一项伪类
-    $row-indicator-over-color :lighten($base-color, 10%),         //悬浮某一项伪类  
-    $row-indicator-width :5px,                                    //伪类宽 
-    $toolstrip-background-color:#50314f,                        //折叠后背景颜色
-    $tool-indicator-selected-color : lighten($base-color, 10%),   //折叠选中某一项伪类颜色
-    $tool-indicator-selected-width :5px                           //折叠选中某一项伪类宽度
-);
-
-.x-treelist-main-navigation-purple{
-
-    //一级菜单项目图标
-    .x-treelist-root-container > .x-treelist-item > .x-treelist-row > .x-treelist-item-wrap > .x-treelist-item-icon,.x-treelist-item-tool{
-        left:0px;
-        padding-left: 18px;
-        padding-right: 32px;
-    };
-
-    //一级菜单项内边距
-    .x-treelist-root-container > .x-treelist-item > .x-treelist-row{
-        padding: 5px 0px !important;
-    };
-
-    //菜单项文本左外边距 50px为图标宽度
-    .x-treelist-item-text{
-        margin-left:50px;
-    };
-
-    //折叠后一级菜单项
-    .x-treelist-item-tool{
-        line-height: 50px;
-    };
-    
-    //折叠后一级菜单项距左边边距
-    .x-treelist-item-floated  .x-treelist-item-text{
-        margin-left: 10px;
-    };
-}
-
-//左侧菜单容器背景颜色
-.x-container-purple {
-    background-color: #50314f;
-}
-
-
-//***************************************************************************Theme-crimson***************************************************************************
-
-/*
-    头部logo
-*/
-.x-container-main-logo-crimson{
-    background-color : $base-color;
-    text-align:center;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 22px;
-    line-height: 50px
-};
-
-/*
-    头部 toolbar
-*/
-@include extjs-toolbar-ui  (
-    $ui:"main-toolbar-crimson",
-    $background-color : $base-color
-);
-
-/*
-    头部 toolbar button
-*/
-@include extjs-button-small-ui (
-    $ui:"main-toolbar-button-crimson",
-    $border-width : 0,
-    $color:rgba(255,255,255,.7),
-    $background-color:transparent
-);
-
-
-/*
-    左侧菜单
-*/
-@include treelist-ui(
-    $ui:"main-navigation-crimson",
-    $padding:0px 0px,                                             //TreeList边距
-    $background-color:#fff,                                     //背景颜色
-    $item-text-color:#000,                                      //文本颜色
-    $item-text-over-color:#666,                                 //悬浮文本颜色
-    $item-text-font-size:15px,                                    //文本字体大小
-    $row-selected-background-color:#ddd,                        //选中行颜色
-    $row-over-background-color:transparent,                       //悬浮行颜色
-    $item-expander-color:#000,                                  //箭头颜色
-    $item-expander-width :20px,                                   //箭头宽度
-    $item-expanded-child-background-color:#fff,                 //展开子节点颜色    
-    $item-line-height:45px,                                       //行高
-    $item-icon-color:#000,                                      //图标颜色
-    $item-icon-over-color:#666,                                 //图标悬浮颜色
-    $item-icon-width:20px,                                        //图标宽度
-    $row-indicator-selected-color : transparent,                  //选中某一项伪类
-    $row-indicator-selected-over-color :transparent,              //悬浮选中某一项伪类
-    $row-indicator-over-color :lighten($base-color, 10%),         //悬浮某一项伪类  
-    $row-indicator-width :5px,                                    //伪类宽 
-    $toolstrip-background-color:#fff,                           //折叠后背景颜色
-    $tool-indicator-selected-color : lighten($base-color, 10%),   //折叠选中某一项伪类颜色
-    $tool-indicator-selected-width :5px,                          //折叠选中某一项伪类宽度
-);
-
-//一级菜单项目图标
-.x-treelist-main-navigation-crimson > .x-treelist-root-container > .x-treelist-item > .x-treelist-row > .x-treelist-item-wrap > .x-treelist-item-icon,
-.x-treelist-main-navigation-crimson .x-treelist-item-tool{
-    left:0px;
-    padding-left: 18px;
-    padding-right: 32px;
-};
-
-//一级菜单项内边距
-.x-treelist-main-navigation-crimson > .x-treelist-root-container > .x-treelist-item > .x-treelist-row{
-    padding: 5px 0px !important;
-};
-
-.x-treelist-main-navigation-crimson{
-    .x-treelist-item-selected > .x-treelist-row > .x-treelist-item-wrap > .x-treelist-item-text,
-    .x-treelist-item-selected > .x-treelist-row > .x-treelist-item-wrap > .x-treelist-item-icon
-    {
-        color: #000 !important;
-    };
-
-    //折叠后一级菜单项距左边边距
-    .x-treelist-item-floated  .x-treelist-item-text{
-        margin-left: 10px;
-    };
-
-    //菜单项文本左外边距 50px为图标宽度
-    .x-treelist-item-text{
-        margin-left:50px;
-    };
-
-    //折叠后一级菜单项
-    .x-treelist-item-tool{
-        line-height: 50px;
-    };
-}
-
-//容器背景颜色
-.x-container-crimson {
-    background-color: #fff;
-}
-
-
-//***************************************************************************Theme-skyblue***************************************************************************
-
-/*
-    头部 logo
-*/
-.x-container-main-logo-skyblue{
-    background-color : $base-color;
-    text-align:center;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 22px;
-    line-height: 50px
-};
-
-/*
-    头部 toolbar
-*/
-@include extjs-toolbar-ui  (
-    $ui:"main-toolbar-skyblue",
-    $background-color:#35baf6
-);
-
-/*
-    头部 toolbar button
-*/
-@include extjs-button-small-ui (
-    $ui:"main-toolbar-button-skyblue",
-    $border-width : 0,
-    $color:rgba(255,255,255,.7),
-    $background-color:transparent
-);
-
-/*
-    左侧菜单
-*/
-@include treelist-ui(
-    $ui:"main-navigation-skyblue",
-    $padding:0px 0px,                                             //TreeList边距
-    $background-color:#32404e,                                  //背景颜色
-    $item-text-color:rgba(255,255,255,.7),                      //文本颜色
-    $item-text-over-color:#fff,                                 //悬浮文本颜色
-    $item-text-font-size:15px,                                    //文本字体大小
-    $row-selected-background-color:transparent,                   //选中行颜色
-    $row-over-background-color:transparent,                       //悬浮行颜色
-    $item-expander-color:#fff,                                  //箭头颜色
-    $item-expander-width :20px,                                   //箭头宽度
-    $item-expanded-child-background-color:#2c3845       ,       //展开子节点颜色    
-    $item-line-height:45px,                                       //行高
-    $item-icon-color:rgba(255,255,255,.7),                      //图标颜色
-    $item-icon-over-color:#fff,                                 //图标悬浮颜色
-    $item-icon-width:20px,                                        //图标宽度
-    $row-indicator-selected-color : transparent,                  //选中某一项伪类
-    $row-indicator-selected-over-color :transparent,              //悬浮选中某一项伪类
-    $row-indicator-over-color :lighten($base-color, 10%),         //悬浮某一项伪类
-    $row-indicator-width :5px,                                    //伪类宽
-    $toolstrip-background-color:#32404e,                        //折叠后背景颜色
-    $tool-indicator-selected-color : lighten($base-color, 10%),   //折叠选中某一项伪类颜色
-    $tool-indicator-selected-width :5px                           //折叠选中某一项伪类宽度
-);
-
-
-.x-treelist-main-navigation-skyblue{
-    .x-treelist-item-expanded > .x-treelist-row{
-        background-color:#2c3845 !important;
+.x-treelist-float-wrap {
+    .x-treelist-item-expanded .x-treelist-item,.x-treelist-item-collapsed .x-treelist-item {
+        width:220px;
+        background-color: var(--background-color);
     }
-    
-    .x-treelist-item-collapsed > .x-treelist-row{
-        background-color:#32404e !important;
-    }
-
-    .x-treelist-item-selected > .x-treelist-row{
-        background-color: #475360;
-    }
-
-    //一级菜单项目图标
-    .x-treelist-root-container > .x-treelist-item > .x-treelist-row > .x-treelist-item-wrap > .x-treelist-item-icon,.x-treelist-item-tool{
-        left:0px;
-        padding-left: 18px;
-        padding-right: 32px;
-    };
-
-    //一级菜单项内边距
-    .x-treelist-root-container > .x-treelist-item > .x-treelist-row{
-        padding: 5px 0px !important;
-    };
-
-    //菜单项文本左外边距 50px为图标宽度
-    .x-treelist-item-text{
-        margin-left:50px;
-    };
-
-    //折叠后一级菜单项
-    .x-treelist-item-tool{
-        line-height: 50px;
-    };
-    
-    //折叠后一级菜单项距左边边距
-    .x-treelist-item-floated  .x-treelist-item-text{
-        margin-left: 10px;
-    };
-}
-
-//左侧菜单容器背景颜色
-.x-container-skyblue {
-    background-color: #32404e;
-}
-
-
-
-//******************************************************TreeList公共样式******************************************************
-
-//折叠一级菜单文本高度
-.x-treelist-item-floated > .x-treelist-row > .x-treelist-item-wrap > .x-treelist-item-text
-{
-    height: 50px;
-    line-height: 50px;
 };
 
-//折叠菜单项外边距
-.x-treelist-item-floated > .x-treelist-container  .x-treelist-item-wrap
-{
-    margin-left: 5px !important;
-};
-
-//折叠子菜单项文本边距
-.x-treelist-item-floated > .x-treelist-container  .x-treelist-item-wrap .x-treelist-item-text{
-    margin-left: 25px !important;
-};
-
-//菜单箭头图标右浮动
-.x-treelist-expander-first .x-treelist-item-expander {
-    left: auto;
-    right:0 !important;
-};
-
-
-//******************************************************TabPanel公共样式******************************************************
-@include extjs-tab-panel-ui  (
-    $ui:"tabpanel-default",
-    $ui-bar-background-color:#f6f6f6,                            //tab背景颜色
-    $ui-tab-background-color-over:gainsboro,                    //tab悬浮背景颜色  
-    $ui-tab-background-color-active:#ddd,                     //tab选中背景颜色
-    $ui-tab-color:#666,                                       //tab文本颜色
-    $ui-tab-color-over:#666,                                  //tab悬浮文本颜色
-    $ui-tab-color-active:#000,                                //tab选中文本颜色
-    $ui-tab-closable-icon-right:5px,                            //tab关闭按钮距右边位置
-    $ui-tab-closable-icon-glyph-color :#c2c2c2,               //tab关闭按钮字体颜色
-    $ui-tab-closable-icon-glyph-color-over:#666,              //tab关闭按钮悬浮字体颜色  
-    $ui-tab-closable-icon-glyph-color-active:#666,            //tab关闭按钮选中字体颜色  
-    $ui-tab-glyph-color:#666,                                 //tab图标颜色
-    $ui-tab-glyph-color-over:#666,                            //tab悬浮图标颜色
-    $ui-tab-glyph-color-active:#000,                          //tab选中图标颜色
-    $ui-bar-scroller-glyph-color:#666,                        //左右滚动按钮颜色
-    $ui-bar-scroller-width:40px,                                //左右滚动按钮宽度
-    $ui-tab-line-height:34px,                                   //行高
-    $ui-strip-border-width:0,
-    $ui-bar-border-width:0,
-    $ui-tab-closable-icon-top:12px,
-    $ui-tab-closable-icon-spacing:0,
-    $ui-tab-glyph-opacity:1,
-    $ui-tab-opacity:1,
-    $ui-tab-opacity-focus:1,
-    $ui-tab-opacity-over:1,
-    $ui-tab-background-opacity:1,
-    $ui-tab-opacity-focus-over:1,
-    $ui-tab-background-opacity-active:1,
-    $ui-tab-background-opacity-over:1,
-    $ui-tab-background-opacity-focus-over:1,
-    $ui-tab-background-opacity-focus-active:1,
-    $ui-bar-scroller-opacity:1
+//******************************************************TabPanel样式******************************************************
+@include tabbar-ui (
+    $ui:"main-tabBar",
+    $background-color:transparent,
+    $line-height :40px
 );
 
-.x-tab-bar-tabpanel-default-top > .x-tab-bar-body-tabpanel-default{
-    padding: 0px 0px 0px 0px;
-};
+@include tab-ui (
+  $ui:"main-tabbar-tab",
+  $padding:0px 22px,
+  $border-radius:3px,
+  $font-size :13px !important,
+  $font-weight:400,
+  $active-indicator-background-color :transparent,
+  $active-indicator-height :0,
+  $background-color :var(--base-color)  !important,
+  $border-style:solid,
+  $border-width : 1px
+);
 
-.x-tab-bar-tabpanel-default-top .x-box-scroller-tab-bar-tabpanel-default {
-    margin-top: -14px;
-};
+.main-tabpanel{
+    .x-tool-boxscroller-tabbar{
+        background-color:var(--base-highlight-color);
+        .x-icon-el{
+            color:var(--color);
+        }
+    }
+    .x-tab .x-icon-el{
+        width: 25px;
+    }
+    .x-button .x-body-el{
+        margin-left:-15px;
+    }
+}

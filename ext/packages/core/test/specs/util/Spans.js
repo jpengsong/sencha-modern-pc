@@ -6,7 +6,7 @@ topSuite("Ext.util.Spans", function() {
     });
 
     describe('add', function() {
-        it('should be able to make a hole in a span resulting in two spans', function () {
+        it('should be able to make a hole in a span resulting in two spans', function() {
             spans.add(0, 10);
 
             expect(spans.spans).toEqual([[0, 10]]);
@@ -16,49 +16,49 @@ topSuite("Ext.util.Spans", function() {
             expect(spans.spans).toEqual([[0, 5], [6, 10]]);
         });
 
-        it('should coalesce adjacent added spans', function () {
+        it('should coalesce adjacent added spans', function() {
             spans.add(0, 10);
             spans.add(10, 20);
 
             expect(spans.spans).toEqual([[0, 20]]);
         });
 
-        it('should coalesce overlapping added spans', function () {
+        it('should coalesce overlapping added spans', function() {
             spans.add(0, 10);
             spans.add(5, 11);
 
             expect(spans.spans).toEqual([[0, 11]]);
         });
 
-        it('should add non-overlapping added spans', function () {
+        it('should add non-overlapping added spans', function() {
             spans.add(0, 10);
             spans.add(11, 20);
 
             expect(spans.spans).toEqual([[0, 10], [11, 20]]);
         });
 
-        it('should coalesce adjacent added spans reverse order', function () {
+        it('should coalesce adjacent added spans reverse order', function() {
             spans.add(10, 20);
             spans.add(0, 10);
 
             expect(spans.spans).toEqual([[0, 20]]);
         });
 
-        it('should coalesce overlapping added spans reverse order', function () {
+        it('should coalesce overlapping added spans reverse order', function() {
             spans.add(5, 20);
             spans.add(0, 10);
 
             expect(spans.spans).toEqual([[0, 20]]);
         });
 
-        it('should add non-overlapping added spans reverse order', function () {
+        it('should add non-overlapping added spans reverse order', function() {
             spans.add(11, 20);
             spans.add(0, 10);
 
             expect(spans.spans).toEqual([[0, 10], [11, 20]]);
         });
 
-        it('should ignore adds of fully contained spans', function () {
+        it('should ignore adds of fully contained spans', function() {
             spans.add(0, 20);
             spans.add(5, 15);
 
@@ -73,7 +73,7 @@ topSuite("Ext.util.Spans", function() {
             expect(spans.spans).toEqual([[0, 20]]);
         });
 
-        it('should coalesce multiple overlapping spans', function () {
+        it('should coalesce multiple overlapping spans', function() {
             spans.add(0, 10);
             spans.add(20, 30);
             spans.add(40, 50);
@@ -94,25 +94,25 @@ topSuite("Ext.util.Spans", function() {
             spans.add(60, 70);
         });
 
-        it('should split first span and leave remaining spans', function () {
+        it('should split first span and leave remaining spans', function() {
             spans.remove(5, 6);
 
             expect(spans.spans).toEqual([[0, 5], [6, 10], [20, 30], [40, 50], [60, 70]]);
         });
 
-        it('should remove first span and leave remaining spans', function () {
+        it('should remove first span and leave remaining spans', function() {
             spans.remove(0, 10);
 
             expect(spans.spans).toEqual([[20, 30], [40, 50], [60, 70]]);
         });
 
-        it('should do nothing if removing in a gap', function () {
+        it('should do nothing if removing in a gap', function() {
             spans.remove(10, 20);
 
             expect(spans.spans).toEqual([[0, 10], [20, 30], [40, 50], [60, 70]]);
         });
 
-        it('should remove the end of an first span', function () {
+        it('should remove the end of an first span', function() {
             spans.remove(9, 10);
 
             expect(spans.spans).toEqual([[0, 9], [20, 30], [40, 50], [60, 70]]);
@@ -122,7 +122,7 @@ topSuite("Ext.util.Spans", function() {
             expect(spans.spans).toEqual([[0, 8], [20, 30], [40, 50], [60, 70]]);
         });
 
-        it('should remove the front of an internal span', function () {
+        it('should remove the front of an internal span', function() {
             spans.remove(20, 21);
 
             expect(spans.spans).toEqual([[0, 10], [21, 30], [40, 50], [60, 70]]);
@@ -132,49 +132,49 @@ topSuite("Ext.util.Spans", function() {
             expect(spans.spans).toEqual([[0, 10], [22, 30], [40, 50], [60, 70]]);
         });
 
-        it('should remove tail of one span and head of the adjacent span', function () {
+        it('should remove tail of one span and head of the adjacent span', function() {
             spans.remove(9, 21);
 
             expect(spans.spans).toEqual([[0, 9], [21, 30], [40, 50], [60, 70]]);
         });
 
-        it('should remove multiple spans at the front', function () {
+        it('should remove multiple spans at the front', function() {
             spans.remove(0, 40);
 
             expect(spans.spans).toEqual([[40, 50], [60, 70]]);
         });
 
-        it('should remove multiple spans at the end', function () {
+        it('should remove multiple spans at the end', function() {
             spans.remove(40, 80);
 
             expect(spans.spans).toEqual([[0, 10], [20, 30]]);
         });
 
-        it('should remove multiple spans in the middle', function () {
+        it('should remove multiple spans in the middle', function() {
             spans.remove(10, 60);
 
             expect(spans.spans).toEqual([[0, 10], [60, 70]]);
         });
 
-        it('should remove tail of first overlapped span, all intervening spans, and head of last overlapped span', function () {
+        it('should remove tail of first overlapped span, all intervening spans, and head of last overlapped span', function() {
             spans.remove(9, 61);
 
             expect(spans.spans).toEqual([[0, 9], [61, 70]]);
         });
 
-        it('should remove all spans', function () {
+        it('should remove all spans', function() {
             spans.remove(0, 100);
 
             expect(spans.spans).toEqual([]);
         });
 
-        it('should remove head of first span', function () {
+        it('should remove head of first span', function() {
             spans.remove(0, 5);
 
             expect(spans.spans).toEqual([[5, 10], [20, 30], [40, 50], [60, 70]]);
         });
 
-        it('should remove tail of last span', function () {
+        it('should remove tail of last span', function() {
             spans.remove(65, 70);
 
             expect(spans.spans).toEqual([[0, 10], [20, 30], [40, 50], [60, 65]]);

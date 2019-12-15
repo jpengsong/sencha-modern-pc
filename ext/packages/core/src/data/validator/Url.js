@@ -25,5 +25,6 @@ Ext.define('Ext.data.validator.Url', {
      * @cfg {RegExp} matcher
      * A matcher to check for simple Urls. This may be overridden.
      */
+    /* eslint-disable-next-line no-useless-escape */
     matcher: /^(http:\/\/|https:\/\/|ftp:\/\/|\/\/)([-a-zA-Z0-9@:%_\+.~#?&//=])+$/
 });

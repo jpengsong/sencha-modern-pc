@@ -34,17 +34,17 @@ Ext.define('Ext.draw.modifier.Modifier', {
         sprite: null
     },
 
-    constructor: function (config) {
+    constructor: function(config) {
         this.mixins.observable.constructor.call(this, config);
     },
 
-    updateUpper: function (upper) {
+    updateUpper: function(upper) {
         if (upper) {
             upper.setLower(this);
         }
     },
 
-    updateLower: function (lower) {
+    updateLower: function(lower) {
         if (lower) {
             lower.setUpper(this);
         }
@@ -54,10 +54,10 @@ Ext.define('Ext.draw.modifier.Modifier', {
      * @private
      * Validate attribute set before use.
      *
-     * @param {Object} attr The attribute to be validated. Note that it may be already initialized, so do
-     * not override properties that have already been used.
+     * @param {Object} attr The attribute to be validated. Note that it may be already initialized,
+     * so do not override properties that have already been used.
      */
-    prepareAttributes: function (attr) {
+    prepareAttributes: function(attr) {
         if (this._lower) {
             this._lower.prepareAttributes(attr);
         }
@@ -69,10 +69,11 @@ Ext.define('Ext.draw.modifier.Modifier', {
      * @param {Object} attr The source attributes.
      * @param {Object} changes The changes to be popped up.
      */
-    popUp: function (attr, changes) {
+    popUp: function(attr, changes) {
         if (this._upper) {
             this._upper.popUp(attr, changes);
-        } else {
+        }
+        else {
             Ext.apply(attr, changes);
         }
     },
@@ -99,20 +100,23 @@ Ext.define('Ext.draw.modifier.Modifier', {
      * value (value at the end of animation, 5) should be used for comparison instead, so
      * that 3 won't be filtered out.
      */
-    filterChanges: function (attr, changes, receiver) {
+    filterChanges: function(attr, changes, receiver) {
         var targets = attr.targets,
             name, value;
 
         if (receiver) {
             for (name in changes) {
                 value = changes[name];
+
                 if (value !== attr[name] || (targets && value !== targets[name])) {
                     receiver[name] = value;
                 }
             }
-        } else {
+        }
+        else {
             for (name in changes) {
                 value = changes[name];
+
                 if (value === attr[name] && (!targets || value === targets[name])) {
                     delete changes[name];
                 }
@@ -126,10 +130,11 @@ Ext.define('Ext.draw.modifier.Modifier', {
      * @private
      * Invoked when changes need to be pushed down to the sprite.
      * @param {Object} attr The source attributes.
-     * @param {Object} changes The changes to make. This object might be changed unexpectedly inside the method.
+     * @param {Object} changes The changes to make. This object might be changed unexpectedly
+     * inside the method.
      * @return {Mixed}
      */
-    pushDown: function (attr, changes) {
+    pushDown: function(attr, changes) {
         return this._lower
             ? this._lower.pushDown(attr, changes)
             : this.filterChanges(attr, changes);

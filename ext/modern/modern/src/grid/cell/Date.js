@@ -23,7 +23,7 @@ Ext.define('Ext.grid.cell.Date', {
         format: ''
     },
 
-    updateColumn: function (column, oldColumn) {
+    updateColumn: function(column, oldColumn) {
         var format;
 
         this.callParent([ column, oldColumn ]);
@@ -37,17 +37,17 @@ Ext.define('Ext.grid.cell.Date', {
         }
     },
 
-    applyFormat: function (format) {
+    applyFormat: function(format) {
         return format || Ext.Date.defaultFormat;
     },
 
-    updateFormat: function (format) {
+    updateFormat: function(format) {
         if (!this.isConfiguring) {
             this.writeValue();
         }
     },
 
-    formatValue: function (value) {
+    formatValue: function(value) {
         return value ? Ext.Date.format(value, this.getFormat()) : '';
     }
 });

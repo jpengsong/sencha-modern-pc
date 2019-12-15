@@ -10,19 +10,17 @@ topSuite("Ext.data.Session", [
         }, requestId);
     }
 
-    var session;
-
-    var adminGroup, peonGroup;
-    var rufusGroups, billGroups, tedGroups;
-    var adminUsers, peonUsers;
-    var userRufus, userBill, userTed;
+    var session, adminGroup, peonGroup, rufusGroups, billGroups, tedGroups, adminUsers, peonUsers,
+        userRufus, userBill, userTed;
 
     function getAndComplete(type, id, theSession, data) {
         theSession = theSession || session;
         data = data || {};
         var rec = theSession.getRecord(type, id);
+
         data.id = data.id || id;
         completeRequest(data);
+
         return rec;
     }
 
@@ -66,6 +64,7 @@ topSuite("Ext.data.Session", [
 
     describe("record access", function() {
         var User, parent, rec;
+
         beforeEach(function() {
             Ext.data.Model.schema.setNamespace('spec');
             User = Ext.define('spec.User', {
@@ -124,6 +123,7 @@ topSuite("Ext.data.Session", [
 
                 it("should raise an error if add a model the schema does not know about", function() {
                     var customSchema = new Ext.data.schema.Schema();
+
                     Ext.define('spec.CustomModel', {
                         extend: 'Ext.data.Model',
                         schema: customSchema
@@ -180,6 +180,7 @@ topSuite("Ext.data.Session", [
                             });
 
                             var spy = spyOn(User.getProxy(), 'read');
+
                             session.adopt(post);
                             expect(spy).not.toHaveBeenCalled();
                         });
@@ -202,6 +203,7 @@ topSuite("Ext.data.Session", [
                             makeUser(1);
                             user.posts();
                             var spy = spyOn(User.getProxy(), 'read');
+
                             session.adopt(user);
                             expect(spy).not.toHaveBeenCalled();
                         });
@@ -209,6 +211,7 @@ topSuite("Ext.data.Session", [
                         it("should set the session onto the store", function() {
                             makeUser(1);
                             var posts = user.posts();
+
                             session.adopt(user);
                             expect(posts.getSession()).toBe(session);
                         });
@@ -216,7 +219,8 @@ topSuite("Ext.data.Session", [
                         it("should adopt existing children", function() {
                             makeUser(1);
                             var posts = user.posts();
-                            posts.add({id: 101}, {id: 102}, {id: 103});
+
+                            posts.add({ id: 101 }, { id: 102 }, { id: 103 });
                             session.adopt(user);
                             expect(posts.getAt(0).session).toBe(session);
                             expect(posts.getAt(1).session).toBe(session);
@@ -226,9 +230,10 @@ topSuite("Ext.data.Session", [
                         it("should adopt any newly loaded items after adopting", function() {
                             makeUser(1);
                             var posts = user.posts();
+
                             session.adopt(user);
                             posts.load();
-                            completeRequest([{id: 101, userId: 1}, {id: 102, userId: 1}, {id: 103, userId: 1}]);
+                            completeRequest([{ id: 101, userId: 1 }, { id: 102, userId: 1 }, { id: 103, userId: 1 }]);
                             expect(posts.getAt(0).session).toBe(session);
                             expect(posts.getAt(1).session).toBe(session);
                             expect(posts.getAt(2).session).toBe(session);
@@ -254,7 +259,9 @@ topSuite("Ext.data.Session", [
                                 id: 1,
                                 addressId: 101
                             });
+
                             var spy = spyOn(spec.Address.getProxy(), 'read');
+
                             session.adopt(user);
                             expect(spy).not.toHaveBeenCalled();
                         });
@@ -279,7 +286,9 @@ topSuite("Ext.data.Session", [
                             var address = new spec.Address({
                                 id: 101
                             });
+
                             var spy = spyOn(User.getProxy(), 'read');
+
                             session.adopt(address);
                             expect(spy).not.toHaveBeenCalled();
                         });
@@ -292,6 +301,7 @@ topSuite("Ext.data.Session", [
                             var user = new User({
                                 id: 1
                             });
+
                             address.setUser(user);
 
                             session.adopt(address);
@@ -317,15 +327,17 @@ topSuite("Ext.data.Session", [
 
                     describe("the left", function() {
                         it("should not load the store", function() {
-                            var group = new Group({id: 1});
+                            var group = new Group({ id: 1 });
+
                             group.users();
                             var spy = spyOn(Group.getProxy(), 'read');
+
                             session.adopt(group);
                             expect(spy).not.toHaveBeenCalled();
                         });
 
                         it("should set the session onto the store", function() {
-                            var group = new Group({id: 1}),
+                            var group = new Group({ id: 1 }),
                                 users = group.users();
 
                             session.adopt(group);
@@ -333,10 +345,10 @@ topSuite("Ext.data.Session", [
                         });
 
                         it("should adopt existing children", function() {
-                            var group = new Group({id: 1}),
+                            var group = new Group({ id: 1 }),
                                 users = group.users();
 
-                            users.add({id: 101}, {id: 102}, {id: 103});
+                            users.add({ id: 101 }, { id: 102 }, { id: 103 });
                             session.adopt(group);
                             expect(users.getAt(0).session).toBe(session);
                             expect(users.getAt(1).session).toBe(session);
@@ -344,12 +356,12 @@ topSuite("Ext.data.Session", [
                         });
 
                         it("should adopt any newly loaded items after adopting", function() {
-                            var group = new Group({id: 1}),
+                            var group = new Group({ id: 1 }),
                                 users = group.users();
 
                             session.adopt(group);
                             users.load();
-                            completeRequest([{id: 101}, {id: 102}, {id: 103}]);
+                            completeRequest([{ id: 101 }, { id: 102 }, { id: 103 }]);
                             expect(users.getAt(0).session).toBe(session);
                             expect(users.getAt(1).session).toBe(session);
                             expect(users.getAt(2).session).toBe(session);
@@ -358,15 +370,17 @@ topSuite("Ext.data.Session", [
 
                     describe("the right", function() {
                         it("should not load the store", function() {
-                            var user = new User({id: 1});
+                            var user = new User({ id: 1 });
+
                             user.groups();
                             var spy = spyOn(Group.getProxy(), 'read');
+
                             session.adopt(user);
                             expect(spy).not.toHaveBeenCalled();
                         });
 
                         it("should set the session onto the store", function() {
-                            var user = new User({id: 1}),
+                            var user = new User({ id: 1 }),
                                 groups = user.groups();
 
                             session.adopt(user);
@@ -374,10 +388,10 @@ topSuite("Ext.data.Session", [
                         });
 
                         it("should adopt existing children", function() {
-                            var user = new User({id: 1}),
+                            var user = new User({ id: 1 }),
                                 groups = user.groups();
 
-                            groups.add({id: 101}, {id: 102}, {id: 103});
+                            groups.add({ id: 101 }, { id: 102 }, { id: 103 });
                             session.adopt(user);
                             expect(groups.getAt(0).session).toBe(session);
                             expect(groups.getAt(1).session).toBe(session);
@@ -385,12 +399,12 @@ topSuite("Ext.data.Session", [
                         });
 
                         it("should adopt any newly loaded items after adopting", function() {
-                            var user = new User({id: 1}),
+                            var user = new User({ id: 1 }),
                                 groups = user.groups();
 
                             session.adopt(user);
                             groups.load();
-                            completeRequest([{id: 101}, {id: 102}, {id: 103}]);
+                            completeRequest([{ id: 101 }, { id: 102 }, { id: 103 }]);
                             expect(groups.getAt(0).session).toBe(session);
                             expect(groups.getAt(1).session).toBe(session);
                             expect(groups.getAt(2).session).toBe(session);
@@ -434,6 +448,7 @@ topSuite("Ext.data.Session", [
 
                     it("should adopt data deeply", function() {
                         var user = User.load(1);
+
                         completeRequest({
                             id: 1,
                             orders: [{
@@ -467,6 +482,7 @@ topSuite("Ext.data.Session", [
                         session.adopt(user);
 
                         var order = user.orders().getAt(0);
+
                         expect(order.session).toBe(session);
                         expect(order.getAddress().session).toBe(session);
                         expect(order.orderItems().getAt(0).session).toBe(session);
@@ -539,6 +555,7 @@ topSuite("Ext.data.Session", [
 
             it("should be able to create a phantom with no data", function() {
                 var rec;
+
                 expect(function() {
                     rec = session.createRecord('User');
                 }).not.toThrow();
@@ -566,6 +583,7 @@ topSuite("Ext.data.Session", [
 
                 it("should be able to create a phantom with no data", function() {
                     var rec;
+
                     expect(function() {
                         rec = session.createRecord('User');
                     }).not.toThrow();
@@ -626,18 +644,21 @@ topSuite("Ext.data.Session", [
                 describe("autoLoad", function() {
                     it("should autoLoad by default", function() {
                         var spy = spyOn(spec.User.getProxy(), 'read');
+
                         session.getRecord('User', 1);
                         expect(spy).toHaveBeenCalled();
                     });
 
                     it("should not autoLoad when passed: false", function() {
                         var spy = spyOn(spec.User.getProxy(), 'read');
+
                         session.getRecord('User', 1, false);
                         expect(spy).not.toHaveBeenCalled();
                     });
 
                     it("should pass parameters to load", function() {
                         var spy = spyOn(spec.User.getProxy(), 'read');
+
                         session.getRecord('User', 1, {
                             params: {
                                 someId: 1
@@ -656,23 +677,26 @@ topSuite("Ext.data.Session", [
 
                     describe("record exists in the parent", function() {
                         beforeEach(function() {
-                            rec = getAndComplete('User', 1, parent, {name: 'Foo'});
+                            rec = getAndComplete('User', 1, parent, { name: 'Foo' });
                         });
 
                         describe("with type/id", function() {
                             it("should return an existing record from the parent", function() {
                                 var child = session.getRecord('User', 1);
+
                                 expect(child.get('name')).toBe('Foo');
                                 expect(child.$className).toBe('spec.User');
                             });
 
                             it("should return a copy, not the same instance", function() {
                                 var child = session.getRecord('User', 1);
+
                                 expect(child).not.toBe(rec);
                             });
 
                             it("should set the session to be the child session", function() {
                                 var child = session.getRecord('User', 1);
+
                                 expect(child.session).toBe(session);
                             });
 
@@ -685,12 +709,14 @@ topSuite("Ext.data.Session", [
 
                             it("should not update the parent record when the child changes", function() {
                                 var child = session.getRecord('User', 1);
+
                                 child.set('name', 'Bar');
                                 expect(rec.get('name')).toBe('Foo');
                             });
 
                             it("should not update the child record when the parent changes", function() {
                                 var child = session.getRecord('User', 1);
+
                                 rec.set('name', 'Bar');
                                 expect(child.get('name')).toBe('Foo');
                             });
@@ -699,7 +725,7 @@ topSuite("Ext.data.Session", [
                                 rec = parent.getRecord('User', 2);
                                 var child = session.getRecord('User', 2);
 
-                                completeRequest({name: 'Foo'});
+                                completeRequest({ name: 'Foo' });
                                 expect(rec.get('name')).toBe('Foo');
                                 expect(child.isLoading()).toBe(true);
                                 expect(child.get('name')).toBeUndefined();
@@ -710,17 +736,20 @@ topSuite("Ext.data.Session", [
                         describe("with parent instance", function() {
                             it("should return an existing record from the parent", function() {
                                 var child = session.getRecord(rec);
+
                                 expect(child.get('name')).toBe('Foo');
                                 expect(child.$className).toBe('spec.User');
                             });
 
                             it("should return a copy, not the same instance", function() {
                                 var child = session.getRecord(rec);
+
                                 expect(child).not.toBe(rec);
                             });
 
                             it("should set the session to be the child session", function() {
                                 var child = session.getRecord(rec);
+
                                 expect(child.session).toBe(session);
                             });
 
@@ -733,12 +762,14 @@ topSuite("Ext.data.Session", [
 
                             it("should not update the parent record when the child changes", function() {
                                 var child = session.getRecord(rec);
+
                                 child.set('name', 'Bar');
                                 expect(rec.get('name')).toBe('Foo');
                             });
 
                             it("should not update the child record when the parent changes", function() {
                                 var child = session.getRecord(rec);
+
                                 rec.set('name', 'Bar');
                                 expect(child.get('name')).toBe('Foo');
                             });
@@ -747,7 +778,7 @@ topSuite("Ext.data.Session", [
                                 rec = parent.getRecord('User', 2);
                                 var child = session.getRecord(rec);
 
-                                completeRequest({name: 'Foo'});
+                                completeRequest({ name: 'Foo' });
                                 expect(rec.get('name')).toBe('Foo');
                                 expect(child.isLoading()).toBe(true);
                                 expect(child.get('name')).toBeUndefined();
@@ -772,13 +803,13 @@ topSuite("Ext.data.Session", [
 
                         describe("with an instance", function() {
                             it("should use the passed instance", function() {
-                                rec = new spec.User({id: 1});
+                                rec = new spec.User({ id: 1 });
                                 expect(session.getRecord(rec)).toBe(rec);
                                 expect(rec.session).toBe(session);
                             });
 
                             it("not push the instance into the parent", function() {
-                                rec = new spec.User({id: 1});
+                                rec = new spec.User({ id: 1 });
                                 session.getRecord(rec);
                                 expect(parent.peekRecord('User', 1)).toBeNull();
                             });
@@ -810,6 +841,7 @@ topSuite("Ext.data.Session", [
 
                 it("should not attempt to load the record", function() {
                     var spy = spyOn(spec.User.getProxy(), 'read');
+
                     session.getRecord('User', 1);
                     expect(spy).not.toHaveBeenCalled();
                 });
@@ -848,6 +880,7 @@ topSuite("Ext.data.Session", [
 
             it("should return the model instance", function() {
                 var result = session.peekRecord('User', 1);
+
                 expect(result.isModel).toBe(true);
                 expect(result).toBe(rec);
             });
@@ -898,12 +931,14 @@ topSuite("Ext.data.Session", [
                     data = data || {};
                     data.id = id;
                     data.userId = userId;
+
                     return getAndComplete('Post', id, session, data);
                 }
 
                 function makeUser(id, data) {
                     data = data || {};
                     data.id = id;
+
                     return getAndComplete('User', id, session, data);
                 }
 
@@ -941,6 +976,7 @@ topSuite("Ext.data.Session", [
 
                 describe("the many", function() {
                     var user;
+
                     beforeEach(function() {
                         user = makeUser(1);
                     });
@@ -951,20 +987,23 @@ topSuite("Ext.data.Session", [
 
                     it("should be empty by default and not complete", function() {
                         var posts = user.posts();
+
                         expect(posts.getCount()).toBe(0);
                         expect(posts.complete).toBe(false);
                     });
 
                     it("should not trigger a load", function() {
                         var spy = spyOn(spec.Post.getProxy(), 'read');
+
                         user.posts();
                         expect(spy).not.toHaveBeenCalled();
                     });
 
                     it("should create records on loading", function() {
                         var posts = user.posts();
+
                         posts.load();
-                        completeRequest([{id: 101, userId: 1}, {id: 102, userId: 1}, {id: 103, userId: 1}]);
+                        completeRequest([{ id: 101, userId: 1 }, { id: 102, userId: 1 }, { id: 103, userId: 1 }]);
                         expect(posts.getAt(0)).toBe(session.peekRecord('Post', 101));
                         expect(posts.getAt(1)).toBe(session.peekRecord('Post', 102));
                         expect(posts.getAt(2)).toBe(session.peekRecord('Post', 103));
@@ -972,6 +1011,7 @@ topSuite("Ext.data.Session", [
 
                     it("should set the complete flag on loading", function() {
                         var posts = user.posts();
+
                         posts.load();
                         completeRequest([]);
                         expect(posts.complete).toBe(true);
@@ -999,7 +1039,7 @@ topSuite("Ext.data.Session", [
                                 posts = user.posts();
 
                             posts.load();
-                            completeRequest([{id: 103, userId: 1}, {id: 102, userId: 1}, {id: 101, userId: 1}]);
+                            completeRequest([{ id: 103, userId: 1 }, { id: 102, userId: 1 }, { id: 101, userId: 1 }]);
 
                             expect(posts.getAt(0)).toBe(post3);
                             expect(posts.getAt(1)).toBe(post2);
@@ -1013,7 +1053,7 @@ topSuite("Ext.data.Session", [
                                 posts = user.posts();
 
                             posts.load();
-                            completeRequest([{id: 103, userId: 1}, {id: 101, userId: 1}]);
+                            completeRequest([{ id: 103, userId: 1 }, { id: 101, userId: 1 }]);
                             expect(posts.getAt(0)).toBe(session.peekRecord('Post', 103));
                             expect(posts.getAt(1)).toBe(session.peekRecord('Post', 101));
                             expect(posts.getAt(2)).toBe(session.peekRecord('Post', 102));
@@ -1023,11 +1063,13 @@ topSuite("Ext.data.Session", [
                             // We had a record with a matching key which was subsequently changed.
                             // Reject it from the server load since the local copy is correct.
                             var post2 = makePost(102, 1);
+
                             post2.set('userId', null);
 
                             var posts = user.posts();
+
                             posts.load();
-                            completeRequest([{id: 101, userId: 1}, {id: 102, userId: 1}, {id: 103, userId: 1}]);
+                            completeRequest([{ id: 101, userId: 1 }, { id: 102, userId: 1 }, { id: 103, userId: 1 }]);
                             expect(posts.getCount()).toBe(2);
                             expect(posts.getAt(0)).toBe(session.peekRecord('Post', 101));
                             expect(posts.getAt(1)).toBe(session.peekRecord('Post', 103));
@@ -1047,6 +1089,7 @@ topSuite("Ext.data.Session", [
                 function makeAddress(id, data) {
                     data = data || {};
                     data.id = id;
+
                     return getAndComplete('Address', id, session, data);
                 }
 
@@ -1054,6 +1097,7 @@ topSuite("Ext.data.Session", [
                     data = data || {};
                     data.id = id;
                     data.addressId = addressId;
+
                     return getAndComplete('User', id, session, data);
                 }
 
@@ -1112,6 +1156,7 @@ topSuite("Ext.data.Session", [
 
                 describe("the left", function() {
                     var user;
+
                     beforeEach(function() {
                         user = makeUser(1);
                     });
@@ -1122,20 +1167,23 @@ topSuite("Ext.data.Session", [
 
                     it("should be empty by default and not complete", function() {
                         var groups = user.groups();
+
                         expect(groups.getCount()).toBe(0);
                         expect(groups.complete).toBe(false);
                     });
 
                     it("should not trigger a load", function() {
                         var spy = spyOn(spec.Group.getProxy(), 'read');
+
                         user.groups();
                         expect(spy).not.toHaveBeenCalled();
                     });
 
                     it("should create records on loading", function() {
                         var groups = user.groups();
+
                         groups.load();
-                        completeRequest([{id: 101}, {id: 102}, {id: 103}]);
+                        completeRequest([{ id: 101 }, { id: 102 }, { id: 103 }]);
                         expect(groups.getAt(0)).toBe(session.peekRecord('Group', 101));
                         expect(groups.getAt(1)).toBe(session.peekRecord('Group', 102));
                         expect(groups.getAt(2)).toBe(session.peekRecord('Group', 103));
@@ -1143,6 +1191,7 @@ topSuite("Ext.data.Session", [
 
                     it("should set the complete flag on loading", function() {
                         var groups = user.groups();
+
                         groups.load();
                         completeRequest([]);
                         expect(groups.complete).toBe(true);
@@ -1155,7 +1204,7 @@ topSuite("Ext.data.Session", [
 
                             groups.add(group2);
                             groups.load();
-                            completeRequest([{id: 103}, {id: 102}, {id: 101}]);
+                            completeRequest([{ id: 103 }, { id: 102 }, { id: 101 }]);
 
                             expect(groups.getAt(0)).toBe(session.peekRecord('Group', 103));
                             expect(groups.getAt(1)).toBe(group2);
@@ -1168,7 +1217,7 @@ topSuite("Ext.data.Session", [
 
                             groups.add(group2);
                             groups.load();
-                            completeRequest([{id: 103}, {id: 101}]);
+                            completeRequest([{ id: 103 }, { id: 101 }]);
                             expect(groups.getAt(0)).toBe(session.peekRecord('Group', 103));
                             expect(groups.getAt(1)).toBe(session.peekRecord('Group', 101));
                             expect(groups.getAt(2)).toBe(group2);
@@ -1178,6 +1227,7 @@ topSuite("Ext.data.Session", [
 
                 describe("the right", function() {
                     var group;
+
                     beforeEach(function() {
                         group = makeGroup(1);
                     });
@@ -1188,20 +1238,23 @@ topSuite("Ext.data.Session", [
 
                     it("should be empty by default and not complete", function() {
                         var users = group.users();
+
                         expect(users.getCount()).toBe(0);
                         expect(users.complete).toBe(false);
                     });
 
                     it("should not trigger a load", function() {
                         var spy = spyOn(spec.User.getProxy(), 'read');
+
                         group.users();
                         expect(spy).not.toHaveBeenCalled();
                     });
 
                     it("should create records on loading", function() {
                         var users = group.users();
+
                         users.load();
-                        completeRequest([{id: 101}, {id: 102}, {id: 103}]);
+                        completeRequest([{ id: 101 }, { id: 102 }, { id: 103 }]);
                         expect(users.getAt(0)).toBe(session.peekRecord('User', 101));
                         expect(users.getAt(1)).toBe(session.peekRecord('User', 102));
                         expect(users.getAt(2)).toBe(session.peekRecord('User', 103));
@@ -1209,6 +1262,7 @@ topSuite("Ext.data.Session", [
 
                     it("should set the complete flag on loading", function() {
                         var users = group.users();
+
                         users.load();
                         completeRequest([]);
                         expect(users.complete).toBe(true);
@@ -1221,7 +1275,7 @@ topSuite("Ext.data.Session", [
 
                             users.add(user2);
                             users.load();
-                            completeRequest([{id: 103}, {id: 102}, {id: 101}]);
+                            completeRequest([{ id: 103 }, { id: 102 }, { id: 101 }]);
 
                             expect(users.getAt(0)).toBe(session.peekRecord('User', 103));
                             expect(users.getAt(1)).toBe(user2);
@@ -1234,7 +1288,7 @@ topSuite("Ext.data.Session", [
 
                             users.add(user2);
                             users.load();
-                            completeRequest([{id: 103}, {id: 101}]);
+                            completeRequest([{ id: 103 }, { id: 101 }]);
                             expect(users.getAt(0)).toBe(session.peekRecord('User', 103));
                             expect(users.getAt(1)).toBe(session.peekRecord('User', 101));
                             expect(users.getAt(2)).toBe(user2);
@@ -1285,6 +1339,7 @@ topSuite("Ext.data.Session", [
             Job = Order = User = identifier = Ext.destroy(identifier);
 
             var Generator = Ext.data.identifier.Generator;
+
             Generator.all = {
                 uuid: Generator.all.uuid
             };
@@ -1324,6 +1379,7 @@ topSuite("Ext.data.Session", [
             expect((new Order({}, session)).id).toBe(15);
 
             var other = new Ext.data.Session();
+
             expect((new User({}, other)).id).toBe(10);
             expect((new Order({}, other)).id).toBe(11);
             expect((new Order({}, other)).id).toBe(12);
@@ -1350,6 +1406,7 @@ topSuite("Ext.data.Session", [
             expect((new Job({}, session)).id).toBe(4);
 
             var other = new Ext.data.Session();
+
             expect((new User({}, other)).id).toBe(10);
             expect((new Job({}, other)).id).toBe(1);
             expect((new Job({}, other)).id).toBe(2);
@@ -1415,6 +1472,7 @@ topSuite("Ext.data.Session", [
                 var user = session.createRecord('User', {
                     serializeField: 1000
                 });
+
                 expect(session.getChanges()).toEqual({
                     User: {
                         C: [{
@@ -1433,6 +1491,7 @@ topSuite("Ext.data.Session", [
                         name: 'Foo',
                         age: 34
                     });
+
                     expect(session.getChanges()).toEqual({
                         User: {
                             C: [{
@@ -1449,6 +1508,7 @@ topSuite("Ext.data.Session", [
                         name: 'Foo',
                         age: 34
                     });
+
                     user.set('name', 'Bar');
                     user.set('age', 5000);
                     expect(session.getChanges()).toEqual({
@@ -1469,18 +1529,20 @@ topSuite("Ext.data.Session", [
 
                     expect(session.getChanges()).toEqual({
                         User: {
-                            C: [{id: user1.getId()}, {id: user2.getId()}, {id: user3.getId()}]
+                            C: [{ id: user1.getId() }, { id: user2.getId() }, { id: user3.getId() }]
                         }
                     });
                 });
 
                 it("should not include non-phantoms", function() {
                     var user = getAndComplete('User', 1);
+
                     expect(session.getChanges()).toBeNull();
                 });
 
                 it("should not include phantom records that are dropped", function() {
                     var user = session.createRecord('User');
+
                     user.drop();
                     expect(session.getChanges()).toBeNull();
                 });
@@ -1489,6 +1551,7 @@ topSuite("Ext.data.Session", [
             describe("update", function() {
                 it("should include the updated record", function() {
                     var user = getAndComplete('User', 1);
+
                     user.set('name', 'Foo');
                     expect(session.getChanges()).toEqual({
                         User: {
@@ -1502,6 +1565,7 @@ topSuite("Ext.data.Session", [
 
                 it("should include the most recently updated state", function() {
                     var user = getAndComplete('User', 1);
+
                     user.set('name', 'Foo');
                     user.set('name', 'Bar');
                     user.set('name', 'Baz');
@@ -1542,6 +1606,7 @@ topSuite("Ext.data.Session", [
 
                 it("should not include a non-dirty record", function() {
                     var user = getAndComplete('User', 1);
+
                     user.set('name', 'Foo');
                     user.commit();
                     expect(session.getChanges()).toBeNull();
@@ -1549,6 +1614,7 @@ topSuite("Ext.data.Session", [
 
                 it("should not include a dropped record", function() {
                     var user = getAndComplete('User', 1);
+
                     user.set('name', 'Foo');
                     user.drop();
                     expect(session.getChanges().User.U).toBeUndefined();
@@ -1556,6 +1622,7 @@ topSuite("Ext.data.Session", [
 
                 it("should not include changes to phantoms", function() {
                     var user = session.createRecord('User');
+
                     user.set('name', 'Foo');
                     expect(session.getChanges().User.U).toBeUndefined();
                 });
@@ -1564,6 +1631,7 @@ topSuite("Ext.data.Session", [
             describe("drop", function() {
                 it("should include dropped records", function() {
                     var user = getAndComplete('User', 1);
+
                     user.drop();
                     expect(session.getChanges()).toEqual({
                         User: {
@@ -1589,6 +1657,7 @@ topSuite("Ext.data.Session", [
 
                 it("should not include phantom records", function() {
                     var user = session.createRecord('User');
+
                     user.drop();
                     expect(session.getChanges()).toBeNull();
                 });
@@ -1630,6 +1699,7 @@ topSuite("Ext.data.Session", [
                     });
 
                     var address = order.getAddress();
+
                     getAndComplete('Address', 101);
 
                     var orderItems = order.orderItems();
@@ -1642,7 +1712,7 @@ topSuite("Ext.data.Session", [
                         id: 202,
                         orderId: 1
                     }]);
-                    
+
                     var orderItem = orderItems.getAt(0);
 
                     order.setAddress(null);
@@ -1668,7 +1738,7 @@ topSuite("Ext.data.Session", [
             });
             describe("one to one", function() {
                 var user, address;
-                
+
                 afterEach(function() {
                     user = address = null;
                 });
@@ -1746,7 +1816,7 @@ topSuite("Ext.data.Session", [
                         user = getAndComplete('User', 1);
                         posts = user.posts();
                         posts.load();
-                        completeRequest([{id: 101, userId: 1}, {id: 102, userId: 1}, {id: 103, userId: 1}]);
+                        completeRequest([{ id: 101, userId: 1 }, { id: 102, userId: 1 }, { id: 103, userId: 1 }]);
                     });
 
                     it("should not include any read records", function() {
@@ -1767,6 +1837,7 @@ topSuite("Ext.data.Session", [
 
                     it("should push store adds as updates", function() {
                         var post = getAndComplete('Post', 104);
+
                         posts.add(post);
                         expect(session.getChanges()).toEqual({
                             Post: {
@@ -1780,6 +1851,7 @@ topSuite("Ext.data.Session", [
 
                     it("should push store adds of phantoms as creates", function() {
                         var post = session.createRecord('Post');
+
                         posts.add(post);
                         expect(session.getChanges()).toEqual({
                             Post: {
@@ -1796,6 +1868,7 @@ topSuite("Ext.data.Session", [
                     it("should update when changing the id of the non key holder", function() {
                         user = session.createRecord('User');
                         var post = session.createRecord('Post');
+
                         user.posts().add(post);
 
                         user.setId(1000);
@@ -1832,6 +1905,7 @@ topSuite("Ext.data.Session", [
                     describe("store not loaded", function() {
                         it("should include local adds", function() {
                             var group1 = getAndComplete('Group', 101);
+
                             groups.add(group1);
                             expect(session.getChanges()).toEqual({
                                 User: {
@@ -1867,6 +1941,7 @@ topSuite("Ext.data.Session", [
 
                         it("should ignore adds & cancelling removes", function() {
                             var group1 = getAndComplete('Group', 101);
+
                             groups.add(group1);
                             groups.removeAt(0);
                             expect(session.getChanges()).toBeNull();
@@ -1876,7 +1951,7 @@ topSuite("Ext.data.Session", [
                     describe("store loaded", function() {
                         beforeEach(function() {
                             groups.load();
-                            completeRequest([{id: 101}, {id: 102}, {id: 103}]);
+                            completeRequest([{ id: 101 }, { id: 102 }, { id: 103 }]);
                         });
 
                         it("should not include any records loaded into the store", function() {
@@ -1885,6 +1960,7 @@ topSuite("Ext.data.Session", [
 
                         it("should include a local add to existing records", function() {
                             var group4 = getAndComplete('Group', 104);
+
                             groups.add(group4);
                             expect(session.getChanges()).toEqual({
                                 User: {
@@ -1920,6 +1996,7 @@ topSuite("Ext.data.Session", [
 
                         it("should ignore adds & cancelling removes", function() {
                             var group4 = getAndComplete('Group', 104);
+
                             groups.add(group4);
                             groups.remove(group4);
                             expect(session.getChanges()).toBeNull();
@@ -2021,6 +2098,7 @@ topSuite("Ext.data.Session", [
                         group.setId(1000);
 
                         var o = {};
+
                         o[user.getId()] = [1000];
 
                         expect(session.getChanges()).toEqual({
@@ -2057,7 +2135,9 @@ topSuite("Ext.data.Session", [
                 var o = {
                     User: {}
                 };
+
                 o.User[action] = data;
+
                 return o;
             }
 
@@ -2096,6 +2176,7 @@ topSuite("Ext.data.Session", [
                         age: 32
                     }]));
                     var user = session.getRecord('User', 17);
+
                     expect(user.get('name')).toBe('Foo');
                     expect(user.get('age')).toBe(32);
                 });
@@ -2107,6 +2188,7 @@ topSuite("Ext.data.Session", [
                         age: 32
                     }]));
                     var user = session.getRecord('User', 17);
+
                     expect(user.dirty).toBe(false);
                 });
 
@@ -2116,6 +2198,7 @@ topSuite("Ext.data.Session", [
                         age: 32
                     }]));
                     var user = session.getRecord('User', 'User-1');
+
                     expect(user.phantom).toBe(false);
                 });
 
@@ -2160,6 +2243,7 @@ topSuite("Ext.data.Session", [
                         age: 32
                     }]));
                     var user = session.getRecord('User', 17);
+
                     expect(user.get('name')).toBe('Foo');
                     expect(user.get('age')).toBe(32);
                 });
@@ -2170,6 +2254,7 @@ topSuite("Ext.data.Session", [
                         age: 32
                     }]));
                     var user = session.getRecord('User', 'User-1');
+
                     expect(user.phantom).toBe(true);
                 });
 
@@ -2199,6 +2284,7 @@ topSuite("Ext.data.Session", [
             describe("drop", function() {
                 it("should drop the record", function() {
                     var user = getAndComplete('User', 100);
+
                     session.update(wrapBlock('D', [100]));
                     expect(user.dropped).toBe(true);
                 });
@@ -2225,6 +2311,7 @@ topSuite("Ext.data.Session", [
                         name: 'Foo',
                         age: 100
                     });
+
                     session.update(wrapBlock('D', [{
                         id: 100,
                         name: 'Foo',
@@ -2240,6 +2327,7 @@ topSuite("Ext.data.Session", [
                         id: 100,
                         name: 'Foo'
                     });
+
                     session.update(wrapBlock('U', [{
                         id: 100,
                         name: 'Bar'
@@ -2253,6 +2341,7 @@ topSuite("Ext.data.Session", [
                         name: 'Foo',
                         age: 10
                     });
+
                     session.update(wrapBlock('U', [{
                         id: 100,
                         name: 'Bar',
@@ -2269,6 +2358,7 @@ topSuite("Ext.data.Session", [
                         name: 'Foo',
                         age: 23
                     });
+
                     session.update(wrapBlock('U', [{
                         id: 100,
                         name: 'Foo',
@@ -2282,10 +2372,12 @@ topSuite("Ext.data.Session", [
                         id: 101,
                         name: 'Foo'
                     });
+
                     var user102 = session.createRecord('User', {
                         id: 102,
                         name: 'Bar'
                     });
+
                     var user103 = session.createRecord('User', {
                         id: 103,
                         name: 'Baz'
@@ -2312,10 +2404,12 @@ topSuite("Ext.data.Session", [
                         id: 101,
                         name: 'Foo'
                     });
+
                     var user102 = session.createRecord('User', {
                         id: 102,
                         name: 'Bar'
                     });
+
                     var user103 = session.createRecord('User', {
                         id: 103,
                         name: 'Baz'
@@ -2348,6 +2442,7 @@ topSuite("Ext.data.Session", [
 
                 it("should throw an exception if the record is dropped", function() {
                     var user = getAndComplete('User', 1);
+
                     user.drop();
                     expect(function() {
                         session.update(wrapBlock('U', [{
@@ -2424,6 +2519,7 @@ topSuite("Ext.data.Session", [
                         });
 
                         var address = order.getAddress();
+
                         getAndComplete('Address', 101);
 
                         var orderItems = order.orderItems();
@@ -2436,7 +2532,7 @@ topSuite("Ext.data.Session", [
                             id: 202,
                             orderId: 1
                         }]);
-                        
+
                         var orderItem = orderItems.getAt(0);
 
                         order.setAddress(null);
@@ -2461,7 +2557,7 @@ topSuite("Ext.data.Session", [
                     it("should process any CRUD operations before associations", function() {
                         session.update({
                             User: {
-                                R: [{id: 1}],
+                                R: [{ id: 1 }],
                                 posts: {
                                     R: {
                                         1: [101]
@@ -2477,6 +2573,7 @@ topSuite("Ext.data.Session", [
                         });
 
                         var user = session.getRecord('User', 1);
+
                         expect(user.posts().indexOfId(101)).toBe(0);
                     });
 
@@ -2537,7 +2634,7 @@ topSuite("Ext.data.Session", [
                             expect(function() {
                                 session.update({
                                     User: {
-                                        R: [{id: 1}],
+                                        R: [{ id: 1 }],
                                         posts: {
                                             R: {
                                                 1: [101]
@@ -2576,6 +2673,7 @@ topSuite("Ext.data.Session", [
                             });
 
                             var posts = user.posts();
+
                             expect(posts.getCount()).toBe(3);
                             expect(posts.getAt(0)).toBe(session.peekRecord('Post', 101));
                             expect(posts.getAt(1)).toBe(session.peekRecord('Post', 102));
@@ -2602,6 +2700,7 @@ topSuite("Ext.data.Session", [
                                 }
                             });
                             var posts = user.posts();
+
                             expect(posts.getCount()).toBe(1);
                             expect(posts.loadCount).toBe(2);
                             expect(posts.complete).toBe(true);
@@ -2631,6 +2730,7 @@ topSuite("Ext.data.Session", [
                             });
 
                             var posts = user.posts();
+
                             expect(posts.getCount()).toBe(2);
                         });
 
@@ -2650,6 +2750,7 @@ topSuite("Ext.data.Session", [
                             });
 
                             var posts = user.posts();
+
                             expect(posts.getCount()).toBe(1);
                             expect(posts.getAt(0)).toBe(post1);
                         });
@@ -2672,6 +2773,7 @@ topSuite("Ext.data.Session", [
                             });
 
                             var posts = user.posts();
+
                             expect(posts.getCount()).toBe(0);
                         });
                     });
@@ -2764,8 +2866,8 @@ topSuite("Ext.data.Session", [
 
                             it("should exclude locally removed records", function() {
                                 var user = getAndComplete('User', 1),
-                                    post1 = getAndComplete('Post', 101, session, {userId: 1}),
-                                    post2 = getAndComplete('Post', 102, session, {userId: 1}),
+                                    post1 = getAndComplete('Post', 101, session, { userId: 1 }),
+                                    post2 = getAndComplete('Post', 102, session, { userId: 1 }),
                                     posts = user.posts();
 
                                 posts.removeAt(0);
@@ -2787,8 +2889,8 @@ topSuite("Ext.data.Session", [
 
                             it("should exclude records with local foreign key modifications", function() {
                                 var user = getAndComplete('User', 1),
-                                    post1 = getAndComplete('Post', 101, session, {userId: 1}),
-                                    post2 = getAndComplete('Post', 102, session, {userId: 1}),
+                                    post1 = getAndComplete('Post', 101, session, { userId: 1 }),
+                                    post2 = getAndComplete('Post', 102, session, { userId: 1 }),
                                     posts = user.posts();
 
                                 post1.set('userId', null);
@@ -2843,7 +2945,7 @@ topSuite("Ext.data.Session", [
                                     posts = user.posts();
 
                                 posts.load();
-                                completeRequest([{id: 101, userId: 1}, {id: 102, userId: 1}, {id: 103, userId: 1}]);
+                                completeRequest([{ id: 101, userId: 1 }, { id: 102, userId: 1 }, { id: 103, userId: 1 }]);
                                 posts.removeAt(0);
                                 session.update({
                                     User: {
@@ -2859,8 +2961,8 @@ topSuite("Ext.data.Session", [
                                 expect(posts.getAt(1)).toBe(session.peekRecord('Post', 103));
                             });
                         });
-                    }); 
-                    
+                    });
+
                 });
 
                 describe("many to many", function() {
@@ -2868,7 +2970,7 @@ topSuite("Ext.data.Session", [
                         it("should read CRUD records before processing", function() {
                             session.update({
                                 User: {
-                                    R: [{id: 1}],
+                                    R: [{ id: 1 }],
                                     groups: {
                                         R: {
                                             1: [101, 102]
@@ -2876,7 +2978,7 @@ topSuite("Ext.data.Session", [
                                     }
                                 },
                                 Group: {
-                                    R: [{id: 101}, {id: 102}]
+                                    R: [{ id: 101 }, { id: 102 }]
                                 }
                             });
                             var user = session.getRecord('User', 1),
@@ -2892,7 +2994,7 @@ topSuite("Ext.data.Session", [
                             expect(function() {
                                 session.update({
                                     User: {
-                                        R: [{id: 1}],
+                                        R: [{ id: 1 }],
                                         groups: {
                                             R: {
                                                 1: [101, 102]
@@ -2942,6 +3044,7 @@ topSuite("Ext.data.Session", [
                                     }
                                 });
                                 var groups = user.groups();
+
                                 expect(groups.getCount()).toBe(1);
                                 expect(groups.getAt(0)).toBe(session.peekRecord('Group', 101));
                             });
@@ -3017,6 +3120,7 @@ topSuite("Ext.data.Session", [
 
                                 getAndComplete('Group', 101);
                                 var groups = user.groups();
+
                                 expect(groups.getCount()).toBe(2);
                                 expect(groups.indexOfId(102)).toBe(0);
                                 expect(groups.indexOfId(101)).toBe(1);
@@ -3053,6 +3157,7 @@ topSuite("Ext.data.Session", [
                                 });
 
                                 var groups = user.groups();
+
                                 expect(groups.getCount()).toBe(1);
                                 expect(groups.indexOfId(102)).toBe(0);
                             });
@@ -3151,7 +3256,7 @@ topSuite("Ext.data.Session", [
                                         group4 = getAndComplete('Group', 104);
 
                                     groups.load();
-                                    completeRequest([{id: 101}, {id: 102}, {id: 103}]);
+                                    completeRequest([{ id: 101 }, { id: 102 }, { id: 103 }]);
                                     groups.add(group4);
 
                                     session.update({
@@ -3172,7 +3277,7 @@ topSuite("Ext.data.Session", [
                                         groups = user.groups();
 
                                     groups.load();
-                                    completeRequest([{id: 101}, {id: 102}]);
+                                    completeRequest([{ id: 101 }, { id: 102 }]);
                                     groups.removeAt(0);
 
                                     session.update({
@@ -3208,6 +3313,7 @@ topSuite("Ext.data.Session", [
                                     });
 
                                     var groups = user.groups();
+
                                     expect(groups.getCount()).toBe(1);
                                     expect(groups.getAt(0)).toBe(group1);
                                 });
@@ -3228,8 +3334,10 @@ topSuite("Ext.data.Session", [
                                     });
 
                                     var groups = user.groups();
+
                                     expect(groups.getCount()).toBe(0);
                                     var group1 = getAndComplete('Group', 101);
+
                                     expect(groups.getCount()).toBe(1);
                                     expect(groups.getAt(0)).toBe(group1);
                                 });
@@ -3275,6 +3383,7 @@ topSuite("Ext.data.Session", [
                                         });
                                         expect(groups.getCount()).toBe(0);
                                         var group1 = getAndComplete('Group', 101);
+
                                         expect(groups.getAt(0)).toBe(group1);
                                     });
                                 });
@@ -3288,7 +3397,7 @@ topSuite("Ext.data.Session", [
                                             group3 = getAndComplete('Group', 103);
 
                                         groups.load();
-                                        completeRequest([{id: 101}, {id: 102}]);
+                                        completeRequest([{ id: 101 }, { id: 102 }]);
 
                                         expect(groups.getCount()).toBe(2);
 
@@ -3312,7 +3421,7 @@ topSuite("Ext.data.Session", [
                                             groups = user.groups();
 
                                         groups.load();
-                                        completeRequest([{id: 101}, {id: 102}]);
+                                        completeRequest([{ id: 101 }, { id: 102 }]);
 
                                         session.update({
                                             User: {
@@ -3351,8 +3460,9 @@ topSuite("Ext.data.Session", [
                                 });
 
                                 var groups = user.groups();
+
                                 groups.load();
-                                completeRequest([{id: 101}, {id: 102}]);
+                                completeRequest([{ id: 101 }, { id: 102 }]);
                                 expect(groups.getCount()).toBe(1);
                                 expect(groups.getAt(0)).toBe(session.peekRecord('Group', 102));
                             });
@@ -3375,7 +3485,7 @@ topSuite("Ext.data.Session", [
                                     });
 
                                     groups.load();
-                                    completeRequest([{id: 101}, {id: 102}]);
+                                    completeRequest([{ id: 101 }, { id: 102 }]);
                                     expect(groups.getCount()).toBe(1);
                                     expect(groups.getAt(0)).toBe(session.peekRecord('Group', 102));
                                 });
@@ -3387,7 +3497,7 @@ topSuite("Ext.data.Session", [
                                         groups = user.groups();
 
                                     groups.load();
-                                    completeRequest([{id: 101}, {id: 102}]);
+                                    completeRequest([{ id: 101 }, { id: 102 }]);
 
                                     session.update({
                                         User: {
@@ -3432,13 +3542,15 @@ topSuite("Ext.data.Session", [
         });
 
         it("should not evict a non-phantom when it is dropped", function() {
-            var user = new spec.User({id: 1}, session);
+            var user = new spec.User({ id: 1 }, session);
+
             user.drop();
             expect(session.peekRecord('User', 1)).toBe(user);
         });
 
         it("should evict a non-phantom when it is erased", function() {
-            var user = new spec.User({id: 1}, session);
+            var user = new spec.User({ id: 1 }, session);
+
             user.erase();
             expect(session.peekRecord('User', 1)).toBe(user);
             completeRequest({});
@@ -3451,7 +3563,7 @@ topSuite("Ext.data.Session", [
 
         beforeEach(function() {
             Ext.data.Model.schema.setNamespace('spec');
-            User =Ext.define('spec.User', {
+            User = Ext.define('spec.User', {
                 extend: 'Ext.data.Model',
                 fields: ['name']
             });
@@ -3465,6 +3577,7 @@ topSuite("Ext.data.Session", [
 
         it("should call commit on created records", function() {
             var user = new spec.User({}, session);
+
             expect(session.getChanges()).toEqual({
                 User: {
                     C: [{
@@ -3477,7 +3590,8 @@ topSuite("Ext.data.Session", [
         });
 
         it("should call commit on updated records", function() {
-            var user = new spec.User({id: 1, name: 'Foo'}, session);
+            var user = new spec.User({ id: 1, name: 'Foo' }, session);
+
             user.set('name', 'Bar');
             expect(session.getChanges()).toEqual({
                 User: {
@@ -3492,7 +3606,8 @@ topSuite("Ext.data.Session", [
         });
 
         it("should call commit on dropped records", function() {
-            var user = new spec.User({id: 1}, session);
+            var user = new spec.User({ id: 1 }, session);
+
             user.drop();
             expect(session.getChanges()).toEqual({
                 User: {
@@ -3607,6 +3722,7 @@ topSuite("Ext.data.Session", [
                 parent = new Ext.data.Session();
 
                 var user = getAndComplete('User', 1, parent);
+
                 // Local change
                 user.set('name', 'Foo');
 
@@ -3620,8 +3736,9 @@ topSuite("Ext.data.Session", [
                         url: 'fakeUrl'
                     }
                 });
+
                 store.load();
-                completeRequest([{id: 1}]);
+                completeRequest([{ id: 1 }]);
                 expect(session.peekRecord('User', 1).get('name')).toBe('Foo');
             });
         });
@@ -3705,6 +3822,7 @@ topSuite("Ext.data.Session", [
                     session = parent.spawn();
 
                     var posts = session.getRecord('User', 1).posts();
+
                     expect(posts.getAt(0).id).toBe(post.id);
                     expect(posts.getAt(0)).not.toBe(post);
                 });
@@ -3719,6 +3837,7 @@ topSuite("Ext.data.Session", [
                     session = parent.spawn();
 
                     var posts = session.getRecord('User', 1).posts();
+
                     expect(posts.getAt(0).id).toBe(101);
                     expect(posts.getAt(0)).not.toBe(post);
                 });
@@ -3794,8 +3913,9 @@ topSuite("Ext.data.Session", [
 
                     it("should not mark the store as complete if the parent record is not a phantom", function() {
                         var user = parent.createRecord('User', {
-                            id: 1
-                        }), childUser;
+                                id: 1
+                            }),
+                            childUser;
 
                         session = parent.spawn();
                         childUser = session.getRecord('User', 1);
@@ -3808,6 +3928,7 @@ topSuite("Ext.data.Session", [
 
     describe("updating from child to parent sessions", function() {
         var child, rec;
+
         beforeEach(function() {
             Ext.data.Model.schema.setNamespace('spec');
             Ext.define('spec.User', {
@@ -3842,6 +3963,7 @@ topSuite("Ext.data.Session", [
                 serializeField: 1000
             });
             var spy = spyOn(rec.getField('serializeField'), 'serialize');
+
             child.save();
             expect(spy).not.toHaveBeenCalled();
             expect(session.getRecord('User', rec.id).get('serializeField')).toBe(1000);
@@ -3883,8 +4005,9 @@ topSuite("Ext.data.Session", [
 
             it("should use a record that is a phantom in the parent as an update from the child", function() {
                 var rec = session.createRecord('User', {
-                    name: 'Foo'
-                }), id = rec.getId();
+                        name: 'Foo'
+                    }),
+                    id = rec.getId();
 
                 child = session.spawn();
                 child.getRecord('User', id).set('name', 'Bar');
@@ -3968,6 +4091,7 @@ topSuite("Ext.data.Session", [
                     });
 
                     var address = order.getAddress();
+
                     getAndComplete('Address', 101, child);
 
                     var orderItems = order.orderItems();
@@ -3980,7 +4104,7 @@ topSuite("Ext.data.Session", [
                         id: 202,
                         orderId: 1
                     }]);
-                    
+
                     var orderItem = orderItems.getAt(0);
 
                     order.setAddress(null);
@@ -4029,12 +4153,11 @@ topSuite("Ext.data.Session", [
                         posts = user.posts();
 
                         posts.load();
-                        completeRequest([{id: 101, userId: 1}, {id: 102, userId: 1}]);
+                        completeRequest([{ id: 101, userId: 1 }, { id: 102, userId: 1 }]);
                         child = session.spawn();
 
                         posts = child.getRecord('User', 1).posts();
                     });
-
 
                     afterEach(function() {
                         user = posts = null;
@@ -4069,6 +4192,7 @@ topSuite("Ext.data.Session", [
 
                     it("should push a new phantom record as a creation", function() {
                         var id = posts.add({})[0].getId();
+
                         child.save();
 
                         expect(session.getChanges()).toEqual({
@@ -4084,6 +4208,7 @@ topSuite("Ext.data.Session", [
 
                     it("should push an added record as an update to the FK", function() {
                         var post = getAndComplete('Post', 105, child);
+
                         posts.add(post);
                         child.save();
 
@@ -4116,7 +4241,7 @@ topSuite("Ext.data.Session", [
 
                     it("should read & update for a foreign key change", function() {
                         posts.load();
-                        completeRequest([{id: 101, userId: 1}, {id: 102, userId: 1}, {id: 103, userId: 1}]);
+                        completeRequest([{ id: 101, userId: 1 }, { id: 102, userId: 1 }, { id: 103, userId: 1 }]);
                         posts.removeAt(1);
                         child.save();
 
@@ -4133,7 +4258,7 @@ topSuite("Ext.data.Session", [
 
                     it("should read and update for a drop", function() {
                         posts.load();
-                        completeRequest([{id: 101, userId: 1}, {id: 102, userId: 1}, {id: 103, userId: 1}]);
+                        completeRequest([{ id: 101, userId: 1 }, { id: 102, userId: 1 }, { id: 103, userId: 1 }]);
                         posts.getAt(1).drop();
                         child.save();
 
@@ -4149,6 +4274,7 @@ topSuite("Ext.data.Session", [
                         var id = posts.add({
                             content: 'Foo'
                         })[0].getId();
+
                         child.save();
 
                         expect(session.getChanges()).toEqual({
@@ -4165,7 +4291,7 @@ topSuite("Ext.data.Session", [
 
                     it("should have no changes if the store is loaded", function() {
                         posts.load();
-                        completeRequest([{id: 101, userId: 1}, {id: 102, userId: 1}, {id: 103, userId: 1}]);
+                        completeRequest([{ id: 101, userId: 1 }, { id: 102, userId: 1 }, { id: 103, userId: 1 }]);
                         child.save();
                         expect(session.getChanges()).toBeNull();
                     });
@@ -4193,7 +4319,7 @@ topSuite("Ext.data.Session", [
                         group = getAndComplete('Group', 1);
                         users = group.users();
                         users.load();
-                        completeRequest([{id: 101}, {id: 102}, {id: 103}]);
+                        completeRequest([{ id: 101 }, { id: 102 }, { id: 103 }]);
                         child = session.spawn();
                         childGroup = child.getRecord('Group', 1);
                         childUsers = childGroup.users();
@@ -4206,6 +4332,7 @@ topSuite("Ext.data.Session", [
                     it("should add an existing record to the parent collection", function() {
                         // Gets it in the parent, we get a copy in the child below
                         var user = getAndComplete('User', 104);
+
                         childUsers.add(child.getRecord('User', 104));
                         child.save();
                         expect(session.getChanges()).toEqual({
@@ -4223,6 +4350,7 @@ topSuite("Ext.data.Session", [
 
                     it("should have a pending add in the parent, not read the record up", function() {
                         var user = getAndComplete('User', 104, child);
+
                         childUsers.add(user);
                         child.save();
                         expect(session.getChanges()).toEqual({
@@ -4261,6 +4389,7 @@ topSuite("Ext.data.Session", [
 
                 describe("store not loaded, created in the parent", function() {
                     var user1, user2;
+
                     beforeEach(function() {
                         group = getAndComplete('Group', 1);
                         users = group.users();
@@ -4284,6 +4413,7 @@ topSuite("Ext.data.Session", [
                     it("should add an existing record to the parent collection", function() {
                         // Gets it in the parent, we get a copy in the child below
                         var user = getAndComplete('User', 104);
+
                         childUsers.add(child.getRecord('User', 104));
                         child.save();
                         expect(session.getChanges()).toEqual({
@@ -4301,6 +4431,7 @@ topSuite("Ext.data.Session", [
 
                     it("should have a pending add in the parent, not read the record up", function() {
                         var user = getAndComplete('User', 104, child);
+
                         childUsers.add(user);
                         child.save();
                         expect(session.getChanges()).toEqual({
@@ -4343,12 +4474,13 @@ topSuite("Ext.data.Session", [
                         childGroup = child.getRecord('Group', 1);
                         childUsers = childGroup.users();
                         childUsers.load();
-                        completeRequest([{id: 101}, {id: 102}, {id: 103}]);
+                        completeRequest([{ id: 101 }, { id: 102 }, { id: 103 }]);
                     });
 
                     it("should add an existing record to the parent collection", function() {
                         // Gets it in the parent, we get a copy in the child below
                         var user = getAndComplete('User', 104);
+
                         childUsers.add(child.getRecord('User', 104));
                         child.save();
                         expect(session.getChanges()).toEqual({
@@ -4367,6 +4499,7 @@ topSuite("Ext.data.Session", [
 
                     it("should have a pending add in the parent, not read the record up", function() {
                         var user = getAndComplete('User', 104, child);
+
                         childUsers.add(user);
                         child.save();
                         expect(session.getChanges()).toEqual({
@@ -4403,7 +4536,7 @@ topSuite("Ext.data.Session", [
                         // We don't have any users in the session
                         expect(users.getCount()).toBe(0);
                         users.load();
-                        completeRequest([{id: 101}, {id: 102}, {id: 103}]);
+                        completeRequest([{ id: 101 }, { id: 102 }, { id: 103 }]);
                         // Now that we have loaded, we exclude 101
                         expect(users.getCount()).toBe(2);
                     });
@@ -4429,6 +4562,7 @@ topSuite("Ext.data.Session", [
                     it("should add an existing record to the parent collection", function() {
                         // Gets it in the parent, we get a copy in the child below
                         var user = getAndComplete('User', 104);
+
                         childUsers.add(child.getRecord('User', 104));
                         child.save();
                         expect(session.getChanges()).toEqual({
@@ -4546,6 +4680,7 @@ topSuite("Ext.data.Session", [
 
     describe("data collisions", function() {
         var User;
+
         beforeEach(function() {
             Ext.data.Model.schema.setNamespace('spec');
             User = Ext.define('spec.User', {
@@ -4581,6 +4716,7 @@ topSuite("Ext.data.Session", [
             describe("static load", function() {
                 it("should not call the model mergeData method and pass the new data", function() {
                     var rec = User.load(1, null, session);
+
                     spyOn(rec, 'mergeData');
                     completeRequest([{
                         id: 1,
@@ -4603,6 +4739,7 @@ topSuite("Ext.data.Session", [
                     asynchronousLoad: false,
                     session: session
                 });
+
                 store.load();
                 spyOn(rec, 'mergeData');
                 completeRequest([{
@@ -4666,6 +4803,7 @@ topSuite("Ext.data.Session", [
 
                 it("should not be dirty if the create is reverted", function() {
                     var rec = createUser();
+
                     rec.drop();
                     expectNotDirty();
                 });
@@ -4681,17 +4819,18 @@ topSuite("Ext.data.Session", [
 
                 it("should be dirty if encountering the record in a create state", function() {
                     var rec = new spec.User();
+
                     session.adopt(rec);
                     expectDirty();
                 });
 
-                it("should be dirty when the store add handler is invoked", function () {
+                it("should be dirty when the store add handler is invoked", function() {
                     var store = new Ext.data.Store({
                         model: 'spec.User',
                         session: session
                     });
 
-                    store.on('add', function () {
+                    store.on('add', function() {
                         expectDirty();
                     });
 
@@ -4742,6 +4881,7 @@ topSuite("Ext.data.Session", [
             describe("update", function() {
                 it("should be dirty after updating a record", function() {
                     var rec = getAndComplete('User', 1, session, { name: 'Foo' });
+
                     expectNotDirty();
                     rec.set('name', 'Bar');
                     expectDirty();
@@ -4749,6 +4889,7 @@ topSuite("Ext.data.Session", [
 
                 it("should not be dirty if the update was reverted", function() {
                     var rec = getAndComplete('User', 1, session, { name: 'Foo' });
+
                     expectNotDirty();
                     rec.set('name', 'Bar');
                     rec.set('name', 'Foo');
@@ -4757,6 +4898,7 @@ topSuite("Ext.data.Session", [
 
                 it("should be dirty if only some updates are reverted", function() {
                     var rec = getAndComplete('User', 1, session, { name: 'Foo' });
+
                     var other = getAndComplete('User', 2, session, { name: 'Foo' });
 
                     rec.set('name', 'Bar');
@@ -4769,6 +4911,7 @@ topSuite("Ext.data.Session", [
                     var rec = new spec.User({
                         id: 1
                     });
+
                     rec.set('name', 'Foo');
                     session.adopt(rec);
                     expectDirty();
@@ -4829,6 +4972,7 @@ topSuite("Ext.data.Session", [
 
                     it("should not fire if only some updates are reverted", function() {
                         var other = getAndComplete('User', 2, session, { name: 'Foo' });
+
                         spy.reset();
                         other.set('name', 'Baz');
                         rec.set('name', 'Foo');
@@ -4840,18 +4984,21 @@ topSuite("Ext.data.Session", [
             describe("drop", function() {
                 it("should not be dirty if a phantom is dropped", function() {
                     var rec = createUser();
+
                     rec.drop();
                     expectNotDirty();
                 });
 
                 it("should be dirty after dropping a record", function() {
                     var rec = getAndComplete('User', 1);
+
                     rec.drop();
                     expectDirty();
                 });
 
                 it("should not be dirty if the drop is reverted", function() {
                     var rec = getAndComplete('User', 1);
+
                     rec.drop();
                     rec.reject();
                     expectNotDirty();
@@ -4872,12 +5019,13 @@ topSuite("Ext.data.Session", [
                     var rec = new spec.User({
                         id: 1
                     });
+
                     rec.drop();
                     session.adopt(rec);
                     expectDirty();
                 });
 
-                it("should be dirty when the store remove handler is invoked", function () {
+                it("should be dirty when the store remove handler is invoked", function() {
                     var rec = new spec.User({
                         id: 1
                     });
@@ -4889,13 +5037,13 @@ topSuite("Ext.data.Session", [
 
                     store.add(rec);
 
-                    store.on('remove', function () {
+                    store.on('remove', function() {
                         expectDirty();
                     });
 
                     rec.drop();
                 });
-                
+
                 describe("events", function() {
                     var rec;
 
@@ -4975,7 +5123,9 @@ topSuite("Ext.data.Session", [
             describe("many to one", function() {
                 it("should not be dirty after dropping a phantom associated record", function() {
                     var user = getAndComplete('AssocUser', 1);
+
                     var rec = user.orders().add({})[0];
+
                     rec.drop();
                     expectNotDirty();
                 });
@@ -5032,6 +5182,7 @@ topSuite("Ext.data.Session", [
                         c.drop();
 
                         var info;
+
                         session.on('dirtychange', function() {
                             info = [a.phantom, b.dirty, c.erased];
                         });
@@ -5044,6 +5195,7 @@ topSuite("Ext.data.Session", [
             describe("save", function() {
                 it("should not be dirty if the save makes no changes", function() {
                     var child = session.spawn();
+
                     child.save();
                     expectNotDirty();
                 });
@@ -5051,6 +5203,7 @@ topSuite("Ext.data.Session", [
                 it("should be dirty if the save introduces changes", function() {
                     getAndComplete('User', 1);
                     var child = session.spawn();
+
                     child.getRecord('User', 1).set('name', 'Foo');
                     child.save();
                     expectDirty();
@@ -5059,6 +5212,7 @@ topSuite("Ext.data.Session", [
                 it("should remain dirty if the save has extra changes", function() {
                     session.createRecord('User');
                     var child = session.spawn();
+
                     child.createRecord('User');
                     child.save();
                     expectDirty();
@@ -5067,6 +5221,7 @@ topSuite("Ext.data.Session", [
                 describe("single change", function() {
                     it("should be dirty after doing a create", function() {
                         var child = session.spawn();
+
                         child.createRecord('User');
                         child.save();
 
@@ -5076,6 +5231,7 @@ topSuite("Ext.data.Session", [
                     it("should be dirty after doing an update", function() {
                         getAndComplete('User', 1);
                         var child = session.spawn();
+
                         child.getRecord('User', 1).set('name', 'Foo');
                         child.save();
 
@@ -5085,6 +5241,7 @@ topSuite("Ext.data.Session", [
                     it("should be dirty after doing a drop", function() {
                         getAndComplete('User', 1);
                         var child = session.spawn();
+
                         child.getRecord('User', 1).drop();
                         child.save();
 
@@ -5095,7 +5252,9 @@ topSuite("Ext.data.Session", [
                 describe("undoing changes", function() {
                     it("should not be dirty after undoing a create", function() {
                         var child = session.spawn();
+
                         var id = createUser().id;
+
                         child.save();
                         expectDirty();
                         session.getRecord('User', id).drop();
@@ -5104,7 +5263,9 @@ topSuite("Ext.data.Session", [
 
                     it("should not be dirty after undoing an update", function() {
                         var rec = getAndComplete('User', 1, session, { name: 'Foo' });
+
                         var child = session.spawn();
+
                         child.getRecord('User', 1).set('name', 'Bar');
                         child.save();
                         expectDirty();
@@ -5114,7 +5275,9 @@ topSuite("Ext.data.Session", [
 
                     it("should not be dirty after undoing a drop", function() {
                         var rec = getAndComplete('User', 1);
+
                         var child = session.spawn();
+
                         child.getRecord('User', 1).drop();
                         child.save();
                         expectDirty();
@@ -5130,6 +5293,7 @@ topSuite("Ext.data.Session", [
 
                     it("should not fire if the save doesn't trigger changes", function() {
                         var child = session.spawn();
+
                         child.save();
                         expect(spy).not.toHaveBeenCalled();
                     });
@@ -5138,6 +5302,7 @@ topSuite("Ext.data.Session", [
                         getAndComplete('User', 1).set('name', 'Foo');
                         spy.reset();
                         var child = session.spawn();
+
                         child.getRecord('User', 1).set('name', 'Bar');
                         child.save();
                         expect(spy).not.toHaveBeenCalled();
@@ -5146,6 +5311,7 @@ topSuite("Ext.data.Session", [
                     it("should fire if the state is made to be dirty", function() {
                         getAndComplete('User', 1);
                         var child = session.spawn();
+
                         child.getRecord('User', 1).set('name', 'Foo');
                         child.save();
                         expectDirtySpy(true);
@@ -5179,7 +5345,7 @@ topSuite("Ext.data.Session", [
                 it("should not be dirty if the update only contained reads", function() {
                     session.update({
                         User: {
-                            R: [{id: 1}]
+                            R: [{ id: 1 }]
                         }
                     });
                     expectNotDirty();
@@ -5209,7 +5375,7 @@ topSuite("Ext.data.Session", [
                     it("should not fire an event if the session was not dirty and the update contained reads", function() {
                         session.update({
                             User: {
-                                R: [{id: 1}]
+                                R: [{ id: 1 }]
                             }
                         });
                         expect(spy).not.toHaveBeenCalled();
@@ -5266,13 +5432,14 @@ topSuite("Ext.data.Session", [
                             b = getAndComplete('User', 2);
 
                         var info;
+
                         session.on('dirtychange', function() {
                             info = [session.peekRecord('User', 3) !== null, a.dirty, b.dropped];
                         });
 
                         session.update({
                             User: {
-                                C: [{id: 3}],
+                                C: [{ id: 3 }],
                                 U: [{
                                     id: 1,
                                     name: 'Foo'
@@ -5288,9 +5455,9 @@ topSuite("Ext.data.Session", [
         });
     });
 
-    describe('Provisional identifiers', function () {
-        function makeSuite (title, schema, expectations) {
-            describe('Schema with ' + title, function () {
+    describe('Provisional identifiers', function() {
+        function makeSuite(title, schema, expectations) {
+            describe('Schema with ' + title, function() {
                 var Base, Derived;
 
                 beforeEach(function() {
@@ -5322,7 +5489,7 @@ topSuite("Ext.data.Session", [
                 });
 
                 describe("record creation", function() {
-                    it('should isolate id generation to the session', function () {
+                    it('should isolate id generation to the session', function() {
                         var standaloneRecord = new Base();
 
                         var sessionRecord = session.createRecord('Base', {
@@ -5333,15 +5500,17 @@ topSuite("Ext.data.Session", [
                         expect(sessionRecord.id).toBe(standaloneRecord.id);
                     });
 
-                    it('should track all created records', function () {
+                    it('should track all created records', function() {
                         var a = session.createRecord('Base', {
                             name: 'Don'
                         });
+
                         expect(a.id).toBe(expectations['B-1']);
 
                         var b = session.createRecord('Derived', {
                             name: 'Evan'
                         });
+
                         expect(b.id).toBe(expectations['D-1']);
 
                         var changes = session.getChanges();
@@ -5385,8 +5554,9 @@ topSuite("Ext.data.Session", [
         });
     });
 
-    describe("Random UUID's", function () {
+    describe("Random UUID's", function() {
         var Base, Derived;
+
         var schema;
 
         beforeEach(function() {
@@ -5395,6 +5565,7 @@ topSuite("Ext.data.Session", [
                     defaultIdentifier: 'uuid'
                 });
             }
+
             schema.setNamespace('spec');
 
             Base = Ext.define('spec.Base', {
@@ -5420,7 +5591,7 @@ topSuite("Ext.data.Session", [
         });
 
         describe("record creation", function() {
-            it('should copy identifier reference into the session', function () {
+            it('should copy identifier reference into the session', function() {
                 var standaloneRecord = new Base();
 
                 var sessionRecord = session.createRecord('Base', {
@@ -5431,6 +5602,7 @@ topSuite("Ext.data.Session", [
                 expect(sessionRecord.id).not.toBe(standaloneRecord.id); // uuid !
 
                 var defaultIdentifier = session.getSchema().getDefaultIdentifier();
+
                 var identA = session.getIdentifier(Base);
 
                 expect(identA).toBe(Base.identifier); // not cloned
@@ -5440,8 +5612,9 @@ topSuite("Ext.data.Session", [
         }); // record creation
     }); // Random UUID's
 
-    describe("Sequential UUID's", function () {
+    describe("Sequential UUID's", function() {
         var Base, Derived;
+
         var schema;
 
         beforeEach(function() {
@@ -5456,6 +5629,7 @@ topSuite("Ext.data.Session", [
                     }
                 });
             }
+
             schema.setNamespace('spec');
 
             Base = Ext.define('spec.Base', {
@@ -5480,7 +5654,7 @@ topSuite("Ext.data.Session", [
         });
 
         describe("record creation", function() {
-            it('should copy identifier reference into the session', function () {
+            it('should copy identifier reference into the session', function() {
                 var standaloneRec = new Base();
 
                 var sessionRecord = session.createRecord('Base', {
@@ -5492,6 +5666,7 @@ topSuite("Ext.data.Session", [
                 // changes right here                 ^
 
                 var defaultIdentifier = session.getSchema().getDefaultIdentifier();
+
                 var identA = session.getIdentifier(Base);
 
                 expect(identA).toBe(Base.identifier); // not cloned
@@ -5502,7 +5677,7 @@ topSuite("Ext.data.Session", [
         }); // record creation
     }); // Sequential UUID's
 
-    describe('Many-to-many associations', function () {
+    describe('Many-to-many associations', function() {
         var User, Group;
 
         beforeEach(function() {
@@ -5538,8 +5713,9 @@ topSuite("Ext.data.Session", [
         });
 
         describe("loading a many-to-many", function() {
-            it('should load groups for a user', function () {
+            it('should load groups for a user', function() {
                 var groups = session.getRecord('User', userRufus.id, false).groups();
+
                 groups.load();
                 completeRequest(rufusGroups);
 
@@ -5559,7 +5735,7 @@ topSuite("Ext.data.Session", [
                 expect(matrix.right.slices[427].members[10]).toEqual([10, 427, 0]);
             });
 
-            it('should load both sides of a matrix', function () {
+            it('should load both sides of a matrix', function() {
                 var rufusGroupsStore = session.getRecord('User', userRufus.id, false).groups(),
                     adminUsersStore = session.getRecord('Group', adminGroup.id, false).users(),
                     peonUsersStore = session.getRecord('Group', peonGroup.id, false).users();
@@ -5592,7 +5768,7 @@ topSuite("Ext.data.Session", [
                 expect(rufusRec1).toBe(rufusRec2);
             });
 
-            it('should allow editing on both sides of a matrix', function () {
+            it('should allow editing on both sides of a matrix', function() {
                 var billGroupsStore = session.getRecord('User', userBill.id, false).groups(),
                     rufusGroupsStore = session.getRecord('User', userRufus.id, false).groups(),
                     adminUsersStore = session.getRecord('Group', adminGroup.id, false).users(),
@@ -5614,6 +5790,7 @@ topSuite("Ext.data.Session", [
                 expect(rufusGroupsStore.getById(adminGroup.id)).toBeTruthy();
 
                 var rufusRec = adminUsersStore.getById(userRufus.id);
+
                 adminUsersStore.remove(rufusRec);
 
                 expect(rufusGroupsStore.getCount()).toBe(1);
@@ -5625,12 +5802,14 @@ topSuite("Ext.data.Session", [
                 expect(billGroupsStore.getById(adminGroup.id)).toBe(null);
 
                 var billRec = peonUsersStore.getById(userBill.id);
+
                 adminUsersStore.add(billRec);
 
                 expect(billGroupsStore.getCount()).toBe(2);
                 expect(billGroupsStore.getById(adminGroup.id)).toBeTruthy();
 
                 var changes = session.getChanges();
+
                 expect(changes).toEqual({
                     User: {
                         groups: {
@@ -5711,6 +5890,7 @@ topSuite("Ext.data.Session", [
             expect(operations[0].getRecords()[1].get('name')).toBe('Foo2');
 
             var r = operations[1].getRecords()[0];
+
             expect(operations[1].isCreateOperation).toBe(true);
             expect(r.$className).toBe('spec.Office');
             expect(r.get('name')).toBe('Bar1');
@@ -5743,6 +5923,7 @@ topSuite("Ext.data.Session", [
             expect(operations[0].getRecords()[1].id).toBe(2);
 
             var r = operations[1].getRecords()[0];
+
             expect(operations[1].isUpdateOperation).toBe(true);
             expect(r.$className).toBe('spec.Office');
             expect(r.id).toBe(1);
@@ -5775,6 +5956,7 @@ topSuite("Ext.data.Session", [
             expect(operations[0].getRecords()[1].id).toBe(2);
 
             var r = operations[1].getRecords()[0];
+
             expect(operations[1].isDestroyOperation).toBe(true);
             expect(r.$className).toBe('spec.Office');
             expect(r.id).toBe(1);
@@ -5786,8 +5968,9 @@ topSuite("Ext.data.Session", [
         });
     });
 
-    describe('transactions', function () {
+    describe('transactions', function() {
         var Base, Parent, Child, GrandChild, Group, User;
+
         var parentData, childData, grandChildData;
 
         beforeEach(function() {
@@ -5881,17 +6064,17 @@ topSuite("Ext.data.Session", [
             Base = Parent = Child = GrandChild = Group = User = null;
         });
 
-        describe('complex transaction', function () {
+        describe('complex transaction', function() {
             var state;
 
-            beforeEach(function () {
+            beforeEach(function() {
                 state = {
                     parentRecs: [],
                     childRecs: [],
                     grandChildRecs: []
                 };
 
-                Ext.each([0, 1], function (n) {
+                Ext.each([0, 1], function(n) {
                     state.grandChildRecs.push(session.createRecord('GrandChild', grandChildData[n]));
                     state.childRecs.push(session.createRecord('Child', childData[n]));
                     state.parentRecs.push(session.createRecord('Parent', parentData[n]));
@@ -5913,11 +6096,12 @@ topSuite("Ext.data.Session", [
                 state.newChild.setParent(state.newParent);
                 state.newGrandChild.setChild(state.newChild);
             });
-            afterEach(function () {
+
+            afterEach(function() {
                 state = null;
             });
 
-            it('should describe the transaction via getChanges', function () {
+            it('should describe the transaction via getChanges', function() {
                 // Quick sanity check on pending changes
                 var changes = session.getChanges();
 
@@ -5940,7 +6124,7 @@ topSuite("Ext.data.Session", [
                 });
             });
 
-            it('should produce a Batch via getSaveBatch', function () {
+            it('should produce a Batch via getSaveBatch', function() {
                 var batch = session.getSaveBatch();
 
                 expect(batch.operations.length).toBe(9);
@@ -5957,7 +6141,7 @@ topSuite("Ext.data.Session", [
                     [ 'destroy', 'GrandChild',  [ state.grandChildRecs[1] ] ],
                     [ 'destroy', 'Child',       [ state.childRecs[1] ] ],
                     [ 'destroy', 'Parent',      [ state.parentRecs[1] ] ]
-                ], function (expectedData, index) {
+                ], function(expectedData, index) {
                     var operation = batch.operations[index],
                         str;
 
@@ -5969,14 +6153,16 @@ topSuite("Ext.data.Session", [
 
                     str = 'operation[' + index + '].records=';
                     var actual = Ext.Array.pluck(operation.getRecords(), 'id');
+
                     actual = Ext.encode(actual);
                     var expected = Ext.Array.pluck(expectedData[2], 'id');
+
                     expected = Ext.encode(expected);
                     expect(str + actual).toBe(str + expected);
                 });
             });
 
-            it('should progress save batch to completion', function () {
+            it('should progress save batch to completion', function() {
                 var newGrandChild2 = session.createRecord('GrandChild');
 
                 newGrandChild2.setChild(state.newChild);
@@ -5991,6 +6177,7 @@ topSuite("Ext.data.Session", [
                 // properly - we send the response records in the reverse order to ensure
                 // we are not just matching by indexes.
                 var createGrandChildRecs = batch.operations[2].getRecords();
+
                 expect(createGrandChildRecs[0]).toBe(state.newGrandChild);
                 expect(createGrandChildRecs[1]).toBe(newGrandChild2);
 
@@ -6019,7 +6206,7 @@ topSuite("Ext.data.Session", [
                 completeRequest([{
                     cid: newGrandChild2.id,
                     id: 3001
-                },{
+                }, {
                     cid: state.newGrandChild.id,
                     id: 3000
                 }]);
@@ -6029,17 +6216,21 @@ topSuite("Ext.data.Session", [
             });
         }); // complex transaction
 
-        describe('matrix updates', function () {
-            it('should be able to create matrix for new record', function () {
+        describe('matrix updates', function() {
+            it('should be able to create matrix for new record', function() {
                 var rufusGroupsStore = session.getRecord('User', userRufus.id, false).groups();
+
                 rufusGroupsStore.load();
                 completeRequest(rufusGroups);
 
                 var user = session.createRecord('User');
+
                 var groups = user.groups();
+
                 groups.add(rufusGroupsStore.getAt(0));
 
                 var batch = session.getSaveBatch();
+
                 var changes = session.getChanges();
 
                 expect(batch.operations.length).toBe(1); // Create for new User
@@ -6063,6 +6254,7 @@ topSuite("Ext.data.Session", [
                 });
 
                 var remainingChanges = session.getChanges();
+
                 expect(remainingChanges).toEqual({
                     User: {
                         groups: {

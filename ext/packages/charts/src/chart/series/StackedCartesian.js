@@ -60,19 +60,19 @@ Ext.define('Ext.chart.series.StackedCartesian', {
         return Ext.isArray(yField) ? yField.length : 1;
     },
 
-    updateStacked: function () {
+    updateStacked: function() {
         this.processData();
     },
 
-    updateSplitStacks: function () {
+    updateSplitStacks: function() {
         this.processData();
     },
 
-    coordinateY: function () {
+    coordinateY: function() {
         return this.coordinateStacked('Y', 1, 2);
     },
 
-    coordinateStacked: function (direction, directionOffset, directionCount) {
+    coordinateStacked: function(direction, directionOffset, directionCount) {
         var me = this,
             store = me.getStore(),
             items = store.getData().items,
@@ -84,7 +84,10 @@ Ext.define('Ext.chart.series.StackedCartesian', {
             fullStackTotal = me.getFullStackTotal(),
             range = [0, 0],
             directions = me['fieldCategory' + direction],
-            dataStart = [], posDataStart = [], negDataStart = [], dataEnd,
+            dataStart = [],
+            posDataStart = [],
+            negDataStart = [],
+            dataEnd,
             stacked = me.getStacked(),
             sprites = me.getSprites(),
             coordinatedData = [],
@@ -117,25 +120,32 @@ Ext.define('Ext.chart.series.StackedCartesian', {
 
             if (stacked && fullStack) {
                 posTotals = [];
+
                 if (splitStacks) {
                     negTotals = [];
                 }
+
                 for (j = 0; j < itemCount; j++) {
                     posTotals[j] = 0;
+
                     if (splitStacks) {
                         negTotals[j] = 0;
                     }
+
                     for (k = 0; k < fieldCount; k++) {
                         data = coordinatedData[k];
+
                         if (!data) {
                             // If the field is hidden there's no coordinated data for it.
                             continue;
                         }
+
                         data = data[j];
 
                         if (data >= 0 || !splitStacks) {
                             posTotals[j] += data;
-                        } else if (data < 0) {
+                        }
+                        else if (data < 0) {
                             negTotals[j] += data;
                         } // else not a valid number
                     }
@@ -163,17 +173,21 @@ Ext.define('Ext.chart.series.StackedCartesian', {
                         if (!data[k]) {
                             data[k] = 0;
                         }
+
                         if (data[k] >= 0 || !splitStacks) {
                             if (fullStack && posTotals[k]) {
                                 data[k] *= fullStackTotal / posTotals[k];
                             }
+
                             dataStart[k] = posDataStart[k];
                             posDataStart[k] += data[k];
                             dataEnd[k] = posDataStart[k];
-                        } else {
+                        }
+                        else {
                             if (fullStack && negTotals[k]) {
                                 data[k] *= fullStackTotal / negTotals[k];
                             }
+
                             dataStart[k] = negDataStart[k];
                             negDataStart[k] += data[k];
                             dataEnd[k] = negDataStart[k];
@@ -186,7 +200,8 @@ Ext.define('Ext.chart.series.StackedCartesian', {
                     Ext.chart.Util.expandRange(range, dataStart);
                     Ext.chart.Util.expandRange(range, dataEnd);
 
-                } else {
+                }
+                else {
 
                     attr['dataStart' + fieldCategoriesItem] = dataStart;
                     attr['data' + fieldCategoriesItem] = data;
@@ -212,7 +227,7 @@ Ext.define('Ext.chart.series.StackedCartesian', {
         }
     },
 
-    getFields: function (fieldCategory) {
+    getFields: function(fieldCategory) {
         var me = this,
             fields = [],
             ln = fieldCategory.length,
@@ -220,9 +235,11 @@ Ext.define('Ext.chart.series.StackedCartesian', {
 
         for (i = 0; i < ln; i++) {
             fieldsItem = me['get' + fieldCategory[i] + 'Field']();
+
             if (Ext.isArray(fieldsItem)) {
                 fields.push.apply(fields, fieldsItem);
-            } else {
+            }
+            else {
                 fields.push(fieldsItem);
             }
         }
@@ -230,30 +247,31 @@ Ext.define('Ext.chart.series.StackedCartesian', {
         return fields;
     },
 
-    updateLabelOverflowPadding: function (labelOverflowPadding) {
+    updateLabelOverflowPadding: function(labelOverflowPadding) {
         var me = this,
             label;
 
         if (!me.isConfiguring) {
             label = me.getLabel();
+
             if (label) {
-                label.setAttributes({labelOverflowPadding: labelOverflowPadding});
+                label.setAttributes({ labelOverflowPadding: labelOverflowPadding });
             }
         }
     },
 
-    updateLabelData: function () {
+    updateLabelData: function() {
         var me = this,
             label = me.getLabel();
 
         if (label) {
-            label.setAttributes({labelOverflowPadding: me.getLabelOverflowPadding()});
+            label.setAttributes({ labelOverflowPadding: me.getLabelOverflowPadding() });
         }
 
         me.callParent();
     },
 
-    getSprites: function () {
+    getSprites: function() {
         var me = this,
             chart = me.getChart(),
             fields = me.getFields(me.fieldCategoryY),
@@ -271,6 +289,7 @@ Ext.define('Ext.chart.series.StackedCartesian', {
         // Create one Ext.chart.series.sprite.StackedCartesian sprite per field.
         for (i = 0; i < fieldCount; i++) {
             sprite = sprites[i];
+
             if (!sprite) {
                 sprite = me.createSprite();
                 sprite.setAttributes({
@@ -279,9 +298,11 @@ Ext.define('Ext.chart.series.StackedCartesian', {
                 sprite.setField(fields[i]);
                 spritesCreated = true;
                 hidden.push(false);
+
                 if (itemInstancing) {
                     sprite.getMarker('items').getTemplate().setAttributes(me.getStyleByIndex(i));
-                } else {
+                }
+                else {
                     sprite.setAttributes(me.getStyleByIndex(i));
                 }
             }
@@ -290,10 +311,11 @@ Ext.define('Ext.chart.series.StackedCartesian', {
         if (spritesCreated) {
             me.updateHidden(hidden);
         }
+
         return sprites;
     },
 
-    getItemForPoint: function (x, y) {
+    getItemForPoint: function(x, y) {
         var me = this,
             sprites = me.getSprites(),
             store = me.getStore(),
@@ -311,8 +333,10 @@ Ext.define('Ext.chart.series.StackedCartesian', {
             if (hidden[i]) {
                 continue;
             }
+
             sprite = sprites[i];
             point = sprite.getNearestDataPoint(x, y);
+
             // Don't stop when the first matching point is found.
             // Keep looking for the nearest point.
             if (point) {
@@ -341,7 +365,7 @@ Ext.define('Ext.chart.series.StackedCartesian', {
         return item;
     },
 
-    provideLegendInfo: function (target) {
+    provideLegendInfo: function(target) {
         var me = this,
             sprites = me.getSprites(),
             title = me.getTitle(),
@@ -354,23 +378,29 @@ Ext.define('Ext.chart.series.StackedCartesian', {
         for (i = 0; i < sprites.length; i++) {
             style = me.getStyleByIndex(i);
             fill = style.fillStyle;
+
             if (title) {
                 if (Ext.isArray(title)) {
                     name = title[i];
-                } else if (single) {
+                }
+                else if (single) {
                     name = title;
                 }
             }
+
             if (!title || !name) {
                 if (Ext.isArray(field)) {
                     name = field[i];
-                } else {
+                }
+                else {
                     name = me.getId();
                 }
             }
+
             target.push({
                 name: name,
-                mark: (Ext.isObject(fill) ? fill.stops && fill.stops[0].color : fill) || style.strokeStyle || 'black',
+                mark: (Ext.isObject(fill) ? fill.stops && fill.stops[0].color : fill) ||
+                       style.strokeStyle || 'black',
                 disabled: hidden[i],
                 series: me.getId(),
                 index: i
@@ -378,15 +408,17 @@ Ext.define('Ext.chart.series.StackedCartesian', {
         }
     },
 
-    onSpriteAnimationStart: function (sprite) {
+    onSpriteAnimationStart: function(sprite) {
         this.spriteAnimationCount++;
+
         if (this.spriteAnimationCount === 1) {
             this.fireEvent('animationstart');
         }
     },
 
-    onSpriteAnimationEnd: function (sprite) {
+    onSpriteAnimationEnd: function(sprite) {
         this.spriteAnimationCount--;
+
         if (this.spriteAnimationCount === 0) {
             this.fireEvent('animationend');
         }

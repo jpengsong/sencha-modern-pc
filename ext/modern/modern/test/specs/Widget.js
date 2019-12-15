@@ -9,6 +9,7 @@ function() {
         w = new Ext.Widget(Ext.apply({
             renderTo: Ext.getBody()
         }, cfg));
+
         return w;
     }
 
@@ -18,12 +19,13 @@ function() {
 
     describe("view controllers", function() {
         var Controller, spy;
+
         beforeEach(function() {
             // Suppress console warning about mapping being overridden
             spyOn(Ext.log, 'warn');
 
             spy = jasmine.createSpy();
-            
+
             Controller = Ext.define('spec.TestController', {
                 extend: 'Ext.app.ViewController',
                 alias: 'controller.test',
@@ -33,36 +35,39 @@ function() {
                 someFn: function() {}
             });
         });
-        
+
         afterEach(function() {
             Ext.undefine('spec.TestController');
             spy = Controller = null;
             Ext.Factory.controller.instance.clearCache();
         });
-        
+
         describe("initializing", function() {
             it("should accept an alias string", function() {
                 makeWidget({
                     controller: 'test'
-                }); 
-                var controller = w.getController();   
+                });
+                var controller = w.getController();
+
                 expect(controller instanceof spec.TestController).toBe(true);
                 expect(controller.getView()).toBe(w);
             });
-            
+
             it("should accept a controller config", function() {
                 makeWidget({
                     controller: {
                         type: 'test'
                     }
-                });    
-                var controller = w.getController();   
+                });
+                var controller = w.getController();
+
                 expect(controller instanceof spec.TestController).toBe(true);
                 expect(controller.getView()).toBe(w);
-            }); 
-            
+            });
+
             it("should accept a controller instance", function() {
                 var controller = new spec.TestController();
+
                 makeWidget({
                     controller: controller
                 });
@@ -84,13 +89,14 @@ function() {
                 expect(spy.callCount).toBe(1);
                 expect(spy.mostRecentCall.args[0]).toBe(w);
             });
-        });  
-        
+        });
+
         it("should destroy the controller when destroying the component", function() {
             makeWidget({
                 controller: 'test'
             });
             var controller = w.getController();
+
             spyOn(controller, 'destroy');
             w.destroy();
             expect(controller.destroy).toHaveBeenCalled();
@@ -109,12 +115,14 @@ function() {
                             xtype: 'component'
                         }
                     });
+
                     expect(ct.items.first().lookupController(false)).toBeNull();
                     ct.destroy();
                 });
 
                 it("should return the controller attached to the component when it is at the root", function() {
                     var controller = new spec.TestController();
+
                     makeWidget({
                         controller: controller
                     });
@@ -123,12 +131,14 @@ function() {
 
                 it("should return the controller attached to the component when it is in a hierarchy", function() {
                     var controller = new spec.TestController();
+
                     var ct = new Ext.container.Container({
                         items: {
                             xtype: 'component',
                             controller: controller
                         }
                     });
+
                     expect(ct.items.first().lookupController(false)).toBe(controller);
                     ct.destroy();
                 });
@@ -142,6 +152,7 @@ function() {
                             xtype: 'component'
                         }
                     });
+
                     expect(ct.items.first().lookupController(false)).toBe(controller);
                     ct.destroy();
                 });
@@ -161,6 +172,7 @@ function() {
                             }
                         }
                     });
+
                     expect(ct.down('#x').lookupController(false)).toBe(controller2);
                     ct.destroy();
                 });
@@ -178,12 +190,14 @@ function() {
                             xtype: 'component'
                         }
                     });
+
                     expect(ct.items.first().lookupController(true)).toBeNull();
                     ct.destroy();
                 });
 
                 it("should not return the controller attached to the component when it is at the root", function() {
                     var controller = new spec.TestController();
+
                     makeWidget({
                         controller: controller
                     });
@@ -192,12 +206,14 @@ function() {
 
                 it("should not return the controller attached to the component when it is in a hierarchy and no controllers exist above it", function() {
                     var controller = new spec.TestController();
+
                     var ct = new Ext.container.Container({
                         items: {
                             xtype: 'component',
                             controller: controller
                         }
                     });
+
                     expect(ct.items.first().lookupController(true)).toBeNull();
                     ct.destroy();
                 });
@@ -211,6 +227,7 @@ function() {
                             xtype: 'component'
                         }
                     });
+
                     expect(ct.items.first().lookupController(true)).toBe(controller);
                     ct.destroy();
                 });
@@ -230,6 +247,7 @@ function() {
                             }
                         }
                     });
+
                     expect(ct.down('#x').lookupController(true)).toBe(controller2);
                     ct.destroy();
                 });
@@ -237,6 +255,7 @@ function() {
 
             it("should default to skipThis: false", function() {
                 var controller = new spec.TestController();
+
                 makeWidget({
                     controller: controller
                 });
@@ -287,6 +306,7 @@ function() {
 
         it("should accept an object instance", function() {
             var vm = new spec.ViewModel();
+
             makeWidget({
                 viewModel: vm
             });
@@ -309,6 +329,7 @@ function() {
 
             it("should call initViewController when creating an instance", function() {
                 var ctrl = new TestController();
+
                 spyOn(ctrl, 'initViewModel');
                 makeWidget({
                     controller: ctrl,
@@ -369,6 +390,7 @@ function() {
         describe("session", function() {
             it("should attach the view model to the session", function() {
                 var session = new Ext.data.Session();
+
                 makeWidget({
                     session: session,
                     viewModel: {}
@@ -378,6 +400,7 @@ function() {
 
             it("should attach the view model to a session higher up in the hierarchy", function() {
                 var session = new Ext.data.Session();
+
                 var ct = new Ext.container.Container({
                     session: session,
                     items: {
@@ -385,6 +408,7 @@ function() {
                         viewModel: true
                     }
                 });
+
                 expect(ct.items.first().getViewModel().getSession()).toBe(session);
                 ct.destroy();
             });
@@ -401,6 +425,7 @@ function() {
                         viewModel: {}
                     }
                 });
+
                 expect(ct.items.first().getViewModel().getSession()).toBe(session2);
                 ct.destroy();
             });
@@ -412,9 +437,10 @@ function() {
                     viewModel: {}
                 });
                 var vm = w.getViewModel();
+
                 w.destroy();
                 expect(vm.destroyed).toBe(true);
-            }); 
+            });
         });
     });
 
@@ -426,6 +452,7 @@ function() {
 
         it("should use a passed session", function() {
             var session = new Ext.data.Session();
+
             makeWidget({
                 session: session
             });
@@ -454,7 +481,9 @@ function() {
             var session = new Ext.data.Session({
                 autoDestroy: false
             });
+
             var spy = spyOn(session, 'destroy').andCallThrough();
+
             makeWidget({
                 session: session
             });
@@ -473,8 +502,9 @@ function() {
                         xtype: 'component'
                     }
                 });
+
                 expect(ct.items.first().lookupSession()).toBe(session);
-                
+
                 ct.destroy();
             });
 
@@ -490,8 +520,9 @@ function() {
                 });
 
                 var child = ct.items.first().getSession();
+
                 expect(child.getParent()).toBe(session);
-                
+
                 ct.destroy();
             });
         });
@@ -744,9 +775,11 @@ function() {
                             test: '{foo}'
                         }
                     }
-                }), vm = ct.getViewModel();
+                }),
+vm = ct.getViewModel();
 
                 var c = ct.items.first();
+
                 spyOn(c, 'setTest');
                 vm.notify();
                 expect(c.setTest.callCount).toBe(1);
@@ -764,7 +797,7 @@ function() {
 
     describe("inheritUi", function() {
         var child;
-        
+
         beforeEach(function() {
             Ext.define('spec.Thingy', {
                 extend: 'Ext.Widget',
@@ -792,7 +825,7 @@ function() {
             expect(ct.items.getAt(0)).not.toHaveCls('x-thingy-foo');
         });
 
-        it("should inherit ui from its container when inheritUi is true", function () {
+        it("should inherit ui from its container when inheritUi is true", function() {
             ct = Ext.create({
                 xtype: 'container',
                 renderTo: Ext.getBody(),
@@ -807,7 +840,7 @@ function() {
             expect(ct.items.getAt(0)).toHaveCls('x-thingy-foo');
         });
 
-        it("should inherit multiple uis", function () {
+        it("should inherit multiple uis", function() {
             ct = Ext.create({
                 xtype: 'container',
                 renderTo: Ext.getBody(),
@@ -868,7 +901,7 @@ function() {
             expect(w).toHaveCls('x-thingy-baz');
         });
 
-        it("should continue to inherit the container's UI when the widget's UI changes", function () {
+        it("should continue to inherit the container's UI when the widget's UI changes", function() {
             ct = Ext.create({
                 xtype: 'container',
                 renderTo: Ext.getBody(),
@@ -892,7 +925,7 @@ function() {
             expect(w).not.toHaveCls('x-thingy-baz');
         });
 
-        it("should continue to inherit the container's UI when the widget's UI is nullified", function () {
+        it("should continue to inherit the container's UI when the widget's UI is nullified", function() {
             ct = Ext.create({
                 xtype: 'container',
                 renderTo: Ext.getBody(),

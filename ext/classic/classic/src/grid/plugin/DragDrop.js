@@ -9,8 +9,8 @@
  * Note that where touch gestures are available, the `longpress` gesture will initiate
  * the drag in order that the `touchstart` may still be used to initiate a scroll.
  *
- * On platforms which implement the [Pointer Events standard](https://www.w3.org/TR/pointerevents/) (IE),
- * the `touchstart` event is usually claimed by the platform, however, this plugin
+ * On platforms which implement the [Pointer Events standard](https://www.w3.org/TR/pointerevents/)
+ * (IE), the `touchstart` event is usually claimed by the platform, however, this plugin
  * uses the `longpress` event to trigger drags, so `touchstart` will not initiate a scroll.
  * On these platforms, a two finger drag gesture will scroll the content, or a single
  * finger drag on an empty area of the view will scroll the content.
@@ -179,7 +179,7 @@ Ext.define('Ext.grid.plugin.DragDrop', {
      * @param {String} dropPosition `"before"` or `"after"` depending on whether the 
      * cursor is above or below the mid-line of the node.
      */
-    
+
     /**
      * @cfg {Boolean} [copy=false]
      * Set as `true` to copy the records from the source grid to the destination drop 
@@ -190,7 +190,7 @@ Ext.define('Ext.grid.plugin.DragDrop', {
      * 
      * See {@link #allowCopy} to allow only control-drag operations to copy records.
      */
-    
+
     /**
      * @cfg {Boolean} [allowCopy=false]
      * Set as `true` to allow the user to hold down the control key at the start of the 
@@ -213,29 +213,30 @@ Ext.define('Ext.grid.plugin.DragDrop', {
      * - `{1}` 's' when more than 1 items (only useful for English).
      * @locale
      */
-    dragText : '{0} selected row{1}',
+    dragText: '{0} selected row{1}',
 
     /**
      * @cfg {String} [ddGroup=gridDD]
-     * A named drag drop group to which this object belongs. If a group is specified, then both the DragZones and
-     * DropZone used by this plugin will only interact with other drag drop objects in the same group.
+     * A named drag drop group to which this object belongs. If a group is specified, then both
+     * the DragZones and DropZone used by this plugin will only interact with other drag drop
+     * objects in the same group.
      */
-    ddGroup : "GridDD",
+    ddGroup: "GridDD",
 
     /**
      * @cfg {String} [dragGroup]
      * The {@link #ddGroup} to which the DragZone will belong.
      *
-     * This defines which other DropZones the DragZone will interact with. Drag/DropZones only interact with other
-     * Drag/DropZones which are members of the same {@link #ddGroup}.
+     * This defines which other DropZones the DragZone will interact with. Drag/DropZones
+     * only interact with other Drag/DropZones which are members of the same {@link #ddGroup}.
      */
 
     /**
      * @cfg {String} [dropGroup]
      * The {@link #ddGroup} to which the DropZone will belong.
      *
-     * This defines which other DragZones the DropZone will interact with. Drag/DropZones only interact with other
-     * Drag/DropZones which are members of the same {@link #ddGroup}.
+     * This defines which other DragZones the DropZone will interact with. Drag/DropZones
+     * only interact with other Drag/DropZones which are members of the same {@link #ddGroup}.
      */
 
     /**
@@ -249,36 +250,40 @@ Ext.define('Ext.grid.plugin.DragDrop', {
      * `false` to disallow dragging items from the View.
      */
     enableDrag: true,
-    
+
     /**
-     * `true` to register this container with the Scrollmanager for auto scrolling during drag operations.
-     * A {@link Ext.dd.ScrollManager} configuration may also be passed.
+     * `true` to register this container with the Scrollmanager for auto scrolling during drag
+     * operations. A {@link Ext.dd.ScrollManager} configuration may also be passed.
      * @cfg {Object/Boolean} containerScroll
      */
     containerScroll: false,
 
     /**
      * @cfg {Object} [dragZone]
-     * A config object to apply to the creation of the {@link #property-dragZone DragZone} which handles for drag start gestures.
+     * A config object to apply to the creation of the {@link #property-dragZone DragZone}
+     * which handles for drag start gestures.
      *
      * Template methods of the DragZone may be overridden using this config.
      */
 
     /**
      * @cfg {Object} [dropZone]
-     * A config object to apply to the creation of the {@link #property-dropZone DropZone} which handles mouseover and drop gestures.
+     * A config object to apply to the creation of the {@link #property-dropZone DropZone}
+     * which handles mouseover and drop gestures.
      *
      * Template methods of the DropZone may be overridden using this config.
      */
 
     /**
      * @property {Ext.view.DragZone} dragZone
-     * An {@link Ext.view.DragZone DragZone} which handles mousedown and dragging of records from the grid.
+     * An {@link Ext.view.DragZone DragZone} which handles mousedown and dragging of records
+     * from the grid.
      */
 
     /**
      * @property {Ext.grid.ViewDropZone} dropZone
-     * An {@link Ext.grid.ViewDropZone DropZone} which handles mouseover and dropping records in any grid which shares the same {@link #dropGroup}.
+     * An {@link Ext.grid.ViewDropZone DropZone} which handles mouseover and dropping records
+     * in any grid which shares the same {@link #dropGroup}.
      */
 
     init: function(view) {
@@ -287,7 +292,7 @@ Ext.define('Ext.grid.plugin.DragDrop', {
             allowCopy: this.allowCopy
         });
 
-        view.on('render', this.onViewRender, this, {single: true});
+        view.on('render', this.onViewRender, this, { single: true });
     },
 
     /**
@@ -303,23 +308,29 @@ Ext.define('Ext.grid.plugin.DragDrop', {
 
     enable: function() {
         var me = this;
+
         if (me.dragZone) {
             me.dragZone.unlock();
         }
+
         if (me.dropZone) {
             me.dropZone.unlock();
         }
+
         me.callParent();
     },
 
     disable: function() {
         var me = this;
+
         if (me.dragZone) {
             me.dragZone.lock();
         }
+
         if (me.dropZone) {
             me.dropZone.lock();
         }
+
         me.callParent();
     },
 
@@ -329,7 +340,7 @@ Ext.define('Ext.grid.plugin.DragDrop', {
             dragZone = me.dragZone || {};
 
         ownerGrid.relayEvents(view, ['beforedrop', 'drop']);
-        
+
         if (me.enableDrag) {
             if (me.containerScroll) {
                 dragZone.scrollEl = view.getEl();

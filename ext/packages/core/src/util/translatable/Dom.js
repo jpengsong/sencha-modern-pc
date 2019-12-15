@@ -20,5 +20,13 @@ Ext.define('Ext.util.translatable.Dom', {
 
     updateElement: function() {
         this.refresh();
+    },
+
+    translateXY: function(x, y) {
+        var element = this.getElement();
+
+        if (element && !element.destroyed) {
+            this.callParent([x, y]);
+        }
     }
 });

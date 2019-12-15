@@ -1,7 +1,5 @@
-/* global expect, Ext, spyOn, jasmine, describe, xdescribe, xit */
-
 topSuite("Ext.dom.Element", function() {
-    
+
     function underlayHidden(underlayEl) {
         return !Ext.getBody().contains(underlayEl) || !underlayEl.isVisible();
     }
@@ -23,7 +21,8 @@ topSuite("Ext.dom.Element", function() {
 
             if (el) {
                 el.destroy();
-            } else {
+            }
+            else {
                 document.body.removeChild(domEl);
             }
         });
@@ -71,13 +70,17 @@ topSuite("Ext.dom.Element", function() {
         it("should throw error if the Element has an invalid id", function() {
             function expectError(id) {
                 var dom = document.createElement('div');
+
                 dom.id = id;
                 document.body.appendChild(dom);
+
                 expect(function() {
                     new Ext.Element(dom);
                 }).toThrow('Invalid Element "id": "' + id + '"');
+
                 document.body.removeChild(dom);
             }
+
             expectError('.abcdef');
             expectError('0a...');
             expectError('12345');
@@ -85,12 +88,12 @@ topSuite("Ext.dom.Element", function() {
             expectError('<12345/>');
             expectError('1<>234.567');
         });
-        
+
         it("should not call initConfig", function() {
             spyOn(Ext.dom.Element.prototype, 'initConfig').andCallThrough();
-            
+
             element = new Ext.dom.Element(domEl);
-            
+
             expect(Ext.dom.Element.prototype.initConfig).not.toHaveBeenCalled();
         });
     });
@@ -151,15 +154,16 @@ topSuite("Ext.dom.Element", function() {
     });
 
     function describeMethods(fly) {
-        describe('methods (using ' + (fly ? 'Ext.fly()' : 'new Ext.dom.Element()') + ')', function(){
+        describe('methods (using ' + (fly ? 'Ext.fly()' : 'new Ext.dom.Element()') + ')', function() {
             var domEl, element;
 
             function addElement(tag) {
                 domEl = document.createElement(tag || 'div');
                 document.body.appendChild(domEl);
+
                 return fly ? Ext.fly(domEl) : Ext.get(domEl);
             }
-            
+
             afterEach(function() {
                 if (element) {
                     // Prevent console warnings
@@ -169,15 +173,105 @@ topSuite("Ext.dom.Element", function() {
                 }
             });
 
-    
+            describe("setStyle", function() {
+                beforeEach(function() {
+                    element = addElement();
+                });
+
+                describe("2 value form", function() {
+                    it("should set a hyphenated name", function() {
+                        element.setStyle('border-width', '1px');
+                        expect(element.dom.style.borderWidth).toBe('1px');
+                    });
+
+                    it("should set a camel cased name", function() {
+                        element.setStyle('borderWidth', '1px');
+                        expect(element.dom.style.borderWidth).toBe('1px');
+                    });
+
+                    it("should overwrite an existing value", function() {
+                        element.setStyle('border-width', '1px');
+                        element.setStyle('border-width', '2px');
+                        expect(element.dom.style.borderWidth).toBe('2px');
+                    });
+
+                    it("should clear a value with null/undefined", function() {
+                        element.setStyle('border-width', '1px');
+                        element.setStyle('border-width', null);
+                        expect(element.dom.style.borderWidth).toBe('');
+
+                        element.setStyle('border-width', '1px');
+                        element.setStyle('border-width', undefined);
+                        expect(element.dom.style.borderWidth).toBe('');
+                    });
+                });
+
+                describe("object form", function() {
+                    it("should set a hyphenated name", function() {
+                        element.setStyle({
+                            'border-width': '1px'
+                        });
+                        expect(element.dom.style.borderWidth).toBe('1px');
+                    });
+
+                    it("should set a camel cased name", function() {
+                        element.setStyle({
+                            'borderWidth': '1px'
+                        });
+                        expect(element.dom.style.borderWidth).toBe('1px');
+                    });
+
+                    it("should overwrite an existing value", function() {
+                        element.setStyle('border-width', '1px');
+                        element.setStyle({
+                            'border-width': '2px'
+                        });
+                        expect(element.dom.style.borderWidth).toBe('2px');
+                    });
+
+                    it("should clear a value with null/undefined", function() {
+                        element.setStyle('border-width', '1px');
+                        element.setStyle({
+                            'border-width': null
+                        });
+                        expect(element.dom.style.borderWidth).toBe('');
+
+                        element.setStyle('border-width', '1px');
+                        element.setStyle({
+                            'border-width': undefined
+                        });
+                        expect(element.dom.style.borderWidth).toBe('');
+                    });
+
+                    it("should set multiple values at once", function() {
+                        element.setStyle({
+                            'border-width': '1px',
+                            width: '50px'
+                        });
+                        expect(element.dom.style.borderWidth).toBe('1px');
+                        expect(element.dom.style.width).toBe('50px');
+                    });
+
+                    it("should accept a chained value", function() {
+                        var o = Ext.Object.chain({
+                            borderWidth: '1px'
+                        });
+
+                        element.setStyle(o);
+                        expect(element.dom.style.borderWidth).toBe('1px');
+                    });
+                });
+            });
+
             describe('clone', function() {
                 var clone,
                     domElInnerHTML = '<span class="bar" style="color:red">Some Text</span>';
-                
+
                 afterEach(function() {
                     if (domEl) {
                         Ext.fly(domEl).destroy();
                     }
+
                     if (clone) {
                         clone.destroy();
                     }
@@ -194,7 +288,7 @@ topSuite("Ext.dom.Element", function() {
                     // deep != true, so it should not have cloned descendants
                     expect(clone.dom.innerHTML).toBe('');
                 });
-                
+
                 describe('deep', function() {
                     // Comparing innerHTML does not work in all browsers:
                     //    Expected '<SPAN style="COLOR: red" class=bar _extData="null">Some Text</SPAN>'
@@ -243,6 +337,7 @@ topSuite("Ext.dom.Element", function() {
                         it("should keep the classList/classMap up to date", function() {
                             element.addCls(['foo', 'bar']);
                             var data = element.getData();
+
                             expect(data.classList).toEqual(['foo', 'bar']);
                             expect(data.classMap).toEqual({
                                 foo: true,
@@ -337,7 +432,7 @@ topSuite("Ext.dom.Element", function() {
                                 it("should only add new classes to the element", function() {
                                     element.dom.className = 'bar';
                                     element.addCls('foo bar');
-                                    expect(domEl.className).toBe('bar foo');  
+                                    expect(domEl.className).toBe('bar foo');
                                 });
 
                                 describe("prefix & suffix", function() {
@@ -392,7 +487,7 @@ topSuite("Ext.dom.Element", function() {
                             it("should only add new classes to the element", function() {
                                 element.dom.className = 'bar';
                                 element.addCls(['foo', 'bar']);
-                                expect(domEl.className).toBe('bar foo');  
+                                expect(domEl.className).toBe('bar foo');
                             });
 
                             describe("prefix & suffix", function() {
@@ -490,6 +585,7 @@ topSuite("Ext.dom.Element", function() {
                             domEl.className = 'foo bar baz';
                             element.removeCls(['foo', 'bar']);
                             var data = element.getData();
+
                             expect(data.classList).toEqual(['baz']);
                             expect(data.classMap).toEqual({
                                 baz: true
@@ -591,7 +687,7 @@ topSuite("Ext.dom.Element", function() {
                                 it("should only remove matching classes to the element", function() {
                                     element.dom.className = 'foo bar baz';
                                     element.removeCls('foo');
-                                    expect(domEl.className).toBe('bar baz');  
+                                    expect(domEl.className).toBe('bar baz');
                                 });
 
                                 describe("prefix & suffix", function() {
@@ -650,7 +746,7 @@ topSuite("Ext.dom.Element", function() {
                             it("should only remove specified classes from the element", function() {
                                 domEl.className = 'foo bar baz';
                                 element.removeCls(['foo', 'baz']);
-                                expect(domEl.className).toBe('bar');  
+                                expect(domEl.className).toBe('bar');
                             });
 
                             describe("prefix & suffix", function() {
@@ -732,6 +828,7 @@ topSuite("Ext.dom.Element", function() {
                             domEl.className = 'foo bar baz';
                             element.setCls(['some', 'stuff']);
                             var data = element.getData();
+
                             expect(data.classList).toEqual(['some', 'stuff']);
                             expect(data.classMap).toEqual({
                                 some: true,
@@ -777,6 +874,7 @@ topSuite("Ext.dom.Element", function() {
                         it("should keep the classList/classMap up to date", function() {
                             element.toggleCls('bar');
                             var data = element.getData();
+
                             expect(data.classList).toEqual(['foo', 'bar']);
                             expect(data.classMap).toEqual({
                                 foo: true,
@@ -898,11 +996,11 @@ topSuite("Ext.dom.Element", function() {
                 });
 
                 it("should call Ext.core.DomHelper.applyStyles if object passed as first argument has style property", function() {
-                    var style = {width:'100px'};
+                    var style = { width: '100px' };
 
                     spyOn(element, "applyStyles");
 
-                    element.set({style: style});
+                    element.set({ style: style });
 
                     expect(element.applyStyles).toHaveBeenCalledWith(style);
                 });
@@ -910,7 +1008,7 @@ topSuite("Ext.dom.Element", function() {
                 it("should set dom element className if object passed as first argument has cls property", function() {
                     var cls = "x-test-class";
 
-                    element.set({cls: cls});
+                    element.set({ cls: cls });
 
                     expect(element.dom.className).toEqual(cls);
                 });
@@ -918,7 +1016,7 @@ topSuite("Ext.dom.Element", function() {
                 it("should use setAttribute by default", function() {
                     spyOn(element.dom, "setAttribute");
 
-                    element.set({align: "center"});
+                    element.set({ align: "center" });
 
                     expect(element.dom.setAttribute).toHaveBeenCalledWith("align", "center");
                 });
@@ -926,8 +1024,7 @@ topSuite("Ext.dom.Element", function() {
                 it("should be able to use expandos", function() {
                     spyOn(element.dom, "setAttribute");
 
-                    element.set({align: "center"}, false);
-
+                    element.set({ align: "center" }, false);
 
                     expect(element.dom.align).toEqual("center");
                 });
@@ -940,7 +1037,7 @@ topSuite("Ext.dom.Element", function() {
                 });
 
                 it("Returns true if this element matches the passed simple selector", function() {
-                    element.set({cls: "x-test-class"});
+                    element.set({ cls: "x-test-class" });
 
                     expect(element.is("div.x-test-class")).toBe(true);
                 });
@@ -963,7 +1060,7 @@ topSuite("Ext.dom.Element", function() {
                     spyOn(element.dom, "focus");
                     element.focus(1);
 
-                    waitsFor(function(){
+                    waitsFor(function() {
                         return element.dom.focus.calls.length === 1;
                     }, "element.dom.focus was never called");
 
@@ -971,7 +1068,7 @@ topSuite("Ext.dom.Element", function() {
                         expect(element.dom.focus).toHaveBeenCalled();
                     });
                 });
-                
+
                 if (Ext.isIE8) {
                     it("should ignore any exception", function() {
                         element.dom.focus = function() {
@@ -996,7 +1093,6 @@ topSuite("Ext.dom.Element", function() {
                     expect(element.dom.blur).toHaveBeenCalled();
                 });
 
-
                 it("should ignore any exception", function() {
                     element.dom.blur = function() {
                         throw "error";
@@ -1020,6 +1116,7 @@ topSuite("Ext.dom.Element", function() {
 
                     it("should wrap the element", function() {
                         var parent = element.dom.parentNode;
+
                         wrap = element.wrap();
                         expect(element.dom.parentNode.parentNode).toBe(parent);
                     });
@@ -1041,6 +1138,7 @@ topSuite("Ext.dom.Element", function() {
                     describe("config", function() {
                         it("should apply the config to the wrapping element", function() {
                             var newId = Ext.id();
+
                             wrap = element.wrap({
                                 cls: 'foo',
                                 id: newId
@@ -1073,7 +1171,7 @@ topSuite("Ext.dom.Element", function() {
                         afterEach(function() {
                             Ext.fly(wrap).destroy();
                         });
-                        
+
                         it("should place the element in the element match the selector", function() {
                             wrap = element.wrap({
                                 cls: 'foo',
@@ -1093,11 +1191,11 @@ topSuite("Ext.dom.Element", function() {
 
                     describe("focus", function() {
                         var child;
-                        
+
                         afterEach(function() {
                             child = Ext.destroy(child);
                         });
-                        
+
                         it("should keep focus if the active element is inside the wrapped element", function() {
                             child = element.createChild({
                                 tag: 'a',
@@ -1106,13 +1204,13 @@ topSuite("Ext.dom.Element", function() {
                             });
 
                             focusAndWait(child);
-                            
+
                             runs(function() {
                                 wrap = element.wrap();
                             });
-                            
+
                             waitsForFocus(child);
-                            
+
                             runs(function() {
                                 expect(Ext.dom.Element.getActiveElement()).toBe(child.dom);
                             });
@@ -1124,20 +1222,24 @@ topSuite("Ext.dom.Element", function() {
                                 html: 'Foo',
                                 tabIndex: '0'
                             });
-                            
+
                             var spy = jasmine.createSpy();
 
                             focusAndWait(child);
-                            
+
+                            if (Ext.isIE) {
+                                waits(100);
+                            }
+
                             runs(function() {
                                 child.on('focus', spy);
                                 child.on('blur', spy);
                                 wrap = element.wrap();
                             });
-                            
+
                             // Nothing must happen, there's nothing to wait for
                             waits(100);
-                            
+
                             runs(function() {
                                 expect(spy).not.toHaveBeenCalled();
                             });
@@ -1145,22 +1247,22 @@ topSuite("Ext.dom.Element", function() {
 
                         it("should not cause an exception when the focused element is not in the element cache", function() {
                             var newId = Ext.id();
-                            
+
                             element.dom.innerHTML = '<a tabIndex="0" id="' + newId + '">Foo</a>';
 
                             child = element.dom.firstChild;
 
                             focusAndWait(child);
-                            
+
                             runs(function() {
                                 expect(function() {
                                     wrap = element.wrap();
                                 }).not.toThrow();
                                 expect(Ext.cache[newId]).toBeUndefined();
                             });
-                            
+
                             waitsForFocus(child);
-                            
+
                             runs(function() {
                                 expect(Ext.dom.Element.getActiveElement()).toBe(child);
                             });
@@ -1190,13 +1292,13 @@ topSuite("Ext.dom.Element", function() {
                             });
 
                             focusAndWait(child);
-                            
+
                             runs(function() {
                                 element.unwrap();
                             });
-                            
+
                             waitsForFocus(child);
-                            
+
                             runs(function() {
                                 expect(Ext.dom.Element.getActiveElement()).toBe(child.dom);
                             });
@@ -1208,19 +1310,19 @@ topSuite("Ext.dom.Element", function() {
                                 html: 'Foo',
                                 tabIndex: '0'
                             });
-                            
+
                             var spy = jasmine.createSpy();
 
                             focusAndWait(child);
-                            
+
                             runs(function() {
                                 child.on('focus', spy);
                                 child.on('blur', spy);
                                 element.unwrap();
                             });
-                            
+
                             waitsForFocus(child);
-                            
+
                             runs(function() {
                                 expect(spy).not.toHaveBeenCalled();
                             });
@@ -1228,21 +1330,22 @@ topSuite("Ext.dom.Element", function() {
 
                         it("should not cause an exception when the focused element is not in the element cache", function() {
                             var newId = Ext.id();
+
                             element.dom.innerHTML = '<a tabIndex="0" id="' + newId + '">Foo</a>';
 
                             child = element.dom.firstChild;
 
                             focusAndWait(child);
-                            
+
                             runs(function() {
                                 expect(function() {
                                     element.unwrap();
                                 }).not.toThrow();
                                 expect(Ext.cache[newId]).toBeUndefined();
                             });
-                            
+
                             waitsForFocus(child);
-                            
+
                             runs(function() {
                                 expect(Ext.dom.Element.getActiveElement()).toBe(child);
                             });
@@ -1270,10 +1373,12 @@ topSuite("Ext.dom.Element", function() {
                 var options;
 
                 beforeEach(function() {
-                    options = {delay: 10};
+                    options = { delay: 10 };
                 });
 
                 xdescribe('deprecated (EventManager)', function() {
+                    var fakeScope = {};
+
                     describe("addListener", function() {
                         beforeEach(function() {
                             element = addElement('div');
@@ -1325,11 +1430,11 @@ topSuite("Ext.dom.Element", function() {
 
                             expect(Ext.EventManager.purgeElement).toHaveBeenCalledWith(element);
                         });
-                        
+
                         // https://sencha.jira.com/browse/EXTJSIV-6713
                         it("should work with images", function() {
                             element = addElement('img');
-                            
+
                             expect(function() { element.purgeAllListeners(); }).not.toThrow();
                             element.destroy();
                         });
@@ -1361,7 +1466,7 @@ topSuite("Ext.dom.Element", function() {
 
             describe("destroy", function() {
                 var id, dom;
-                
+
                 beforeEach(function() {
                     element = addElement('div');
                     id = element.id;
@@ -1379,7 +1484,7 @@ topSuite("Ext.dom.Element", function() {
                 it("should should remove the cache entry", function() {
                     expect(id in Ext.cache).toBe(false);
                 });
-                
+
                 // IE8 does element destruction differently, see below
                 if (!Ext.isIE8) {
                     it("should remove the element from the dom", function() {
@@ -1387,34 +1492,34 @@ topSuite("Ext.dom.Element", function() {
                     });
                 }
             });
-            
+
             if (Ext.isIE8) {
                 describe("destroy (IE8)", function() {
                     var dom;
-                    
+
                     beforeEach(function() {
                         element = addElement('div');
                         dom = element.dom;
                     });
-                    
+
                     it("should schedule element for garbage collection", function() {
                         var queue = Ext.Element.destroyQueue,
                             len = queue.length;
-                        
+
                         element.destroy();
-                        
+
                         expect(queue.length).toBe(len + 1);
                         expect(queue[len]).toBe(dom);
                     });
-                    
+
                     it("should finally destroy the element after a timeout", function() {
                         runs(function() {
                             element.destroy();
                         });
-                        
+
                         // The timeout is hardcoded in Element override
                         waits(32);
-                        
+
                         runs(function() {
                             expect(dom.parentNode).toBeFalsy();
                         });
@@ -1433,7 +1538,7 @@ topSuite("Ext.dom.Element", function() {
                 // run that could not be reproduced.  They always passed locally in the test runner.
                 // The comments have been left to show the unique differences needed to get these to
                 // run in IE 6.
-                describe("masking the body el", function () {
+                describe("masking the body el", function() {
                     var cmp, maskEl, dom, scrollHeight, scrollWidth;
 
                     function createCmp(height) {
@@ -1442,14 +1547,14 @@ topSuite("Ext.dom.Element", function() {
                             renderTo: Ext.getBody()
                         });
 
-                        maskEl = Ext.getBody().mask({msg: "Tom Sawyer"});
+                        maskEl = Ext.getBody().mask({ msg: "Tom Sawyer" });
 
                         dom = document.body;
                         scrollHeight = dom.scrollHeight;
                         scrollWidth = dom.scrollWidth;
                     }
 
-                    afterEach(function () {
+                    afterEach(function() {
                         Ext.removeNode(maskEl.dom.nextSibling);
                         Ext.removeNode(maskEl.dom);
                         Ext.destroy(cmp, maskEl);
@@ -1478,27 +1583,30 @@ topSuite("Ext.dom.Element", function() {
 
             describe("getAttribute", function() {
                 var element2, element3;
+
                 beforeEach(function() {
                     element = addElement('div');
-                    element2 = Ext.getBody().createChild({tag: "div"});
+                    element2 = Ext.getBody().createChild({ tag: "div" });
 
                     // Have to prefix all custom attributes with "data-", otherwise Edge freaks out
                     if (element.dom.setAttribute) {
                         element.dom.setAttribute("data-qtip", "bar");
                         element2.dom.setAttribute("ext:data-qtip", "foo");
-                    } else {
+                    }
+                    else {
                         element.dom["qtip"] = "bar";
                         element2.dom["ext:qtip"] = "foo";
                     }
 
                     if (element.dom.setAttributeNS) {
-                        element3 = Ext.getBody().createChild({tag: "div"});
+                        element3 = Ext.getBody().createChild({ tag: "div" });
                         element3.dom.setAttributeNS("ext", "data-qtip", "foobar");
                     }
                 });
 
                 afterEach(function() {
                     element2.destroy();
+
                     if (element3) {
                         element3.destroy();
                     }
@@ -1534,31 +1642,31 @@ topSuite("Ext.dom.Element", function() {
                     });
                 });
             });
-            
+
             describe("getAttributes", function() {
                 it("should return an empty object for element with no attributes", function() {
                     var empty = document.createElement('div');
-                    
+
                     var attrs = Ext.fly(empty).getAttributes();
-                    
+
                     expect(attrs).toEqual({});
-                    
+
                     Ext.fly(empty).destroy();
                 });
-                
+
                 it("should return all attributes", function() {
                     var el = Ext.getBody().createChild({
                         tag: 'div',
                         role: 'foo'
                     });
-                    
+
                     var attrs = el.getAttributes();
-                    
+
                     expect(attrs).toEqual({
                         role: 'foo',
                         id: el.id
                     });
-                    
+
                     el.destroy();
                 });
             });
@@ -1601,43 +1709,43 @@ topSuite("Ext.dom.Element", function() {
             describe("visibilityMode", function() {
                 var modes = ['DISPLAY', 'VISIBILITY', 'OFFSETS', 'CLIP'],
                     i;
-                
+
                 beforeEach(function() {
                     element = addElement('div');
                 });
-                
+
                 describe("setVisibilityMode and getVisibilityMode", function() {
                     function makeSpec(mode) {
                         it("should work with " + mode, function() {
                             var modeValue = Ext.dom.Element[mode];
-                            
+
                             element.setVisibilityMode(modeValue);
-                            
+
                             expect(element.getVisibilityMode()).toBe(modeValue);
                         });
                     }
-                    
+
                     for (i = 0; i < modes.length; i++) {
                         makeSpec(modes[i]);
                     }
                 });
-                
+
                 describe("visibility mode on flyweights", function() {
                     function makeSpec(mode) {
                         it("should retain " + mode, function() {
                             var modeValue = Ext.dom.Element[mode];
-                            
+
                             Ext.fly(element.dom).setVisibilityMode(modeValue);
                             expect(Ext.fly(element.dom).getVisibilityMode()).toBe(modeValue);
                         });
                     }
-                    
+
                     for (i = 0; i < modes.length; i++) {
                         makeSpec(modes[i]);
                     }
                 });
             });
-            
+
             // The classic toolkit does things differently; see Ext.overrides.dom.Element
             // test suite for inline style tests
             (Ext.toolkit === 'modern' ? describe : xdescribe)("setVisible", function() {
@@ -1649,47 +1757,47 @@ topSuite("Ext.dom.Element", function() {
                         CLIP: Ext.baseCSSPrefix + 'hidden-clip'
                     },
                     i;
-                
+
                 beforeEach(function() {
                     element = addElement('div');
                 });
-                
+
                 function makeSuite(mode) {
                     describe("hiding with " + mode, function() {
                         var modeValue = Ext.dom.Element[mode],
                             rightCls = classes[mode],
                             wrongModes = Ext.Array.difference(modes, [mode]),
                             wrongCls, j;
-                        
+
                         beforeEach(function() {
                             element.setVisibilityMode(modeValue);
                             element.setVisible(false);
                         });
-                        
+
                         it("should assign " + rightCls, function() {
                             expect(element.hasCls(rightCls)).toBe(true);
                         });
-                        
+
                         for (j = 0; j < wrongModes.length; j++) {
                             wrongCls = classes[wrongModes[j]];
-                            
+
                             it("should remove " + wrongCls, function() {
                                 expect(element.hasCls(wrongCls)).toBe(false);
                             });
                         }
-                        
+
                         describe("showing with " + mode, function() {
                             beforeEach(function() {
                                 element.setVisible(true);
                             });
-                            
+
                             it("should remove " + rightCls, function() {
                                 expect(element.hasCls(rightCls)).toBe(false);
                             });
-                            
+
                             for (j = 0; j < wrongModes.length; j++) {
                                 wrongCls = classes[wrongModes[j]];
-                                
+
                                 it("should not add " + wrongCls, function() {
                                     expect(element.hasCls(wrongCls)).toBe(false);
                                 });
@@ -1697,22 +1805,24 @@ topSuite("Ext.dom.Element", function() {
                         });
                     });
                 }
-                
+
                 for (i = 0; i < modes.length; i++) {
                     makeSuite(modes[i]);
                 }
             });
-            
+
             describe("visibility", function() {
                 var child, grandChild,
                     modes = [Ext.dom.Element.DISPLAY, Ext.dom.Element.VISIBILITY];
 
                 beforeEach(function() {
                     element = addElement('div');
-                    child = element.createChild({tag: "div"});
+                    child = element.createChild({ tag: "div" });
+
                     if (child) {
                         child.setVisible(true);
-                        grandChild = child.createChild({tag: "div"});
+                        grandChild = child.createChild({ tag: "div" });
+
                         if (grandChild) {
                             grandChild.setVisible(true);
                         }
@@ -1723,12 +1833,13 @@ topSuite("Ext.dom.Element", function() {
                     if (grandChild) {
                         grandChild.destroy();
                     }
+
                     if (child) {
                         child.destroy();
                     }
                 });
 
-                it("should toggle the visibility of the element itself", function(){
+                it("should toggle the visibility of the element itself", function() {
                     for (var i in modes) {
                         element.setVisibilityMode(modes[i]);
 
@@ -1736,11 +1847,11 @@ topSuite("Ext.dom.Element", function() {
                         expect(element.isVisible(false)).toBe(false);
 
                         element.setVisible(true);
-                        expect(element.isVisible(false)).toBe(true);                    
+                        expect(element.isVisible(false)).toBe(true);
                     }
                 });
 
-                it("should toggle the 'deep' visibility of the grand-child", function(){
+                it("should toggle the 'deep' visibility of the grand-child", function() {
                     for (var i in modes) {
                         element.setVisibilityMode(modes[i]);
 
@@ -1766,6 +1877,7 @@ topSuite("Ext.dom.Element", function() {
 
                 function clearMargins() {
                     var s = element.dom.style;
+
                     s.marginTop = s.marginRight = s.marginBottom = s.marginLeft = '';
                 }
 
@@ -1874,7 +1986,7 @@ topSuite("Ext.dom.Element", function() {
         var element, element2, domEl, domEl2, id;
 
         beforeEach(function() {
-            element = Ext.getBody().createChild({tag: "div"});
+            element = Ext.getBody().createChild({ tag: "div" });
             domEl = element.dom;
 
             id = Ext.id();
@@ -1887,9 +1999,11 @@ topSuite("Ext.dom.Element", function() {
             // Prevent console warnings
             spyOn(Ext.Logger, 'warn');
             element.destroy();
+
             if (element2) {
                 element2.destroy();
             }
+
             if (domEl2 && domEl2.parentNode === document.body) {
                 document.body.removeChild(domEl2);
             }
@@ -1962,13 +2076,14 @@ topSuite("Ext.dom.Element", function() {
                     expect(Ext.get(element)).toBe(element);
                 });
             });
-            
+
             describe("passing a Ext.dom.FlyWeight as first argument", function() {
                 it("should return Ext.dom.Element", function() {
                     var result = Ext.get(Ext.fly(domEl));
+
                     expect(result).toBe(element);
                     expect(result.isFly).toBeUndefined();
-                    
+
                 });
             });
 
@@ -1987,6 +2102,7 @@ topSuite("Ext.dom.Element", function() {
             describe("passing an array as first argument", function() {
                 it("should call Ext.dom.Element.select", function() {
                     var arr = [domEl, domEl2];
+
                     spyOn(Ext.dom.Element, "select");
 
                     Ext.get(arr);
@@ -2085,28 +2201,29 @@ topSuite("Ext.dom.Element", function() {
 
             });
 
-            describe('use strict', function () {
+            describe('use strict', function() {
                 var backup;
 
-                //TODO - See if there is a cheap enough way to avoid this replacement
-                //TODO - Oddly enough even if we wrap Ext.fly it throws an error trying
-                //TODO - to use Ext.fly.caller but the caller is the wrapper not the
-                //TODO - strict mode function (perhaps the JIT has removed the "useless"
-                //TODO - wrapper function).
-                beforeEach(function () {
-                    Ext.fly = (function (oldFly) {
+                // TODO - See if there is a cheap enough way to avoid this replacement
+                // TODO - Oddly enough even if we wrap Ext.fly it throws an error trying
+                // TODO - to use Ext.fly.caller but the caller is the wrapper not the
+                // TODO - strict mode function(perhaps the JIT has removed the "useless"
+                // TODO - wrapper function).
+                beforeEach(function() {
+                    Ext.fly = (function(oldFly) {
                         backup = oldFly;
-                        return function (dom, named) {
+
+                        return function(dom, named) {
                             return oldFly(dom, named || '_global');
                         };
                     }(Ext.fly));
                 });
 
-                afterEach(function () {
+                afterEach(function() {
                     Ext.fly = backup;
                 });
 
-                it('should work when called by strict mode function', function () {
+                it('should work when called by strict mode function', function() {
                     'use strict';
                     var f = Ext.fly(domEl2);
                 });
@@ -2208,6 +2325,7 @@ topSuite("Ext.dom.Element", function() {
 
             it("should wrap an Ext.dom.Element instance", function() {
                 var el = Ext.getBody().createChild();
+
                 expect(Ext.fly(el).dom).toBe(el.dom);
                 el.destroy();
             });
@@ -2234,13 +2352,14 @@ topSuite("Ext.dom.Element", function() {
             });
         });
     });
-    
-    describe("getXY", function(){
+
+    describe("getXY", function() {
         var unAttached;
-        beforeEach(function(){
+
+        beforeEach(function() {
             unAttached = document.createElement('div');
         });
-        it("should not throw when reading unattached element", function(){
+        it("should not throw when reading unattached element", function() {
             Ext.fly(unAttached).getXY();
         });
     });
@@ -2272,6 +2391,7 @@ topSuite("Ext.dom.Element", function() {
 
         it("should return false if the element is in the DOM", function() {
             var el = Ext.getBody().createChild();
+
             expect(Ext.isGarbage(el.dom)).toBe(false);
             el.destroy();
         });
@@ -2282,6 +2402,7 @@ topSuite("Ext.dom.Element", function() {
 
         it("should return false if the element is in the detached body", function() {
             var el = Ext.getDetachedBody().createChild();
+
             expect(Ext.isGarbage(el.dom)).toBe(false);
             el.destroy();
         });
@@ -2304,7 +2425,7 @@ topSuite("Ext.dom.Element", function() {
         });
 
         if (!Ext.isIE8) { // IE8 doesn't support SVG
-            it("should return false if SVGElement is in the DOM", function () {
+            it("should return false if SVGElement is in the DOM", function() {
                 var g = document.createElementNS('http://www.w3.org/2000/svg', 'g'),
                     el = Ext.getBody().appendChild(g);
 
@@ -2313,7 +2434,7 @@ topSuite("Ext.dom.Element", function() {
                 el.destroy();
             });
 
-            it("should return true if SVGElement is not in the DOM", function () {
+            it("should return true if SVGElement is not in the DOM", function() {
                 var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
                 expect(Ext.isGarbage(g)).toBe(true);
@@ -2738,7 +2859,8 @@ topSuite("Ext.dom.Element", function() {
 
                     if (deviation > 0) {
                         return actual >= (value - deviation) && actual <= (value + deviation);
-                    } else {
+                    }
+                    else {
                         return actual >= (value + deviation) && actual <= (value - deviation);
                     }
                 }
@@ -3816,6 +3938,7 @@ topSuite("Ext.dom.Element", function() {
     describe("using flyweights", function() {
         it("should be able to remove a class using a fly when the className is modified directly", function() {
             var el = document.createElement('div');
+
             Ext.fly(el).addCls(['foo', 'bar', 'baz']);
             el.className += ' asdf';
             Ext.fly(el).removeCls('asdf');
@@ -3824,6 +3947,7 @@ topSuite("Ext.dom.Element", function() {
 
         it("should be able to check a class exists using a fly when the className is modified directly", function() {
             var el = document.createElement('div');
+
             Ext.fly(el).addCls(['foo', 'bar', 'baz']);
             el.className += ' asdf';
             expect(Ext.fly(el).hasCls('asdf')).toBe(true);
@@ -3844,6 +3968,7 @@ topSuite("Ext.dom.Element", function() {
                     }, opt);
 
                     element.addListener(o);
+
                     return o;
                 }
 
@@ -3976,6 +4101,7 @@ topSuite("Ext.dom.Element", function() {
                         expect(handler).not.toHaveBeenCalled();
 
                         var timerId = eventOptions.$delayedTask.id;
+
                         expect(timerId).toBeTruthy();
 
                         fire();
@@ -4015,13 +4141,13 @@ topSuite("Ext.dom.Element", function() {
                     });
 
                     it("should pass the target as the delegate item when the event occurs in a child and leave the event target untouched", function() {
-                        addListener({delegate: '.child'});
+                        addListener({ delegate: '.child' });
                         fire(grandchild);
                         expect(handler).toHaveBeenCalled();
                         expect(handler.mostRecentCall.args[0].target).toBe(grandchild);
                         expect(handler.mostRecentCall.args[1]).toBe(child);
                     });
-                    
+
                     if (delegated) {
                         // https://sencha.jira.com/browse/EXTJS-18435
                         it("should add capture listeners for direct events with delegate selector", function() {
@@ -4029,9 +4155,9 @@ topSuite("Ext.dom.Element", function() {
                                 delegate: '.child',
                                 mouseenter: handler
                             });
-                            
+
                             var event = element.events.mouseenter;
-                            
+
                             // We don't have to test the propagation mechanism here,
                             // just the fact that listener was added to directCaptures
                             expect(event.directCaptures.observable.dom).toBe(element.dom);
@@ -4191,6 +4317,7 @@ topSuite("Ext.dom.Element", function() {
 
                     it("should remove the event listener with scope", function() {
                         var scope = {};
+
                         addListener({ scope: scope });
                         removeListener({ scope: scope });
                         fire();
@@ -4208,7 +4335,6 @@ topSuite("Ext.dom.Element", function() {
                         fire();
                         expect(handler2.callCount).toBe(1);
                     });
-
 
                     it("should remove a single event listener", function() {
                         addListener({ single: true });
@@ -4328,17 +4454,19 @@ topSuite("Ext.dom.Element", function() {
             afterEach(function() {
                 target.destroy();
             });
-            
+
             fire = function(type, useMouseEvents) {
                 if (useMouseEvents) {
                     jasmine.doFireMouseEvent(target, Ext.testHelper.mouseEvents[type]);
-                } else {
+                }
+                else {
                     // Some platforms do not fire an end event without a start.
                     // And the TouchAction class throws an error if an end
                     // event arrives and there are no active touches.
                     if (type === 'end') {
                         Ext.testHelper.fireEvent('start', target);
                     }
+
                     Ext.testHelper.fireEvent(type, target);
                 }
             };
@@ -4351,7 +4479,7 @@ topSuite("Ext.dom.Element", function() {
                 expect(listeners.pointerdown.mostRecentCall.args[0].type).toBe('pointerdown');
                 expect(listeners.touchstart.mostRecentCall.args[0].type).toBe('touchstart');
                 expect(listeners.mousedown.mostRecentCall.args[0].type).toBe('mousedown');
-                
+
                 // Release gestures
                 Ext.testHelper.fireEvent('end', target);
             });
@@ -4438,7 +4566,7 @@ topSuite("Ext.dom.Element", function() {
                         cls: 'foo'
                     }]
                 });
-                root.on('click', spy, null, {delegate: '.foo'});
+                root.on('click', spy, null, { delegate: '.foo' });
                 doClick(root.first());
                 expect(spy.callCount).toBe(1);
             });
@@ -4449,7 +4577,7 @@ topSuite("Ext.dom.Element", function() {
                         cls: 'foo'
                     }]
                 });
-                root.on('click', spy, null, {delegate: '.bar'});
+                root.on('click', spy, null, { delegate: '.bar' });
                 doClick(root.first());
                 expect(spy).not.toHaveBeenCalled();
             });
@@ -4464,7 +4592,8 @@ topSuite("Ext.dom.Element", function() {
                     }]
                 });
                 var bar = root.down('.bar').dom;
-                root.on('click', spy, null, {delegate: '.foo'});
+
+                root.on('click', spy, null, { delegate: '.foo' });
                 doClick(bar);
                 expect(spy.mostRecentCall.args[0].target).toBe(bar);
             });
@@ -4481,7 +4610,7 @@ topSuite("Ext.dom.Element", function() {
                 var bar = root.down('.bar').dom,
                     foo = root.down('.foo').dom;
 
-                root.on('click', spy, null, {delegate: '.foo'});
+                root.on('click', spy, null, { delegate: '.foo' });
                 doClick(bar);
                 expect(spy.mostRecentCall.args[1]).toBe(foo);
             });
@@ -4505,7 +4634,7 @@ topSuite("Ext.dom.Element", function() {
                         baz = root.down('.baz'),
                         order = [];
 
-                    root.on('click', function() { order.push('baz'); }, null, {delegate: '.baz'});
+                    root.on('click', function() { order.push('baz'); }, null, { delegate: '.baz' });
                     bar.on('click', function() { order.push('bar'); });
                     foo.on('click', function() { order.push('foo'); });
 
@@ -4541,11 +4670,10 @@ topSuite("Ext.dom.Element", function() {
                         child1_1 = Ext.get('child1_1'),
                         order = [];
 
-
-                    root.on('click', function() { order.push('root'); }, null, {delegate: '.foo'});
-                    child1.on('click', function() { order.push('child1'); }, null, {delegate: '.foo'});
-                    child1_1.on('click', function() { order.push('child1_1'); }, null, {delegate: '.foo'});
-                    child2.on('click', function() { order.push('child2'); }, null, {delegate: '.foo'});
+                    root.on('click', function() { order.push('root'); }, null, { delegate: '.foo' });
+                    child1.on('click', function() { order.push('child1'); }, null, { delegate: '.foo' });
+                    child1_1.on('click', function() { order.push('child1_1'); }, null, { delegate: '.foo' });
+                    child2.on('click', function() { order.push('child2'); }, null, { delegate: '.foo' });
 
                     doClick(child1_1.down('.foo', true), 'click');
                     expect(order).toEqual(['child1_1', 'child1', 'root']);
@@ -4714,7 +4842,8 @@ topSuite("Ext.dom.Element", function() {
             if (Ext.isIE9m) {
                 // Since we don't support "direct capture" on IE9m the order is a bit different
                 expect(result).toEqual(['gd', 'gdc', 'cdc', 'cd', 'pdc', 'pd', 'pc', 'cc', 'gc', 'g', 'c', 'p']);
-            } else {
+            }
+            else {
                 expect(result).toEqual(['pdc', 'cdc', 'gdc', 'gd', 'cd', 'pd', 'pc', 'cc', 'gc', 'g', 'c', 'p']);
             }
 
@@ -4820,7 +4949,7 @@ topSuite("Ext.dom.Element", function() {
             it("should call preventDefault if the preventDefault option is passed", function() {
                 var spy = spyOn(Ext.event.Event.prototype, 'preventDefault');
 
-                el.on('click', function() {}, null, {preventDefault: true});
+                el.on('click', function() {}, null, { preventDefault: true });
                 jasmine.fireMouseEvent(el, 'click');
                 expect(spy.callCount).toBe(1);
             });
@@ -4828,7 +4957,7 @@ topSuite("Ext.dom.Element", function() {
             it("should call stopPropagation if the stopPropagation option is passed", function() {
                 var spy = spyOn(Ext.event.Event.prototype, 'stopPropagation');
 
-                el.on('click', function() {}, null, {stopPropagation: true});
+                el.on('click', function() {}, null, { stopPropagation: true });
                 jasmine.fireMouseEvent(el, 'click');
                 expect(spy.callCount).toBe(1);
             });
@@ -4836,7 +4965,7 @@ topSuite("Ext.dom.Element", function() {
             it("should call stopEvent if the stopEvent option is passed", function() {
                 var spy = spyOn(Ext.event.Event.prototype, 'stopEvent');
 
-                el.on('click', function() {}, null, {stopEvent: true});
+                el.on('click', function() {}, null, { stopEvent: true });
                 jasmine.fireMouseEvent(el, 'click');
                 expect(spy.callCount).toBe(1);
             });
@@ -4940,6 +5069,7 @@ topSuite("Ext.dom.Element", function() {
 
         beforeEach(function() {
             var proto = Ext.dom.Element.prototype;
+
             proto.additiveEvents.custommousemove = 'custommousemove';
             proto.eventMap.custommousemove = 'customtouchmove';
             proto.eventMap.customclick = 'customtap';
@@ -4951,6 +5081,7 @@ topSuite("Ext.dom.Element", function() {
 
         afterEach(function() {
             var proto = Ext.dom.Element.prototype;
+
             delete proto.additiveEvents.custommousemove;
             delete proto.eventMap.custommousemove;
             delete proto.eventMap.customclick;
@@ -4981,7 +5112,7 @@ topSuite("Ext.dom.Element", function() {
             });
 
             it("should clear listeners correctly with single: true", function() {
-                el.on('custommousemove', spy, null, {single: true});
+                el.on('custommousemove', spy, null, { single: true });
 
                 Ext.event.publisher.Gesture.instance.fire(el, 'custommousemove', e, false, false);
                 expect(spy.callCount).toBe(1);
@@ -5119,6 +5250,7 @@ topSuite("Ext.dom.Element", function() {
                 it("should return 0", function() {
                     makeDefault();
                     var parent = Ext.getBody().createChild();
+
                     parent.append(el);
                     expect(el.measure()).toEqual({
                         width: 100,
@@ -5138,6 +5270,7 @@ topSuite("Ext.dom.Element", function() {
             it("should not be affected by transforms", function() {
                 makeDefault();
                 var s = el.dom.style;
+
                 s.webkitTransform = s.msTransform = s.transform = 'scale(0.5)';
                 expect(el.measure()).toEqual({
                     width: 100,
@@ -5207,30 +5340,30 @@ topSuite("Ext.dom.Element", function() {
         });
     });
 
-    describe('miscellaneous', function () {
+    describe('miscellaneous', function() {
         // classic
-        (Ext.toolkit === 'classic' ? describe : xdescribe)('classic toolkit', function () {
-            
+        (Ext.toolkit === 'classic' ? describe : xdescribe)('classic toolkit', function() {
+
             // EXTJS-20524
-            describe('syncContent', function () {
-                it('should not throw an exception when syncing node content', function () {
+            describe('syncContent', function() {
+                it('should not throw an exception when syncing node content', function() {
                     var el1 = Ext.fly(document.createElement('div')),
                         el2 = Ext.fly(document.createElement('div'));
-                    
+
                     el1.dom.innerHTML = '<!--comment--> foo';
                     el2.dom.innerHTML = '<!--comment--> bar';
-    
-                    expect(function () {el1.syncContent(el2);}).not.toThrow();
+
+                    expect(function() { el1.syncContent(el2); }).not.toThrow();
                     expect(el1.dom.innerHTML).toEqual(
                         (Ext.isIE8 ? '' : '<!--comment--> ') + 'bar'
                     );
                 });
             });
         });
-        
+
         // modern
-        (Ext.toolkit === 'modern' ? describe : xdescribe)('modern toolkit', function () {
-        
+        (Ext.toolkit === 'modern' ? describe : xdescribe)('modern toolkit', function() {
+
         });
     });
 });

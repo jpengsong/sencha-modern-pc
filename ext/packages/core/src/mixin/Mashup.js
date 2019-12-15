@@ -21,13 +21,13 @@
  *
  * @since 5.0.0
  */
-Ext.define('Ext.mixin.Mashup', function (Mashup) { return {
+Ext.define('Ext.mixin.Mashup', function(Mashup) { return { // eslint-disable-line brace-style
     extend: 'Ext.Mixin',
 
     mixinConfig: {
         id: 'mashup',
 
-        extended: function (baseClass, derivedClass) {
+        extended: function(baseClass, derivedClass) {
             Mashup.process(derivedClass);
         }
     },
@@ -78,7 +78,7 @@ Ext.define('Ext.mixin.Mashup', function (Mashup) { return {
      */
 
     statics: {
-        process: function (targetClass) {
+        process: function(targetClass) {
             var body = targetClass.prototype,
                 requiredScripts = body.requiredScripts,
                 hooks = targetClass._classHooks,
@@ -156,7 +156,8 @@ Ext.define('Ext.mixin.Mashup', function (Mashup) { return {
         }
     },
 
-    onClassMixedIn: function (targetClass) {
+    onClassMixedIn: function(targetClass) {
         Mashup.process(targetClass);
     }
-}});
+};
+});

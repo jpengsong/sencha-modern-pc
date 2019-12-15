@@ -1,5 +1,6 @@
 topSuite("Ext.app.bind.Formula", ['Ext.app.ViewModel'], function() {
     var vm;
+
     beforeEach(function() {
         vm = new Ext.app.ViewModel({
             // this is a config not an instance so the VM knows it owns the instance
@@ -17,8 +18,10 @@ topSuite("Ext.app.bind.Formula", ['Ext.app.ViewModel'], function() {
 
     function makeFormula(fn, name) {
         var o = {};
+
         o[name || 'fn'] = fn;
         vm.setFormulas(o);
+
         return vm.getRoot().children.fn.formula;
     }
 
@@ -39,6 +42,7 @@ topSuite("Ext.app.bind.Formula", ['Ext.app.ViewModel'], function() {
                 return fn;
             }
         });
+
         delete expr.$literal;
         expect(Ext.Object.getKeys(expr)).toEqual(result);
     }
@@ -264,11 +268,11 @@ topSuite("Ext.app.bind.Formula", ['Ext.app.ViewModel'], function() {
             matchExpr("function (get) { return get('foo') + get('bar') + get('baz'); };", ['foo', 'bar', 'baz']);
         });
 
-        it("should match an expression with a number in it", function() {   
+        it("should match an expression with a number in it", function() {
             matchExpr("function (get) { return get('foo1'); };", ['foo1']);
         });
 
-        it("should match an expression that starts with an underscore", function() {   
+        it("should match an expression that starts with an underscore", function() {
             matchExpr("function (get) { return get('_foo'); };", ['_foo']);
         });
 

@@ -6,12 +6,13 @@
  * @private
  * @since 6.5.0
  */
-(function (LRU, prototype) {
+/* eslint-disable indent */
+(function(LRU, prototype) {
 // @define Ext.util.LRU
 
     // NOTE: We have to implement this class old-school because it is used by the
     // platformConfig class processor (so Ext.define is not yet ready for action).
-    (Ext.util || (Ext.util = {})).LRU = LRU = function (config) {
+    (Ext.util || (Ext.util = {})).LRU = LRU = function(config) {
         var me = this,
             head;
 
@@ -52,7 +53,7 @@
          * @param {String} key
          * @param {Object} value
          */
-        add: function (key, value) {
+        add: function(key, value) {
             var me = this,
                 map = me.map,
                 entry = map[key];
@@ -84,7 +85,7 @@
          * @param {Object} fn.value The removed item.
          * @param {Object} [scope] The `this` pointer for `fn`.
          */
-        clear: function (fn, scope) {
+        clear: function(fn, scope) {
             var me = this,
                 head = me.head,
                 entry = head.next;
@@ -94,7 +95,7 @@
             me.count = 0;
 
             if (fn && !fn.$nullFn) {
-                for ( ; entry !== head; entry = entry.next) {
+                for (; entry !== head; entry = entry.next) {
                     fn.call(scope || me, entry.key, entry.value);
                 }
             }
@@ -108,10 +109,12 @@
          * @param {Object} fn.value The item.
          * @param {Object} [scope] The `this` pointer to use for `fn`.
          */
-        each: function (fn, scope) {
+        each: function(fn, scope) {
+            var head, ent;
+
             scope = scope || this;
 
-            for (var head = this.head, ent = head.next; ent !== head; ent = ent.next) {
+            for (head = this.head, ent = head.next; ent !== head; ent = ent.next) {
                 if (fn.call(scope, ent.key, ent.value)) {
                     break;
                 }
@@ -128,7 +131,7 @@
          * @param {Object} [scope] The `this` pointer to use for `fn`.
          * @return {Object} The removed item.
          */
-        prune: function (fn, scope) {
+        prune: function(fn, scope) {
             var me = this,
                 entry = me.head.prev,
                 ret;
@@ -151,7 +154,7 @@
          * @param {String} key The key of the item to remove.
          * @return {Object} The removed item or `undefined` if the key was not found.
          */
-        remove: function (key) {
+        remove: function(key) {
             var me = this,
                 map = me.map,
                 entry = map[key],
@@ -171,7 +174,7 @@
          * Moves the item with the given key to the front (MRU) of the list.
          * @param {String} key The key of the item to move to the front.
          */
-        touch: function (key) {
+        touch: function(key) {
             var me = this,
                 head = me.head,
                 entry = me.map[key];
@@ -194,7 +197,7 @@
          * @param {Object} fn.value The removed item.
          * @param {Object} [scope] The `this` pointer for `fn`.
          */
-        trim: function (size, fn, scope) {
+        trim: function(size, fn, scope) {
             while (this.count > size) {
                 this.prune(fn, scope);
             }
@@ -208,7 +211,7 @@
          * @param {Object} entry The cache item entry.
          * @private
          */
-        link: function (entry) {
+        link: function(entry) {
             var head = this.head,
                 first = head.next;
 
@@ -223,7 +226,7 @@
          * @param {Object} entry The cache item entry.
          * @private
          */
-        unlink: function (entry) {
+        unlink: function(entry) {
             var next = entry.next,
                 prev = entry.prev;
 

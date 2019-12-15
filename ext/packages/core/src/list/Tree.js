@@ -97,7 +97,7 @@ Ext.define('Ext.list.Tree', {
 
         /**
          * @cfg {Boolean} expanderFirst
-         * `true` to display the expander to the left of the item text.  
+         * `true` to display the expander to the left of the item text.
          * `false` to display the expander to the right of the item text.
          */
         expanderFirst: true,
@@ -113,9 +113,9 @@ Ext.define('Ext.list.Tree', {
     config: {
         /**
          * @cfg {Boolean} floatLeafItems
-         * `true` to allow the popout to show on leaf items on click/tap. This is the same popout (menu)
-         * non-leaf items show their child items in. `false` to prevent the popout from showing
-         * for leaf items.
+         * `true` to allow the popout to show on leaf items on click/tap. This is the same popout
+         * (menu) non-leaf items show their child items in. `false` to prevent the popout
+         * from showing for leaf items.
          */
         floatLeafItems: false,
 
@@ -124,9 +124,10 @@ Ext.define('Ext.list.Tree', {
          * The default configuration for the widgets created for tree items.
          *
          * @cfg {String} [defaults.xtype="treelistitem"]
-         * The type of item to create. By default, items are `{@link Ext.list.TreeItem treelistitem}`
-         * instances. This can be customized but this `xtype` must reference a class that
-         * ultimately derives from the `{@link Ext.list.AbstractTreeItem}` base class.
+         * The type of item to create. By default, items are
+         * `{@link Ext.list.TreeItem treelistitem}` instances. This can be customized but this
+         * `xtype` must reference a class that ultimately derives from the
+         * `{@link Ext.list.AbstractTreeItem}` base class.
          */
         defaults: {
             xtype: 'treelistitem'
@@ -141,6 +142,11 @@ Ext.define('Ext.list.Tree', {
 
         iconSize: null,
 
+        /**
+         * @cfg {Number} [indent=null]
+         * 
+         * The number of pixels to offset each level of tree nodes.
+         */
         indent: null,
 
         /**
@@ -260,6 +266,7 @@ Ext.define('Ext.list.Tree', {
             //
             for (c = wasOver; c; c = this.getItem(node.parentNode)) {
                 node = c.getNode();
+
                 if (map[node.internalId]) {
                     break;
                 }
@@ -275,6 +282,7 @@ Ext.define('Ext.list.Tree', {
 
     applySelection: function(selection, oldSelection) {
         var store = this.getStore();
+
         if (!store) {
             selection = null;
         }
@@ -286,6 +294,7 @@ Ext.define('Ext.list.Tree', {
         if (selection && selection.get('selectable') === false) {
             selection = oldSelection;
         }
+
         return selection;
     },
 
@@ -298,19 +307,22 @@ Ext.define('Ext.list.Tree', {
             // getItem has guards around null, so we don't
             // need to check for oldSelection/selection here
             item = me.getItem(oldSelection);
+
             if (item) {
                 item.setSelected(false);
             }
 
             item = me.getItem(selection);
+
             if (item) {
                 item.setSelected(true);
 
-                while (parent = item.getParentItem()) {
+                while (parent = item.getParentItem()) { // eslint-disable-line no-cond-assign
                     parent.setExpanded(true);
                     item = parent;
                 }
             }
+
             me.fireEvent('selectionchange', me, selection);
         }
     },
@@ -333,6 +345,7 @@ Ext.define('Ext.list.Tree', {
                     me.storeListeners.destroy();
                 }
             }
+
             me.removeRoot();
             me.storeListeners = null;
         }
@@ -341,17 +354,18 @@ Ext.define('Ext.list.Tree', {
             me.storeListeners = store.on({
                 destroyable: true,
                 scope: me,
-                filterchange: 'onFilterChange',
                 nodeappend: 'onNodeAppend',
                 nodecollapse: 'onNodeCollapse',
                 nodeexpand: 'onNodeExpand',
                 nodeinsert: 'onNodeInsert',
                 noderemove: 'onNodeRemove',
                 rootchange: 'onRootChange',
-                update: 'onNodeUpdate'
+                update: 'onNodeUpdate',
+                refresh: 'onRefresh'
             });
 
             root = store.getRoot();
+
             if (root) {
                 me.createRootItem(root);
             }
@@ -393,6 +407,7 @@ Ext.define('Ext.list.Tree', {
         if (oldValue) {
             el.removeCls(uiPrefix + oldValue);
         }
+
         if (ui) {
             el.addCls(uiPrefix + ui);
         }
@@ -445,6 +460,7 @@ Ext.define('Ext.list.Tree', {
     privates: {
         checkForOutsideClick: function(e) {
             var floater = this.activeFloater;
+
             if (!floater.element.contains(e.target)) {
                 this.unfloatAll();
             }
@@ -468,20 +484,25 @@ Ext.define('Ext.list.Tree', {
 
             if (parent.isRootListItem) {
                 toolEl = item.getToolElement();
+
                 if (toolEl) {
                     previousSibling = me.findVisiblePreviousSibling(node);
+
                     if (!previousSibling) {
                         toolsElement.insertFirst(toolEl);
-                    } else {
+                    }
+                    else {
                         previousSibling = me.getItem(previousSibling);
                         toolEl.insertAfter(previousSibling.getToolElement());
                     }
+
                     toolEl.dom.setAttribute('data-recordId', node.internalId);
                     toolEl.isTool = true;
                 }
             }
 
             me.itemMap[node.internalId] = item;
+
             return item;
         },
 
@@ -509,12 +530,15 @@ Ext.define('Ext.list.Tree', {
 
         findVisiblePreviousSibling: function(node) {
             var sibling = node.previousSibling;
+
             while (sibling) {
                 if (sibling.data.visible) {
                     return sibling;
                 }
+
                 sibling = sibling.previousSibling;
             }
+
             return null;
         },
 
@@ -547,15 +571,19 @@ Ext.define('Ext.list.Tree', {
 
             if (byHover) {
                 // monitorMouseLeave allows straying out for the specified short time
-                me.toolMouseListeners = item.getToolElement().monitorMouseLeave(300, me.checkForMouseLeave, me);
-                me.floaterMouseListeners = (item.floater || item).el.monitorMouseLeave(300, me.checkForMouseLeave, me);
+                me.toolMouseListeners =
+                    item.getToolElement().monitorMouseLeave(300, me.checkForMouseLeave, me);
+                me.floaterMouseListeners =
+                    (item.floater || item).el.monitorMouseLeave(300, me.checkForMouseLeave, me);
+
                 floater.element.on('mouseover', 'onMouseOver', me);
-            } else {
+            }
+            else {
                 Ext.on('mousedown', 'checkForOutsideClick', me);
             }
         },
 
-        shouldRippleItem: function (item, e) {
+        shouldRippleItem: function(item, e) {
             if (item && item.getSelected()) {
                 return false;
             }
@@ -579,6 +607,7 @@ Ext.define('Ext.list.Tree', {
             if (item) {
                 id = item.getAttribute('data-recordId');
                 item = me.itemMap[id];
+
                 if (item && me.shouldRippleItem(item, e)) {
                     this.rippleItem(item, e);
                 }
@@ -598,6 +627,7 @@ Ext.define('Ext.list.Tree', {
             if (item) {
                 id = item.getAttribute('data-recordId');
                 item = this.itemMap[id];
+
                 if (item) {
                     item.onClick(e);
                 }
@@ -623,16 +653,11 @@ Ext.define('Ext.list.Tree', {
                 relatedTarget = e.getRelatedTarget();
 
             if (floater) {
-                if (relatedTarget !== floater.getToolElement().dom && !floater.element.contains(relatedTarget)) {
+                if (relatedTarget !== floater.getToolElement().dom &&
+                    !floater.element.contains(relatedTarget)) {
                     this.unfloatAll();
                 }
             }
-        },
-
-        onFilterChange: function(store) {
-            // Because the tree can use bottom up or top down filtering, don't try and figure out
-            // what changed here, just do a global refresh
-            this.onRootChange(store.getRoot());
         },
 
         /**
@@ -643,9 +668,11 @@ Ext.define('Ext.list.Tree', {
          * @private
          */
         onNodeAppend: function(parentNode, node) {
+            var item;
+
             // If it's a root we'll handle it on rootchange
             if (parentNode) {
-                var item = this.itemMap[parentNode.internalId];
+                item = this.itemMap[parentNode.internalId];
 
                 if (item) {
                     item.nodeInsert(node, null);
@@ -683,12 +710,15 @@ Ext.define('Ext.list.Tree', {
                     me.collapsingForExpand = true;
                     parentNode = (item.getParentItem() || me.rootItem).getNode();
                     childNodes = parentNode.childNodes;
+
                     for (i = 0, len = childNodes.length; i < len; ++i) {
                         child = childNodes[i];
+
                         if (child !== node) {
                             child.collapse();
                         }
                     }
+
                     me.collapsing = false;
                 }
 
@@ -721,11 +751,13 @@ Ext.define('Ext.list.Tree', {
          * @private
          */
         onNodeRemove: function(parentNode, node, isMove) {
+            var item;
+
             // If it's a move we don't need to do anything, we won't process it
             // as a removal, the addition will handle it all.
             // Also if the node being removed is the root we'll handle it in rootchange
             if (parentNode && !isMove) {
-                var item = this.itemMap[parentNode.internalId];
+                item = this.itemMap[parentNode.internalId];
 
                 if (item) {
                     item.nodeRemove(node);
@@ -748,6 +780,18 @@ Ext.define('Ext.list.Tree', {
             if (item) {
                 item.nodeUpdate(node, modifiedFieldNames);
             }
+        },
+
+        /**
+         * Handles before a root node loads
+         * @param {Ext.data.TreeStore} store The store.
+         * @private
+         */
+        onRefresh: function(store) {
+            // Because the tree can use bottom up or top down filtering (or reload), 
+            // don't try and figure out, what changed here
+            // just do a global refresh
+            this.onRootChange(store.getRoot());
         },
 
         /**
@@ -782,13 +826,16 @@ Ext.define('Ext.list.Tree', {
 
             if (map) {
                 item = map[id];
+
                 // If it's null, it means it's a root level item
                 if (item.getParentItem() === null) {
                     toolEl = item.getToolElement();
+
                     if (toolEl) {
                         this.toolsElement.removeChild(toolEl);
                     }
                 }
+
                 delete map[id];
             }
         },
@@ -816,10 +863,12 @@ Ext.define('Ext.list.Tree', {
             if (item) {
                 id = item.getAttribute('data-recordId');
                 item = this.itemMap[id];
+
                 if (item) {
                     if (item === this.activeFloater) {
                         this.unfloatAll();
-                    } else {
+                    }
+                    else {
                         this.floatItem(item, false);
                     }
                 }
@@ -839,6 +888,7 @@ Ext.define('Ext.list.Tree', {
             if (item) {
                 id = item.getAttribute('data-recordId');
                 item = this.itemMap[id];
+
                 if (item) {
                     this.floatItem(item, true);
                 }
@@ -868,8 +918,10 @@ Ext.define('Ext.list.Tree', {
 
                         me.floaterMouseListeners = me.toolMouseListeners = null;
                     }
+
                     floater.element.un('mouseover', 'onMouseOver', me);
-                } else {
+                }
+                else {
                     Ext.un('mousedown', 'checkForOutsideClick', me);
                 }
             }

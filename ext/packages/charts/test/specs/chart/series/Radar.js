@@ -1,16 +1,16 @@
 topSuite("Ext.chart.series.Radar", ['Ext.chart.*', 'Ext.data.ArrayStore'], function() {
 
-    describe("center", function () {
+    describe("center", function() {
 
         var chart, layoutDone;
 
-        afterEach(function () {
+        afterEach(function() {
             chart = Ext.destroy(chart);
             layoutDone = false;
         });
 
-        it("should be set to a proper value when new series is added", function () {
-            runs(function () {
+        it("should be set to a proper value when new series is added", function() {
+            runs(function() {
                 chart = new Ext.chart.PolarChart({
                     renderTo: Ext.getBody(),
                     width: 400,
@@ -70,18 +70,18 @@ topSuite("Ext.chart.series.Radar", ['Ext.chart.*', 'Ext.data.ArrayStore'], funct
                         }
                     ],
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 chart.addSeries({
@@ -94,11 +94,11 @@ topSuite("Ext.chart.series.Radar", ['Ext.chart.*', 'Ext.data.ArrayStore'], funct
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var seriesList = chart.getSeries(),

@@ -1,26 +1,26 @@
-topSuite('Ext.util.History', function () {
+topSuite('Ext.util.History', function() {
     var HistoryUtil = Ext.util.History;
 
-    beforeEach(function () {
+    beforeEach(function() {
         Ext.testHelper.hash.init();
     });
 
-    afterEach(function () {
+    afterEach(function() {
         Ext.testHelper.hash.reset();
     });
 
-    function createSetAddReplaceSuites (fn) {
-        describe(fn, function () {
-            function createSuites (hashbang) {
-                describe(hashbang ? 'hashbang' : 'hash', function () {
+    function createSetAddReplaceSuites(fn) {
+        describe(fn, function() {
+            function createSuites(hashbang) {
+                describe(hashbang ? 'hashbang' : 'hash', function() {
                     var manualTest = hashbang ? '#!foo' : '#foo';
 
-                    beforeEach(function () {
+                    beforeEach(function() {
                         HistoryUtil.hashbang = hashbang;
                     });
 
-                    function createSpecs (name, input) {
-                        it(name, function () {
+                    function createSpecs(name, input) {
+                        (Ext.isIE8 && fn === 'replace' ? xit : it)(name, function() {
                             HistoryUtil[fn](input);
 
                             expect(HistoryUtil.win.location.hash).toBe(manualTest);
@@ -41,12 +41,12 @@ topSuite('Ext.util.History', function () {
         });
     }
 
-    describe('construction', function () {
-        it('should be instantiated', function () {
+    describe('construction', function() {
+        it('should be instantiated', function() {
             expect(HistoryUtil.isInstance).toBe(true);
         });
 
-        it('should be observable', function () {
+        it('should be observable', function() {
             expect(HistoryUtil.isObservable).toBe(true);
         });
     });
@@ -55,73 +55,77 @@ topSuite('Ext.util.History', function () {
     createSetAddReplaceSuites('add');
     createSetAddReplaceSuites('replace');
 
-    describe('getHash', function () {
-        it('should be an empty string', function () {
+    describe('getHash', function() {
+        it('should be an empty string', function() {
             expect(HistoryUtil.getHash()).toBe('');
         });
 
-        it('should not return prefixed with #', function () {
-            HistoryUtil.win.location.hash = '#foo'
+        it('should not return prefixed with #', function() {
+            HistoryUtil.win.location.hash = '#foo';
 
             expect(HistoryUtil.getHash()).toBe('foo');
         });
 
-        it('should not return prefixed with #!', function () {
-            HistoryUtil.win.location.hash = '#!foo'
+        it('should not return prefixed with #!', function() {
+            HistoryUtil.win.location.hash = '#!foo';
 
             expect(HistoryUtil.getHash()).toBe('foo');
         });
     });
 
-    describe('getToken', function () {
-        it('should be an empty string', function () {
+    describe('getToken', function() {
+        it('should be an empty string', function() {
             expect(HistoryUtil.getToken()).toBe('');
         });
 
-        it('should not return prefixed with #', function () {
+        it('should not return prefixed with #', function() {
             HistoryUtil.setHash('#foo');
 
             expect(HistoryUtil.getToken()).toBe('foo');
         });
 
-        it('should not return prefixed with #!', function () {
+        it('should not return prefixed with #!', function() {
             HistoryUtil.setHash('#!foo');
 
             expect(HistoryUtil.getToken()).toBe('foo');
         });
     });
 
-    describe('handleStateChange', function () {
-        it('should set currentToken', function () {
+    describe('handleStateChange', function() {
+        it('should set currentToken', function() {
             HistoryUtil.handleStateChange('foo');
 
             expect(HistoryUtil.currentToken).toBe('foo');
         });
 
-        it('should set currentToken with ! prefixed', function () {
+        it('should set currentToken with ! prefixed', function() {
             HistoryUtil.handleStateChange('!foo');
 
             expect(HistoryUtil.currentToken).toBe('foo');
         });
 
-        it('should fire change event', function () {
+        it('should fire change event', function() {
             var spy = spyOn({
                 test: Ext.emptyFn
             }, 'test');
 
-            HistoryUtil.on('change', spy, { single: true });
+            HistoryUtil.on('change', spy, {
+                single: true
+            });
 
             HistoryUtil.handleStateChange('foo');
 
             expect(spy).toHaveBeenCalledWith('foo');
         });
 
-        it('should fire change event prefixed with !', function () {
+        it('should fire change event prefixed with !', function() {
             var spy = spyOn({
                 test: Ext.emptyFn
             }, 'test');
 
-            HistoryUtil.on('change', spy, { single: true });
+            HistoryUtil.on('change', spy, {
+                single: true
+            });
 
             HistoryUtil.handleStateChange('!foo');
 
@@ -129,27 +133,29 @@ topSuite('Ext.util.History', function () {
         });
     });
 
-    describe('onHashChange', function () {
-        it('should set currentToken', function () {
+    describe('onHashChange', function() {
+        it('should set currentToken', function() {
             HistoryUtil.add('foo');
             HistoryUtil.onHashChange();
 
             expect(HistoryUtil.currentToken).toBe('foo');
         });
 
-        it('should set currentToken with ! prefixed', function () {
+        it('should set currentToken with ! prefixed', function() {
             HistoryUtil.add('!foo');
             HistoryUtil.onHashChange();
 
             expect(HistoryUtil.currentToken).toBe('foo');
         });
 
-        it('should fire change event', function () {
+        it('should fire change event', function() {
             var spy = spyOn({
                 test: Ext.emptyFn
             }, 'test');
 
-            HistoryUtil.on('change', spy, { single: true });
+            HistoryUtil.on('change', spy, {
+                single: true
+            });
 
             HistoryUtil.add('foo');
             HistoryUtil.onHashChange();
@@ -157,12 +163,14 @@ topSuite('Ext.util.History', function () {
             expect(spy).toHaveBeenCalledWith('foo');
         });
 
-        it('should fire change event prefixed with !', function () {
+        it('should fire change event prefixed with !', function() {
             var spy = spyOn({
                 test: Ext.emptyFn
             }, 'test');
 
-            HistoryUtil.on('change', spy, { single: true });
+            HistoryUtil.on('change', spy, {
+                single: true
+            });
 
             HistoryUtil.add('!foo');
             HistoryUtil.onHashChange();
@@ -171,8 +179,8 @@ topSuite('Ext.util.History', function () {
         });
     });
 
-    describe('back', function () {
-        it('should not have a hash anymore', function () {
+    (Ext.isIE8 ? xdescribe : describe)('back', function() {
+        it('should not have a hash anymore', function() {
             HistoryUtil.add('foo');
 
             HistoryUtil.back();
@@ -180,7 +188,7 @@ topSuite('Ext.util.History', function () {
             expect(HistoryUtil.getHash()).toBe('');
         });
 
-        it('should handle replace on no browser stack', function () {
+        it('should handle replace on no browser stack', function() {
             expect(HistoryUtil.getHash()).toBe('');
 
             var set = HistoryUtil.replace('foo');
@@ -191,7 +199,7 @@ topSuite('Ext.util.History', function () {
             expect(HistoryUtil.getHash()).toBe('foo');
         });
 
-        it('should go back to last hash', function () {
+        it('should go back to last hash', function() {
             HistoryUtil.add('foo');
             HistoryUtil.add('bar');
 
@@ -203,8 +211,8 @@ topSuite('Ext.util.History', function () {
         });
     });
 
-    describe('forward', function () {
-        it('should go forward', function () {
+    (Ext.isIE8 ? xdescribe : describe)('forward', function() {
+        it('should go forward', function() {
             HistoryUtil.add('foo');
 
             HistoryUtil.back();
@@ -216,7 +224,7 @@ topSuite('Ext.util.History', function () {
             expect(HistoryUtil.getHash()).toBe('foo');
         });
 
-        it('should go back to last hash', function () {
+        it('should go back to last hash', function() {
             HistoryUtil.add('foo');
             HistoryUtil.add('bar');
 

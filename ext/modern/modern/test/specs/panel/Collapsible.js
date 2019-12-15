@@ -1,9 +1,17 @@
 topSuite("Ext.panel.Collapsible", [
-    'Ext.app.ViewModel', 
+    'Ext.app.ViewModel',
     'Ext.Button',
     'Ext.panel.Collapser'
 ], function() {
     var panel;
+
+    Ext.panel.Collapser.override({
+        config: {
+            animation: {
+                duration: 20
+            }
+        }
+    });
 
     function makePanel(config) {
         config = config || {};
@@ -21,7 +29,7 @@ topSuite("Ext.panel.Collapsible", [
         }, config));
     }
 
-    afterEach(function () {
+    afterEach(function() {
         panel = Ext.destroy(panel);
     });
 
@@ -68,46 +76,104 @@ topSuite("Ext.panel.Collapsible", [
             expect(panel.element.getHeight()).toBeLessThan(400);
         });
     });
-    
-    describe('events', function () {
+  
+    describe('events', function() {
         function expandCollapse(collapse) {
             var action = collapse ? 'collapse' : 'expand',
-                event  = 'before' + action,
-                spy;
-            
-            describe(event, function () {
-                it('should prevent ' + action + ' if returning false', function (done) {
-                    makePanel({
-                        collapsible : true,
-                        collapsed   : !collapse
-                    });
-                    
-                    spy = spyOnEvent(panel, event).andReturn(false);
-                    panel.toggleCollapsed(collapse).then(function () {
-                        expect(spy).toHaveBeenCalled();
-                        expect(panel.getCollapsed()).toBe(!collapse);
-                    }).then(done).done();
+                event = 'before' + action,
+                calls;
+
+            it('should prevent ' + action + ' if returning false', function(done) {
+                makePanel({
+                    collapsible: true,
+                    collapsed: !collapse
                 });
-                
-                it('should not prevent ' + action + ' if nothing is returned', function (done) {
-                    makePanel({
-                        collapsible : true,
-                        collapsed   : !collapse
-                    });
-                    
-                    spy = spyOnEvent(panel, event).andCallThrough();
-                    panel.toggleCollapsed(collapse).then(function () {
-                        expect(spy).toHaveBeenCalled();
-                        expect(panel.getCollapsed()).toBe(collapse);
-                    }).then(done).done();
+
+                calls = 0;
+                panel.on(event, function() {
+                    ++calls;
+
+                    return false;
                 });
+
+                panel.toggleCollapsed(collapse).then(function() {
+                    expect(calls).toBe(1);
+                    expect(panel.getCollapsed()).toBe(!collapse);
+                }).then(done).done();
+            });
+
+            it('should not prevent ' + action + ' if nothing is returned', function(done) {
+                makePanel({
+                    collapsible: true,
+                    collapsed: !collapse
+                });
+
+                calls = 0;
+                panel.on(event, function() {
+                    ++calls;
+                });
+
+                panel.toggleCollapsed(collapse).then(function() {
+                    expect(calls).toBe(1);
+                    expect(panel.getCollapsed()).toBe(collapse);
+                }).then(done).done();
             });
         }
-        
-        // beforecollapse
-        expandCollapse(true);
-        
-        // beforeexpand
-        expandCollapse(false);
+
+        describe('beforecollapse', function() {
+            expandCollapse(true);
+        });
+
+        describe('beforeexpand', function() {
+            expandCollapse(false);
+        });
+    });
+
+    describe("titleCollapse", function() {
+        it("should be collapsible on click of panel header", function() {
+            makePanel({
+                titleCollapse: true,
+                collapsible: true,
+                collapsed: false,
+                items:[{
+                    html: 'testing'
+                }]
+            });
+            
+            expect(panel.getCollapsed()).toBe(false);
+
+            jasmine.fireMouseEvent(panel.header.el.dom, 'mousedown');
+            jasmine.fireMouseEvent(panel.header.el.dom, 'mouseup');
+            jasmine.fireMouseEvent(panel.header.el.dom, 'click');
+            expect(panel.getCollapsed()).toBe(true);
+
+            waits(500);
+            jasmine.fireMouseEvent(panel.header.el.dom, 'click');
+            runs(function() {
+                expect(panel.getCollapsed()).toBe(false);
+            });
+        });
+
+        it("setTitleCollapse", function() {
+            makePanel({
+                collapsible: true,
+                collapsed: false,
+                items:[{
+                    html: 'testing'
+                }]
+            });
+            
+            panel.setTitleCollapse(true);
+            expect(panel.getCollapsed()).toBe(false);
+            
+            jasmine.fireMouseEvent(panel.header.el.dom, 'mousedown');
+            jasmine.fireMouseEvent(panel.header.el.dom, 'mouseup');
+            jasmine.fireMouseEvent(panel.header.el.dom, 'click');
+            expect(panel.getCollapsed()).toBe(true);
+
+            panel.setTitleCollapse(false);
+            jasmine.fireMouseEvent(panel.header.el.dom, 'click');
+            expect(panel.getCollapsed()).toBe(true);
+        });
     });
 });

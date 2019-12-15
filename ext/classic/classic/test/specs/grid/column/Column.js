@@ -1,23 +1,21 @@
-/* global Ext, expect, jasmine */
-
 topSuite("Ext.grid.column.Column",
     ['Ext.grid.Panel', 'Ext.grid.plugin.CellEditing', 'Ext.form.field.Text'],
 function() {
-
     var defaultColumns = [
             { header: 'Name',  dataIndex: 'name', width: 100 },
             { header: 'Email', dataIndex: 'email', flex: 1 },
             { header: 'Phone', dataIndex: 'phone', flex: 1, hidden: true }
-        ], grid, store, colRef;
+        ],
+        grid, store, colRef;
 
     function createGrid(storeCfg, gridCfg) {
         store = new Ext.data.Store(Ext.apply({
-            fields:['name', 'email', 'phone'],
+            fields: ['name', 'email', 'phone'],
             data: [
-                { 'name': 'Lisa',  "email":"lisa@simpsons.com",  "phone":"555-111-1224"  },
-                { 'name': 'Bart',  "email":"bart@simpsons.com",  "phone":"555-222-1234"  },
-                { 'name': 'Homer', "email":"homer@simpsons.com", "phone":"555-222-1244"  },
-                { 'name': 'Marge', "email":"marge@simpsons.com", "phone":"555-222-1254"  }
+                { 'name': 'Lisa',  "email": "lisa@simpsons.com",  "phone": "555-111-1224"  },
+                { 'name': 'Bart',  "email": "bart@simpsons.com",  "phone": "555-222-1234"  },
+                { 'name': 'Homer', "email": "homer@simpsons.com", "phone": "555-222-1244"  },
+                { 'name': 'Marge', "email": "marge@simpsons.com", "phone": "555-222-1254"  }
             ]
         }, storeCfg));
 
@@ -29,9 +27,9 @@ function() {
             renderTo: Ext.getBody()
         }, gridCfg));
         colRef = grid.getColumnManager().getColumns();
-    }        
+    }
 
-    afterEach(function(){
+    afterEach(function() {
         grid = Ext.destroy(grid);
     });
 
@@ -164,7 +162,7 @@ function() {
 
             columns[1].items = {
                 xtype: 'textfield',
-                flex : 1,
+                flex: 1,
                 margin: '2'
             };
             createGrid(
@@ -181,7 +179,7 @@ function() {
             expect(store.getSorters().length).toBe(0);
         });
     });
-    
+
     describe("layout", function() {
         it("should layout grouped columns correctly", function() {
             grid = new Ext.grid.Panel({
@@ -273,9 +271,9 @@ function() {
         beforeEach(function() {
             cellEditingPlugin = new Ext.grid.plugin.CellEditing();
             store = new Ext.data.Store({
-                fields:['name'],
+                fields: ['name'],
                 data: {
-                    'items': [ {'name': 'A'} ]
+                    'items': [ { 'name': 'A' } ]
                 },
                 proxy: {
                     type: 'memory',
@@ -288,7 +286,7 @@ function() {
             grid = new Ext.grid.Panel({
                 store: store,
                 columns: [
-                    {dataIndex: 'name', editor: { xtype: 'textfield', id: 'nameEditor' }}
+                    { dataIndex: 'name', editor: { xtype: 'textfield', id: 'nameEditor' } }
                 ],
                 plugins: [cellEditingPlugin],
                 renderTo: Ext.getBody()
@@ -297,6 +295,7 @@ function() {
 
         it("should destroy the editor field that was created using the column's getEditor method", function() {
             var field = grid.headerCt.items.getAt(0).getEditor();
+
             grid.destroy();
             expect(field.destroyed).toBe(true);
             expect(Ext.ComponentMgr.get('nameEditor')).toBeUndefined();
@@ -304,26 +303,27 @@ function() {
 
         it("should destroy the editor field that was created using the editing plugin's getEditor method", function() {
             var field = cellEditingPlugin.getEditor(store.getAt(0), grid.headerCt.items.getAt(0));
+
             grid.destroy();
             expect(field.destroyed).toBe(true);
             expect(Ext.ComponentMgr.get('nameEditor')).toBeUndefined();
         });
     });
 
-    describe('column properties', function () {
-        it('should only have one header as the root header when columns is a config', function () {
+    describe('column properties', function() {
+        it('should only have one header as the root header when columns is a config', function() {
             createGrid();
 
             expect(grid.query('[isRootHeader]').length).toBe(1);
         });
 
-        it('should only have one header as the root header when columns config is an instance', function () {
+        it('should only have one header as the root header when columns config is an instance', function() {
             createGrid({}, {
                 columns: new Ext.grid.header.Container({
                     items: [
                         { header: 'Name',  columns: {
                             header: 'Foo', dataIndex: 'foo'
-                        }},
+                        } },
                         { header: 'Email', dataIndex: 'email', flex: 1 },
                         { header: 'Phone', dataIndex: 'phone', flex: 1, hidden: true }
                     ]
@@ -333,7 +333,7 @@ function() {
             expect(grid.query('[isRootHeader]').length).toBe(1);
         });
 
-        it('should have as many isColumn matches as there are defined columns', function () {
+        it('should have as many isColumn matches as there are defined columns', function() {
             createGrid({}, {
                 columns: [
                     { header: 'Name',  dataIndex: 'name', width: 100 },
@@ -345,15 +345,15 @@ function() {
             expect(grid.query('[isColumn]').length).toBe(3);
         });
 
-        it('should have as many isGroupHeader matches as there are defined column groups', function () {
+        it('should have as many isGroupHeader matches as there are defined column groups', function() {
             createGrid({}, {
                 columns: [
                     { header: 'Name',  columns: {
                         header: 'Foo', dataIndex: 'foo'
-                    }},
+                    } },
                     { header: 'Email', columns: {
                         header: 'Bar', dataIndex: 'bar'
-                    }},
+                    } },
                     { header: 'Phone', dataIndex: 'phone', flex: 1, hidden: true }
                 ]
             });
@@ -369,10 +369,10 @@ function() {
                 columns: [
                     { header: 'Name',  columns: {
                         header: 'Foo', dataIndex: 'foo'
-                    }},
+                    } },
                     { header: 'Email', columns: {
                         header: 'Bar', dataIndex: 'bar'
-                    }},
+                    } },
                     { header: 'Phone', dataIndex: 'phone', flex: 1, hidden: true }
                 ]
             });
@@ -384,7 +384,7 @@ function() {
             }
         });
 
-        it('should not have any isGroupHeader matches if there are no column groups', function () {
+        it('should not have any isGroupHeader matches if there are no column groups', function() {
             createGrid({}, {
                 columns: [
                     { header: 'Name',  dataIndex: 'name', width: 100 },
@@ -402,7 +402,7 @@ function() {
             createGrid({}, {
                 columns: [
                     { header: 'Name',  dataIndex: 'name', width: 100 },
-                    { header: 'Email', dataIndex: 'email', flex: 1, align: 'end'}
+                    { header: 'Email', dataIndex: 'email', flex: 1, align: 'end' }
                 ]
             });
             expect(Ext.fly(grid.view.getCell(0, colRef[1]).firstChild).getStyle('text-align')).toBe('right');
@@ -416,21 +416,20 @@ function() {
             expect(colRef[0].textInnerEl.dom).hasHTML('NewName');
         });
 
-
         describe("empty value", function() {
             var emptyValues = ['', ' ', null, undefined, '&#160;'],
                 i;
 
-            for (i=0; i<emptyValues.length; i++) {
+            for (i = 0; i < emptyValues.length; i++) {
                 it("should remove the emtpy cls when initially hidden (" + emptyValues[i] + ")", function() {
                     createGrid({}, {
                         columns: [
-                            { text: emptyValues[i], dataIndex: 'phone', flex: 1}
+                            { text: emptyValues[i], dataIndex: 'phone', flex: 1 }
                         ]
                     });
-                    
+
                     expect(colRef[0].titleEl).toHaveCls(Ext.baseCSSPrefix + 'column-header-inner-empty');
-                    
+
                     colRef[0].setText('Phone');
 
                     expect(colRef[0].titleEl).not.toHaveCls(Ext.baseCSSPrefix + 'column-header-inner-empty');
@@ -439,12 +438,12 @@ function() {
                 it("should add the emtpy cls when setting text to an empty value (" + emptyValues[i] + ")", function() {
                     createGrid({}, {
                         columns: [
-                            { text: 'Foo', dataIndex: 'phone', flex: 1}
+                            { text: 'Foo', dataIndex: 'phone', flex: 1 }
                         ]
                     });
-                    
+
                     expect(colRef[0].titleEl).not.toHaveCls(Ext.baseCSSPrefix + 'column-header-inner-empty');
-                    
+
                     colRef[0].setText(emptyValues[i]);
 
                     expect(colRef[0].titleEl).toHaveCls(Ext.baseCSSPrefix + 'column-header-inner-empty');

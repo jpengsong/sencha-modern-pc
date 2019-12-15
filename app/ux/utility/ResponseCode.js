@@ -1,6 +1,12 @@
-
 /**
  * 操作ResponseCode的工具类
+ * 本地/远程 返回ResponseData的Code枚举
+ *  ResponseData = {
+ *     Data:object,
+ *     Success:true,
+ *     Message:null,
+ *     Code:枚举
+ *  } 
  */
 Ext.define('App.ux.utility.ResponseCode', {
     alternateClassName: ['App.ResponseCode'],

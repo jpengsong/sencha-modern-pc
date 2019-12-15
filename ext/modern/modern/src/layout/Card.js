@@ -1,15 +1,17 @@
 /**
- * Sometimes you want to show several screens worth of information but you've only got a small screen to work with.
- * TabPanels and Carousels both enable you to see one screen of many at a time, and underneath they both use a Card
+ * Sometimes you want to show several screens worth of information but you've only got a 
+ * small screen to work with.
+ * TabPanels and Carousels both enable you to see one screen of many at a time, and underneath 
+ * they both use a Card
  * Layout.
  *
- * Card Layout takes the size of the Container it is applied to and sizes the currently active item to fill the
- * Container completely. It then hides the rest of the items, allowing you to change which one is currently visible but
- * only showing one at once.
+ * Card Layout takes the size of the Container it is applied to and sizes the currently active 
+ * item to fill the Container completely. It then hides the rest of the items, allowing you to 
+ * change which one is currently visible but only showing one at once.
  *
- * Here we create a Panel with a Card Layout and later set the second item active (the active item index is zero-based,
- * so 1 corresponds to the second item). You might consider using a {@link Ext.tab.Panel tab panel} or a
- * {@link Ext.carousel.Carousel carousel}.
+ * Here we create a Panel with a Card Layout and later set the second item active (the active 
+ * item index is zero-based, so 1 corresponds to the second item). You might consider using a 
+ * {@link Ext.tab.Panel tab panel} or a {@link Ext.carousel.Carousel carousel}.
  *
  *     var panel = Ext.create('Ext.Panel', {
  *         layout: 'card',
@@ -81,7 +83,8 @@ Ext.define('Ext.layout.Card', {
      * 
      * @cfg {String} [animation.direction]
      *
-     * For animations that support a direction, the direction of the animation can be specified. The possible values are:
+     * For animations that support a direction, the direction of the animation can be specified. 
+     * The possible values are:
      * - `'horizontal'`
      * - `'vertical'`
      * - `'top'`
@@ -91,9 +94,9 @@ Ext.define('Ext.layout.Card', {
      *
      * If a particular direction is specified (`top`/`right`/`bottom`/`left`), then the layout
      * will always animate in that direction. If `horizontal`/`vertical` is used, the direction
-     * will be determined based on the position in the items collection. If the new item is before the
-     * current item, the direction will be "back" (`left`/`top`). If the new item is after the current item,
-     * the direction will be "forward" (`right`/`top`).
+     * will be determined based on the position in the items collection. If the new item is 
+     * before the current item, the direction will be "back" (`left`/`top`). If the new item is 
+     * after the current item, the direction will be "forward" (`right`/`top`).
      */
 
     /**
@@ -122,11 +125,12 @@ Ext.define('Ext.layout.Card', {
 
     /**
      * @cfg {Boolean} [deferRender=true]
-     * By default, items not initially shown in the Card layout are rendered when first shown.  This provides
-     * a performance benefit, but if the hidden items contain components that are bound, the bindings do not
-     * immediately take effect.  If you have a form with bnound fields that spans several cards, the initially
-     * hidden items won't have their values bound and validation will not be done properly.  In those cases,
-     * you will want to set deferRender to false.
+     * By default, items not initially shown in the Card layout are rendered when first shown.  
+     * This provides a performance benefit, but if the hidden items contain components that are 
+     * bound, the bindings do not immediately take effect.  If you have a form with bnound fields
+     * that spans several cards, the initially hidden items won't have their values bound and 
+     * validation will not be done properly.  In those cases, you will want to set deferRender 
+     * to false.
      */
     deferRender: true,
 
@@ -159,6 +163,7 @@ Ext.define('Ext.layout.Card', {
             animation.setLayout(me);
 
             direction = animation.getDirection();
+
             if (!direction || me.autoDirectionMap[direction]) {
                 me.autoDirection = direction || 'horizontal';
                 // If we got horizontal or vertical, clear it out
@@ -171,21 +176,23 @@ Ext.define('Ext.layout.Card', {
         }
     },
 
-    applyIndicator: function (indicator, currentIndicator) {
+    applyIndicator: function(indicator, currentIndicator) {
         return Ext.updateWidget(currentIndicator, indicator, this, 'createIndicator');
     },
 
-    createIndicator: function (indicator) {
+    createIndicator: function(indicator) {
         return Ext.apply({
             ownerCmp: this.getContainer()
         }, indicator);
     },
 
-    updateIndicator: function (indicator) {
+    updateIndicator: function(indicator) {
+        var container, innerItems, activeItem;
+
         if (indicator) {
-            var container = this.getContainer(),
-                innerItems = container.getInnerItems(),
-                activeItem = container.getActiveItem();
+            container = this.getContainer();
+            innerItems = container.getInnerItems();
+            activeItem = container.getActiveItem();
 
             indicator
                 .sync(innerItems.length, innerItems.indexOf(activeItem))
@@ -198,13 +205,20 @@ Ext.define('Ext.layout.Card', {
         }
     },
 
-    onContainerInitialized: function() {
+    onContainerInitialized: function(container) {
         var me = this,
-            container = me.getContainer(),
             firstItem = container.getInnerAt(0),
-            activeItem = container.getActiveItem();
+            activeItem = container.getActiveItem(),
+            minHeight = container.getMinHeight();
 
-        me.callParent();
+        // card layouts use position absolute to animate change of items, 
+        // if minHeight is set but height isn't, IE does not flex items 
+        // when flex-direction is column
+        if (Ext.isIE && minHeight != null && container.getHeight() == null) {
+            container.setHeight(minHeight);
+        }
+
+        me.callParent([ container ]);
 
         if (activeItem) {
             // Don't call showItem here, since the component will get rendered by the
@@ -235,27 +249,35 @@ Ext.define('Ext.layout.Card', {
         if (autoDirection && newIndex !== -1 && oldIndex !== -1) {
             if (newIndex < oldIndex) {
                 direction = horizontal ? 'right' : 'up';
-            } else {
+            }
+            else {
                 direction = horizontal ? 'left' : 'down';
             }
+
             animation.setDirection(direction);
         }
 
         me.fireEventedAction('activeitemchange', [me, newItem, oldItem],
-            'doActiveItemChange', me);
+                             'doActiveItemChange', me);
     },
 
     onItemInnerStateChange: function(item, isInner, destroying) {
+        var container, activeItem;
+
         this.callParent([item, isInner, destroying]);
 
-        var container = this.getContainer(),
-            activeItem = container.getActiveItem();
+        container = this.getContainer();
+        activeItem = container.getActiveItem();
 
         if (isInner) {
-            if (activeItem !== container.innerIndexOf(item) && activeItem !== item && item !== container.pendingActiveItem) {
+            if (activeItem !== container.innerIndexOf(item) &&
+                activeItem !== item &&
+                item !== container.pendingActiveItem
+            ) {
                 item.hide();
             }
-        } else {
+        }
+        else {
             if (!destroying && !item.destroyed && item.destroying !== true) {
                 item.show();
             }
@@ -285,7 +307,7 @@ Ext.define('Ext.layout.Card', {
         }
     },
 
-    onItemAdd: function (item, index) {
+    onItemAdd: function(item, index) {
         var indicator,
             style;
 
@@ -305,9 +327,8 @@ Ext.define('Ext.layout.Card', {
         }
     },
 
-    onItemRemove: function (item, index, destroying) {
-        var indicator,
-            w, h;
+    onItemRemove: function(item, index, destroying) {
+        var indicator, w, h;
 
         this.callParent([item, index, destroying]);
 
@@ -323,14 +344,14 @@ Ext.define('Ext.layout.Card', {
             h = item.getHeight();
 
             item.setWidth(null).setWidth(w);
-            item.setHeight(null).setHeight(w);
+            item.setHeight(null).setHeight(h);
         }
     },
 
     /**
      * Moves to the next item if not on the last item.
      */
-    next: function () {
+    next: function() {
         var container = this.getContainer(),
             activeItem = container.getActiveItem(),
             innerItems = container.getInnerItems(),
@@ -346,7 +367,7 @@ Ext.define('Ext.layout.Card', {
     /**
      * Moves to the previous item if not on the first item.
      */
-    previous: function () {
+    previous: function() {
         var container = this.getContainer(),
             activeItem = container.getActiveItem(),
             innerItems = container.getInnerItems(),
@@ -359,7 +380,7 @@ Ext.define('Ext.layout.Card', {
         }
     },
 
-    onIndicatorTap: function (indicator, index) {
+    onIndicatorTap: function(indicator, index) {
         var container = this.getContainer();
 
         container.setActiveItem(index);
@@ -385,7 +406,10 @@ Ext.define('Ext.layout.Card', {
 
         showItem: function(item) {
             item.show();
-            item.setRendered(true, true);
+
+            if (this.getContainer().rendered) {
+                item.setRendered(true, true);
+            }
         }
     }
 });

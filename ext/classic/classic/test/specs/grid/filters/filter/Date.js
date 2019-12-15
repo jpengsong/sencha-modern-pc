@@ -1,5 +1,3 @@
-/* global Ext, jasmine, expect */
-
 topSuite("Ext.grid.filters.filter.Date",
     ['Ext.grid.Panel', 'Ext.grid.filters.Filters'],
 function() {
@@ -9,23 +7,25 @@ function() {
         proxyStoreLoad = Ext.data.ProxyStore.prototype.load,
         loadStore = function() {
             proxyStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         };
 
     function createGrid(listCfg, gridCfg, storeCfg) {
         synchronousLoad = false;
         store = new Ext.data.Store(Ext.apply({
-            fields:['name', 'email', 'phone', { name: 'dob', type: 'date'}],
+            fields: ['name', 'email', 'phone', { name: 'dob', type: 'date' }],
             data: [
-                {name: 'evan', dob: Ext.Date.parse('1992-12-12T12:30:01', 'c')},
-                {name: 'nige', dob: Ext.Date.parse('1992-12-11T11:30:01', 'c')},
-                {name: 'phil', dob: Ext.Date.parse('1992-12-10T10:30:01', 'c')},
-                {name: 'don',  dob: Ext.Date.parse('1992-12-09T09:30:01', 'c')},
-                {name: 'alex', dob: Ext.Date.parse('1992-12-08T08:30:01', 'c')},
-                {name: 'ben',  dob: Ext.Date.parse('1992-12-08T07:30:01', 'c')}
+                { name: 'evan', dob: Ext.Date.parse('1992-12-12T12:30:01', 'c') },
+                { name: 'nige', dob: Ext.Date.parse('1992-12-11T11:30:01', 'c') },
+                { name: 'phil', dob: Ext.Date.parse('1992-12-10T10:30:01', 'c') },
+                { name: 'don',  dob: Ext.Date.parse('1992-12-09T09:30:01', 'c') },
+                { name: 'alex', dob: Ext.Date.parse('1992-12-08T08:30:01', 'c') },
+                { name: 'ben',  dob: Ext.Date.parse('1992-12-08T07:30:01', 'c') }
             ],
             autoDestroy: true
         }, storeCfg));
@@ -109,6 +109,7 @@ function() {
                 Ext.Array.sort(itemsArray, function(lhs, rhs) {
                     lhs = lhs.priority;
                     rhs = rhs.priority;
+
                     return (lhs < rhs) ? -1 : ((lhs > rhs) ? 1 : 0);
                 });
             }
@@ -128,7 +129,7 @@ function() {
                 activeItem = menu.down('[text="' + item.text + '"]');
                 activeItem.activated = true;
                 activeItem.expandMenu(null, 0);
-                
+
                 switch (item.text) {
                     case "On":
                         on = activeItem.menu.down('datepicker');
@@ -149,7 +150,8 @@ function() {
                 headerNode = pickerEl.down('.x-datepicker-header', true);
                 selectedNode = pickerEl.down('.x-datepicker-selected', true);
                 waitsForFocus(datepicker);
-            } else {
+            }
+            else {
                 activeItem.menu.hide();
                 activeItem.activated = false;
             }
@@ -165,15 +167,15 @@ function() {
         // Undo the overrides.
         Ext.data.ProxyStore.prototype.load = proxyStoreLoad;
         Ext.destroy(store, grid);
-        
+
         grid = plugin = store = columnFilter = menu = headerCt = rootMenuItem = null;
         datepicker = pickerEl = headerNode = selectedNode = before = after = on = null;
     }
 
     afterEach(tearDown);
 
-    describe("init", function () {
-        it("should add a menu separator to the menu", function () {
+    describe("init", function() {
+        it("should add a menu separator to the menu", function() {
             createGrid();
             showMenu();
 
@@ -183,25 +185,25 @@ function() {
         });
     });
 
-    describe("setValue", function () {
+    describe("setValue", function() {
         var parse = Ext.Date.parse;
 
-        it("should filter the store regardless of whether the menu has been created", function () {
+        it("should filter the store regardless of whether the menu has been created", function() {
             createGrid();
 
             expect(store.data.length).toBe(6);
-            columnFilter.setValue({eq: Ext.Date.parse('1992-12-08T07:30:01', 'c')});
+            columnFilter.setValue({ eq: Ext.Date.parse('1992-12-08T07:30:01', 'c') });
             expect(store.data.length).toBe(2);
         });
 
-        it("should update the value of the date whenever called", function () {
+        it("should update the value of the date whenever called", function() {
             // See EXTJS-11532.
             createGrid();
 
             columnFilter.createMenu();
 
-            columnFilter.setValue({eq: parse('08/08/1992', 'd/m/Y')});
-            columnFilter.setValue({eq: parse('26/09/2009', 'd/m/Y')});
+            columnFilter.setValue({ eq: parse('08/08/1992', 'd/m/Y') });
+            columnFilter.setValue({ eq: parse('26/09/2009', 'd/m/Y') });
 
             expect(columnFilter.filter.eq.getValue()).toEqual(parse('26/09/2009', 'd/m/Y'));
         });
@@ -213,6 +215,7 @@ function() {
             columnFilter.setDateFormat('Y/m/d');
             columnFilter.createMenu();
             var d = new Date(2010, 0, 1);
+
             columnFilter.setValue({
                 lt: d
             });
@@ -225,6 +228,7 @@ function() {
             });
             columnFilter.createMenu();
             var d = new Date(1992, 11, 9);
+
             columnFilter.setValue({
                 lt: d
             });
@@ -239,6 +243,7 @@ function() {
             });
             columnFilter.createMenu();
             var d = new Date(1992, 11, 9);
+
             columnFilter.setValue({
                 gt: d
             });
@@ -254,6 +259,7 @@ function() {
             });
             columnFilter.createMenu();
             var d = new Date(1992, 11, 9);
+
             columnFilter.setValue({
                 eq: d
             });
@@ -262,8 +268,8 @@ function() {
         });
     });
 
-    describe("onMenuSelect handler and setFieldValue", function () {
-        it("should correctly filter based upon picker selections", function () {
+    describe("onMenuSelect handler and setFieldValue", function() {
+        it("should correctly filter based upon picker selections", function() {
             createGrid();
             showPicker('Before');
 
@@ -277,9 +283,9 @@ function() {
         });
     });
 
-    describe("removing store filters, tri-filter", function () {
+    describe("removing store filters, tri-filter", function() {
         // Note that it should only call the onFilterRemove handler if the gridfilters API created the store filter.
-        beforeEach(function () {
+        beforeEach(function() {
             // In short: Removing a store filter on the store itself will trigger the listener bound by the gridfilters API.
             // This was throwing an exception, b/c the delegated handler in the Date filter class was expecting that the
             // menu had already been created.
@@ -287,24 +293,24 @@ function() {
             createGrid();
 
             // Adding a filter with the same property name as that of a column filter will setup the bug.
-            store.getFilters().add({property: 'dob', value: {eq: new Date()}});
+            store.getFilters().add({ property: 'dob', value: { eq: new Date() } });
         });
 
-        it("should not throw if removing filters directly on the bound store", function () {
-            expect(function () {
+        it("should not throw if removing filters directly on the bound store", function() {
+            expect(function() {
                 // Trigger the bug by clearing filters directly on the store.
                 store.clearFilter();
             }).not.toThrow();
         });
 
-        it("should not call through to the delegated handler if the store filter was not generated by the class", function () {
+        it("should not call through to the delegated handler if the store filter was not generated by the class", function() {
             spyOn(columnFilter, 'onFilterRemove');
             store.clearFilter();
 
             expect(columnFilter.onFilterRemove).not.toHaveBeenCalled();
         });
 
-        it("should not call through to the delegated handler when the store filter is replaced", function () {
+        it("should not call through to the delegated handler when the store filter is replaced", function() {
             spyOn(columnFilter, 'onFilterRemove');
             plugin.addFilter(new Ext.util.Filter({
                 type: 'date',
@@ -319,7 +325,7 @@ function() {
             expect(columnFilter.onFilterRemove).not.toHaveBeenCalled();
         });
 
-        it("should replace the current filter if we add a new one with same id and different value", function () {
+        it("should replace the current filter if we add a new one with same id and different value", function() {
             // This should call the handler because the gridfilters API created the store filter.
             tearDown();
             createGrid({
@@ -345,13 +351,13 @@ function() {
         });
     });
 
-    describe("adding a column filter, tri-filter", function () {
-        describe("replacing an existing column filter", function () {
+    describe("adding a column filter, tri-filter", function() {
+        describe("replacing an existing column filter", function() {
             // See EXTJS-16082.
-            it("should not throw", function () {
+            it("should not throw", function() {
                 createGrid();
 
-                expect(function () {
+                expect(function() {
                     plugin.addFilter({
                         type: 'string',
                         value: 'ben germane'
@@ -359,7 +365,7 @@ function() {
                 }).not.toThrow();
             });
 
-            it("should replace the existing store filter", function () {
+            it("should replace the existing store filter", function() {
                 var filters, filter, basePrefix,
                     date = Ext.Date.parse('1992-12-08T07:30:01', 'c'),
                     date2 = Ext.Date.parse('1992-12-10T10:30:01', 'c');
@@ -397,9 +403,9 @@ function() {
         });
     });
 
-    describe("showing the menu", function () {
+    describe("showing the menu", function() {
         function setActive(state) {
-            it("should not add a filter to the store when shown " + (state ? 'active' : 'inactive'), function () {
+            it("should not add a filter to the store when shown " + (state ? 'active' : 'inactive'), function() {
                 createGrid({
                     active: state,
                     value: {
@@ -410,7 +416,7 @@ function() {
                 spyOn(columnFilter, 'addStoreFilter');
 
                 showMenu();
-                
+
                 runs(function() {
                     expect(columnFilter.addStoreFilter).not.toHaveBeenCalled();
                 });
@@ -421,8 +427,8 @@ function() {
         setActive(false);
     });
 
-    describe("clearing filters", function () {
-        it("should not recheck the root menu item (\"Filters\") when showing menu after clearing filters", function () {
+    describe("clearing filters", function() {
+        it("should not recheck the root menu item (\"Filters\") when showing menu after clearing filters", function() {
             createGrid();
             showMenu();
 
@@ -447,17 +453,17 @@ function() {
         });
     });
 
-    describe("selecting using the UI", function () {
+    describe("selecting using the UI", function() {
         var filters;
 
-        afterEach(function () {
+        afterEach(function() {
             filters = null;
         });
 
-        describe("the After datepicker", function () {
+        describe("the After datepicker", function() {
             function afterAndBefore() {
                 showPicker('Before');
-                
+
                 runs(function() {
                     setPicker('12/8/2014');
 
@@ -472,25 +478,27 @@ function() {
             function selectOn() {
                 // Now select a date that would result in an empty result set.
                 showPicker('On');
-                
+
                 runs(function() {
                     setPicker('9/26/2009');
 
                     // We expect that the On selection will disable and deactivate the previous selection
                     // because we don't currently support OR operations.
                     expect(after.up('menuitem').checked).toBe(false);
+
                     if (before) {
                         expect(before.up('menuitem').checked).toBe(false);
                     }
+
                     expect(on.up('menuitem').checked).toBe(true);
                     expect(filters.length).toBe(1);
                     expect(filters.getAt(0).getId()).toBe(columnFilter.getBaseIdPrefix() + '-eq');
                 });
             }
 
-            beforeEach(function () {
+            beforeEach(function() {
                 createGrid();
-                
+
                 showPicker('After');
 
                 runs(function() {
@@ -499,20 +507,20 @@ function() {
                 });
             });
 
-            it("should enable and activate after a selection is made", function () {
+            it("should enable and activate after a selection is made", function() {
                 expect(after.up('menuitem').checked).toBe(true);
                 expect(filters.length).toBe(1);
                 expect(filters.getAt(0).getId()).toBe(columnFilter.getBaseIdPrefix() + '-gt');
             });
 
-            it("should support the enabling and activating of the Before bits if a supported Before selection is made", function () {
+            it("should support the enabling and activating of the Before bits if a supported Before selection is made", function() {
                 afterAndBefore();
             });
 
-            it("should disable and deactivate the After bits if an unsupported Before selection is made", function () {
+            it("should disable and deactivate the After bits if an unsupported Before selection is made", function() {
                 // Now select a date that would result in an empty result set.
                 showPicker('Before');
-                
+
                 runs(function() {
                     setPicker('8/7/1992');
 
@@ -525,20 +533,20 @@ function() {
                 });
             });
 
-            it("should disable and deactivate the After bits if an On selection is made", function () {
+            it("should disable and deactivate the After bits if an On selection is made", function() {
                 selectOn();
             });
 
-            it("should disable and deactivate the After and Before bits if an On selection is made", function () {
+            it("should disable and deactivate the After and Before bits if an On selection is made", function() {
                 afterAndBefore();
                 selectOn();
             });
         });
 
-        describe("the Before datepicker", function () {
+        describe("the Before datepicker", function() {
             function afterAndBefore() {
                 showPicker('After');
-                
+
                 runs(function() {
                     setPicker('8/8/1992');
 
@@ -553,43 +561,45 @@ function() {
             function selectOn() {
                 // Now select a date that would result in an empty result set.
                 showPicker('On');
-                
+
                 runs(function() {
                     setPicker('9/26/2009');
 
                     // We expect that the On selection will disable and deactivate the previous selection
                     // because we don't currently support OR operations.
                     expect(before.up('menuitem').checked).toBe(false);
+
                     if (after) {
                         expect(after.up('menuitem').checked).toBe(false);
                     }
+
                     expect(on.up('menuitem').checked).toBe(true);
                     expect(filters.length).toBe(1);
                     expect(filters.getAt(0).getId()).toBe(columnFilter.getBaseIdPrefix() + '-eq');
                 });
             }
 
-            beforeEach(function () {
+            beforeEach(function() {
                 createGrid();
                 showPicker('Before');
-                
+
                 runs(function() {
                     setPicker('12/8/2014');
                     filters = store.getFilters();
                 });
             });
 
-            it("should enable and activate after a selection is made", function () {
+            it("should enable and activate after a selection is made", function() {
                 expect(before.up('menuitem').checked).toBe(true);
                 expect(filters.length).toBe(1);
                 expect(filters.getAt(0).getId()).toBe(columnFilter.getBaseIdPrefix() + '-lt');
             });
 
-            it("should support the enabling and activating of the Before bits if a supported Before selection is made", function () {
+            it("should support the enabling and activating of the Before bits if a supported Before selection is made", function() {
                 afterAndBefore();
             });
 
-            it("should disable and deactivate the Before bits if an unsupported After selection is made", function () {
+            it("should disable and deactivate the Before bits if an unsupported After selection is made", function() {
                 // Now select a date that would result in an empty result set.
                 showPicker('After');
 
@@ -605,17 +615,17 @@ function() {
                 });
             });
 
-            it("should disable and deactivate the Before bits if an On selection is made", function () {
+            it("should disable and deactivate the Before bits if an On selection is made", function() {
                 selectOn();
             });
 
-            it("should disable and deactivate the After and Before bits if an On selection is made", function () {
+            it("should disable and deactivate the After and Before bits if an On selection is made", function() {
                 afterAndBefore();
                 selectOn();
             });
         });
 
-        describe("the On datepicker", function () {
+        describe("the On datepicker", function() {
             function afterOrBefore(which) {
                 // Making a selection on either the After or Before datepicker should disable and deactivate the On datepicker.
                 showPicker(which);
@@ -638,36 +648,38 @@ function() {
                     // We expect that the On selection will disable and deactivate the previous selection
                     // because we don't currently support OR operations.
                     expect(before.up('menuitem').checked).toBe(false);
+
                     if (after) {
                         expect(after.up('menuitem').checked).toBe(false);
                     }
+
                     expect(on.up('menuitem').checked).toBe(true);
                     expect(filters.length).toBe(1);
                     expect(filters.getAt(0).getId()).toBe(columnFilter.getBaseIdPrefix() + '-eq');
                 });
             }
 
-            beforeEach(function () {
+            beforeEach(function() {
                 createGrid();
                 on = showPicker('On');
-                
+
                 runs(function() {
                     setPicker('1/22/1972');
                     filters = store.getFilters();
                 });
             });
 
-            it("should enable and activate after a selection is made", function () {
+            it("should enable and activate after a selection is made", function() {
                 expect(on.up('menuitem').checked).toBe(true);
                 expect(filters.length).toBe(1);
                 expect(filters.getAt(0).getId()).toBe(columnFilter.getBaseIdPrefix() + '-eq');
             });
 
-            it("should disable and deactivate the On bits if an After selection is made", function () {
+            it("should disable and deactivate the On bits if an After selection is made", function() {
                 afterOrBefore('After');
             });
 
-            it("should disable and deactivate the On bits if an Before selection is made", function () {
+            it("should disable and deactivate the On bits if an Before selection is made", function() {
                 afterOrBefore('Before');
             });
 
@@ -677,12 +689,12 @@ function() {
         });
     });
 
-    describe("the UI and the active state", function () {
+    describe("the UI and the active state", function() {
         function setActive(active) {
-            describe("when " + active, function () {
+            describe("when " + active, function() {
                 var maybe = !active ? 'not' : '';
 
-                it("should " + maybe + ' check the Filters menu item', function () {
+                it("should " + maybe + ' check the Filters menu item', function() {
                     createGrid({
                         active: active
                     });
@@ -694,7 +706,7 @@ function() {
                     });
                 });
 
-                it("should set any field values that map to a configured value, Before and After", function () {
+                it("should set any field values that map to a configured value, Before and After", function() {
                     createGrid({
                         active: active,
                         value: {
@@ -718,7 +730,7 @@ function() {
                     });
                 });
 
-                it("should set any field values that map to a configured value, On", function () {
+                it("should set any field values that map to a configured value, On", function() {
                     createGrid({
                         active: active,
                         value: {
@@ -734,22 +746,22 @@ function() {
                     });
                 });
 
-                describe("when a store filter is created", function () {
-                    it("should not update the filter collection twice", function () {
+                describe("when a store filter is created", function() {
+                    it("should not update the filter collection twice", function() {
                         var called = 0;
 
                         createGrid({
                             active: active
                         }, {
                             listeners: {
-                                filterchange: function () {
+                                filterchange: function() {
                                     ++called;
                                 }
                             }
                         });
 
                         showPicker('On');
-                        
+
                         runs(function() {
                             columnFilter.setValue({
                                 eq: Ext.Date.parse('1972-01-22T12:30:01', 'c')
@@ -764,16 +776,16 @@ function() {
         setActive(true);
         setActive(false);
 
-        describe("toggling active state on same filter", function () {
+        describe("toggling active state on same filter", function() {
             // The root Filters menu item's checked state and the header filter class should all reflect the current state.
             // See EXTJS-17430.
-            it("should update the UI", function () {
+            it("should update the UI", function() {
                 var column;
 
                 createGrid();
 
                 showPicker('Before');
-                
+
                 runs(function() {
                     setPicker('12/10/1992');
                     column = columnFilter.column;

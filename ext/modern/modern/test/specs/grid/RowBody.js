@@ -16,18 +16,21 @@ function() {
         store, grid, expandField;
 
     function getStore(count) {
-        var data = [], field, i, j;
-        
+        var data = [],
+field, i, j;
+
         if (!count) {
             count = numRecords;
         }
 
         for (i = 0; i < count; i++) {
             data[i] = {};
+
             for (j = 0; j < fields.length; j++) {
                 field = fields[j];
                 data[i][field] = 'foo';
             }
+
             data.expanded = false;
         }
 
@@ -42,8 +45,9 @@ function() {
             width: 300,
             height: 400,
             store: getStore(numRecords),
-            columns: fields.map(function (name) {
+            columns: fields.map(function(name) {
                 name = (typeof name === 'object') ? name.name : name;
+
                 return {
                     dataIndex: name,
                     width: 100,
@@ -62,6 +66,7 @@ function() {
         };
 
         config = Ext.apply(defaults, config);
+
         return new Ext.grid.Grid(config);
     }
 
@@ -70,8 +75,9 @@ function() {
             width: 300,
             height: 400,
             store: getStore(numRecords),
-            columns: fields.map(function (name) {
+            columns: fields.map(function(name) {
                 name = (typeof name === 'object') ? name.name : name;
+
                 return {
                     dataIndex: name,
                     width: 100,
@@ -94,6 +100,7 @@ function() {
         };
 
         config = Ext.apply(defaults, config);
+
         return new Ext.grid.Grid(config);
     }
 
@@ -106,12 +113,12 @@ function() {
             beforeEach(function() {
                 expandField = expandFieldName;
             });
-            afterEach(function () {
+            afterEach(function() {
                 store = grid = Ext.destroy(grid, store);
             });
 
-            describe("Visibility", function () {
-                beforeEach(function () {
+            describe("Visibility", function() {
+                beforeEach(function() {
                     grid = getTplGrid();
                     store = grid.getStore();
 
@@ -119,7 +126,7 @@ function() {
                     grid.refresh();
                 });
 
-                it("should be collapsed and hidden by default", function () {
+                it("should be collapsed and hidden by default", function() {
                     var row = grid.getItemAt(0),
                         body = row.getBody();
 
@@ -128,7 +135,7 @@ function() {
                     expect(body.el.isVisible()).toBe(false);
                 });
 
-                it("should set collapsed false and unhide when expanded", function () {
+                it("should set collapsed false and unhide when expanded", function() {
                     var top = grid.getItemAt(0),
                         body = top.getBody();
 
@@ -139,7 +146,7 @@ function() {
                     expect(body.el.isVisible()).toBe(true);
                 });
 
-                it("should call the updater when collapse/expand is called", function () {
+                it("should call the updater when collapse/expand is called", function() {
                     var top = grid.getItemAt(0),
                         body = top.getBody();
 
@@ -154,8 +161,8 @@ function() {
                 });
             });
 
-            describe("Template Based Row Body", function () {
-                beforeEach(function () {
+            describe("Template Based Row Body", function() {
+                beforeEach(function() {
                     grid = getTplGrid();
                     store = grid.getStore();
 
@@ -163,8 +170,8 @@ function() {
                     grid.refresh();
                 });
 
-                describe("Template Based ViewModel Access", function () {
-                    it("should render data from the view model properly", function () {
+                describe("Template Based ViewModel Access", function() {
+                    it("should render data from the view model properly", function() {
                         var row = grid.getItemAt(0),
                             body = row.getBody(),
                             inner = body.getInnerHtmlElement(),
@@ -174,8 +181,8 @@ function() {
                     });
                 });
 
-                describe("Template Based Row Spacing", function () {
-                    it("should space rows properly when RowBody is collapsed", function () {
+                describe("Template Based Row Spacing", function() {
+                    it("should space rows properly when RowBody is collapsed", function() {
                         var count = grid.getStore().getCount(),
                             headerHeight = grid.getHeaderContainer().el.getHeight(),
                             height = grid.getItemAt(0).el.getHeight(),
@@ -188,11 +195,13 @@ function() {
                         }
                     });
 
-                    it("should space rows properly when RowBody is expanded", function () {
+                    it("should space rows properly when RowBody is expanded", function() {
                         var top = grid.getItemAt(0),
                             headerHeight = grid.getHeaderContainer().el.getHeight(),
-                            rowHeight = top.el.getHeight(), rowBodyHeight,
-                            count = grid.getStore().getCount(), i, row, y;
+                            rowHeight = top.el.getHeight(),
+rowBodyHeight,
+                            count = grid.getStore().getCount(),
+i, row, y;
 
                         top.expand();
                         rowBodyHeight = top.getBody().el.getHeight();
@@ -205,12 +214,12 @@ function() {
                         }
                     });
 
-                    it("should space rows properly when RowBody is expanded and collapsed", function () {
+                    it("should space rows properly when RowBody is expanded and collapsed", function() {
                         var top = grid.getItemAt(0),
                             headerHeight = grid.getHeaderContainer().el.getHeight(),
                             height = top.el.getHeight(),
-                            count = grid.getStore().getCount(), i, row, y;
-
+                            count = grid.getStore().getCount(),
+i, row, y;
 
                         for (i = 0; i < count; ++i) {
                             row = grid.getItemAt(i);
@@ -248,6 +257,7 @@ function() {
                         if (row.getRecord() !== recZero) {
                             return true;
                         }
+
                         scroller.scrollBy(0, 50);
                     }, 'grid to recycle row', 40000);
 
@@ -263,6 +273,7 @@ function() {
                         if (row.getRecord() === recZero) {
                             return true;
                         }
+
                         scroller.scrollBy(0, -50);
                     }, 'grid to recycle row', 40000);
 
@@ -274,8 +285,8 @@ function() {
                 });
             });
 
-            describe("Widget Based Row Body", function () {
-                beforeEach(function () {
+            describe("Widget Based Row Body", function() {
+                beforeEach(function() {
                     grid = getWidgetGrid();
                     store = grid.getStore();
 
@@ -283,12 +294,12 @@ function() {
                     grid.refresh();
                 });
 
-                describe("Widget Based ViewModel Access", function () {
-                    it("should render data from the view model properly", function () {
+                describe("Widget Based ViewModel Access", function() {
+                    it("should render data from the view model properly", function() {
                         var row = grid.getItemAt(0),
                             body = row.getBody(),
-                            widget = body.getWidget(), text;
-
+                            widget = body.getWidget(),
+text;
 
                         // Update bindings for testing
                         row.getViewModel().notify();
@@ -297,8 +308,8 @@ function() {
                     });
                 });
 
-                describe("Widget Based Row Spacing", function () {
-                    it("should space rows properly when RowBody is collapsed", function () {
+                describe("Widget Based Row Spacing", function() {
+                    it("should space rows properly when RowBody is collapsed", function() {
                         var count = grid.getStore().getCount(),
                             headerHeight = grid.getHeaderContainer().el.getHeight(),
                             height = grid.getItemAt(0).el.getHeight(),
@@ -311,11 +322,13 @@ function() {
                         }
                     });
 
-                    it("should space rows properly when RowBody is expanded", function () {
+                    it("should space rows properly when RowBody is expanded", function() {
                         var top = grid.getItemAt(0),
                             headerHeight = grid.getHeaderContainer().el.getHeight(),
-                            rowHeight = top.el.getHeight(), rowBodyHeight,
-                            count = grid.getStore().getCount(), i, row, padding, y;
+                            rowHeight = top.el.getHeight(),
+rowBodyHeight,
+                            count = grid.getStore().getCount(),
+i, row, padding, y;
 
                         top.expand();
 
@@ -325,7 +338,7 @@ function() {
                             row = grid.getItemAt(i);
                             padding = row.getBody().contentElement.getPadding('tb');
                             y = headerHeight + (i * (rowHeight + rowBodyHeight));
-                            
+
                             // Allow 1px tolerance for older browsers
                             expect(row.el.getY()).toBeApprox(Math.round(y));
                             row.expand();

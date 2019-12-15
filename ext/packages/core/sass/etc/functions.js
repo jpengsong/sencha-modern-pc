@@ -1,11 +1,11 @@
 exports.init = function(runtime) {
     runtime.register({
-        map_merge: function (map1, map2) {
+        map_merge: function(map1, map2) {
             var ret = new Fashion.Map(map1 && map1.items);
 
             if (map2) {
                 for (var items = map2.items, i = 0; i < items.length; i += 2) {
-                    ret.put(items[i], items[i+1]);
+                    ret.put(items[i], items[i + 1]);
                 }
             }
 
@@ -21,7 +21,7 @@ exports.init = function(runtime) {
          * @returns {Fashion.Map}
          * @private
          */
-        intersect_arguments: function (mixinName1, mixinName2) {
+        intersect_arguments: function(mixinName1, mixinName2) {
             var r = runtime;
 
             mixinName1 = mixinName1.value.replace(/-/g, '_');
@@ -46,7 +46,7 @@ exports.init = function(runtime) {
 
             for (name in currentScopeArgs) {
                 translatedName = name.replace(/_/g, '-');
-                
+
                 if (supportedArgs1[translatedName] && supportedArgs2[translatedName]) {
                     args.put(runtime.box(translatedName.substr(1)), currentScopeArgs[name]);
                 }

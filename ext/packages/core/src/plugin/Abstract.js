@@ -16,56 +16,16 @@
 Ext.define('Ext.plugin.Abstract', {
     alternateClassName: 'Ext.AbstractPlugin',
 
+    mixins: [
+        'Ext.mixin.Identifiable'
+    ],
+
     /**
      * @property {Boolean} isPlugin
      * The value `true` to identify objects of this class or a subclass thereof.
      * @readonly
      */
     isPlugin: true,
-
-    /**
-     * Initializes the plugin.
-     * @param {Object} [config] Configuration object.
-     */
-    constructor: function (config) {
-        if (config) {
-            this.pluginConfig = config;
-            this.initConfig(config);
-        }
-    },
-
-    /**
-     * Creates clone of the plugin.
-     * @param {Object} [overrideCfg] Additional config for the derived plugin.
-     */
-    clonePlugin: function (overrideCfg) {
-        return new this.self(Ext.apply({}, overrideCfg, this.pluginConfig));
-    },
-
-    /**
-     * @method detachCmp
-     * Plugins that can be disconnected from their host component should implement
-     * this method.
-     * @since 6.2.0
-     */
-
-    /**
-     * Returns the component to which this plugin is attached.
-     * @return {Ext.Component} The owning host component.
-     */
-    getCmp: function() {
-        return this.cmp;
-    },
-
-    /**
-     * Sets the host component to which this plugin is attached. For a plugin to be
-     * removable without being destroyed, this method should be provided and be prepared
-     * to receive `null` for the component.
-     * @param {Ext.Component} host The owning host component.
-     */
-    setCmp: function (host) {
-        this.cmp = host;
-    },
 
     /**
      * @cfg {String} id
@@ -94,6 +54,18 @@ Ext.define('Ext.plugin.Abstract', {
      */
 
     /**
+     * Initializes the plugin.
+     * @param {Object} [config] Configuration object.
+     */
+    constructor: function(config) {
+        if (config) {
+            this.cmp = config.cmp;
+            this.pluginConfig = config;
+            this.initConfig(config);
+        }
+    },
+
+    /**
      * @method init
      * The init method is invoked to formally associate the host component and the plugin.
      *
@@ -104,18 +76,64 @@ Ext.define('Ext.plugin.Abstract', {
     init: Ext.emptyFn,
 
     /**
-     * @method destroy
-     *
      * The destroy method is invoked by the owning Component at the time the Component is
      * being destroyed.
      */
     destroy: function() {
-        this.cmp = this.pluginConfig = null;
+        var me = this;
 
-        this.callParent();
+        me.destroy = Ext.emptyFn;
+        me.destroying = true;
+        me.cmp = me.pluginConfig = null;
+
+        me.doDestroy();
+
+        me.callParent();
+
+        // This just makes it hard to ask "was destroy() called?":
+        // me.destroying = false; // removed in 7.0
     },
 
-    onClassExtended: function (cls, data, hooks) {
+    doDestroy: Ext.emptyFn,
+
+    /**
+     * Creates clone of the plugin.
+     * @param {Object} [overrideCfg] Additional config for the derived plugin.
+     */
+    clonePlugin: function(overrideCfg) {
+        return new this.self(Ext.apply({}, overrideCfg, this.pluginConfig));
+    },
+
+    /**
+     * @method detachCmp
+     * Plugins that can be disconnected from their host component should implement
+     * this method.
+     * @since 6.2.0
+     */
+
+    /**
+     * Returns the component to which this plugin is attached.
+     * @return {Ext.Component} The owning host component.
+     */
+    getCmp: function() {
+        return this.cmp;
+    },
+
+    /**
+     * Sets the host component to which this plugin is attached. For a plugin to be
+     * removable without being destroyed, this method should be provided and be prepared
+     * to receive `null` for the component.
+     * @param {Ext.Component} host The owning host component.
+     */
+    setCmp: function(host) {
+        this.cmp = host;
+    },
+
+    getStatefulOwner: function() {
+        return [this.cmp, 'plugins'];
+    },
+
+    onClassExtended: function(cls, data, hooks) {
         var alias = data.alias,
             prototype = cls.prototype;
 
@@ -129,7 +147,7 @@ Ext.define('Ext.plugin.Abstract', {
         }
     },
 
-    resolveListenerScope: function (defaultScope) {
+    resolveListenerScope: function(defaultScope) {
         var me = this,
             cmp = me.getCmp(),
             scope;
@@ -146,8 +164,9 @@ Ext.define('Ext.plugin.Abstract', {
     },
 
     statics: {
-        decode: function (plugins, typeProp, include) {
+        decode: function(plugins, typeProp, include) {
             if (plugins) {
+                // eslint-disable-next-line vars-on-top
                 var type = Ext.typeOf(plugins), // 'object', 'array', 'string'
                     entry, key, obj, value;
 
@@ -182,15 +201,11 @@ Ext.define('Ext.plugin.Abstract', {
 
                             entry[typeProp] = key;
 
-                            if (key === 'responsive') {
-                                entry.weight = -1000;
-                            }
-
                             Ext.apply(entry, value);
                             plugins.push(entry);
                         }
 
-                        plugins.sort(Ext.weightSortFn);
+                        Ext.sortByWeight(plugins);
                     }
                 }
                 //<debug>

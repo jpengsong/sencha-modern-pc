@@ -20,7 +20,7 @@ Ext.define('Ext.Sheet', {
     isViewportMenu: false,
 
     /**
-     * 
+     *
      * @hide
      */
     hidden: true,
@@ -119,7 +119,8 @@ Ext.define('Ext.Sheet', {
 
     applyHideAnimation: function(config) {
         var exit = this.getExit(),
-            direction = exit;
+            direction = exit,
+            anim;
 
         if (exit === null) {
             return null;
@@ -130,22 +131,27 @@ Ext.define('Ext.Sheet', {
                 type: 'slideOut'
             };
         }
-        var anim = this.callParent([config]);
+
+        anim = this.callParent([config]);
 
         if (anim) {
             if (exit === 'bottom') {
                 direction = 'down';
-            } else if (exit === 'top') {
+            }
+            else if (exit === 'top') {
                 direction = 'up';
             }
+
             anim.setDirection(direction);
         }
+
         return anim;
     },
 
     applyShowAnimation: function(config) {
         var enter = this.getEnter(),
-            direction = enter;
+            direction = enter,
+            anim;
 
         if (enter === null) {
             return null;
@@ -156,21 +162,25 @@ Ext.define('Ext.Sheet', {
                 type: 'slideIn'
             };
         }
-        var anim = this.callParent([config]);
+
+        anim = this.callParent([config]);
 
         if (anim) {
             if (enter === 'bottom') {
                 direction = 'down';
             }
+
             if (enter === 'top') {
                 direction = 'up';
             }
+
             anim.setBefore({
                 display: null
             });
             anim.setReverse(true);
             anim.setDirection(direction);
         }
+
         return anim;
     },
 
@@ -179,7 +189,8 @@ Ext.define('Ext.Sheet', {
 
         if (side) {
             Ext.Viewport.hideMenu(side, animation);
-        } else {
+        }
+        else {
             this.callParent([animation]);
         }
     },
@@ -194,7 +205,8 @@ Ext.define('Ext.Sheet', {
         if (side) {
             VP.setMenu(me);
             VP.showMenu(side);
-        } else {
+        }
+        else {
             me.callParent([animation, options]);
         }
     },
@@ -213,7 +225,7 @@ Ext.define('Ext.Sheet', {
             Ext.Viewport.setMenu(me, {
                 side: newSide
             });
-            
+
             // We're flipping sides while shown.
             if (reShow) {
                 me.show();

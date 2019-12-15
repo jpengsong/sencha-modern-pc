@@ -27,9 +27,11 @@ Ext.define('Ext.data.validator.Presence', {
 
     validate: function(value) {
         var valid = !(value === undefined || value === null);
+
         if (valid && !this.getAllowEmpty()) {
             valid = value !== '';
         }
+
         return valid ? true : this.getMessage();
     }
 });

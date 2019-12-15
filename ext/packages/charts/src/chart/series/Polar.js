@@ -95,7 +95,7 @@ Ext.define('Ext.chart.series.Polar', {
         lengthField: 'radiusField'
     },
 
-    constructor: function (config) {
+    constructor: function(config) {
         var me = this,
             configurator = me.self.getConfigurator(),
             configs = configurator.configs,
@@ -109,38 +109,39 @@ Ext.define('Ext.chart.series.Polar', {
                 }
             }
         }
+
         me.callParent([config]);
     },
 
-    getXField: function () {
+    getXField: function() {
         return this.getAngleField();
     },
 
-    updateXField: function (value) {
+    updateXField: function(value) {
         this.setAngleField(value);
     },
 
-    getYField: function () {
+    getYField: function() {
         return this.getRadiusField();
     },
 
-    updateYField: function (value) {
+    updateYField: function(value) {
         this.setRadiusField(value);
     },
 
-    applyXAxis: function (newAxis, oldAxis) {
+    applyXAxis: function(newAxis, oldAxis) {
         return this.getChart().getAxis(newAxis) || oldAxis;
     },
 
-    applyYAxis: function (newAxis, oldAxis) {
+    applyYAxis: function(newAxis, oldAxis) {
         return this.getChart().getAxis(newAxis) || oldAxis;
     },
 
-    getXRange: function () {
+    getXRange: function() {
         return [this.dataRange[0], this.dataRange[2]];
     },
 
-    getYRange: function () {
+    getYRange: function() {
         return [this.dataRange[1], this.dataRange[3]];
     },
 
@@ -154,7 +155,7 @@ Ext.define('Ext.chart.series.Polar', {
 
     isStoreDependantColorCount: true,
 
-    getDefaultSpriteConfig: function () {
+    getDefaultSpriteConfig: function() {
         return {
             type: this.seriesType,
             renderer: this.getRenderer(),
@@ -165,11 +166,11 @@ Ext.define('Ext.chart.series.Polar', {
         };
     },
 
-    applyRotation: function (rotation) {
+    applyRotation: function(rotation) {
         return Ext.draw.sprite.AttributeParser.angle(Ext.draw.Draw.rad(rotation));
     },
 
-    updateRotation: function (rotation) {
+    updateRotation: function(rotation) {
         var sprites = this.getSprites();
 
         if (sprites && sprites[0]) {

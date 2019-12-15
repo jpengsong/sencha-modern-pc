@@ -38,12 +38,12 @@ Ext.define('Ext.grid.plugin.ViewOptionsListItem', {
     cls: Ext.baseCSSPrefix + 'column-options-item',
 
     updateRecord: function(record, oldRecord) {
+        var me = this,
+            tool;
+
         if (!record) {
             return;
         }
-
-        var me = this,
-            tool;
 
         me.callParent([record, oldRecord]);
 

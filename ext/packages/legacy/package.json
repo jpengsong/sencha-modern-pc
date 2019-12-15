@@ -1,6 +1,10 @@
 {
-    "name": "@extjs/ext-react-legacy",
-    "version": "6.5.3.57",
+    "name": "@extjs/ext-legacy",
+    "ext-react-name": "@extjs/ext-react-legacy",
+    "ext-name": "@extjs/ext-legacy",
+    "SenchaExtName": "@sencha/ext-legacy",
+    "SenchaExtReactName": "@sencha/ext-react-legacy",
+    "version": "7.0.0.156",
     "sencha": {
         "name": "legacy",
         "namespace": "Ext",
@@ -11,8 +15,8 @@
         "creator": "Sencha",
         "summary": "Legacy / Deprecated Classes",
         "detailedDescription": "This package contains classes that are no longer supported",
-        "version": "6.5.3.57",
-        "compatVersion": "6.0.0",
+        "version": "7.0.0.156",
+        "compatVersion": "7.0.0",
         "format": "1",
         "output": {
             "base": "${framework.dir}/build/packages/${package.name}/${toolkit.name}/${build.id}",

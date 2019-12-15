@@ -1,3 +1,6 @@
+/**
+ * 本地模拟数据数据库，用于多个数据源联合查询
+ */
 Ext.define("App.ux.utility.SimulateDB", {
     alternateClassName: ['App.SimulateDB'],
     statics: {

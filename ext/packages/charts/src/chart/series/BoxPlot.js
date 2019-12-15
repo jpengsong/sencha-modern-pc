@@ -120,7 +120,7 @@ Ext.define('Ext.chart.series.BoxPlot', {
 
     fieldCategoryY: ['Low', 'Q1', 'Median', 'Q3', 'High'],
 
-    updateXAxis: function (xAxis) {
+    updateXAxis: function(xAxis) {
         xAxis.setExpandRangeBy(0.5);
         this.callParent(arguments);
     }

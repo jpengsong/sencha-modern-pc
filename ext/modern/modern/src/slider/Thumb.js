@@ -3,7 +3,7 @@
  */
 Ext.define('Ext.slider.Thumb', {
     extend: 'Ext.Component',
-    xtype : 'thumb',
+    xtype: 'thumb',
 
     baseCls: Ext.baseCSSPrefix + 'thumb',
 
@@ -112,9 +112,13 @@ Ext.define('Ext.slider.Thumb', {
 
         if (fillTrack === false) {
             fillElement.hide();
-        } else {
+        }
+        else {
             fillElement.show();
-            fillElement.setStyle('background-color', (typeof fillTrack === 'string') ? fillTrack : '');
+            fillElement.setStyle(
+                'background-color',
+                (typeof fillTrack === 'string') ? fillTrack : ''
+            );
         }
     },
 
@@ -126,7 +130,7 @@ Ext.define('Ext.slider.Thumb', {
         return !this.isDisabled();
     },
 
-    initDragConstraints: function () {
+    initDragConstraints: function() {
         // This template method is called JIT to allow us to setup constraints
         if (this.isDisabled()) {
             return false;
@@ -145,35 +149,45 @@ Ext.define('Ext.slider.Thumb', {
         }
     },
 
-    onBeforeDragStart: function (source, info, event) {
+    onBeforeDragStart: function(source, info, event) {
+        var xy;
+
         if (this.isDisabled()) {
             return false;
         }
 
-        var xy = info.proxy.current;
+        xy = info.proxy.current;
+
         this.getSlider().onThumbBeforeDragStart(this, event, xy.x, xy.y);
     },
 
     onDragStart: function(source, info, event) {
         var xy = info.proxy.current;
+
         this.getSlider().onThumbDragStart(this, event, xy.x, xy.y);
     },
 
-    onDragMove: function (source, info, event) {
+    onDragMove: function(source, info, event) {
+        var xy;
+
         if (this.isDisabled()) {
             return false;
         }
 
-        var xy = info.proxy.current;
+        xy = info.proxy.current;
+
         this.getSlider().onThumbDragMove(this, event, xy.x, xy.y);
     },
 
-    onDragEnd: function (source, info, event) {
+    onDragEnd: function(source, info, event) {
+        var xy;
+
         if (this.isDisabled()) {
             return false;
         }
 
-        var xy = info.proxy.current;
+        xy = info.proxy.current;
+
         this.getSlider().onThumbDragEnd(this, event, xy.x, xy.y);
     },
 
@@ -183,7 +197,7 @@ Ext.define('Ext.slider.Thumb', {
         }
     },
 
-    onResize: function (width) {
+    onResize: function(width) {
         var me = this,
             slider = me.ownerCmp;
 
@@ -214,14 +228,14 @@ Ext.define('Ext.slider.Thumb', {
         me.callParent([ui, oldUi]);
     },
 
-    updateDragMax: function (max) {
+    updateDragMax: function(max) {
         var constraint = this.getDraggable().getConstrain(),
             range = constraint.getX();
 
         constraint.setX([ range && range[0], max ]);
     },
 
-    updateDragMin: function (min) {
+    updateDragMin: function(min) {
         var constraint = this.getDraggable().getConstrain(),
             range = constraint.getX();
 

@@ -1,11 +1,11 @@
 /**
- * Base class for any Ext.Component that may contain other Components. Containers handle the basic behavior of
- * containing items, namely adding, inserting and removing items.
+ * Base class for any Ext.Component that may contain other Components. Containers handle the basic
+ * behavior of containing items, namely adding, inserting and removing items.
  *
  * The most commonly used Container classes are Ext.panel.Panel, Ext.window.Window and
- * Ext.tab.Panel. If you do not need the capabilities offered by the aforementioned classes you can create a
- * lightweight Container to be encapsulated by an HTML element to your specifications by using the
- * {@link Ext.Component#autoEl autoEl} config option.
+ * Ext.tab.Panel. If you do not need the capabilities offered by the aforementioned classes you can
+ * create a lightweight Container to be encapsulated by an HTML element to your specifications
+ * by using the {@link Ext.Component#autoEl autoEl} config option.
  *
  * The code below illustrates how to explicitly create a Container:
  *
@@ -41,19 +41,21 @@
  *
  * ## Layout
  *
- * Container classes delegate the rendering of child Components to a layout manager class which must be configured into
- * the Container using the `{@link #layout}` configuration property.
+ * Container classes delegate the rendering of child Components to a layout manager class which must
+ * be configured into the Container using the `{@link #layout}` configuration property.
  *
- * When either specifying child `{@link #cfg-items}` of a Container, or dynamically {@link #method-add adding} Components to a
- * Container, remember to consider how you wish the Container to arrange those child elements, and whether those child
- * elements need to be sized using one of Ext's built-in `{@link #layout}` schemes. By default, Containers use the
- * {@link Ext.layout.container.Auto Auto} scheme which only renders child components, appending them one after the other
- * inside the Container, and **does not apply any sizing** at all.
+ * When either specifying child `{@link #cfg-items}` of a Container, or dynamically
+ * {@link #method-add adding} Components to a Container, remember to consider how you wish
+ * the Container to arrange those child elements, and whether those child elements need to be sized
+ * using one of Ext's built-in `{@link #layout}` schemes. By default, Containers use the
+ * {@link Ext.layout.container.Auto Auto} scheme which only renders child components, appending them
+ * one after the other inside the Container, and **does not apply any sizing** at all.
  *
  * A common mistake is when a developer neglects to specify a `{@link #layout}` (e.g. GridPanels or
- * TreePanels are added to Containers for which no `{@link #layout}` has been specified). If a Container is left to
- * use the default {@link Ext.layout.container.Auto Auto} scheme, none of its child components will be resized, or changed in
- * any way when the Container is resized.
+ * TreePanels are added to Containers for which no `{@link #layout}` has been specified).
+ * If a Container is left to use the default {@link Ext.layout.container.Auto Auto} scheme,
+ * none of its child components will be resized, or changed in any way when the Container
+ * is resized.
  *
  * Certain layout managers allow dynamic addition of child components. Those that do include
  * Ext.layout.container.Card, Ext.layout.container.Anchor, Ext.layout.container.VBox,
@@ -69,15 +71,16 @@
  *     myTabPanel.add(myNewGrid); // Ext.tab.Panel implicitly uses Ext.layout.container.Card
  *     myTabPanel.setActiveTab(myNewGrid);
  *
- * The example above adds a newly created GridPanel to a TabPanel. Note that a TabPanel uses {@link
- * Ext.layout.container.Card} as its layout manager which means all its child items are sized to {@link
- * Ext.layout.container.Fit fit} exactly into its client area.
+ * The example above adds a newly created GridPanel to a TabPanel. Note that a TabPanel uses
+ * {@link Ext.layout.container.Card} as its layout manager which means all its child items are sized
+ * to {@link Ext.layout.container.Fit fit} exactly into its client area.
  *
- * **_Overnesting is a common problem_**. An example of overnesting occurs when a GridPanel is added to a TabPanel by
- * wrapping the GridPanel _inside_ a wrapping Panel (that has no `{@link #layout}` specified) and then add that
- * wrapping Panel to the TabPanel. The point to realize is that a GridPanel **is** a Component which can be added
- * directly to a Container. If the wrapping Panel has no `{@link #layout}` configuration, then the overnested
- * GridPanel will not be sized as expected.
+ * **_Overnesting is a common problem_**. An example of overnesting occurs when a GridPanel is added
+ * to a TabPanel by wrapping the GridPanel _inside_ a wrapping Panel (that has no `{@link #layout}`
+ * specified) and then add that wrapping Panel to the TabPanel. The point to realize is that
+ * a GridPanel **is** a Component which can be added directly to a Container. If the wrapping Panel
+ * has no `{@link #layout}` configuration, then the overnested GridPanel will not be sized
+ * as expected.
  * 
  * ## {@link Ext.Component#reference References} and {@link #referenceHolder Reference Holders}
  * 
@@ -247,8 +250,8 @@
  *     console.log(inner2.lookupReference('a').id, inner2.lookupReference('b').id);
  * 
  * Similar to references, if a {@link Ext.app.ViewController} is attached to this view, it becomes
- * the {@link #defaultListenerScope}, which means un-scoped, late bound events will be directed to the
- * controller. This is powerful as it allows views to be totally declarative:
+ * the {@link #defaultListenerScope}, which means un-scoped, late bound events will be directed
+ * to the controller. This is powerful as it allows views to be totally declarative:
  * 
  *     Ext.define('MyApp.controller.Login', {
  *         extend : 'Ext.app.ViewController',
@@ -346,8 +349,9 @@
  *
  * ## Adding via remote configuration
  *
- * A server side script can be used to add Components which are generated dynamically on the server. An example of
- * adding a GridPanel to a TabPanel where the GridPanel is generated by the server based on certain parameters:
+ * A server side script can be used to add Components which are generated dynamically on the server.
+ * An example of adding a GridPanel to a TabPanel where the GridPanel is generated by the server
+ * based on certain parameters:
  *
  *     // execute an Ajax request to invoke server side script:
  *     Ext.Ajax.request({
@@ -368,8 +372,9 @@
  *         }
  *     });
  *
- * The server script needs to return a JSON representation of a configuration object, which, when decoded will return a
- * config object with an {@link Ext.Component#xtype xtype}. The server might return the following JSON:
+ * The server script needs to return a JSON representation of a configuration object, which,
+ * when decoded will return a config object with an {@link Ext.Component#xtype xtype}. The server
+ * might return the following JSON:
  *
  *     {
  *         "xtype": 'grid',
@@ -396,18 +401,22 @@
  *         "headers": [
  *             {"header": "Customer", "width": 250, "dataIndex": 'customer', "sortable": true},
  *             {"header": "Invoice Number", "width": 120, "dataIndex": 'invNo', "sortable": true},
- *             {"header": "Invoice Date", "width": 100, "dataIndex": 'date', "renderer": Ext.util.Format.dateRenderer('M d, y'), "sortable": true},
- *             {"header": "Value", "width": 120, "dataIndex": 'value', "renderer": 'usMoney', "sortable": true}
+ *             {"header": "Invoice Date", "width": 100, "dataIndex": 'date',
+ *              "renderer": Ext.util.Format.dateRenderer('M d, y'), "sortable": true},
+ *             {"header": "Value", "width": 120, "dataIndex": 'value', "renderer": 'usMoney',
+ *              "sortable": true}
  *         ]
  *     }
  *
- * When the above code fragment is passed through the `eval` function in the success handler of the Ajax request, the
- * result will be a config object which, when added to a Container, will cause instantiation of a GridPanel. **Be sure
- * that the Container is configured with a layout which sizes and positions the child items to your requirements.**
+ * When the above code fragment is passed through the `eval` function in the success handler
+ * of the Ajax request, the result will be a config object which, when added to a Container,
+ * will cause instantiation of a GridPanel. **Be sure that the Container is configured with a layout
+ * which sizes and positions the child items to your requirements.**
  *
- * **Note:** since the code above is _generated_ by a server script, the `autoLoad` params for the Store, the user's
- * preferred date format, the metadata to allow generation of the Model layout, and the ColumnModel can all be generated
- * into the code since these are all known on the server.
+ * **Note:** since the code above is _generated_ by a server script, the `autoLoad` params
+ * for the Store, the user's preferred date format, the metadata to allow generation of the Model
+ * layout, and the ColumnModel can all be generated into the code since these are all known
+ * on the server.
  */
 Ext.define('Ext.container.Container', {
     extend: 'Ext.Component',
@@ -506,7 +515,8 @@ Ext.define('Ext.container.Container', {
     /**
      * @cfg {Object/Function} defaults
      * This option is a means of applying default settings to all added items whether added
-     * through the {@link #cfg-items} config or via the {@link #method-add} or {@link #insert} methods.
+     * through the {@link #cfg-items} config or via the {@link #method-add} or {@link #insert}
+     * methods.
      *
      * Defaults are applied to both config objects and instantiated components conditionally
      * so as not to override existing properties in the item (see {@link Ext#applyIf}).
@@ -540,24 +550,27 @@ Ext.define('Ext.container.Container', {
      *
      * @since 2.3.0
      */
-    
-     /**
-      * @cfg {String} defaultType
-      * The default {@link Ext.Component xtype} of child Components to create in this Container when
-      * a child item is specified as a raw configuration object, rather than as an instantiated Component.
-      * @since 2.3.0
-      */
+
+    /**
+     * @cfg {String} defaultType
+     * The default {@link Ext.Component xtype} of child Components to create in this Container when
+     * a child item is specified as a raw configuration object, rather than as an instantiated
+     * Component.
+     * @since 2.3.0
+     */
     defaultType: 'panel',
 
     /**
      * @cfg {Boolean} detachOnRemove
-     * True to move any component to the {@link Ext#getDetachedBody detachedBody} when the component is
-     * removed from this container. This option is only applicable when the component is not destroyed while
-     * being removed, see {@link #autoDestroy} and {@link #method-remove}. If this option is set to false, the DOM
-     * of the component will remain in the current place until it is explicitly moved.
+     * True to move any component to the {@link Ext#getDetachedBody detachedBody} when the component
+     * is removed from this container. This option is only applicable when the component
+     * is not destroyed while being removed, see {@link #autoDestroy} and {@link #method-remove}.
+     * If this option is set to false, the DOM of the component will remain in the current place
+     * until it is explicitly moved.
      */
     detachOnRemove: true,
 
+    // eslint-disable-next-line max-len
     // @cmd-auto-dependency {aliasPrefix: "widget.", typeProperty: "xtype", defaultTypeProperty: "defaultType", defaultsProperty: "defaults"}
     /**
      * @cfg {Object/Object[]} items
@@ -594,7 +607,8 @@ Ext.define('Ext.container.Container', {
      *
      * Ext uses lazy rendering. Child Components will only be rendered
      * should it become necessary. Items are automatically laid out when they are first
-     * shown (no sizing is done while hidden), or in response to a {@link #method-updateLayout} call.
+     * shown (no sizing is done while hidden), or in response to a {@link #method-updateLayout}
+     * call.
      *
      * Do not specify {@link Ext.panel.Panel#contentEl contentEl} or
      * {@link Ext.panel.Panel#html html} with `items`.
@@ -662,9 +676,9 @@ Ext.define('Ext.container.Container', {
      *
      * ## Configuring the default layout type
      *
-     * If a certain Container class has a default layout (For example a {@link Ext.toolbar.Toolbar Toolbar}
-     * with a default `Box` layout), then to simply configure the default layout,
-     * use an object, but without the `type` property:
+     * If a certain Container class has a default layout (For example a
+     * {@link Ext.toolbar.Toolbar Toolbar} with a default `Box` layout), then to simply configure
+     * the default layout, use an object, but without the `type` property:
      *
      *
      *     xtype: 'toolbar',
@@ -683,14 +697,14 @@ Ext.define('Ext.container.Container', {
      * and not passing them as multiple arguments or an array.
      */
     suspendLayout: false,
-    
+
     /**
      * @cfg {String} defaultFocus
      *
      * Specifies a child Component to receive focus when this Container's {@link #method-focus}
      * method is called. Should be a valid {@link Ext.ComponentQuery query} selector.
      */
-    
+
     /**
      * When set to `true`, two elements are added to the container's element. These are the
      * `{@link #tabGuardBeforeEl}` and `{@link #tabGuardAfterEl}`.
@@ -709,6 +723,7 @@ Ext.define('Ext.container.Container', {
     // Begin Properties
     // ***********************************************************************************
 
+    /* eslint-disable indent, max-len */
     /**
      * @property {String/String[]/Ext.XTemplate} tabGuardTpl
      * This template is used to generate the `tabGuard` elements. It is used once per
@@ -725,7 +740,8 @@ Ext.define('Ext.container.Container', {
                          Ext.baseCSSPrefix + 'tab-guard-{tabGuardPosition}"' +
             ' style="width:0px;height:0px;">' +
         '</span>',
-    
+    /* eslint-enable indent, max-len */
+
     /**
      * @property {Object} tabGuardElements
      * Read only object containing property names for tab guard elements, keyed by position.
@@ -736,7 +752,7 @@ Ext.define('Ext.container.Container', {
         before: 'tabGuardBeforeEl',
         after: 'tabGuardAfterEl'
     },
-    
+
     /**
      * @property {Number} tabGuardBeforeIndex The tabIndex attribute value to assign
      * to the "before" tab guard element. Default is `undefined` for automatic detection
@@ -744,7 +760,7 @@ Ext.define('Ext.container.Container', {
      * @private
      * @since 6.2.0
      */
-    
+
     /**
      * @property {Number} tabGuardAfterIndex The tabIndex attribute value to assign
      * to the "after" tab guard element. Default is `undefined` for automatic detection
@@ -782,7 +798,7 @@ Ext.define('Ext.container.Container', {
      * @inheritdoc
      */
     ariaRole: 'presentation',
-    
+
     /**
      * @cfg baseCls
      * @inheritdoc
@@ -795,7 +811,7 @@ Ext.define('Ext.container.Container', {
      * @private
      */
     layoutCounter: 0,
-    
+
     // ***********************************************************************************
     // End Properties
     // ***********************************************************************************
@@ -811,7 +827,8 @@ Ext.define('Ext.container.Container', {
      * Fires after any {@link Ext.Component} is added or inserted into the container.
      * @param {Ext.container.Container} this
      * @param {Ext.Component} component The component that was added
-     * @param {Number} index The index at which the component was added to the container's items collection
+     * @param {Number} index The index at which the component was added to the container's items
+     * collection
      * @since 2.3.0
      */
 
@@ -819,7 +836,8 @@ Ext.define('Ext.container.Container', {
      * @event afterlayout
      * Fires when the components in this container are arranged by the associated layout manager.
      * @param {Ext.container.Container} this
-     * @param {Ext.layout.container.Container} layout The ContainerLayout implementation for this container
+     * @param {Ext.layout.container.Container} layout The ContainerLayout implementation for this
+     * container
      * @since 2.3.0
      */
 
@@ -829,7 +847,8 @@ Ext.define('Ext.container.Container', {
      * A handler can return false to cancel the add.
      * @param {Ext.container.Container} this
      * @param {Ext.Component} component The component being added
-     * @param {Number} index The index at which the component will be added to the container's items collection
+     * @param {Number} index The index at which the component will be added to the container's items
+     * collection
      * @since 2.3.0
      */
 
@@ -924,11 +943,11 @@ Ext.define('Ext.container.Container', {
             needsLayout = false,
             addingArray, items, i, length, item, pos, ret, instanced;
 
-
         if (args.length === 1 && Ext.isArray(args[0])) {
             items = args[0];
             addingArray = true;
-        } else {
+        }
+        else {
             items = args;
         }
 
@@ -946,48 +965,56 @@ Ext.define('Ext.container.Container', {
         // loop
         for (i = 0; i < length; i++) {
             item = items[i];
+
             //<debug>
             if (!item) {
                 Ext.raise("Cannot add null item to Container with itemId/id: " + me.getItemId());
             }
 
             if (item.destroyed) {
-                Ext.raise("Cannot add destroyed item '" + item.getId() + "' to Container '" + me.getId() + "'");
+                Ext.raise("Cannot add destroyed item '" + item.getId() + "' to Container '" +
+                          me.getId() + "'");
             }
             //</debug>
 
             pos = (index < 0) ? me.items.length : (index + i);
             instanced = !!item.instancedCmp;
             delete item.instancedCmp;
-            // Floating Components are not added into the items collection, but to a separate floatingItems collection
+
+            // Floating Components are not added into the items collection,
+            // but to a separate floatingItems collection
             if (item.floating) {
                 (me.floatingItems || (me.floatingItems = new Ext.util.ItemCollection())).add(item);
                 item.onAdded(me, pos, instanced);
                 delete item.$initParent;
+
                 if (me.hasListeners.add) {
                     me.fireEvent('add', me, item, pos);
                 }
-            } else if ((!me.hasListeners.beforeadd || me.fireEvent('beforeadd', me, item, pos) !== false) && me.onBeforeAdd(item) !== false) {
+            }
+            // eslint-disable-next-line max-len
+            else if ((!me.hasListeners.beforeadd || me.fireEvent('beforeadd', me, item, pos) !== false) && me.onBeforeAdd(item) !== false) {
                 me.items.insert(pos, item);
                 item.onAdded(me, pos, instanced);
                 delete item.$initParent;
-                
+
                 if (me.focusableContainer) {
                     me.onFocusableChildAdd(item);
                 }
-                
+
                 me.onAdd(item, pos);
                 layout.onAdd(item, pos);
 
                 needsLayout = true;
+
                 if (me.hasListeners.add) {
                     me.fireEvent('add', me, item, pos);
                 }
             }
 
-            // This flag may be set by onBeforeAdd to tell the layout system that any remove is temporary
-            // and that focus should not be reverted because Ext.layout.Layout#moveItem will be
-            // moving things into place soon, and that will handle keeping focus stable.
+            // This flag may be set by onBeforeAdd to tell the layout system that any remove
+            // is temporary and that focus should not be reverted because Ext.layout.Layout#moveItem
+            // will be moving things into place soon, and that will handle keeping focus stable.
             item.isLayoutMoving = false;
         }
 
@@ -1001,18 +1028,18 @@ Ext.define('Ext.container.Container', {
             if (length && me.focusableContainer) {
                 me.$initFocusableContainerAfterLayout = true;
             }
-            
+
             Ext.resumeLayouts(true);
         }
 
         return ret;
     },
-    
-    onAdded: function(container, pos, instanced) { 
-        this.callParent([container, pos, instanced]); 
+
+    onAdded: function(container, pos, instanced) {
+        this.callParent([container, pos, instanced]);
         this.containerOnAdded(container, instanced);
     },
-    
+
     /**
      * @method onRemoved
      * @inheritdoc
@@ -1033,8 +1060,10 @@ Ext.define('Ext.container.Container', {
         if (floaters) {
             floaters = floaters.items;
             floaterCount = floaters.length;
+
             for (i = 0; i < floaterCount; i++) {
                 floater = floaters[i];
+
                 if (!floater.rendered && floater.autoShow) {
                     floater.show();
                 }
@@ -1059,13 +1088,13 @@ Ext.define('Ext.container.Container', {
         if (me.hasListeners.afterlayout) {
             me.fireEvent('afterlayout', me, layout);
         }
-        
+
         // focusableContainer could have changed between setting the flag in add()
         // and actual layout, so check again
         if (me.focusableContainer && me.$initFocusableContainerAfterLayout) {
             me.initFocusableContainer();
         }
-        
+
         delete me.$initFocusableContainerAfterLayout;
     },
 
@@ -1074,7 +1103,7 @@ Ext.define('Ext.container.Container', {
             items = me.items,
             floatingItems = me.floatingItems,
             c;
-        
+
         if (me.focusableContainer) {
             me.destroyFocusableContainer();
         }
@@ -1083,9 +1112,9 @@ Ext.define('Ext.container.Container', {
             while ((c = items.first())) {
                 me.doRemove(c, true);
             }
-            
+
             items.destroy();
-            
+
             me.items = null;
         }
 
@@ -1093,18 +1122,18 @@ Ext.define('Ext.container.Container', {
             while ((c = floatingItems.first())) {
                 me.doRemove(c, true);
             }
-            
+
             floatingItems.destroy();
-            
+
             me.floatingItems = null;
         }
-        
+
         Ext.destroy(me.layout);
-        
+
         me.callParent();
     },
 
-    beforeRender: function () {
+    beforeRender: function() {
         var me = this,
             layout = me.getLayout(),
             targetCls;
@@ -1133,13 +1162,13 @@ Ext.define('Ext.container.Container', {
      * component. If the function returns false at any point, the cascade is stopped on
      * that branch.
      * @param {Function} fn The function to call
-     * @param {Object} [scope] The scope of the function (defaults to current component)
+     * @param {Object} [scope] The scope of the function(defaults to current component)
      * @param {Array} [origArgs] The args to call the function with. The current component
      * always passed as the last argument.
      * @return {Ext.Container} this
      * @since 2.3.0
      */
-    cascade: function(fn, scope, origArgs){
+    cascade: function(fn, scope, origArgs) {
         var me = this,
             cs = me.items ? me.items.items : [],
             len = cs.length,
@@ -1149,16 +1178,19 @@ Ext.define('Ext.container.Container', {
             componentIndex = args.length - 1;
 
         if (fn.apply(scope || me, args) !== false) {
-            for (; i < len; i++){
+            for (; i < len; i++) {
                 c = cs[i];
+
                 if (c.cascade) {
                     c.cascade(fn, scope, origArgs);
-                } else {
+                }
+                else {
                     args[componentIndex] = c;
                     fn.apply(scope || c, args);
                 }
             }
         }
+
         return this;
     },
 
@@ -1167,22 +1199,28 @@ Ext.define('Ext.container.Container', {
      * or whether it is a descendant.
      *
      * @param {Ext.Component} comp The Component to test.
-     * @param {Boolean} [deep=false] Pass `true` to test for the Component being a descendant at any level.
+     * @param {Boolean} [deep=false] Pass `true` to test for the Component being a descendant
+     * at any level.
      * @return {Boolean} `true` if the passed Component is contained at the specified level.
      */
     contains: function(comp, deep) {
         var result = false;
+
         if (deep) {
             this.cascade(function(c) {
                 // Only test if the item is a container
                 if (c.contains && c.contains(comp)) {
                     result = true;
+
                     return false;
                 }
             });
+
             return result;
-        } else {
-            return this.items.contains(comp) || (this.floatingItems && this.floatingItems.contains(comp));
+        }
+        else {
+            return this.items.contains(comp) ||
+                   (this.floatingItems && this.floatingItems.contains(comp));
         }
     },
 
@@ -1206,11 +1244,11 @@ Ext.define('Ext.container.Container', {
                 itemsToDisable[i].disable(silent, true);
             }
         }
-        
+
         if (me.focusableContainer) {
             me.activateFocusableContainer(false);
         }
-        
+
         return me;
     },
 
@@ -1234,7 +1272,7 @@ Ext.define('Ext.container.Container', {
                 itemsToDisable[i].enable(silent, true);
             }
         }
-        
+
         if (me.focusableContainer) {
             me.activateFocusableContainer(true);
         }
@@ -1245,7 +1283,8 @@ Ext.define('Ext.container.Container', {
     /**
      * Return the immediate child Component in which the passed element is located.
      * @param {Ext.dom.Element/HTMLElement/String} el The element to test (or ID of element).
-     * @param {Boolean} deep If `true`, returns the deepest descendant Component which contains the passed element.
+     * @param {Boolean} deep If `true`, returns the deepest descendant Component which contains
+     * the passed element.
      * @return {Ext.Component} The child item which contains the passed element.
      */
     getChildByElement: function(el, deep) {
@@ -1256,13 +1295,16 @@ Ext.define('Ext.container.Container', {
             ln = it.length;
 
         el = Ext.getDom(el);
+
         for (; i < ln; i++) {
             item = it[i];
             itemEl = item.getEl();
+
             if (itemEl && ((itemEl.dom === el) || itemEl.contains(el))) {
                 return (deep && item.getChildByElement) ? item.getChildByElement(el, deep) : item;
             }
         }
+
         return null;
     },
 
@@ -1288,6 +1330,7 @@ Ext.define('Ext.container.Container', {
             comp = comp.getItemId();
         }
 
+        // eslint-disable-next-line vars-on-top
         var c = this.items.get(comp),
             floaters = this.floatingItems;
 
@@ -1310,7 +1353,7 @@ Ext.define('Ext.container.Container', {
      */
     getFocusEl: function() {
         var delegate = this.getDefaultFocus();
-        
+
         if (delegate) {
             // DO NOT drill down to delegate's focusEl or return its main el here.
             // Container's getFocusEl() is supposed to return delegates as components,
@@ -1326,8 +1369,8 @@ Ext.define('Ext.container.Container', {
     },
 
     /**
-     * Returns the {@link Ext.layout.container.Container layout} instance currently associated with this Container.
-     * If a layout has not been instantiated yet, that is done first
+     * Returns the {@link Ext.layout.container.Container layout} instance currently associated
+     * with this Container. If a layout has not been instantiated yet, that is done first
      * @return {Ext.layout.container.Container} The layout
      */
     getLayout: function() {
@@ -1343,8 +1386,8 @@ Ext.define('Ext.container.Container', {
 
     /**
      * @protected
-     * Used by {@link Ext.ComponentQuery ComponentQuery}, {@link #child} and {@link #down} to retrieve all of the items
-     * which can potentially be considered a child of this Container.
+     * Used by {@link Ext.ComponentQuery ComponentQuery}, {@link #child} and {@link #down}
+     * to retrieve all of the items which can potentially be considered a child of this Container.
      *
      * This may be overriden by Components which have ownership of Components
      * that are not contained in the {@link #property-items} collection.
@@ -1365,6 +1408,7 @@ Ext.define('Ext.container.Container', {
         for (; i < len; i++) {
             item = items[i];
             result[result.length] = item;
+
             if (deep && item.getRefItems) {
                 result.push.apply(result, item.getRefItems(true));
             }
@@ -1374,9 +1418,11 @@ Ext.define('Ext.container.Container', {
         if (me.floatingItems) {
             items = me.floatingItems.items;
             len = items.length;
+
             for (i = 0; i < len; i++) {
                 item = items[i];
                 result[result.length] = item;
+
                 if (deep && item.getRefItems) {
                     result.push.apply(result, item.getRefItems(true));
                 }
@@ -1385,27 +1431,27 @@ Ext.define('Ext.container.Container', {
 
         return result;
     },
-    
+
     /**
      * Finds the configured default focus item. See {@link #defaultFocus}.
      */
     getDefaultFocus: function() {
         var defaultFocus = this.defaultFocus,
             result;
-        
+
         // This might not work during initConfig
         if (defaultFocus && !this.isConfiguring) {
             result = this.down(defaultFocus);
         }
-        
+
         // Returning undefined is ok
         return result;
     },
-    
+
     setDefaultFocus: function(value) {
         this.defaultFocus = value;
     },
-    
+
     initComponent: function() {
         var me = this;
 
@@ -1474,11 +1520,11 @@ Ext.define('Ext.container.Container', {
      * requested.
      * @protected
      */
-    initInheritedState: function (inheritedState, inheritedStateInner) {
+    initInheritedState: function(inheritedState, inheritedStateInner) {
         var me = this,
             layout = me.layout;
 
-        me.callParent([ inheritedState, inheritedStateInner ]);
+        me.callParent([inheritedState, inheritedStateInner]);
 
         if (me.collapsed) {
             inheritedState.collapsed = true;
@@ -1499,7 +1545,8 @@ Ext.define('Ext.container.Container', {
      * @param {Number} index The index at which the Component will be inserted
      * into the Container's items collection
      *
-     * @param {Ext.Component/Object/Ext.Component[]/Object[]} component The child Component or config object to insert.
+     * @param {Ext.Component/Object/Ext.Component[]/Object[]} component The child Component
+     * or config object to insert.
      *
      * Ext uses lazy rendering, and will only render the inserted Component should
      * it become necessary.
@@ -1521,23 +1568,28 @@ Ext.define('Ext.container.Container', {
      */
     insert: function(index, component) {
         var compIdx;
+
         if (component && component.isComponent) {
             compIdx = this.items.indexOf(component);
+
             if (compIdx !== -1) {
                 return this.move(compIdx, index);
             }
         }
+
         return this.add(index, component);
     },
 
     /**
      * @protected
-     * Called when a raw config object is added to this container either during initialization of the {@link #cfg-items} config,
-     * or when new items are {@link #method-add added}, or {@link #method-insert inserted}.
+     * Called when a raw config object is added to this container either during initialization
+     * of the {@link #cfg-items} config, or when new items are {@link #method-add added},
+     * or {@link #method-insert inserted}.
      *
      * This method converts the passed object into an instanced child component.
      *
-     * This may be overridden in subclasses when special processing needs to be applied to child creation. 
+     * This may be overridden in subclasses when special processing needs to be applied to child
+     * creation. 
      *
      * @param {Object} comp The config object being added.
      * @return {Ext.Component} The component to be added.
@@ -1572,6 +1624,7 @@ Ext.define('Ext.container.Container', {
                 comp.instancedCmp = true;
             }
         }
+
         return comp;
     },
 
@@ -1593,20 +1646,28 @@ Ext.define('Ext.container.Container', {
         if (fromIdx.isComponent) {
             fromIdx = items.indexOf(fromIdx);
         }
+
         item = items.getAt(fromIdx);
+
         if (fromIdx !== toIdx) {
             item = items.removeAt(fromIdx);
+
             if (item === false) {
                 return false;
             }
+
             toIdx = Math.min(toIdx, items.getCount());
             items.insert(toIdx, item);
+
             me.onMove(item, fromIdx, toIdx);
+
             if (me.hasListeners.childmove) {
                 me.fireEvent('childmove', me, item, fromIdx, toIdx);
             }
+
             me.updateLayout();
         }
+
         return item;
     },
 
@@ -1635,7 +1696,7 @@ Ext.define('Ext.container.Container', {
      * @return {Ext.Component/Ext.Component[]} The moved item(s).
      * @since 5.0.0
      */
-    moveBefore: function (item, before) {
+    moveBefore: function(item, before) {
         var activeEl,
             refocusEl;
 
@@ -1650,13 +1711,16 @@ Ext.define('Ext.container.Container', {
                 refocusEl.suspendFocusEvents();
                 item.isLayoutMoving = true;
             }
+
             item = this.layout.moveItemBefore(item, before);
+
             if (refocusEl) {
                 item.isLayoutMoving = false;
                 refocusEl.focus();
                 refocusEl.resumeFocusEvents();
             }
         }
+
         return item;
     },
 
@@ -1685,7 +1749,7 @@ Ext.define('Ext.container.Container', {
      * @return {Ext.Component/Ext.Component[]} The moved item(s).
      * @since 5.0.0
      */
-    moveAfter: function (item, after) {
+    moveAfter: function(item, after) {
         var layout = this.layout,
             index;
 
@@ -1693,15 +1757,17 @@ Ext.define('Ext.container.Container', {
             index = after ? layout.getMoveAfterIndex(after) : 0;
             item = this.moveBefore(item, this.items.getAt(index));
         }
+
         return item;
     },
 
     /**
-     * A method to find a child component after the passed child parameter. If a selector is also provided,
-     * the first child component matching the selector will be returned.
+     * A method to find a child component after the passed child parameter. If a selector is also
+     * provided, the first child component matching the selector will be returned.
      *
      * @param {Ext.Component} child The child to use as a starting point to find the next child.
-     * @param {String} [selector] A {@link Ext.ComponentQuery} selector to find the next child. This will return the next child matching this selector. This parameter is optional.
+     * @param {String} [selector] A {@link Ext.ComponentQuery} selector to find the next child.
+     * This will return the next child matching this selector. This parameter is optional.
      * @return {Ext.Component} The next child found, `null` if no child found.
      */
     nextChild: function(child, selector) {
@@ -1721,10 +1787,12 @@ Ext.define('Ext.container.Container', {
                         break;
                     }
                 }
-            } else {
+            }
+            else {
                 result = items.getAt(childIndex + 1);
             }
         }
+
         return result || null;
     },
 
@@ -1764,6 +1832,7 @@ Ext.define('Ext.container.Container', {
 
         if (owner && owner !== this) {
             item.isLayoutMoving = true;
+
             owner.remove(item, {
                 destroy: false,
                 detach: false
@@ -1804,11 +1873,12 @@ Ext.define('Ext.container.Container', {
     },
 
     /**
-     * A method to find a child component before the passed child parameter. If a selector is also provided,
-     * the first child component matching the selector will be returned.
+     * A method to find a child component before the passed child parameter. If a selector is also
+     * provided, the first child component matching the selector will be returned.
      *
      * @param {Ext.Component} child The child to use as a starting point to find the previous child.
-     * @param {String} [selector] A {@link Ext.ComponentQuery} selector to find the previous child. This will return the first child matching this selector. This parameter is optional.
+     * @param {String} [selector] A {@link Ext.ComponentQuery} selector to find the previous child.
+     * This will return the first child matching this selector. This parameter is optional.
      * @return {Ext.Component} The previous child found, `null` if no child found.
      */
     prevChild: function(child, selector) {
@@ -1828,10 +1898,12 @@ Ext.define('Ext.container.Container', {
                         break;
                     }
                 }
-            } else {
+            }
+            else {
                 result = items.getAt(childIndex - 1);
             }
         }
+
         return result || null;
     },
 
@@ -1844,8 +1916,8 @@ Ext.define('Ext.container.Container', {
      *
      * @param {Object} [autoDestroy] Flags to determine what to do with the removed component.
      * (May also be specified as a boolean `autoDestroy` flag for backward compatibility).
-     * @param {Boolean} [autoDestroy.destroy] Defaults to this Container's {@link #autoDestroy} config.
-     * Specifies whether to destroy the component being removed.
+     * @param {Boolean} [autoDestroy.destroy] Defaults to this Container's {@link #autoDestroy}
+     * config. Specifies whether to destroy the component being removed.
      * @param [autoDestroy.detach] Defaults to the {@link #detachOnRemove} configuration
      * Specifies whether to remove the component's DOM from the container and into
      * the {@link Ext#getDetachedBody detached body element}
@@ -1866,7 +1938,8 @@ Ext.define('Ext.container.Container', {
 
         //<debug>
         if (!arguments.length) {
-            Ext.log.warn("Ext.container.Container: remove takes an argument of the component to remove. cmp.remove() is incorrect usage.");
+            Ext.log.warn("Ext.container.Container: remove takes an argument of the component " +
+                         "to remove. cmp.remove() is incorrect usage.");
         }
         //</debug>
 
@@ -1880,7 +1953,7 @@ Ext.define('Ext.container.Container', {
             if (!me.destroying && !me.destroyAfterRemoving && !c.floating) {
                 me.updateLayout();
             }
-            
+
             if (me.destroyAfterRemoving) {
                 me.destroy();
             }
@@ -1908,14 +1981,17 @@ Ext.define('Ext.container.Container', {
 
         if (floaters) {
             removeItems = me.items.items.concat(floaters.items);
-        } else {
+        }
+        else {
             removeItems = me.items.items.slice();
         }
+
         len = removeItems.length;
 
         // Suspend Layouts while we remove multiple items from the container
         Ext.suspendLayouts();
         me.removingAll = true;
+
         for (; i < len; i++) {
             item = removeItems[i];
             me.remove(item, autoDestroy);
@@ -1924,9 +2000,13 @@ Ext.define('Ext.container.Container', {
                 items.push(item);
             }
         }
+
         me.removingAll = false;
-        // Resume Layouts now that all items have been removed and do a single layout (if we removed anything!)
+
+        // Resume Layouts now that all items have been removed and do a single layout
+        // (if we removed anything!)
         Ext.resumeLayouts(!!len);
+
         return items;
     },
 
@@ -1952,6 +2032,7 @@ Ext.define('Ext.container.Container', {
                     type: configuration
                 };
             }
+
             type = configuration.type;
 
             if (oldLayout) {
@@ -1975,6 +2056,7 @@ Ext.define('Ext.container.Container', {
                             type: oldLayout
                         };
                     }
+
                     configuration = Ext.merge({}, oldLayout, configuration);
                 }
             }
@@ -1983,8 +2065,10 @@ Ext.define('Ext.container.Container', {
                 configuration.owner = this;
                 configuration = Ext.Factory.layout(configuration);
             }
+
             configuration.setOwner(this);
         }
+
         me.layout = configuration;
 
         if (me.rendered) {
@@ -2007,8 +2091,8 @@ Ext.define('Ext.container.Container', {
      *     panel.getLayout().setActiveItem('card-2');
      *     panel.getLayout().setActiveItem(1);
      *
-     * @param {Ext.Component/Number/String} item  The component, component {@link Ext.Component#id id},
-     * {@link Ext.Component#itemId itemId}, or index of component.
+     * @param {Ext.Component/Number/String} item  The component, component
+     * {@link Ext.Component#id id}, {@link Ext.Component#itemId itemId}, or index of component.
      * @return {Ext.Component} the activated component or false when nothing activated.
      * False is returned also when trying to activate an already active item.
      */
@@ -2017,9 +2101,7 @@ Ext.define('Ext.container.Container', {
     },
 
     updateActions: function(actions) {
-        var me = this,
-            actionName,
-            action;
+        var actionName;
 
         // Convert action configs into Ext.Action instances.
         for (actionName in actions) {
@@ -2035,29 +2117,29 @@ Ext.define('Ext.container.Container', {
      */
     getAction: function(name) {
         var owner = this;
-        
+
         for (owner = this; owner; owner = owner.getRefOwner()) {
             if (owner.actions && owner.actions[name]) {
                 return owner.actions[name];
             }
         }
     },
-    
+
     onShowComplete: function(cb, scope) {
         var me = this;
-        
+
         me.callParent([cb, scope]);
-        
+
         if (me.focusableContainer && me.activateFocusableContainer) {
             me.activateFocusableContainer();
         }
     },
-    
+
     onFocusEnter: function(e) {
         var me = this;
 
         me.callParent([e]);
-        
+
         // We DO NOT check if `me` is focusable here. The reason is that
         // non-focusable containers need to track focus entering their
         // children so that revertFocus would work if these children
@@ -2066,12 +2148,12 @@ Ext.define('Ext.container.Container', {
             me.mixins.focusablecontainer.onFocusEnter.call(me, e);
         }
     },
-    
+
     onFocusLeave: function(e) {
         var me = this;
-        
+
         me.callParent([e]);
-        
+
         // Ditto
         if (me.focusableContainer && !me.destroying && !me.destroyed) {
             me.mixins.focusablecontainer.onFocusLeave.call(me, e);
@@ -2105,21 +2187,24 @@ Ext.define('Ext.container.Container', {
                     // conditionally set all the configs in defaults if they have not
                     // yet been set on the component instance.
                     config.setConfig(defaults, null, me._applyDefaultsOptions);
-                } else {
+                }
+                else {
                     // If we have a config object (not a component instance) we can do a
                     // full (deep) merge of the config with the defaults object.
                     // Fork the defaults object first so that we don't modify the original
                     config = me.self.getConfigurator().merge(me, Ext.Object.fork(defaults), config);
                 }
             }
+
             return config;
         },
 
-        // The targetCls is a CSS class that the layout needs added to the targetEl. The targetEl is where the container's
-        // children are rendered and is usually just the main el. Some containers (e.g. panels) use a body instead.
+        // The targetCls is a CSS class that the layout needs added to the targetEl. The targetEl
+        // is where the container's children are rendered and is usually just the main el.
+        // Some containers (e.g. panels) use a body instead.
         //
-        // In general, if a class overrides getTargetEl it will also need to override this method. This is necessary to
-        // avoid a post-render step to add the targetCls.
+        // In general, if a class overrides getTargetEl it will also need to override this method.
+        // This is necessary to avoid a post-render step to add the targetCls.
         applyTargetCls: function(targetCls) {
             this.layoutTargetCls = targetCls;
         },
@@ -2144,27 +2229,31 @@ Ext.define('Ext.container.Container', {
                 if (flags.destroy != null) {
                     doDestroy = flags.destroy;
                 }
-                
+
                 if (flags.detach != null) {
                     doDetach = flags.detach;
                 }
             }
 
-            // isDestroying flag is true if the removal is taking place as part of destruction, OR if removal is intended to *cause* destruction
+            // isDestroying flag is true if the removal is taking place as part of destruction,
+            // OR if removal is intended to *cause* destruction
             isDestroying = component.destroying || doDestroy;
 
             if (floating) {
                 me.floatingItems.remove(component);
-            } else {
+            }
+            else {
                 me.items.remove(component);
             }
 
-            // Inform ownerLayout of removal before deleting the ownerLayout & ownerCt references in the onRemoved call
+            // Inform ownerLayout of removal before deleting the ownerLayout & ownerCt references
+            // in the onRemoved call
             if (hasLayout && !floating) {
                 // Removing a component from a running layout has to cancel the layout
                 if (layout.running) {
                     Ext.Component.cancelLayout(component, isDestroying);
                 }
+
                 layout.onRemove(component, isDestroying);
             }
 
@@ -2191,16 +2280,19 @@ Ext.define('Ext.container.Container', {
                 if (hasLayout && !floating) {
                     layout.afterRemove(component);
                 }
+
                 if (doDetach && component.rendered) {
                     component.detachFromBody();
                 }
             }
         },
 
-        finishRenderChildren: function () {
+        finishRenderChildren: function() {
+            var layout;
+
             this.callParent();
 
-            var layout = this.getLayout();
+            layout = this.getLayout();
 
             if (layout) {
                 layout.finishRender();
@@ -2220,7 +2312,7 @@ Ext.define('Ext.container.Container', {
         /**
          * @private
          */
-        getContentTarget: function(){
+        getContentTarget: function() {
             return this.getLayout().getContentTarget();
         },
 
@@ -2239,11 +2331,13 @@ Ext.define('Ext.container.Container', {
             // The passed array is a reference to a user's config object and MUST NOT be mutated.
             if (Ext.isArray(items)) {
                 items = items.slice();
-            } else {
+            }
+            else {
                 items = [items];
             }
 
             // Make sure defaults are applied and item is initialized
+            // eslint-disable-next-line vars-on-top
             var me = this,
                 i = 0,
                 len = items.length,
@@ -2251,24 +2345,29 @@ Ext.define('Ext.container.Container', {
 
             for (; i < len; i++) {
                 item = items[i];
+
                 if (item == null) {
                     Ext.Array.erase(items, i, 1);
                     --i;
                     --len;
-                } else {
+                }
+                else {
                     if (applyDefaults) {
                         item = this.applyDefaults(item);
                     }
 
                     // Tell the item we're in a container during construction
                     item.$initParent = me;
+
                     if (item.isComponent) {
                         // When this was passed to us, it's an already constructed component
                         // This is useful to know because we can make decisions regarding the
                         // state of the component if it's newly created
                         item.instancedCmp = true;
                     }
+
                     items[i] = me.lookupComponent(item);
+
                     // delete here because item may have been a config, so we don't
                     // want to mutate it
                     delete item.$initParent;
@@ -2287,8 +2386,10 @@ Ext.define('Ext.container.Container', {
             if (floaters) {
                 floaters = floaters.items;
                 floaterCount = floaters.length;
+
                 for (i = 0; i < floaterCount; i++) {
                     floater = floaters[i];
+
                     if (floater.el && !floater.hidden) {
                         floater.setPosition(floater.x, floater.y);
                     }
@@ -2303,24 +2404,24 @@ Ext.define('Ext.container.Container', {
                 minTabIndex = me.tabGuardBeforeIndex || 0,
                 maxTabIndex = me.tabGuardAfterIndex || 0,
                 i, tabIndex, nodes;
-            
+
             if (!me.rendered || !me.tabGuard) {
                 return;
             }
-            
+
             nodes = me.el.findTabbableElements({
                 skipSelf: true
             });
-            
+
             // Both tab guards may be in the list, disregard them
             if (nodes[0] === beforeGuard.dom) {
                 nodes.shift();
             }
-            
+
             if (nodes[nodes.length - 1] === afterGuard.dom) {
                 nodes.pop();
             }
-            
+
             if (nodes && nodes.length) {
                 // In some cases it might be desirable to configure before and after
                 // guard elements' tabIndex explicitly but if it is missing we try to
@@ -2332,14 +2433,14 @@ Ext.define('Ext.container.Container', {
                         // Can't use node.tabIndex property here, IE8 will report 0
                         // even if tabIndex attribute is missing.
                         tabIndex = +nodes[i].getAttribute('tabIndex');
-                        
+
                         if (tabIndex > 0) {
                             minTabIndex = Math.min(minTabIndex, tabIndex);
                             maxTabIndex = Math.max(maxTabIndex, tabIndex);
                         }
                     }
                 }
-                
+
                 beforeGuard.dom.setAttribute('tabIndex', minTabIndex);
                 afterGuard.dom.setAttribute('tabIndex', maxTabIndex);
             }
@@ -2349,14 +2450,14 @@ Ext.define('Ext.container.Container', {
                 beforeGuard.dom.removeAttribute('tabIndex');
                 afterGuard.dom.removeAttribute('tabIndex');
             }
-            
+
             if (me.onTabGuardFocusEnter) {
                 if (!beforeGuard.hasListeners.focusenter) {
                     beforeGuard.on('focusenter', me.onTabGuardFocusEnter, me);
                 }
-                
+
                 if (!afterGuard.hasListeners.focusenter) {
-                    afterGuard.on('focusenter',  me.onTabGuardFocusEnter, me);
+                    afterGuard.on('focusenter', me.onTabGuardFocusEnter, me);
                 }
             }
         },
@@ -2383,7 +2484,7 @@ Ext.define('Ext.container.Container', {
             }
         },
 
-        setupRenderTpl: function (renderTpl) {
+        setupRenderTpl: function(renderTpl) {
             this.callParent(arguments);
             this.getLayout().setupRenderTpl(renderTpl);
         }

@@ -1,5 +1,6 @@
 /**
- * The slider is a way to allow the user to select a value from a given numerical range. You might use it for choosing
+ * The slider is a way to allow the user to select a value from a given numerical range. 
+ * You might use it for choosing
  */
 Ext.define('Ext.field.SingleSlider', {
     extend: 'Ext.field.Slider',
@@ -58,13 +59,13 @@ Ext.define('Ext.field.SingleSlider', {
     * @param {Array} value The end value.
     * @param {Ext.event.Event} e
     */
-   
+
     /**
      * @cfg value
      * @inheritdoc Ext.slider.Slider#cfg-value
      * @accessor
      */
-   
+
     /**
      * @property defaultBindProperty
      * @inheritdoc
@@ -81,17 +82,21 @@ Ext.define('Ext.field.SingleSlider', {
 
     applyValue: function(value, oldValue) {
         value = this.callParent([value, oldValue]);
+
         if (value && Ext.isArray(value)) {
             value = value[0];
         }
+
         return value;
     },
 
     getValue: function() {
         var value = this.callParent();
+
         if (value && Ext.isArray(value)) {
             value = value[0];
         }
+
         return value;
     },
 
@@ -106,9 +111,11 @@ Ext.define('Ext.field.SingleSlider', {
 
     onSliderDrag: function(slider, thumb, value, e) {
         var me = this;
+
         if (me.getLiveUpdate()) {
             me.setValue(value);
         }
+
         me.fireEvent('drag', me, slider, value, e);
     },
 

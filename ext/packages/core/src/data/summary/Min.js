@@ -13,6 +13,7 @@ Ext.define('Ext.data.summary.Min', {
 
         for (i = begin; i < end; ++i) {
             v = this.extractValue(records[i], property, root);
+
             if (v < min) {
                 min = v;
             }

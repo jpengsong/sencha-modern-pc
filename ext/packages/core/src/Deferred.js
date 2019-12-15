@@ -1,15 +1,15 @@
-/*
- Ext.Deferred adapted from:
- [DeftJS](https://github.com/deftjs/deftjs5)
- Copyright (c) 2012-2013 [DeftJS Framework Contributors](http://deftjs.org)
- Open source under the [MIT License](http://en.wikipedia.org/wiki/MIT_License).
-
- when(), all(), any(), some(), map(), reduce(), delay() and timeout()
- sequence(), parallel(), pipeline()
- methods adapted from: [when.js](https://github.com/cujojs/when)
- Copyright (c) B Cavalier & J Hann
- Open source under the [MIT License](http://en.wikipedia.org/wiki/MIT_License).
- */
+//
+// Ext.Deferred adapted from:
+// [DeftJS](https://github.com/deftjs/deftjs5)
+// Copyright (c) 2012-2013 [DeftJS Framework Contributors](http://deftjs.org)
+// Open source under the [MIT License](http://en.wikipedia.org/wiki/MIT_License).
+//
+// when(), all(), any(), some(), map(), reduce(), delay() and timeout()
+// sequence(), parallel(), pipeline()
+// methods adapted from: [when.js](https://github.com/cujojs/when)
+// Copyright (c) B Cavalier & J Hann
+// Open source under the [MIT License](http://en.wikipedia.org/wiki/MIT_License).
+//
 
 /**
  * Deferreds are the mechanism used to create new Promises. A Deferred has a single
@@ -77,11 +77,12 @@
  *
  * @since 6.0.0
  */
-Ext.define('Ext.Deferred', function (Deferred) {
-    var ExtPromise,
-        rejected,
-        resolved,
-        when;
+Ext.define('Ext.Deferred', function(Deferred) {
+/* eslint indent: "off" */
+var ExtPromise,
+    rejected,
+    resolved,
+    when; // eslint-disable-line
 
 return {
     extend: 'Ext.promise.Deferred',
@@ -91,7 +92,7 @@ return {
     ],
 
     statics: {
-        _ready: function () {
+        _ready: function() {
             // Our requires are met, so we can cache Ext.promise.Deferred
             ExtPromise = Ext.promise.Promise;
             when = Ext.Promise.resolve;
@@ -109,7 +110,7 @@ return {
          * @return {Ext.promise.Promise} A Promise of an Array of the resolved values.
          * @static
          */
-        all: function () {
+        all: function() {
             return ExtPromise.all.apply(ExtPromise, arguments);
         },
 
@@ -125,16 +126,16 @@ return {
          * @return {Ext.promise.Promise} A Promise of the first resolved value.
          * @static
          */
-        any: function (promisesOrValues) {
+        any: function(promisesOrValues) {
             //<debug>
             if (!(Ext.isArray(promisesOrValues) || ExtPromise.is(promisesOrValues))) {
                 Ext.raise('Invalid parameter: expected an Array or Promise of an Array.');
             }
             //</debug>
 
-            return Deferred.some(promisesOrValues, 1).then(function (array) {
+            return Deferred.some(promisesOrValues, 1).then(function(array) {
                 return array[0];
-            }, function (error) {
+            }, function(error) {
                 if (error instanceof Error &&
                     error.message === 'Too few Promises were resolved.') {
                     Ext.raise('No Promises were resolved.');
@@ -155,7 +156,7 @@ return {
          * will resolve after the specified delay.
          * @static
          */
-        delay: function (promiseOrValue, milliseconds) {
+        delay: function(promiseOrValue, milliseconds) {
             var deferred;
 
             if (arguments.length === 1) {
@@ -167,7 +168,7 @@ return {
 
             deferred = new Deferred();
 
-            deferred.timeoutId = Ext.defer(function () {
+            deferred.timeoutId = Ext.defer(function() {
                 delete deferred.timeoutId;
                 deferred.resolve(promiseOrValue);
             }, milliseconds);
@@ -188,6 +189,7 @@ return {
                 // Prevent Cmd from requiring
                 rejected = Ext.Promise.reject();
             }
+
             return rejected;
         },
 
@@ -204,6 +206,7 @@ return {
                 // Prevent Cmd from requiring
                 resolved = Ext.Promise.resolve();
             }
+
             return resolved;
         },
 
@@ -221,7 +224,7 @@ return {
          * values.
          * @static
          */
-        map: function (promisesOrValues, mapFn) {
+        map: function(promisesOrValues, mapFn) {
             //<debug>
             if (!(Ext.isArray(promisesOrValues) || ExtPromise.is(promisesOrValues))) {
                 Ext.raise('Invalid parameter: expected an Array or Promise of an Array.');
@@ -232,7 +235,7 @@ return {
             }
             //</debug>
 
-            return Deferred.resolved(promisesOrValues).then(function (promisesOrValues) {
+            return Deferred.resolved(promisesOrValues).then(function(promisesOrValues) {
                 var deferred, index, promiseOrValue, remainingToResolve, resolve, results, i, len;
 
                 remainingToResolve = promisesOrValues.length;
@@ -243,19 +246,23 @@ return {
                     deferred.resolve(results);
                 }
                 else {
-                    resolve = function (item, index) {
-                        return Deferred.resolved(item).then(function (value) {
+                    resolve = function(item, index) {
+                        return Deferred.resolved(item).then(function(value) {
                             return mapFn(value, index, results);
-                        }).then(function (value) {
+                        })
+                        .then(function(value) {
                             results[index] = value;
+
                             if (!--remainingToResolve) {
                                 deferred.resolve(results);
                             }
+
                             return value;
-                        }, function (reason) {
+                        }, function(reason) {
                             return deferred.reject(reason);
                         });
                     };
+
                     for (index = i = 0, len = promisesOrValues.length; i < len; index = ++i) {
                         promiseOrValue = promisesOrValues[index];
 
@@ -286,11 +293,11 @@ return {
          * @return {Function} The new wrapper function.
          * @static
          */
-        memoize: function (fn, scope, hashFn) {
+        memoize: function(fn, scope, hashFn) {
             var memoizedFn = Ext.Function.memoize(fn, scope, hashFn);
 
-            return function () {
-                return Deferred.all(Ext.Array.slice(arguments)).then(function (values) {
+            return function() {
+                return Deferred.all(Ext.Array.slice(arguments)).then(function(values) {
                     return memoizedFn.apply(scope, values);
                 });
             };
@@ -310,14 +317,16 @@ return {
          * call (in the same order).
          * @static
          */
-        parallel: function (fns, scope) {
+        parallel: function(fns, scope) {
+            var args;
+
             if (scope == null) {
                 scope = null;
             }
 
-            var args = Ext.Array.slice(arguments, 2);
+            args = Ext.Array.slice(arguments, 2);
 
-            return Deferred.map(fns, function (fn) {
+            return Deferred.map(fns, function(fn) {
                 if (!Ext.isFunction(fn)) {
                     throw new Error('Invalid parameter: expected a function.');
                 }
@@ -343,12 +352,12 @@ return {
          * function in the pipeline.
          * @static
          */
-        pipeline: function (fns, initialValue, scope) {
+        pipeline: function(fns, initialValue, scope) {
             if (scope == null) {
                 scope = null;
             }
 
-            return Deferred.reduce(fns, function (value, fn) {
+            return Deferred.reduce(fns, function(value, fn) {
                 if (!Ext.isFunction(fn)) {
                     throw new Error('Invalid parameter: expected a function.');
                 }
@@ -358,15 +367,15 @@ return {
         },
 
         /**
-         * Returns a promise that resolves or rejects as soon as one of the promises in the array resolves
-         * or rejects, with the value or reason from that promise.
+         * Returns a promise that resolves or rejects as soon as one of the promises
+         * in the array resolves or rejects, with the value or reason from that promise.
          * @param {Ext.promise.Promise[]} promises The promises.
          * @return {Ext.promise.Promise} The promise to be resolved when the race completes.
          *
          * @static
          * @since 6.5.0
          */
-        race: function () {
+        race: function() {
             return ExtPromise.race.apply(ExtPromise, arguments);
         },
 
@@ -382,7 +391,9 @@ return {
          * @return {Ext.promise.Promise} A Promise of the reduced value.
          * @static
          */
-        reduce: function (values, reduceFn, initialValue) {
+        reduce: function(values, reduceFn, initialValue) {
+            var initialValueSpecified;
+
             //<debug>
             if (!(Ext.isArray(values) || ExtPromise.is(values))) {
                 Ext.raise('Invalid parameter: expected an Array or Promise of an Array.');
@@ -393,16 +404,21 @@ return {
             }
             //</debug>
 
-            var initialValueSpecified = arguments.length === 3;
+            initialValueSpecified = arguments.length === 3;
 
-            return Deferred.resolved(values).then(function (promisesOrValues) {
+            return Deferred.resolved(values).then(function(promisesOrValues) {
                 var reduceArguments = [
                     promisesOrValues,
-                    function (previousValueOrPromise, currentValueOrPromise, currentIndex) {
-                        return Deferred.resolved(previousValueOrPromise).then(function (previousValue) {
-                            return Deferred.resolved(currentValueOrPromise).then(function (currentValue) {
-                                return reduceFn(previousValue, currentValue, currentIndex, promisesOrValues);
-                            });
+                    function(previousValueOrPromise, currentValueOrPromise, currentIndex) {
+                        return Deferred.resolved(previousValueOrPromise).then(
+                            function(previousValue) {
+                                return Deferred.resolved(currentValueOrPromise).then(
+                                    function(currentValue) {
+                                        return reduceFn(
+                                            previousValue, currentValue, currentIndex,
+                                            promisesOrValues
+                                        );
+                                });
                         });
                     }
                 ];
@@ -423,7 +439,7 @@ return {
          * @return {Ext.promise.Promise} The rejected Promise.
          * @static
          */
-        rejected: function (reason) {
+        rejected: function(reason) {
             var deferred = new Ext.Deferred();
 
             deferred.reject(reason);
@@ -443,7 +459,7 @@ return {
          * @return {Ext.promise.Promise} A Promise of the specified Promise or value.
          * @static
          */
-        resolved: function (promiseOrValue) {
+        resolved: function(promiseOrValue) {
             var deferred = new Ext.Deferred();
 
             deferred.resolve(promiseOrValue);
@@ -465,19 +481,21 @@ return {
          * call (in the same order).
          * @static
          */
-        sequence: function (fns, scope) {
+        sequence: function(fns, scope) {
+            var args;
+
             if (scope == null) {
                 scope = null;
             }
 
-            var args = Ext.Array.slice(arguments, 2);
+            args = Ext.Array.slice(arguments, 2);
 
-            return Deferred.reduce(fns, function (results, fn) {
+            return Deferred.reduce(fns, function(results, fn) {
                 if (!Ext.isFunction(fn)) {
                     throw new Error('Invalid parameter: expected a function.');
                 }
 
-                return Deferred.resolved(fn.apply(scope, args)).then(function (result) {
+                return Deferred.resolved(fn.apply(scope, args)).then(function(result) {
                     results.push(result);
 
                     return results;
@@ -500,7 +518,7 @@ return {
          * values.
          * @static
          */
-        some: function (promisesOrValues, howMany) {
+        some: function(promisesOrValues, howMany) {
             //<debug>
             if (!(Ext.isArray(promisesOrValues) || ExtPromise.is(promisesOrValues))) {
                 Ext.raise('Invalid parameter: expected an Array or Promise of an Array.');
@@ -511,7 +529,7 @@ return {
             }
             //</debug>
 
-            return Deferred.resolved(promisesOrValues).then(function (promisesOrValues) {
+            return Deferred.resolved(promisesOrValues).then(function(promisesOrValues) {
                 var deferred, index, onReject, onResolve, promiseOrValue,
                     remainingToReject, remainingToResolve, values, i, len;
 
@@ -524,7 +542,7 @@ return {
                     deferred.reject(new Error('Too few Promises were resolved.'));
                 }
                 else {
-                    onResolve = function (value) {
+                    onResolve = function(value) {
                         if (remainingToResolve > 0) {
                             values.push(value);
                         }
@@ -538,7 +556,7 @@ return {
                         return value;
                     };
 
-                    onReject = function (reason) {
+                    onReject = function(reason) {
                         remainingToReject--;
 
                         if (remainingToReject === 0) {
@@ -572,21 +590,21 @@ return {
          * enforces the specified timeout.
          * @static
          */
-        timeout: function (promiseOrValue, milliseconds) {
+        timeout: function(promiseOrValue, milliseconds) {
             var deferred = new Deferred(),
                 timeoutId;
 
-            timeoutId = Ext.defer(function () {
+            timeoutId = Ext.defer(function() {
                 if (timeoutId) {
                     deferred.reject(new Error('Promise timed out.'));
                 }
             }, milliseconds);
 
-            Deferred.resolved(promiseOrValue).then(function (value) {
+            Deferred.resolved(promiseOrValue).then(function(value) {
                 Ext.undefer(timeoutId);
                 timeoutId = null;
                 deferred.resolve(value);
-            }, function (reason) {
+            }, function(reason) {
                 Ext.undefer(timeoutId);
                 timeoutId = null;
                 deferred.reject(reason);
@@ -595,7 +613,8 @@ return {
             return deferred.promise;
         }
     }
-};},
-function (Deferred) {
+};
+},
+function(Deferred) {
     Deferred._ready();
 });

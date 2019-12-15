@@ -1,6 +1,6 @@
 /* global Ext, expect */
 
-topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore'], function() {
+topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore', 'Ext.data.JsonStore'], function() {
     function generateStoreData(pointCount) {
         var data = [
                 { month: 'Jan' },
@@ -23,6 +23,7 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
 
         for (; i < ln; i++) {
             entry = data[i];
+
             for (j = 0; j < pointCount; j++) {
                 entry['data' + (j + 1).toString()] = Math.random() * 10;
             }
@@ -30,23 +31,23 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
 
         return data;
     }
-    
+
     beforeEach(function() {
         // Silence Sencha download server warnings
         spyOn(Ext.log, 'warn');
     });
 
-    describe('markers', function () {
+    describe('markers', function() {
         var chart;
 
-        afterEach(function () {
+        afterEach(function() {
             Ext.destroy(chart);
         });
 
-        it('should be visible even if the series markers are hidden', function () {
+        it('should be visible even if the series markers are hidden', function() {
             var layoutDone;
 
-            runs(function () {
+            runs(function() {
                 chart = new Ext.chart.CartesianChart({
                     renderTo: Ext.getBody(),
                     width: 300,
@@ -79,32 +80,33 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                     }],
                     legend: true,
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 var sprite = chart.getLegend().getSprites()[0];
+
                 expect(sprite.getMarker().attr.hidden).toBe(false);
             });
         });
     });
 
-    describe('docked', function () {
+    describe('docked', function() {
         var chart;
 
-        afterEach(function () {
+        afterEach(function() {
             Ext.destroy(chart);
         });
 
-        it('should position the sprite legend properly', function () {
+        it('should position the sprite legend properly', function() {
             var side = 400,
                 layoutDone,
                 legendSpriteCount,
@@ -137,17 +139,17 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                     yField: 'y'
                 },
                 listeners: {
-                    layout: function () {
+                    layout: function() {
                         layoutDone = true;
                     }
                 }
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 chart.setLegend({
                     type: 'sprite',
                     docked: 'top'
@@ -155,11 +157,11 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                 layoutDone = false;
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 // docked: 'top'
                 var chartRect = chart.getChartRect(),
                     legend = chart.getLegend(),
@@ -184,6 +186,7 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                 expect(legendSpriteCount).toBeGreaterThan(0);
 
                 legendSpriteIds = {};
+
                 for (var i = 0; i < legendSpriteCount; i++) {
                     legendSpriteIds[legendSprites[i].getId()] = true;
                 }
@@ -195,11 +198,11 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                 layoutDone = false;
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 // docked: 'top'
                 var chartRect = chart.getChartRect(),
                     legend = chart.getLegend(),
@@ -235,11 +238,11 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                 layoutDone = false;
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 // docked: 'right'
                 var chartRect = chart.getChartRect(),
                     legend = chart.getLegend(),
@@ -263,11 +266,11 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                 layoutDone = false;
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 // docked: 'bottom'
                 var chartRect = chart.getChartRect(),
                     legend = chart.getLegend(),
@@ -291,11 +294,11 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                 layoutDone = false;
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 // docked: 'left'
                 var chartRect = chart.getChartRect(),
                     legend = chart.getLegend(),
@@ -316,11 +319,11 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                 layoutDone = false;
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 // legend: null
                 var chartRect = chart.getChartRect();
 
@@ -336,11 +339,11 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                 layoutDone = false;
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 var legend = chart.getLegend(),
                     legendSurface = legend.getSurface();
 
@@ -350,11 +353,11 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                 layoutDone = false;
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 // docked: 'right',
                 // hidden: true
                 var chartRect = chart.getChartRect(),
@@ -372,11 +375,11 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                 layoutDone = false;
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 // docked: 'right',
                 // hidden: false
                 var chartRect = chart.getChartRect(),
@@ -399,11 +402,11 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                 layoutDone = false;
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 // docked: 'right',
                 // hidden: true
                 var chartRect = chart.getChartRect(),
@@ -421,7 +424,7 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
         });
     });
 
-    describe("updateTheme", function () {
+    describe("updateTheme", function() {
         var storeData = generateStoreData(2);
 
         var chartConfig = {
@@ -464,19 +467,19 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
 
         var store, chart;
 
-        beforeEach(function () {
+        beforeEach(function() {
             store = new Ext.data.Store({
                 fields: [ 'month', 'data1', 'data2' ],
                 data: storeData
             });
         });
 
-        afterEach(function () {
+        afterEach(function() {
             Ext.destroy(chart, store);
         });
 
         it("should use the style from the theme, " +
-            "if the user hasn't provided their own config", function () {
+            "if the user hasn't provided their own config", function() {
             var CustomTheme = Ext.define(null, {
                 extend: 'Ext.chart.theme.Base',
                 singleton: true,
@@ -510,7 +513,9 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
             chart = new Ext.chart.CartesianChart(config);
 
             var legend = chart.getLegend();
+
             var borderSprite = legend.getBorder();
+
             var itemSprites = legend.getSprites();
 
             expect(borderSprite.attr.lineWidth).toBe(2);
@@ -528,7 +533,7 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
             }
         });
 
-        it("should should use the style from the user config, if it was provided", function () {
+        it("should should use the style from the user config, if it was provided", function() {
             var config = Ext.merge({
                 store: store,
                 legend: {
@@ -552,7 +557,9 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
             chart = new Ext.chart.CartesianChart(config);
 
             var legend = chart.getLegend();
+
             var borderSprite = legend.getBorder();
+
             var itemSprites = legend.getSprites();
 
             expect(borderSprite.attr.lineWidth).toBe(2);
@@ -571,14 +578,11 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
         });
     });
 
-    // Safari 7 times out here in Modern for unknown reason in TeamCity only.
-    // Works fine locally (tested in Safari 7.0 (9537.71).
-    TODO(Ext.isSafari7).
-    describe("store", function () {
+    describe("store", function() {
         var storeData = generateStoreData(4),
             store, chart, legend;
 
-        beforeEach(function () {
+        beforeEach(function() {
             var layoutEndSpy;
 
             store = new Ext.data.Store({
@@ -635,16 +639,16 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
             waitsForSpy(layoutEndSpy, "chart layout to finish");
         });
 
-        afterEach(function () {
+        afterEach(function() {
             Ext.destroy(chart, store);
         });
 
-        it("should trigger sprite/layout update on data update", function () {
+        it("should trigger sprite/layout update on data update", function() {
             var series = chart.getSeries()[0],
                 oldBorderWidth, newBorderWidth,
                 oldSecondItem, oldSecondItemX, newSecondItem, newSecondItemX;
 
-            runs(function () {
+            runs(function() {
                 oldBorderWidth = legend.borderSprite.getBBox().width;
                 oldSecondItem = legend.getSprites()[1];
                 oldSecondItemX = oldSecondItem.getBBox().x;
@@ -653,24 +657,23 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
             });
 
             // Wait for the required test conditions to become true
-            waitsFor(function () {
+            waitsFor(function() {
                 newBorderWidth = legend.borderSprite.getBBox().width;
                 newSecondItem = legend.getSprites()[1];
                 newSecondItemX = newSecondItem.getBBox().x;
 
-                return newBorderWidth > oldBorderWidth &&
-                        newSecondItem === oldSecondItem &&
+                return newSecondItem === oldSecondItem &&
                         newSecondItem.getLabel().attr.text === 'Firewall' &&
                         newSecondItemX > oldSecondItemX;
             });
         });
 
-        it("should trigger sprite/layout update on data change", function () {
+        it("should trigger sprite/layout update on data change", function() {
             var series = chart.getSeries()[0],
                 oldBorderWidth, newBorderWidth,
                 oldSecondItem, oldSecondItemX, newSecondItem, newSecondItemX;
 
-            runs(function () {
+            runs(function() {
                 oldBorderWidth = legend.borderSprite.getBBox().width;
                 oldSecondItem = legend.getSprites()[1];
                 oldSecondItemX = oldSecondItem.getBBox().x;
@@ -679,25 +682,25 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
             });
 
             // Wait for the required test conditions to become true
-            waitsFor(function () {
+            waitsFor(function() {
                 newBorderWidth = legend.borderSprite.getBBox().width;
                 newSecondItem = legend.getSprites()[1];
                 newSecondItemX = newSecondItem.getBBox().x;
 
-                return newBorderWidth < oldBorderWidth &&
-                // The sprite should be reused.
-                    newSecondItem === oldSecondItem &&
+                // newSecondItem === oldSecondItem since the sprite should be reused. 
+                // newSecondItemX === oldSecondItemX since the second sprite now displays the third 
+                // title ('Chrome'),but because the whole legend is centered, and has 4 items only, the
+                // position of 'Firefox' earlier should match position of 'Chrome' now.
+
+                return newSecondItem === oldSecondItem &&
                     newSecondItem.getLabel().attr.text === 'Chrome' &&
                     legend.getSprites().length === 4 &&
-                // The second sprite now displays the third title ('Chrome'),
-                // but because the whole legend is centered, it should actually
-                // move to the right, as there is now one less item.
-                    newSecondItemX > oldSecondItemX &&
+                    newSecondItemX === oldSecondItemX &&
                     legend.getSprites()[3].getLabel().attr.text === 'data4';
             });
         });
 
-        it("should trigger sprite/layout update on data sort", function () {
+        it("should trigger sprite/layout update on data sort", function() {
             var oldBorderWidth, newBorderWidth,
                 performLayoutSpy = spyOn(legend, 'performLayout').andCallThrough(),
                 sprites = legend.getSprites();
@@ -708,7 +711,7 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                 expect(sprites[2].getBBox().x < sprites[3].getBBox().x).toBe(true);
             }
 
-            runs(function () {
+            runs(function() {
                 // Initial positions:
                 // IE - Firefox - Chrome - Safari
                 checkPositions(sprites);
@@ -720,7 +723,7 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
 
            waitsForSpy(performLayoutSpy, "legend layout to finish after DESC sort");
 
-            runs(function () {
+            runs(function() {
                 newBorderWidth = legend.borderSprite.getBBox().width;
 
                 // Relative positions of the sprites should stay the same.
@@ -737,7 +740,7 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                 chart.legendStore.sort('name', 'ASC');
                 performLayoutSpy.reset();
             });
-            
+
            waitsForSpy(performLayoutSpy, "legend layout to finish after ASC sort");
 
             runs(function() {
@@ -753,35 +756,40 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
         });
     });
 
-    describe('series colors', function () {
+    describe('series colors', function() {
         var chart, layoutEnd;
+
         var colors1 = ['red', 'blue', 'green', 'orange', 'yellow'];
+
         var colors2 = ['gold', 'cyan', 'magenta', 'lime', 'navy'];
+
         var n = colors1.length;
-        var data = (function () {
+
+        var data = (function() {
             var data = [];
 
             for (var i = 0; i < n; i++) {
                 var point = {
-                    x: 'cat' + (i+1)
+                    x: 'cat' + (i + 1)
                 };
+
                 for (var j = 0; j < n; j++) {
-                    point['y' + (j+1)] = j+1;
+                    point['y' + (j + 1)] = j + 1;
                 }
+
                 data.push(point);
             }
 
             return data;
         })();
 
-        afterEach(function () {
+        afterEach(function() {
             chart = Ext.destroy(chart);
             layoutEnd = false;
         });
 
-
-        it('should use theme colors in a cartesian (bar) chart', function () {
-            runs(function () {
+        it('should use theme colors in a cartesian (bar) chart', function() {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'cartesian',
                     animation: false,
@@ -801,16 +809,16 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                         yField: ['y1', 'y2', 'y3', 'y4', 'y5']
                     }],
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutEnd =  true;
                         }
                     }
                 });
             });
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutEnd;
             });
-            runs(function () {
+            runs(function() {
                 var series = chart.getSeries()[0],
                     seriesSprites = series.getSprites(),
                     legendSprites = chart.getLegend().getSprites(),
@@ -822,8 +830,8 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                 }
             });
         });
-        it('should use theme colors in a polar (pie3d) chart', function () {
-            runs(function () {
+        it('should use theme colors in a polar (pie3d) chart', function() {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'polar',
                     animation: false,
@@ -845,16 +853,16 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                         }
                     }],
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutEnd =  true;
                         }
                     }
                 });
             });
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutEnd;
             });
-            runs(function () {
+            runs(function() {
                 var series = chart.getSeries()[0],
                     seriesSprites = series.getSprites(),
                     legendSprites = chart.getLegend().getSprites(),
@@ -866,8 +874,8 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                 }
             });
         });
-        it('should use colors from the series "colors" config (cartesian, bar)', function () {
-            runs(function () {
+        it('should use colors from the series "colors" config (cartesian, bar)', function() {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'cartesian',
                     animation: false,
@@ -888,29 +896,30 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                         colors: colors1.slice()
                     }],
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutEnd =  true;
                         }
                     }
                 });
             });
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutEnd;
             });
-            runs(function () {
+            runs(function() {
                 var series = chart.getSeries()[0],
                     seriesSprites = series.getSprites(),
                     legendSprites = chart.getLegend().getSprites();
 
                 for (var i = 0; i < n; i++) {
                     var hexColor = Ext.util.Color.fly(colors1[i]).toString();
+
                     expect(seriesSprites[i].attr.fillStyle).toBe(hexColor);
                     expect(legendSprites[i].getMarker().attr.fillStyle).toBe(hexColor);
                 }
             });
         });
-        it('should use colors from the series "colors" config (polar, pie3d)', function () {
-            runs(function () {
+        it('should use colors from the series "colors" config (polar, pie3d)', function() {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'polar',
                     animation: false,
@@ -933,29 +942,30 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                         colors: colors1.slice()
                     }],
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutEnd =  true;
                         }
                     }
                 });
             });
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutEnd;
             });
-            runs(function () {
+            runs(function() {
                 var series = chart.getSeries()[0],
                     seriesSprites = series.getSprites(),
                     legendSprites = chart.getLegend().getSprites();
 
                 for (var i = 0; i < n; i++) {
                     var hexColor = Ext.util.Color.fly(colors1[i]).toString();
+
                     expect(seriesSprites[i * series.spritesPerSlice].attr.baseColor).toBe(hexColor);
                     expect(legendSprites[i].getMarker().attr.fillStyle).toBe(hexColor);
                 }
             });
         });
-        it('should reflect dynamic changes to the series "colors" config (cartesian, bar)', function () {
-            runs(function () {
+        it('should reflect dynamic changes to the series "colors" config (cartesian, bar)', function() {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'cartesian',
                     animation: false,
@@ -976,34 +986,35 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                         colors: colors1.slice()
                     }],
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutEnd =  true;
                         }
                     }
                 });
             });
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutEnd;
             });
-            runs(function () {
+            runs(function() {
                 layoutEnd = false;
                 chart.getSeries()[0].setColors(colors2.slice());
             });
             waits(1);
-            runs(function () {
+            runs(function() {
                 var series = chart.getSeries()[0],
                     seriesSprites = series.getSprites(),
                     legendSprites = chart.getLegend().getSprites();
 
                 for (var i = 0; i < n; i++) {
                     var hexColor = Ext.util.Color.fly(colors2[i]).toString();
+
                     expect(seriesSprites[i].attr.fillStyle).toBe(hexColor);
                     expect(legendSprites[i].getMarker().attr.fillStyle).toBe(hexColor);
                 }
             });
         });
-        it('should reflect dynamic changes to the series "colors" config (polar, pie3d)', function () {
-            runs(function () {
+        it('should reflect dynamic changes to the series "colors" config (polar, pie3d)', function() {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'polar',
                     animation: false,
@@ -1026,31 +1037,100 @@ topSuite("Ext.chart.legend.SpriteLegend", ['Ext.chart.*', 'Ext.data.ArrayStore']
                         colors: colors1.slice()
                     }],
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutEnd =  true;
                         }
                     }
                 });
             });
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutEnd;
             });
-            runs(function () {
+            runs(function() {
                 layoutEnd = false;
                 chart.getSeries()[0].setColors(colors2.slice());
             });
             waits(1);
-            runs(function () {
+            runs(function() {
                 var series = chart.getSeries()[0],
                     seriesSprites = series.getSprites(),
                     legendSprites = chart.getLegend().getSprites();
 
                 for (var i = 0; i < n; i++) {
                     var hexColor = Ext.util.Color.fly(colors2[i]).toString();
+
                     expect(seriesSprites[i * series.spritesPerSlice].attr.baseColor).toBe(hexColor);
                     expect(legendSprites[i].getMarker().attr.fillStyle).toBe(hexColor);
                 }
             });
         });
+    });
+
+    describe('long legends', function() {
+        var store, chart, layoutDone;
+
+        beforeEach(function() {
+            chart = null;
+            store = Ext.create('Ext.data.JsonStore', {
+                fields: ['os', 'data1' ],
+                data: [
+                    { os: 'BlackBerry', data1: 20.4 },
+                    { os: 'iOS', data1: 29.6 },
+                    { os: 'Windows Phone', data1: 24.5 },
+                    { os: 'Others, very long to break the example', data1: 25.5 }
+                ]
+            });
+
+            chart = Ext.create({
+                xtype: 'polar',
+                width: 200,
+                height: 500,
+                renderTo: document.body,
+                store: store,
+                insetPadding: 50,
+                innerPadding: 20,
+                legend: {
+                    docked: 'bottom',
+                    position: 'right'
+                },
+                interactions: ['rotate', 'itemhighlight'],
+                listeners: {
+                    layout: function() {
+                        layoutDone = true;
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    angleField: 'data1',
+                    label: { field: 'os' },
+                    highlight: true,
+                    tooltip: {
+                        trackMouse: true,
+
+                        renderer: function(tt, storeItem, item) {
+                            tt.setHtml(storeItem.get('os') + ': ' + storeItem.get('data1') + '%');
+                        }
+                    }
+                }]
+            });
+        });
+
+        afterEach(function() {
+            Ext.destroy(chart, store);
+        });
+
+        it("should not enter infinite loop if provided surfaceWidth is small", function() {
+            waitsFor(function() {
+                return layoutDone;
+            });
+
+            runs(function() {
+                var canvas = document.querySelector('.x-surface-canvas');
+
+                expect(canvas).not.toBe(null);
+            });
+
+        });
+
     });
 });

@@ -26,12 +26,12 @@ Ext.define('Ext.util.HashMap', {
      * @readonly
      */
     generation: 0,
-    
+
     config: {
         /**
-        * @cfg {Function} keyFn A function that is used to retrieve a default key for a passed object.
-        * A default is provided that returns the `id` property on the object. This function is only used
-        * if the `add` method is called with a single argument.
+        * @cfg {Function} keyFn A function that is used to retrieve a default key for a passed
+        * object. A default is provided that returns the `id` property on the object. This function
+        * is only used if the `add` method is called with a single argument.
         */
         keyFn: null
     },
@@ -74,12 +74,13 @@ Ext.define('Ext.util.HashMap', {
     constructor: function(config) {
         var me = this,
             fn;
-        
+
         // Will call initConfig
         me.mixins.observable.constructor.call(me, config);
         me.clear(true);
 
         fn = me.getKeyFn();
+
         if (fn) {
             me.getKey = fn;
         }
@@ -150,9 +151,11 @@ Ext.define('Ext.util.HashMap', {
         me.map[key] = value;
         ++me.length;
         me.generation++;
+
         if (me.hasListeners.add) {
             me.fireEvent('add', me, key, value);
         }
+
         return value;
     },
 
@@ -178,12 +181,15 @@ Ext.define('Ext.util.HashMap', {
         if (!me.containsKey(key)) {
             me.add(key, value);
         }
+
         old = map[key];
         map[key] = value;
         me.generation++;
+
         if (me.hasListeners.replace) {
             me.fireEvent('replace', me, key, value, old);
         }
+
         return value;
     },
 
@@ -194,9 +200,11 @@ Ext.define('Ext.util.HashMap', {
      */
     remove: function(o) {
         var key = this.findKey(o);
+
         if (key !== undefined) {
             return this.removeAtKey(key);
         }
+
         return false;
     },
 
@@ -214,11 +222,14 @@ Ext.define('Ext.util.HashMap', {
             delete me.map[key];
             --me.length;
             me.generation++;
+
             if (me.hasListeners.remove) {
                 me.fireEvent('remove', me, key, value);
             }
+
             return true;
         }
+
         return false;
     },
 
@@ -229,6 +240,7 @@ Ext.define('Ext.util.HashMap', {
      */
     get: function(key) {
         var map = this.map;
+
         return map.hasOwnProperty(key) ? map[key] : undefined;
     },
 
@@ -236,8 +248,8 @@ Ext.define('Ext.util.HashMap', {
      * @ignore
      */
     clear: function(initial) {
-        // We use the above syntax because we don't want the initial param to be part of the public API
-
+        // We use the above syntax because we don't want the initial param to be part
+        // of the public API
         var me = this;
 
         // Only clear if it has ever had any content
@@ -246,9 +258,11 @@ Ext.define('Ext.util.HashMap', {
             me.length = 0;
             me.generation = initial ? 0 : me.generation + 1;
         }
+
         if (initial !== true && me.hasListeners.clear) {
             me.fireEvent('clear', me);
         }
+
         return me;
     },
 
@@ -259,6 +273,7 @@ Ext.define('Ext.util.HashMap', {
      */
     containsKey: function(key) {
         var map = this.map;
+
         return map.hasOwnProperty(key) && map[key] !== undefined;
     },
 
@@ -297,11 +312,13 @@ Ext.define('Ext.util.HashMap', {
         var arr = [],
             key,
             map = this.map;
+
         for (key in map) {
             if (map.hasOwnProperty(key)) {
-                arr.push(isKey ? key: map[key]);
+                arr.push(isKey ? key : map[key]);
             }
         }
+
         return arr;
     },
 
@@ -323,6 +340,7 @@ Ext.define('Ext.util.HashMap', {
             length = this.length;
 
         scope = scope || this;
+
         for (key in items) {
             if (items.hasOwnProperty(key)) {
                 if (fn.call(scope, key, items[key], length) === false) {
@@ -330,6 +348,7 @@ Ext.define('Ext.util.HashMap', {
                 }
             }
         }
+
         return this;
     },
 
@@ -343,12 +362,15 @@ Ext.define('Ext.util.HashMap', {
             key;
 
         hash.suspendEvents();
+
         for (key in map) {
             if (map.hasOwnProperty(key)) {
                 hash.add(key, map[key]);
             }
         }
+
         hash.resumeEvents();
+
         return hash;
     },
 
@@ -367,6 +389,7 @@ Ext.define('Ext.util.HashMap', {
                 return key;
             }
         }
+
         return undefined;
     }
 }, function(HashMap) {

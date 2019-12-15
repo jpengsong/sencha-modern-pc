@@ -1,9 +1,9 @@
-describe("Ext.data.validator.CurrencyUS", function() {
-
+topSuite("Ext.data.validator.CurrencyUS", function() {
     var v;
 
     function validate(value) {
         v = new Ext.data.validator.CurrencyUS();
+
         return v.validate(value);
     }
 

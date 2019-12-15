@@ -28,7 +28,7 @@ topSuite("Ext.layout.component.field.FieldContainer", ['Ext.form.field.*'], func
 
                 expect(fc.items.first().getWidth()).toBe(298);
             });
-            
+
             it("should account for vertical padding supplied by the fieldBodyCls", function() {
                 fc = new Ext.form.FieldContainer({
                     renderTo: Ext.getBody(),
@@ -57,7 +57,7 @@ topSuite("Ext.layout.component.field.FieldContainer", ['Ext.form.field.*'], func
                     renderTo: document.body,
                     width: 500,
                     hideLabel: true,
-                    msgTarget : 'side',
+                    msgTarget: 'side',
                     layout: 'hbox',
                     items: {
                         flex: 1,
@@ -85,7 +85,7 @@ topSuite("Ext.layout.component.field.FieldContainer", ['Ext.form.field.*'], func
                     hideLabel: true,
                     width: 200,
                     height: 200,
-                    msgTarget : 'under',
+                    msgTarget: 'under',
                     layout: 'vbox',
                     items: {
                         flex: 1,
@@ -186,7 +186,7 @@ topSuite("Ext.layout.component.field.FieldContainer", ['Ext.form.field.*'], func
 
                 ct.destroy();
             });
-            
+
             it("should account for vertical padding supplied by the fieldBodyCls", function() {
                 var ct = new Ext.container.Container({
                     floating: true,
@@ -234,7 +234,7 @@ topSuite("Ext.layout.component.field.FieldContainer", ['Ext.form.field.*'], func
                         xtype: 'fieldcontainer',
                         hideLabel: true,
                         margin: 0,
-                        msgTarget : 'side',
+                        msgTarget: 'side',
                         items: {
                             xtype: 'component',
                             width: 50
@@ -272,7 +272,7 @@ topSuite("Ext.layout.component.field.FieldContainer", ['Ext.form.field.*'], func
                         xtype: 'fieldcontainer',
                         hideLabel: true,
                         margin: 0,
-                        msgTarget : 'under',
+                        msgTarget: 'under',
                         items: {
                             xtype: 'component',
                             height: 50

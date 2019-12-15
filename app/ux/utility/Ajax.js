@@ -21,18 +21,32 @@ Ext.define("App.ux.utility.Ajax", {
         * @param {Boolean} option.nosim 参数设置 false 请求本地接口,true 请求远程接口 缺省为true
         * @param {Boolean} option.showmask 参数设置true显示遮罩
         * @param {String} option.maskmsg 遮罩显示消息 缺省为 '正在请求数据...'
-        * @static
+        * 使用例子如下：
+        * App.Ajax.request({
+        *    url: "/api/SystemManage/SysUser/AddSysUser""),
+        *    method: "POST"),
+        *    nosim: false,
+        *    type: "JSON",
+        *    showmask: true,
+        *    maskmsg: "正在保存...",
+        *    params: user.getData(),
+        *    success: function (response) {
+        *               
+        *    },
+        *    error: function (msg) {
+        *               
+        *    }
+        * })
         */
         request: function (option) {
             var me = this, ajaxConfig, myMask;
             if (option.showmask) {
                 myMask = Ext.create({
                     xtype: "loadmask",
-                    msg: option.maskmsg || '正在请求数据...',
-                    componentCls: "x-mask-ui",
-                    target: Ext.getCmp("mainCardPanel")
+                    displayed:true,
+                    floated:true,
+                    message: option.maskmsg || '正在请求数据...'
                 });
-                myMask.show();
             }
             ajaxConfig = {
                 defaultHeaders: {
@@ -60,7 +74,7 @@ Ext.define("App.ux.utility.Ajax", {
                         myMask.destroy();
                     }
                     if (response.status == 0) {
-                        App.Msg.Error("未连接到服务接口");
+                        Ext.Msg.alert("提示","未连接到服务接口");
                     } else {
                         if (Ext.isFunction(option.error)) {
                             option.error(response);
@@ -144,7 +158,7 @@ Ext.define("App.ux.utility.Ajax", {
                     option.error(responseData.Message);
                 }
                 else {
-                    App.Msg.Error(responseData.Message);
+                    Ext.Msg.alert("提示",responseData.Message);
                 }
             }
         }

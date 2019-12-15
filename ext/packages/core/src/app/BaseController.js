@@ -9,7 +9,7 @@ Ext.define('Ext.app.BaseController', {
         'Ext.app.EventBus',
         'Ext.app.domain.Global'
     ],
-    
+
     uses: [
         'Ext.app.domain.Controller'
     ],
@@ -21,7 +21,7 @@ Ext.define('Ext.app.BaseController', {
 
     isController: true,
 
-    config : {
+    config: {
         /**
          * @cfg {String} id The id of this controller. You can use this id when dispatching.
          * 
@@ -33,7 +33,7 @@ Ext.define('Ext.app.BaseController', {
          * @accessor
          */
         id: undefined,
-       
+
         /**
          * @cfg {Object} control
          * @accessor
@@ -210,7 +210,7 @@ Ext.define('Ext.app.BaseController', {
 
         me.eventbus = Ext.app.EventBus;
 
-        //need to have eventbus property set before we initialize the config
+        // need to have eventbus property set before we initialize the config
         me.mixins.observable.constructor.call(me, config);
     },
 
@@ -240,6 +240,7 @@ Ext.define('Ext.app.BaseController', {
      */
     updateControl: function(control) {
         this.getId();
+
         if (control) {
             this.control(control);
         }
@@ -251,6 +252,7 @@ Ext.define('Ext.app.BaseController', {
      */
     updateListen: function(listen) {
         this.getId();
+
         if (listen) {
             this.listen(listen);
         }
@@ -431,9 +433,10 @@ Ext.define('Ext.app.BaseController', {
      *      });
      *
      * @param {Object} to Config object containing domains, selectors and listeners.
-     * @param {Ext.app.Controller} [controller] The controller to add the listeners to. Defaults to the current controller.
+     * @param {Ext.app.Controller} [controller] The controller to add the listeners to. Defaults
+     * to the current controller.
      */
-    listen: function (to, controller) {
+    listen: function(to, controller) {
         this.eventbus.listen(to, controller || this);
     },
 
@@ -445,6 +448,7 @@ Ext.define('Ext.app.BaseController', {
             bus.unlisten(me);
             me.eventbus = null;
         }
+
         me.callParent();
     }
 });

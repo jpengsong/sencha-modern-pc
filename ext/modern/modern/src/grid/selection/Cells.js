@@ -31,6 +31,7 @@ Ext.define('Ext.grid.selection.Cells', {
             result.startCell = me.startCell.clone();
             result.endCell = me.endCell.clone();
         }
+
         return result;
     },
 
@@ -48,9 +49,13 @@ Ext.define('Ext.grid.selection.Cells', {
                 columnIndex = recordIndex.columnIndex;
                 recordIndex = recordIndex.recordIndex;
             }
+
             //<debug>
             if (!(Ext.isNumber(recordIndex) && Ext.isNumber(columnIndex))) {
-                Ext.raise('Cells#isSelected must be passed either a GridLocation of a row and column index');
+                Ext.raise(
+                    'Cells#isSelected must be passed either a GridLocation of ' +
+                    'a row and column index'
+                );
             }
             //</debug>
 
@@ -60,6 +65,7 @@ Ext.define('Ext.grid.selection.Cells', {
             if (recordIndex >= range[0] && recordIndex <= range[1]) {
                 // get start and end columns in the range
                 range = this.getColumnRange();
+
                 return (columnIndex >= range[0] && columnIndex <= range[1]);
             }
         }
@@ -102,8 +108,10 @@ Ext.define('Ext.grid.selection.Cells', {
 
         for (rowIdx = rowRange[0]; rowIdx <= rowRange[1]; rowIdx++) {
             baseLocation = new Ext.grid.Location(view, store.getAt(rowIdx));
+
             for (colIdx = colRange[0]; colIdx <= colRange[1]; colIdx++) {
                 location = baseLocation.cloneForColumn(colIdx);
+
                 if (fn.call(scope || me, location, colIdx, rowIdx) === false) {
                     return;
                 }
@@ -156,6 +164,7 @@ Ext.define('Ext.grid.selection.Cells', {
                     changed = true;
                 });
             }
+
             me.startCell = me.endCell = null;
 
             if (changed && !suppressEvent) {
@@ -168,10 +177,11 @@ Ext.define('Ext.grid.selection.Cells', {
          * @param {Ext.grid.Location} startCell The start cell of the cell drag selection.
          * @private
          */
-        setRangeStart: function (startCell) {
+        setRangeStart: function(startCell) {
             // Must clone them. Users might use one instance and reconfigure it to navigate.
             this.startCell = (this.endCell = startCell.clone()).clone();
             this.view.onCellSelect(startCell);
+            this.fireCellSelection();
         },
 
         /**
@@ -179,7 +189,7 @@ Ext.define('Ext.grid.selection.Cells', {
          * @param {Ext.grid.Location} endCell The end cell of the cell drag selection.
          * @private
          */
-        setRangeEnd: function (endCell) {
+        setRangeEnd: function(endCell) {
             var me = this,
                 view = me.view,
                 store = view.store,
@@ -193,26 +203,35 @@ Ext.define('Ext.grid.selection.Cells', {
             lastRange = me.lastRange || range;
 
             rowStart = Math.max(Math.min(range[0][1], lastRange[0][1]), renderInfo.indexTop);
-            rowEnd   = Math.min(Math.max(range[1][1], lastRange[1][1]), renderInfo.indexBottom - 1);
+            rowEnd = Math.min(Math.max(range[1][1], lastRange[1][1]), renderInfo.indexBottom - 1);
 
             colStart = Math.min(range[0][0], lastRange[0][0]);
-            colEnd   = Math.min(Math.max(range[1][0], lastRange[1][0]), maxColIdx);
+            colEnd = Math.min(Math.max(range[1][0], lastRange[1][0]), maxColIdx);
 
             // Loop through the union of last range and current range
             for (rowIdx = rowStart; rowIdx <= rowEnd; rowIdx++) {
                 baseLocation = new Ext.grid.Location(view, store.getAt(rowIdx));
+
                 for (colIdx = colStart; colIdx <= colEnd; colIdx++) {
                     location = baseLocation.cloneForColumn(colIdx);
 
                     // If we are outside the current range, deselect
-                    if (rowIdx < range[0][1] || rowIdx > range[1][1] || colIdx < range[0][0] || colIdx > range[1][0]) {
+                    if (
+                        rowIdx < range[0][1] ||
+                        rowIdx > range[1][1] ||
+                        colIdx < range[0][0] ||
+                        colIdx > range[1][0]
+                    ) {
                         view.onCellDeselect(location);
-                    } else {
+                    }
+                    else {
                         view.onCellSelect(location);
                     }
                 }
             }
+
             me.lastRange = range;
+            me.fireCellSelection();
         },
 
         extendRange: function(extensionVector) {
@@ -227,15 +246,53 @@ Ext.define('Ext.grid.selection.Cells', {
                 });
                 me.startCell = extensionVector.start.clone();
                 me.setRangeEnd(newEndCell);
-                me.view.getNavigationModel().setLocation(extensionVector.start);
-            } else {
+                view.getNavigationModel().setLocation({
+                    column: extensionVector.start.columnIndex,
+                    record: extensionVector.start.record
+                });
+            }
+            else {
                 me.startCell = new Ext.grid.Location(view, {
                     record: me.getFirstRowIndex(),
                     column: me.getFirstColumnIndex()
                 });
                 me.setRangeEnd(extensionVector.end);
-                me.view.getNavigationModel().setLocation(extensionVector.end);
+
+                view.getNavigationModel().setLocation({
+                    column: extensionVector.end.columnIndex,
+                    record: extensionVector.end.record
+                });
             }
+        },
+
+        reduceRange: function(extensionVector) {
+            var me = this,
+                view = me.view,
+                newEndCell;
+
+            if (extensionVector.type === 'rows') {
+                newEndCell = new Ext.grid.Location(view, {
+                    record: extensionVector.end.recordIndex - 1,
+                    column: extensionVector.end.columnIndex
+                });
+                me.setRangeEnd(newEndCell);
+                view.getNavigationModel().setLocation({
+                    column: extensionVector.end.columnIndex,
+                    record: me.view.getStore().getAt(extensionVector.end.recordIndex - 1)
+                });
+            }
+            else {
+                newEndCell = new Ext.grid.Location(view, {
+                    record: extensionVector.end.recordIndex,
+                    column: extensionVector.end.columnIndex
+                });
+                me.setRangeEnd(newEndCell);
+                view.getNavigationModel().setLocation({
+                    column: extensionVector.end.columnIndex,
+                    record: me.view.getStore().getAt(extensionVector.end.recordIndex)
+                });
+            }
+
         },
 
         /**
@@ -249,7 +306,10 @@ Ext.define('Ext.grid.selection.Cells', {
          * @private
          */
         getRange: function() {
-            return [[this.getFirstColumnIndex(), this.getFirstRowIndex()], [this.getLastColumnIndex(), this.getLastRowIndex()]];
+            return [
+                [this.getFirstColumnIndex(), this.getFirstRowIndex()],
+                [this.getLastColumnIndex(), this.getLastRowIndex()]
+            ];
         },
 
         /**
@@ -263,7 +323,8 @@ Ext.define('Ext.grid.selection.Cells', {
 
         /**
          * @private
-         * Used by the SelectionModel to fire the selectionchange event with the batch of selected records
+         * Used by the SelectionModel to fire the selectionchange event with 
+         * the batch of selected records
          */
         getRecords: function() {
             var rowRange = this.getRowRange();
@@ -282,6 +343,14 @@ Ext.define('Ext.grid.selection.Cells', {
             return (range[1][0] - range[0][0] + 1) * (range[1][1] - range[0][1] + 1);
         },
 
+        fireCellSelection: function() {
+            var me = this,
+                selModel = me.getSelectionModel(),
+                view = selModel.getView();
+
+            view.fireEvent('cellselection', view, me.getRange());
+        },
+
         /**
          * @private
          */
@@ -291,8 +360,17 @@ Ext.define('Ext.grid.selection.Cells', {
                 columns = view.getVisibleColumns();
 
             me.clear();
-            me.setRangeStart(new Ext.grid.Location(view, {record: 0, column: 0}));
-            me.setRangeEnd(new Ext.grid.Location(view, {record: view.store.last(), column: columns[columns.length - 1]}));
+            me.setRangeStart(
+                new Ext.grid.Location(view, {
+                    record: 0, column: 0
+                })
+            );
+            me.setRangeEnd(
+                new Ext.grid.Location(view, {
+                    record: view.store.last(),
+                    column: columns[columns.length - 1]
+                })
+            );
         },
 
         /**
@@ -306,9 +384,11 @@ Ext.define('Ext.grid.selection.Cells', {
             // All selected only if we encompass the entire store and every visible column
             if (start) {
                 if (!start.columnIndex && !start.recordIndex) {
-                    return end.columnIndex === end.view.getVisibleColumns().length - 1 && end.recordIndex === end.view.store.getCount() - 1;
+                    return end.columnIndex === end.view.getVisibleColumns().length - 1 &&
+                           end.recordIndex === end.view.store.getCount() - 1;
                 }
             }
+
             return false;
         },
 
@@ -322,7 +402,8 @@ Ext.define('Ext.grid.selection.Cells', {
 
         /**
          * @private
-         * Called through {@link Ext.grid.selection.SpreadsheetModel#getLastSelected} by {@link Ext.panel.Table#updateBindSelection} when publishing the `selection` property.
+         * Called through {@link Ext.grid.selection.SpreadsheetModel#getLastSelected} by 
+         * {@link Ext.panel.Table#updateBindSelection} when publishing the `selection` property.
          * It should yield the last record selected.
          */
         getLastSelected: function() {
@@ -345,9 +426,17 @@ Ext.define('Ext.grid.selection.Cells', {
 
             if (me.getCount()) {
                 me.getSelectionModel().onSelectionFinish(me,
-                    new Ext.grid.Location(view, {record: me.getFirstRowIndex(), column: me.getFirstColumnIndex()}),
-                    new Ext.grid.Location(view, {record: me.getLastRowIndex(), column: me.getLastColumnIndex()}));
-            } else {
+                                                         new Ext.grid.Location(view, {
+                                                             record: me.getFirstRowIndex(),
+                                                             column: me.getFirstColumnIndex() }
+                                                         ),
+                                                         new Ext.grid.Location(view, {
+                                                             record: me.getLastRowIndex(),
+                                                             column: me.getLastColumnIndex() }
+                                                         )
+                );
+            }
+            else {
                 me.getSelectionModel().onSelectionFinish(me);
             }
         }

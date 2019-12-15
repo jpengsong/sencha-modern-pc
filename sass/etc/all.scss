@@ -1,45 +1,17 @@
+/****************导入响应式布局****************/
+@import "media.scss";
+/****************导入root****************/
+@import "root.scss";
+/****************导入组件样式****************/
+@import "component.scss";
 
-//******************************************************全局样式******************************************************
 
-.base-backgroundcolor{
-    background-color: $base-color !important;
-}
+// .x-field > * > * > .x-error-message-el {
+//     font: normal 0.8rem/16px Roboto, sans-serif !important;
+//     color: #c62828;
+//     color: var(--alert-color);
+// }
 
-//****************遮罩样式**************
-.x-mask-ui{
-    background-color:transparent !important;
-    z-index:200000000 !important;
-}
-
-.x-mask-ui > .x-mask-msg{
-    padding:0px;
-}
-
-.x-mask-ui .x-mask-msg-text{
-    padding:50px 20px 5px 20px;
-    background-size:60px;
-    color: white;
-    background-color:#000;
-    background-image: url(images/loadmask/loading_1.gif)
-}
-
-//****************遮罩样式**************
-.x-column-header-checkbox{
-    border-color: #d1d1d1 !important;
-}
-
-//****************弹框文本居中**************
-.x-message-box >.x-window-bodyWrap >.x-window-body{
-    line-height: 40px;
-}
-
-pre {
-    width: 100%;
-    margin: 15px 0 0 0;
-    padding: 20px;
-    border: 0;
-    border: 1px dotted #785;
-    background: #fff;
-    line-height: 1.4;
-    font-family: Consolas;
+pre{
+    white-space:pre-line !important;
 }

@@ -1,16 +1,17 @@
-/* global Ext, jasmine, MockAjaxManager, expect, xit */
-
 topSuite("Ext.grid.feature.Grouping",
-    ['Ext.grid.Panel', 'Ext.grid.plugin.CellEditing', 'Ext.form.field.Text', 'Ext.form.field.Number', 'Ext.grid.feature.*', 'Ext.grid.plugin.RowExpander', 'Ext.data.BufferedStore'],
+    ['Ext.grid.Panel', 'Ext.grid.plugin.CellEditing', 'Ext.form.field.Text', 'Ext.form.field.Number',
+    'Ext.grid.feature.*', 'Ext.grid.plugin.RowExpander', 'Ext.data.identifier.Negative', 'Ext.data.BufferedStore'],
 function() {
     var grid, view, store, menu, schema, groupingFeature,
         synchronousLoad = true,
         proxyStoreLoad = Ext.data.ProxyStore.prototype.load,
         loadStore = function() {
             proxyStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         };
 
@@ -27,7 +28,7 @@ function() {
             renderTo: Ext.getBody(),
             store: new Ext.data.Store(Ext.apply({
                 model: spec.Restaurant,
-                data : []
+                data: []
             }, storeCfg)),
             width: 200,
             height: 200,
@@ -89,6 +90,7 @@ function() {
 
     function triggerCellKeyEvent(type, rowIdx, cellIdx, key) {
         var target = findCell(rowIdx, cellIdx);
+
         jasmine.fireKeyEvent(target, type, key);
     }
 
@@ -104,35 +106,35 @@ function() {
         });
     });
 
-    afterEach(function(){
+    afterEach(function() {
         Ext.undefine('spec.Restaurant');
         schema.clear(true);
         grid = view = store = menu = schema = groupingFeature = Ext.destroy(grid, store);
-        
+
         MockAjaxManager.removeMethods();
 
         // Undo the overrides.
         Ext.data.ProxyStore.prototype.load = proxyStoreLoad;
     });
 
-    describe('init', function () {
+    describe('init', function() {
         it("should have the show in groups header unchecked when there's no groupField", function() {
             grid = new Ext.grid.Panel({
-                renderTo : Ext.getBody(),
-                store : new Ext.data.Store({
+                renderTo: Ext.getBody(),
+                store: new Ext.data.Store({
                     model: spec.Restaurant,
-                    data : []
+                    data: []
                 }),
-                width : 200,
-                height : 200,
-                title : 'Restaurants',
-                features : {ftype: 'grouping'},
-                columns : [{
-                    text : 'Name',
-                    dataIndex : 'name'
+                width: 200,
+                height: 200,
+                title: 'Restaurants',
+                features: { ftype: 'grouping' },
+                columns: [{
+                    text: 'Name',
+                    dataIndex: 'name'
                 }, {
-                    text : 'Cuisine',
-                    dataIndex : 'cuisine'
+                    text: 'Cuisine',
+                    dataIndex: 'cuisine'
                 }]
             });
 
@@ -141,22 +143,22 @@ function() {
 
         it("should have the show in groups header checked when there's a groupField", function() {
             grid = new Ext.grid.Panel({
-                renderTo : Ext.getBody(),
-                store : new Ext.data.Store({
+                renderTo: Ext.getBody(),
+                store: new Ext.data.Store({
                     model: spec.Restaurant,
                     groupField: 'cuisine',
-                    data : []
+                    data: []
                 }),
-                width : 200,
-                height : 200,
-                title : 'Restaurants',
-                features : {ftype: 'grouping'},
-                columns : [{
-                    text : 'Name',
-                    dataIndex : 'name'
+                width: 200,
+                height: 200,
+                title: 'Restaurants',
+                features: { ftype: 'grouping' },
+                columns: [{
+                    text: 'Name',
+                    dataIndex: 'name'
                 }, {
-                    text : 'Cuisine',
-                    dataIndex : 'cuisine'
+                    text: 'Cuisine',
+                    dataIndex: 'cuisine'
                 }]
             });
 
@@ -169,26 +171,26 @@ function() {
                 viewRefreshed = false;
 
             grid = new Ext.grid.Panel({
-                renderTo : Ext.getBody(),
-                store : new Ext.data.Store({
+                renderTo: Ext.getBody(),
+                store: new Ext.data.Store({
                     model: spec.Restaurant,
                     groupField: 'cuisine',
                     groupDir: 'DESC',
-                    data : [
-                        { name: "Beardog's",     cuisine: "Home cooking"},
-                        { name: "World Service", cuisine: "Poncy"}
+                    data: [
+                        { name: "Beardog's",     cuisine: "Home cooking" },
+                        { name: "World Service", cuisine: "Poncy" }
                     ]
                 }),
-                width : 200,
-                height : 200,
-                title : 'Restaurants',
-                features : [groupingFeature],
-                columns : [{
-                    text : 'Name',
-                    dataIndex : 'name'
+                width: 200,
+                height: 200,
+                title: 'Restaurants',
+                features: [groupingFeature],
+                columns: [{
+                    text: 'Name',
+                    dataIndex: 'name'
                 }, {
-                    text : 'Cuisine',
-                    dataIndex : 'cuisine'
+                    text: 'Cuisine',
+                    dataIndex: 'cuisine'
                 }]
             });
             var bufferedRenderer = grid.view.bufferedRenderer,
@@ -231,59 +233,60 @@ function() {
             expect(grid.store.getAt(1).get('cuisine')).toEqual('Home cooking');
         });
 
-        it("should clear groupers when the feature is configured as disabled", function(){
+        it("should clear groupers when the feature is configured as disabled", function() {
             grid = new Ext.grid.Panel({
-                renderTo : Ext.getBody(),
-                store : new Ext.data.Store({
+                renderTo: Ext.getBody(),
+                store: new Ext.data.Store({
                     model: spec.Restaurant,
                     groupField: 'cuisine',
-                    data : []
+                    data: []
                 }),
-                width : 200,
-                height : 200,
-                features : [new Ext.grid.feature.Grouping({
+                width: 200,
+                height: 200,
+                features: [new Ext.grid.feature.Grouping({
                     disabled: true
                 })],
-                columns : [{
-                    text : 'Name',
-                    dataIndex : 'name'
+                columns: [{
+                    text: 'Name',
+                    dataIndex: 'name'
                 }, {
-                    text : 'Cuisine',
-                    dataIndex : 'cuisine'
+                    text: 'Cuisine',
+                    dataIndex: 'cuisine'
                 }]
             });
 
             expect(grid.getStore().getGrouper()).toBeNull();
         });
 
-        it("should disable the show in groups header when the feature is configured as disabled", function(){
+        it("should disable the show in groups header when the feature is configured as disabled", function() {
             grid = new Ext.grid.Panel({
-                renderTo : Ext.getBody(),
-                store : new Ext.data.Store({
+                renderTo: Ext.getBody(),
+                store: new Ext.data.Store({
                     model: spec.Restaurant,
                     groupField: 'cuisine',
-                    data : []
+                    data: []
                 }),
-                width : 200,
-                height : 200,
-                features : [new Ext.grid.feature.Grouping({
+                width: 200,
+                height: 200,
+                features: [new Ext.grid.feature.Grouping({
                     disabled: true
                 })],
-                columns : [{
-                    text : 'Name',
-                    dataIndex : 'name'
+                columns: [{
+                    text: 'Name',
+                    dataIndex: 'name'
                 }, {
-                    text : 'Cuisine',
-                    dataIndex : 'cuisine'
+                    text: 'Cuisine',
+                    dataIndex: 'cuisine'
                 }]
             });
             var header = grid.headerCt.items.getAt(0);
+
             grid.headerCt.showMenuBy(null, header.triggerEl, header);
             expect(grid.headerCt.getMenu().child('#groupToggleMenuItem').isDisabled()).toBe(true);
         });
 
-        describe('view.isGrouping property', function () {
-            it('should be set on the view if `groupField` is configured', function () {
+        describe('view.isGrouping property', function() {
+            it('should be set on the view if `groupField` is configured', function() {
                 makeGrid({
                     groupField: 'cuisine'
                 });
@@ -291,13 +294,13 @@ function() {
                 expect(view.isGrouping).toBe(true);
             });
 
-            it('should not be set on the view if `groupField` is not configured', function () {
+            it('should not be set on the view if `groupField` is not configured', function() {
                 makeGrid();
 
                 expect(view.isGrouping).toBe(false);
             });
 
-            it('should be set on the view if `grouper` is configured', function () {
+            it('should be set on the view if `grouper` is configured', function() {
                 makeGrid({
                     grouper: 'cuisine'
                 });
@@ -305,18 +308,18 @@ function() {
                 expect(view.isGrouping).toBe(true);
             });
 
-            it('should not be set on the view if `grouper` is not configured', function () {
+            it('should not be set on the view if `grouper` is not configured', function() {
                 makeGrid();
 
                 expect(view.isGrouping).toBe(false);
             });
         });
 
-        it('should not be collapsed', function () {
+        it('should not be collapsed', function() {
             makeGrid({
                 data: [
-                    { name: 'Germanicus', cuisine: 'Roman'},
-                    { name: 'Alexander', cuisine: 'Greek'}
+                    { name: 'Germanicus', cuisine: 'Roman' },
+                    { name: 'Alexander', cuisine: 'Greek' }
                 ],
                 groupField: 'cuisine'
             });
@@ -329,22 +332,22 @@ function() {
     describe('mouse interaction', function() {
         var lockedGrid,
             data = [
-                {projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 112, description: 'Integrate 2.0 Forms with 2.0 Layouts', estimate: 6, rate: 150, due:'06/24/2007'},
-                {projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 113, description: 'Implement AnchorLayout', estimate: 4, rate: 150, due:'06/25/2007'},
-                {projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 114, description: 'Add support for multiple<br>types of anchors', estimate: 4, rate: 150, due:'06/27/2007'},
-                {projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 115, description: 'Testing and debugging', estimate: 8, rate: 0, due:'06/29/2007'},
-                {projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 101, description: 'Add required rendering "hooks" to GridView', estimate: 6, rate: 100, due:'07/01/2007'},
-                {projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 102, description: 'Extend GridView and override rendering functions', estimate: 6, rate: 100, due:'07/03/2007'},
-                {projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 103, description: 'Extend Store with grouping functionality', estimate: 4, rate: 100, due:'07/04/2007'},
-                {projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 121, description: 'Default CSS Styling', estimate: 2, rate: 100, due:'07/05/2007'},
-                {projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 104, description: 'Testing and debugging', estimate: 6, rate: 100, due:'07/06/2007'},
-                {projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 105, description: 'Ext Grid plugin integration', estimate: 4, rate: 125, due:'07/01/2007'},
-                {projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 106, description: 'Summary creation during rendering phase', estimate: 4, rate: 125, due:'07/02/2007'},
-                {projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 107, description: 'Dynamic summary updates in editor grids', estimate: 6, rate: 125, due:'07/05/2007'},
-                {projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 108, description: 'Remote summary integration', estimate: 4, rate: 125, due:'07/05/2007'},
-                {projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 109, description: 'Summary renderers and calculators', estimate: 4, rate: 125, due:'07/06/2007'},
-                {projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 110, description: 'Integrate summaries with GroupingView', estimate: 10, rate: 125, due:'07/11/2007'},
-                {projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 111, description: 'Testing and debugging', estimate: 8, rate: 125, due:'07/15/2007'}
+                { projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 112, description: 'Integrate 2.0 Forms with 2.0 Layouts', estimate: 6, rate: 150, due: '06/24/2007' },
+                { projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 113, description: 'Implement AnchorLayout', estimate: 4, rate: 150, due: '06/25/2007' },
+                { projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 114, description: 'Add support for multiple<br>types of anchors', estimate: 4, rate: 150, due: '06/27/2007' },
+                { projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 115, description: 'Testing and debugging', estimate: 8, rate: 0, due: '06/29/2007' },
+                { projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 101, description: 'Add required rendering "hooks" to GridView', estimate: 6, rate: 100, due: '07/01/2007' },
+                { projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 102, description: 'Extend GridView and override rendering functions', estimate: 6, rate: 100, due: '07/03/2007' },
+                { projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 103, description: 'Extend Store with grouping functionality', estimate: 4, rate: 100, due: '07/04/2007' },
+                { projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 121, description: 'Default CSS Styling', estimate: 2, rate: 100, due: '07/05/2007' },
+                { projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 104, description: 'Testing and debugging', estimate: 6, rate: 100, due: '07/06/2007' },
+                { projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 105, description: 'Ext Grid plugin integration', estimate: 4, rate: 125, due: '07/01/2007' },
+                { projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 106, description: 'Summary creation during rendering phase', estimate: 4, rate: 125, due: '07/02/2007' },
+                { projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 107, description: 'Dynamic summary updates in editor grids', estimate: 6, rate: 125, due: '07/05/2007' },
+                { projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 108, description: 'Remote summary integration', estimate: 4, rate: 125, due: '07/05/2007' },
+                { projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 109, description: 'Summary renderers and calculators', estimate: 4, rate: 125, due: '07/06/2007' },
+                { projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 110, description: 'Integrate summaries with GroupingView', estimate: 10, rate: 125, due: '07/11/2007' },
+                { projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 111, description: 'Testing and debugging', estimate: 8, rate: 125, due: '07/15/2007' }
             ],
             lockedGridStore,
             showSummary,
@@ -353,6 +356,7 @@ function() {
             toggleGroupSummaries = function() {
                 showSummary = !showSummary;
                 var view = lockedGrid.lockedGrid.getView();
+
                 view.getFeature('group').toggleSummaryRow(showSummary);
                 view.refresh();
                 view = lockedGrid.normalGrid.getView();
@@ -371,19 +375,19 @@ function() {
                 extend: 'Ext.data.Model',
                 idProperty: 'taskId',
                 fields: [
-                    {name: 'projectId', type: 'int'},
-                    {name: 'project', type: 'string'},
-                    {name: 'taskId', type: 'int'},
-                    {name: 'description', type: 'string'},
-                    {name: 'estimate', type: 'float'},
-                    {name: 'rate', type: 'float'},
-                    {name: 'due', type: 'date', dateFormat:'m/d/Y'}
+                    { name: 'projectId', type: 'int' },
+                    { name: 'project', type: 'string' },
+                    { name: 'taskId', type: 'int' },
+                    { name: 'description', type: 'string' },
+                    { name: 'estimate', type: 'float' },
+                    { name: 'rate', type: 'float' },
+                    { name: 'due', type: 'date', dateFormat: 'm/d/Y' }
                 ]
             });
             lockedGridStore = new Ext.data.Store({
                 model: 'spec.Task',
                 data: data,
-                sorters: {property: 'due', direction: 'ASC'},
+                sorters: { property: 'due', direction: 'ASC' },
                 groupField: 'project'
             });
 
@@ -395,7 +399,7 @@ function() {
                 title: 'Sponsored Projects',
                 iconCls: 'icon-grid',
                 renderTo: document.body,
-                columnLines : true,
+                columnLines: true,
                 store: lockedGridStore,
                 features: [{
                     id: 'group',
@@ -446,7 +450,7 @@ function() {
                         sortable: true,
                         dataIndex: 'estimate',
                         summaryType: 'sum',
-                        renderer: function(value, metaData, record, rowIdx, colIdx, store, view){
+                        renderer: function(value, metaData, record, rowIdx, colIdx, store, view) {
                             return value + ' hours';
                         },
                         summaryRenderer: function(value, summaryData, dataIndex) {
@@ -479,6 +483,7 @@ function() {
                                 record = records[i];
                                 total += record.get('estimate') * record.get('rate');
                             }
+
                             return total;
                         },
                         summaryRenderer: Ext.util.Format.usMoney
@@ -527,9 +532,10 @@ function() {
                 header.move(0, 3);
 
                 // Grab the first record in the second group (first group being collapsed)
-                var firstInGroup1 = lockedGrid.store.data.findBy(function(r){return r.data.description==='Add required rendering "hooks" to GridView';});
+                var firstInGroup1 = lockedGrid.store.data.findBy(function(r) { return r.data.description === 'Add required rendering "hooks" to GridView'; });
 
                 var firstRowInGroup1 = lockedGrid.normalGrid.view.getNode(firstInGroup1);
+
                 var dataRowOfFirstRowInGroup1 = lockedGrid.normalGrid.view.getRow(firstInGroup1);
 
                 // The first row in group 1 is a wrapper which contains the group header, and then the first data row
@@ -537,12 +543,13 @@ function() {
                 expect(Ext.fly(firstRowInGroup1).hasCls('x-grid-item-alt')).toBe(true);
 
                 // Extract the trimmed text content of the data row. Due date "07/01/2007" is now on the right"
-                expect((dataRowOfFirstRowInGroup1.innerText || dataRowOfFirstRowInGroup1.textContent).replace(/[\r\n\t]/g,'')).toEqual("6 hours$100.00$600.0007/01/2007");
+                expect((dataRowOfFirstRowInGroup1.innerText || dataRowOfFirstRowInGroup1.textContent).replace(/[\r\n\t]/g, '')).toEqual("6 hours$100.00$600.0007/01/2007");
 
                 // Show group summaries
                 toggleGroupSummaries();
 
                 var collapsedGroup0Placeholder = lockedGrid.normalGrid.view.all.item(0).dom;
+
                 expect(Ext.fly(collapsedGroup0Placeholder).hasCls('x-grid-item')).toBe(true);
 
                 // Move Due date back to left side
@@ -553,10 +560,11 @@ function() {
 
             runs(function() {
                 var collapsedGroup0Placeholder = lockedGrid.normalGrid.view.all.item(0).dom;
+
                 var group0SummaryRow = Ext.fly(collapsedGroup0Placeholder).down('tr.x-grid-row-summary', true);
 
-                //Extract the text content of the summary row. The due date should have moved back to the left
-                expect((group0SummaryRow.innerText || group0SummaryRow.textContent).replace(/[\r\n\t]/g,'')).toBe("06/29/200722 hours$112.50$2,100.00");
+                // Extract the text content of the summary row. The due date should have moved back to the left
+                expect((group0SummaryRow.innerText || group0SummaryRow.textContent).replace(/[\r\n\t]/g, '')).toBe("06/29/200722 hours$112.50$2,100.00");
             });
         });
 
@@ -573,7 +581,7 @@ function() {
 
             expect(groupStore.getCount()).toBe(13);
 
-            grouping.onGroupClick(lockedGrid.lockedGrid.view, groupHeader, firstGroupName, {ctrlKey: true});
+            grouping.onGroupClick(lockedGrid.lockedGrid.view, groupHeader, firstGroupName, { ctrlKey: true });
 
             expect(groupStore.getCount()).toBe(6);
         });
@@ -582,16 +590,16 @@ function() {
     describe('keyboard interaction', function() {
         var lockedGrid,
             data = [
-                {projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 112, description: 'Integrate 2.0 Forms with 2.0 Layouts', estimate: 6, rate: 150, due:'06/24/2007'},
-                {projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 113, description: 'Implement AnchorLayout', estimate: 4, rate: 150, due:'06/25/2007'},
-                {projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 114, description: 'Add support for multiple<br>types of anchors', estimate: 4, rate: 150, due:'06/27/2007'},
-                {projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 115, description: 'Testing and debugging', estimate: 8, rate: 0, due:'06/29/2007'},
-                {projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 101, description: 'Add required rendering "hooks" to GridView', estimate: 6, rate: 100, due:'07/01/2007'},
-                {projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 102, description: 'Extend GridView and override rendering functions', estimate: 6, rate: 100, due:'07/03/2007'},
-                {projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 103, description: 'Extend Store with grouping functionality', estimate: 4, rate: 100, due:'07/04/2007'},
-                {projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 121, description: 'Default CSS Styling', estimate: 2, rate: 100, due:'07/05/2007'},
-                {projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 104, description: 'Testing and debugging', estimate: 6, rate: 100, due:'07/06/2007'},
-                {projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 105, description: 'Ext Grid plugin integration', estimate: 4, rate: 125, due:'07/01/2007'},
+                { projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 112, description: 'Integrate 2.0 Forms with 2.0 Layouts', estimate: 6, rate: 150, due: '06/24/2007' },
+                { projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 113, description: 'Implement AnchorLayout', estimate: 4, rate: 150, due: '06/25/2007' },
+                { projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 114, description: 'Add support for multiple<br>types of anchors', estimate: 4, rate: 150, due: '06/27/2007' },
+                { projectId: 100, project: 'Ext Forms: Field Anchoring', taskId: 115, description: 'Testing and debugging', estimate: 8, rate: 0, due: '06/29/2007' },
+                { projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 101, description: 'Add required rendering "hooks" to GridView', estimate: 6, rate: 100, due: '07/01/2007' },
+                { projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 102, description: 'Extend GridView and override rendering functions', estimate: 6, rate: 100, due: '07/03/2007' },
+                { projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 103, description: 'Extend Store with grouping functionality', estimate: 4, rate: 100, due: '07/04/2007' },
+                { projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 121, description: 'Default CSS Styling', estimate: 2, rate: 100, due: '07/05/2007' },
+                { projectId: 101, project: 'Ext Grid: Single-level Grouping', taskId: 104, description: 'Testing and debugging', estimate: 6, rate: 100, due: '07/06/2007' },
+                { projectId: 102, project: 'Ext Grid: Summary Rows', taskId: 105, description: 'Ext Grid plugin integration', estimate: 4, rate: 125, due: '07/01/2007' }
             ],
             lockedGridStore,
             showSummary,
@@ -611,19 +619,19 @@ function() {
                 extend: 'Ext.data.Model',
                 idProperty: 'taskId',
                 fields: [
-                    {name: 'projectId', type: 'int'},
-                    {name: 'project', type: 'string'},
-                    {name: 'taskId', type: 'int'},
-                    {name: 'description', type: 'string'},
-                    {name: 'estimate', type: 'float'},
-                    {name: 'rate', type: 'float'},
-                    {name: 'due', type: 'date', dateFormat:'m/d/Y'}
+                    { name: 'projectId', type: 'int' },
+                    { name: 'project', type: 'string' },
+                    { name: 'taskId', type: 'int' },
+                    { name: 'description', type: 'string' },
+                    { name: 'estimate', type: 'float' },
+                    { name: 'rate', type: 'float' },
+                    { name: 'due', type: 'date', dateFormat: 'm/d/Y' }
                 ]
             });
             lockedGridStore = new Ext.data.Store({
                 model: 'spec.Task',
                 data: data,
-                sorters: {property: 'due', direction: 'ASC'},
+                sorters: { property: 'due', direction: 'ASC' },
                 groupField: 'project'
             });
 
@@ -635,7 +643,7 @@ function() {
                 title: 'Sponsored Projects',
                 iconCls: 'icon-grid',
                 renderTo: document.body,
-                columnLines : true,
+                columnLines: true,
                 store: lockedGridStore,
                 plugins: cellEditingPlugin,
                 features: [{
@@ -689,7 +697,7 @@ function() {
                         editor: {
                             xtype: 'numberfield'
                         },
-                        renderer: function(value, metaData, record, rowIdx, colIdx, store, view){
+                        renderer: function(value, metaData, record, rowIdx, colIdx, store, view) {
                             return value + ' hours';
                         },
                         summaryRenderer: function(value, summaryData, dataIndex) {
@@ -722,6 +730,7 @@ function() {
                                 record = records[i];
                                 total += record.get('estimate') * record.get('rate');
                             }
+
                             return total;
                         },
                         summaryRenderer: Ext.util.Format.usMoney
@@ -735,7 +744,9 @@ function() {
         // TAB should navigate round the grid searching for the next actionable
         // cell, but give up when it returns to the start cell, refocus that and
         // stop
-        it('should TAB from the sole expanded group row and wrap back round and refocus the same editor', function() {
+        // TODO This test suffers heavily from IE "cannot focus input element" problem
+        (Ext.isIE8 ? xit : it)('should TAB from the sole expanded group row and wrap back round and refocus the same editor',
+                function() {
             var inputField,
                 focusLeaveSpy,
                 focusEnterSpy;
@@ -751,8 +762,13 @@ function() {
                 if ((inputField = cellEditingPlugin.activeEditor.field) && inputField.containsFocus) {
                     focusLeaveSpy = spyOn(inputField, 'onFocusLeave');
                     focusEnterSpy = spyOn(inputField, 'onFocusEnter');
+
                     return true;
                 }
+            }, 'cell editor to become focused', 500);
+
+            runs(function() {
+                expect(document.activeElement).toBe(cellEditingPlugin.activeEditor.field.inputEl.dom);
             });
 
             runs(function() {
@@ -764,7 +780,7 @@ function() {
             // no other actionable cells to settle on, it should refocus.
             waitsFor(function() {
                 return (focusLeaveSpy.callCount === 1 &&  focusEnterSpy.callCount === 1);
-            });
+            }, 'focusEnter/focusLeave call count', 500);
 
             // We should end up focused on the sole editable cell in the whole grid.
             runs(function() {
@@ -773,54 +789,81 @@ function() {
         });
     });
 
-    describe('reconfiguring and destruction', function () {
+    describe('reconfiguring and destruction', function() {
         var grouping;
 
         function makeStore() {
             return new Ext.data.Store({
                 model: spec.Restaurant,
-                data : [],
+                data: [],
                 autoDestroy: true
             });
         }
 
-        beforeEach(function () {
+        beforeEach(function() {
             grouping = new Ext.grid.feature.Grouping({});
 
-
             grid = new Ext.grid.Panel({
-                renderTo : Ext.getBody(),
-                store : makeStore(),
-                width : 200,
-                height : 200,
-                features : [grouping],
-                columns : [{
-                    text : 'Name',
-                    dataIndex : 'name'
+                renderTo: Ext.getBody(),
+                store: makeStore(),
+                width: 200,
+                height: 200,
+                features: [grouping],
+                columns: [{
+                    text: 'Name',
+                    dataIndex: 'name'
                 }, {
-                    text : 'Cuisine',
-                    dataIndex : 'cuisine'
+                    text: 'Cuisine',
+                    dataIndex: 'cuisine'
                 }]
             });
         });
 
-        afterEach(function () {
+        afterEach(function() {
             Ext.destroy(grouping);
             grouping = null;
         });
 
-        it('should retain the store when the grid is reconfigured with a null store', function(){
+        it('should retain the store when the grid is reconfigured with a null store', function() {
             var ds = grouping.dataSource;
+
             grid.reconfigure(null, [{
                 text: 'Foo'
             }]);
             expect(grouping.dataSource).toBe(ds);
         });
 
-        it("should not call the Grouping's dataSource (GroupStore) bindStore method when reconfigured with a new store", function () {
+        it("should work when binding a BufferedStore", function() {
+            grid.destroy();
+
+            expect(function() {
+                grid = new Ext.grid.Panel({
+                    renderTo: Ext.getBody(),
+                    features: [new Ext.grid.feature.Grouping({})],
+                    viewModel: {
+                        stores: {
+                            foo: {
+                                type: 'buffered',
+                                proxy: {
+                                    type: 'ajax',
+                                    url: 'fakeurl'
+                                }
+                            }
+                        }
+                    },
+                    bind: {
+                        store: '{foo}'
+                    }
+                });
+
+                grid.getViewModel().notify();
+            }).not.toThrow();
+        });
+
+        it("should not call the Grouping's dataSource (GroupStore) bindStore method when reconfigured with a new store", function() {
             var store2 = new Ext.data.Store({
                     model: spec.Restaurant,
-                    data : []
+                    data: []
                 }),
                 ds;
 
@@ -831,36 +874,36 @@ function() {
             expect(ds.bindStore).toHaveBeenCalled();
         });
 
-        it('should create the proper groups when reconfigured with a new store', function () {
+        it('should create the proper groups when reconfigured with a new store', function() {
             var data = [{
                     name: 'Cheesecake Factory',
                     cuisine: 'American'
-                },{
+                }, {
                     name: 'University Cafe',
                     cuisine: 'American'
-                },{
+                }, {
                     name: 'Nola\'s',
                     cuisine: 'Cajun'
-                },{
+                }, {
                     name: 'House of Bagels',
                     cuisine: 'Bagels'
-                },{
+                }, {
                     name: 'The Prolific Oven',
                     cuisine: 'Sandwiches'
-                },{
+                }, {
                     name: 'La Strada',
                     cuisine: 'Italian'
-                },{
+                }, {
                     name: 'Buca di Beppo',
                     cuisine: 'Italian'
-                },{
+                }, {
                     name: 'Pasta?',
                     cuisine: 'Italian'
                 }],
                 storeCfg = {
                     fields: ['name', 'cuisine'],
                     groupField: 'cuisine',
-                    sorters: ['cuisine','name'],
+                    sorters: ['cuisine', 'name'],
                     data: data
                 },
                 store = new Ext.data.Store(storeCfg),
@@ -874,7 +917,7 @@ function() {
             expect(group.items.length).toBe(2);
         });
 
-        it('reconfiguring a grid using buffered rendering and grouping should bind the groupStore to the plugin', function () {
+        it('reconfiguring a grid using buffered rendering and grouping should bind the groupStore to the plugin', function() {
             // This test demonstrates that reconfiguring the grid will properly bind the feature's group
             // store to the plugin.
             //
@@ -889,7 +932,7 @@ function() {
                 height: 100,
                 store: makeStore(),
                 features: grouping,
-                columns:[{
+                columns: [{
                     text: 'Name',
                     dataIndex: 'name',
                     width: 100
@@ -905,18 +948,19 @@ function() {
             grid.destroy();
         });
 
-        it("should unwind all listeners set on the dataSource after grid destruction", function () {
+        it("should unwind all listeners set on the dataSource after grid destruction", function() {
             var ds = grouping.dataSource;
+
             spyOn(ds, 'bindStore');
             grid.destroy();
             expect(ds.bindStore).toHaveBeenCalledWith(null);
-            expect((ds.store || {destroyed : true}).destroyed).toBe(true);
+            expect((ds.store || { destroyed: true }).destroyed).toBe(true);
         });
 
     });
 
-    describe('grouping + RowExpander plugin', function () {
-        it('should return the model associated by the data node', function () {
+    describe('grouping + RowExpander plugin', function() {
+        it('should return the model associated by the data node', function() {
             // The bug was triggered in the UI by mousing over a group title. Internally, the view event
             // is triggering a callback that would call the public viewtable.getRecord() method, and this
             // was failing because it was querying the data store instead of the grouping store. So, for
@@ -934,9 +978,9 @@ function() {
                     model: spec.Restaurant,
                     groupField: 'cuisine',
                     groupDir: 'DESC',
-                    data : [
-                        { name: "Beardog's",     cuisine: "Home cooking"},
-                        { name: "World Service", cuisine: "Poncy"}
+                    data: [
+                        { name: "Beardog's",     cuisine: "Home cooking" },
+                        { name: "World Service", cuisine: "Poncy" }
                     ]
                 }),
                 width: 200,
@@ -964,9 +1008,9 @@ function() {
         });
     });
 
-    describe('sending to server', function () {
-        describe('remoteRoot', function () {
-            it('should work when there are no groups', function () {
+    describe('sending to server', function() {
+        describe('remoteRoot', function() {
+            it('should work when there are no groups', function() {
                 // See EXTJS-9425.
                 var store = new Ext.data.Store({
                     fields: ['name', 'seniority', 'department'],
@@ -1010,20 +1054,20 @@ function() {
                         name: 'Test',
                         seniority: 1
                     }],
-                    root:[]
+                    root: []
                 };
 
                 store.load({
-                    callback: function () {
+                    callback: function() {
                         wasCalled = true;
                     }
                 });
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return wasCalled;
                 });
 
-                runs(function () {
+                runs(function() {
                     // If the bug still exists a TypeError will be thrown and summaryData will never
                     // be defined and stamped onto the feature's refreshData object.
                     expect(grouping.refreshData.summaryData).toBeDefined();
@@ -1041,26 +1085,26 @@ function() {
                 renderTo: document.body,
                 width: 600,
                 height: 300,
-                columns : [{
-                    dataIndex : 'text',
-                    flex : 1
+                columns: [{
+                    dataIndex: 'text',
+                    flex: 1
                 }],
-                features : [ {ftype: 'grouping'}],
-                store : {
-                    data : [{
-                        text : 'a'
+                features: [ { ftype: 'grouping' }],
+                store: {
+                    data: [{
+                        text: 'a'
                     }],
-                    fields : [ 'text' ],
-                    grouper : {
-                        groupFn : function (record) {
+                    fields: [ 'text' ],
+                    grouper: {
+                        groupFn: function(record) {
                             if (record.get('text') === 'a') {
                                 return 0;
                             }
                         }
                     },
-                    xtype : 'store'
+                    xtype: 'store'
                 },
-                xtype : 'grid'
+                xtype: 'grid'
             });
             grouping = grid.view.findFeature('grouping');
         });
@@ -1075,7 +1119,7 @@ function() {
         });
     });
 
-    describe('stateful', function () {
+    describe('stateful', function() {
         var data, grid, view, store, grouping, columns, params, stateId, header, selector;
 
         function createGrid(gridCfg, groupingCfg, columns, storeCfg) {
@@ -1084,17 +1128,17 @@ function() {
                 subject: 'Math',
                 mark: 84,
                 allowance: 15.50
-            },{
+            }, {
                 student: 'Student 1',
                 subject: 'Science',
                 mark: 72,
                 allowance: 10.75
-            },{
+            }, {
                 student: 'Student 2',
                 subject: 'Math',
                 mark: 96,
                 allowance: 100.75
-            },{
+            }, {
                 student: 'Student 2',
                 subject: 'Science',
                 mark: 68,
@@ -1133,8 +1177,9 @@ function() {
                 dataIndex: 'student',
                 text: 'Name',
                 summaryType: 'count',
-                summaryRenderer: function (value, summaryData, field) {
+                summaryRenderer: function(value, summaryData, field) {
                     params = arguments;
+
                     return Ext.String.format('{0} student{1}', value, value !== 1 ? 's' : '');
                 }
             }, {
@@ -1144,7 +1189,7 @@ function() {
                 summaryType: 'average'
             }, {
                 itemId: 'noDataIndexColumn',
-                summaryType: function (records, values) {
+                summaryType: function(records, values) {
                     var i = 0,
                         length = records.length,
                         total = 0,
@@ -1154,6 +1199,7 @@ function() {
                         record = records[i];
                         total += record.get('allowance');
                     }
+
                     return total;
                 },
                 summaryRenderer: Ext.util.Format.usMoney,
@@ -1209,16 +1255,18 @@ function() {
                 jasmine.fireMouseEvent(header.el.dom, 'mousedown');
                 jasmine.fireMouseEvent(header.triggerEl.dom, 'click');
                 // Click 'Group by this field'.
-                
+
                 waitsFor(function() {
                     menu = header.activeMenu;
+
                     return menu && menu.isVisible();
                 });
 
                 runs(function() {
                     jasmine.fireMouseEvent(menu.down('#groupMenuItem').itemEl.dom, 'click');
                 });
-            } else {
+            }
+            else {
                 header.sort(dir);
             }
 
@@ -1244,49 +1292,50 @@ function() {
                 if (groupField) {
                     expect(grid.getState().storeState.grouper.property).toBe(groupField);
                 }
-            } else {
+            }
+            else {
                 expect(grid.getState().storeState.sorters[0].direction).toBe(dir);
             }
 
             grid.saveState();
         }
 
-        beforeEach(function () {
+        beforeEach(function() {
             new Ext.state.Provider();
             stateId = new Date().getTime();
         });
 
-        afterEach(function () {
+        afterEach(function() {
             Ext.state.Manager.getProvider().clear();
             tearDown();
         });
 
-        describe('groupField', function () {
+        describe('groupField', function() {
             function doGroupFieldTests(groupField) {
                 var which = !groupField ? 'not' : '';
 
-                describe('when groupField is ' + which + ' defined', function () {
-                    it('should maintain the grouping', function () {
+                describe('when groupField is ' + which + ' defined', function() {
+                    it('should maintain the grouping', function() {
                         doUITest({
                             groupField: groupField
                         }, 'ASC');
                     });
 
-                    it('should maintain the sort direction', function () {
+                    it('should maintain the sort direction', function() {
                         doUITest({
                             groupField: groupField
                         }, 'DESC');
                     });
 
-                    describe('autoLoad', function () {
-                        it('should render the groups correctly when not auto-loading', function () {
+                    describe('autoLoad', function() {
+                        it('should render the groups correctly when not auto-loading', function() {
                             doUITest({
                                 autoLoad: false,
                                 groupField: groupField
                             }, 'ASC');
                         });
 
-                        it('should render the groups correctly when auto-loading', function () {
+                        it('should render the groups correctly when auto-loading', function() {
                             doUITest({
                                 autoLoad: true,
                                 groupField: groupField
@@ -1294,8 +1343,8 @@ function() {
                         });
                     });
 
-                    describe('sorting', function () {
-                        it('should render the groups correctly when local sorting', function () {
+                    describe('sorting', function() {
+                        it('should render the groups correctly when local sorting', function() {
                             doUITest({
                                 autoLoad: false,
                                 groupField: groupField,
@@ -1310,7 +1359,7 @@ function() {
             doGroupFieldTests(null);
         });
 
-        it('should lookup the correct record for a row when clicked when groups are collapsed', function () {
+        it('should lookup the correct record for a row when clicked when groups are collapsed', function() {
             // See EXTJS-15190.
             var el, selection, menu;
 
@@ -1320,7 +1369,7 @@ function() {
 
             // Trigger the menu.
             Ext.testHelper.showHeaderMenu(header);
-            
+
             runs(function() {
                 menu = header.activeMenu;
 
@@ -1349,7 +1398,7 @@ function() {
             });
         });
 
-        it('should persist the .isGrouping property on the view when grouped', function () {
+        it('should persist the .isGrouping property on the view when grouped', function() {
             doGrid();
 
             header = grid.headerCt.down('[dataIndex="student"]');
@@ -1376,7 +1425,7 @@ function() {
         });
     });
 
-    describe('collapsed state', function () {
+    describe('collapsed state', function() {
         // See EXTJS-15755.
         var hdCollapsedCls = Ext.grid.feature.Grouping.prototype.hdCollapsedCls,
             roman, greek, viewBody;
@@ -1384,8 +1433,8 @@ function() {
         function makeUI(storeCfg, filterCfg, gridCfg) {
             makeGrid(Ext.apply({
                 data: [
-                    { name: 'Sulla', cuisine: 'Roman'},
-                    { name: 'Pericles', cuisine: 'Greek'}
+                    { name: 'Sulla', cuisine: 'Roman' },
+                    { name: 'Pericles', cuisine: 'Greek' }
                 ],
                 groupField: 'cuisine'
             }, storeCfg), filterCfg, gridCfg);
@@ -1396,15 +1445,14 @@ function() {
             roman = groupingFeature.getMetaGroup('Roman');
         }
 
-
-        afterEach(function () {
+        afterEach(function() {
             roman = greek = viewBody = null;
         });
 
-        describe('init', function () {
-            describe('startCollapsed', function () {
+        describe('init', function() {
+            describe('startCollapsed', function() {
                 function makeStartCollapsed(startCollapsed, isBR) {
-                    it('should honor the `startCollapsed` config when ' + (startCollapsed ? 'starting collapsed, ' : 'starting expanded, ') + (isBR ? 'buffer rendered' : 'non buffer rendered'), function () {
+                    it('should honor the `startCollapsed` config when ' + (startCollapsed ? 'starting collapsed, ' : 'starting expanded, ') + (isBR ? 'buffer rendered' : 'non buffer rendered'), function() {
                         // Note that the startCollapsed config will be set to `false` when the groupStore is constructed,
                         // so instead we should inspect the feature's metaGroupCache.
                         makeUI(null, {
@@ -1431,10 +1479,10 @@ function() {
             });
         });
 
-        describe('collapse state after grid store operations', function () {
-            describe('initial collapse state', function () {
+        describe('collapse state after grid store operations', function() {
+            describe('initial collapse state', function() {
                 function collapsed(collapseState, filterValue) {
-                    it('should retain its collapsed state of ' + filterValue + ' after the grid store is filtered and cleared when ' + (collapseState ? 'starting collapsed' : 'starting expanded'), function () {
+                    it('should retain its collapsed state of ' + filterValue + ' after the grid store is filtered and cleared when ' + (collapseState ? 'starting collapsed' : 'starting expanded'), function() {
                         makeUI(null, {
                             startCollapsed: collapseState
                         });
@@ -1461,17 +1509,18 @@ function() {
                 collapsed(false, 'Greek');
             });
 
-            describe('expanding and collapsing', function () {
+            describe('expanding and collapsing', function() {
                 // There was a bug in how the collapsed state of feature groups was persisted after a store operation.
                 // For instance, when the feature would process the store again, it was expecting the collapsed state
                 // to have been poked onto the group object itself, which may no longer be around. We now have a separate,
                 // internal metaGroup cache in the feature that stores this information.
                 function testIt(group, method, filterValue, collapsible) {
                     var initialState = method === 'expand';
+
                     collapsible = collapsible !== false;
-                    
+
                     describe('Group: "' + group + '", method: "' + method + '", filterValue: "' + filterValue + '"' + '", collapsible: "' + collapsible + '"', function() {
-                        it('should retain its state of ' + !initialState, function () {
+                        it('should retain its state of ' + !initialState, function() {
                             makeUI(null, {
                                 startCollapsed: initialState
                             });
@@ -1490,7 +1539,8 @@ function() {
 
                         it('should ' + (collapsible ? '' : 'not') + ' have the ' + (initialState ? 'collapseTip' : 'expandTip') +  ' tooltip', function() {
                             var row;
-                            makeUI(null,{
+
+                            makeUI(null, {
                                 startCollapsed: initialState,
                                 collapsible: collapsible
                             });
@@ -1499,34 +1549,35 @@ function() {
 
                             if (collapsible) {
                                 expect(row.getAttribute('data-qtip')).toEqual(initialState ? groupingFeature.collapseTip : groupingFeature.expandTip);
-                            } else {
+                            }
+                            else {
                                 expect(row.getAttribute('data-qtip')).toBeNull();
                             }
                         });
                     });
                 }
 
-                describe('when group is expanded before store operations', function () {
-                    describe('when expanded group is filtered', function () {
+                describe('when group is expanded before store operations', function() {
+                    describe('when expanded group is filtered', function() {
                         testIt('Greek', 'expand', 'Roman');
                         testIt('Roman', 'expand', 'Greek');
                         testIt('Roman', 'expand', 'Greek', false);
                     });
 
-                    describe('when expanded group is not filtered', function () {
+                    describe('when expanded group is not filtered', function() {
                         testIt('Greek', 'expand', 'Greek');
                         testIt('Roman', 'expand', 'Roman');
                     });
                 });
 
-                describe('when group is collapsed before store operations', function () {
-                    describe('when collapsed group is filtered', function () {
+                describe('when group is collapsed before store operations', function() {
+                    describe('when collapsed group is filtered', function() {
                         testIt('Greek', 'collapse', 'Roman');
                         testIt('Roman', 'collapse', 'Greek');
                         testIt('Roman', 'collapse', 'Greek', false);
                     });
 
-                    describe('when collapsed group is not filtered', function () {
+                    describe('when collapsed group is not filtered', function() {
                         testIt('Greek', 'collapse', 'Greek');
                         testIt('Roman', 'collapse', 'Roman');
                     });
@@ -1534,7 +1585,7 @@ function() {
 
                 it("should cancel actionableMode while collapsing", function() {
                     var cell, plugin;
-                    
+
                     makeUI(null, null, {
                         columns: [{
                             text: 'Name',
@@ -1550,7 +1601,7 @@ function() {
                         }
                     });
 
-                    cell = grid.view.getCellInclusive({row: 0, column: 0});
+                    cell = grid.view.getCellInclusive({ row: 0, column: 0 });
                     plugin = grid.findPlugin('cellediting');
                     jasmine.fireMouseEvent(cell, 'click');
 
@@ -1562,16 +1613,16 @@ function() {
                         expect(function() {
                             groupingFeature.collapse('Greek');
                         }).not.toThrow();
-                    
+
                         expect(plugin.editing).toBe(false);
                     });
                 });
 
-                it('should have group header text when collapsed', function () {
+                it('should have group header text when collapsed', function() {
                     makeUI({
                         data: [
-                            { name: 'Sulla', cuisine: 'Roman', cuisineOrder: 'b'},
-                            { name: 'Pericles', cuisine: 'Greek', cuisineOrder: 'a'}
+                            { name: 'Sulla', cuisine: 'Roman', cuisineOrder: 'b' },
+                            { name: 'Pericles', cuisine: 'Greek', cuisineOrder: 'a' }
                         ],
                         groupField: 'cuisineOrder'
                     }, {
@@ -1580,7 +1631,7 @@ function() {
                         columns: [{
                             text: 'Cuisine',
                             dataIndex: 'cuisineOrder',
-                            renderer: function (value, meta, record) {
+                            renderer: function(value, meta, record) {
                                 return record.get('cuisine');
                             }
                         }]
@@ -1601,15 +1652,15 @@ function() {
         });
     });
 
-    describe('referencing the groups and metaGroups', function () {
+    describe('referencing the groups and metaGroups', function() {
         // See EXTJS-15755.
         var roman, greek;
 
         function makeUI(storeCfg, filterCfg) {
             makeGrid(Ext.apply({
                 data: [
-                    { name: 'Cincinnatus', cuisine: 'Roman'},
-                    { name: 'Cleisthenes', cuisine: 'Greek'}
+                    { name: 'Cincinnatus', cuisine: 'Roman' },
+                    { name: 'Cleisthenes', cuisine: 'Greek' }
                 ],
                 groupField: 'cuisine'
             }, storeCfg), filterCfg);
@@ -1618,16 +1669,16 @@ function() {
             roman = groupingFeature.getMetaGroup('Roman');
         }
 
-        afterEach(function () {
+        afterEach(function() {
             roman = greek = null;
         });
 
-        describe('init', function () {
+        describe('init', function() {
             function doIt(groupField) {
                 makeGrid({
                     data: [
-                        { name: 'Cincinnatus', cuisine: 'Roman'},
-                        { name: 'Cleisthenes', cuisine: 'Greek'}
+                        { name: 'Cincinnatus', cuisine: 'Roman' },
+                        { name: 'Cleisthenes', cuisine: 'Greek' }
                     ],
                     groupField: groupField
                 });
@@ -1637,15 +1688,15 @@ function() {
                 var word = grouped ? '' : 'not',
                     groupField = grouped ? 'cuisine' : null;
 
-                describe('when store is ' + word + ' grouped', function () {
-                    it('should be able to lookup a store group', function () {
+                describe('when store is ' + word + ' grouped', function() {
+                    it('should be able to lookup a store group', function() {
                         doIt(groupField);
 
                         expect(!!groupingFeature.getGroup('Roman')).toBe(grouped);
                         expect(!!groupingFeature.getGroup('Greek')).toBe(grouped);
                     });
 
-                    it('should ' + word + ' be able to lookup a metaGroup', function () {
+                    it('should ' + word + ' be able to lookup a metaGroup', function() {
                         var cache;
 
                         doIt(groupField);
@@ -1661,12 +1712,12 @@ function() {
             isGrouped(false);
         });
 
-        describe('after store operations', function () {
+        describe('after store operations', function() {
             function filterIt(method, specName, groupName, bool) {
                 // Note that the metaGroups should be present for filtered groups b/c the filter could be cleared.
-                it(specName + ', method: "' + method + '", groupName: "' + groupName + '"', function () {
+                it(specName + ', method: "' + method + '", groupName: "' + groupName + '"', function() {
                     makeUI();
-                    
+
                     store.getGroups().emptyGroupRetainTime = 100;
 
                     grid.store.addFilter({
@@ -1676,7 +1727,8 @@ function() {
 
                     if (method === 'getGroup') {
                         expect(!!groupingFeature.getGroup(groupName)).toBe(bool);
-                    } else {
+                    }
+                    else {
                         // Note that we can't use .getMetaGroup b/c that will return a new group if the groupName isn't in the cache.
                         expect(groupingFeature.getCache(groupName)).toBeDefined();
                     }
@@ -1693,44 +1745,45 @@ function() {
             }
 
             function removeIt(method, specName, groupName) {
-                it(specName + ', method: "' + method + '", groupName: "' + groupName + '"', function () {
+                it(specName + ', method: "' + method + '", groupName: "' + groupName + '"', function() {
                     makeUI();
 
                     grid.store.setGrouper(null);
 
                     if (method === 'getGroup') {
                         expect(groupingFeature.getGroup(groupName)).toBeUndefined();
-                    } else {
+                    }
+                    else {
                         expect(groupingFeature.getMetaGroup(groupName)).toBeUndefined();
                     }
                 });
             }
 
-            describe('looking up groups', function () {
-                describe('when groups are filtered', function () {
+            describe('looking up groups', function() {
+                describe('when groups are filtered', function() {
                     filterIt('getGroup', 'should not be able to lookup the group if filtered', 'Greek', false);
                     filterIt('getGroup', 'should be able to lookup the group if not filtered', 'Roman', true);
                 });
 
-                describe('when the grouper is removed', function () {
+                describe('when the grouper is removed', function() {
                     removeIt('getGroup', 'should not be able to lookup the group if removed', 'Greek');
                     removeIt('getGroup', 'should not be able to lookup the group if removed', 'Roman');
                 });
             });
 
-            describe('looking up metaGroups', function () {
-                describe('when groups are filtered', function () {
+            describe('looking up metaGroups', function() {
+                describe('when groups are filtered', function() {
                     filterIt('getCache', 'should not remove the metaGroup if it is not among the filtered values', 'Greek', false);
                     filterIt('getCache', 'should not remove the metaGroup if it is among the filtered values', 'Roman', false);
                 });
 
-                describe('when the grouper is removed', function () {
+                describe('when the grouper is removed', function() {
                     removeIt('getCache', 'should remove the metaGroup if the grouper is removed', 'Greek');
                     removeIt('getCache', 'should remove the metaGroup if the grouper is removed', 'Roman');
                 });
             });
 
-            describe('groupFn and types', function () {
+            describe('groupFn and types', function() {
                 // Note that the bug is caused when a groupFn changes a type such as a Date. In these cases,
                 // the group name won't be able to be looked up b/c the data field is a Date object but the
                 // the store groups (and by extension the GroupingFeature.metaGroupCache keys) will be strings
@@ -1741,24 +1794,24 @@ function() {
                 // See EXTJS-17135.
                 var record;
 
-                beforeEach(function () {
+                beforeEach(function() {
                     Ext.define('spec.Movie', {
                         extend: 'Ext.data.Model',
-                        fields: ['name', 'type', { name: 'released', type: 'date'}]
+                        fields: ['name', 'type', { name: 'released', type: 'date' }]
                     });
                 });
 
-                afterEach(function () {
+                afterEach(function() {
                     Ext.undefine('spec.Movie');
                     record = null;
                 });
 
-                it('should be able to work for complex types', function () {
+                it('should be able to work for complex types', function() {
                     makeGrid({
                         model: 'spec.Movie',
                         grouper: {
                             property: 'released',
-                            groupFn: function (record) {
+                            groupFn: function(record) {
                                 return Ext.Date.format(record.get('released'), 'Y-m-d');
                             }
                         },
@@ -1791,10 +1844,10 @@ function() {
         });
     });
 
-    describe('the metaGroupCache', function () {
-        describe('preserving state across operations', function () {
-            describe('sorting', function () {
-                beforeEach(function () {
+    describe('the metaGroupCache', function() {
+        describe('preserving state across operations', function() {
+            describe('sorting', function() {
+                beforeEach(function() {
                     makeGrid({
                         data: [{
                             name: 'Utley',
@@ -1806,16 +1859,16 @@ function() {
                     grid.headerCt.visibleColumnManager.getColumns()[0].sort();
                 });
 
-                it('should preserve the group', function () {
+                it('should preserve the group', function() {
                     expect(groupingFeature.getCache().Utley).toBeDefined();
                 });
             });
         });
 
-        describe('locked grids', function () {
+        describe('locked grids', function() {
             var lockedGroupingFeature, normalGroupingFeature;
 
-            beforeEach(function () {
+            beforeEach(function() {
                 makeGrid(null, null, {
                     enableLocking: true
                 });
@@ -1824,14 +1877,14 @@ function() {
                 normalGroupingFeature = view.normalView.summaryFeature;
             });
 
-            afterEach(function () {
+            afterEach(function() {
                 lockedGroupingFeature = normalGroupingFeature = null;
             });
         });
     });
 
-    describe('the hideGroupedHeader config', function () {
-        it('should default to false', function () {
+    describe('the hideGroupedHeader config', function() {
+        it('should default to false', function() {
             makeGrid({
                 groupField: 'cuisine'
             });
@@ -1839,7 +1892,7 @@ function() {
             expect(groupingFeature.hideGroupedHeader).toBe(false);
         });
 
-        it('should honor a given config', function () {
+        it('should honor a given config', function() {
             makeGrid({
                 groupField: 'cuisine'
             }, {
@@ -1849,7 +1902,7 @@ function() {
             expect(groupingFeature.hideGroupedHeader).toBe(true);
         });
 
-        it("should enable both of the Grouping's menu items", function () {
+        it("should enable both of the Grouping's menu items", function() {
             var menu;
 
             makeGrid({
@@ -1862,7 +1915,7 @@ function() {
             expect(menu.down('#groupToggleMenuItem').disabled).toBe(false);
         });
 
-        it("should check the 'Show in groups' menu item by default when shown", function () {
+        it("should check the 'Show in groups' menu item by default when shown", function() {
             // Note the following Grouping configs must be turned on for the menu item to be in the menu!
             makeGrid({
                 groupField: 'name'
@@ -1875,7 +1928,7 @@ function() {
             expect(menu.down('#groupToggleMenuItem').checked).toBe(true);
         });
 
-        it("should disable the 'Show in groups' menu item when it's unchecked", function () {
+        it("should disable the 'Show in groups' menu item when it's unchecked", function() {
             makeGrid({
                 groupField: 'name'
             });
@@ -1885,8 +1938,8 @@ function() {
             expect(menu.down('#groupToggleMenuItem').disabled).toBe(true);
         });
 
-        describe('when false', function () {
-            it('should not hide the column whose dataIndex maps to the store.groupField', function () {
+        describe('when false', function() {
+            it('should not hide the column whose dataIndex maps to the store.groupField', function() {
                 var groupField =  'cuisine';
 
                 makeGrid({
@@ -1897,14 +1950,14 @@ function() {
             });
         });
 
-        describe('when true', function () {
+        describe('when true', function() {
             var groupField;
 
-            afterEach(function () {
+            afterEach(function() {
                 groupField = null;
             });
 
-            it('should hide the column whose dataIndex maps to the store.groupField', function () {
+            it('should hide the column whose dataIndex maps to the store.groupField', function() {
                 groupField =  'cuisine';
 
                 makeGrid({
@@ -1916,7 +1969,7 @@ function() {
                 expect(grid.columnManager.getHeaderByDataIndex(groupField).hidden).toBe(true);
             });
 
-            it('should show the column whose dataIndex maps to the store.groupField when toggled', function () {
+            it('should show the column whose dataIndex maps to the store.groupField when toggled', function() {
                 var columnManager;
 
                 groupField =  'cuisine';
@@ -1945,7 +1998,7 @@ function() {
     });
 
     function runGroupers(buffered) {
-        describe('groupers and ' + (buffered ? 'buffered' : 'data') + ' store', function () {
+        describe('groupers and ' + (buffered ? 'buffered' : 'data') + ' store', function() {
             var contains = Ext.Array.contains,
                 groupers, storeCfg;
 
@@ -1967,8 +2020,7 @@ function() {
                 }];
             }
 
-            beforeEach(function () {
-                
+            beforeEach(function() {
 
                 storeCfg = {
                     buffered: buffered,
@@ -1984,14 +2036,14 @@ function() {
                 }
             });
 
-            afterEach(function () {
+            afterEach(function() {
                 groupers = storeCfg = null;
             });
 
-            describe('no defined groupers', function () {
+            describe('no defined groupers', function() {
                 // Note we know that they are indeed grouped (and the UI reflects the grouping) by the fact that
                 // there is an entry for the groupField in the metaGroupCache.
-                it('should still group on init when grouping by a groupField with a complex type', function () {
+                it('should still group on init when grouping by a groupField with a complex type', function() {
                     makeGrid(Ext.apply({
                         groupField: 'name'
                     }, storeCfg));
@@ -2002,10 +2054,11 @@ function() {
                     }
 
                     var headers = view.body.query('.x-group-hd-container', true);
+
                     expect(headers.length).toBe(1);
                 });
 
-                it('should still group when grouping by a groupField with a complex type', function () {
+                it('should still group when grouping by a groupField with a complex type', function() {
                     // Here we're initially grouping by a groupField that maps to a string value and then
                     // switching to a group that maps to a complex type.
                     makeGrid(Ext.apply({
@@ -2019,31 +2072,32 @@ function() {
 
                     // Not specifying a column here will default to column[0].
                     clickItem('groupMenuItem');
-                    
+
                     // Clicking the menu item above to re-group causes the store
                     // to load. Since this is deferred for a BufferedStore, we
                     // must wait for the store to start loading before completing
                     // the mock data request
-                    waitsFor(function () {
+                    waitsFor(function() {
                         return buffered ? store.isLoading() : true;
                     });
-                    runs(function () {
+                    runs(function() {
                         if (buffered) {
                             completeWithData(getData());
                         }
-    
+
                         var headers = view.body.query('.x-group-hd-container', true);
+
                         expect(headers.length).toBe(1);
                     });
                 });
             });
 
-            describe('defined groupers', function () {
-                describe('startCollapsed', function () {
+            describe('defined groupers', function() {
+                describe('startCollapsed', function() {
                     function doStartCollapsedTests(startCollapsed) {
-                        describe('when ' + startCollapsed, function () {
-                            describe('init', function () {
-                                it('should not have any groupers by default', function () {
+                        describe('when ' + startCollapsed, function() {
+                            describe('init', function() {
+                                it('should not have any groupers by default', function() {
                                     makeGrid(storeCfg);
 
                                     if (buffered) {
@@ -2054,7 +2108,7 @@ function() {
                                     expect(groupingFeature.groupers).toBe(null);
                                 });
 
-                                it('should honor configured groupers', function () {
+                                it('should honor configured groupers', function() {
                                     makeGrid(storeCfg, {
                                         groupers: [{
                                             property: 'name',
@@ -2079,21 +2133,21 @@ function() {
                                 });
                             });
 
-                            describe('after init', function () {
+                            describe('after init', function() {
                                 // Note: the Grouping feature doesn't completely support a BufferedStore yet so I've
                                 // these specs are only testing non-buffered data store.
                                 var groupNames = [],
                                     rendererValues = [],
                                     cache;
 
-                                beforeEach(function () {
+                                beforeEach(function() {
                                     makeGrid({
                                         groupField: 'name',
                                         data: getData()
                                     }, {
                                         groupers: [{
                                             property: 'name',
-                                            groupFn: function (val) {
+                                            groupFn: function(val) {
                                                 var name = val.data.name,
                                                     ret = [name.first, name.middle, name.last].join(' ');
 
@@ -2110,7 +2164,7 @@ function() {
                                         columns: [{
                                             text: 'Name',
                                             dataIndex: 'name',
-                                            renderer: function (val) {
+                                            renderer: function(val) {
                                                 if (!contains(rendererValues, val)) {
                                                     rendererValues.push(val);
                                                 }
@@ -2123,27 +2177,27 @@ function() {
                                     cache = groupingFeature.getCache();
                                 });
 
-                                afterEach(function () {
+                                afterEach(function() {
                                     groupNames.length = rendererValues.length = 0;
                                     cache = null;
                                 });
 
-                                describe('column renderers', function () {
-                                    it('should be passed a complex data type as the value', function () {
+                                describe('column renderers', function() {
+                                    it('should be passed a complex data type as the value', function() {
                                         expect(Ext.isObject(rendererValues[0])).toBe(true);
                                         expect(Ext.isObject(rendererValues[1])).toBe(true);
                                     });
                                 });
 
-                                describe('the UI', function () {
+                                describe('the UI', function() {
                                     var cells;
 
-                                    afterEach(function () {
+                                    afterEach(function() {
                                         cells = null;
                                     });
 
-                                    describe('group container rows', function () {
-                                        it('should create a group container row for each group with the correct group name', function () {
+                                    describe('group container rows', function() {
+                                        it('should create a group container row for each group with the correct group name', function() {
                                             cells = view.body.query('.' + groupingFeature.ctCls, true);
 
                                             expect((cells[0].textContent || cells[0].innerText).replace(/\s/g, '')).toBe('Name:BobTheCat');
@@ -2152,8 +2206,8 @@ function() {
                                     });
 
                                     if (!startCollapsed) {
-                                        describe('data rows', function () {
-                                            it('should correctly render the cell value', function () {
+                                        describe('data rows', function() {
+                                            it('should correctly render the cell value', function() {
                                                 cells = view.body.query('.x-grid-row');
 
                                                 expect((cells[0].textContent || cells[0].innerText).replace(/\s/g, '')).toBe('BobTheCat');
@@ -2170,19 +2224,19 @@ function() {
                     doStartCollapsedTests(false);
                 });
 
-                describe('grouping via the UI', function () {
+                describe('grouping via the UI', function() {
                     // Here we're just testing that the internal cache values update when the UI is clicked.
                     //
                     // Note: the Grouping feature doesn't completely support a BufferedStore yet so I've
                     // these specs are only testing non-buffered data store.
-                    beforeEach(function () {
+                    beforeEach(function() {
                         makeGrid({
                             groupField: 'cuisine',
                             data: getData()
                         }, {
                             groupers: [{
                                 property: 'name',
-                                groupFn: function (val) {
+                                groupFn: function(val) {
                                     var name = val.data.name;
 
                                     return [name.first, name.middle, name.last].join(' ');
@@ -2192,7 +2246,7 @@ function() {
                             columns: [{
                                 text: 'Name',
                                 dataIndex: 'name',
-                                renderer: function (val) {
+                                renderer: function(val) {
                                     return [val.first, val.middle, val.last].join(' ');
                                 }
                             }, {
@@ -2202,7 +2256,7 @@ function() {
                         });
                     });
 
-                    describe('the "Group by this field" menu item', function () {
+                    describe('the "Group by this field" menu item', function() {
                         function doTest() {
                             // Sanity.
                             expect(store.getGrouper().getProperty()).toBe('cuisine');
@@ -2213,25 +2267,25 @@ function() {
                             expect(store.getGrouper().getProperty()).toBe('name');
                         }
 
-                        it('should work when grouping by a complex data type', function () {
+                        it('should work when grouping by a complex data type', function() {
                             doTest();
                         });
 
-                        it('should work when toggling', function () {
+                        it('should work when toggling', function() {
                             doTest();
                             clickItem('groupMenuItem', grid.columns[1]);
                             doTest();
                         });
                     });
 
-                    describe('the "Show in groups" check menu item', function () {
+                    describe('the "Show in groups" check menu item', function() {
                         function doTest() {
                             // Not specifying a column here will default to column[0].
                             clickItem('groupMenuItem');
                             expect(store.getGrouper().getProperty()).toBe('name');
                         }
 
-                        it('should work when toggling', function () {
+                        it('should work when toggling', function() {
                             doTest();
                             clickItem('groupToggleMenuItem', grid.columns[1]);
                             doTest();
@@ -2245,89 +2299,89 @@ function() {
     runGroupers(true);
     runGroupers(false);
 
-    describe('groupKey values', function () {
+    describe('groupKey values', function() {
         var key;
 
         function initGrid(groupKey) {
             makeGrid({
                 data: [
-                    { name: 'Pericles', cuisine: groupKey},
-                    { name: 'Sulla', cuisine: 'Roman'}
+                    { name: 'Pericles', cuisine: groupKey },
+                    { name: 'Sulla', cuisine: 'Roman' }
                 ],
                 groupField: 'cuisine'
             });
         }
 
-        afterEach(function () {
+        afterEach(function() {
             key = null;
         });
 
-        describe('non-empty string values', function () {
-            beforeEach(function () {
+        describe('non-empty string values', function() {
+            beforeEach(function() {
                 key = '5th Century Athens';
             });
 
-            it('should work for string values', function () {
+            it('should work for string values', function() {
                 initGrid(key);
                 expect(store.getGroups().getAt(0).getGroupKey()).toBe(key);
             });
 
-            it('should create a metaGroup', function () {
+            it('should create a metaGroup', function() {
                 initGrid(key);
                 expect(!!groupingFeature.getCache()[key]).toBe(true);
             });
         });
 
-        describe('empty string values', function () {
-            beforeEach(function () {
+        describe('empty string values', function() {
+            beforeEach(function() {
                 key = '';
             });
 
-            it('should work for empty string', function () {
+            it('should work for empty string', function() {
                 initGrid('');
                 expect(store.getGroups().getAt(0).getGroupKey()).toBe('');
             });
 
-            it('should create a metaGroup', function () {
+            it('should create a metaGroup', function() {
                 initGrid('');
                 expect(!!groupingFeature.getCache()[key]).toBe(true);
             });
         });
 
-        describe('null values', function () {
-            beforeEach(function () {
+        describe('null values', function() {
+            beforeEach(function() {
                 key = null;
             });
 
-            it('should work for null values', function () {
+            it('should work for null values', function() {
                 initGrid(key);
                 expect(store.getGroups().getAt(0).getGroupKey()).toBe('');
             });
 
-            it('should create a metaGroup with an empty string key', function () {
+            it('should create a metaGroup with an empty string key', function() {
                 initGrid(key);
                 expect(!!groupingFeature.getCache()['']).toBe(true);
             });
         });
 
-        describe('undefined values', function () {
-            beforeEach(function () {
+        describe('undefined values', function() {
+            beforeEach(function() {
                 key = undefined;
             });
 
-            it('should work for undefined values', function () {
+            it('should work for undefined values', function() {
                 initGrid(key);
                 expect(store.getGroups().getAt(0).getGroupKey()).toBe('');
             });
 
-            it('should create a metaGroup with an empty string key', function () {
+            it('should create a metaGroup with an empty string key', function() {
                 initGrid(key);
                 expect(!!groupingFeature.getCache()['']).toBe(true);
             });
         });
     });
 
-    describe('clearing the bound data store', function () {
+    describe('clearing the bound data store', function() {
         // See EXTJS-1582.
         var store, view;
 
@@ -2336,59 +2390,59 @@ function() {
                 model: spec.Restaurant,
                 groupField: 'cuisine',
                 groupDir: 'DESC',
-                data : [
-                    { name: "Beardog's", cuisine: "Home cooking"},
-                    { name: "World Service", cuisine: "Poncy"}
+                data: [
+                    { name: "Beardog's", cuisine: "Home cooking" },
+                    { name: "World Service", cuisine: "Poncy" }
                 ]
             });
-            
+
             grid = new Ext.grid.Panel({
-                renderTo : Ext.getBody(),
+                renderTo: Ext.getBody(),
                 store: store,
-                width : 200,
-                height : 200,
-                title : 'Restaurants',
+                width: 200,
+                height: 200,
+                title: 'Restaurants',
                 deferRowRender: false,
-                features : [{
+                features: [{
                     ftype: 'grouping'
                 }],
-                columns : [{
-                    text : 'Name',
-                    dataIndex : 'name'
+                columns: [{
+                    text: 'Name',
+                    dataIndex: 'name'
                 }, {
-                    text : 'Cuisine',
-                    dataIndex : 'cuisine'
+                    text: 'Cuisine',
+                    dataIndex: 'cuisine'
                 }]
             });
 
             view = grid.view;
         });
 
-        afterEach(function () {
+        afterEach(function() {
             store = view = Ext.destroy(store);
         });
 
-        it('should work', function () {
-            expect(function () {
+        it('should work', function() {
+            expect(function() {
                 store.removeAll();
             }).not.toThrow();
         });
 
-        it('should clear the view', function () {
+        it('should clear the view', function() {
             expect(view.all.count).toBe(store.getCount());
             store.removeAll();
             expect(view.all.count).toBe(0);
         });
     });
 
-    describe('update operations on the GroupStore', function () {
-        describe('operating on the last field in a group', function () {
+    describe('update operations on the GroupStore', function() {
+        describe('operating on the last field in a group', function() {
             function createGrid(groupField) {
                 makeGrid({
                     model: spec.Restaurant,
                     groupField: groupField || 'cuisine',
-                    data : [
-                        { name: "Beardog's", cuisine: true}
+                    data: [
+                        { name: "Beardog's", cuisine: true }
                     ],
                     filters: [{
                         property: 'cuisine',
@@ -2400,21 +2454,21 @@ function() {
             }
 
             function test(str, prop) {
-                describe(str, function () {
-                    it('should work when filtering the store', function () {
+                describe(str, function() {
+                    it('should work when filtering the store', function() {
                         createGrid(prop);
 
-                        expect(function () {
+                        expect(function() {
                             store.filter('cuisine', false);
                         }).not.toThrow();
 
                         expect(store.data.length).toBe(0);
                     });
 
-                    it('should work when setting the model', function () {
+                    it('should work when setting the model', function() {
                         createGrid(prop);
 
-                        expect(function () {
+                        expect(function() {
                             store.getAt(0).set('cuisine', false);
                         }).not.toThrow();
 
@@ -2472,10 +2526,10 @@ function() {
         });
     });
 
-    describe('on store reload', function () {
+    describe('on store reload', function() {
         var data;
 
-        beforeEach(function () {
+        beforeEach(function() {
             data = [{
                 cuisine: 'Tuna Delight',
                 name: 'Bob The Cat'
@@ -2485,11 +2539,11 @@ function() {
             }];
         });
 
-        afterEach(function () {
+        afterEach(function() {
             data = null;
         });
 
-        it('should maintain the groupKey property to lookup the current group', function () {
+        it('should maintain the groupKey property to lookup the current group', function() {
             // Note: To trigger this bug the group must be collapsed before the store is reloaded and
             // then collapsed again. At this point, the feature was keeping a reference to the old
             // destroyed group. Let's test that this is no longer the case.
@@ -2518,8 +2572,8 @@ function() {
         });
     });
 
-    describe('adding new record to group', function () {
-        describe('inserting in first position', function () {
+    describe('adding new record to group', function() {
+        describe('inserting in first position', function() {
             // See EXTJS-17051.
 
             function doTheGrid(isBR) {
@@ -2531,12 +2585,12 @@ function() {
                         direction: 'ASC'
                     },
                     data: [
-                        { name: "Chicks' Ciao", cuisine: "Fine Dining"},
-                        { name: "Molly's Table", cuisine: "Fine Dining"},
-                        { name: "Pete's Place", cuisine: "Fine Dining"},
-                        { name: "World of Utley", cuisine: "Fine Dining"},
-                        { name: "Lily's Leapers", cuisine: "Fine Dining"},
-                        { name: "Who? Roo?", cuisine: "Fine Dining"}
+                        { name: "Chicks' Ciao", cuisine: "Fine Dining" },
+                        { name: "Molly's Table", cuisine: "Fine Dining" },
+                        { name: "Pete's Place", cuisine: "Fine Dining" },
+                        { name: "World of Utley", cuisine: "Fine Dining" },
+                        { name: "Lily's Leapers", cuisine: "Fine Dining" },
+                        { name: "Who? Roo?", cuisine: "Fine Dining" }
                     ]
                 }, null, {
                     height: 500,
@@ -2550,12 +2604,12 @@ function() {
             }
 
             function doTests(isBR) {
-                it('should not create a new group in store, buffered rendering = ' + isBR, function () {
+                it('should not create a new group in store, buffered rendering = ' + isBR, function() {
                     doTheGrid(isBR);
                     expect(store.getGroups().length).toBe(1);
                 });
 
-                it('should not create a new group in view, buffered rendering = ' + isBR, function () {
+                it('should not create a new group in view, buffered rendering = ' + isBR, function() {
                     doTheGrid(isBR);
                     expect(view.body.el.query('.x-grid-group-hd').length).toBe(1);
                 });
@@ -2566,76 +2620,76 @@ function() {
         });
     });
 
-    describe('collapsing and expanding', function () {
-        describe('should work', function () {
+    describe('collapsing and expanding', function() {
+        describe('should work', function() {
             var groupName = 'Fine Dining';
 
-            beforeEach(function () {
+            beforeEach(function() {
                 makeGrid({
                     groupField: 'cuisine',
                     data: [
-                        { name: "Chicks' Ciao", cuisine: "Fine Dining"},
-                        { name: "Molly's Table", cuisine: "Fine Dining"},
-                        { name: "Pete's Place", cuisine: "Fine Dining"},
-                        { name: "World of Utley", cuisine: "Fine Dining"},
-                        { name: "Lily's Leapers", cuisine: "Fine Dining"},
-                        { name: "Who? Roo?", cuisine: "Fine Dining"}
+                        { name: "Chicks' Ciao", cuisine: "Fine Dining" },
+                        { name: "Molly's Table", cuisine: "Fine Dining" },
+                        { name: "Pete's Place", cuisine: "Fine Dining" },
+                        { name: "World of Utley", cuisine: "Fine Dining" },
+                        { name: "Lily's Leapers", cuisine: "Fine Dining" },
+                        { name: "Who? Roo?", cuisine: "Fine Dining" }
                     ]
                 });
             });
 
-            it('should collapse', function () {
+            it('should collapse', function() {
                 groupingFeature.collapse(groupName);
 
                 expect(groupingFeature.getMetaGroup(groupName).isCollapsed).toBe(true);
             });
 
-            it('should expand', function () {
+            it('should expand', function() {
                 groupingFeature.collapse(groupName);
                 groupingFeature.expand(groupName);
 
                 expect(groupingFeature.getMetaGroup(groupName).isCollapsed).toBe(false);
             });
-            
+
             describe("events", function() {
                 var spy;
-                
+
                 beforeEach(function() {
                     spy = jasmine.createSpy('event');
                 });
-                
+
                 afterEach(function() {
                     spy = null;
                 });
-                
+
                 it("should fire groupcollapse event on the grid", function() {
                     grid.on('groupcollapse', spy);
-                    
+
                     groupingFeature.collapse(groupName);
-                    
+
                     expect(spy.callCount).toBe(1);
                 });
-                
+
                 it("should fire groupexpand event on the grid", function() {
                     grid.on('groupexpand', spy);
-                    
+
                     groupingFeature.collapse(groupName);
                     groupingFeature.expand(groupName);
-                    
+
                     expect(spy.callCount).toBe(1);
                 });
             });
         });
 
         describe('group where groupKey = ""', function() {
-            beforeEach(function () {
+            beforeEach(function() {
                 makeGrid({
                     groupField: 'cuisine',
                     data: [
-                        { name: "Chicks' Ciao", cuisine: "Fine Dining"},
-                        { name: "Molly's Table", cuisine: "Fine Dining"},
-                        { name: "Gary's Grille", cuisine: ""},
-                        { name: "Henry's Hibachi", cuisine: ""}
+                        { name: "Chicks' Ciao", cuisine: "Fine Dining" },
+                        { name: "Molly's Table", cuisine: "Fine Dining" },
+                        { name: "Gary's Grille", cuisine: "" },
+                        { name: "Henry's Hibachi", cuisine: "" }
                     ]
                 });
             });
@@ -2654,61 +2708,62 @@ function() {
             });
         });
 
-        describe('collapsing the last group in the view', function () {
+        describe('collapsing the last group in the view', function() {
             var groupName;
 
-            describe('when the view is not overflowed', function () {
-                beforeEach(function () {
+            describe('when the view is not overflowed', function() {
+                beforeEach(function() {
                     groupName = "Molly's Table";
 
                     makeGrid({
                         groupField: 'name',
                         data: [
-                            { name: "Chicks' Ciao", cuisine: "Fine Dining"},
-                            { name: groupName, cuisine: "Fine Dining"}
+                            { name: "Chicks' Ciao", cuisine: "Fine Dining" },
+                            { name: groupName, cuisine: "Fine Dining" }
                         ]
                     });
                 });
 
-                it('should work when using the `collapse` API', function () {
+                it('should work when using the `collapse` API', function() {
                     groupingFeature.collapse(groupName);
 
                     expect(groupingFeature.getMetaGroup(groupName).isCollapsed).toBe(true);
                 });
 
-                it('should work when using the mouse', function () {
+                it('should work when using the mouse', function() {
                     var dom = view.body.el.query(groupingFeature.eventSelector)[1];
+
                     jasmine.fireMouseEvent(dom, 'click');
 
                     expect(groupingFeature.getMetaGroup(groupName).isCollapsed).toBe(true);
                 });
             });
 
-            describe('when the view is overflowed', function () {
-                beforeEach(function () {
+            describe('when the view is overflowed', function() {
+                beforeEach(function() {
                     groupName = 'World of Utley';
 
                     makeGrid({
                         groupField: 'name',
                         data: [
-                            { name: "Chicks' Ciao", cuisine: "Fine Dining"},
-                            { name: "Molly's Table", cuisine: "Fine Dining"},
-                            { name: "Pete's Place", cuisine: "Fine Dining"},
-                            { name: "Who? Roo?", cuisine: "Fine Dining"},
-                            { name: "Lily's Leapers", cuisine: "Fine Dining"},
-                            { name: groupName, cuisine: "Fine Dining"}
+                            { name: "Chicks' Ciao", cuisine: "Fine Dining" },
+                            { name: "Molly's Table", cuisine: "Fine Dining" },
+                            { name: "Pete's Place", cuisine: "Fine Dining" },
+                            { name: "Who? Roo?", cuisine: "Fine Dining" },
+                            { name: "Lily's Leapers", cuisine: "Fine Dining" },
+                            { name: groupName, cuisine: "Fine Dining" }
                         ]
                     });
                 });
 
-                it('should work using the `collapse` API', function () {
+                it('should work using the `collapse` API', function() {
 
                     groupingFeature.collapse(groupName);
 
                     expect(groupingFeature.getMetaGroup(groupName).isCollapsed).toBe(true);
                 });
 
-                it('should work using the mouse', function () {
+                it('should work using the mouse', function() {
 
                     var dom = view.body.el.query(groupingFeature.eventSelector)[5];
 
@@ -2722,20 +2777,20 @@ function() {
         });
 
         function runSuites(suite, callback) {
-            describe(suite, function () {
+            describe(suite, function() {
                 var data;
 
-                beforeEach(function () {
+                beforeEach(function() {
                     data = [
-                        { name: "chicks' ciao", cuisine: "fine dining"},
-                        { name: "Molly's Table", cuisine: "Fine Dining"},
-                        { name: "Pete's Place", cuisine: "Fine Dining"},
-                        { name: "Who? Roo?", cuisine: "Fine Dining"},
-                        { name: "Lily's Leapers", cuisine: "Fine Dining"}
+                        { name: "chicks' ciao", cuisine: "fine dining" },
+                        { name: "Molly's Table", cuisine: "Fine Dining" },
+                        { name: "Pete's Place", cuisine: "Fine Dining" },
+                        { name: "Who? Roo?", cuisine: "Fine Dining" },
+                        { name: "Lily's Leapers", cuisine: "Fine Dining" }
                     ];
                 });
 
-                afterEach(function () {
+                afterEach(function() {
                     data = null;
                 });
 
@@ -2754,27 +2809,27 @@ function() {
                 function doTest(startCollapsed) {
                     var groupKey = "Molly's Table";
 
-                    it('should work, startCollapsed: ' + startCollapsed, function () {
+                    it('should work, startCollapsed: ' + startCollapsed, function() {
                         expect(function() {
                             doGrid(startCollapsed);
-    
+
                             groupingFeature.expand(groupKey);
                             callback(data);
                             groupingFeature.collapse(groupKey);
                         }).not.toThrow();
                     });
                 }
-                
+
                 doTest(true);
                 doTest(false);
             });
         }
 
-        runSuites('when the view is refreshed', function () {
+        runSuites('when the view is refreshed', function() {
             view.refresh();
         });
 
-        runSuites('when the store is loaded', function (data) {
+        runSuites('when the store is loaded', function(data) {
             store.load();
             completeWithData(data);
         });
@@ -2784,11 +2839,11 @@ function() {
         // Pass a reference to the cmp not an index!
         function dragColumn(from, to, onRight) {
             var fromBox = from.titleEl.getBox(),
-                fromMx = fromBox.x + fromBox.width/2,
-                fromMy = fromBox.y + fromBox.height/2,
+                fromMx = fromBox.x + fromBox.width / 2,
+                fromMy = fromBox.y + fromBox.height / 2,
                 toBox = to.titleEl.getBox(),
                 toMx = onRight ? toBox.right - 10 : toBox.left + 10,
-                toMy = toBox.y + toBox.height/2,
+                toMy = toBox.y + toBox.height / 2,
                 dragThresh = onRight ? Ext.dd.DragDropManager.clickPixelThresh + 1 : -Ext.dd.DragDropManager.clickPixelThresh - 1;
 
             // Mousedown on the header to drag
@@ -2809,27 +2864,27 @@ function() {
         it("should allow column drag/drop with filters enabled", function() {
             makeGrid({
                 data: [
-                    { name: 'Sulla', cuisine: 'Roman'},
-                    { name: 'Sulla2', cuisine: 'Roman'},
-                    { name: 'Pericles', cuisine: 'Greek'}
+                    { name: 'Sulla', cuisine: 'Roman' },
+                    { name: 'Sulla2', cuisine: 'Roman' },
+                    { name: 'Pericles', cuisine: 'Greek' }
                 ],
                 groupField: 'cuisine'
             });
             grid.getStore().filter('name', 'Sulla');
             var name = grid.down('[text=Name]'),
                 cuisine = grid.down('[text=Cuisine]');
-            
+
             dragColumn(name, cuisine, true);
         });
     });
-    
+
     describe('initially null id', function() {
         it('should be able to remove it after changing the id', function() {
             makeGrid({
                 data: [
-                    { name: 'Sulla', cuisine: 'Roman'},
-                    { name: 'Marius', cuisine: 'Roman'},
-                    { name: 'Pericles', cuisine: 'Greek'}
+                    { name: 'Sulla', cuisine: 'Roman' },
+                    { name: 'Marius', cuisine: 'Roman' },
+                    { name: 'Pericles', cuisine: 'Greek' }
                 ],
                 groupField: 'cuisine'
             });
@@ -2837,6 +2892,7 @@ function() {
                 name: 'Aurelian',
                 cuisine: 'Roman'
             });
+
             newRestaurant.set('id', null);
             store.add(newRestaurant);
             newRestaurant.setId('foo');
@@ -2844,5 +2900,274 @@ function() {
             expect(view.all.getCount()).toBe(3);
         });
     });
-      
+
+    describe('grouping store collapse/expand', function() {
+        var store = null,
+         grid = null,
+         view, groupingFeature;
+
+        beforeEach(function() {
+            Ext.define('spec.Test', {
+                extend: 'Ext.data.Model',
+                idProperty: 'id',
+                identifier: {
+                    type: 'negative'
+                },
+                fields: [{
+                    name: 'id',
+                    type: 'string'
+                }, {
+                    name: 'text',
+                    type: 'string'
+                }, {
+                    name: 'category',
+                    type: 'string'
+                }]
+            });
+
+            store = new Ext.data.Store({
+                model: spec.Test,
+                groupField: 'category',
+                data: [
+                    {
+                      "text": "Text 1",
+                      "category": "Category 1"
+                    },
+                    {
+                      "text": "Text 2",
+                      "category": "Category 1"
+                    },
+                    {
+                      "text": "Text 3",
+                      "category": "Category 2"
+                    },
+                    {
+                      "text": "Text 4",
+                      "category": "Category 2"
+                    },
+                    {
+                      "text": "Text 5",
+                      "category": "Category 3"
+                    },
+                    {
+                      "text": "Text 6",
+                      "category": "Category 3"
+                    },
+                    {
+                      "text": "Text 7",
+                      "category": "Category 4"
+                    },
+                    {
+                      "text": "Text 8",
+                      "category": "Category 4"
+                    }
+                  ]
+            });
+
+            grid = new Ext.grid.Panel(Ext.apply({
+                renderTo: Ext.getBody(),
+                extend: 'Ext.grid.Panel',
+                alias: 'widget.fiddlegrid',
+                requires: [
+                    'GridModel'
+                ],
+                striped: true,
+                columnLines: true,
+                layout: 'fit',
+                store: store,
+                columns: [{
+                    text: 'ID',
+                    dataIndex: 'id',
+                    flex: 1
+                }, {
+                    text: 'Text',
+                    dataIndex: 'text',
+                    flex: 1
+                }, {
+                    text: 'Category',
+                    dataIndex: 'category',
+                    width: 100
+                }],
+                features: [{
+                    ftype: 'grouping',
+                    collapsible: true,
+                    hideGroupedHeader: true,
+                    enableGroupingMenu: false,
+                    expandTip: null,
+                    collapseTip: null
+                }]
+            }));
+
+            store = grid.store;
+            view = grid.view;
+            groupingFeature = view.summaryFeature;
+        });
+
+        afterEach(function() {
+            Ext.destroy(grid, store, view, groupingFeature);
+        });
+
+        it('session should maintain model/id on collapse/expand', function() {
+            var groupCount = store.getGroups().length;
+
+            var group1, group2;
+
+            // initially all groups are expanded
+            for (var i = 1; i <= groupCount; i++) {
+                expect(groupingFeature.getMetaGroup('Category ' + i).isCollapsed).toBe(false);
+            }
+
+            // collapse second group
+            group1 = groupingFeature.getRecordGroup(store.getAt(3));
+            groupingFeature.collapse(group1.getGroupKey());
+            // Fewer view items.
+            expect(grid.view.all.getCount()).toBe(7);
+
+            // collapse fourth group
+            group2 = groupingFeature.getRecordGroup(store.getAt(7));
+            groupingFeature.collapse(group2.getGroupKey());
+            // Fewer view items.
+            expect(grid.view.all.getCount()).toBe(6);
+
+            // expand fourth group
+            groupingFeature.expand(group2.getGroupKey());
+            // More view items.
+            expect(grid.view.all.getCount()).toBe(7);
+
+            // expand second group
+            groupingFeature.expand(group1.getGroupKey());
+            // More view items.
+            expect(grid.view.all.getCount()).toBe(8);
+        });
+
+        it('should be able to get different ids for group placeholder then data items', function() {
+            var grouping = grid.view.findFeature('grouping'),
+            groupStore = grouping.dataSource,
+            data = groupStore.getData().items,
+            dataLen = data.length,
+            groups = store.getGroups().items,
+            groupLen = groups.length,
+            dataLanIdArray = [],
+            i, placeholder;
+
+            // Data items and group items should exist
+            expect(dataLen).not.toBeLessThan(1);
+            expect(groupLen).not.toBeLessThan(1);
+
+            for (i = 0; i < dataLen; i++) {
+                dataLanIdArray.push(data[i].id);
+            }
+
+            // Placeholder Ids should not collide with data ids
+            for (i = 0; i < groupLen; i++) {
+                placeholder = groupStore.groupingFeature.getMetaGroup(groups[i]).placeholder;
+                expect(dataLanIdArray.indexOf(placeholder.id)).toBe(-1);
+            }
+        });
+    });
+
+    describe('toggle summary button', function() {
+        var lockedGrid,
+            data = [],
+            lockedGridStore,
+            showSummary,
+            selector,
+            groupSummaryFeature,
+            group,
+            toggleGroupSummaries = function() {
+                showSummary = !showSummary;
+                var view = lockedGrid.getView();
+
+                view.getFeature('group').toggleSummaryRow(showSummary);
+                view.refresh();
+            };
+
+            for (var index = 0; index < 300; index++) {
+                data.push({
+                    name: index + ' - Name',
+                    firstName: index + ' - First Name',
+                    lastName: index + ' - Last Name',
+                    random: Math.round(Math.random() * 10),
+                    group: index % 10
+                });
+            }
+
+        afterEach(function() {
+            lockedGrid.destroy();
+            lockedGridStore.destroy();
+            Ext.undefine('spec.Task');
+        });
+
+        beforeEach(function() {
+            Ext.define('spec.Task', {
+                extend: 'Ext.data.Model',
+                fields: [
+                    { name: 'name', type: 'string' },
+                    { name: 'firstName', type: 'string' },
+                    { name: 'lastName', type: 'string' },
+                    { name: 'random', type: 'int' },
+                    { name: 'group', type: 'int' }
+                ]
+            });
+
+            lockedGridStore = new Ext.data.Store({
+                model: 'spec.Task',
+                data: data,
+                groupField: 'group'
+            });
+
+            showSummary = true;
+            lockedGrid = new Ext.grid.Panel({
+                title: 'Sponsored Projects',
+                iconCls: 'icon-grid',
+                renderTo: Ext.getBody(),
+                height: 200,
+                columnLines: true,
+                store: lockedGridStore,
+                features: [{
+                    id: 'group',
+                    ftype: 'groupingsummary',
+                    groupHeaderTpl: 'Group {name}',
+                    hideGroupedHeader: true,
+                    enableGroupingMenu: false
+                }],
+                columns: [{
+                    text: 'Name',
+                    dataIndex: 'name',
+                    width: 180
+                }, {
+                    text: 'First Name',
+                    dataIndex: 'firstName',
+                    width: 180
+                }, {
+                    text: 'Last Name',
+                    dataIndex: 'lastName',
+                    width: 180
+                }, {
+                    text: 'Num',
+                    dataIndex: 'random',
+                    width: 70,
+                    summaryType: 'sum'
+                }]
+            });
+
+            groupSummaryFeature = lockedGrid.view.getFeature('group');
+
+        });
+
+        it('should set body top to 0 on click', function() {
+            var view = lockedGrid.getView(),
+            scroller = view.getScrollable();
+
+            spyOn(view.ownerGrid.getView(), 'refreshView');
+
+            scroller.scrollTo(0, 10000);
+
+            toggleGroupSummaries();
+            runs(function() {
+                expect(view.ownerGrid.getView().refreshView).toHaveBeenCalled();
+            });
+        });
+
+    });
 });

@@ -10,9 +10,11 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
                 text: 'Item' + i,
                 itemId: 'item' + i
             };
+
             if (withValue) {
                 o.value = 'item' + i;
             }
+
             ret.push(o);
         }
 
@@ -47,6 +49,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
             i;
 
         expect(len).toBe(states.length);
+
         for (i = 0; i < len; ++i) {
             expect(items[i].getPressed()).toBe(states[i]);
         }
@@ -60,6 +63,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
         if (typeof b === 'number') {
             b = getItem(b);
         }
+
         b.onTap();
     }
 
@@ -95,6 +99,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         forceSelection: false,
                                         items: makeItems(4, true),
@@ -126,6 +131,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         forceSelection: true,
                                         items: makeItems(4, true),
@@ -202,6 +208,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         forceSelection: false,
                                         items: makeItems(4),
@@ -233,6 +240,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         forceSelection: true,
                                         items: makeItems(4),
@@ -313,6 +321,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         value: null,
                                         forceSelection: false,
@@ -347,6 +356,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         value: null,
                                         forceSelection: true,
@@ -429,6 +439,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         value: null,
                                         forceSelection: false,
@@ -463,6 +474,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         value: null,
                                         forceSelection: true,
@@ -554,6 +566,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         forceSelection: false,
                                         items: makeItems(4, true),
@@ -585,6 +598,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         forceSelection: true,
                                         items: makeItems(4, true),
@@ -661,6 +675,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         forceSelection: false,
                                         items: makeItems(4),
@@ -692,6 +707,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         forceSelection: true,
                                         items: makeItems(4),
@@ -772,6 +788,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         value: null,
                                         forceSelection: false,
@@ -806,6 +823,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         value: null,
                                         forceSelection: true,
@@ -888,6 +906,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         value: null,
                                         forceSelection: false,
@@ -922,6 +941,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     createMultipleButton({
                                         value: null,
                                         forceSelection: true,
@@ -1006,6 +1026,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                         it("should fire the change event", function() {
                             var spy = jasmine.createSpy();
+
                             button.on('change', spy);
 
                             getItem(1).setPressed(true);
@@ -1050,6 +1071,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                         it("should fire the change event", function() {
                             var spy = jasmine.createSpy();
+
                             button.on('change', spy);
 
                             clickIt(getItem(1));
@@ -1094,6 +1116,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                         it("should fire the change event", function() {
                             var spy = jasmine.createSpy();
+
                             button.on('change', spy);
 
                             button.setValue('item2');
@@ -1142,6 +1165,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                             it("should fire the change event", function() {
                                 var spy = jasmine.createSpy();
+
                                 button.on('change', spy);
 
                                 getItem(1).setPressed(true);
@@ -1191,6 +1215,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                             it("should fire the change event", function() {
                                 var spy = jasmine.createSpy();
+
                                 button.on('change', spy);
 
                                 getItem(0).setPressed(false);
@@ -1246,6 +1271,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                             it("should fire the change event", function() {
                                 var spy = jasmine.createSpy();
+
                                 button.on('change', spy);
 
                                 clickIt(getItem(1));
@@ -1296,6 +1322,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should fire the change event", function() {
                                     var spy = jasmine.createSpy();
+
                                     button.on('change', spy);
 
                                     clickIt(getItem(0));
@@ -1345,6 +1372,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should not fire events", function() {
                                     var spy = jasmine.createSpy();
+
                                     button.on('change', spy);
                                     button.on('toggle', spy);
 
@@ -1378,6 +1406,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                             it("should fire the change event", function() {
                                 var spy = jasmine.createSpy();
+
                                 button.on('change', spy);
 
                                 button.setValue('item2');
@@ -1427,6 +1456,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                             it("should fire the change event", function() {
                                 var spy = jasmine.createSpy();
+
                                 button.on('change', spy);
 
                                 button.setValue(null);
@@ -1483,6 +1513,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                         it("should fire the change event", function() {
                             var spy = jasmine.createSpy();
+
                             button.on('change', spy);
 
                             getItem(1).setPressed(true);
@@ -1527,6 +1558,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                         it("should fire the change event", function() {
                             var spy = jasmine.createSpy();
+
                             button.on('change', spy);
 
                             clickIt(getItem(1));
@@ -1572,6 +1604,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                             it("should fire the change event", function() {
                                 var spy = jasmine.createSpy();
+
                                 button.on('change', spy);
 
                                 button.setValue('item2');
@@ -1610,6 +1643,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                             it("should fire the change event", function() {
                                 var spy = jasmine.createSpy();
+
                                 button.on('change', spy);
 
                                 button.setValue(['item2', 'item4']);
@@ -1663,6 +1697,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                             it("should fire the change event", function() {
                                 var spy = jasmine.createSpy();
+
                                 button.on('change', spy);
 
                                 getItem(1).setPressed(true);
@@ -1709,6 +1744,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should fire the change event", function() {
                                     var spy = jasmine.createSpy();
+
                                     button.on('change', spy);
 
                                     getItem(0).setPressed(false);
@@ -1758,6 +1794,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should fire the change event", function() {
                                     var spy = jasmine.createSpy();
+
                                     button.on('change', spy);
 
                                     getItem(0).setPressed(false);
@@ -1814,6 +1851,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                             it("should fire the change event", function() {
                                 var spy = jasmine.createSpy();
+
                                 button.on('change', spy);
 
                                 clickIt(getItem(1));
@@ -1860,6 +1898,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should fire the change event", function() {
                                     var spy = jasmine.createSpy();
+
                                     button.on('change', spy);
 
                                     clickIt(getItem(0));
@@ -1909,6 +1948,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should fire the change event", function() {
                                     var spy = jasmine.createSpy();
+
                                     button.on('change', spy);
 
                                     clickIt(getItem(0));
@@ -1965,6 +2005,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                             it("should fire the change event", function() {
                                 var spy = jasmine.createSpy();
+
                                 button.on('change', spy);
 
                                 button.setValue(['item1', 'item2']);
@@ -2011,6 +2052,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should fire the change event", function() {
                                     var spy = jasmine.createSpy();
+
                                     button.on('change', spy);
 
                                     button.setValue([]);
@@ -2060,6 +2102,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
                                 it("should fire the change event", function() {
                                     var spy = jasmine.createSpy();
+
                                     button.on('change', spy);
 
                                     button.setValue(['item2']);
@@ -2147,25 +2190,27 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
 
             it("should have the value set already in pressedchange", function() {
                 var btn1 = button.down('#item1');
+
                 btn1.on('pressedchange', function() {
                     expect(button.getValue()).toEqual(['item1']);
-                }, null, {single: true});
+                }, null, { single: true });
                 btn1.toggle();
 
                 var btn2 = button.down('#item2');
+
                 btn2.on('pressedchange', function() {
                     expect(button.getValue()).toEqual(['item1', 'item2']);
-                }, null, {single: true});
+                }, null, { single: true });
                 btn2.toggle();
 
                 btn2.on('pressedchange', function() {
                     expect(button.getValue()).toEqual(['item1']);
-                }, null, {single: true});
+                }, null, { single: true });
                 btn2.toggle();
 
                  btn1.on('pressedchange', function() {
                     expect(button.getValue()).toEqual([]);
-                }, null, {single: true});
+                }, null, { single: true });
                 btn1.toggle();
             });
 
@@ -2214,20 +2259,20 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
                 expect(spy.calls[3].args[2]).toBe(true);
             });
 
-            it('should fire toggle event after value has been set', function () {
+            it('should fire toggle event after value has been set', function() {
                 button.setValue(['item2']);
 
-                button.on('toggle', function (btn) {
+                button.on('toggle', function(btn) {
                     expect(btn.getValue()).toEqual(['item1', 'item3']);
                 });
 
                 button.setValue(['item3', 'item1']);
             });
 
-            it('should fire change event after value has been set', function () {
+            it('should fire change event after value has been set', function() {
                 button.setValue(['item2']);
 
-                button.on('change', function (btn) {
+                button.on('change', function(btn) {
                     expect(btn.getValue()).toEqual(['item1', 'item3']);
                 });
 
@@ -2247,6 +2292,7 @@ topSuite("Ext.SegmentedButton", ['Ext.app.ViewModel'], function() {
                 }
             });
             var vm = button.getViewModel();
+
             vm.notify();
             expect(button.getValue()).toBe('item1');
 

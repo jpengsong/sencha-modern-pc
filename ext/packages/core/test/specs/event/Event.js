@@ -1,17 +1,15 @@
-/* global Ext, expect, jasmine */
-
 topSuite("Ext.event.Event", function() {
     var E = Ext.event.Event,
         e;
-    
+
     function makeKeyEvent(config) {
         e = new E(Ext.apply({
             type: 'keydown'
         }, config));
-        
+
         return e;
     }
-    
+
     // The following key specs have their behaviour taken from the listed browsers.
     // IE/WebKit share the same behaviour, however Gecko behaves differently in various
     // cases.
@@ -42,28 +40,29 @@ topSuite("Ext.event.Event", function() {
                 });
             });
         }
+
         // IE8-11 + Chrome follow the same behaviour
         if (Ext.isGecko) {
             makeKeySuite((function() {
                 var downupData = [
-                    [true, 'ctrl', 17, 0, {ctrlKey: true}],
-                    [true, 'shift', 16, 18, {shiftKey: true}],
-                    [true, 'alt', 18, 0, {altKey: true}],
+                    [true, 'ctrl', 17, 0, { ctrlKey: true }],
+                    [true, 'shift', 16, 18, { shiftKey: true }],
+                    [true, 'alt', 18, 0, { altKey: true }],
                     [false, 'a', 65, 0],
                     [false, 'c', 67, 0],
                     [false, 'x', 88, 0],
-                    [false, 'ctrl+a', 65, 0, {ctrlKey: true}],
-                    [false, 'ctrl+c', 67, 0, {ctrlKey: true}],
-                    [false, 'ctrl+x', 88, 0, {ctrlKey: true}],
-                    [false, 'shift+a', 65, 0, {shiftKey: true}],
-                    [false, 'shift+c', 67, 0, {shiftKey: true}],
-                    [false, 'shift+x', 88, 0, {shiftKey: true}],
+                    [false, 'ctrl+a', 65, 0, { ctrlKey: true }],
+                    [false, 'ctrl+c', 67, 0, { ctrlKey: true }],
+                    [false, 'ctrl+x', 88, 0, { ctrlKey: true }],
+                    [false, 'shift+a', 65, 0, { shiftKey: true }],
+                    [false, 'shift+c', 67, 0, { shiftKey: true }],
+                    [false, 'shift+x', 88, 0, { shiftKey: true }],
                     [false, '1', 49, 0],
                     [false, '5', 53, 0],
                     [false, '8', 56, 0],
-                    [false, '!', 49, 0, {shiftKey: true}],
-                    [false, '%', 53, 0, {shiftKey: true}],
-                    [false, '*', 56, 0, {shiftKey: true}],
+                    [false, '!', 49, 0, { shiftKey: true }],
+                    [false, '%', 53, 0, { shiftKey: true }],
+                    [false, '*', 56, 0, { shiftKey: true }],
                     [true, 'backspace', 8, 0],
                     [true, 'enter', 13, 0],
                     [true, 'home', 36, 0],
@@ -89,14 +88,14 @@ topSuite("Ext.event.Event", function() {
                     [false, '[', 219, 0],
                     [false, ']', 220, 0],
                     [false, '-', 173, 0],
-                    [false, '<', 188, 0, {shiftKey: true}],
-                    [false, '>', 190, 0, {shiftKey: true}],
-                    [false, '?', 191, 0, {shiftKey: true}],
-                    [false, ':', 59, 0, {shiftKey: true}],
-                    [false, '"', 222, 0, {shiftKey: true}],
-                    [false, '{', 219, 0, {shiftKey: true}],
-                    [false, '}', 220, 0, {shiftKey: true}],
-                    [false, '_', 173, 0, {shiftKey: true}]
+                    [false, '<', 188, 0, { shiftKey: true }],
+                    [false, '>', 190, 0, { shiftKey: true }],
+                    [false, '?', 191, 0, { shiftKey: true }],
+                    [false, ':', 59, 0, { shiftKey: true }],
+                    [false, '"', 222, 0, { shiftKey: true }],
+                    [false, '{', 219, 0, { shiftKey: true }],
+                    [false, '}', 220, 0, { shiftKey: true }],
+                    [false, '_', 173, 0, { shiftKey: true }]
                 ];
 
                 return {
@@ -110,18 +109,18 @@ topSuite("Ext.event.Event", function() {
                         [false, 'a', 0, 97],
                         [false, 'c', 0, 99],
                         [false, 'x', 0, 120],
-                        [false, 'ctrl+a', 0, 97, {ctrlKey: true}],
-                        [false, 'ctrl+c', 0, 99, {ctrlKey: true}],
-                        [false, 'ctrl+x', 0, 120, {ctrlKey: true}],
-                        [false, 'shift+a', 0, 65, {shiftKey: true}],
-                        [false, 'shift+c', 0, 67, {shiftKey: true}],
-                        [false, 'shift+x', 0, 88, {shiftKey: true}],
+                        [false, 'ctrl+a', 0, 97, { ctrlKey: true }],
+                        [false, 'ctrl+c', 0, 99, { ctrlKey: true }],
+                        [false, 'ctrl+x', 0, 120, { ctrlKey: true }],
+                        [false, 'shift+a', 0, 65, { shiftKey: true }],
+                        [false, 'shift+c', 0, 67, { shiftKey: true }],
+                        [false, 'shift+x', 0, 88, { shiftKey: true }],
                         [false, '1', 0, 49],
                         [false, '5', 0, 53],
                         [false, '8', 0, 56],
-                        [false, '!', 0, 33, {shiftKey: true}],
-                        [false, '%', 0, 37, {shiftKey: true}],
-                        [false, '*', 0, 42, {shiftKey: true}],
+                        [false, '!', 0, 33, { shiftKey: true }],
+                        [false, '%', 0, 37, { shiftKey: true }],
+                        [false, '*', 0, 42, { shiftKey: true }],
                         [true, 'backspace', 8, 0],
                         [true, 'enter', 13, 0],
                         [true, 'home', 36, 0],
@@ -147,38 +146,39 @@ topSuite("Ext.event.Event", function() {
                         [false, '[', 0, 91],
                         [false, ']', 0, 93],
                         [false, '-', 0, 45],
-                        [false, '<', 0, 60, {shiftKey: true}],
-                        [false, '>', 0, 62, {shiftKey: true}],
-                        [false, '?', 0, 63, {shiftKey: true}],
-                        [false, ':', 0, 58, {shiftKey: true}],
-                        [false, '"', 0, 34, {shiftKey: true}],
-                        [false, '{', 0, 123, {shiftKey: true}],
-                        [false, '}', 0, 125, {shiftKey: true}],
-                        [false, '_', 0, 95, {shiftKey: true}]
+                        [false, '<', 0, 60, { shiftKey: true }],
+                        [false, '>', 0, 62, { shiftKey: true }],
+                        [false, '?', 0, 63, { shiftKey: true }],
+                        [false, ':', 0, 58, { shiftKey: true }],
+                        [false, '"', 0, 34, { shiftKey: true }],
+                        [false, '{', 0, 123, { shiftKey: true }],
+                        [false, '}', 0, 125, { shiftKey: true }],
+                        [false, '_', 0, 95, { shiftKey: true }]
                     ]
                 };
             })());
-        } else {
+        }
+        else {
             makeKeySuite((function() {
                 var downupData = [
-                    [true, 'ctrl', 17, 0, {ctrlKey: true}],
-                    [true, 'shift', 16, 18, {shiftKey: true}],
-                    [true, 'alt', 18, 0, {altKey: true}],
+                    [true, 'ctrl', 17, 0, { ctrlKey: true }],
+                    [true, 'shift', 16, 18, { shiftKey: true }],
+                    [true, 'alt', 18, 0, { altKey: true }],
                     [false, 'a', 65, 0],
                     [false, 'c', 67, 0],
                     [false, 'x', 88, 0],
-                    [false, 'ctrl+a', 65, 0, {ctrlKey: true}],
-                    [false, 'ctrl+c', 67, 0, {ctrlKey: true}],
-                    [false, 'ctrl+x', 88, 0, {ctrlKey: true}],
-                    [false, 'shift+a', 65, 0, {shiftKey: true}],
-                    [false, 'shift+c', 67, 0, {shiftKey: true}],
-                    [false, 'shift+x', 88, 0, {shiftKey: true}],
+                    [false, 'ctrl+a', 65, 0, { ctrlKey: true }],
+                    [false, 'ctrl+c', 67, 0, { ctrlKey: true }],
+                    [false, 'ctrl+x', 88, 0, { ctrlKey: true }],
+                    [false, 'shift+a', 65, 0, { shiftKey: true }],
+                    [false, 'shift+c', 67, 0, { shiftKey: true }],
+                    [false, 'shift+x', 88, 0, { shiftKey: true }],
                     [false, '1', 49, 0],
                     [false, '5', 53, 0],
                     [false, '8', 56, 0],
-                    [false, '!', 49, 0, {shiftKey: true}],
-                    [false, '%', 53, 0, {shiftKey: true}],
-                    [false, '*', 56, 0, {shiftKey: true}],
+                    [false, '!', 49, 0, { shiftKey: true }],
+                    [false, '%', 53, 0, { shiftKey: true }],
+                    [false, '*', 56, 0, { shiftKey: true }],
                     [true, 'backspace', 8, 0],
                     [true, 'enter', 13, 0],
                     [true, 'home', 36, 0],
@@ -204,14 +204,14 @@ topSuite("Ext.event.Event", function() {
                     [false, '[', 219, 0],
                     [false, ']', 220, 0],
                     [false, '-', 189, 0],
-                    [false, '<', 188, 0, {shiftKey: true}],
-                    [false, '>', 190, 0, {shiftKey: true}],
-                    [false, '?', 191, 0, {shiftKey: true}],
-                    [false, ':', 186, 0, {shiftKey: true}],
-                    [false, '"', 222, 0, {shiftKey: true}],
-                    [false, '{', 219, 0, {shiftKey: true}],
-                    [false, '}', 220, 0, {shiftKey: true}],
-                    [false, '_', 189, 0, {shiftKey: true}]
+                    [false, '<', 188, 0, { shiftKey: true }],
+                    [false, '>', 190, 0, { shiftKey: true }],
+                    [false, '?', 191, 0, { shiftKey: true }],
+                    [false, ':', 186, 0, { shiftKey: true }],
+                    [false, '"', 222, 0, { shiftKey: true }],
+                    [false, '{', 219, 0, { shiftKey: true }],
+                    [false, '}', 220, 0, { shiftKey: true }],
+                    [false, '_', 189, 0, { shiftKey: true }]
                 ];
 
                 return {
@@ -262,20 +262,20 @@ topSuite("Ext.event.Event", function() {
                         [false, '[', 91, 91],
                         [false, ']', 93, 93],
                         [false, '-', 45, 45],
-                        [false, '<', 60, 60, {shiftKey: true}],
-                        [false, '>', 62, 62, {shiftKey: true}],
-                        [false, '?', 63, 63, {shiftKey: true}],
-                        [false, ':', 58, 58, {shiftKey: true}],
-                        [false, '"', 34, 34, {shiftKey: true}],
-                        [false, '{', 123, 123, {shiftKey: true}],
-                        [false, '}', 125, 125, {shiftKey: true}],
-                        [false, '_', 95, 95, {shiftKey: true}]
+                        [false, '<', 60, 60, { shiftKey: true }],
+                        [false, '>', 62, 62, { shiftKey: true }],
+                        [false, '?', 63, 63, { shiftKey: true }],
+                        [false, ':', 58, 58, { shiftKey: true }],
+                        [false, '"', 34, 34, { shiftKey: true }],
+                        [false, '{', 123, 123, { shiftKey: true }],
+                        [false, '}', 125, 125, { shiftKey: true }],
+                        [false, '_', 95, 95, { shiftKey: true }]
                     ]
                 };
             })());
         }
     });
-    
+
     describe("isNavKeyPress", function() {
         function makeSuite(scrollableOnly) {
             describe("scrollableOnly: " + scrollableOnly, function() {
@@ -306,24 +306,24 @@ topSuite("Ext.event.Event", function() {
                 if (Ext.isGecko) {
                     makeKeySuite((function() {
                         var downupData = [
-                            [false, 'ctrl', 17, 0, {ctrlKey: true}],
-                            [false, 'shift', 16, 18, {shiftKey: true}],
-                            [false, 'alt', 18, 0, {altKey: true}],
+                            [false, 'ctrl', 17, 0, { ctrlKey: true }],
+                            [false, 'shift', 16, 18, { shiftKey: true }],
+                            [false, 'alt', 18, 0, { altKey: true }],
                             [false, 'a', 65, 0],
                             [false, 'c', 67, 0],
                             [false, 'x', 88, 0],
-                            [false, 'ctrl+a', 65, 0, {ctrlKey: true}],
-                            [false, 'ctrl+c', 67, 0, {ctrlKey: true}],
-                            [false, 'ctrl+x', 88, 0, {ctrlKey: true}],
-                            [false, 'shift+a', 65, 0, {shiftKey: true}],
-                            [false, 'shift+c', 67, 0, {shiftKey: true}],
-                            [false, 'shift+x', 88, 0, {shiftKey: true}],
+                            [false, 'ctrl+a', 65, 0, { ctrlKey: true }],
+                            [false, 'ctrl+c', 67, 0, { ctrlKey: true }],
+                            [false, 'ctrl+x', 88, 0, { ctrlKey: true }],
+                            [false, 'shift+a', 65, 0, { shiftKey: true }],
+                            [false, 'shift+c', 67, 0, { shiftKey: true }],
+                            [false, 'shift+x', 88, 0, { shiftKey: true }],
                             [false, '1', 49, 0],
                             [false, '5', 53, 0],
                             [false, '8', 56, 0],
-                            [false, '!', 49, 0, {shiftKey: true}],
-                            [false, '%', 53, 0, {shiftKey: true}],
-                            [false, '*', 56, 0, {shiftKey: true}],
+                            [false, '!', 49, 0, { shiftKey: true }],
+                            [false, '%', 53, 0, { shiftKey: true }],
+                            [false, '*', 56, 0, { shiftKey: true }],
                             [false, 'backspace', 8, 0],
                             [!scrollableOnly, 'enter', 13, 0],
                             [true, 'home', 36, 0],
@@ -349,14 +349,14 @@ topSuite("Ext.event.Event", function() {
                             [false, '[', 219, 0],
                             [false, ']', 220, 0],
                             [false, '-', 173, 0],
-                            [false, '<', 188, 0, {shiftKey: true}],
-                            [false, '>', 190, 0, {shiftKey: true}],
-                            [false, '?', 191, 0, {shiftKey: true}],
-                            [false, ':', 59, 0, {shiftKey: true}],
-                            [false, '"', 222, 0, {shiftKey: true}],
-                            [false, '{', 219, 0, {shiftKey: true}],
-                            [false, '}', 220, 0, {shiftKey: true}],
-                            [false, '_', 173, 0, {shiftKey: true}]
+                            [false, '<', 188, 0, { shiftKey: true }],
+                            [false, '>', 190, 0, { shiftKey: true }],
+                            [false, '?', 191, 0, { shiftKey: true }],
+                            [false, ':', 59, 0, { shiftKey: true }],
+                            [false, '"', 222, 0, { shiftKey: true }],
+                            [false, '{', 219, 0, { shiftKey: true }],
+                            [false, '}', 220, 0, { shiftKey: true }],
+                            [false, '_', 173, 0, { shiftKey: true }]
                         ];
 
                         return {
@@ -370,18 +370,18 @@ topSuite("Ext.event.Event", function() {
                                 [false, 'a', 0, 97],
                                 [false, 'c', 0, 99],
                                 [false, 'x', 0, 120],
-                                [false, 'ctrl+a', 0, 97, {ctrlKey: true}],
-                                [false, 'ctrl+c', 0, 99, {ctrlKey: true}],
-                                [false, 'ctrl+x', 0, 120, {ctrlKey: true}],
-                                [false, 'shift+a', 0, 65, {shiftKey: true}],
-                                [false, 'shift+c', 0, 67, {shiftKey: true}],
-                                [false, 'shift+x', 0, 88, {shiftKey: true}],
+                                [false, 'ctrl+a', 0, 97, { ctrlKey: true }],
+                                [false, 'ctrl+c', 0, 99, { ctrlKey: true }],
+                                [false, 'ctrl+x', 0, 120, { ctrlKey: true }],
+                                [false, 'shift+a', 0, 65, { shiftKey: true }],
+                                [false, 'shift+c', 0, 67, { shiftKey: true }],
+                                [false, 'shift+x', 0, 88, { shiftKey: true }],
                                 [false, '1', 0, 49],
                                 [false, '5', 0, 53],
                                 [false, '8', 0, 56],
-                                [false, '!', 0, 33, {shiftKey: true}],
-                                [false, '%', 0, 37, {shiftKey: true}],
-                                [false, '*', 0, 42, {shiftKey: true}],
+                                [false, '!', 0, 33, { shiftKey: true }],
+                                [false, '%', 0, 37, { shiftKey: true }],
+                                [false, '*', 0, 42, { shiftKey: true }],
                                 [false, 'backspace', 8, 0],
                                 [!scrollableOnly, 'enter', 13, 0],
                                 [true, 'home', 36, 0],
@@ -407,38 +407,39 @@ topSuite("Ext.event.Event", function() {
                                 [false, '[', 0, 91],
                                 [false, ']', 0, 93],
                                 [false, '-', 0, 45],
-                                [false, '<', 0, 60, {shiftKey: true}],
-                                [false, '>', 0, 62, {shiftKey: true}],
-                                [false, '?', 0, 63, {shiftKey: true}],
-                                [false, ':', 0, 58, {shiftKey: true}],
-                                [false, '"', 0, 34, {shiftKey: true}],
-                                [false, '{', 0, 123, {shiftKey: true}],
-                                [false, '}', 0, 125, {shiftKey: true}],
-                                [false, '_', 0, 95, {shiftKey: true}]
+                                [false, '<', 0, 60, { shiftKey: true }],
+                                [false, '>', 0, 62, { shiftKey: true }],
+                                [false, '?', 0, 63, { shiftKey: true }],
+                                [false, ':', 0, 58, { shiftKey: true }],
+                                [false, '"', 0, 34, { shiftKey: true }],
+                                [false, '{', 0, 123, { shiftKey: true }],
+                                [false, '}', 0, 125, { shiftKey: true }],
+                                [false, '_', 0, 95, { shiftKey: true }]
                             ]
                         };
                     })());
-                } else {
+                }
+                else {
                     makeKeySuite((function() {
                         var downupData = [
-                            [false, 'ctrl', 17, 0, {ctrlKey: true}],
-                            [false, 'shift', 16, 18, {shiftKey: true}],
-                            [false, 'alt', 18, 0, {altKey: true}],
+                            [false, 'ctrl', 17, 0, { ctrlKey: true }],
+                            [false, 'shift', 16, 18, { shiftKey: true }],
+                            [false, 'alt', 18, 0, { altKey: true }],
                             [false, 'a', 65, 0],
                             [false, 'c', 67, 0],
                             [false, 'x', 88, 0],
-                            [false, 'ctrl+a', 65, 0, {ctrlKey: true}],
-                            [false, 'ctrl+c', 67, 0, {ctrlKey: true}],
-                            [false, 'ctrl+x', 88, 0, {ctrlKey: true}],
-                            [false, 'shift+a', 65, 0, {shiftKey: true}],
-                            [false, 'shift+c', 67, 0, {shiftKey: true}],
-                            [false, 'shift+x', 88, 0, {shiftKey: true}],
+                            [false, 'ctrl+a', 65, 0, { ctrlKey: true }],
+                            [false, 'ctrl+c', 67, 0, { ctrlKey: true }],
+                            [false, 'ctrl+x', 88, 0, { ctrlKey: true }],
+                            [false, 'shift+a', 65, 0, { shiftKey: true }],
+                            [false, 'shift+c', 67, 0, { shiftKey: true }],
+                            [false, 'shift+x', 88, 0, { shiftKey: true }],
                             [false, '1', 49, 0],
                             [false, '5', 53, 0],
                             [false, '8', 56, 0],
-                            [false, '!', 49, 0, {shiftKey: true}],
-                            [false, '%', 53, 0, {shiftKey: true}],
-                            [false, '*', 56, 0, {shiftKey: true}],
+                            [false, '!', 49, 0, { shiftKey: true }],
+                            [false, '%', 53, 0, { shiftKey: true }],
+                            [false, '*', 56, 0, { shiftKey: true }],
                             [false, 'backspace', 8, 0],
                             [!scrollableOnly, 'enter', 13, 0],
                             [true, 'home', 36, 0],
@@ -464,14 +465,14 @@ topSuite("Ext.event.Event", function() {
                             [false, '[', 219, 0],
                             [false, ']', 220, 0],
                             [false, '-', 189, 0],
-                            [false, '<', 188, 0, {shiftKey: true}],
-                            [false, '>', 190, 0, {shiftKey: true}],
-                            [false, '?', 191, 0, {shiftKey: true}],
-                            [false, ':', 186, 0, {shiftKey: true}],
-                            [false, '"', 222, 0, {shiftKey: true}],
-                            [false, '{', 219, 0, {shiftKey: true}],
-                            [false, '}', 220, 0, {shiftKey: true}],
-                            [false, '_', 189, 0, {shiftKey: true}]
+                            [false, '<', 188, 0, { shiftKey: true }],
+                            [false, '>', 190, 0, { shiftKey: true }],
+                            [false, '?', 191, 0, { shiftKey: true }],
+                            [false, ':', 186, 0, { shiftKey: true }],
+                            [false, '"', 222, 0, { shiftKey: true }],
+                            [false, '{', 219, 0, { shiftKey: true }],
+                            [false, '}', 220, 0, { shiftKey: true }],
+                            [false, '_', 189, 0, { shiftKey: true }]
                         ];
 
                         return {
@@ -522,20 +523,21 @@ topSuite("Ext.event.Event", function() {
                                 [false, '[', 91, 91],
                                 [false, ']', 93, 93],
                                 [false, '-', 45, 45],
-                                [false, '<', 60, 60, {shiftKey: true}],
-                                [false, '>', 62, 62, {shiftKey: true}],
-                                [false, '?', 63, 63, {shiftKey: true}],
-                                [false, ':', 58, 58, {shiftKey: true}],
-                                [false, '"', 34, 34, {shiftKey: true}],
-                                [false, '{', 123, 123, {shiftKey: true}],
-                                [false, '}', 125, 125, {shiftKey: true}],
-                                [false, '_', 95, 95, {shiftKey: true}]
+                                [false, '<', 60, 60, { shiftKey: true }],
+                                [false, '>', 62, 62, { shiftKey: true }],
+                                [false, '?', 63, 63, { shiftKey: true }],
+                                [false, ':', 58, 58, { shiftKey: true }],
+                                [false, '"', 34, 34, { shiftKey: true }],
+                                [false, '{', 123, 123, { shiftKey: true }],
+                                [false, '}', 125, 125, { shiftKey: true }],
+                                [false, '_', 95, 95, { shiftKey: true }]
                             ]
                         };
                     })());
                 }
             });
         }
+
         makeSuite(false);
         makeSuite(true);
     });
@@ -577,13 +579,18 @@ topSuite("Ext.event.Event", function() {
 
     describe("time stamp", function() {
         describe("delegated", function() {
-            var target, event;
+            var target, event, t0, t1;
 
             beforeEach(function() {
                 target = Ext.getBody().createChild();
 
                 target.on('mousedown', function(e) {
                     event = e;
+                    t0 = e.timeStamp;
+                });
+
+                target.on('mouseup', function(e) {
+                    t1 = e.timeStamp;
                 });
             });
 
@@ -593,23 +600,25 @@ topSuite("Ext.event.Event", function() {
             });
 
             it("should be the current date in milliseconds", function() {
-                var start = +new Date();
                 jasmine.fireMouseEvent(target, 'mousedown');
-                var end = +new Date();
+
                 jasmine.fireMouseEvent(target, 'mouseup');
 
-                expect(event.time >= start && event.time <= end).toBe(true);
+                // MDN (https://developer.mozilla.org/en-US/docs/Web/API/Event/timeStamp):
+                // This value is the number of milliseconds elapsed from the beginning of
+                // the current document's lifetime till the event was created.
+                expect(t1 >= t0).toBe(true);
             });
 
             it("should set both time and timeStamp", function() {
-                jasmine.fireMouseEvent(target,'mousedown');
+                jasmine.fireMouseEvent(target, 'mousedown');
                 expect(event.time).toBe(event.timeStamp);
                 jasmine.fireMouseEvent(target, 'mouseup');
             });
         });
 
         describe("non-delegated", function() {
-            var target, event;
+            var target, event, t0, t1;
 
             beforeEach(function() {
                 target = Ext.getBody().createChild();
@@ -617,6 +626,11 @@ topSuite("Ext.event.Event", function() {
                 target.on({
                     mousedown: function(e) {
                         event = e;
+                        t0 = e.timeStamp;
+                    },
+                    mouseup: function(e) {
+                        event = e;
+                        t1 = e.timeStamp;
                     },
                     delegated: false
                 });
@@ -628,23 +642,25 @@ topSuite("Ext.event.Event", function() {
             });
 
             it("should be the current date in milliseconds", function() {
-                var start = +new Date();
-                jasmine.fireMouseEvent(target,'mousedown');
-                var end = +new Date();
+                jasmine.fireMouseEvent(target, 'mousedown');
+
                 jasmine.fireMouseEvent(target, 'mouseup');
 
-                expect(event.time >= start && event.time <= end).toBe(true);
+                // MDN (https://developer.mozilla.org/en-US/docs/Web/API/Event/timeStamp):
+                // This value is the number of milliseconds elapsed from the beginning of
+                // the current document's lifetime till the event was created.
+                expect(t1 >= t0).toBe(true);
             });
 
             it("should set both time and timeStamp", function() {
-                jasmine.fireMouseEvent(target,'mousedown');
+                jasmine.fireMouseEvent(target, 'mousedown');
                 expect(event.time).toBe(event.timeStamp);
                 jasmine.fireMouseEvent(target, 'mouseup');
             });
         });
     });
 
-    describe('which', function () {
+    describe('which', function() {
         var target, event;
 
         beforeEach(function() {
@@ -661,17 +677,17 @@ topSuite("Ext.event.Event", function() {
              * IE8 will not set keyCode param on the event.
              * e.keyCode will always be 0
              */
-            describe('key event', function () {
+            describe('key event', function() {
                 beforeEach(function() {
                     target.on({
                         delegated: false,
-                        keydown: function (e) {
+                        keydown: function(e) {
                             event = e;
                         }
                     });
                 });
 
-                it('should recognize key code', function () {
+                it('should recognize key code', function() {
                     jasmine.fireKeyEvent(target, 'keydown', 'a');
                     jasmine.fireKeyEvent(target, 'keyup', 'a');
 
@@ -680,7 +696,7 @@ topSuite("Ext.event.Event", function() {
                     expect(which).toBe('a');
                 });
 
-                it('should recognize key code with modifier', function () {
+                it('should recognize key code with modifier', function() {
                     jasmine.fireKeyEvent(target, 'keydown', 'B', true);
                     jasmine.fireKeyEvent(target, 'keyup', 'B', true);
 

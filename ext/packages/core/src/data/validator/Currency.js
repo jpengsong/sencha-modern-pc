@@ -70,7 +70,8 @@ Ext.define('Ext.data.validator.Currency', {
 
             if (me.getSymbolAtEnd()) {
                 ret += symbolPart;
-            } else {
+            }
+            else {
                 ret = symbolPart + ret;
             }
 
@@ -88,6 +89,7 @@ Ext.define('Ext.data.validator.Currency', {
         parseValue: function(v) {
             // If we're at the front, replace -/+$1 with -/+1
             v = v.replace(this.currencyMatcher, this.atEnd ? '' : '$1');
+
             return this.callParent([v]);
         },
 
@@ -103,7 +105,7 @@ Ext.define('Ext.data.validator.Currency', {
                 sign = me.getSignPart();
 
                 me.atEnd = atEnd;
-                me.currencyMatcher = new RegExp(atEnd ? (symbolPart + '$') : ('^' + sign + symbolPart));
+                me.currencyMatcher = new RegExp(atEnd ? (symbolPart + '$') : ('^' + sign + symbolPart)); // eslint-disable-line max-len
             }
         }
     }

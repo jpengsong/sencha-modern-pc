@@ -32,7 +32,7 @@ Ext.define('Ext.util.ClickRepeater', {
      * @param {Ext.util.ClickRepeater} this
      * @param {Ext.event.Event} e
      */
-    
+
     config: {
         /**
          * @cfg {Ext.dom.Element} [el]
@@ -69,7 +69,7 @@ Ext.define('Ext.util.ClickRepeater', {
      * @cfg {Number} interval
      * The interval between firings of the "click" event (in milliseconds).
      */
-    interval : 20,
+    interval: 20,
 
     /**
      * @cfg {Number} delay
@@ -82,15 +82,15 @@ Ext.define('Ext.util.ClickRepeater', {
      * @cfg {Boolean} preventDefault
      * True to prevent the default click event
      */
-    preventDefault : true,
+    preventDefault: true,
 
     /**
      * @cfg {Boolean} stopDefault
      * True to stop the default click event
      */
-    stopDefault : false,
+    stopDefault: false,
 
-    timer : 0,
+    timer: 0,
 
     /**
     * @cfg {Function/String} handler
@@ -113,7 +113,7 @@ Ext.define('Ext.util.ClickRepeater', {
      * Creates new ClickRepeater.
      * @param {Object} [config] Config object.
      */
-    constructor : function(config) {
+    constructor: function(config) {
         var me = this;
 
         // Legacy constructor. Element is first parameter
@@ -129,9 +129,9 @@ Ext.define('Ext.util.ClickRepeater', {
         this.setEl(null);
         this.callParent();
     },
-    
+
     privates: {
-        
+
         fireClick: function(e) {
             var me = this;
 
@@ -162,12 +162,15 @@ Ext.define('Ext.util.ClickRepeater', {
             if (oldEl) {
                 oldEl.selectable();
                 Ext.undefer(me.timer);
+
                 if (me.pressedCls) {
                     oldEl.removeCls(me.pressedCls);
                 }
+
                 Ext.getDoc().un('mouseup', me.handleMouseUp, me);
                 me.elListeners = Ext.destroy(me.elListeners);
             }
+
             if (newEl) {
                 newEl.unselectable();
                 elListeners = {
@@ -175,9 +178,11 @@ Ext.define('Ext.util.ClickRepeater', {
                     scope: me,
                     destroyable: true
                 };
+
                 if (me.preventDefault || me.stopDefault) {
                     elListeners.click = me.eventOptions;
                 }
+
                 me.elListeners = newEl.on(elListeners);
             }
         },
@@ -186,6 +191,7 @@ Ext.define('Ext.util.ClickRepeater', {
             if (this.preventDefault) {
                 e.preventDefault();
             }
+
             if (this.stopDefault) {
                 e.stopEvent();
             }
@@ -196,14 +202,17 @@ Ext.define('Ext.util.ClickRepeater', {
                 el = me.getEl();
 
             Ext.undefer(me.timer);
+
             if (me.pressedCls) {
                 el.addCls(me.pressedCls);
             }
+
             me.mousedownTime = Ext.now();
 
             if (e.pointerType === 'mouse') {
                 el.on("mouseout", me.handleMouseOut, me);
             }
+
             Ext.getDoc().on("mouseup", me.handleMouseUp, me);
 
             me.fireEvent("mousedown", me, e);
@@ -214,7 +223,7 @@ Ext.define('Ext.util.ClickRepeater', {
                 me.delay = 400;
             }
 
-            me.timer =  Ext.defer(me.click, me.delay || me.interval, me, [e]);
+            me.timer = Ext.defer(me.click, me.delay || me.interval, me, [e]);
 
             if (me.mousedownPreventDefault) {
                 e.preventDefault();
@@ -225,45 +234,49 @@ Ext.define('Ext.util.ClickRepeater', {
             }
         },
 
-        click : function(e) {
+        click: function(e) {
             var me = this;
 
             me.fireClick(e);
-            me.timer =  Ext.defer(me.click, me.accelerate ?
-                me.easeOutExpo(Ext.now() - me.mousedownTime,
-                    400,
-                    -390,
-                    12000) :
-                me.interval, me, [e]);
+            me.timer = Ext.defer(me.click, me.accelerate
+                ? me.easeOutExpo(Ext.now() - me.mousedownTime,
+                                 400,
+                                 -390,
+                                 12000)
+                : me.interval, me, [e]);
         },
 
-        easeOutExpo : function (t, b, c, d) {
-            return (t === d) ? b + c : c * (-Math.pow(2, -10 * t/d) + 1) + b;
+        easeOutExpo: function(t, b, c, d) {
+            return (t === d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
         },
 
-        handleMouseOut : function() {
+        handleMouseOut: function() {
             var me = this,
                 el = me.getEl();
 
             Ext.undefer(me.timer);
+
             if (me.pressedCls) {
                 el.removeCls(me.pressedCls);
             }
+
             el.on("mouseover", me.handleMouseReturn, me);
         },
 
-        handleMouseReturn : function(e) {
+        handleMouseReturn: function(e) {
             var me = this,
                 el = me.getEl();
 
             el.un("mouseover", me.handleMouseReturn, me);
+
             if (me.pressedCls) {
                 el.addCls(me.pressedCls);
             }
+
             me.click(e);
         },
 
-        handleMouseUp : function(e) {
+        handleMouseUp: function(e) {
             var me = this,
                 el = me.getEl();
 
@@ -271,9 +284,11 @@ Ext.define('Ext.util.ClickRepeater', {
             el.un("mouseover", me.handleMouseReturn, me);
             el.un("mouseout", me.handleMouseOut, me);
             Ext.getDoc().un("mouseup", me.handleMouseUp, me);
+
             if (me.pressedCls) {
                 el.removeCls(me.pressedCls);
             }
+
             me.fireEvent("mouseup", me, e);
         }
     }

@@ -1,4 +1,3 @@
-
 /**
  * 树节点数据 
  */
@@ -101,7 +100,7 @@ Ext.define('App.ux.utility.TreeNode', {
                 App.Ajax.request({
                     url: treeStore.getProxy().getUrl(),
                     method: "GET",
-                    nosim: false,
+                    nosim: true,
                     type: "JSON",
                     params: params,
                     success: function (data) {

@@ -6,6 +6,7 @@ Ext.define('App.store.main.Plist', {
         { ViewType: "login" },
         { ViewType: "page404" },
         { ViewType: "page500" },
-        { ViewType: "lockscreen" }
+        { ViewType: "lockscreen" },
+        { ViewType: "home" }
     ]
 });

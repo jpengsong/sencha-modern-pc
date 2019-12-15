@@ -72,7 +72,7 @@ Ext.define('Ext.data.Range', {
      */
     store: null,
 
-    constructor: function (config) {
+    constructor: function(config) {
         var me = this,
             activeRanges, store;
 
@@ -91,11 +91,12 @@ Ext.define('Ext.data.Range', {
         if ('begin' in config) {
             me.begin = me.end = 0; // Applied on us above, so clear it
 
+            /* eslint-disable-next-line dot-notation */
             me.goto(config.begin, config.end);
         }
     },
 
-    destroy: function () {
+    destroy: function() {
         var me = this,
             store = me.store,
             activeRanges = store && store.activeRanges;
@@ -109,7 +110,7 @@ Ext.define('Ext.data.Range', {
         me.callParent();
     },
 
-    goto: function (begin, end) {
+    goto: function(begin, end) {
         var me = this,
             buffer = me.buffer,
             task = me.task;
@@ -122,8 +123,10 @@ Ext.define('Ext.data.Range', {
             if (!task) {
                 me.task = task = new Ext.util.DelayedTask(me.doGoto, me);
             }
+
             task.delay(buffer);
-        } else {
+        }
+        else {
             me.doGoto();
         }
     },

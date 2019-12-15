@@ -1,21 +1,22 @@
+/* global specModel */
 topSuite("Ext.data.Model", [
-    'Ext.data.Store', 
-    'Ext.data.proxy.JsonP', 
-    'Ext.data.TreeModel', 
+    'Ext.data.Store',
+    'Ext.data.proxy.JsonP',
+    'Ext.data.TreeModel',
     'Ext.data.identifier.*',
-    'Ext.data.validator.*', 
+    'Ext.data.validator.*',
     'Ext.data.summary.*',
     'Ext.data.Session',
     'Ext.data.proxy.*'
 ], function() {
-    
+
     beforeEach(function() {
         Ext.ClassManager.enableNamespaceParseCache = false;
         Ext.data.Model.schema.setNamespace('spec');
     });
-    
+
     afterEach(function() {
-        Ext.ClassManager.enableNamespaceParseCache = true; 
+        Ext.ClassManager.enableNamespaceParseCache = true;
         Ext.data.Model.schema.clear(true);
     });
 
@@ -51,12 +52,14 @@ topSuite("Ext.data.Model", [
                 var rec = create({
                     name: 'Foo'
                 });
+
                 expect(rec.$className).toBe('spec.User');
                 expect(rec.get('name')).toBe('Foo');
             });
 
             it("should create with no data", function() {
                 var rec = create();
+
                 expect(rec.$className).toBe('spec.User');
                 expect(rec.get('name')).toBeUndefined();
             });
@@ -93,9 +96,11 @@ topSuite("Ext.data.Model", [
                 var a = create({
                     id: 1
                 });
+
                 expect(a.phantom).toBe(false);
 
                 var b = create({});
+
                 expect(b.phantom).toBe(true);
             });
         });
@@ -113,6 +118,7 @@ topSuite("Ext.data.Model", [
                 var rec = create({
                     name: 'Foo'
                 });
+
                 expect(rec.$className).toBe('spec.User');
                 expect(rec.get('name')).toBe('Foo');
                 expect(rec.session).toBe(session);
@@ -120,6 +126,7 @@ topSuite("Ext.data.Model", [
 
             it("should create with no data", function() {
                 var rec = create();
+
                 expect(rec.$className).toBe('spec.User');
                 expect(rec.get('name')).toBeUndefined();
                 expect(rec.session).toBe(session);
@@ -176,6 +183,39 @@ topSuite("Ext.data.Model", [
 
                 expect(orders.getAt(0)).toBe(order);
             });
+
+            it("should skip session additon based on flag", function() {
+                var M = Ext.define(null, {
+                    extend: 'Ext.data.Model',
+                    fields: []
+                });
+
+                var rec = new M({}, session, true);
+
+                expect(rec.session).toBe(null);
+            });
+
+            it("should add session additon based on flag", function() {
+                var M = Ext.define(null, {
+                    extend: 'Ext.data.Model',
+                    fields: []
+                });
+
+                var rec = new M({}, session, false);
+
+                expect(rec.session).toBe(session);
+            });
+
+            it("should add session without any flag in constructor", function() {
+                var M = Ext.define(null, {
+                    extend: 'Ext.data.Model',
+                    fields: []
+                });
+
+                var rec = new M({}, session);
+
+                expect(rec.session).toBe(session);
+            });
         });
     });
 
@@ -198,6 +238,7 @@ topSuite("Ext.data.Model", [
             var rec = new User({
                 id: 1
             });
+
             rec.set('name', 'Foo');
             rec.mergeData({
                 name: 'Bar'
@@ -211,6 +252,7 @@ topSuite("Ext.data.Model", [
                 id: 1,
                 name: 'Foo'
             });
+
             rec.mergeData({
                 name: 'Bar'
             });
@@ -233,6 +275,7 @@ topSuite("Ext.data.Model", [
                 model: Ext.data.Model,
                 data: data
             });
+
             data = store.getProxy().getData();
 
             // The raw data object should be inported directly as the records' data objects
@@ -247,49 +290,51 @@ topSuite("Ext.data.Model", [
             expect(store.getAt(0).get('forename')).toBe('Nigel');
         });
     });
-    
+
     describe("getField/getFields", function() {
         var A;
-        
+
         beforeEach(function() {
             A = Ext.define('spec.A', {
                 extend: Ext.data.Model,
                 fields: ['id', 'name', 'key']
             });
         });
-        
+
         afterEach(function() {
             Ext.undefine('spec.A');
             A = null;
         });
-        
+
         describe("getFields", function() {
             it("should return an array", function() {
-                expect(Ext.isArray(A.getFields())).toBe(true);    
+                expect(Ext.isArray(A.getFields())).toBe(true);
             });
-            
+
             it("should return all fields in the model", function() {
-                expect(A.getFields().length).toBe(3);    
+                expect(A.getFields().length).toBe(3);
             });
-            
+
             it("should be able to be called on an instance", function() {
                 var o = new A();
-                expect(o.getFields().length).toBe(3);    
+
+                expect(o.getFields().length).toBe(3);
             });
         });
-        
+
         describe("getField", function() {
             it("should return null if no field with a matching name is found", function() {
-                expect(A.getField('foo')).toBeNull();    
+                expect(A.getField('foo')).toBeNull();
             });
-            
+
             it("should return the field", function() {
-                expect(A.getField('key').isField).toBe(true);    
+                expect(A.getField('key').isField).toBe(true);
             });
-            
+
             it("should be able to be called on an instance", function() {
                 var o = new A();
-                expect(o.getField('name').isField).toBe(true);  
+
+                expect(o.getField('name').isField).toBe(true);
             });
         });
     });
@@ -347,10 +392,10 @@ topSuite("Ext.data.Model", [
             });
         });
     });
-    
+
     describe("defining models", function() {
         var A, B;
-        
+
         afterEach(function() {
             Ext.undefine('specModel');
             Ext.undefine('spec.A');
@@ -359,8 +404,8 @@ topSuite("Ext.data.Model", [
             A = B = null;
         });
 
-        describe('entityName', function () {
-            beforeEach(function () {
+        describe('entityName', function() {
+            beforeEach(function() {
                 Ext.define('specModel', {
                     extend: 'Ext.data.Model'
                 });
@@ -375,16 +420,16 @@ topSuite("Ext.data.Model", [
                 });
             });
 
-            it('should generate proper default entityName for top-level', function () {
+            it('should generate proper default entityName for top-level', function() {
                 expect(specModel.entityName).toBe('specModel');
             });
 
-            it('should generate proper default entityName for namespaced entity', function () {
+            it('should generate proper default entityName for namespaced entity', function() {
                 expect(spec.A.entityName).toBe('A');
                 expect(spec.B.entityName).toBe('B');
             });
 
-            it('should generate proper default entityName for a deep namespaced entity', function () {
+            it('should generate proper default entityName for a deep namespaced entity', function() {
                 expect(spec.model.sub.C.entityName).toBe('model.sub.C');
             });
         });
@@ -395,7 +440,7 @@ topSuite("Ext.data.Model", [
                 Ext.undefine('spec.B');
                 A = B = null;
             });
-            
+
             function defineA(fields, cfg) {
                 cfg = Ext.apply({
                     extend: Ext.data.Model,
@@ -403,50 +448,53 @@ topSuite("Ext.data.Model", [
                 }, cfg);
                 A = Ext.define('spec.A', cfg);
             }
-            
+
             // @define B
             function defineB(fields, cfg) {
                 cfg = Ext.apply({
-                    extend: A,  
+                    extend: A,
                     fields: fields
                 }, cfg);
-                
+
                 // This will warn about redefining field 'id'
                 spyOn(Ext.log, 'warn');
-                
+
                 B = Ext.define('spec.B', cfg);
             }
-            
+
             it("should be able to define a string name field and default the type to auto", function() {
                 defineA(['id']);
                 var field = A.getField('id');
+
                 expect(field.isField).toBe(true);
                 expect(field.getType()).toBe('auto');
                 expect(A.getFields().length).toBe(1);
-            });  
-            
+            });
+
             it("should be able to define an object field and default the type to auto", function() {
                 defineA([{
                     name: 'id'
                 }]);
                 var field = A.getField('id');
+
                 expect(field.isField).toBe(true);
                 expect(field.getType()).toBe('auto');
                 expect(A.getFields().length).toBe(1);
             });
-            
+
             it("should read the type parameter from the field", function() {
                 defineA([{
                     name: 'id',
                     type: 'int'
-                }]); 
+                }]);
                 expect(A.getField('id').getType()).toBe('int');
             });
-            
+
             it("should retain the field definition order", function() {
-                defineA(['id', 'd', 'a', 'c', 'b']   );
+                defineA(['id', 'd', 'a', 'c', 'b']);
                 var fields = A.getFields(),
                     names = [];
+
                 Ext.Array.forEach(fields, function(field) {
                     names.push(field.getName());
                 });
@@ -457,44 +505,48 @@ topSuite("Ext.data.Model", [
             it("should be able to define a field with a - in the name", function() {
                 defineA(['the-field']);
                 var field = A.getField('the-field');
+
                 expect(field.isField);
             });
-            
+
             describe("id field", function() {
                 it("should create a field matching the idProperty if it doesn't exist", function() {
                     defineA([]);
                     var fields = A.getFields();
+
                     expect(fields.length).toBe(1);
                     expect(fields[0].getName()).toBe(A.prototype.idProperty);
-                });  
-                
+                });
+
                 it("should append the id field to the end if it doesn't exist", function() {
                     defineA(['a', 'b']);
                     var fields = A.getFields();
+
                     expect(fields[2].getName()).toBe('id');
                 });
-                
+
                 it("should not create an extra field if the idProperty field is already defined", function() {
                     defineA([{
                         name: 'id',
                         type: 'int'
-                     }]);  
+                     }]);
                      var field = A.getField('id');
+
                      expect(field.getType()).toBe('int');
                 });
-                
+
                 it("should create an idField when the name isn't the default", function() {
                     defineA([], {
                         idProperty: 'name'
                     });
                     expect(A.getField('name').isField).toBe(true);
                 });
-                
+
                 it("should clear any defaultValue on the idField", function() {
                     defineA([{
                         name: 'id',
                         type: 'int'
-                    }]);    
+                    }]);
                     expect(A.getField('id').defaultValue).toBeNull();
                 });
 
@@ -502,53 +554,55 @@ topSuite("Ext.data.Model", [
                     defineA([{
                         name: 'id',
                         type: 'int'
-                    }]);  
+                    }]);
                     expect(A.getField('id').allowNull).toBe(true);
                 });
             });
-            
+
             describe("subclassing", function() {
                 it("should inherit the fields from the superclass", function() {
                     defineA(['id', 'name']);
                     defineB([]);
                     expect(B.getFields().length).toBe(2);
                 });
-                
+
                 it("should append new fields to the end", function() {
                     defineA(['id', 'name']);
                     defineB(['foo', 'bar']);
-                    
+
                     var fields = B.getFields();
+
                     expect(fields.length).toBe(4);
                     expect(fields[2].getName()).toBe('foo');
-                    expect(fields[3].getName()).toBe('bar');    
+                    expect(fields[3].getName()).toBe('bar');
                 });
-                
+
                 it("should not modify the fields in the superclass", function() {
                     defineA(['id', 'name']);
                     defineB(['foo', 'bar']);
-                    
+
                     var fields = A.getFields();
+
                     expect(fields.length).toBe(2);
                     expect(fields[0].getName()).toBe('id');
                     expect(fields[1].getName()).toBe('name');
                 });
-                
+
                 it("should be able to override a field in the base", function() {
                     defineA(['id']);
                     defineB([{
                         name: 'id',
                         type: 'int'
                     }]);
-                    
+
                     expect(A.getField('id').getType()).toBe('auto');
                     expect(B.getField('id').getType()).toBe('int');
-                    
+
                 });
-                
+
                 it("should copy fields for deep subclasses", function() {
                     defineA(['id']);
-                    defineB(['bField']);    
+                    defineB(['bField']);
                     Ext.define('spec.C', {
                         extend: B,
                         fields: ['cField']
@@ -557,16 +611,17 @@ topSuite("Ext.data.Model", [
                         extend: spec.C,
                         fields: ['dField']
                     });
-                    
+
                     var fields = spec.C.getFields();
+
                     expect(fields.length).toBe(3);
                     expect(fields[2].getName()).toBe('cField');
-                    
+
                     fields = spec.D.getFields();
                     expect(fields.length).toBe(4);
                     expect(fields[2].getName()).toBe('cField');
                     expect(fields[3].getName()).toBe('dField');
-                    
+
                     Ext.undefine('spec.C');
                     Ext.undefine('spec.D');
                 });
@@ -616,6 +671,7 @@ topSuite("Ext.data.Model", [
                             defineB(['baz']);
 
                             var fields = spec.A.getFields();
+
                             expect(fields.length).toBe(3);
                             expect(fields[0].name).toBe('foo');
                             expect(fields[1].name).toBe('bar');
@@ -639,6 +695,7 @@ topSuite("Ext.data.Model", [
                             defineB(['baz']);
 
                             var fields = spec.A.getFields();
+
                             expect(fields.length).toBe(3);
                             expect(fields[0].name).toBe('foo');
                             expect(fields[1].name).toBe('id');
@@ -662,9 +719,10 @@ topSuite("Ext.data.Model", [
                         describe("id declared as a field in superclass & subclass", function() {
                             it("should keep both idFields in the defined order", function() {
                                 defineA(['foo', 'id', 'bar']);
-                                defineB(['customId', 'baz'], {idProperty: 'customId'});
+                                defineB(['customId', 'baz'], { idProperty: 'customId' });
 
                                 var fields = spec.A.getFields();
+
                                 expect(fields.length).toBe(3);
                                 expect(fields[0].name).toBe('foo');
                                 expect(fields[1].name).toBe('id');
@@ -691,9 +749,10 @@ topSuite("Ext.data.Model", [
                         describe("id declared as field only in superclass", function() {
                             it("should keep a defined idField from the parent, but it should not be the idField", function() {
                                 defineA(['foo', 'id', 'bar']);
-                                defineB(['baz'], {idProperty: 'customId'});
+                                defineB(['baz'], { idProperty: 'customId' });
 
                                 var fields = spec.A.getFields();
+
                                 expect(fields.length).toBe(3);
                                 expect(fields[0].name).toBe('foo');
                                 expect(fields[1].name).toBe('id');
@@ -720,9 +779,10 @@ topSuite("Ext.data.Model", [
                         describe("id declared as a field only in subclass", function() {
                             it("should remove the generated id field and leave the declared idField in place", function() {
                                 defineA(['foo']);
-                                defineB(['bar', 'customId', 'baz'], {idProperty: 'customId'});
+                                defineB(['bar', 'customId', 'baz'], { idProperty: 'customId' });
 
                                 var fields = spec.A.getFields();
+
                                 expect(fields.length).toBe(2);
                                 expect(fields[0].name).toBe('foo');
                                 expect(fields[1].name).toBe('id');
@@ -739,14 +799,35 @@ topSuite("Ext.data.Model", [
                                 expect(spec.A.idField.name).toBe('id');
                                 expect(spec.B.idField.name).toBe('customId');
                             });
+
+                            it("should keep a redefined id field", function() {
+                                defineA([]);
+                                defineB(['customId', 'id'], { idProperty: 'customId' });
+
+                                var fields = spec.A.getFields();
+
+                                expect(fields.length).toBe(1);
+                                expect(fields[0].name).toBe('id');
+
+                                fields = spec.B.getFields();
+                                expect(fields.length).toBe(2);
+                                expect(fields[0].name).toBe('id');
+                                expect(fields[1].name).toBe('customId');
+
+                                expect(spec.B.getField('id')).toBe(fields[0]);
+
+                                expect(spec.A.idField.name).toBe('id');
+                                expect(spec.B.idField.name).toBe('customId');
+                            });
                         });
 
                         describe("id not declared as a field", function() {
                             it("should replace a generated idField from the parent", function() {
                                 defineA(['foo', 'bar']);
-                                defineB(['baz'], {idProperty: 'customId'});
+                                defineB(['baz'], { idProperty: 'customId' });
 
                                 var fields = spec.A.getFields();
+
                                 expect(fields.length).toBe(3);
                                 expect(fields[0].name).toBe('foo');
                                 expect(fields[1].name).toBe('bar');
@@ -808,41 +889,43 @@ topSuite("Ext.data.Model", [
                     });
                 });
             });
-            
+
             describe("configs the model sets on the field", function() {
                 describe("ordinal", function() {
                     function expectOrdinal(name, ordinal, cls) {
                         cls = cls || A;
                         var field = cls.getField(name);
-                        expect(field.ordinal).toBe(ordinal);    
+
+                        expect(field.ordinal).toBe(ordinal);
                     }
-                    
+
                     it("should set the ordinal for each field in order", function() {
                         defineA(['foo', 'bar', 'baz']);
                         var fields = A.getFields();
+
                         expectOrdinal('foo', 0);
                         expectOrdinal('bar', 1);
                         expectOrdinal('baz', 2);
                     });
-                    
+
                     it("should append the id field to the end", function() {
                         defineA(['foo', 'bar', 'baz']);
-                        expectOrdinal('id', 3);    
+                        expectOrdinal('id', 3);
                     });
-                    
+
                     it("should not move the id field if it exists", function() {
                         defineA(['id', 'foo', 'bar', 'baz']);
-                        expectOrdinal('id', 0);    
+                        expectOrdinal('id', 0);
                     });
-                    
+
                     describe("subclassing", function() {
                         it("should append field to the end", function() {
                             defineA(['id', 'foo']);
                             defineB(['bar', 'baz']);
                             expectOrdinal('bar', 2, B);
                             expectOrdinal('baz', 3, B);
-                        });  
-                        
+                        });
+
                         it("should not move a field if redefined", function() {
                             defineA(['id', 'foo']);
                             defineB(['bar', 'baz', {
@@ -851,7 +934,7 @@ topSuite("Ext.data.Model", [
                             }]);
                             expectOrdinal('foo', 1, B);
                         });
-                        
+
                         it("should append a custom id field to the end", function() {
                             defineA(['id', 'foo']);
                             defineB(['bar'], {
@@ -861,42 +944,42 @@ topSuite("Ext.data.Model", [
                         });
                     });
                 });
-                
+
                 describe("definedBy", function() {
                     it("should set the defined class on all fields", function() {
                         defineA(['foo', 'bar']);
                         expect(A.getField('foo').definedBy).toBe(A);
                         expect(A.getField('bar').definedBy).toBe(A);
                     });
-                    
+
                     it("should set the defined class on an id field", function() {
                         defineA(['foo', 'bar']);
                         expect(A.getField('id').definedBy).toBe(A);
                     });
-                    
+
                     describe("subclassing", function() {
                         it("should set the subclass on the field", function() {
                             defineA(['foo']);
                             defineB(['bar']);
-                            expect(B.getField('bar').definedBy).toBe(B);    
+                            expect(B.getField('bar').definedBy).toBe(B);
                         });
-                        
+
                         it("should retain the superclass on the field", function() {
                             defineA(['foo']);
                             defineB(['bar']);
-                            expect(B.getField('foo').definedBy).toBe(A);    
+                            expect(B.getField('foo').definedBy).toBe(A);
                         });
-                        
+
                         it("should set the if the field is redefined", function() {
                             defineA(['foo']);
                             defineB(['bar', {
                                 name: 'foo',
                                 type: 'int'
                             }]);
-                            expect(B.getField('foo').definedBy).toBe(B); 
+                            expect(B.getField('foo').definedBy).toBe(B);
                         });
                     });
-                });    
+                });
             });
 
             describe("calculated fields", function() {
@@ -950,6 +1033,7 @@ topSuite("Ext.data.Model", [
                         var rec = new B({
                             foo: 10
                         });
+
                         expect(rec.get('bar')).toBe(20);
                     });
 
@@ -966,6 +1050,7 @@ topSuite("Ext.data.Model", [
                         var rec = new A({
                             foo: 10
                         });
+
                         expect(rec.get('bar')).toBe(20);
                         rec = new B({
                             foo: 20
@@ -975,7 +1060,7 @@ topSuite("Ext.data.Model", [
                 });
             });
         });
-        
+
         describe("proxy", function() {
             function defineA(proxy, cfg) {
                 cfg = Ext.apply({
@@ -985,7 +1070,7 @@ topSuite("Ext.data.Model", [
                 }, cfg);
                 A = Ext.define('spec.A', cfg);
             }
-            
+
             it("should ask the schema to construct a proxy by default", function() {
                 defineA();
                 var schema = A.schema,
@@ -1009,12 +1094,12 @@ topSuite("Ext.data.Model", [
                 expect(proxy.alias).toEqual(['proxy.memory']);
                 expect(proxy.alias).not.toEqual(['proxy.' + schemaConfig.type]);
             });
-            
+
             it("should create a proxy type string", function() {
                 defineA('jsonp');
                 expect(A.getProxy() instanceof Ext.data.proxy.JsonP).toBe(true);
             });
-            
+
             it("should create a proxy from a config", function() {
                 defineA({
                     type: 'ajax',
@@ -1052,14 +1137,14 @@ topSuite("Ext.data.Model", [
                 expect(A.getProxy().getUrl()).toBe('/A');
                 Ext.undefine('spec.CustomProxy');
             });
-    
+
             it("should inherit the type and url from the proxy instance when the schema isn't used", function() {
                 Ext.define('spec.CustomProxy', {
                     extend: 'Ext.data.proxy.Rest',
                     alias: 'proxy.custom',
                     url: 'foo.bar'
                 });
-        
+
                 defineA({
                     type: 'custom',
                     schema: false
@@ -1068,14 +1153,14 @@ topSuite("Ext.data.Model", [
                 expect(A.getProxy().getUrl()).toBe('foo.bar');
                 Ext.undefine('spec.CustomProxy');
             });
-    
+
             it("should only inherit the type from the proxy when the schema is used", function() {
                 Ext.define('spec.CustomProxy', {
                     extend: 'Ext.data.proxy.Rest',
                     alias: 'proxy.custom',
                     url: 'foo.bar'
                 });
-        
+
                 defineA({
                     type: 'custom'
                 });
@@ -1083,36 +1168,37 @@ topSuite("Ext.data.Model", [
                 expect(A.getProxy().getUrl()).toBe('/A');
                 Ext.undefine('spec.CustomProxy');
             });
-            
+
             it("should use a passed instance", function() {
                 var proxy = new Ext.data.proxy.Ajax();
+
                 defineA(proxy);
                 expect(A.getProxy()).toBe(proxy);
                 proxy = null;
             });
-            
+
             describe("subclassing", function() {
                 function defineB(proxy, cfg) {
                     cfg = Ext.apply({
                         extend: A
                     }, cfg);
-                    
+
                     if (proxy) {
                         cfg.proxy = proxy;
                     }
-                    
+
                     B = Ext.define('spec.B', cfg);
                 }
-                
+
                 it("should inherit a config from the parent", function() {
                     defineA({
                         type: 'ajax',
                         url: '/foo'
-                    });    
+                    });
                     defineB();
                     expect(B.getProxy().getUrl()).toBe('/foo');
-                });  
-                
+                });
+
                 it("should override anything on the parent", function() {
                     defineA({
                         type: 'ajax',
@@ -1121,27 +1207,27 @@ topSuite("Ext.data.Model", [
                     defineB({
                         type: 'ajax',
                         url: '/bar'
-                    });   
+                    });
                     expect(B.getProxy().getUrl()).toBe('/bar');
                 });
-                
+
                 it("should clone an existing instance", function() {
                     defineA({
                         type: 'ajax',
                         url: '/foo'
-                    });    
+                    });
                     // trigger creation
                     A.getProxy();
                     defineB();
                     expect(B.getProxy()).not.toBe(A.getProxy());
                     expect(B.getProxy().getUrl()).toBe('/foo');
                 });
-                
+
                 it("should not modify the super instance", function() {
                     defineA({
                         type: 'ajax',
                         url: '/foo'
-                    });    
+                    });
                     defineB();
                     B.getProxy().setUrl('/bar');
                     expect(A.getProxy().getUrl()).toBe('/foo');
@@ -1175,15 +1261,15 @@ topSuite("Ext.data.Model", [
                 expect(model.getProxy().isMemoryProxy).toBe(true);
             });
         });
-        
+
         // TODO:
         describe("associations", function() {
-            
+
         });
-        
+
         describe("identifier", function() {
             var idgen;
-            
+
             function defineA(identifier, fields, cfg) {
                 cfg = Ext.apply({
                     extend: Ext.data.Model,
@@ -1192,36 +1278,39 @@ topSuite("Ext.data.Model", [
                 }, cfg);
                 A = Ext.define('spec.A', cfg);
             }
-            
+
             afterEach(function() {
                 idgen = null;
                 var Generator = Ext.data.identifier.Generator;
+
                 Generator.all = {
                     uuid: Generator.all.uuid
                 }; // clear generator id map
             });
-            
+
             it("should default to identifier.Sequential", function() {
                 defineA();
 
                 var r = new A();
+
                 expect(r.getId()).toBe('A-1');
 
                 r = new A();
                 expect(r.getId()).toBe('A-2');
             });
-            
+
             it("should create an identifier from a type string", function() {
                 defineA('negative');
 
                 var r = new A();
+
                 expect(r.getId()).toBe(-1);
 
                 r = new A();
                 expect(r.getId()).toBe(-2);
 
             });
-            
+
             it("should create an identifier from a config object", function() {
                 defineA({
                     type: 'sequential',
@@ -1229,6 +1318,7 @@ topSuite("Ext.data.Model", [
                 });
 
                 var r = new A();
+
                 expect(r.getId()).toBe('foo1');
 
                 r = new A();
@@ -1245,9 +1335,11 @@ topSuite("Ext.data.Model", [
                         seed: 1000
                     }
                 });
+
                 defineA('x');
 
                 var a = new A();
+
                 var b = new B();
 
                 expect(a.id).toBe('ID_1000');
@@ -1255,57 +1347,59 @@ topSuite("Ext.data.Model", [
             });
 
             describe("subclassing", function() {
-                function defineB (identifier, cfg) {
+                function defineB(identifier, cfg) {
                     cfg = Ext.apply({
                         extend: A,
                         identifier: identifier
                     }, cfg);
-                    
+
                     B = Ext.define('spec.B', cfg);
                 }
-                
+
                 describe("defined on the subclass", function() {
                     it("should use a string type", function() {
                         defineA({
                             type: 'negative'
                         });
-                    
+
                         defineB('sequential');
 
                         var a = new A();
+
                         var b = new B();
 
                         expect(a.id).toBe(-1);
                         expect(b.id).toBe(1);
                     });
-                    
+
                     it("should use an object type", function() {
                         defineA({
                             type: 'negative'
                         });
-                    
+
                         defineB({
                             type: 'sequential'
                         });
 
                         var a = new A();
+
                         var b = new B();
 
                         expect(a.id).toBe(-1);
                         expect(b.id).toBe(1);
                     });
-                    
+
                     it("should use an instance", function() {
                         idgen = new Ext.data.identifier.Sequential();
                         defineA({
                             type: 'sequential'
                         });
-                    
+
                         defineB(idgen);
                         expect(B.identifier).toBe(idgen);
                     });
                 });
-                
+
                 describe("inheriting from parent", function() {
                     it("should clone an instance if it's cloneable", function() {
                         defineA({
@@ -1317,13 +1411,13 @@ topSuite("Ext.data.Model", [
                         expect(idgen).not.toBe(A.identifier);
                         expect(idgen.getPrefix()).toBe('foo');
                     });
-                    
+
                     it("should not clone the instance if it's not cloneable", function() {
                         defineA('uuid');
                         defineB();
                         expect(B.identifier).toBe(A.identifier);
                     });
-                    
+
                     it("should not clone if an id is specified", function() {
                         defineA({
                             type: 'sequential',
@@ -1335,6 +1429,7 @@ topSuite("Ext.data.Model", [
                         expect(B.identifier).toBe(A.identifier);
 
                         var a = new A();
+
                         var b = new B();
 
                         expect(a.id).toBe('ID_1000');
@@ -1343,20 +1438,24 @@ topSuite("Ext.data.Model", [
                 });
             });
         });
-        
+
         describe("validators", function() {
             function validate(cls, fieldName, value) {
                 var field = cls.getField(fieldName);
+
                 return field.validate(value, '|');
             }
 
             function expectError(cls, fieldName, value, expected) {
                 var msg = validate(cls, fieldName, value);
+
                 if (msg === true) {
                     msg = [];
-                } else {
+                }
+                else {
                     msg = msg.split('|');
                 }
+
                 expect(msg).toEqual(expected);
             }
 
@@ -1432,7 +1531,7 @@ topSuite("Ext.data.Model", [
                     expectError(A, 'email', null, [emailMsg]);
                 });
             });
-            
+
             describe("on the model", function() {
                 function defineA(validators, fields, cfg) {
                     cfg = Ext.apply({
@@ -1448,10 +1547,10 @@ topSuite("Ext.data.Model", [
                         defineA([{
                             field: 'name',
                             type: 'url'
-                        }]);     
+                        }]);
                         expectError(A, 'name', null, [urlMsg]);
                     });
-                    
+
                     it("should accept multiple validators for a single field", function() {
                         defineA([{
                             field: 'name',
@@ -1463,7 +1562,7 @@ topSuite("Ext.data.Model", [
                         }]);
                         expectError(A, 'name', null, [urlMsg, formatMsg]);
                     });
-                    
+
                     it("should be able to pass validators for multiple fields", function() {
                         defineA([{
                             field: 'name',
@@ -1471,12 +1570,12 @@ topSuite("Ext.data.Model", [
                         }, {
                             field: 'email',
                             type: 'email'
-                        }]);         
-                        
+                        }]);
+
                         expectError(A, 'name', null, [urlMsg]);
                         expectError(A, 'email', null, [emailMsg]);
                     });
-                    
+
                     it("should accept a function validator", function() {
                         var fn = function() {
                             return 'Failed';
@@ -1490,25 +1589,26 @@ topSuite("Ext.data.Model", [
                         expectError(A, 'name', null, ['Failed']);
                     });
                 });
-                
+
                 describe("object style", function() {
                     it("should accept a string", function() {
                         defineA({
                             name: 'url'
                         });
                         expectError(A, 'name', null, [urlMsg]);
-                    });  
-                    
+                    });
+
                     it("should accept a function", function() {
                         var fn = function() {
                             return 'Failed';
                         };
+
                         defineA({
                             name: fn
                         });
                         expectError(A, 'name', null, ['Failed']);
                     });
-                    
+
                     it("should accept config object", function() {
                         defineA({
                             name: {
@@ -1517,29 +1617,29 @@ topSuite("Ext.data.Model", [
                             }
                         });
                         expectError(A, 'name', null, [formatMsg]);
-                    }); 
-                    
+                    });
+
                     it("should accept an array of strings", function() {
                         defineA({
                             name: ['url', 'email']
                         });
                         expectError(A, 'name', null, [urlMsg, emailMsg]);
                     });
-                    
+
                     it("should accept an array of functions", function() {
-                        var fn1 = function(){
+                        var fn1 = function() {
                             return 'Fail1';
                         },
-                            fn2 = function(){
+                            fn2 = function() {
                                 return 'Fail2';
                             };
-                            
+
                         defineA({
                             name: [fn1, fn2]
                         });
                         expectError(A, 'name', null, ['Fail1', 'Fail2']);
                     });
-                    
+
                     it("should accept an array of objects", function() {
                         defineA({
                             name: [{
@@ -1552,10 +1652,9 @@ topSuite("Ext.data.Model", [
                         });
                         expectError(A, 'name', 'x', [formatMsg, 'Length must be at least 3']);
                     });
-                    
-                    
+
                     it("should accept a mixed array", function() {
-                        var fn = function(){
+                        var fn = function() {
                             return 'Fail';
                         };
 
@@ -1567,13 +1666,13 @@ topSuite("Ext.data.Model", [
                         });
                         expectError(A, 'name', 'x', [emailMsg, 'Length must be at least 3', 'Fail']);
                     });
-                    
+
                     it("should be able to declare multiple fields at once", function() {
                         defineA({
                             name: 'url',
                             email: 'email'
                         });
-                        
+
                         expectError(A, 'name', null, [urlMsg]);
                         expectError(A, 'email', null, [emailMsg]);
                     });
@@ -1743,7 +1842,7 @@ topSuite("Ext.data.Model", [
                     });
                 });
             });
-            
+
             describe("subclassing", function() {
                 function defineA(validators, fields, cfg) {
                     cfg = Ext.apply({
@@ -1756,11 +1855,11 @@ topSuite("Ext.data.Model", [
 
                 function defineB(validators, fields, cfg) {
                     cfg = Ext.apply({
-                        extend: A,  
+                        extend: A,
                         fields: fields || [],
                         validators: validators
                     }, cfg);
-                    
+
                     B = Ext.define('spec.B', cfg);
                 }
 
@@ -1867,7 +1966,7 @@ topSuite("Ext.data.Model", [
                     beforeEach(function() {
                         spyOn(Ext.log, 'warn');
                     });
-                    
+
                     it("should not inherit a field validator", function() {
                         defineA(null, [{
                             name: 'name',
@@ -2027,6 +2126,7 @@ topSuite("Ext.data.Model", [
             it("should generate a summary model by default", function() {
                 defineA();
                 var M = A.getSummaryModel();
+
                 expect(M.superclass).toBe(A.prototype);
                 // The default id field
                 expectFieldNames(M, ['id', 'rate']);
@@ -2035,6 +2135,7 @@ topSuite("Ext.data.Model", [
             it("should generate a summary model if there are no summary fields", function() {
                 defineA(null, ['id', 'rate', 'name']);
                 var M = A.getSummaryModel();
+
                 expect(M.superclass).toBe(A.prototype);
                 expectFieldNames(M, ['id', 'rate', 'name']);
             });
@@ -2045,6 +2146,7 @@ topSuite("Ext.data.Model", [
                     summary: 'average'
                 }]);
                 var M = A.getSummaryModel();
+
                 expect(M).not.toBeNull();
                 expect(M.superclass).toBe(A.prototype);
             });
@@ -2054,6 +2156,7 @@ topSuite("Ext.data.Model", [
                     maxRate: 'max'
                 });
                 var M = A.getSummaryModel();
+
                 expect(M).not.toBeNull();
                 expect(M.superclass).toBe(A.prototype);
             });
@@ -2066,6 +2169,7 @@ topSuite("Ext.data.Model", [
                     summary: 'average'
                 }]);
                 var M = A.getSummaryModel();
+
                 expect(M).not.toBeNull();
                 expect(M.superclass).toBe(A.prototype);
             });
@@ -2082,6 +2186,7 @@ topSuite("Ext.data.Model", [
             describe("as a function", function() {
                 it("should set the summary type", function() {
                     var spy = jasmine.createSpy();
+
                     defineA({
                         maxRate: spy
                     });
@@ -2099,15 +2204,17 @@ topSuite("Ext.data.Model", [
                     });
 
                     var T = A.getSummaryModel();
+
                     var rec = new T({
                         maxRate: '100'
                     });
+
                     expect(rec.get('maxRate')).toBe(100);
                 });
             });
 
             describe("subclassing", function() {
-                function defineB (summary, fields, cfg) {
+                function defineB(summary, fields, cfg) {
                     cfg = Ext.apply({
                         extend: A,
                         fields: fields,
@@ -2128,6 +2235,7 @@ topSuite("Ext.data.Model", [
                             }]);
 
                             var M = B.getSummaryModel();
+
                             expect(M.superclass).toBe(B.prototype);
                             expectFieldNames(M, ['id', 'name', 'income']);
 
@@ -2145,6 +2253,7 @@ topSuite("Ext.data.Model", [
                             }]);
 
                             var M = B.getSummaryModel();
+
                             expect(M.superclass).toBe(B.prototype);
                             expectFieldNames(M, ['id', 'name', 'income']);
                             expectFieldNames(B, ['id', 'name', 'income']);
@@ -2165,6 +2274,7 @@ topSuite("Ext.data.Model", [
                             });
 
                             var M = B.getSummaryModel();
+
                             expect(M.superclass).toBe(B.prototype);
                             expectFieldNames(M, ['id', 'name', 'maxIncome']);
                             expectFieldNames(B, ['id', 'name']);
@@ -2188,6 +2298,7 @@ topSuite("Ext.data.Model", [
                             }]);
 
                             var M = B.getSummaryModel();
+
                             expect(M.superclass).toBe(B.prototype);
                             expectFieldNames(M, ['id', 'name', 'income', 'maxIncome']);
                             expectFieldNames(B, ['id', 'name', 'income']);
@@ -2213,6 +2324,7 @@ topSuite("Ext.data.Model", [
                                 defineB();
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'income']);
                                 expectFieldNames(B, ['id', 'name', 'income']);
@@ -2227,6 +2339,7 @@ topSuite("Ext.data.Model", [
                                 }]);
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'income', 'rate']);
                                 expectFieldNames(B, ['id', 'name', 'income', 'rate']);
@@ -2243,6 +2356,7 @@ topSuite("Ext.data.Model", [
                                 });
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'income', 'maxIncome']);
                                 expectFieldNames(B, ['id', 'name', 'income']);
@@ -2262,6 +2376,7 @@ topSuite("Ext.data.Model", [
                                 }]);
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'income', 'rate', 'maxIncome']);
                                 expectFieldNames(B, ['id', 'name', 'income', 'rate']);
@@ -2285,6 +2400,7 @@ topSuite("Ext.data.Model", [
                                 defineB();
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'maxIncome']);
                                 expectFieldNames(B, ['id', 'name']);
@@ -2299,6 +2415,7 @@ topSuite("Ext.data.Model", [
                                 }]);
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'rate', 'maxIncome']);
                                 expectFieldNames(B, ['id', 'name', 'rate']);
@@ -2315,6 +2432,7 @@ topSuite("Ext.data.Model", [
                                 });
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'maxIncome', 'maxRate']);
                                 expectFieldNames(B, ['id', 'name']);
@@ -2329,6 +2447,7 @@ topSuite("Ext.data.Model", [
                                 });
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'maxIncome']);
                                 expectFieldNames(B, ['id', 'name']);
@@ -2350,6 +2469,7 @@ topSuite("Ext.data.Model", [
                                 }]);
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'rate', 'maxIncome', 'maxRate']);
                                 expectFieldNames(B, ['id', 'name', 'rate']);
@@ -2367,6 +2487,7 @@ topSuite("Ext.data.Model", [
                                 }]);
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'rate', 'maxIncome']);
                                 expectFieldNames(B, ['id', 'name', 'rate']);
@@ -2395,6 +2516,7 @@ topSuite("Ext.data.Model", [
                                 defineB();
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'income', 'maxIncome']);
                                 expectFieldNames(B, ['id', 'name', 'income']);
@@ -2409,6 +2531,7 @@ topSuite("Ext.data.Model", [
                                 }]);
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'income', 'rate', 'maxIncome']);
                                 expectFieldNames(B, ['id', 'name', 'income', 'rate']);
@@ -2425,6 +2548,7 @@ topSuite("Ext.data.Model", [
                                 });
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'income', 'maxIncome', 'maxRate']);
                                 expectFieldNames(B, ['id', 'name', 'income']);
@@ -2439,6 +2563,7 @@ topSuite("Ext.data.Model", [
                                 });
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'income', 'maxIncome']);
                                 expectFieldNames(B, ['id', 'name', 'income']);
@@ -2460,6 +2585,7 @@ topSuite("Ext.data.Model", [
                                 }]);
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'income', 'rate', 'maxIncome', 'maxRate']);
                                 expectFieldNames(B, ['id', 'name', 'income', 'rate']);
@@ -2477,6 +2603,7 @@ topSuite("Ext.data.Model", [
                                 }]);
 
                                 var M = B.getSummaryModel();
+
                                 expect(M.superclass).toBe(B.prototype);
                                 expectFieldNames(M, ['id', 'name', 'income', 'rate', 'maxIncome']);
                                 expectFieldNames(B, ['id', 'name', 'income', 'rate']);
@@ -2489,15 +2616,15 @@ topSuite("Ext.data.Model", [
             });
         });
     });
-    
+
     describe("get/setProxy", function() {
         var A;
-        
+
         afterEach(function() {
             A = null;
             Ext.undefine('spec.A');
         });
-        
+
         function defineA(proxy, cfg) {
             cfg = Ext.apply({
                 extend: Ext.data.Model,
@@ -2506,13 +2633,13 @@ topSuite("Ext.data.Model", [
             }, cfg);
             A = Ext.define('spec.A', cfg);
         }
-        
+
         it("should be able to set a string type", function() {
             defineA();
             A.setProxy('ajax');
             expect(A.getProxy() instanceof Ext.data.proxy.Ajax).toBe(true);
         });
-        
+
         it("should be able to set a config", function() {
             defineA();
             A.setProxy({
@@ -2521,33 +2648,35 @@ topSuite("Ext.data.Model", [
             });
             expect(A.getProxy().getUrl()).toBe('/foo');
         });
-        
+
         it("should be able to set an instance", function() {
             var proxy = new Ext.data.proxy.Ajax({
                 url: '/foo'
             });
+
             defineA();
             A.setProxy(proxy);
             expect(A.getProxy()).toBe(proxy);
             proxy = null;
         });
-        
+
         it("should have the instance method call the static method", function() {
             defineA({
                 type: 'ajax',
                 url: '/foo'
             });
             var proxy = A.getProxy();
-            
-            var o = new A();   
+
+            var o = new A();
+
             expect(o.getProxy()).toBe(proxy);
             proxy = null;
         });
     });
-    
+
     describe("remote calls", function() {
         var A, theOperation, rec;
-            
+
         function defineA(proxy, cfg) {
             cfg = Ext.apply({
                 extend: Ext.data.Model,
@@ -2564,30 +2693,34 @@ topSuite("Ext.data.Model", [
             rec = new A({
                 id: id
             }, session);
+
             if (loadOptions) {
                 rec.load(loadOptions);
             }
+
             return rec;
         }
 
         beforeEach(function() {
             MockAjaxManager.addMethods();
         });
-        
+
         afterEach(function() {
             MockAjaxManager.removeMethods();
             theOperation = A = null;
             Ext.undefine('spec.A');
         });
-        
+
         describe("load", function() {
             var readSpy;
+
             beforeEach(function() {
                 defineA();
                 readSpy = spyOn(A.getProxy(), 'read').andCallFake(function(operation) {
                     theOperation = operation;
+
                     return readSpy.originalValue.apply(this, arguments);
-                }); 
+                });
             });
 
             function complete(data, status) {
@@ -2605,7 +2738,7 @@ topSuite("Ext.data.Model", [
                     });
                 }).toThrow();
             });
-            
+
             it("should pass the id as part of the operation", function() {
                 make(3, {});
                 expect(theOperation.getId()).toBe(3);
@@ -2621,14 +2754,14 @@ topSuite("Ext.data.Model", [
                     make();
                     expect(rec.phantom).toBe(true);
                     rec.load();
-                    complete({id: 1});
+                    complete({ id: 1 });
                     expect(rec.phantom).toBe(false);
                 });
 
                 it("should set the id on the new record", function() {
                     make();
                     rec.load();
-                    complete({id: 200});
+                    complete({ id: 200 });
                     expect(rec.getId()).toBe(200);
                 });
             });
@@ -2636,6 +2769,7 @@ topSuite("Ext.data.Model", [
             describe("while loading", function() {
                 it("should return the operation", function() {
                     var op = rec.load();
+
                     expect(rec.load()).toBe(op);
                 });
 
@@ -2667,12 +2801,14 @@ topSuite("Ext.data.Model", [
                             i = 0;
 
                         make(3, {});
+
                         for (i = 0; i < 3; ++i) {
                             rec.load({
                                 success: successSpy,
                                 callback: callbackSpy
                             });
                         }
+
                         complete({});
                         expect(successSpy.callCount).toBe(3);
                         expect(callbackSpy.callCount).toBe(3);
@@ -2719,12 +2855,14 @@ topSuite("Ext.data.Model", [
                             i = 0;
 
                         make(3, {});
+
                         for (i = 0; i < 3; ++i) {
                             rec.load({
                                 failure: failureSpy,
                                 callback: callbackSpy
                             });
                         }
+
                         complete(null, 500);
                         expect(failureSpy.callCount).toBe(3);
                         expect(callbackSpy.callCount).toBe(3);
@@ -2805,16 +2943,16 @@ topSuite("Ext.data.Model", [
                     it("should be able to load associations", function() {
                         make(3, {});
                         complete({
-                            posts: [{id: 1}, {id: 2}, {id: 3}]
+                            posts: [{ id: 1 }, { id: 2 }, { id: 3 }]
                         });
 
                         var posts = rec.posts();
+
                         expect(posts.getCount()).toBe(3);
                         expect(posts.getAt(0).getId()).toBe(1);
                         expect(posts.getAt(1).getId()).toBe(2);
                         expect(posts.getAt(2).getId()).toBe(3);
 
-                        
                     });
 
                     describe("with a session", function() {
@@ -2842,7 +2980,7 @@ topSuite("Ext.data.Model", [
 
                             make(3, {}, session);
                             complete({
-                                posts: [{id: 1, aId: 3}, {id: 2, aId: 3}, {
+                                posts: [{ id: 1, aId: 3 }, { id: 2, aId: 3 }, {
                                     id: 3,
                                     aId: 3,
                                     comments: [{
@@ -2852,6 +2990,7 @@ topSuite("Ext.data.Model", [
                             });
 
                             var posts = rec.posts();
+
                             expect(posts.getAt(1)).toBe(post);
                             expect(posts.getAt(2).comments().first()).toBe(comment);
                             session.destroy();
@@ -2871,7 +3010,7 @@ topSuite("Ext.data.Model", [
                 it("should call the instance load method and pass options", function() {
                     var options = {},
                         spy = spyOn(A.prototype, 'load');
-                    
+
                     A.load(1, options);
                     expect(spy).toHaveBeenCalledWith(options);
                 });
@@ -2881,7 +3020,7 @@ topSuite("Ext.data.Model", [
                         extend: 'Ext.data.Model',
                         idProperty: 'foo'
                     });
-                    
+
                     rec = CustomId.load(1);
                     expect(rec.get('foo')).toBe(1);
                     Ext.undefine('spec.CustomId');
@@ -2961,16 +3100,18 @@ topSuite("Ext.data.Model", [
                 it("should abort a load operation", function() {
                     make(100, {});
                     var op = rec.loadOperation;
+
                     spyOn(op, 'abort');
                     rec.abort();
                     expect(op.abort).toHaveBeenCalled();
                 });
             });
-            
+
             describe("operation successful", function() {
-                
+
                 it("should trigger the success callback", function() {
                     var spy = jasmine.createSpy();
+
                     make(17, {
                         success: spy
                     });
@@ -2982,9 +3123,10 @@ topSuite("Ext.data.Model", [
 
                     expect(spy).toHaveBeenCalled();
                 });
-                
+
                 it("should pass a record and the operation", function() {
-                    var spy = jasmine.createSpy();                    
+                    var spy = jasmine.createSpy();
+
                     make(17, {
                         success: spy
                     });
@@ -2993,13 +3135,14 @@ topSuite("Ext.data.Model", [
                         name: 'TheName'
                     });
                     var args = spy.mostRecentCall.args;
+
                     expect(args[0]).toBe(rec);
                     expect(args[1]).toBe(theOperation);
                 });
-                
+
                 it("should only pass the first record if the server returns multiple", function() {
                     var spy = jasmine.createSpy();
-                    
+
                     make(17, {
                         success: spy
                     });
@@ -3013,20 +3156,21 @@ topSuite("Ext.data.Model", [
                     expect(spy.mostRecentCall.args[0]).toBe(rec);
                     expect(spy.callCount).toBe(1);
                 });
-                
+
                 it("should default the scope to the instance", function() {
                     var spy = jasmine.createSpy();
+
                     make(100, {
                         success: spy
                     });
                     complete({});
                     expect(spy.mostRecentCall.object).toBe(rec);
                 });
-                
+
                 it("should use a passed scope", function() {
                     var o = {},
                         spy = jasmine.createSpy();
-                        
+
                     make(100, {
                         scope: o,
                         success: spy
@@ -3034,25 +3178,25 @@ topSuite("Ext.data.Model", [
                     complete({});
                     expect(spy.mostRecentCall.object).toBe(o);
                 });
-                
+
                 it("should also fire the callback", function() {
                     var callbackSpy = jasmine.createSpy(),
                         successSpy = jasmine.createSpy();
-                        
+
                     make(100, {
                         success: successSpy,
                         callback: callbackSpy
                     });
                     complete({});
                     expect(successSpy).toHaveBeenCalled();
-                    expect(callbackSpy).toHaveBeenCalled(); 
+                    expect(callbackSpy).toHaveBeenCalled();
                 });
-                
+
                 describe("with no record returned", function() {
                     it("should fire the failure callback, not success", function() {
                         var successSpy = jasmine.createSpy(),
                             failureSpy = jasmine.createSpy();
-                            
+
                         make(100, {
                             failure: failureSpy,
                             success: successSpy
@@ -3063,29 +3207,31 @@ topSuite("Ext.data.Model", [
                     });
                 });
             });
-            
+
             describe("operation failure", function() {
                 it("should trigger the failure callback", function() {
                     var spy = jasmine.createSpy();
+
                     make(17, {
                         failure: spy
                     });
                     complete(null, 500);
                     expect(spy).toHaveBeenCalled();
                 });
-                
+
                 it("should pass the record and the operation", function() {
                     var spy = jasmine.createSpy();
-                    
+
                     make(17, {
-                        failure: spy   
+                        failure: spy
                     });
                     complete(null, 500);
                     var args = spy.mostRecentCall.args;
+
                     expect(args[0]).toBe(rec);
                     expect(args[1]).toBe(theOperation);
                 });
-                
+
                 it("should default the scope to the instance", function() {
                     var spy = jasmine.createSpy();
 
@@ -3095,11 +3241,11 @@ topSuite("Ext.data.Model", [
                     complete(null, 500);
                     expect(spy.mostRecentCall.object).toBe(rec);
                 });
-                
+
                 it("should use a passed scope", function() {
                     var o = {},
                         spy = jasmine.createSpy();
-                        
+
                     make(100, {
                         scope: o,
                         failure: spy
@@ -3107,21 +3253,21 @@ topSuite("Ext.data.Model", [
                     complete(null, 500);
                     expect(spy.mostRecentCall.object).toBe(o);
                 });
-                
+
                 it("should also fire the callback", function() {
                     var callbackSpy = jasmine.createSpy(),
                         failureSpy = jasmine.createSpy();
-                        
+
                     make(100, {
                         failure: failureSpy,
                         callback: callbackSpy
                     });
                     complete(null, 500);
                     expect(failureSpy).toHaveBeenCalled();
-                    expect(callbackSpy).toHaveBeenCalled(); 
+                    expect(callbackSpy).toHaveBeenCalled();
                 });
             });
-            
+
             describe("callback", function() {
                 it("should default the scope to the instance", function() {
                     var spy = jasmine.createSpy();
@@ -3131,39 +3277,43 @@ topSuite("Ext.data.Model", [
                     });
                     complete({});
                     expect(spy.mostRecentCall.object).toBe(rec);
-                });  
-                
+                });
+
                 it("should use a passed scope", function() {
-                    var o = {}, 
+                    var o = {},
                         spy = jasmine.createSpy();
-                        
+
                     make(100, {
                         scope: o,
                         callback: spy
                     });
                     complete({});
                     expect(spy.mostRecentCall.object).toBe(o);
-                }); 
-                
-                it("should receive the model, operation & success=true when successful", function() {                    
+                });
+
+                it("should receive the model, operation & success=true when successful", function() {
                     var spy = jasmine.createSpy();
+
                     make(17, {
-                        callback: spy   
+                        callback: spy
                     });
                     complete({});
                     var args = spy.mostRecentCall.args;
+
                     expect(args[0]).toBe(rec);
                     expect(args[1]).toBe(theOperation);
                     expect(args[2]).toBe(true);
                 });
-                
+
                 it("should receive rec, operation & success=false when failed", function() {
                     var spy = jasmine.createSpy();
+
                     make(17, {
-                        callback: spy    
+                        callback: spy
                     });
                     complete(null, 500);
                     var args = spy.mostRecentCall.args;
+
                     expect(args[0]).toBe(rec);
                     expect(args[1]).toBe(theOperation);
                     expect(args[2]).toBe(false);
@@ -3171,6 +3321,7 @@ topSuite("Ext.data.Model", [
 
                 it("should be called last when successful", function() {
                     var order = [];
+
                     make(17, {
                         success: function() { order.push('success'); },
                         callback: function() { order.push('callback'); }
@@ -3181,6 +3332,7 @@ topSuite("Ext.data.Model", [
 
                 it("should be called last when failed", function() {
                     var order = [];
+
                     make(17, {
                         failure: function() { order.push('fail'); },
                         callback: function() { order.push('callback'); }
@@ -3190,23 +3342,25 @@ topSuite("Ext.data.Model", [
                 });
             });
         });
-        
+
         describe("save", function() {
             var rec, spy;
-            
+
             function setupCallback(success) {
                 spyOn(A.getProxy(), 'doRequest').andCallFake(function(op) {
                     theOperation = op;
+
                     if (success) {
                         op.process(new Ext.data.ResultSet({
                             success: true
                         }));
-                    } else {
+                    }
+                    else {
                         op.setException('Failed');
                     }
                 });
             }
-            
+
             beforeEach(function() {
                 defineA();
                 rec = new A({
@@ -3214,29 +3368,32 @@ topSuite("Ext.data.Model", [
                 });
                 spy = jasmine.createSpy();
             });
-            
+
             describe("operation types", function() {
                 it("should create a destroy operation if the record is dropped", function() {
                     rec = new A();
                     rec.drop();
                     var operation = rec.save();
+
                     expect(operation instanceof Ext.data.operation.Destroy).toBe(true);
                 });
-                
+
                 it("should create a create operation if the record is a phantom", function() {
                     rec = new A();
                     var operation = rec.save();
+
                     expect(operation instanceof Ext.data.operation.Create).toBe(true);
                 });
-                
+
                 it("should create an update operation if the record is not phantom and not dropped", function() {
                     var operation = rec.save();
+
                     expect(operation instanceof Ext.data.operation.Update).toBe(true);
                 });
             });
 
             describe("callbacks", function() {
-                describe("success", function() {                        
+                describe("success", function() {
                     beforeEach(function() {
                         setupCallback(true);
                     });
@@ -3246,6 +3403,7 @@ topSuite("Ext.data.Model", [
                             success: spy
                         });
                         var args = spy.mostRecentCall.args;
+
                         expect(args[0]).toBe(rec);
                         expect(args[1]).toBe(theOperation);
                         expect(theOperation.wasSuccessful()).toBe(true);
@@ -3260,6 +3418,7 @@ topSuite("Ext.data.Model", [
 
                     it("should use the passed scope", function() {
                         var o = {};
+
                         rec.save({
                             success: spy,
                             scope: o
@@ -3285,6 +3444,7 @@ topSuite("Ext.data.Model", [
                             failure: spy
                         });
                         var args = spy.mostRecentCall.args;
+
                         expect(args[0]).toBe(rec);
                         expect(args[1]).toBe(theOperation);
                         expect(theOperation.wasSuccessful()).toBe(false);
@@ -3299,6 +3459,7 @@ topSuite("Ext.data.Model", [
 
                     it("should use the passed scope", function() {
                         var o = {};
+
                         rec.save({
                             failure: spy,
                             scope: o
@@ -3315,13 +3476,14 @@ topSuite("Ext.data.Model", [
                 });
 
                 describe("callback", function() {
-                    describe("on success", function() {            
+                    describe("on success", function() {
                         it("should pass the record, operation & success", function() {
                             setupCallback(true);
                             rec.save({
                                 callback: spy
                             });
                             var args = spy.mostRecentCall.args;
+
                             expect(args[0]).toBe(rec);
                             expect(args[1]).toBe(theOperation);
                             expect(theOperation.wasSuccessful()).toBe(true);
@@ -3329,13 +3491,14 @@ topSuite("Ext.data.Model", [
                         });
                     });
 
-                    describe("on failure", function() {            
+                    describe("on failure", function() {
                         it("should pass the record, operation & success", function() {
                             setupCallback(false);
                             rec.save({
                                 callback: spy
                             });
                             var args = spy.mostRecentCall.args;
+
                             expect(args[0]).toBe(rec);
                             expect(args[1]).toBe(theOperation);
                             expect(theOperation.wasSuccessful()).toBe(false);
@@ -3354,6 +3517,7 @@ topSuite("Ext.data.Model", [
                     it("should use the passed scope", function() {
                         setupCallback(true);
                         var o = {};
+
                         rec.save({
                             callback: spy,
                             scope: o
@@ -3363,51 +3527,53 @@ topSuite("Ext.data.Model", [
                 });
             });
         });
-        
+
         describe("erase", function() {
             var spy, rec;
-            
+
             beforeEach(function() {
                 defineA();
                 spy = jasmine.createSpy();
             });
-            
-            
+
             describe("phantom", function() {
                 beforeEach(function() {
                     rec = new A();
                 });
-                
+
                 it("should not make a call to the proxy", function() {
                     var proxy = A.getProxy();
+
                     spyOn(proxy, 'erase');
                     rec.erase();
                     expect(proxy.erase).not.toHaveBeenCalled();
                 });
-                
+
                 it("should return an operation, it should be completed", function() {
                     var op = rec.erase();
+
                     expect(op.isOperation).toBe(true);
                     expect(op.isComplete()).toBe(true);
                 });
-                
+
                 it("should call afterErase", function() {
                     spyOn(rec, 'callJoined');
                     rec.erase();
                     expect(rec.callJoined).toHaveBeenCalled();
                     expect(rec.callJoined.mostRecentCall.args[0]).toBe('afterErase');
                 });
-                
+
                 it("should set the erased property", function() {
                     rec.erase();
                     expect(rec.erased).toBe(true);
                 });
-                
+
                 describe("callbacks", function() {
                     describe("success", function() {
                         it("should fire before the function returns", function() {
                             var after = false,
                                 val;
+
                             rec.erase({
                                 success: function() {
                                     val = after;
@@ -3416,28 +3582,30 @@ topSuite("Ext.data.Model", [
                             after = true;
                             expect(val).toBe(false);
                         });
-                        
+
                         it("should pass the record and the operation", function() {
                             rec.erase({
                                 success: spy
                             });
                             var args = spy.mostRecentCall.args,
                                 op = args[1];
+
                             expect(args[0]).toBe(rec);
                             expect(op instanceof Ext.data.operation.Destroy).toBe(true);
                             expect(op.getRecords()).toEqual([rec]);
                             expect(op.wasSuccessful()).toBe(true);
                         });
-                        
+
                         it("should default the scope to the model", function() {
                             rec.erase({
                                 success: spy
                             });
                             expect(spy.mostRecentCall.object).toBe(rec);
                         });
-                        
+
                         it("should use the passed scope", function() {
                             var o = {};
+
                             rec.erase({
                                 success: spy,
                                 scope: o
@@ -3445,7 +3613,7 @@ topSuite("Ext.data.Model", [
                             expect(spy.mostRecentCall.object).toBe(o);
                         });
                     });
-                    
+
                     describe("failure", function() {
                         it("should never call this", function() {
                             rec.erase({
@@ -3454,11 +3622,12 @@ topSuite("Ext.data.Model", [
                             expect(spy).not.toHaveBeenCalled();
                         });
                     });
-                    
+
                     describe("callback", function() {
                         it("should fire before the function returns", function() {
                             var after = false,
                                 val;
+
                             rec.erase({
                                 callback: function() {
                                     val = after;
@@ -3467,29 +3636,31 @@ topSuite("Ext.data.Model", [
                             after = true;
                             expect(val).toBe(false);
                         });
-                        
+
                         it("should pass the record, operation & success", function() {
                             rec.erase({
                                 callback: spy
                             });
                             var args = spy.mostRecentCall.args,
                                 op = args[1];
+
                             expect(args[0]).toBe(rec);
                             expect(op instanceof Ext.data.operation.Destroy).toBe(true);
                             expect(op.getRecords()).toEqual([rec]);
                             expect(op.wasSuccessful()).toBe(true);
                             expect(args[2]).toBe(true);
                         });
-                        
+
                         it("should default the scope to the model", function() {
                             rec.erase({
                                 callback: spy
                             });
                             expect(spy.mostRecentCall.object).toBe(rec);
                         });
-                        
+
                         it("should use the passed scope", function() {
                             var o = {};
+
                             rec.erase({
                                 callback: spy,
                                 scope: o
@@ -3499,39 +3670,42 @@ topSuite("Ext.data.Model", [
                     });
                 });
             });
-            
+
             describe("non-phantom", function() {
                 function setupCallback(success) {
                     spyOn(A.getProxy(), 'erase').andCallFake(function(op) {
                         theOperation = op;
+
                         if (success) {
                             op.process(new Ext.data.ResultSet({
                                 success: true
                             }));
-                        } else {
+                        }
+                        else {
                             op.setException('Failed');
                         }
                     });
                 }
-                
+
                 beforeEach(function() {
                     rec = new A({
                         id: 17
                     });
                 });
-                
+
                 it("should call the proxy erase method", function() {
                     spy = spyOn(A.getProxy(), 'erase').andReturn();
                     rec.erase();
                     expect(spy).toHaveBeenCalled();
                 });
-                
+
                 it("should return an operation, it should not be completed", function() {
                     var op = rec.erase();
+
                     expect(op.isOperation).toBe(true);
                     expect(op.isComplete()).toBe(false);
                 });
-                
+
                 describe("when successful", function() {
                     it("should call afterErase", function() {
                         spyOn(rec, 'callJoined');
@@ -3540,14 +3714,14 @@ topSuite("Ext.data.Model", [
                         expect(rec.callJoined).toHaveBeenCalled();
                         expect(rec.callJoined.mostRecentCall.args[0]).toBe('afterErase');
                     });
-                
+
                     it("should set the erased property", function() {
                         setupCallback(true);
                         rec.erase();
                         expect(rec.erased).toBe(true);
                     });
                 });
-                
+
                 describe("when not successful", function() {
                     it("should not call afterErase", function() {
                         spyOn(rec, 'callJoined');
@@ -3555,46 +3729,48 @@ topSuite("Ext.data.Model", [
                         rec.erase();
                         expect(rec.callJoined).not.toHaveBeenCalledWith('afterErase');
                     });
-                
+
                     it("should not set the erased property", function() {
                         setupCallback(false);
                         rec.erase();
                         expect(rec.erased).toBe(false);
                     });
                 });
-                
+
                 describe("callbacks", function() {
-                    describe("success", function() {                        
+                    describe("success", function() {
                         beforeEach(function() {
                             setupCallback(true);
                         });
-                        
+
                         it("should pass the record and the operation", function() {
                             rec.erase({
                                 success: spy
                             });
                             var args = spy.mostRecentCall.args;
+
                             expect(args[0]).toBe(rec);
                             expect(args[1]).toBe(theOperation);
                             expect(theOperation.wasSuccessful()).toBe(true);
                         });
-                        
+
                         it("should default the scope to the model", function() {
                             rec.erase({
                                 success: spy
                             });
                             expect(spy.mostRecentCall.object).toBe(rec);
                         });
-                        
+
                         it("should use the passed scope", function() {
                             var o = {};
+
                             rec.erase({
                                 success: spy,
                                 scope: o
                             });
                             expect(spy.mostRecentCall.object).toBe(o);
                         });
-                        
+
                         it("should not call failure", function() {
                             rec.erase({
                                 failure: spy
@@ -3602,38 +3778,40 @@ topSuite("Ext.data.Model", [
                             expect(spy).not.toHaveBeenCalled();
                         });
                     });
-                    
+
                     describe("failure", function() {
                         beforeEach(function() {
                             setupCallback(false);
                         });
-                        
+
                         it("should pass the record and the operation", function() {
                             rec.erase({
                                 failure: spy
                             });
                             var args = spy.mostRecentCall.args;
+
                             expect(args[0]).toBe(rec);
                             expect(args[1]).toBe(theOperation);
                             expect(theOperation.wasSuccessful()).toBe(false);
                         });
-                        
+
                         it("should default the scope to the model", function() {
                             rec.erase({
                                 failure: spy
                             });
                             expect(spy.mostRecentCall.object).toBe(rec);
                         });
-                        
+
                         it("should use the passed scope", function() {
                             var o = {};
+
                             rec.erase({
                                 failure: spy,
                                 scope: o
                             });
                             expect(spy.mostRecentCall.object).toBe(o);
                         });
-                        
+
                         it("should not call success", function() {
                             rec.erase({
                                 success: spy
@@ -3641,36 +3819,38 @@ topSuite("Ext.data.Model", [
                             expect(spy).not.toHaveBeenCalled();
                         });
                     });
-                    
+
                     describe("callback", function() {
-                        describe("on success", function() {            
+                        describe("on success", function() {
                             it("should pass the record, operation & success", function() {
                                 setupCallback(true);
                                 rec.erase({
                                     callback: spy
                                 });
                                 var args = spy.mostRecentCall.args;
+
                                 expect(args[0]).toBe(rec);
                                 expect(args[1]).toBe(theOperation);
                                 expect(theOperation.wasSuccessful()).toBe(true);
                                 expect(args[2]).toBe(true);
                             });
                         });
-                        
-                        describe("on failure", function() {            
+
+                        describe("on failure", function() {
                             it("should pass the record, operation & success", function() {
                                 setupCallback(false);
                                 rec.erase({
                                     callback: spy
                                 });
                                 var args = spy.mostRecentCall.args;
+
                                 expect(args[0]).toBe(rec);
                                 expect(args[1]).toBe(theOperation);
                                 expect(theOperation.wasSuccessful()).toBe(false);
                                 expect(args[2]).toBe(false);
                             });
                         });
-                        
+
                         it("should default the scope to the model", function() {
                             setupCallback(true);
                             rec.erase({
@@ -3678,10 +3858,11 @@ topSuite("Ext.data.Model", [
                             });
                             expect(spy.mostRecentCall.object).toBe(rec);
                         });
-                        
+
                         it("should use the passed scope", function() {
                             setupCallback(true);
                             var o = {};
+
                             rec.erase({
                                 callback: spy,
                                 scope: o
@@ -3696,8 +3877,9 @@ topSuite("Ext.data.Model", [
 
     describe("the initial id", function() {
         var A, rec;
+
         function defineA(type, dateFormat) {
-            A = Ext.define(null, {  
+            A = Ext.define(null, {
                 extend: 'Ext.data.Model',
                 fields: [{
                     name: 'id',
@@ -3719,6 +3901,7 @@ topSuite("Ext.data.Model", [
             it("should auto generate an id when not specified and be phantom", function() {
                 rec = new A();
                 var prefix = rec.self.identifier.getPrefix();
+
                 expect(rec.id).toBe(prefix + '1');
                 expect(rec.phantom).toBe(true);
             });
@@ -3740,6 +3923,7 @@ topSuite("Ext.data.Model", [
             it("should auto generate an id when not specified and be phantom", function() {
                 rec = new A();
                 var prefix = rec.self.identifier.getPrefix();
+
                 expect(rec.id).toBe(prefix + '1');
                 expect(rec.phantom).toBe(true);
             });
@@ -3769,6 +3953,7 @@ topSuite("Ext.data.Model", [
             it("should auto generate an id when not specified and be phantom", function() {
                 rec = new A();
                 var prefix = rec.self.identifier.getPrefix();
+
                 expect(rec.id).toBe(prefix + '1');
                 expect(rec.phantom).toBe(true);
             });
@@ -3798,12 +3983,14 @@ topSuite("Ext.data.Model", [
             it("should auto generate an id when not specified and be phantom", function() {
                 rec = new A();
                 var prefix = rec.self.identifier.getPrefix();
+
                 expect(rec.id).toBe(prefix + '1');
                 expect(rec.phantom).toBe(true);
             });
 
             it("should use a specified id and not be phantom", function() {
                 var d = new Date();
+
                 rec = new A({
                     id: d
                 });
@@ -3813,6 +4000,7 @@ topSuite("Ext.data.Model", [
 
             it("should run the converter and not be phantom", function() {
                 var now = new Date().getTime();
+
                 rec = new A({
                     id: '2012-01-01'
                 });
@@ -3822,17 +4010,17 @@ topSuite("Ext.data.Model", [
             });
         });
     });
-    
+
     describe("constructing", function() {
         var now = new Date(),
             myArr = [],
             myObj = {},
             A, B, o,
-            convertOnlyCalled, 
+            convertOnlyCalled,
             convertAndDefaultValueCalled,
             returnFromConvert,
             useReturnFromConvert;
-            
+
         beforeEach(function() {
             useReturnFromConvert = false;
             A = Ext.define('spec.A', {
@@ -3841,9 +4029,11 @@ topSuite("Ext.data.Model", [
                     name: 'convertOnly',
                     convert: function(v) {
                         convertOnlyCalled = true;
+
                         if (useReturnFromConvert) {
                             return returnFromConvert;
-                        } else {
+                        }
+                        else {
                             return v;
                         }
                     }
@@ -3851,9 +4041,11 @@ topSuite("Ext.data.Model", [
                     name: 'convertAndDefaultValue',
                     convert: function(v) {
                         convertAndDefaultValueCalled = true;
+
                         if (useReturnFromConvert) {
                             return returnFromConvert;
-                        } else {
+                        }
+                        else {
                             return v;
                         }
                     },
@@ -3874,23 +4066,23 @@ topSuite("Ext.data.Model", [
             });
             convertAndDefaultValueCalled = convertOnlyCalled = false;
         });
-        
+
         afterEach(function() {
             Ext.undefine('spec.A');
             A = B = o = null;
             returnFromConvert = undefined;
         });
-        
+
         it("should accept no params", function() {
             expect(function() {
                 o = new A();
             }).not.toThrow();
         });
-        
+
         it("should assign an underlying data object", function() {
             o = new A({
                 nothing: 'Foo'
-            });    
+            });
             expect(o.get('nothing')).toBe('Foo');
         });
 
@@ -3908,35 +4100,35 @@ topSuite("Ext.data.Model", [
             });
             expect(o.get('the-field')).toBe('foo');
         });
-        
+
         describe("id", function() {
             describe("with no value", function() {
                 describe("with no identifier config", function() {
                     it("should generate a new id", function() {
                         spyOn(A.identifier, 'generate').andReturn('x');
                         o = new A();
-                        expect(o.id).toBe('x');    
+                        expect(o.id).toBe('x');
                     });
-            
+
                     it("should set phantom: true", function() {
                         o = new A();
-                        expect(o.phantom).toBe(true);    
+                        expect(o.phantom).toBe(true);
                     });
 
                     it("should put the id on the idProperty field", function() {
                         spyOn(A.identifier, 'generate').andReturn('x');
                         o = new A();
-                        expect(o.get('id')).toBe('x');    
+                        expect(o.get('id')).toBe('x');
                     });
                 });
-                
+
                 describe("with identifier config", function() {
                     it("should generate an id", function() {
                         spyOn(A.identifier, 'generate').andReturn('Foo');
                         o = new A();
                         expect(o.id).toBe('Foo');
                     });
-                    
+
                     it("should set phantom: true", function() {
                         spyOn(A.identifier, 'generate').andReturn('Foo');
                         o = new A();
@@ -3946,33 +4138,33 @@ topSuite("Ext.data.Model", [
                     it("should put the id on the idProperty field", function() {
                         spyOn(A.identifier, 'generate').andReturn('Foo');
                         o = new A();
-                        expect(o.get('id')).toBe('Foo');    
+                        expect(o.get('id')).toBe('Foo');
                     });
                 });
-            });  
-            
+            });
+
             describe("with a value", function() {
                 it("should set the id", function() {
                     o = new A({
                         id: 3
-                    });    
+                    });
                     expect(o.id).toBe(3);
-                });  
-                
+                });
+
                 it("should set phantom: false", function() {
                     o = new A({
                         id: 3
-                    });    
+                    });
                     expect(o.phantom).toBe(false);
                 });
-                
+
                 it("should modify the idProperty field", function() {
                     o = new A({
                         id: 3
                     });
                     expect(o.get('id')).toBe(3);
                 });
-                
+
                 it("should not call the id generator", function() {
                     spyOn(A.identifier, 'generate');
                     o = new A({
@@ -3996,12 +4188,13 @@ topSuite("Ext.data.Model", [
                         }
                     }]
                 });
- 
-                var t = new Record({pageId: 'foo', browserId: 'bar', id: 'xx' });
+
+                var t = new Record({ pageId: 'foo', browserId: 'bar', id: 'xx' });
+
                 expect(t.getId()).toBe('foobar');
             });
         });
-        
+
         describe("convert", function() {
             it("should call the convert method", function() {
                 useReturnFromConvert = true;
@@ -4010,7 +4203,7 @@ topSuite("Ext.data.Model", [
                 expect(convertOnlyCalled).toBe(true);
                 expect(o.get('convertOnly')).toBe(10);
             });
-            
+
             it("should ignore the value from convert if it returns undefined", function() {
                 useReturnFromConvert = true;
                 returnFromConvert = undefined;
@@ -4020,57 +4213,60 @@ topSuite("Ext.data.Model", [
                 expect(convertOnlyCalled).toBe(true);
                 expect(o.get('convertOnly')).toBe('foo');
             });
-        });  
-            
+        });
+
         describe("defaultValue", function() {
             it("should assign the defaultValue", function() {
                 o = new A({});
-                expect(o.get('defaultOnly')).toBe('foo');   
+                expect(o.get('defaultOnly')).toBe('foo');
             });
-            
+
             it("should only assign the defaultValue if the value is undefined", function() {
                 o = new A({
                     defaultOnly: null
                 });
-                expect(o.get('defaultOnly')).toBeNull(); 
+                expect(o.get('defaultOnly')).toBeNull();
                 o = new A({
                     defaultOnly: ''
                 });
-                expect(o.get('defaultOnly')).toBe('');   
+                expect(o.get('defaultOnly')).toBe('');
                 o = new A({
                     defaultOnly: false
                 });
-                expect(o.get('defaultOnly')).toBe(false);   
+                expect(o.get('defaultOnly')).toBe(false);
                 o = new A({
                     defaultOnly: 0
                 });
-                expect(o.get('defaultOnly')).toBe(0);     
-            });    
-            
+                expect(o.get('defaultOnly')).toBe(0);
+            });
+
             describe("object types", function() {
                 it("should copy objects", function() {
                     o = new A({});
                     var val = o.get('objField');
+
                     expect(val).not.toBe(myObj);
                     expect(val).toEqual(myObj);
                 });
-                
+
                 it("should copy dates", function() {
                     o = new A({});
                     var val = o.get('dateField');
+
                     expect(val).not.toBe(now);
                     expect(val).toEqual(now);
                 });
-                
+
                 it("should copy arrays", function() {
                     o = new A({});
                     var val = o.get('arrField');
+
                     expect(val).not.toBe(myArr);
                     expect(val).toEqual(myArr);
                 });
             });
         });
-        
+
         describe("both", function() {
             it("should call convert if the value is defined", function() {
                 o = new A({
@@ -4079,17 +4275,17 @@ topSuite("Ext.data.Model", [
                 expect(convertAndDefaultValueCalled).toBe(true);
                 expect(o.get('convertAndDefaultValue')).toBe(11);
             });
-            
+
             it("should not call convert if the value is undefined", function() {
                 o = new A({});
-                expect(convertAndDefaultValueCalled).toBe(false);    
+                expect(convertAndDefaultValueCalled).toBe(false);
             });
-            
+
             it("should assign the default if the value is undefined", function() {
                 o = new A({});
                 expect(o.get('convertAndDefaultValue')).toBe(16);
             });
-            
+
             it("should assign the defaultValue if convert returns null", function() {
                 useReturnFromConvert = true;
                 returnFromConvert = undefined;
@@ -4101,50 +4297,51 @@ topSuite("Ext.data.Model", [
             });
         });
     });
-    
+
     describe("getting values", function() {
         var A,
             o;
-            
+
         beforeEach(function() {
             A = Ext.define('spec.A', {
                 extend: Ext.data.Model,
                 fields: ['aField']
             });
         });
-        
+
         afterEach(function() {
             Ext.undefine('spec.A');
             A = o = null;
         });
-        
+
         it("should return a value that was in the fields collection", function() {
             o = new A({
                 aField: 'foo'
             });
             expect(o.get('foo'));
-        });  
-        
+        });
+
         it("should return a value not in the fields collection", function() {
             o = new A({
                 other: 'foo'
             });
-            expect(o.get('other'));    
+            expect(o.get('other'));
         });
-        
+
         it("should return the value unchanged", function() {
             var v = {};
+
             o = new A({
                 aField: v
-            });    
+            });
             expect(o.get('aField')).toBe(v);
         });
     });
-    
+
     describe("setting values", function() {
         var Person,
             o;
-            
+
         var definePerson = function(cfg) {
             cfg = Ext.apply({
                 extend: Ext.data.Model,
@@ -4159,19 +4356,20 @@ topSuite("Ext.data.Model", [
                     type: 'int'
                 }]
             }, cfg);
-            Person = Ext.define('spec.Person', cfg); 
+            Person = Ext.define('spec.Person', cfg);
         };
-        
+
         afterEach(function() {
             Ext.undefine('spec.Person');
             Person = o = null;
         });
-        
+
         describe("without dependencies", function() {
             it("should set a single key/value", function() {
                 definePerson();
                 o = new Person();
                 var result = o.set('rank', 3);
+
                 expect(o.get('rank')).toBe(3);
                 expect(result).toEqual(['rank']);
             });
@@ -4182,20 +4380,22 @@ topSuite("Ext.data.Model", [
                 var result = o.set({
                     name: 'Foo',
                     rank: 4
-                });    
+                });
+
                 expect(o.get('name')).toBe('Foo');
                 expect(o.get('rank')).toBe(4);
                 expect(result).toEqual(['name', 'rank']);
             });
-            
+
             it("should set a value not in the fields collection", function() {
                 definePerson();
                 o = new Person();
                 var result = o.set('other', 1);
+
                 expect(o.get('other')).toBe(1);
-                expect(result).toEqual(['other']);    
+                expect(result).toEqual(['other']);
             });
-            
+
             it("should only return fields that were modified", function() {
                 definePerson();
                 o = new Person({
@@ -4206,13 +4406,15 @@ topSuite("Ext.data.Model", [
                     name: 'Bar',
                     rank: 3
                 });
+
                 expect(result).toEqual(['name']);
             });
 
         });
-        
+
         describe("with dependencies", function() {
             var A;
+
             var defineA = function(fields, cfg) {
                 cfg = Ext.apply({
                     extend: Ext.data.Model,
@@ -4220,14 +4422,15 @@ topSuite("Ext.data.Model", [
                 }, cfg);
                 A = Ext.define('spec.A', cfg);
             };
-            
+
             afterEach(function() {
                 Ext.undefine('spec.A');
                 A = null;
             });
-            
+
             it("should not trigger any dependencies if setting a field that doesn't require it", function() {
                 var spy = jasmine.createSpy();
+
                 defineA(['name', 'age', {
                     name: 'doubleAge',
                     depends: 'age',
@@ -4236,12 +4439,14 @@ topSuite("Ext.data.Model", [
                 o = new A();
                 spy.reset();
                 var result = o.set('name', 'foo');
+
                 expect(spy).not.toHaveBeenCalled();
                 expect(result).toEqual(['name']);
             });
-            
+
             it("should not trigger the dependency if the value doesn't change", function() {
                 var spy = jasmine.createSpy();
+
                 defineA(['a', {
                     name: 'b',
                     depends: 'a',
@@ -4254,24 +4459,27 @@ topSuite("Ext.data.Model", [
                 o.set('a', 1);
                 expect(spy).not.toHaveBeenCalled();
             });
-            
+
             it("should trigger a simple dependency", function() {
                 var called = false;
+
                 defineA(['name', 'age', {
                     name: 'doubleAge',
                     depends: 'age',
                     convert: function(v, rec) {
                         called = true;
+
                         return rec.get('age') * 2;
                     }
                 }]);
                 o = new A();
                 var result = o.set('age', 10);
+
                 expect(called).toBe(true);
                 expect(o.get('doubleAge')).toBe(20);
                 expect(result).toEqual(['age', 'doubleAge']);
             });
-            
+
             it("should not trigger the convert until all dependent fields are set", function() {
                 defineA(['a', 'b', {
                     name: 'c',
@@ -4285,10 +4493,11 @@ topSuite("Ext.data.Model", [
                     a: 1,
                     b: 3
                 });
+
                 expect(o.get('c')).toBe(4);
                 expect(result).toEqual(['a', 'b', 'c']);
             });
-            
+
             it("should trigger the convert function if either of the dependent fields are set", function() {
                 defineA(['a', 'b', {
                     name: 'c',
@@ -4302,100 +4511,104 @@ topSuite("Ext.data.Model", [
                     b: 1
                 });
                 var result = o.set('a', 2);
+
                 expect(o.get('c')).toBe(3);
                 expect(result).toEqual(['a', 'c']);
                 result = o.set('b', 2);
                 expect(o.get('c')).toBe(4);
                 expect(result).toEqual(['b', 'c']);
             });
-            
+
             it("should trigger cascading converts", function() {
                 defineA(['a', {
                     name: 'b',
                     depends: 'a',
                     convert: function(v, rec) {
                         return rec.get('a') + 1;
-                    } 
+                    }
                 }, {
                     name: 'c',
                     depends: 'b',
                     convert: function(v, rec) {
                         return rec.get('b') + 1;
-                    } 
+                    }
                 }, {
                     name: 'd',
                     depends: 'c',
                     convert: function(v, rec) {
                         return rec.get('c') + 1;
-                    } 
+                    }
                 }]);
                 o = new A();
                 var result = o.set('a', 1);
+
                 expect(o.get('b')).toBe(2);
                 expect(o.get('c')).toBe(3);
                 expect(o.get('d')).toBe(4);
                 expect(result).toEqual(['a', 'b', 'c', 'd']);
             });
-            
+
             it("should allow setting a calculated value", function() {
                 defineA(['a', {
                     name: 'b',
                     depends: 'a',
                     convert: function(v, rec) {
                         return rec.get('a') + 1;
-                    } 
+                    }
                 }, {
                     name: 'c',
                     depends: 'b',
                     convert: function(v, rec) {
                         return rec.get('b') + 1;
-                    } 
+                    }
                 }]);
                 o = new A();
                 var result = o.set('b', 3, {
                     convert: false
                 });
+
                 expect(o.get('c')).toBe(4);
                 expect(result).toEqual(['b', 'c']);
             });
-            
+
             it("should be able to set independent calculated fields at once", function() {
                 defineA(['a', {
                     name: 'b',
                     depends: 'a',
                     convert: function(v, rec) {
                         return rec.get('a') + 1;
-                    } 
+                    }
                 }, 'c', {
                     name: 'd',
                     depends: 'c',
                     convert: function(v, rec) {
                         return rec.get('c') + 1;
-                    } 
+                    }
                 }]);
                 o = new A();
                 var result = o.set({
                     a: 1,
                     c: 1
                 });
+
                 expect(o.get('b')).toBe(2);
                 expect(o.get('d')).toBe(2);
                 expect(result).toEqual(['a', 'c', 'b', 'd']);
             });
-            
+
             it("should allow setting a value its calculated dependent", function() {
                 defineA(['a', {
                     name: 'b',
                     depends: 'a',
                     convert: function(v, rec) {
                         return rec.get('a') + 1;
-                    } 
+                    }
                 }, {
                     name: 'c',
                     depends: 'b',
                     convert: function(v, rec) {
                         return rec.get('b') + 1;
-                    } 
+                    }
                 }]);
                 o = new A();
                 o.set({
@@ -4423,23 +4636,23 @@ topSuite("Ext.data.Model", [
                 }).not.toThrow();
             });
         });
-        
+
         it("should update the id property if the id changes", function() {
             definePerson();
             o = new Person();
             o.set('id', 1);
             expect(o.id).toBe(1);
         });
-        
+
         it("should not call the store while the editing flag is set", function() {
             definePerson();
             o = new Person();
             spyOn(o, 'callJoined');
             o.beginEdit();
             o.set('rank', 1);
-            expect(o.callJoined).not.toHaveBeenCalled();    
+            expect(o.callJoined).not.toHaveBeenCalled();
         });
-        
+
         it("should not call the store if there are no modified fields", function() {
             definePerson();
             o = new Person({
@@ -4447,36 +4660,36 @@ topSuite("Ext.data.Model", [
             });
             spyOn(o, 'callJoined');
             o.set('rank', 1);
-            expect(o.callJoined).not.toHaveBeenCalled();    
+            expect(o.callJoined).not.toHaveBeenCalled();
         });
-        
+
         describe("options", function() {
             describe("convert", function() {
                 it("should convert by default", function() {
-                    definePerson();    
+                    definePerson();
                     o = new Person();
                     o.set('rank', '1');
                     expect(o.get('rank')).toBe(1);
                 });
-                
+
                 it("should be convert when passed into the method", function() {
-                    definePerson();    
+                    definePerson();
                     o = new Person();
                     o.set('rank', '1', {
                         convert: true
                     });
                     expect(o.get('rank')).toBe(1);
                 });
-                
+
                 it("should not convert when passed false", function() {
-                    definePerson();    
+                    definePerson();
                     o = new Person();
                     o.set('rank', '1', {
                         convert: false
                     });
                     expect(o.get('rank')).toBe('1');
                 });
-                
+
                 it("should accept options when using the object form", function() {
                     definePerson();
                     o = new Person();
@@ -4485,25 +4698,25 @@ topSuite("Ext.data.Model", [
                     }, {
                         convert: true
                     });
-                    expect(o.get('rank')).toBe(1);    
+                    expect(o.get('rank')).toBe(1);
                 });
             });
-            
+
             describe("commit", function() {
                 beforeEach(function() {
                     definePerson();
                 });
-                
+
                 var opt = {
                     commit: true
                 };
-                
+
                 it("should default to false", function() {
                     o = new Person();
                     o.set('rank', 1);
-                    expect(o.dirty).toBe(true);    
+                    expect(o.dirty).toBe(true);
                 });
-                
+
                 it("should have no modified fields", function() {
                     o = new Person({
                         rank: 1
@@ -4511,15 +4724,15 @@ topSuite("Ext.data.Model", [
                     o.set('rank', 2, opt);
                     expect(o.isModified('rank')).toBe(false);
                 });
-                
+
                 it("should not be dirty", function() {
                     o = new Person({
                         rank: 1
                     });
                     o.set('rank', 2, opt);
-                    expect(o.dirty).toBe(false);   
+                    expect(o.dirty).toBe(false);
                 });
-                
+
                 it("should call commit even if no fields were modified", function() {
                     o = new Person({
                         rank: 1
@@ -4528,11 +4741,11 @@ topSuite("Ext.data.Model", [
                     o.set('rank', 1, opt);
                     expect(o.commit).toHaveBeenCalled();
                 });
-                
+
                 it("should pass the modified fields to commit", function() {
                     o = new Person({
                         rank: 1
-                    });    
+                    });
                     spyOn(o, 'commit');
                     o.set({
                         name: 'Foo',
@@ -4540,11 +4753,11 @@ topSuite("Ext.data.Model", [
                     }, opt);
                     expect(o.commit.mostRecentCall.args[1]).toEqual(['name', 'rank']);
                 });
-                
+
                 it("should call commit with silent: true if the silent option is passed", function() {
                     o = new Person({
                         rank: 1
-                    });    
+                    });
                     spyOn(o, 'commit');
                     o.set('rank', 2, {
                         commit: true,
@@ -4552,17 +4765,17 @@ topSuite("Ext.data.Model", [
                     });
                     expect(o.commit.mostRecentCall.args[0]).toBe(true);
                 });
-                
+
                 it("should not trigger the normal after edit call", function() {
                     o = new Person({
                         rank: 1
-                    });    
+                    });
                     spyOn(o, 'callJoined');
                     o.set('rank', 2, opt);
                     expect(o.callJoined).not.toHaveBeenCalledWith('afterEdit');
                 });
             });
-            
+
             // We will cover most of the dirty option under value tracking.
             describe("dirty", function() {
                 it("should still return fields in the modified collection with dirty: false", function() {
@@ -4571,10 +4784,11 @@ topSuite("Ext.data.Model", [
                     var result = o.set('rank', 1, {
                         dirty: false
                     });
+
                     expect(result).toEqual(['rank']);
                 });
             });
-            
+
             describe("silent", function() {
                 it("should not trigger the store if the silent flag is set", function() {
                     definePerson();
@@ -4584,12 +4798,12 @@ topSuite("Ext.data.Model", [
                         silent: true
                     });
                     expect(o.callJoined).not.toHaveBeenCalled();
-                });  
+                });
             });
         });
     });
 
-    describe('calculated fields', function () {
+    describe('calculated fields', function() {
         // We have coverage of "convert" so here we just focus on the conversion of the
         // "calculate" config to its proper "convert" equivalent.
         var Type,
@@ -4607,7 +4821,7 @@ topSuite("Ext.data.Model", [
 
                     {
                         name: 'calc',
-                        calculate: function (data) {
+                        calculate: function(data) {
                             return data.name + data.rank + data.serialNumber;
                         }
                     }
@@ -4622,16 +4836,16 @@ topSuite("Ext.data.Model", [
             });
         });
 
-        it('should determine the depends by parsing the method', function () {
+        it('should determine the depends by parsing the method', function() {
             expect(field.depends).toEqual(['name', 'rank', 'serialNumber']);
             expect(rec.data.calc).toBe('DonPeon1234');
         });
 
-        it('should react to changes in dependent fields', function () {
+        it('should react to changes in dependent fields', function() {
             var record, modifiedFieldNames;
 
             rec.join({
-                afterEdit: function (rec, mods) {
+                afterEdit: function(rec, mods) {
                     record = rec;
                     modifiedFieldNames = mods;
                     mods.sort(); // ensure consistent order
@@ -4654,7 +4868,7 @@ topSuite("Ext.data.Model", [
 
     describe("value tracking", function() {
         var Person, o;
-        
+
         beforeEach(function() {
             Person = Ext.define('spec.Person', {
                 extend: Ext.data.Model,
@@ -4671,21 +4885,21 @@ topSuite("Ext.data.Model", [
                     name: 'active',
                     persist: false
                 }]
-            }); 
+            });
         });
-        
+
         afterEach(function() {
             Ext.undefine('spec.Person');
             Person = o = null;
         });
-        
+
         describe("simple modifications", function() {
             describe("dirty", function() {
                 it("should not be dirty when constructed", function() {
                     o = new Person();
-                    expect(o.dirty).toBe(false);    
+                    expect(o.dirty).toBe(false);
                 });
-                
+
                 it("should not be dirty when constructed with values", function() {
                     o = new Person({
                         id: 1,
@@ -4694,33 +4908,33 @@ topSuite("Ext.data.Model", [
                     });
                     expect(o.dirty).toBe(false);
                 });
-                
+
                 it("should not be dirty when setting a value and it doesn't change", function() {
                     o = new Person({
                         rank: 1
-                    });    
+                    });
                     o.set('rank', 1);
                     expect(o.dirty).toBe(false);
                 });
-                
+
                 it("should not be dirty if setting a non-persistent field", function() {
                     o = new Person();
                     o.set('active', false);
-                    expect(o.dirty).toBe(false);    
+                    expect(o.dirty).toBe(false);
                 });
-                
+
                 it("should be dirty if a field changes value", function() {
                     o = new Person();
                     o.set('rank', 1);
-                    expect(o.dirty).toBe(true);    
+                    expect(o.dirty).toBe(true);
                 });
-                
+
                 it("should be dirty if a non-field changes value", function() {
                     o = new Person();
                     o.set('notField', 2);
-                    expect(o.dirty).toBe(true);    
+                    expect(o.dirty).toBe(true);
                 });
-                
+
                 it("should be dirty when setting multiple fields", function() {
                     o = new Person();
                     o.set({
@@ -4729,34 +4943,34 @@ topSuite("Ext.data.Model", [
                     });
                     expect(o.dirty).toBe(true);
                 });
-                
+
                 it("should be dirty when reverting only a single modified field", function() {
                     o = new Person({
                         rank: 1,
                         name: 'Foo'
-                    });  
+                    });
                     o.set({
                         rank: 2,
                         name: 'Bar'
-                    }); 
+                    });
                     o.set('rank', 1);
                     expect(o.dirty).toBe(true);
                 });
-                
+
                 it("should be not dirty when reverting all modified fields", function() {
                     o = new Person({
                         rank: 1,
                         name: 'Foo'
-                    });  
+                    });
                     o.set({
                         rank: 2,
                         name: 'Bar'
-                    }); 
+                    });
                     o.set('rank', 1);
                     o.set('name', 'Foo');
                     expect(o.dirty).toBe(false);
                 });
-                
+
                 it("should not set dirty if the dirty: false option is passed", function() {
                     o = new Person();
                     o.set('rank', 1, {
@@ -4765,45 +4979,45 @@ topSuite("Ext.data.Model", [
                     expect(o.dirty).toBe(false);
                 });
             });
-            
+
             describe("modified", function() {
                 describe("isModified", function() {
                     it("should not have modified fields when constructed with no vales", function() {
                         o = new Person();
                         expect(o.isModified('name')).toBe(false);
-                        expect(o.isModified('rank')).toBe(false);    
+                        expect(o.isModified('rank')).toBe(false);
                     });
-                
+
                     it("should not have modified fields when constructed with data", function() {
                         o = new Person({
                             name: 'Foo',
                             rank: 1
                         });
                         expect(o.isModified('name')).toBe(false);
-                        expect(o.isModified('rank')).toBe(false);   
+                        expect(o.isModified('rank')).toBe(false);
                     });
-                
+
                     it("should not have a modified field if the value doesn't change", function() {
                         o = new Person({
                             name: 'Foo',
                             rank: 1
                         });
                         o.set('name', 'Foo');
-                        expect(o.isModified('name')).toBe(false);   
+                        expect(o.isModified('name')).toBe(false);
                     });
-                
+
                     it("should not have a modified field if it's persist: false", function() {
                         o = new Person();
                         o.set('active', 'true');
-                        expect(o.isModified('active')).toBe(false);    
-                    });            
-                
+                        expect(o.isModified('active')).toBe(false);
+                    });
+
                     it("should have a modified field if a field changes value", function() {
                         o = new Person();
                         o.set('rank', 1);
-                        expect(o.isModified('rank')).toBe(true);    
+                        expect(o.isModified('rank')).toBe(true);
                     });
-                    
+
                     it("should have modified fields if multiple fields change", function() {
                         o = new Person();
                         o.set({
@@ -4811,15 +5025,15 @@ topSuite("Ext.data.Model", [
                             rank: 3
                         });
                         expect(o.isModified('name')).toBe(true);
-                        expect(o.isModified('rank')).toBe(true);  
+                        expect(o.isModified('rank')).toBe(true);
                     });
-                    
+
                     it("should have a modified field if a non-field changes", function() {
                         o = new Person();
                         o.set('other', 'foo');
-                        expect(o.isModified('other')).toBe(true);    
-                    }); 
-                    
+                        expect(o.isModified('other')).toBe(true);
+                    });
+
                     it("should not be modified when reverting a field", function() {
                         o = new Person({
                             name: 'Foo',
@@ -4833,7 +5047,7 @@ topSuite("Ext.data.Model", [
                         expect(o.isModified('name')).toBe(false);
                         expect(o.isModified('rank')).toBe(true);
                     });
-                    
+
                     it("should not be modified when passing dirty: false", function() {
                         o = new Person();
                         o.set('rank', 1, {
@@ -4842,86 +5056,85 @@ topSuite("Ext.data.Model", [
                         expect(o.isModified('rank')).toBe(false);
                     });
                 });
-                
+
                 describe("getModified", function() {
                     it("should return undefined if there's no modified value", function() {
                         o = new Person();
                         expect(o.getModified('name')).toBeUndefined();
                     });
-                    
+
                     it("should return the previous value when modified", function() {
                         o = new Person({
                             rank: 1
-                        });    
+                        });
                         o.set('rank', 2);
                         expect(o.getModified('rank')).toBe(1);
                     });
-                    
+
                     it("should return the original value when modified", function() {
                         o = new Person({
                             rank: 1
-                        });    
+                        });
                         o.set('rank', 2);
                         o.set('rank', 3);
                         o.set('rank', 4);
                         expect(o.getModified('rank')).toBe(1);
                     });
-                    
+
                     it("should return undefined if the modified value is set back to the original", function() {
                         o = new Person({
                             rank: 1
-                        });    
+                        });
                         o.set('rank', 2);
                         o.set('rank', 1);
                         expect(o.getModified('rank')).toBeUndefined();
                     });
                 });
             });
-            
+
             describe("previousValue", function() {
                 it("should return undefined if there's no previous value", function() {
                     o = new Person();
                     expect(o.getPrevious('name')).toBeUndefined();
                 });
-                
+
                 it("should return the previous value when the value changes", function() {
                     o = new Person({
                         name: 'Foo'
-                    });    
+                    });
                     o.set('name', 'Bar');
                     expect(o.getPrevious('name')).toBe('Foo');
                 });
-                
+
                 it("should return the most recent previous value when the value changes", function() {
                     o = new Person({
                         name: 'Foo'
-                    });    
+                    });
                     o.set('name', 'Bar');
                     o.set('name', 'Baz');
                     expect(o.getPrevious('name')).toBe('Bar');
                     o.set('name', 'Blah');
                     expect(o.getPrevious('name')).toBe('Baz');
                 });
-                
+
                 it("should not update the previousValue if the value doesn't change", function() {
                     o = new Person({
                         name: 'Foo'
-                    });    
+                    });
                     o.set('name', 'Bar');
                     o.set('name', 'Bar');
                     expect(o.getPrevious('name')).toBe('Foo');
                 });
             });
         });
-        
-        
+
         describe("editing", function() {
             it("should set the editing flag when beginEdit is called", function() {
                 o = new Person();
                 o.beginEdit();
                 expect(o.editing).toBe(true);
             });
-            
+
             it("should update the modified values during editing", function() {
                 o = new Person({
                     name: 'Foo',
@@ -4929,9 +5142,9 @@ topSuite("Ext.data.Model", [
                 });
                 o.beginEdit();
                 o.set('name', 'Bar');
-                expect(o.getModified('name')).toBe('Foo');    
+                expect(o.getModified('name')).toBe('Foo');
             });
-            
+
             it("should update the previous values during editing", function() {
                 o = new Person({
                     name: 'Foo',
@@ -4939,16 +5152,16 @@ topSuite("Ext.data.Model", [
                 });
                 o.beginEdit();
                 o.set('name', 'Bar');
-                expect(o.getPrevious('name')).toBe('Foo');    
+                expect(o.getPrevious('name')).toBe('Foo');
             });
-            
+
             it("should update the dirty state during editing", function() {
                 o = new Person();
                 o.beginEdit();
                 o.set('name', 'Foo');
-                expect(o.dirty).toBe(true);    
+                expect(o.dirty).toBe(true);
             });
-            
+
             describe("cancelEdit", function() {
                 it("should clear the editing flag when cancelEdit is called", function() {
                     o = new Person();
@@ -4956,7 +5169,7 @@ topSuite("Ext.data.Model", [
                     o.cancelEdit();
                     expect(o.editing).toBe(false);
                 });
-                
+
                 it("should restore data values to the previous state", function() {
                     o = new Person({
                         name: 'Name1',
@@ -4971,7 +5184,7 @@ topSuite("Ext.data.Model", [
                     expect(o.get('name')).toBe('Name1');
                     expect(o.get('rank')).toBe(1);
                 });
-                
+
                 it("should restore modified values to the previous state", function() {
                     o = new Person({
                         name: 'Name1',
@@ -4984,7 +5197,7 @@ topSuite("Ext.data.Model", [
                     expect(o.getModified('name')).toBe('Name1');
                     expect(o.isModified('rank')).toBe(false);
                 });
-                
+
                 it("should restore the previousValues state", function() {
                     o = new Person({
                         name: 'Name1',
@@ -5008,7 +5221,7 @@ topSuite("Ext.data.Model", [
                     expect(o.getPrevious('Name2'));
                     expect(o.getPrevious('rank')).toBe(1);
                 });
-                
+
                 it("should restore the dirty state", function() {
                     o = new Person();
                     o.beginEdit();
@@ -5017,7 +5230,7 @@ topSuite("Ext.data.Model", [
                     expect(o.dirty).toBe(false);
                 });
             });
-            
+
             describe("endEdit", function() {
                 it("should clear the editing flag when endEdit is called", function() {
                     o = new Person();
@@ -5025,7 +5238,7 @@ topSuite("Ext.data.Model", [
                     o.endEdit();
                     expect(o.editing).toBe(false);
                 });
-                
+
                 it("should not modify the data values", function() {
                     o = new Person({
                         name: 'Name1',
@@ -5040,7 +5253,7 @@ topSuite("Ext.data.Model", [
                     expect(o.get('name')).toBe('Name2');
                     expect(o.get('rank')).toBe(2);
                 });
-                
+
                 it("should not modify the modified values", function() {
                     o = new Person({
                         name: 'Name1',
@@ -5053,12 +5266,12 @@ topSuite("Ext.data.Model", [
                     expect(o.getModified('name')).toBe('Name1');
                     expect(o.getModified('rank')).toBe(1);
                 });
-                
+
                 it("should restore the previousValues", function() {
                     o = new Person({
                         name: 'Name1',
                         rank: 1
-                    });    
+                    });
                     o.set('name', 'Name2');
                     o.beginEdit();
                     o.set({
@@ -5073,24 +5286,24 @@ topSuite("Ext.data.Model", [
                     expect(o.getPrevious('name')).toBe('Name1');
                     expect(o.getPrevious('rank')).toBeUndefined();
                 });
-                
+
                 it("should not modify the dirty state", function() {
                     o = new Person({
                         name: 'Name1',
                         rank: 1
-                    });  
+                    });
                     o.beginEdit();
                     o.set('rank', 2);
                     o.endEdit();
                     expect(o.dirty).toBe(true);
                 });
-                
+
                 it("should call the store if the record is dirty with the modified fields", function() {
                     var record, modifiedFieldNames;
 
                     o = new Person();
                     o.join({
-                        afterEdit: function (rec, mods) {
+                        afterEdit: function(rec, mods) {
                             record = rec;
                             modifiedFieldNames = mods;
                             mods.sort(); // to ensure order
@@ -5105,7 +5318,7 @@ topSuite("Ext.data.Model", [
                     expect(record).toBe(o);
                     expect(modifiedFieldNames).toEqual(['name', 'rank']);
                 });
-                
+
                 it("should not call the store if the record is not dirty", function() {
                     o = new Person();
                     o.beginEdit();
@@ -5113,7 +5326,7 @@ topSuite("Ext.data.Model", [
                     o.endEdit();
                     expect(o.callJoined).not.toHaveBeenCalled();
                 });
-                
+
                 describe("options", function() {
                     it("should not call the store if silent is passed & it's dirty", function() {
                         o = new Person();
@@ -5123,7 +5336,7 @@ topSuite("Ext.data.Model", [
                         o.endEdit(true);
                         expect(o.callJoined).not.toHaveBeenCalled();
                     });
-                    
+
                     it("should not call the store if silent is modified fields are passed", function() {
                         o = new Person();
                         o.beginEdit();
@@ -5132,13 +5345,13 @@ topSuite("Ext.data.Model", [
                         o.endEdit(true, ['foo']);
                         expect(o.callJoined).not.toHaveBeenCalled();
                     });
-                    
+
                     it("should call the store even if not dirty if modified fields are passed", function() {
                         var record, modifiedFieldNames;
 
                         o = new Person();
                         o.join({
-                            afterEdit: function (rec, mods) {
+                            afterEdit: function(rec, mods) {
                                 record = rec;
                                 modifiedFieldNames = mods;
                             }
@@ -5153,15 +5366,15 @@ topSuite("Ext.data.Model", [
                 });
             });
         });
-        
+
         describe("commit", function() {
             it("should clear the dirty state", function() {
                 o = new Person();
                 o.set('rank', 1);
                 o.commit();
-                expect(o.dirty).toBe(false);    
+                expect(o.dirty).toBe(false);
             });
-            
+
             it("should clear the editing flag", function() {
                 o = new Person();
                 o.beginEdit();
@@ -5169,7 +5382,7 @@ topSuite("Ext.data.Model", [
                 o.commit();
                 expect(o.editing).toBe(false);
             });
-            
+
             it("should have no modified fields", function() {
                 o = new Person({
                     name: 'Name1',
@@ -5183,7 +5396,7 @@ topSuite("Ext.data.Model", [
                 expect(o.isModified('name')).toBe(false);
                 expect(o.isModified('rank')).toBe(false);
             });
-            
+
             it("should have no effect on previous values", function() {
                 o = new Person({
                     name: 'Name1',
@@ -5205,7 +5418,7 @@ topSuite("Ext.data.Model", [
                 expect(o.getPrevious('name')).toBe('Name1');
                 expect(o.getPrevious('rank')).toBe(1);
             });
-            
+
             describe("calling the store with afterCommit", function() {
                 it("should be called", function() {
                     o = new Person();
@@ -5214,20 +5427,20 @@ topSuite("Ext.data.Model", [
                     expect(o.callJoined).toHaveBeenCalled();
                     expect(o.callJoined.mostRecentCall.args[0]).toBe('afterCommit');
                 });
-            
+
                 it("should not be called if silent is passed", function() {
                     o = new Person();
                     spyOn(o, 'callJoined');
                     o.commit(true);
                     expect(o.callJoined).not.toHaveBeenCalled();
                 });
-            
+
                 it("should pass the modified fields if passed", function() {
                     var record, modifiedFieldNames;
 
                     o = new Person();
                     o.join({
-                        afterCommit: function (rec, mods) {
+                        afterCommit: function(rec, mods) {
                             record = rec;
                             modifiedFieldNames = mods;
                         }
@@ -5240,15 +5453,15 @@ topSuite("Ext.data.Model", [
                 });
             });
         });
-        
+
         describe("reject", function() {
             it("should clear the dirty state", function() {
                 o = new Person();
                 o.set('rank', 1);
                 o.reject();
-                expect(o.dirty).toBe(false);    
+                expect(o.dirty).toBe(false);
             });
-            
+
             it("should clear the editing flag", function() {
                 o = new Person();
                 o.beginEdit();
@@ -5256,7 +5469,7 @@ topSuite("Ext.data.Model", [
                 o.reject();
                 expect(o.editing).toBe(false);
             });
-            
+
             it("should have no modified fields", function() {
                 o = new Person({
                     name: 'Name1',
@@ -5270,7 +5483,7 @@ topSuite("Ext.data.Model", [
                 expect(o.isModified('name')).toBe(false);
                 expect(o.isModified('rank')).toBe(false);
             });
-            
+
             it("should update previous values", function() {
                 o = new Person({
                     name: 'Name1',
@@ -5306,7 +5519,7 @@ topSuite("Ext.data.Model", [
                 o.reject();
                 expect(o.phantom).toBe(false);
             });
-            
+
             describe("after reject", function() {
                 it("should be called", function() {
                     o = new Person();
@@ -5315,7 +5528,7 @@ topSuite("Ext.data.Model", [
                     expect(o.callJoined).toHaveBeenCalled();
                     expect(o.callJoined.mostRecentCall.args[0]).toBe('afterReject');
                 });
-            
+
                 it("should not be called if silent is passed", function() {
                     o = new Person();
                     spyOn(o, 'callJoined');
@@ -5359,6 +5572,7 @@ topSuite("Ext.data.Model", [
         describe("commit", function() {
             it("should clear the dirty state", function() {
                 var rec = new User();
+
                 rec.set('name', 'Foo');
                 expect(rec.dirty).toBe(true);
                 rec.commit();
@@ -5367,6 +5581,7 @@ topSuite("Ext.data.Model", [
 
             it("should not modify any field values", function() {
                 var rec = new User();
+
                 rec.set('name', 'Foo');
                 rec.set('age', 100);
                 rec.commit();
@@ -5376,6 +5591,7 @@ topSuite("Ext.data.Model", [
 
             it("should clear the modified state", function() {
                 var rec = new User();
+
                 rec.set('name', 'Foo');
                 expect(rec.isModified('name')).toBe(true);
                 rec.commit();
@@ -5384,6 +5600,7 @@ topSuite("Ext.data.Model", [
 
             it("should clear any editing state", function() {
                 var rec = new User();
+
                 rec.beginEdit();
                 expect(rec.editing).toBe(true);
                 rec.commit();
@@ -5392,6 +5609,7 @@ topSuite("Ext.data.Model", [
 
             it("should clear the phantom state", function() {
                 var rec = new User();
+
                 expect(rec.phantom).toBe(true);
                 rec.commit();
                 expect(rec.phantom).toBe(false);
@@ -5401,6 +5619,7 @@ topSuite("Ext.data.Model", [
                 var rec = new User({
                     id: 1
                 });
+
                 rec.drop();
                 expect(rec.erased).toBe(false);
                 rec.commit();
@@ -5464,6 +5683,7 @@ topSuite("Ext.data.Model", [
         describe("reject", function() {
             it("should clear the dirty state", function() {
                 var rec = new User();
+
                 rec.set('name', 'Foo');
                 expect(rec.dirty).toBe(true);
                 rec.reject();
@@ -5475,6 +5695,7 @@ topSuite("Ext.data.Model", [
                     name: 'Foo',
                     age: 1
                 });
+
                 rec.set('name', 'Bar');
                 rec.set('age', 100);
                 rec.reject();
@@ -5487,6 +5708,7 @@ topSuite("Ext.data.Model", [
                     name: 'Foo',
                     age: 1
                 });
+
                 rec.set('name', 'Bar');
                 rec.set('age', 100);
                 convertSpy.reset();
@@ -5496,6 +5718,7 @@ topSuite("Ext.data.Model", [
 
             it("should clear the modified state", function() {
                 var rec = new User();
+
                 rec.set('name', 'Foo');
                 expect(rec.isModified('name')).toBe(true);
                 rec.reject();
@@ -5504,6 +5727,7 @@ topSuite("Ext.data.Model", [
 
             it("should clear any editing state", function() {
                 var rec = new User();
+
                 rec.beginEdit();
                 expect(rec.editing).toBe(true);
                 rec.reject();
@@ -5514,6 +5738,7 @@ topSuite("Ext.data.Model", [
                 var rec = new User({
                     id: 1
                 });
+
                 rec.drop();
                 rec.reject();
                 expect(rec.dropped).toBe(false);
@@ -5522,8 +5747,10 @@ topSuite("Ext.data.Model", [
             describe("notifying joined parties", function() {
                 it("should not call afterEdit when restoring values", function() {
                     var rec = new User({
-                        name: 'Foo'
-                    }), spy;
+                            name: 'Foo'
+                        }),
+                        spy;
+
                     rec.set('name', 'Bar');
                     spy = spyOn(rec, 'callJoined');
                     rec.reject();
@@ -5533,8 +5760,10 @@ topSuite("Ext.data.Model", [
 
                 it("should call afterReject", function() {
                     var rec = new User({
-                        name: 'Foo'
-                    }), spy;
+                            name: 'Foo'
+                        }),
+                        spy;
+
                     rec.set('name', 'Bar');
                     spy = spyOn(rec, 'callJoined');
                     rec.reject();
@@ -5544,8 +5773,10 @@ topSuite("Ext.data.Model", [
 
                 it("should not call afterReject with silent: true", function() {
                     var rec = new User({
-                        name: 'Foo'
-                    }), spy;
+                            name: 'Foo'
+                        }),
+                        spy;
+
                     rec.set('name', 'Bar');
                     spy = spyOn(rec, 'callJoined');
                     rec.reject(true);
@@ -5554,36 +5785,39 @@ topSuite("Ext.data.Model", [
             });
         });
     });
-    
+
     describe("getData", function() {
-        var A; 
+        var A;
+
         beforeEach(function() {
             A = Ext.define(null, {
                 extend: 'Ext.data.Model',
                 fields: ['id', 'name']
             });
         });
-        
+
         afterEach(function() {
             A = null;
         });
-        
+
         it("should return all the fields in the model", function() {
             var rec = new A({
                 id: 1,
                 name: 'Foo'
             });
+
             expect(rec.getData()).toEqual({
                 id: 1,
                 name: 'Foo'
             });
         });
-        
+
         it("should include non-field data", function() {
             var rec = new A({
                 id: 1,
                 other: 'val'
             });
+
             expect(rec.getData().other).toBe('val');
         });
 
@@ -5594,7 +5828,7 @@ topSuite("Ext.data.Model", [
                 User = Ext.define('spec.User', {
                     extend: 'Ext.data.Model',
                     fields: ['id', 'name', {
-                        name: 'age', 
+                        name: 'age',
                         persist: false
                     }, {
                         name: 'created',
@@ -5614,7 +5848,7 @@ topSuite("Ext.data.Model", [
                     name: 'Foo'
                 });
             });
-            
+
             afterEach(function() {
                 Ext.undefine('spec.User');
                 rec = User = null;
@@ -5627,7 +5861,7 @@ topSuite("Ext.data.Model", [
                     Post = Ext.define('spec.Post', {
                         extend: 'Ext.data.Model',
                         fields: ['id', 'title', {
-                            name: 'content', 
+                            name: 'content',
                             persist: false
                         }, {
                             name: 'userId',
@@ -5791,7 +6025,7 @@ topSuite("Ext.data.Model", [
                             }));
                             rec.getAddress().set('city', 'Q');
                             rec.getAddress().set('street', 'Z');
-                            
+
                             expect(rec.getData({
                                 associated: true,
                                 changes: true,
@@ -5826,7 +6060,7 @@ topSuite("Ext.data.Model", [
                                 city: 'C',
                                 created: new Date(2008, 10, 3)
                             }));
-                            
+
                             expect(rec.getData({
                                 associated: true,
                                 serialize: true
@@ -5991,16 +6225,18 @@ topSuite("Ext.data.Model", [
                 });
             });
         });
-        
+
         describe("with associations", function() {
             var rec;
+
             function read(Model, data) {
                 var reader = new Ext.data.reader.Json({
                     model: Model
                 });
+
                 return reader.read(data).getRecords()[0];
             }
-            
+
             describe("basic many to one", function() {
                 var Comment, User, Post;
 
@@ -6026,24 +6262,24 @@ topSuite("Ext.data.Model", [
                         }]
                     });
                 });
-                
+
                 afterEach(function() {
                     Ext.undefine('spec.User');
                     Ext.undefine('spec.Post');
                     Ext.undefine('spec.Comment');
                     Comment = User = Post = null;
                 });
-                
-                
+
                 describe("the one", function() {
                     it("should not include the key if the item does not exist", function() {
                         rec = read(Post, {
                             id: 1
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({});
                     });
-                    
+
                     it("should not trigger the item to load", function() {
                         rec = read(Post, {
                             id: 1
@@ -6051,9 +6287,10 @@ topSuite("Ext.data.Model", [
                         // Trigger it the first time, second time we ask it shouldn't be there
                         rec.getAssociatedData();
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({});
                     });
-                    
+
                     it("should include the single record", function() {
                         rec = read(Post, {
                             id: 1,
@@ -6063,6 +6300,7 @@ topSuite("Ext.data.Model", [
                             }
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({
                             user: {
                                 id: 17,
@@ -6084,6 +6322,7 @@ topSuite("Ext.data.Model", [
                                 user: true
                             }
                         });
+
                         expect(data).toEqual({
                             id: 1,
                             user: {
@@ -6111,6 +6350,7 @@ topSuite("Ext.data.Model", [
                             id: 1
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({});
                     });
 
@@ -6121,6 +6361,7 @@ topSuite("Ext.data.Model", [
                         // Trigger it the first time, second time we ask it shouldn't be there
                         rec.getAssociatedData();
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({});
                     });
 
@@ -6130,6 +6371,7 @@ topSuite("Ext.data.Model", [
                             posts: []
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({
                             posts: []
                         });
@@ -6154,6 +6396,7 @@ topSuite("Ext.data.Model", [
                         });
 
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({
                             posts: [{
                                 id: 1,
@@ -6216,6 +6459,7 @@ topSuite("Ext.data.Model", [
                         expect(post2[userName]).toBe(rec);
 
                         var posts = rec.getAssociatedData().posts;
+
                         expect(posts[0].user).toBeUndefined();
                         expect(posts[1].user).toBeUndefined();
                     });
@@ -6235,6 +6479,7 @@ topSuite("Ext.data.Model", [
                         });
 
                         var postsStore = rec.posts();
+
                         var post1 = postsStore.getAt(0);
 
                         var data = post1.getData({
@@ -6290,7 +6535,7 @@ topSuite("Ext.data.Model", [
                             comments: [{
                                 id: 42,
                                 content: 'This is wrong!'
-                            },{
+                            }, {
                                 id: 427,
                                 content: 'No, you are wrong!'
                             }]
@@ -6300,23 +6545,23 @@ topSuite("Ext.data.Model", [
                             comments: [{
                                 id: 420,
                                 content: 'This is wrong too!'
-                            },{
+                            }, {
                                 id: 4270,
                                 content: 'No, you are wrong again!'
-                            },{
+                            }, {
                                 id: 4271,
                                 content: 'Yeah, you are wrong again!'
                             }]
                         }]
                     };
 
-                    beforeEach(function () {
+                    beforeEach(function() {
                         // reader / records will claim the data and mutate it, so we need
                         // to clone it for them:
                         rec = read(User, Ext.clone(nestedData));
                     });
 
-                    it('should not include associations in data object', function () {
+                    it('should not include associations in data object', function() {
                         expect(rec.data).toEqual({
                             id: 17
                         });
@@ -6324,10 +6569,11 @@ topSuite("Ext.data.Model", [
 
                     it("should include the first level of child records", function() {
                         var posts = rec.posts();
+
                         expect(posts.getCount()).toBe(nestedData.posts.length);
                     });
 
-                    it('should produce all levels in getData(true)', function () {
+                    it('should produce all levels in getData(true)', function() {
                         var data = rec.getData(true);
 
                         expect(data).toEqual({
@@ -6340,7 +6586,7 @@ topSuite("Ext.data.Model", [
                                     id: 42,
                                     content: 'This is wrong!',
                                     postId: 1
-                                },{
+                                }, {
                                     id: 427,
                                     content: 'No, you are wrong!',
                                     postId: 1
@@ -6353,11 +6599,11 @@ topSuite("Ext.data.Model", [
                                     id: 420,
                                     content: 'This is wrong too!',
                                     postId: 2
-                                },{
+                                }, {
                                     id: 4270,
                                     content: 'No, you are wrong again!',
                                     postId: 2
-                                },{
+                                }, {
                                     id: 4271,
                                     content: 'Yeah, you are wrong again!',
                                     postId: 2
@@ -6366,7 +6612,7 @@ topSuite("Ext.data.Model", [
                         });
                     });
 
-                    it('should produce all levels with getNestedData()', function () {
+                    it('should produce all levels with getNestedData()', function() {
                         var data = rec.getData({
                             associated: {
                                 posts: true
@@ -6404,7 +6650,7 @@ topSuite("Ext.data.Model", [
                                     id: 42,
                                     content: 'This is wrong!',
                                     postId: 1
-                                },{
+                                }, {
                                     id: 427,
                                     content: 'No, you are wrong!',
                                     postId: 1
@@ -6417,11 +6663,11 @@ topSuite("Ext.data.Model", [
                                     id: 420,
                                     content: 'This is wrong too!',
                                     postId: 2
-                                },{
+                                }, {
                                     id: 4270,
                                     content: 'No, you are wrong again!',
                                     postId: 2
-                                },{
+                                }, {
                                     id: 4271,
                                     content: 'Yeah, you are wrong again!',
                                     postId: 2
@@ -6434,6 +6680,7 @@ topSuite("Ext.data.Model", [
 
                     it("should have PostA first", function() {
                         var posts = rec.posts();
+
                         expect(posts.getAt(0).data).toEqual({
                             id: 1,
                             content: 'PostA',
@@ -6441,8 +6688,9 @@ topSuite("Ext.data.Model", [
                         });
                     });
 
-                    it('should limit traversal from children to parent', function () {
+                    it('should limit traversal from children to parent', function() {
                         var post = rec.posts().getAt(0);
+
                         var data = post.getData({
                             associated: {
                                 user: true
@@ -6476,7 +6724,7 @@ topSuite("Ext.data.Model", [
                                 id: 42,
                                 content: 'This is wrong!',
                                 postId: 1
-                            },{
+                            }, {
                                 id: 427,
                                 content: 'No, you are wrong!',
                                 postId: 1
@@ -6484,8 +6732,9 @@ topSuite("Ext.data.Model", [
                         });
                     });
 
-                    it('should return the proper data for PostA.getData(true)', function () {
+                    it('should return the proper data for PostA.getData(true)', function() {
                         var post = rec.posts().getAt(0);
+
                         var data = post.getData(true);
 
                         // This is interesting because we are starting in the middle
@@ -6511,11 +6760,11 @@ topSuite("Ext.data.Model", [
                                         id: 420,
                                         content: 'This is wrong too!',
                                         postId: 2
-                                    },{
+                                    }, {
                                         id: 4270,
                                         content: 'No, you are wrong again!',
                                         postId: 2
-                                    },{
+                                    }, {
                                         id: 4271,
                                         content: 'Yeah, you are wrong again!',
                                         postId: 2
@@ -6545,11 +6794,11 @@ topSuite("Ext.data.Model", [
                                                 id: 420,
                                                 content: 'This is wrong too!',
                                                 postId: 2
-                                            },{
+                                            }, {
                                                 id: 4270,
                                                 content: 'No, you are wrong again!',
                                                 postId: 2
-                                            },{
+                                            }, {
                                                 id: 4271,
                                                 content: 'Yeah, you are wrong again!',
                                                 postId: 2
@@ -6557,7 +6806,7 @@ topSuite("Ext.data.Model", [
                                         }]
                                     }
                                 }
-                            },{
+                            }, {
                                 id: 427,
                                 content: 'No, you are wrong!',
                                 postId: 1,
@@ -6580,11 +6829,11 @@ topSuite("Ext.data.Model", [
                                                 id: 420,
                                                 content: 'This is wrong too!',
                                                 postId: 2
-                                            },{
+                                            }, {
                                                 id: 4270,
                                                 content: 'No, you are wrong again!',
                                                 postId: 2
-                                            },{
+                                            }, {
                                                 id: 4271,
                                                 content: 'Yeah, you are wrong again!',
                                                 postId: 2
@@ -6596,9 +6845,11 @@ topSuite("Ext.data.Model", [
                         });
                     });
 
-                    it('should return the proper data for PostA.comments[0].getData(true)', function () {
+                    it('should return the proper data for PostA.comments[0].getData(true)', function() {
                         var post = rec.posts().getAt(0);
+
                         var comment = post.comments().getAt(0);
+
                         var data = comment.getData(true);
 
                         // We are starting at the Comment, climbing to its Post and then
@@ -6619,7 +6870,7 @@ topSuite("Ext.data.Model", [
                                         id: 1,
                                         content: "PostA",
                                         userId: 17
-                                    },{
+                                    }, {
                                         id: 2,
                                         content: "PostB",
                                         userId: 17,
@@ -6627,11 +6878,11 @@ topSuite("Ext.data.Model", [
                                             id: 420,
                                             content: "This is wrong too!",
                                             postId: 2
-                                        },{
+                                        }, {
                                             id: 4270,
                                             content: "No, you are wrong again!",
                                             postId: 2
-                                        },{
+                                        }, {
                                             id: 4271,
                                             content: "Yeah, you are wrong again!",
                                             postId: 2
@@ -6657,7 +6908,7 @@ topSuite("Ext.data.Model", [
                                                 id: 1,
                                                 content: "PostA",
                                                 userId: 17
-                                            },{
+                                            }, {
                                                 id: 2,
                                                 content: "PostB",
                                                 userId: 17,
@@ -6665,11 +6916,11 @@ topSuite("Ext.data.Model", [
                                                     id: 420,
                                                     content: "This is wrong too!",
                                                     postId: 2
-                                                },{
+                                                }, {
                                                     id: 4270,
                                                     content: "No, you are wrong again!",
                                                     postId: 2
-                                                },{
+                                                }, {
                                                     id: 4271,
                                                     content: "Yeah, you are wrong again!",
                                                     postId: 2
@@ -6682,20 +6933,25 @@ topSuite("Ext.data.Model", [
                         });
                     });
 
-                    it('should link PostA to the proper user', function () {
+                    it('should link PostA to the proper user', function() {
                         var post = rec.posts().getAt(0);
+
                         expect(post.getUser()).toBe(rec);
                     });
 
-                    it('should load comments for PostA', function () {
+                    it('should load comments for PostA', function() {
                         var post = rec.posts().getAt(0);
+
                         var comments = post.comments();
+
                         expect(comments.getCount()).toBe(nestedData.posts[0].comments.length);
                     });
 
-                    it('should load proper first comment for PostA', function () {
+                    it('should load proper first comment for PostA', function() {
                         var post = rec.posts().getAt(0);
+
                         var comments = post.comments();
+
                         expect(comments.getAt(0).data).toEqual({
                             id: 42,
                             content: 'This is wrong!',
@@ -6703,9 +6959,11 @@ topSuite("Ext.data.Model", [
                         });
                     });
 
-                    it('should load proper second comment for PostA', function () {
+                    it('should load proper second comment for PostA', function() {
                         var post = rec.posts().getAt(0);
+
                         var comments = post.comments();
+
                         expect(comments.getAt(1).data).toEqual({
                             id: 427,
                             content: 'No, you are wrong!',
@@ -6713,15 +6971,19 @@ topSuite("Ext.data.Model", [
                         });
                     });
 
-                    it('should link the first comment for PostA to its Post', function () {
+                    it('should link the first comment for PostA to its Post', function() {
                         var post = rec.posts().getAt(0);
+
                         var comments = post.comments();
+
                         expect(comments.getAt(0).getPost()).toBe(post);
                     });
 
-                    it('should link the second comment for PostA to its Post', function () {
+                    it('should link the second comment for PostA to its Post', function() {
                         var post = rec.posts().getAt(0);
+
                         var comments = post.comments();
+
                         expect(comments.getAt(1).getPost()).toBe(post);
                     });
 
@@ -6729,6 +6991,7 @@ topSuite("Ext.data.Model", [
 
                     it("should have PostB second", function() {
                         var posts = rec.posts();
+
                         expect(posts.getAt(1).data).toEqual({
                             id: 2,
                             content: 'PostB',
@@ -6736,20 +6999,24 @@ topSuite("Ext.data.Model", [
                         });
                     });
 
-                    it('should link PostB to the proper user', function () {
+                    it('should link PostB to the proper user', function() {
                         var post = rec.posts().getAt(1);
+
                         expect(post.getUser()).toBe(rec);
                     });
 
-
-                    it('should load comments for PostB', function () {
+                    it('should load comments for PostB', function() {
                         var post = rec.posts().getAt(1);
+
                         var comments = post.comments();
+
                         expect(comments.getCount()).toBe(nestedData.posts[1].comments.length);
                     });
-                    it('should load proper first comment for PostB', function () {
+                    it('should load proper first comment for PostB', function() {
                         var post = rec.posts().getAt(1);
+
                         var comments = post.comments();
+
                         expect(comments.getAt(0).data).toEqual({
                             id: 420,
                             content: 'This is wrong too!',
@@ -6757,9 +7024,11 @@ topSuite("Ext.data.Model", [
                         });
                     });
 
-                    it('should load proper second comment for PostB', function () {
+                    it('should load proper second comment for PostB', function() {
                         var post = rec.posts().getAt(1);
+
                         var comments = post.comments();
+
                         expect(comments.getAt(1).data).toEqual({
                             id: 4270,
                             content: 'No, you are wrong again!',
@@ -6767,9 +7036,11 @@ topSuite("Ext.data.Model", [
                         });
                     });
 
-                    it('should load proper third comment for PostB', function () {
+                    it('should load proper third comment for PostB', function() {
                         var post = rec.posts().getAt(1);
+
                         var comments = post.comments();
+
                         expect(comments.getAt(2).data).toEqual({
                             id: 4271,
                             content: 'Yeah, you are wrong again!',
@@ -6777,28 +7048,35 @@ topSuite("Ext.data.Model", [
                         });
                     });
 
-                    it('should link the first comment for PostB to its Post', function () {
+                    it('should link the first comment for PostB to its Post', function() {
                         var post = rec.posts().getAt(1);
+
                         var comments = post.comments();
+
                         expect(comments.getAt(0).getPost()).toBe(post);
                     });
 
-                    it('should link the second comment for PostB to its Post', function () {
+                    it('should link the second comment for PostB to its Post', function() {
                         var post = rec.posts().getAt(1);
+
                         var comments = post.comments();
+
                         expect(comments.getAt(1).getPost()).toBe(post);
                     });
 
-                    it('should link the third comment for PostA to its Post', function () {
+                    it('should link the third comment for PostA to its Post', function() {
                         var post = rec.posts().getAt(1);
+
                         var comments = post.comments();
+
                         expect(comments.getAt(2).getPost()).toBe(post);
                     });
                 });  // deeply nested
             }); // basic many to one
-            
+
             describe("basic one to one", function() {
                 var Person, Passport;
+
                 beforeEach(function() {
                     Person = Ext.define('spec.Person', {
                         extend: 'Ext.data.Model',
@@ -6814,22 +7092,23 @@ topSuite("Ext.data.Model", [
                         fields: ['id', 'expires']
                     });
                 });
-                
+
                 afterEach(function() {
                     Ext.undefine('spec.Person');
                     Ext.undefine('spec.Passport');
                     Person = Passport = null;
                 });
-                
+
                 describe("the key holder", function() {
                      it("should not include the key if the item does not exist", function() {
                         rec = read(Person, {
                             id: 1
                         });
                          var data = rec.getAssociatedData();
+
                          expect(data).toEqual({});
                     });
-                    
+
                     it("should not trigger the item to load", function() {
                         rec = read(Person, {
                             id: 1
@@ -6837,9 +7116,10 @@ topSuite("Ext.data.Model", [
                         // Trigger it the first time, second time we ask it shouldn't be there
                         rec.getAssociatedData();
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({});
                     });
-                    
+
                     it("should include the single record", function() {
                         rec = read(Person, {
                             id: 1,
@@ -6853,9 +7133,11 @@ topSuite("Ext.data.Model", [
                         expect(rec.data.passport).toBeUndefined();
 
                         var passport = rec.getPassport();
+
                         expect(passport.getPerson()).toBe(rec);
 
                         var data = rec.getData(true);
+
                         expect(data).toEqual({
                             id: 1,
                             passportId: 22,
@@ -6865,7 +7147,7 @@ topSuite("Ext.data.Model", [
                             }
                         });
                     });
-                    
+
                     it("should not include the key holder on each non-key holder", function() {
                         rec = read(Person, {
                             id: 1,
@@ -6875,19 +7157,21 @@ topSuite("Ext.data.Model", [
                             }
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data.passport.user).toBeUndefined();
                     });
                 });
-                
+
                 describe("the non key holder", function() {
                     it("should not include the key if the item does not exist", function() {
                         rec = read(Passport, {
                             id: 1
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({});
                     });
-                    
+
                     it("should not trigger the item to load", function() {
                         rec = read(Passport, {
                             id: 1
@@ -6895,9 +7179,10 @@ topSuite("Ext.data.Model", [
                         // Trigger it the first time, second time we ask it shouldn't be there
                         rec.getAssociatedData();
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({});
                     });
-                    
+
                     it("should include the single record", function() {
                         rec = read(Passport, {
                             id: 1,
@@ -6907,6 +7192,7 @@ topSuite("Ext.data.Model", [
                             }
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({
                             person: {
                                 id: 45,
@@ -6914,7 +7200,7 @@ topSuite("Ext.data.Model", [
                             }
                         });
                     });
-                    
+
                     it("should not include the non-key holder on each key holder", function() {
                         rec = read(Passport, {
                             id: 1,
@@ -6933,6 +7219,7 @@ topSuite("Ext.data.Model", [
                         rec.getPerson().setPassport(rec);
 
                         var data = rec.getAssociatedData();
+
                         expect(data.person.passport).toBeUndefined();
                     });
                 });
@@ -6940,6 +7227,7 @@ topSuite("Ext.data.Model", [
 
             describe("basic many to many", function() {
                 var User, Group, Profile;
+
                 beforeEach(function() {
                     User = Ext.define('spec.User', {
                         extend: 'Ext.data.Model',
@@ -6979,9 +7267,10 @@ topSuite("Ext.data.Model", [
                             id: 1
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({});
                     });
-                    
+
                     it("should not trigger the item to load", function() {
                         rec = read(User, {
                             id: 1
@@ -6989,20 +7278,22 @@ topSuite("Ext.data.Model", [
                         // Trigger it the first time, second time we ask it shouldn't be there
                         rec.getAssociatedData();
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({});
                     });
-                    
+
                     it("should include the key if the store exists but is empty", function() {
                         rec = read(User, {
                             id: 1,
                             groups: []
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({
                             groups: []
                         });
                     });
-                    
+
                     it("should include the child records", function() {
                         rec = read(User, {
                             id: 100,
@@ -7019,6 +7310,7 @@ topSuite("Ext.data.Model", [
                         });
 
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({
                             groups: [{
                                 id: 1,
@@ -7032,7 +7324,7 @@ topSuite("Ext.data.Model", [
                             }]
                         });
                     });
-                    
+
                     it("should not include the inverse on each child", function() {
                         rec = read(User, {
                             id: 100,
@@ -7090,6 +7382,7 @@ topSuite("Ext.data.Model", [
                             }]
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({
                             groups: [{
                                 id: 1,
@@ -7118,9 +7411,10 @@ topSuite("Ext.data.Model", [
                             id: 1
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({});
                     });
-                    
+
                     it("should not trigger the item to load", function() {
                         rec = read(Group, {
                             id: 1
@@ -7128,20 +7422,22 @@ topSuite("Ext.data.Model", [
                         // Trigger it the first time, second time we ask it shouldn't be there
                         rec.getAssociatedData();
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({});
                     });
-                    
+
                     it("should include the key if the store exists but is empty", function() {
                         rec = read(Group, {
                             id: 1,
                             users: []
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({
                             users: []
                         });
                     });
-                    
+
                     it("should include the child records", function() {
                         rec = read(Group, {
                             id: 100,
@@ -7158,6 +7454,7 @@ topSuite("Ext.data.Model", [
                         });
 
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({
                             users: [{
                                 id: 1,
@@ -7171,7 +7468,7 @@ topSuite("Ext.data.Model", [
                             }]
                         });
                     });
-                    
+
                     it("should not include the inverse on each child", function() {
                         rec = read(Group, {
                             id: 100,
@@ -7230,6 +7527,7 @@ topSuite("Ext.data.Model", [
                             }]
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({
                             users: [{
                                 id: 1,
@@ -7256,12 +7554,13 @@ topSuite("Ext.data.Model", [
             describe("complex cases", function() {
                 describe("nested data", function() {
                     var User;
+
                     beforeEach(function() {
                         User = Ext.define('spec.User', {
                             extend: 'Ext.data.Model',
                             fields: ['id', 'name']
                         });
-                        
+
                         Ext.define('spec.Order', {
                             extend: 'Ext.data.Model',
                             fields: ['id', 'date', {
@@ -7269,7 +7568,7 @@ topSuite("Ext.data.Model", [
                                 reference: 'User'
                             }]
                         });
-                        
+
                         Ext.define('spec.OrderItem', {
                             extend: 'Ext.data.Model',
                             fields: ['id', 'price', {
@@ -7281,13 +7580,13 @@ topSuite("Ext.data.Model", [
                                 reference: 'Product'
                             }]
                         });
-                        
+
                         Ext.define('spec.Product', {
                             extend: 'Ext.data.Model',
                             fields: ['id', 'name']
                         });
                     });
-                    
+
                     afterEach(function() {
                         User = null;
                         Ext.undefine('spec.User');
@@ -7295,7 +7594,7 @@ topSuite("Ext.data.Model", [
                         Ext.undefine('spec.OrderItem');
                         Ext.undefine('spec.Product');
                     });
-                    
+
                     it("should load nested associations", function() {
                         rec = read(User, {
                             id: 1,
@@ -7358,6 +7657,7 @@ topSuite("Ext.data.Model", [
                             }]
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({
                             orders: [{
                                 id: 1,
@@ -7427,14 +7727,15 @@ topSuite("Ext.data.Model", [
                         });
                     });
                 });
-                
+
                 describe("multiple associations of the same type", function() {
                     var Ticket;
+
                     beforeEach(function() {
                         Ext.define('spec.User', {
                             extend: 'Ext.data.Model'
                         });
-                        
+
                         Ticket = Ext.define('spec.Ticket', {
                             extend: 'Ext.data.Model',
                             fields: ['id', {
@@ -7454,13 +7755,13 @@ topSuite("Ext.data.Model", [
                             }]
                         });
                     });
-                    
+
                     afterEach(function() {
                         Ticket = null;
                         Ext.undefine('spec.User');
                         Ext.undefine('spec.Ticket');
                     });
-                    
+
                     it("should be able to have multiple associations of the same type", function() {
                         rec = read(Ticket, {
                             id: 1,
@@ -7474,6 +7775,7 @@ topSuite("Ext.data.Model", [
                             }
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({
                             creator: {
                                 id: 1,
@@ -7486,9 +7788,10 @@ topSuite("Ext.data.Model", [
                         });
                     });
                 });
-                
+
                 describe("recursive associations", function() {
                     var Node;
+
                     beforeEach(function() {
                         Node = Ext.define('spec.Node', {
                             extend: 'Ext.data.Model',
@@ -7504,7 +7807,7 @@ topSuite("Ext.data.Model", [
                             }]
                         });
                     });
-                    
+
                     it("should read recursive associations", function() {
                         rec = read(Node, {
                             id: 1,
@@ -7542,6 +7845,7 @@ topSuite("Ext.data.Model", [
                             }]
                         });
                         var data = rec.getAssociatedData();
+
                         expect(data).toEqual({
                             children: [{
                                 id: 2,
@@ -7586,9 +7890,10 @@ topSuite("Ext.data.Model", [
                         });
                     });
                 });
-                
+
                 describe("repeating records", function() {
                     var Organization;
+
                     beforeEach(function() {
                         Organization = Ext.define('spec.Organization', {
                             extend: 'Ext.data.Model',
@@ -7611,14 +7916,14 @@ topSuite("Ext.data.Model", [
                             }]
                         });
                     });
-                    
+
                     afterEach(function() {
                         Organization = null;
                         Ext.undefine('spec.Organization');
                         Ext.undefine('spec.Group');
                         Ext.undefine('spec.User');
                     });
-                    
+
                     it("should be able to repeat records with the same id", function() {
                         rec = read(Organization, {
                             id: 1,
@@ -7646,9 +7951,9 @@ topSuite("Ext.data.Model", [
                                 }]
                             }]
                         });
-                        
+
                         var groups = rec.getAssociatedData().groups;
-                            
+
                         expect(groups[0].users[0]).toEqual({
                             id: 1,
                             groupId: 1,
@@ -7669,11 +7974,11 @@ topSuite("Ext.data.Model", [
             });
         });
     });
-    
+
     describe("validation", function() {
-        
+
         var A, o;
-        
+
         function defineA(validators, fields, cfg) {
             cfg = Ext.apply({
                 extend: Ext.data.Model,
@@ -7726,11 +8031,13 @@ topSuite("Ext.data.Model", [
 
                 it("should return an ErrorCollection", function() {
                     var errors = o.validate();
+
                     expect(errors instanceof Ext.data.ErrorCollection).toBe(true);
                 });
 
                 it("should have no items in the error collection", function() {
                     var errors = o.validate();
+
                     expect(errors.getCount()).toBe(0);
                     expect(errors.isValid()).toBe(true);
                 });
@@ -7743,6 +8050,7 @@ topSuite("Ext.data.Model", [
                     });
                     o = new A();
                     var errors = o.validate();
+
                     expect(errors instanceof Ext.data.ErrorCollection).toBe(true);
                 });
 
@@ -7809,10 +8117,11 @@ topSuite("Ext.data.Model", [
                 });
             });
         });
-        
+
         describe("isValid", function() {
             it("should return true if using an Ext.data.Model instance", function() {
                 var o = new Ext.data.Model();
+
                 expect(o.isValid()).toBe(true);
             });
 
@@ -7820,10 +8129,11 @@ topSuite("Ext.data.Model", [
                 defineA({
                     name: 'presence'
                 });
-                
+
                 var o = new A({
                     name: 'Foo'
                 });
+
                 expect(o.isValid()).toBe(true);
             });
 
@@ -7837,17 +8147,19 @@ topSuite("Ext.data.Model", [
                     name: 'foo',
                     rank: null
                 });
+
                 expect(o.isValid()).toBe(false);
             });
-            
+
             it("should return false if all fields in the model are not valid", function() {
                 defineA({
                     name: 'presence'
                 });
-                
+
                 var o = new A({
                     name: null
                 });
+
                 expect(o.isValid()).toBe(false);
             });
 
@@ -7902,6 +8214,7 @@ topSuite("Ext.data.Model", [
                 var o = new A({
                     name: 'Foo'
                 });
+
                 expect(o.getValidation().isValid()).toBe(true);
             });
 
@@ -7915,6 +8228,7 @@ topSuite("Ext.data.Model", [
                     name: 'foo',
                     rank: null
                 });
+
                 expect(o.getValidation().isValid()).toBe(false);
             });
 
@@ -7926,6 +8240,7 @@ topSuite("Ext.data.Model", [
                 var o = new A({
                     name: null
                 });
+
                 expect(o.getValidation().isValid()).toBe(false);
             });
 
@@ -7993,14 +8308,14 @@ topSuite("Ext.data.Model", [
 
                 validators: {
                     description: { type: 'length', min: 10, max: 200 },
-                    color:       { type: 'inclusion', list: [ 'red', 'white', 'blue' ] },
-                    first:       { type: 'exclusion', list: [ 'Ed' ] },
+                    color: { type: 'inclusion', list: [ 'red', 'white', 'blue' ] },
+                    first: { type: 'exclusion', list: [ 'Ed' ] },
                     formatField: { type: 'format', matcher: /123/ },
-                    email:       'email',
-                    phone:       { type: 'format', matcher: /\d{3}\-\d{4}/, message: 'Phone number required' }
+                    email: 'email',
+                    phone: { type: 'format', matcher: /\d{3}-\d{4}/, message: 'Phone number required' }
                 },
 
-                doValidate: function () {
+                doValidate: function() {
                     //
                 }
             });
@@ -8037,7 +8352,7 @@ topSuite("Ext.data.Model", [
                 errors = instance.validate();
             });
 
-            it('should report valid object as having no errors', function () {
+            it('should report valid object as having no errors', function() {
                 instance = new User({
                     description: 'long enough',
                     color: 'red',
@@ -8070,31 +8385,37 @@ topSuite("Ext.data.Model", [
 
             it("should have the correct bad length message", function() {
                 var error = errors.getByField('description')[0];
+
                 expect(error.message).toEqual('Length must be between 10 and 200');
             });
 
             it("should have the correct bad format message", function() {
                 var error = errors.getByField('formatField')[0];
+
                 expect(error.message).toEqual(getMessage(V.Format));
             });
 
             it("should have the correct non-inclusion message", function() {
                 var error = errors.getByField('color')[0];
+
                 expect(error.message).toEqual(getMessage(V.Inclusion));
             });
 
             it("should have the correct non-exclusion message", function() {
                 var error = errors.getByField('first')[0];
+
                 expect(error.message).toEqual(getMessage(V.Exclusion));
             });
 
             it("should have the correct bad email format message", function() {
                 var error = errors.getByField('email')[0];
+
                 expect(error.message).toEqual(getMessage(V.Email));
             });
 
             it("should allow user-defined error messages", function() {
                 var error = errors.getByField('phone')[0];
+
                 expect(error.message).toEqual('Phone number required');
             });
         });
@@ -8103,16 +8424,16 @@ topSuite("Ext.data.Model", [
     describe("support for legacy validations", function() {
         var User,
             instance,
-            convert1 = function (value) {
+            convert1 = function(value) {
                 return value;
             },
-            convert2 = function (value) {
+            convert2 = function(value) {
                 return value;
             },
-            convert3 = function (value) {
+            convert3 = function(value) {
                 return value;
             },
-            convert4 = function (value) {
+            convert4 = function(value) {
                 return value ? value.toUpperCase() : '';
             };
 
@@ -8122,15 +8443,15 @@ topSuite("Ext.data.Model", [
                 extend: Ext.data.Model,
 
                 fields: [
-                    {name: 'id'},
-                    {name: 'first',       type: 'string', convert: convert1},
-                    {name: 'last',        type: 'string', convert: null},
-                    {name: 'email',       type: 'string'},
-                    {name: 'formatField', type: 'string'},
-                    {name: 'phone',       type: 'string', convert: convert2},
-                    {name: 'color',       type: 'string'},
-                    {name: 'description', type: 'string', convert: convert3},
-                    {name: 'nopersist',   type: 'string', persist: false},
+                    { name: 'id' },
+                    { name: 'first',       type: 'string', convert: convert1 },
+                    { name: 'last',        type: 'string', convert: null },
+                    { name: 'email',       type: 'string' },
+                    { name: 'formatField', type: 'string' },
+                    { name: 'phone',       type: 'string', convert: convert2 },
+                    { name: 'color',       type: 'string' },
+                    { name: 'description', type: 'string', convert: convert3 },
+                    { name: 'nopersist',   type: 'string', persist: false },
                     {
                         name: 'initial',
                         type: 'string',
@@ -8141,15 +8462,15 @@ topSuite("Ext.data.Model", [
                 validations: [
                     { type: 'length',    field: 'description', min: 10, max: 200 },
                     { type: 'inclusion', field: 'color', list: ['red', 'white', 'blue'] },
-                    { type: 'exclusion', field: 'first', list: ['Ed']} ,
+                    { type: 'exclusion', field: 'first', list: ['Ed'] },
 
                     { type: 'format',    field: 'formatField', matcher: /123/ },
                     { type: 'email',     field: 'email' },
 
-                    { type: 'format',  matcher: /\d{3}\-\d{4}/, field: 'phone', message: 'Phone number required' }
+                    { type: 'format',  matcher: /\d{3}-\d{4}/, field: 'phone', message: 'Phone number required' }
                 ],
 
-                doValidate: function () {
+                doValidate: function() {
                     //
                 }
             });
@@ -8188,7 +8509,7 @@ topSuite("Ext.data.Model", [
                 errors = instance.validate();
             });
 
-            it('should report valid object as having no errors', function () {
+            it('should report valid object as having no errors', function() {
                 instance = new User({
                     description: 'long enough',
                     color: 'red',
@@ -8221,31 +8542,37 @@ topSuite("Ext.data.Model", [
 
             it("should have the correct bad length message", function() {
                 var error = errors.getByField('description')[0];
+
                 expect(error.message).toEqual('Length must be between 10 and 200');
             });
 
             it("should have the correct bad format message", function() {
                 var error = errors.getByField('formatField')[0];
+
                 expect(error.message).toEqual(getMessage(V.Format));
             });
 
             it("should have the correct non-inclusion message", function() {
                 var error = errors.getByField('color')[0];
+
                 expect(error.message).toEqual(getMessage(V.Inclusion));
             });
 
             it("should have the correct non-exclusion message", function() {
                 var error = errors.getByField('first')[0];
+
                 expect(error.message).toEqual(getMessage(V.Exclusion));
             });
 
             it("should have the correct bad email format message", function() {
                 var error = errors.getByField('email')[0];
+
                 expect(error.message).toEqual(getMessage(V.Email));
             });
 
             it("should allow user-defined error messages", function() {
                 var error = errors.getByField('phone')[0];
+
                 expect(error.message).toEqual('Phone number required');
             });
         });
@@ -8253,6 +8580,7 @@ topSuite("Ext.data.Model", [
 
     describe("copy/clone", function() {
         var User, user, other, session;
+
         beforeEach(function() {
             User = Ext.define('spec.User', {
                 extend: 'Ext.data.Model',
@@ -8276,6 +8604,7 @@ topSuite("Ext.data.Model", [
 
             it("should copy data across and retain types, but the data object should be different", function() {
                 var aDate = new Date();
+
                 user = new User({
                     name: 'Foo',
                     age: 12,
@@ -8351,7 +8680,7 @@ topSuite("Ext.data.Model", [
                 });
 
                 it("should not copy a session by default", function() {
-                    user = new User({id: 1}, session);
+                    user = new User({ id: 1 }, session);
                     other = user.copy();
                     expect(other.session).toBeNull();
                 });
@@ -8368,6 +8697,7 @@ topSuite("Ext.data.Model", [
 
             it("should copy data across and retain types, but the data object should be different", function() {
                 var aDate = new Date();
+
                 user = new User({
                     name: 'Foo',
                     age: 12,
@@ -8433,7 +8763,7 @@ topSuite("Ext.data.Model", [
                 });
 
                 it("should not copy a session by default", function() {
-                    user = new User({id: 1}, session);
+                    user = new User({ id: 1 }, session);
                     other = user.clone();
                     expect(other.session).toBeNull();
                 });
@@ -8477,6 +8807,7 @@ topSuite("Ext.data.Model", [
 
         it("should erase the record if it is a phantom", function() {
             var rec = new A();
+
             rec.drop();
             expect(rec.dropped).toBe(true);
             expect(rec.erased).toBe(true);
@@ -8486,6 +8817,7 @@ topSuite("Ext.data.Model", [
             var rec = new A({
                 id: 1
             });
+
             spyOn(rec, 'callJoined');
             rec.drop();
             expect(rec.callJoined).toHaveBeenCalled();
@@ -8495,8 +8827,9 @@ topSuite("Ext.data.Model", [
         describe("associations", function() {
             // The specifics of this are tested in the associations themselves.
             // Here we just want to test the cascade flag works correctly.
-            
+
             var order, address, orderItems, orderItem;
+
             beforeEach(function() {
                 Ext.define('spec.Order', {
                     extend: 'Ext.data.Model',
@@ -8592,6 +8925,7 @@ topSuite("Ext.data.Model", [
                 name: 'Foo',
                 version: 5
             });
+
             user.set('name', 'Bar');
             user.commit();
             expect(user.get('version')).toBe(6);
@@ -8601,6 +8935,7 @@ topSuite("Ext.data.Model", [
             var user = new User({
                 name: 'Foo'
             });
+
             expect(user.get('version')).toBe(1);
             user.set('name', 'Bar');
             user.commit();
@@ -8612,6 +8947,7 @@ topSuite("Ext.data.Model", [
                 id: 1,
                 name: 'X'
             });
+
             user.set('name', 'Bar');
             user.reject();
             expect(user.get('version')).toBe(1);
@@ -8676,6 +9012,7 @@ topSuite("Ext.data.Model", [
 
             it("should have model defaults", function() {
                 var rec = new T();
+
                 expect(rec.get('rate')).toBeUndefined();
                 expect(rec.get('score')).toBeUndefined();
                 expect(rec.get('strField')).toBe('');
@@ -8684,6 +9021,7 @@ topSuite("Ext.data.Model", [
 
             it("should generate the summary data based on the fields", function() {
                 var rec = new T();
+
                 rec.calculateSummary(sampleData);
                 expect(rec.dirty).toBe(false);
                 expect(rec.get('rate')).toBe(9.5);
@@ -8730,6 +9068,7 @@ topSuite("Ext.data.Model", [
 
             it("should have model defaults", function() {
                 var rec = new T();
+
                 expect(rec.get('rate')).toBeUndefined();
                 expect(rec.get('score')).toBeUndefined();
                 expect(rec.get('strField')).toBe('');
@@ -8740,6 +9079,7 @@ topSuite("Ext.data.Model", [
 
             it("should generate the summary data based on the fields", function() {
                 var rec = new T();
+
                 rec.calculateSummary(sampleData);
                 expect(rec.dirty).toBe(false);
                 expect(rec.get('rate')).toBe(9.5);

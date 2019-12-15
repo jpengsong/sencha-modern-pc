@@ -6,8 +6,6 @@
 *        Message: "",
 *        Code: "Public.I_0001"
 *   }
-* 
-* 
 */
 Ext.define("override.simlet.JsonSimlet", {
     override: "Ext.ux.ajax.JsonSimlet",

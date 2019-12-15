@@ -4,6 +4,8 @@
 Ext.define('Ext.util.Group', {
     extend: 'Ext.util.Collection',
 
+    isGroup: true,
+
     config: {
         groupKey: null
     },

@@ -1,9 +1,9 @@
 xdescribe("Ext.data.validator.Date", function() {
-
     var v;
 
     function validate(value) {
         v = new Ext.data.validator.Date();
+
         return v.validate(value);
     }
 

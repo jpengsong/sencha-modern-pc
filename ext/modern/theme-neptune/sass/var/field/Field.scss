@@ -192,7 +192,7 @@ $field-required-indicator-margin-big: dynamic(null);
  * @var {string}
  * Field error icon when {#errorTarget} is `'side'`
  */
-$field-error-icon-side: dynamic($fa-var-exclamation-circle FontAwesome);
+$field-error-icon-side: dynamic($fa-var-exclamation-circle 'Font Awesome 5 Free');
 
 /**
  * @var {color}
@@ -243,7 +243,7 @@ $field-error-icon-side-margin-big: dynamic(0 8px);
  * @var {string}
  * Field error icon when {#errorTarget} is `'under'`
  */
-$field-error-icon-under: dynamic($fa-var-exclamation-circle FontAwesome);
+$field-error-icon-under: dynamic($fa-var-exclamation-circle 'Font Awesome 5 Free');
 
 /**
  * @var {color}

@@ -1,109 +1,108 @@
 Ext.define("App.view.systemmanage.sysuser.SysUserEdit", {
     alias: "widget.sysuseredit",
-    extend: "Ext.window.Window",
-    maximizable: true,
+    extend: "Ext.Dialog",
+    displayed: true,
+    closable: true,
     modal: true,
     width: 450,
     height: 550,
-    autoShow: true,
     layout: "fit",
+    padding: "0 0",
     items: [
         {
-            xtype: "form",
+            xtype: "formpanel",
             reference: "form",
-            layout: "form",
+            defaults: {
+                labelAlign: "left",
+                labelTextAlign: "center",
+                labelWrap: true,
+                border: true,
+                width: "100%",
+                labelWidth: 70,
+                margin: "0",
+                clearable: false
+            },
+            buttonToolbar: {
+                xtype: 'toolbar',
+                docked: 'bottom',
+                defaultType: 'button',
+                weighted: true,
+                ui: 'footer',
+                defaultButtonUI: 'action',
+                layout: {
+                    type: 'box',
+                    vertical: false,
+                    pack: 'center'
+                },
+                defaults: {
+                    margin: "0px 5px"
+                }
+            },
             items: [
                 {
                     xtype: "comboxtree",
-                    fieldLabel: '所属机构',
+                    label: '所属机构',
+                    hideSearchfield: false,
+                    treeheight: 300,
+                    querylocal: true,
                     displayField: "OrgName",
                     valueField: "SysOrgId",
-                    width: "100%",
-                    height: 200,
-                    rootVisible: false,
-                    params: function () {
-                        return { SysOrgId: "00000000-0000-0000-0000-000000000000" };
-                    },
                     bind: {
-                        defautvalue: "{user.OrgId}",
-                        store: "{treestore}"
+                        store: "{treestore}",
+                        value: "{user.OrgId}"
                     },
-                    allowBlank: false,
-                    afterLabelTextTpl: config.AfterLabelTextRequired
+                    params:{
+                        SysOrgId: "00000000-0000-0000-0000-000000000000"
+                    }
                 },
                 {
                     xtype: "textfield",
-                    fieldLabel: '登录名',
-                    allowBlank: false,
-                    bind: "{user.LoginName}",
-                    afterLabelTextTpl: config.AfterLabelTextRequired
+                    label: '登录名',
+                    required: true,
+                    bind: "{user.LoginName}"
                 },
                 {
                     xtype: "textfield",
+                    label: '用户名',
                     bind: "{user.UserName}",
-                    allowBlank: false,
-                    maxLength: 10,
-                    fieldLabel: '用户名',
-                    afterLabelTextTpl: config.AfterLabelTextRequired
+                    required: true,
+                    maxLength: 10
                 },
                 {
                     xtype: "passwordfield",
-                    inputType: 'password',
-                    fieldLabel: '密码',
+                    label: '密码',
                     bind: "{user.LoginPassWord}",
-                    allowBlank: false,
-                    afterLabelTextTpl: config.AfterLabelTextRequired
+                    required: true
                 },
                 {
                     xtype: "textfield",
-                    fieldLabel: '手机号',
+                    label: '手机号',
                     bind: "{user.Mobile}"
                 },
                 {
-                    xtype: "textfield",
-                    fieldLabel: '邮箱',
-                    vtype: 'email',
+                    xtype: "emailfield",
+                    label: '邮箱',
                     bind: "{user.Email}"
                 },
                 {
                     xtype: 'radiogroup',
-                    fieldLabel: '是否启用',
+                    label: '是否启用',
                     bind: "{user.IsEnable}",
-                    simpleValue: true,
+                    defaultType: 'radio',
                     items: [
-                        { boxLabel: '启用', name: 'IsEnable', inputValue: 1, margin: "0 0 0 70" },
-                        { boxLabel: '禁用', name: 'IsEnable', inputValue: 0, margin: "0 0 0 30", checked: true }
+                        {  label: '启用', name: 'IsEnable', value: 1, margin: "0 0 0 50" },
+                        {  label: '禁用', name: 'IsEnable', value: 0, checked:true}
                     ]
                 },
                 {
-                    fieldLabel: '描述',
+                    xtype: 'textareafield',
+                    label: '描述',
                     bind: "{user.Description}",
-                    xtype: 'textareafield'
                 }
-            ]
-        }
-    ],
-    dockedItems: [
-        {
-            xtype: 'toolbar',
-            dock: 'bottom',
-            ui: "footer",
-            layout: {
-                type: "hbox",
-                align: "center",
-                pack: "center"
-            },
-            items: [
-                {
-                    text: '保存',
-                    iconCls: "x-fa fa-floppy-o",
-                    handler: "onSave"
-                },
-                {
-                    text: '重置',
-                    iconCls: "x-fa fa-refresh",
-                    handler: "onReset"
-                }
+            ],
+            buttons: [
+                { text: '保存', iconCls: "x-far fa-save", handler: 'onSave' },
+                { text: '重置', iconCls: "x-far fa-history", handler: 'onReset' }
             ]
         }
     ],
@@ -113,12 +112,11 @@ Ext.define("App.view.systemmanage.sysuser.SysUserEdit", {
         onSave: function () {
             var me = this,
                 view = me.getView(),
-                scope = view.scope,
-                data = me.getViewModel().get("user").getData(),
                 refs = me.getReferences(),
-                form = refs.form;
-            if (form.isValid()) {
-                console.info(data);
+                scope = view.scope,
+                user = me.getViewModel().get("user");
+                user.set("IsEnable",refs.form.getValues().IsEnable);
+            if (refs.form.validate()) {
                 App.Ajax.request({
                     url: "/api/SystemManage/SysUser/" + (view.status == "add" ? "AddSysUser" : "EditSysUser"),
                     method: (view.status == "add" ? "POST" : "PUT"),
@@ -126,18 +124,18 @@ Ext.define("App.view.systemmanage.sysuser.SysUserEdit", {
                     type: "JSON",
                     showmask: true,
                     maskmsg: "正在保存...",
-                    params: data,
+                    params: user.getData(),
                     success: function (response) {
                         if (response.Data > 0) {
-                            App.Msg.Info("保存成功");
+                            Ext.Msg.alert("提示","保存成功");
                             scope.grid.getStore().loadPage(1);
                             view.close();
                         } else {
-                            App.Msg.Info("保存失败");
+                            Ext.Msg.alert("提示","保存失败");
                         }
                     },
                     error: function (msg) {
-                        App.Msg.Error(msg);
+                        Ext.Msg.alert("提示",msg);
                     }
                 })
             }

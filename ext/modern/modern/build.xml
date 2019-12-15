@@ -239,6 +239,24 @@
         </x-compile>
     </target>
 
+    <target name="froala-editor" depends="init">
+        <x-compile refid="${compiler.ref.id}">
+            <![CDATA[
+            classpath
+                -name=froala-editor
+                -path=${framework.dir}/../packages/froala-editor/src
+            and
+            classpath
+                -name=froala-editor
+                -path=${framework.dir}/../packages/froala-editor/overrides
+                -tags=overrides
+            and
+            include
+                -all
+        ]]>
+        </x-compile>
+    </target>
+    
     <target name="d3" depends="init">
         <x-compile refid="${compiler.ref.id}">
             <![CDATA[
@@ -453,6 +471,6 @@ Ext.Boot.loadSyncBasePrefix([
 
     <target name="bootstrap"
             description="*** Regenerate files needed by standalone examples and unit tests ***"
-            depends="calendar,charts,ux,exporter,d3,pivot,pivot-d3,core-bootstrap,test-bootstrap"/>
+            depends="calendar,charts,ux,froala-editor, exporter,d3,pivot,pivot-d3,core-bootstrap,test-bootstrap"/>
 
 </project>

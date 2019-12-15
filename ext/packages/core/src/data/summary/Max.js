@@ -13,6 +13,7 @@ Ext.define('Ext.data.summary.Max', {
 
         for (i = begin; i < end; ++i) {
             v = this.extractValue(records[i], property, root);
+
             if (v > max) {
                 max = v;
             }

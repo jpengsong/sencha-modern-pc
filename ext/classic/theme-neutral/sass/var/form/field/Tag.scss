@@ -154,7 +154,7 @@ $tag-field-item-selected-over-close-icon-glyph-color: dynamic($tag-field-item-se
  * @var {string/list}
  * Glyph for the "close" icon when {@link Global_CSS#$enable-font-icons} is `true`.
  */
-$tag-field-item-close-icon-glyph: dynamic($fa-var-close 16px $font-icon-font-family);
+$tag-field-item-close-icon-glyph: dynamic($fa-var-times 16px $font-icon-font-family);
 
 /**
  * @var {color}

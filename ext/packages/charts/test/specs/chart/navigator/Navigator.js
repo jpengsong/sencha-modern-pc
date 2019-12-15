@@ -1,10 +1,10 @@
 topSuite('Ext.chart.navigator.Navigator', [
     'Ext.chart.*',
     'Ext.app.ViewModel',
-    'Ext.data.Store',
+    'Ext.data.ArrayStore',
     'Ext.data.field.Field',
     'Ext.data.proxy.Memory'
-], function () {
+], function() {
     function generateData() {
         var data = [],
             increment = Math.PI / 18,
@@ -77,7 +77,7 @@ topSuite('Ext.chart.navigator.Navigator', [
         };
     }
 
-    describe('layout', function () {
+    describe('layout', function() {
         var chartNavigator, layoutDone;
 
         afterEach(function() {
@@ -85,15 +85,15 @@ topSuite('Ext.chart.navigator.Navigator', [
             layoutDone = false;
         });
 
-        it('should span series', function () {
-            runs(function () {
+        it('should span series', function() {
+            runs(function() {
                 chartNavigator = Ext.create(Ext.merge({
                     navigator: {
                         axis: 'bottom',
                         span: 'series',
 
                         listeners: {
-                            layout: function () {
+                            layout: function() {
                                 layoutDone = true;
                             }
                         }
@@ -101,17 +101,18 @@ topSuite('Ext.chart.navigator.Navigator', [
                 }, getCfg()));
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var chart = chartNavigator.getChart(),
                     navigator = chartNavigator.getNavigator();
 
                 var chartRect = chart.getMainRect();
+
                 var navigatorRect = navigator.getSurface('overlay').getRect();
 
                 expect(chartRect[0]).toBe(navigatorRect[0]);
@@ -119,15 +120,15 @@ topSuite('Ext.chart.navigator.Navigator', [
             });
         });
 
-        it('should span chart', function () {
-            runs(function () {
+        it('should span chart', function() {
+            runs(function() {
                 chartNavigator = Ext.create(Ext.merge({
                     navigator: {
                         axis: 'bottom',
                         span: 'chart',
 
                         listeners: {
-                            layout: function () {
+                            layout: function() {
                                 layoutDone = true;
                             }
                         }
@@ -135,11 +136,11 @@ topSuite('Ext.chart.navigator.Navigator', [
                 }, getCfg()));
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var navigator = chartNavigator.getNavigator();
@@ -153,7 +154,7 @@ topSuite('Ext.chart.navigator.Navigator', [
         });
     });
 
-    describe('view model', function () {
+    describe('view model', function() {
         var chartNavigator, layoutDone;
 
         afterEach(function() {
@@ -161,7 +162,7 @@ topSuite('Ext.chart.navigator.Navigator', [
             layoutDone = false;
         });
 
-        it('should span series', function () {
+        it('should span series', function() {
             var VM = new Ext.app.ViewModel({
                 stores: {
                     dataStore: {
@@ -200,7 +201,7 @@ topSuite('Ext.chart.navigator.Navigator', [
 
             });
 
-            runs(function () {
+            runs(function() {
                 chartNavigator = Ext.create({
                     xtype: 'chartnavigator',
                     renderTo: document.body,
@@ -236,7 +237,7 @@ topSuite('Ext.chart.navigator.Navigator', [
                         axis: 'foo',
 
                         listeners: {
-                            layout: function () {
+                            layout: function() {
                                 layoutDone = true;
                             }
                         }
@@ -244,11 +245,11 @@ topSuite('Ext.chart.navigator.Navigator', [
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var navigator = chartNavigator.getNavigator(),

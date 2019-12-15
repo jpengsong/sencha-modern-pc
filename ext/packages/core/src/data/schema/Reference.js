@@ -1,7 +1,8 @@
 /**
  * @class Ext.data.schema.Reference
  *
- * **This is not a real JavaScript class and cannot be created.  This is for documentation purposes only.**
+ * **This is not a real JavaScript class and cannot be created. This is for documentation purposes
+ * only.**
  *
  * This documentation is for:
  *
@@ -103,8 +104,8 @@
  */
 
 /**
- * @cfg {String} [setterName] The name of the setter function (if required). Typically this is generated
- * based on the {@link #role}.
+ * @cfg {String} [setterName] The name of the setter function (if required). Typically this is
+ * generated based on the {@link #role}.
  */
 
 /**

@@ -1,10 +1,12 @@
-/* global Ext, expect, jasmine, spyOn */
-
 topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], function() {
+    var fakeScope = {
+        id: "fakeScope",
+        fakeScope: true
+    };
 
     describe("Ext.global", function() {
         it("should return the global scope", function() {
-            expect(Ext.global).toBe((function(){ return this;}).call());
+            expect(Ext.global).toBe((function() { return this; }).call());
         });
     });
 
@@ -15,7 +17,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
             origin = {
                 name: 'value',
                 something: 'cool',
-                items: [1,2,3],
+                items: [1, 2, 3],
                 method: function() {
                     this.myMethodCalled = true;
                 },
@@ -28,13 +30,13 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
         it("should copy normal properties", function() {
             Ext.apply(origin, {
                 name: 'newName',
-                items: [4,5,6],
+                items: [4, 5, 6],
                 otherThing: 'not cool',
                 isCool: false
             });
 
             expect(origin.name).toEqual('newName');
-            expect(origin.items).toEqual([4,5,6]);
+            expect(origin.items).toEqual([4, 5, 6]);
             expect(origin.something).toEqual('cool');
             expect(origin.otherThing).toEqual('not cool');
             expect(origin.isCool).toEqual(false);
@@ -134,7 +136,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
                 bar: 'oldBar'
             });
 
-            expect(o).toEqual( {
+            expect(o).toEqual({
                 foo: 'foo',
                 bar: 'bar'
             });
@@ -152,13 +154,13 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
         });
 
         it("should override valueOf", function() {
-            o = Ext.apply({}, {valueOf: 1});
+            o = Ext.apply({}, { valueOf: 1 });
 
             expect(o.valueOf).toEqual(1);
         });
 
         it("should override toString", function() {
-            o = Ext.apply({}, {toString: 3});
+            o = Ext.apply({}, { toString: 3 });
 
             expect(o.toString).toEqual(3);
 
@@ -174,7 +176,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
            expect(Ext.emptyFn('aaaa', 'bbbbb')).toBeUndefined();
         });
     });
-    
+
     describe("Ext.iterate", function() {
         var itFn;
 
@@ -198,11 +200,11 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
                     Ext.iterate(o, itFn);
                 });
 
-                it("should call the iterate function 3 times", function () {
+                it("should call the iterate function 3 times", function() {
                     expect(itFn.callCount).toEqual(3);
                 });
 
-                it("should call the iterate function with correct arguments", function () {
+                it("should call the iterate function with correct arguments", function() {
                     expect(itFn.calls[0].args).toEqual(["n1", 11, o]);
                     expect(itFn.calls[1].args).toEqual(["n2", 13, o]);
                     expect(itFn.calls[2].args).toEqual(["n3", 18, o]);
@@ -231,7 +233,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
                 Ext.iterate(o, itFn);
             });
 
-            it("should not call the iterate function", function () {
+            it("should not call the iterate function", function() {
                 expect(itFn).not.toHaveBeenCalled();
             });
 
@@ -249,11 +251,11 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
                     Ext.iterate(arr, itFn);
                 });
 
-                it("should call the iterate function 4 times", function () {
+                it("should call the iterate function 4 times", function() {
                     expect(itFn.callCount).toEqual(4);
                 });
 
-                it("should call the iterate function with correct arguments", function () {
+                it("should call the iterate function with correct arguments", function() {
                     expect(itFn.calls[0].args).toEqual([6, 0, arr]);
                     expect(itFn.calls[1].args).toEqual([7, 1, arr]);
                     expect(itFn.calls[2].args).toEqual([8, 2, arr]);
@@ -283,14 +285,14 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
                 Ext.iterate(arr, itFn);
             });
 
-            it("should not call the iterate function", function () {
+            it("should not call the iterate function", function() {
                 expect(itFn).not.toHaveBeenCalled();
             });
 
         });
     });
 
-    describe("Ext.applyIf", function(){
+    describe("Ext.applyIf", function() {
         var o;
 
         it("should apply properties and return an object with an empty destination object", function() {
@@ -299,7 +301,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
                 bar: 'bar'
             });
 
-            expect(o).toEqual( {
+            expect(o).toEqual({
                 foo: 'foo',
                 bar: 'bar'
             });
@@ -359,20 +361,19 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
         });
     });
 
-
     describe("Ext.extend", function() {
-        describe("class creation", function () {
+        describe("class creation", function() {
             var Child, Parent, baz;
 
             Parent = Ext.extend(Object, {
-                constructor: function(config){
+                constructor: function(config) {
                     Ext.apply(this, config);
                     this.foobar = false;
                 }
             });
 
             Child = Ext.extend(Parent, {
-                constructor: function(){
+                constructor: function() {
                     Child.superclass.constructor.apply(this, arguments);
                     this.foobar = true;
                 }
@@ -405,24 +406,26 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
             });
         });
 
-        describe("constructors", function () {
+        describe("constructors", function() {
             // Extending Object
-            var A = function () {
+            var A = function() {
                 A.superclass.constructor.call(this);
                 this.data = 'a';
             };
+
             Ext.extend(A, Object, {});
 
             // Extending class created via 3 argument form using 3 arg form
-            var B = function () {
+            var B = function() {
                 B.superclass.constructor.call(this);
                 this.data += 'b';
             };
+
             Ext.extend(B, A, {});
 
             // Extending class produced via 3 argument form using 2 argument form
             var C = Ext.extend(B, {
-                constructor: function () {
+                constructor: function() {
                     C.superclass.constructor.call(this);
                     this.data += 'c';
                 }
@@ -430,25 +433,27 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
 
             // Extending class produced via 2 argument form using 2 argument form
             var D = Ext.extend(C, {
-                constructor: function () {
+                constructor: function() {
                     D.superclass.constructor.call(this);
                     this.data += 'd';
                 }
             });
 
             // Extending again using 3 argument form
-            var E = function () {
+            var E = function() {
                 E.superclass.constructor.call(this);
                 this.data += 'e';
             };
+
             Ext.extend(E, D, {});
 
-            it("should call each constructor ", function () {
+            it("should call each constructor ", function() {
                 var instance = new E();
+
                 expect(instance.data).toBe('abcde');
             });
 
-            it("should correctly set the constructor", function () {
+            it("should correctly set the constructor", function() {
                 expect(E.superclass.constructor).toEqual(D.prototype.constructor);
                 expect(D.superclass.constructor).toEqual(C.prototype.constructor);
                 expect(C.superclass.constructor).toEqual(B);
@@ -456,23 +461,24 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
             });
         });
 
-        describe("derive from Ext.define'd base", function () {
+        describe("derive from Ext.define'd base", function() {
             var A = Ext.define(null, {
-                constructor: function () {
+                constructor: function() {
                     this.data = 'a';
                 }
             });
 
             // Extending class created via 3 argument form using 3 arg form
-            var B = function () {
+            var B = function() {
                 B.superclass.constructor.call(this);
                 this.data += 'b';
             };
+
             Ext.extend(B, A, {});
 
             // Extending class produced via 3 argument form using 2 argument form
             var C = Ext.extend(B, {
-                constructor: function () {
+                constructor: function() {
                     C.superclass.constructor.call(this);
                     this.data += 'c';
                 }
@@ -480,25 +486,27 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
 
             // Extending class produced via 2 argument form using 2 argument form
             var D = Ext.extend(C, {
-                constructor: function () {
+                constructor: function() {
                     D.superclass.constructor.call(this);
                     this.data += 'd';
                 }
             });
 
             // Extending again using 3 argument form
-            var E = function () {
+            var E = function() {
                 E.superclass.constructor.call(this);
                 this.data += 'e';
             };
+
             Ext.extend(E, D, {});
 
-            it("should call each constructor ", function () {
+            it("should call each constructor ", function() {
                 var instance = new E();
+
                 expect(instance.data).toBe('abcde');
             });
 
-            it("should correctly set the constructor", function () {
+            it("should correctly set the constructor", function() {
                 expect(E.superclass.constructor).toEqual(D.prototype.constructor);
                 expect(D.superclass.constructor).toEqual(C.prototype.constructor);
                 expect(C.superclass.constructor).toEqual(B);
@@ -507,9 +515,9 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
         });
     });
 
-    describe("Ext.override", function(){
+    describe("Ext.override", function() {
         describe("on a raw JS class", function() {
-            it("should override existing methods and add new methods to the prototype", function(){
+            it("should override existing methods and add new methods to the prototype", function() {
                 var Cls = function() {},
                     fn1 = function() {},
                     fn2 = function() {},
@@ -647,6 +655,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
                 });
 
                 var o = new Cls();
+
                 expect(o.doIt()).toBe(101);
             });
         });
@@ -795,16 +804,14 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
     });
 
     describe("Ext.typeOf", function() {
-        
         it("should return null", function() {
             expect(Ext.typeOf(null)).toEqual('null');
         });
-        
+
         it("should return undefined", function() {
             expect(Ext.typeOf(undefined)).toEqual('undefined');
             expect(Ext.typeOf(window.someWeirdPropertyThatDoesntExist)).toEqual('undefined');
         });
-
 
         it("should return string", function() {
             expect(Ext.typeOf('')).toEqual('string');
@@ -818,21 +825,19 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
             expect(Ext.typeOf(new Number(1.2))).toEqual('number');
         });
 
-
         it("should return boolean", function() {
             expect(Ext.typeOf(true)).toEqual('boolean');
             expect(Ext.typeOf(false)).toEqual('boolean');
             expect(Ext.typeOf(new Boolean(true))).toEqual('boolean');
         });
-        
 
         it("should return array", function() {
-            expect(Ext.typeOf([1,2,3])).toEqual('array');
-            expect(Ext.typeOf(new Array(1,2,3))).toEqual('array');
+            expect(Ext.typeOf([1, 2, 3])).toEqual('array');
+            expect(Ext.typeOf(new Array(1, 2, 3))).toEqual('array');
         });
-        
+
         it("should return function", function() {
-            expect(Ext.typeOf(function(){})).toEqual('function');
+            expect(Ext.typeOf(function() {})).toEqual('function');
             expect(Ext.typeOf(new Function())).toEqual('function');
             expect(Ext.typeOf(Object)).toEqual('function');
             expect(Ext.typeOf(Array)).toEqual('function');
@@ -851,7 +856,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
             //
             // if (typeof obj === 'object' && !obj.toString && obj.call && obj.apply && (obj + '')) {...}
         });
-        
+
         it("should return regexp", function() {
             expect(Ext.typeOf(/test/)).toEqual('regexp');
             expect(Ext.typeOf(new RegExp('test'))).toEqual('regexp');
@@ -860,7 +865,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
         it("should return date", function() {
             expect(Ext.typeOf(new Date())).toEqual('date');
         });
-        
+
         it("should return textnode", function() {
             expect(Ext.typeOf(document.createTextNode('tada'))).toEqual('textnode');
             expect(Ext.typeOf(document.createTextNode(' '))).toEqual('whitespace');
@@ -874,7 +879,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
         });
 
         it("should return object", function() {
-            expect(Ext.typeOf({some: 'stuff'})).toEqual('object');
+            expect(Ext.typeOf({ some: 'stuff' })).toEqual('object');
             expect(Ext.typeOf(new Object())).toEqual('object');
             expect(Ext.typeOf(window)).toEqual('object');
         });
@@ -882,14 +887,17 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
     });
 
     describe("Ext.isIterable", function() {
-        var LengthyClass = function(){},
-            ClassWithItem = function(){},
-            LengthyItemClass = function(){};
+        var LengthyClass = function() {},
+            ClassWithItem = function() {},
+            LengthyItemClass = function() {};
 
         LengthyClass.prototype.length = 1;
-        ClassWithItem.prototype.item = function(){};
+
+        ClassWithItem.prototype.item = function() {};
+
         LengthyItemClass.prototype.length = 1;
-        LengthyItemClass.prototype.item = function(){};
+
+        LengthyItemClass.prototype.item = function() {};
 
         it("should return true with an arguments object", function() {
             expect(Ext.isIterable(arguments)).toBe(true);
@@ -946,27 +954,27 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
         it("should return true with html collection", function() {
             expect(Ext.isIterable(document.images)).toBe(true);
         });
-        
-        it("should return false for a function", function(){
-            expect(Ext.isIterable(function(){})).toBe(false);
+
+        it("should return false for a function", function() {
+            expect(Ext.isIterable(function() {})).toBe(false);
         });
 
         it('should return false for objects with a length property', function() {
-            expect(Ext.isIterable({length:1})).toBe(false);
+            expect(Ext.isIterable({ length: 1 })).toBe(false);
         });
 
         it('should return false for objects with an item property', function() {
-            expect(Ext.isIterable({item: function(){}})).toBe(false);
+            expect(Ext.isIterable({ item: function() {} })).toBe(false);
         });
-        
+
         it('should return false for objects with a length prototype property', function() {
             expect(Ext.isIterable(new LengthyClass())).toBe(false);
         });
-        
+
         it('should return false for objects with an item prototype property', function() {
             expect(Ext.isIterable(new ClassWithItem())).toBe(false);
         });
-        
+
         it('should return false for objects with item and length prototype properties', function() {
             expect(Ext.isIterable(new LengthyItemClass())).toBe(false);
         });
@@ -1053,6 +1061,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
             var C = Ext.extend(Object, {
                 length: 1
             });
+
             expect(Ext.isArray(new C())).toBe(false);
         });
 
@@ -1278,6 +1287,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
 
         it("should return false with TextNode", function() {
             var textNode = document.createTextNode('foobar');
+
             document.body.appendChild(textNode);
             expect(Ext.isElement(textNode)).toBe(false);
             document.body.removeChild(textNode);
@@ -1336,7 +1346,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
 
     describe("Ext.isFunction", function() {
         it("should return true with anonymous function", function() {
-            expect(Ext.isFunction(function(){})).toBe(true);
+            expect(Ext.isFunction(function() {})).toBe(true);
         });
 
         it("should return true with new Function syntax", function() {
@@ -1350,7 +1360,9 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
         it("should return true with instance function", function() {
             var stupidClass = function() {},
                 testObject;
+
             stupidClass.prototype.testMe = function() {};
+
             testObject = new stupidClass();
 
             expect(Ext.isFunction(testObject.testMe)).toBe(true);
@@ -1412,21 +1424,21 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
         it("should return false with node list", function() {
             expect(Ext.isFunction(document.getElementsByTagName('body'))).toBe(false);
         });
-        
+
         it("should return true with a function from a document where Ext isn't loaded", function() {
             var iframe = document.createElement('iframe'),
                 win, doc;
 
             iframe.src = 'about:blank';
             document.body.appendChild(iframe);
-            
+
             doc = iframe.contentDocument ? iframe.contentDocument : (iframe.contentWindow.document || iframe.document);
             win = iframe.contentWindow || iframe.window;
-            
+
             doc.open();
             doc.write('<html><head><script type="text/javascript">function customFn() {}</script></head><body></body></html>');
             doc.close();
-            
+
             expect(Ext.isFunction(win.customFn)).toBe(true);
             document.body.removeChild(iframe);
             iframe = doc = win = null;
@@ -1750,6 +1762,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
 
         it("should return false with object instance", function() {
             var stupidClass = function() {};
+
             expect(Ext.isPrimitive(new stupidClass())).toBe(false);
         });
 
@@ -1771,7 +1784,8 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
             expect(Ext.isString(String(""))).toBe(true);
         });
 
-        it("should return false with new String() syntax", function() { //should return an object that wraps the primitive
+        // should return an object that wraps the primitive
+        it("should return false with new String() syntax", function() {
             expect(Ext.isString(new String(""))).toBe(false);
         });
 
@@ -1855,6 +1869,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
 
         it("should return true with TextNode", function() {
             var textNode = document.createTextNode('foobar');
+
             document.body.appendChild(textNode);
             expect(Ext.isTextNode(textNode)).toBe(true);
             document.body.removeChild(textNode);
@@ -1869,7 +1884,8 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
         });
 
         it("should clone an array", function() {
-            var array = [2,'5',[1,3,4]];
+            var array = [2, '5', [1, 3, 4]];
+
             clone = Ext.clone(array);
             expect(clone).toEqual(array);
             expect(clone).not.toBe(array);
@@ -1882,20 +1898,23 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
                 },
                 b: 2
             };
+
             clone = Ext.clone(object);
             expect(clone).toEqual(object);
             expect(clone).not.toBe(object);
         });
 
-        it("should clone a date", function(){
+        it("should clone a date", function() {
             var date = new Date();
+
             clone = Ext.clone(date);
             expect(clone).toEqual(date);
             expect(clone).not.toBe(date);
         });
 
-        it("should clone a dom node", function(){
+        it("should clone a dom node", function() {
             var node = document.createElement('DIV');
+
             document.body.appendChild(node);
             clone = Ext.clone(node);
             expect(clone.tagName).toEqual(clone.tagName);
@@ -1903,13 +1922,13 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
             expect(clone).not.toBe(node);
             document.body.removeChild(node);
         });
-        
+
         it("should return null for null items", function() {
-        	expect(Ext.clone(null)).toBeNull();
+            expect(Ext.clone(null)).toBeNull();
         });
-        
+
         it("should return undefined for undefined items", function() {
-        	expect(Ext.clone(undefined)).toBeUndefined();
+            expect(Ext.clone(undefined)).toBeUndefined();
         });
 
         it("should not copy Ext.enumerable properties onto cloned object", function() {
@@ -1917,17 +1936,19 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
         });
 
         it("should copy same-named Ext.enumerable property onto cloned object", function() {
-            expect(Ext.clone({toString: true}).hasOwnProperty('toString')).toBe(true);
-            expect(Ext.clone({toString: true}).hasOwnProperty('valueOf')).toBe(false);
+            expect(Ext.clone({ toString: true }).hasOwnProperty('toString')).toBe(true);
+            expect(Ext.clone({ toString: true }).hasOwnProperty('valueOf')).toBe(false);
         });
     });
 
     describe('getUniqueGlobalNamespace', function() {
         it("should return an unique global namespace", function() {
             expect(Ext.getUniqueGlobalNamespace()).toBe("ExtBox1");
+
             try {
                 delete window.ExtBox1;
-            } catch(e) {
+            }
+            catch (e) {
                 window.ExtBox1 = undefined;
             }
         });
@@ -1947,6 +1968,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
                 elevated = true;
                 ret = fn.apply(scope, args || []);
                 elevated = false;
+
                 return ret;
             };
         });
@@ -2048,13 +2070,13 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
             expect(args[2][0]).toBe(fakeEvent);
         });
 
-        describe('timer callbacks', function () {
+        describe('timer callbacks', function() {
             var called = false,
                 elevatedCalled = false,
                 elevatedScope, elevatedArgs, fn;
 
-            beforeEach(function () {
-                fn = function () {
+            beforeEach(function() {
+                fn = function() {
                     elevatedCalled = elevated;
                     elevatedScope = this;
                     elevatedArgs = Ext.Array.slice(arguments, 0);
@@ -2063,7 +2085,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
                 };
             });
 
-            afterEach(function () {
+            afterEach(function() {
                 fn = null;
                 called = elevatedCalled = false;
             });
@@ -2167,7 +2189,7 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
             it("should call the elevateFunction when Ext.interval() is called", function() {
                 var args, interval;
 
-                fn = Ext.Function.createSequence(fn, function () {
+                fn = Ext.Function.createSequence(fn, function() {
                     Ext.uninterval(interval);
                 });
 
@@ -2226,61 +2248,61 @@ topSuite("Ext", ["Ext.event.publisher.Dom", "Ext.event.publisher.Gesture"], func
             });
         });
     });
-    
+
     describe("Ext.ariaWarn", function() {
         var logSpy, logMsgs;
-        
+
         beforeEach(function() {
             logMsgs = [];
             logSpy = spyOn(Ext.log, 'warn').andCallFake(function() {
                 logMsgs = [].concat(logMsgs, Array.prototype.slice.apply(arguments));
             });
-            
+
             // Ext.ariaWarn will be set to Ext.emptyFn before running the tests, to avoid
             // massive console fallout; we need to save the original fn for testing.
             Ext.ariaWarn = Ext._ariaWarn;
             Ext.ariaWarn.first = false;
         });
-        
+
         afterEach(function() {
             logSpy = logMsgs = null;
             Ext.ariaWarn = Ext.emptyFn;
         });
-        
+
         it("should provide additional instructions the first time", function() {
             Ext.ariaWarn('foo');
-            
+
             expect(logMsgs.join(' ')).toMatch(/can be suppressed/);
         });
-        
+
         it("should only provide additional instructions the first time", function() {
             Ext.ariaWarn('foo');
             Ext.ariaWarn('bar');
-            
+
             var match = logMsgs.join(' ').match(/can be suppressed/g);
-            
+
             expect(match.length).toBe(1);
         });
-        
-        it("should not warn when Ext.enableAria = false", function () {
+
+        it("should not warn when Ext.enableAria = false", function() {
             var orig = Ext.enableAria;
-            
+
             Ext.enableAria = false;
             Ext.ariaWarn('blerg');
-            
+
             expect(logSpy).not.toHaveBeenCalled();
-            
+
             Ext.enableAria = orig;
         });
-        
+
         it("should not warn when Ext.slicer = true", function() {
             var orig = Ext.slicer;
-            
+
             Ext.slicer = true;
             Ext.ariaWarn('throbbe');
-            
+
             expect(logSpy).not.toHaveBeenCalled();
-            
+
             Ext.slicer = orig;
         });
     });

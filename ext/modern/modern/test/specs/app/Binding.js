@@ -10,7 +10,7 @@ topSuite("Ext.app.bind.Binding", ['Ext.app.ViewModel', 'Ext.Panel', 'Ext.field.T
     // which then contaminated the supposedly incoming value from the VM.
     // resulting in the field being empty.
     describe('TextField', function() {
-        it("should not push a non-confgured null initial value out to a two way bind", function () {
+        it("should not push a non-confgured null initial value out to a two way bind", function() {
             component = Ext.create('Ext.Panel', {
                 renderTo: document.body,
                 viewModel: {
@@ -32,6 +32,7 @@ topSuite("Ext.app.bind.Binding", ['Ext.app.ViewModel', 'Ext.Panel', 'Ext.field.T
             viewModel.notify();
 
             var textfield = Ext.getCmp('test-textfield');
+
             expect(textfield.getValue()).toBe('test value');
         });
     });
@@ -45,7 +46,8 @@ topSuite("Ext.app.bind.Binding", ['Ext.app.ViewModel', 'Ext.Panel', 'Ext.field.T
                 lazy: false
             }
         });
-        it("should not push a non-confgured null initial value out to a two way bind", function () {
+
+        it("should not push a non-confgured null initial value out to a two way bind", function() {
             component = Ext.create('Ext.Panel', {
                 renderTo: document.body,
                 viewModel: {
@@ -67,6 +69,7 @@ topSuite("Ext.app.bind.Binding", ['Ext.app.ViewModel', 'Ext.Panel', 'Ext.field.T
             viewModel.notify();
 
             var textfield = Ext.getCmp('test-textfield');
+
             expect(textfield.getValue()).toBe('test value');
         });
     });

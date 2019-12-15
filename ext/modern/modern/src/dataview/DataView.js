@@ -216,17 +216,18 @@ Ext.define('Ext.dataview.DataView', {
      * @since 6.5.0
      */
 
-    constructor: function (config) {
+    constructor: function(config) {
         if (config && config.useComponents) {
             //<debug>
             if (this.self !== Ext.dataview.DataView) {
                 Ext.raise('The useComponents config has been replaced by Ext.dataview.Component');
             }
+
             Ext.log.warn('The useComponents config has been replaced by Ext.dataview.Component');
             //</debug>
 
-            // For compatibility sake, we can redirect the creation to the right
-            // place:
+            // For compatibility sake, we can redirect the creation to the right place:
+            // eslint-disable-next-line dot-notation
             return new Ext.dataview['Component'](config); // hide usage from Cmd
         }
 
@@ -243,7 +244,7 @@ Ext.define('Ext.dataview.DataView', {
         return Array.prototype.slice.call(this.getFastItems());
     },
 
-    onStoreAdd: function (store, records, index) {
+    onStoreAdd: function(store, records, index) {
         this.callParent(arguments);
 
         this.renderItems(index, index + records.length);
@@ -253,10 +254,20 @@ Ext.define('Ext.dataview.DataView', {
         this.removeItems(index, index + records.length);
     },
 
+    /**
+     * This method is called when rendering view item elements. It returns the {@link #cfg!itemCls}.
+     *
+     * It may be overridden to allow subclasses to interrogate the item data object to produce
+     * whatever classes are needed.
+     */
+    getItemClass: function(data) {
+        return this.getItemCls();
+    },
+
     privates: {
         dirtyCls: Ext.baseCSSPrefix + 'dirty',
 
-        changeItem: function (recordIndex) {
+        changeItem: function(recordIndex) {
             var me = this,
                 dataItems = me.dataItems,
                 item = dataItems[recordIndex],
@@ -264,7 +275,7 @@ Ext.define('Ext.dataview.DataView', {
                 storeCount = me.store.getCount(),
                 options = {
                     isFirst: !recordIndex,
-                    isLast: recordIndex === storeCount -1,
+                    isLast: recordIndex === storeCount - 1,
                     item: item,
                     record: record,
                     recordIndex: recordIndex
@@ -283,7 +294,7 @@ Ext.define('Ext.dataview.DataView', {
             }
         },
 
-        createDataItem: function (index, record) {
+        createDataItem: function(index, record) {
             var me = this,
                 store = me.store,
                 data = me.gatherData(record, index),
@@ -309,12 +320,12 @@ Ext.define('Ext.dataview.DataView', {
 
             this.callParent();
         },
-		
+
         resetSelection: function(records) {
             this.setItemSelection(records, false);
         },
-		
-        doRefresh: function (scrollToTop) {
+
+        doRefresh: function(scrollToTop) {
             var me = this,
                 records = me.dataRange.records,
                 storeCount = records.length,
@@ -336,10 +347,10 @@ Ext.define('Ext.dataview.DataView', {
                 // Stashes the NavigationModel's location for restoration after refresh
                 restoreFocus = me.saveFocusState();
                 me.hideEmptyText();
-                
+
                 // Resets Store's selection
                 me.resetSelection(records);
-                	
+
                 if (itemCount > storeCount) {
                     me.removeItems(storeCount, itemCount);
                     // We've removed extra items, but all remaining items need to
@@ -359,6 +370,7 @@ Ext.define('Ext.dataview.DataView', {
                 if (me.hasSelection()) {
                     me.setItemSelection(me.getSelections(), true);
                 }
+
                 restoreFocus();
             }
         },
@@ -367,10 +379,10 @@ Ext.define('Ext.dataview.DataView', {
             return this.getRenderTarget().dom.childNodes;
         },
 
-        getItemElementConfig: function (index, data, store) {
+        getItemElementConfig: function(index, data, store) {
             var me = this,
                 result = {
-                    cls: me.baseCls + '-item ' + (me.getItemCls() || ''),
+                    cls: me.baseCls + '-item ' + (me.getItemClass(data) || ''),
                     html: me.renderItemTpl(index, data, store)
                 };
 
@@ -386,7 +398,7 @@ Ext.define('Ext.dataview.DataView', {
             return result;
         },
 
-        removeItems: function (from, to) {
+        removeItems: function(from, to) {
             var me = this,
                 items = me.dataItems.splice(from, to - from),
                 i;
@@ -396,7 +408,7 @@ Ext.define('Ext.dataview.DataView', {
             }
         },
 
-        renderItems: function (from, to) {
+        renderItems: function(from, to) {
             var me = this,
                 dataItems = me.dataItems,
                 records = me.dataRange.records,
@@ -413,7 +425,7 @@ Ext.define('Ext.dataview.DataView', {
                 // We don't have a data item rendered beyond this range, so either
                 // before should be null (to append to parentNode) or it should be
                 // the last scrollDock:'end'
-                before = me.findTailItem(/*rawElements=*/true);
+                before = me.findTailItem(/* rawElements= */true);
                 before = before && before.el.dom;
             }
 
@@ -426,7 +438,7 @@ Ext.define('Ext.dataview.DataView', {
             dataItems.splice.apply(dataItems, args);
         },
 
-        renderItemTpl: function (index, data, store) {
+        renderItemTpl: function(index, data, store) {
             var itemTpl = this.getItemTpl(),
                 parent = store.getData().items,
                 value;
@@ -434,30 +446,31 @@ Ext.define('Ext.dataview.DataView', {
             data.xcount = typeof data.xcount === 'number' ? data.xcount : store.getCount();
             data.xindex = typeof data.xindex === 'number' ? data.xindex : index;
 
-            value = itemTpl.apply(data, parent, index+1, parent.length);
+            value = itemTpl.apply(data, parent, index + 1, parent.length);
 
             value = (value == null) ? '' : String(value);
 
             return value || this.getEmptyItemText();
         },
 
-        syncItemRecord: function (options) {
+        syncItemRecord: function(options) {
             var me = this,
                 item = options.item,
+                itemFly = Ext.fly(item),
                 record = options.record,
                 store = me.store,
                 recordIndex = options ? options.recordIndex : store.indexOf(record),
-                data = me.gatherData(record, recordIndex),
-                dirtyCls = me.$dirty;
+                data = me.gatherData(record, recordIndex);
 
             item.innerHTML = me.renderItemTpl(recordIndex, data, store);
             item.setAttribute('data-recordid', record.internalId);
             item.setAttribute('data-recordindex', recordIndex);
 
-            Ext.fly(item).toggleCls(me.dirtyCls, record.dirty);
+            itemFly.toggleCls(me.dirtyCls, record.dirty);
+            itemFly.toggleCls(me.selectedCls, me.getSelectable().isRowSelected(record));
         },
 
-        traverseItem: function (item, delta) {
+        traverseItem: function(item, delta) {
             var me = this,
                 items = me.getRenderTarget().dom.childNodes,
                 next = null,
@@ -472,6 +485,7 @@ Ext.define('Ext.dataview.DataView', {
                 }
 
                 i = Array.prototype.indexOf.call(items, dom);
+
                 if (i > -1) {
                     next = items[i + delta] || null;
 

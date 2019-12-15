@@ -7,6 +7,8 @@
 Ext.define('Ext.data.Group', {
     extend: 'Ext.util.Group',
 
+    isDataGroup: true,
+
     store: null,
 
     /**

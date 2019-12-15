@@ -30,6 +30,7 @@ topSuite("Ext.app.bind.Binding", ['Ext.app.ViewModel', 'Ext.panel.Panel', 'Ext.f
         viewModel.notify();
 
         var textfield = Ext.getCmp('test-textfield');
+
         expect(textfield.getValue()).toBe('test value');
     });
 });

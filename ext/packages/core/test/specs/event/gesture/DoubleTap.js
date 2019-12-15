@@ -1,6 +1,4 @@
-/* global expect, Ext, xdescribe, jasmine, describe */
-
-// describe("Ext.event.gesture.DoubleTap", function () {});
+// describe("Ext.event.gesture.DoubleTap", function() {});
 // The above appeases Cmd's parser to associate spec run results with files.
 
 // Double Tap doesn't currently work in IE8 because 2 clicks in rapid succession will
@@ -155,7 +153,7 @@
     it("should fire a doubletap if done after a touchend is vetoed", function() {
         targetEl.on('touchend', function(e) {
             e.stopEvent();
-        }, null, {single: true});
+        }, null, { single: true });
 
         runs(function() {
             start({ id: 1, x: 400, y: 10 });

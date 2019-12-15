@@ -70,7 +70,6 @@ Ext.define('Ext.field.Spinner', {
          * `true` if autorepeating should start slowly and accelerate.
          */
         accelerateOnTapHold: true,
-        
 
         /**
          * @cfg {Boolean} cycle
@@ -126,10 +125,10 @@ Ext.define('Ext.field.Spinner', {
      */
     classCls: Ext.baseCSSPrefix + 'spinnerfield',
     groupedButtonsCls: Ext.baseCSSPrefix + 'grouped-buttons',
-    
+
     initElement: function() {
         this.callParent();
-        
+
         this.inputElement.dom.readOnly = true;
     },
 
@@ -169,42 +168,42 @@ Ext.define('Ext.field.Spinner', {
 
     onKeyDown: function(e) {
         var limit;
-        
+
         if (this.getInputType() !== 'number') {
             switch (e.getKey()) {
                 case e.UP:
                     e.stopEvent();
                     this.spin(false);
                     break;
-                
+
                 case e.DOWN:
                     e.stopEvent();
                     this.spin(true);
                     break;
-                
+
                 // Home and End keys: https://www.w3.org/TR/wai-aria-practices-1.1/#spinbutton
                 case e.HOME:
                     limit = this.getMinValue();
-                    
+
                     if (limit != null) {
                         e.stopEvent();
                         this.setValue(limit);
                     }
-                    
+
                     break;
-                
+
                 case e.END:
                     limit = this.getMaxValue();
-                    
+
                     if (limit != null) {
                         e.stopEvent();
                         this.setValue(limit);
                     }
-                    
+
                     break;
             }
         }
-        
+
         this.callParent([e]);
     },
 
@@ -245,13 +244,14 @@ Ext.define('Ext.field.Spinner', {
             value = originalValue + stepValue;
         }
 
-        //if cycle is true, then we need to check fi the value hasn't changed and we cycle the value
+        // if cycle is true, then we need to check fi the value hasn't 
+        // changed and we cycle the value
         if (me.getCycle()) {
-            if (originalValue == minValue && value < minValue) {
+            if (originalValue === minValue && value < minValue) {
                 value = maxValue;
             }
 
-            if (originalValue == maxValue && value > maxValue) {
+            if (originalValue === maxValue && value > maxValue) {
                 value = minValue;
             }
         }
@@ -270,6 +270,8 @@ Ext.define('Ext.field.Spinner', {
         me.fireEvent('spin', me, value, direction);
         me.fireEvent('spin' + direction, me, value);
     },
+
+    rawToValue: Ext.emptyFn,
 
     privates: {
         spinning: false,

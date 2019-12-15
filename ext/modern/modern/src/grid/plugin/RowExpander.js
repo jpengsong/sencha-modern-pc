@@ -7,11 +7,31 @@
  *         fields: ['fname', 'lname', 'talent', 'powers'],
  *         groupField: 'powers',
  *         data: [
- *             { 'fname': 'Barry',  'lname': 'Allen', 'talent': 'Speedster', 'powers': true  },
- *             { 'fname': 'Oliver', 'lname': 'Queen', 'talent': 'Archery', 'powers': false  },
- *             { 'fname': 'Kara',   'lname': 'Zor-El', 'talent': 'All', 'powers': true  },
- *             { 'fname': 'Helena', 'lname': 'Bertinelli', 'talent': 'Weapons Expert', 'powers': false  },
- *             { 'fname': 'Hal',    'lname': 'Jordan', 'talent': 'Willpower', 'powers': true  },
+ *             { 'fname': 'Barry',
+ *               'lname': 'Allen', 
+ *               'talent': 'Speedster',
+ *               'powers': true
+ *             },
+ *             { 'fname': 'Oliver',
+ *               'lname': 'Queen',
+ *               'talent': 'Archery',
+ *               'powers': false
+ *             },
+ *             { 'fname': 'Kara',
+ *               'lname': 'Zor-El', 
+ *               'talent': 'All',
+ *               'powers': true
+ *             },
+ *             { 'fname': 'Helena',
+ *               'lname': 'Bertinelli', 
+ *               'talent': 'Weapons Expert',
+ *               'powers': false
+ *             },
+ *             { 'fname': 'Hal',
+ *               'lname': 'Jordan', 
+ *               'talent': 'Willpower',
+ *               'powers': true
+ *             },
  *         ]
  *     });
  *
@@ -72,7 +92,7 @@ Ext.define('Ext.grid.plugin.RowExpander', {
 
     expanderSelector: '.' + Ext.baseCSSPrefix + 'expandercell .' + Ext.baseCSSPrefix + 'icon-el',
 
-    init: function (grid) {
+    init: function(grid) {
         grid.setVariableHeights(true);
         this.setGrid(grid);
     },
@@ -84,6 +104,7 @@ Ext.define('Ext.grid.plugin.RowExpander', {
         if (col && !grid.destroying) {
             grid.unregisterColumn(col, true);
         }
+
         this.callParent();
     },
 
@@ -91,7 +112,7 @@ Ext.define('Ext.grid.plugin.RowExpander', {
         return Ext.factory(Ext.apply({}, column), null, oldColumn);
     },
 
-    updateGrid: function (grid) {
+    updateGrid: function(grid) {
         var me = this;
 
         if (grid) {

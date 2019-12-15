@@ -63,10 +63,19 @@
  * specify other parameters (see {@link #method!submit} for details), including callback
  * functions for success and failure. These functions are used to take some action in your
  * app after your data has been saved to the server side.
+ *
+ * When doing a form submit, each field's value is serialized using the serializer for the
+ * {@link Ext.data.Model} used when `modelValidation` is enabled, or using the serializer
+ * specified in the form field's {@link Ext.field.Field#dataType} config.
  */
 Ext.define('Ext.form.Panel', {
     extend: 'Ext.field.Panel',
     xtype: 'formpanel',
+    isFormPanel: true,
+
+    mixins: [
+        'Ext.mixin.FieldDefaults'
+    ],
 
     alternateClassName: 'Ext.form.FormPanel',
 
@@ -155,12 +164,26 @@ Ext.define('Ext.form.Panel', {
          * data instead of when the form was first created.
          */
         trackResetOnLoad: false
+
+        /**
+         * @cfg {Object} fieldDefaults
+         * The properties in this object are used as default config values for field instance.
+         */
+
+        /**
+         * @cfg {Boolean} jsonSubmit
+         * If set to true, the field values are sent as JSON in the request body.
+         * All of the field values, plus any additional params configured via
+         * {@link #baseParams} and/or the `options` to {@link #submit},
+         * will be included in the values POSTed in the body of the request.
+         */
     },
 
-    getTemplate: function () {
+    getTemplate: function() {
         var template = this.callParent();
 
-        // Added a submit input for standard form submission. This cannot have "display: none;" or it will not work
+        // Added a submit input for standard form submission. This cannot have "display: none;"
+        // or it will not work
         template.push({
             tag: 'input',
             type: 'submit',
@@ -173,19 +196,20 @@ Ext.define('Ext.form.Panel', {
     /**
      * @private
      */
-    initialize: function () {
+    initialize: function() {
         this.callParent();
         this.element.on('submit', 'onSubmit', this);
     },
 
-    applyEnctype: function (newValue) {
-        var  form = this.element.dom || null;
+    applyEnctype: function(newValue) {
+        var form = this.element.dom || null;
 
         if (form) {
             if (newValue) {
-                form.setAttribute("enctype", newValue);
-            } else {
-                form.setAttribute("enctype");
+                form.setAttribute('enctype', newValue);
+            }
+            else {
+                form.setAttribute('enctype');
             }
         }
     },
@@ -193,17 +217,18 @@ Ext.define('Ext.form.Panel', {
     /**
      * @private
      */
-    onSubmit: function (event) {
+    onSubmit: function(event) {
         var me = this;
 
         if (event && !me.getStandardSubmit()) {
             event.stopEvent();
-        } else {
+        }
+        else {
             this.submit(null, event);
         }
     },
 
-    updateSubmitOnAction: function (value) {
+    updateSubmitOnAction: function(value) {
         this[value ? 'on' : 'un']({
             action: 'onFieldAction',
             scope: this
@@ -213,7 +238,7 @@ Ext.define('Ext.form.Panel', {
     /**
      * @private
      */
-    onFieldAction: function (field) {
+    onFieldAction: function(field) {
         if (this.getSubmitOnAction()) {
             field.blur();
             this.submit();
@@ -318,38 +343,48 @@ Ext.define('Ext.form.Panel', {
      * @return {Ext.data.Connection} The request object if the {@link #standardSubmit}
      * config is false. If `standardSubmit` is `true`, then the return value is undefined.
      */
-    submit: function (options, e) {
+    submit: function(options, e) {
+        var me = this,
+            formValues, form;
+
         options = options || {};
 
-        var me = this,
-            formValues = me.getValues(me.getStandardSubmit() || !options.submitDisabled),
-            form = me.element.dom || {};
+        formValues = me.getSubmitValues({
+            enabled: me.getStandardSubmit() || !options.submitDisabled
+        });
+        form = me.element.dom || {};
 
         if (this.getEnableSubmissionForm()) {
             form = this.createSubmissionForm(form, formValues);
         }
 
         options = Ext.apply({
-            url : me.getUrl() || form.action,
+            url: me.getUrl() || form.action,
             submit: false,
             form: form,
-            method : me.getMethod() || form.method || 'post',
-            autoAbort : false,
-            params : null,
-            waitMsg : null,
-            headers : null,
-            success : null,
-            failure : null
+            method: me.getMethod() || form.method || 'post',
+            autoAbort: false,
+            params: null,
+            waitMsg: null,
+            headers: null,
+            success: null,
+            failure: null
         }, options || {});
 
-        return me.fireAction('beforesubmit', [me, formValues, options, e], 'doBeforeSubmit', null, null, 'after');
+        return me.fireAction('beforesubmit',
+                             [me, formValues, options, e],
+                             'doBeforeSubmit',
+                             null,
+                             null,
+                             'after'
+        );
     },
 
     privates: {
         /**
          * @private
          */
-        applyExtraParams: function (options) {
+        applyExtraParams: function(options) {
             var form = options.form,
                 params = Ext.merge(this.getBaseParams() || {}, options.params),
                 name, input;
@@ -366,7 +401,7 @@ Ext.define('Ext.form.Panel', {
         /**
          * @private
          */
-        beforeAjaxSubmit: function (form, options, successFn, failureFn) {
+        beforeAjaxSubmit: function(form, options, successFn, failureFn) {
             var me = this,
                 url = options.url || me.getUrl(),
                 request = Ext.merge({}, {
@@ -374,25 +409,38 @@ Ext.define('Ext.form.Panel', {
                     timeout: me.getTimeout() * 1000,
                     form: form,
                     scope: me
-                }, options);
+                }, options),
+                formValues = {},
+                jsonSubmit = me.jsonSubmit,
+                paramsKey = 'params',
+                contentType = 'x-www-form-urlencoded; charset=UTF-8',
+                original, placeholder, formData;
 
             delete request.success;
             delete request.failure;
 
-            request.params = Ext.merge(me.getBaseParams() || {}, options.params);
+            if (jsonSubmit) {
+                paramsKey = 'jsonData';
+                contentType = 'json';
+                formValues = me.getSubmitValues({
+                    enabled: me.getStandardSubmit() || !options.submitDisabled
+                });
+                delete request.params;
+                delete request.form;
+            }
+
+            request[paramsKey] = Ext.merge({}, me.getBaseParams(), options.params, formValues);
             request.header = Ext.apply({
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                'Content-Type': 'application/' + contentType
             }, options.headers || {});
 
-            request.callback = function (callbackOptions, success, response) {
+            request.callback = function(callbackOptions, success, response) {
                 var responseText = response.responseText,
                     responseXML = response.responseXML,
                     statusResult = Ext.data.request.Ajax.parseStatus(response.status, response);
 
                 if (form.$fileswap) {
-                    var original, placeholder;
-
-                    Ext.each(form.$fileswap, function (item) {
+                    Ext.each(form.$fileswap, function(item) {
                         original = item.original;
                         placeholder = item.placeholder;
 
@@ -413,34 +461,45 @@ Ext.define('Ext.form.Panel', {
                 if (success) {
                     if (statusResult && responseText && responseText.length === 0) {
                         success = true;
-                    } else {
+                    }
+                    else {
                         if (!Ext.isEmpty(response.responseBytes)) {
                             success = statusResult.success;
-                        } else {
-                            if (Ext.isString(responseText) && response.request.options.responseType === "text") {
+                        }
+                        else {
+                            if (
+                                Ext.isString(responseText) &&
+                                response.request.options.responseType === 'text'
+                            ) {
                                 response.success = true;
-                            } else if (Ext.isString(responseText)) {
+                            }
+                            else if (Ext.isString(responseText)) {
                                 try {
                                     response = Ext.decode(responseText);
-                                } catch (e) {
+                                }
+                                catch (e) {
                                     response.success = false;
                                     response.error = e;
                                     response.message = e.message;
                                 }
-                            } else if (Ext.isSimpleObject(responseText)) {
+                            }
+                            else if (Ext.isSimpleObject(responseText)) {
                                 response = responseText;
-                                Ext.applyIf(response, {success: true});
+                                Ext.applyIf(response, { success: true });
                             }
 
                             if (!Ext.isEmpty(responseXML)) {
                                 response.success = true;
                             }
+
                             success = !!response.success;
                         }
                     }
+
                     if (success) {
                         successFn(response, responseText);
-                    } else {
+                    }
+                    else {
                         failureFn(response, responseText);
                     }
                 }
@@ -452,15 +511,16 @@ Ext.define('Ext.form.Panel', {
             if (Ext.feature.has.XHR2 && request.xhr2) {
                 delete request.form;
 
-                var formData = request.data = new FormData(form);
+                formData = request.data = new FormData(form);
 
                 if (request.params) {
-                    Ext.iterate(request.params, function (name, value) {
+                    Ext.iterate(request.params, function(name, value) {
                         if (Ext.isArray(value)) {
-                            Ext.each(value, function (v) {
+                            Ext.each(value, function(v) {
                                 formData.append(name, v);
                             });
-                        } else {
+                        }
+                        else {
                             formData.append(name, value);
                         }
                     });
@@ -475,7 +535,7 @@ Ext.define('Ext.form.Panel', {
         /**
          * @private
          */
-        beforeDirectSubmit: function (api, form, options, successFn, failureFn) {
+        beforeDirectSubmit: function(api, form, options, successFn, failureFn) {
             var me = this,
                 submit;
 
@@ -487,19 +547,21 @@ Ext.define('Ext.form.Panel', {
             submit = api.submit;
 
             if (!submit) {
-                Ext.raise("Cannot find Ext Direct API method for submit action");
+                Ext.raise('Cannot find Ext Direct API method for submit action');
             }
 
-            return submit(form, function (data, response, success) {
+            return submit(form, function(data, response, success) {
                 me.setMasked(false);
 
                 if (success) {
                     if (data.success) {
                         successFn(response, data);
-                    } else {
+                    }
+                    else {
                         failureFn(response, data);
                     }
-                } else {
+                }
+                else {
                     failureFn(response, data);
                 }
             }, me);
@@ -508,17 +570,18 @@ Ext.define('Ext.form.Panel', {
         /**
          * @private
          */
-        beforeStandardSubmit: function (form, options) {
+        beforeStandardSubmit: function(form, options) {
+            var field, fields, ln, body, i;
+
             if (options.url && Ext.isEmpty(form.action)) {
                 form.action = options.url;
             }
 
-            // Spinner fields must have their components enabled *before* submitting or else the value
-            // will not be posted.
-            var fields = this.query('spinnerfield'),
-                ln = fields.length,
-                body = document.body,
-                i, field;
+            // Spinner fields must have their components enabled *before*
+            // submitting or else the value will not be posted.
+            fields = this.query('spinnerfield');
+            ln = fields.length;
+            body = document.body;
 
             for (i = 0; i < ln; i++) {
                 field = fields[i];
@@ -542,7 +605,7 @@ Ext.define('Ext.form.Panel', {
         /**
          * @private
          */
-        createSubmissionForm: function (form, values) {
+        createSubmissionForm: function(form, values) {
             var fields = this.getFields(),
                 name, input, field, fileTrigger, inputDom;
 
@@ -550,10 +613,10 @@ Ext.define('Ext.form.Panel', {
                 form = form.cloneNode(false);
 
                 for (name in values) {
-                    input = document.createElement("input");
-                    input.setAttribute("type", "text");
-                    input.setAttribute("name", name);
-                    input.setAttribute("value", values[name]);
+                    input = document.createElement('input');
+                    input.setAttribute('type', 'text');
+                    input.setAttribute('name', name);
+                    input.setAttribute('value', values[name]);
                     form.appendChild(input);
                 }
             }
@@ -561,20 +624,25 @@ Ext.define('Ext.form.Panel', {
             for (name in fields) {
                 if (fields.hasOwnProperty(name)) {
                     field = fields[name];
-                    if(field.isFile) {
+
+                    if (field.isFile) {
                         // The <input type="file"> of a FileField is its "file" trigger button.
                         fileTrigger = field.getTriggers().file;
                         inputDom = fileTrigger && fileTrigger.getComponent().buttonElement.dom;
 
                         if (inputDom) {
-                            if(!form.$fileswap) form.$fileswap = [];
+                            if (!form.$fileswap) {
+                                form.$fileswap = [];
+                            }
+
                             input = inputDom.cloneNode(true);
                             inputDom.parentNode.insertBefore(input, inputDom.nextSibling);
                             form.appendChild(inputDom);
-                            form.$fileswap.push({original: inputDom, placeholder: input});
+                            form.$fileswap.push({ original: inputDom, placeholder: input });
                         }
-                    } else if(field.isPassword) {
-                        if(field.getInputType() !== "password") {
+                    }
+                    else if (field.isPassword) {
+                        if (field.getInputType() !== 'password') {
                             field.setRevealed(false);
                         }
                     }
@@ -587,49 +655,53 @@ Ext.define('Ext.form.Panel', {
         /**
          * @private
          */
-        doBeforeSubmit: function (me, formValues, options) {
+        doBeforeSubmit: function(me, formValues, options) {
             var form = options.form || {},
                 multipartDetected = false,
-                ret;
+                api, scope, ret, successFn, failureFn, waitMsg;
 
             if (this.getMultipartDetection() === true) {
-                this.getFields(false).forEach(function (field) {
+                this.getFields(false).forEach(function(field) {
                     if (field.isFile === true) {
                         multipartDetected = true;
+
                         return false;
                     }
                 });
 
                 if (multipartDetected) {
-                    form.setAttribute("enctype", "multipart/form-data");
+                    form.setAttribute('enctype', 'multipart/form-data');
                 }
             }
 
             if (options.enctype) {
-                form.setAttribute("enctype", options.enctype);
+                form.setAttribute('enctype', options.enctype);
             }
 
             if (me.getStandardSubmit()) {
                 ret = me.beforeStandardSubmit(form, options);
             }
             else {
-                var api = me.getApi(),
-                    scope = options.scope || me,
-                    failureFn = function (response, responseText) {
-                        if (Ext.isFunction(options.failure)) {
-                            options.failure.call(scope, me, response, responseText);
-                        }
+                api = me.getApi();
+                scope = options.scope || me;
 
-                        me.fireEvent('exception', me, response);
-                    },
-                    successFn = function (response, responseText) {
-                        if (Ext.isFunction(options.success)) {
-                            options.success.call(options.scope || me, me, response, responseText);
-                        }
+                failureFn = function(response, responseText) {
+                    if (Ext.isFunction(options.failure)) {
+                        options.failure.call(scope, me, response, responseText);
+                    }
 
-                        me.fireEvent('submit', me, response);
-                    },
-                    waitMsg = options.waitMsg;
+                    me.fireEvent('exception', me, response);
+                };
+
+                successFn = function(response, responseText) {
+                    if (Ext.isFunction(options.success)) {
+                        options.success.call(options.scope || me, me, response, responseText);
+                    }
+
+                    me.fireEvent('submit', me, response);
+                };
+
+                waitMsg = options.waitMsg;
 
                 if (options.waitMsg) {
                     if (typeof waitMsg === 'string') {

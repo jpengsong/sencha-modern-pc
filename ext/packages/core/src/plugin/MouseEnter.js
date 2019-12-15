@@ -39,21 +39,25 @@ Ext.define('Ext.plugin.MouseEnter', {
     /**
      * @cfg {Object} [scope] The scope (`this` pointer) in which to execute the callback(s).
      */
-    
+
     /**
      * @cfg {Number} [delay] The time in milliseconds to wait before processing the mouse event.
-     * This can prevent unwanted processing when the user swipes the mouse rapidly across the component.
+     * This can prevent unwanted processing when the user swipes the mouse rapidly across
+     * the component.
      */
 
-    init: function (component) {
+    init: function(component) {
         //<debug>
         if (!this.delegate) {
             Ext.raise('mouseenter plugin must be configured with a delegate selector');
         }
+
         if (!this.handler) {
             Ext.raise('mouseenter plugin must be configured with handler callback');
         }
         //</debug>
+
+        // eslint-disable-next-line vars-on-top
         var me = this,
             listeners = {
                 mouseover: 'onMouseEvent',
@@ -100,7 +104,8 @@ Ext.define('Ext.plugin.MouseEnter', {
             if (me.delay) {
                 Ext.undefer(me.mouseEventTimer);
                 me.mouseEventTimer = Ext.defer(me.handleMouseEvent, me.delay, me, [e, delegate]);
-            } else {
+            }
+            else {
                 me.handleMouseEvent(e, delegate);
             }
         }
@@ -111,12 +116,13 @@ Ext.define('Ext.plugin.MouseEnter', {
 
         if (e.type === 'mouseover') {
             Ext.callback(me.handler, null, [e, delegate], 0, me.cmp, me.scope);
-        } else if (me.leaveHandler) {
+        }
+        else if (me.leaveHandler) {
             Ext.callback(me.leaveHandler, null, [e, delegate], 0, me.cmp, me.scope);
         }
     },
 
-    destroy: function () {
+    destroy: function() {
         Ext.destroy(this.mouseListener);
         this.callParent();
     }

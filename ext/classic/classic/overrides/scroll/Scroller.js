@@ -3,9 +3,9 @@
  */
 Ext.define(null, {
     override: 'Ext.scroll.Scroller',
-    
+
     compatibility: Ext.isIE8,
-    
+
     privates: {
         // Important note: this code had to be copied as a whole
         // because the scrollLeft assignment trickery only works
@@ -24,9 +24,11 @@ Ext.define(null, {
 
                 if (xInf || yInf) {
                     maxPosition = me.getMaxPosition();
+
                     if (xInf) {
                         x = maxPosition.x;
                     }
+
                     if (yInf) {
                         y = maxPosition.y;
                     }
@@ -53,19 +55,24 @@ Ext.define(null, {
                             scrollLeft: x
                         }
                     }, animate);
+
                     deferred = new Ext.Deferred();
                     callback = animate.callback;
+
                     animate.callback = function() {
                         if (callback) {
                             callback.call(animate.scope || Ext.global, arguments);
                         }
+
                         // The callback will be called if the element is destroyed
                         if (me.destroyed) {
                             deferred.reject();
-                        } else {
+                        }
+                        else {
                             deferred.resolve();
                         }
                     };
+
                     element.animate(animate);
                     ret = deferred.promise;
                 }
@@ -82,44 +89,47 @@ Ext.define(null, {
                     if ((x != null && x !== 0) && y != null) {
                         me.deferDomScroll = true;
                     }
-                    
+
                     if (y != null) {
                         dom.scrollTop = y;
                     }
-                    
+
                     if (x != null) {
                         dom.scrollLeft = x;
                     }
-                    
+
                     if (me.deferDomScroll) {
                         me.deferDomScroll = false;
-                        
-                        // Reading the DOM makes sure the second assignment
-                        // will fire the event.
+
+                        // Reading the DOM makes sure the second assignment will fire the event.
+                        // eslint-disable-next-line no-unused-expressions
                         +dom.scrollLeft;
                         dom.scrollLeft = x;
+                        // eslint-disable-next-line no-unused-expressions
                         +dom.scrollTop;
                         dom.scrollTop = y;
                     }
+
                     ret = Ext.Deferred.getCachedResolved();
                 }
 
                 // Our position object will need refreshing before returning.
                 me.positionDirty = true;
-            } else {
+            }
+            else {
                 ret = Ext.Deferred.getCachedRejected();
             }
 
             return ret;
         },
-        
+
         onDomScroll: function() {
             var me = this;
-            
+
             if (me.deferDomScroll) {
                 return;
             }
-            
+
             me.callParent();
         }
     }

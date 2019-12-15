@@ -1,9 +1,7 @@
 topSuite("Ext.chart.axis.layout.Continuous", ['Ext.chart.*', 'Ext.data.ArrayStore'], function() {
-    var proto = Ext.chart.axis.layout.Continuous.prototype;
+    describe('snapEnds', function() {
 
-    describe('snapEnds', function () {
-
-        it("should use majorTickSteps value instead of segmenter.diff method to determine the number of steps", function () {
+        it("should use majorTickSteps value instead of segmenter.diff method to determine the number of steps", function() {
             var chart = new Ext.chart.CartesianChart({
                 renderTo: Ext.getBody(),
                 width: 200,
@@ -37,15 +35,16 @@ topSuite("Ext.chart.axis.layout.Continuous", ['Ext.chart.*', 'Ext.data.ArrayStor
                     yField: 'value'
                 }]
             });
+
             chart.performLayout();
 
             var numericAxis = chart.getAxis(0);
+
             var layoutContext = numericAxis.getSprites()[0].getLayoutContext();
+
             expect(layoutContext.majorTicks.steps).toEqual(10);
 
             chart.destroy();
         });
-
     });
-
 });

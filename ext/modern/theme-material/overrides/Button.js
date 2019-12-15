@@ -9,16 +9,18 @@ Ext.define('Ext.theme.material.Button', {
 
     materialIconRe: /^md-icon[-|_](.*)/,
 
-    applyIconCls: function (classList) {
+    applyIconCls: function(classList) {
+        var len, i, cls, materialMatch;
+
         if (classList) {
             classList = Ext.dom.Element.splitCls(classList);
 
-            var len = classList.length,
-                i, cls, materialMatch;
+            len = classList.length;
 
             for (i = 0; i < len; i++) {
                 cls = classList[i];
                 materialMatch = cls && cls.match(this.materialIconRe);
+
                 if (materialMatch && materialMatch.length > 1) {
                     classList.unshift('md-icon');
                     break;

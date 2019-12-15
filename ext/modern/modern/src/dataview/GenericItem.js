@@ -24,19 +24,19 @@ Ext.define('Ext.dataview.GenericItem', {
         recordIndex: null
     },
 
-    updateRecordIndex: function (value) {
+    updateRecordIndex: function(value) {
         this.el.dom.setAttribute('data-recordindex', value);
     },
 
-    getDataview: function () {
+    getDataview: function() {
         return this.parent; // backwards compat
     },
 
-    updateInnerCls: function (cls, old) {
+    updateInnerCls: function(cls, old) {
         this.innerElement.replaceCls(old, cls);
     },
 
-    updateContentCls: function (cls, old) {
+    updateContentCls: function(cls, old) {
         this.getInnerHtmlElement().replaceCls(old, cls);
     },
 
@@ -45,7 +45,7 @@ Ext.define('Ext.dataview.GenericItem', {
 
         dirtyCls: Ext.baseCSSPrefix + 'dirty',
 
-        augmentToolHandler: function (tool, args) {
+        augmentToolHandler: function(tool, args) {
             // args = [ dataitem, tool, ev ]   ==>   [ dataitem, info ]
             var me = this;
 
@@ -60,7 +60,7 @@ Ext.define('Ext.dataview.GenericItem', {
 
         handleEmptyText: function(html) {
             var parent;
-            
+
             if (!html) {
                 parent = this.parent;
 
@@ -68,13 +68,13 @@ Ext.define('Ext.dataview.GenericItem', {
                     html = parent.getEmptyItemText();
                 }
             }
-        
+
             return html;
         },
 
         syncDirty: function(record) {
             var me = this,
-                dirty = record.dirty;
+                dirty = record ? record.dirty : false;
 
             if (dirty !== me.$dirty) {
                 me.toggleCls(me.dirtyCls, dirty);

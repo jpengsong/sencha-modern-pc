@@ -21,7 +21,9 @@ topSuite("Ext.data.summary.Count", ['Ext.data.Model'], function() {
                 if (typeof data[0] === 'number') {
                     data = Ext.Array.map(data, function(n) {
                         var o = {};
+
                         o[property] = n;
+
                         return o;
                     });
                 }
@@ -32,6 +34,7 @@ topSuite("Ext.data.summary.Count", ['Ext.data.Model'], function() {
                     return new M(item);
                 });
             }
+
             return aggregator.calculate(data, property, withRecords ? 'data' : '', begin, end);
         }
 

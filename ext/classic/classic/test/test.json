@@ -20,6 +20,7 @@
             "../../../../../packages/d3/test/specs-classic",
             "../../../../packages/ux/test/specs",
             "../../../../packages/ux/test/classic/specs",
+            "../../../../../packages/calendar/test/specs",
             "../../../../../packages/pivot/test/specs",
             "../../../../../packages/pivot/test/classic/specs",
             "../../../../../packages/exporter/test/specs",

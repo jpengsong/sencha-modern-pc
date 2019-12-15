@@ -3,7 +3,8 @@
  * in a popup dialog.
  *
  * The key difference between ActionSheet and {@link Ext.Sheet} is that ActionSheets are
- * docked at the bottom of the screen, and the {@link #defaultType} is set to {@link Ext.Button button}.
+ * docked at the bottom of the screen, and the {@link #defaultType} is set to
+ * {@link Ext.Button button}.
  *
  * ## Example
  *
@@ -30,9 +31,9 @@
  * ## Edge Menus
  * Action Sheets can be used with {@link Ext.Viewport#setMenu}. They can be linked with
  * any side of the screen (top, left, bottom or right). To use this menu you will call various
- * menu related functions on the {@link Ext.Viewport Viewport} such as {@link Ext.Viewport#showMenu},
- * {@link Ext.Viewport#hideMenu}, {@link Ext.Viewport#toggleMenu}, {@link Ext.Viewport#hideOtherMenus},
- * or {@link Ext.Viewport#hideAllMenus}.
+ * menu related functions on the {@link Ext.Viewport Viewport} such as
+ * {@link Ext.Viewport#showMenu}, {@link Ext.Viewport#hideMenu}, {@link Ext.Viewport#toggleMenu},
+ * {@link Ext.Viewport#hideOtherMenus}, or {@link Ext.Viewport#hideAllMenus}.
  *
  *      @example
  *      var menu = Ext.create({

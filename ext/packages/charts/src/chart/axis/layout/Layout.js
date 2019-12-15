@@ -15,7 +15,7 @@ Ext.define('Ext.chart.axis.layout.Layout', {
         axis: null
     },
 
-    constructor: function (config) {
+    constructor: function(config) {
         this.mixins.observable.constructor.call(this, config);
     },
 
@@ -23,7 +23,7 @@ Ext.define('Ext.chart.axis.layout.Layout', {
      * Processes the data of the series bound to the axis.
      * @param {Ext.chart.series.Series} series The bound series.
      */
-    processData: function (series) {
+    processData: function(series) {
         var me = this,
             axis = me.getAxis(),
             direction = axis.getDirection(),
@@ -32,9 +32,10 @@ Ext.define('Ext.chart.axis.layout.Layout', {
 
         if (series) {
             series['coordinate' + direction]();
-        } else {
+        }
+        else {
             for (i = 0, ln = boundSeries.length; i < ln; i++) {
-                boundSeries[i]['coordinate' + direction]()
+                boundSeries[i]['coordinate' + direction]();
             }
         }
     },
@@ -43,7 +44,7 @@ Ext.define('Ext.chart.axis.layout.Layout', {
      * Calculates the position of major ticks for the axis.
      * @param {Object} context
      */
-    calculateMajorTicks: function (context) {
+    calculateMajorTicks: function(context) {
         var me = this,
             attr = context.attr,
             range = attr.max - attr.min,
@@ -63,7 +64,7 @@ Ext.define('Ext.chart.axis.layout.Layout', {
      * Calculates the position of sub ticks for the axis.
      * @param {Object} context
      */
-    calculateMinorTicks: function (context) {
+    calculateMinorTicks: function(context) {
         if (this.snapMinorEnds) {
             context.minorTicks = this.snapMinorEnds(context);
         }
@@ -74,7 +75,7 @@ Ext.define('Ext.chart.axis.layout.Layout', {
      * @param {Object} context
      * @return {*}
      */
-    calculateLayout: function (context) {
+    calculateLayout: function(context) {
         var me = this,
             attr = context.attr;
 
@@ -84,6 +85,7 @@ Ext.define('Ext.chart.axis.layout.Layout', {
 
         if (attr.majorTicks) {
             me.calculateMajorTicks(context);
+
             if (attr.minorTicks) {
                 me.calculateMinorTicks(context);
             }
@@ -107,7 +109,7 @@ Ext.define('Ext.chart.axis.layout.Layout', {
      * @param {Number} trimMin
      * @param {Number} trimMax
      */
-    trimByRange: function (context, ticks, trimMin, trimMax) {
+    trimByRange: function(context, ticks, trimMin, trimMax) {
         var segmenter = context.segmenter,
             unit = ticks.unit,
             beginIdx = segmenter.diff(ticks.from, trimMin, unit),
@@ -125,6 +127,7 @@ Ext.define('Ext.chart.axis.layout.Layout', {
 
         if (ticks.from < trimMin) {
             ticks.from = segmenter.add(ticks.from, begin * ticks.step, unit);
+
             while (ticks.from < trimMin) {
                 begin++;
                 ticks.from = segmenter.add(ticks.from, ticks.step, unit);

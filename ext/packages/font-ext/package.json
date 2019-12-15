@@ -1,6 +1,10 @@
 {
-    "name": "@extjs/ext-react-font-ext",
-    "version": "6.5.3.57",
+    "name": "@extjs/ext-font-ext",
+    "ext-react-name": "@extjs/ext-react-font-ext",
+    "ext-name": "@extjs/ext-font-ext",
+    "SenchaExtName": "@sencha/ext-font-ext",
+    "SenchaExtReactName": "@sencha/ext-react-font-ext",
+    "version": "7.0.0.156",
     "sencha": {
         "name": "font-ext",
         "namespace": "Ext",
@@ -11,8 +15,8 @@
         "creator": "Sencha",
         "summary": "Extra font icons",
         "detailedDescription": "Simple web font with additional icons in the Font Awesome style",
-        "version": "6.5.3.57",
-        "compatVersion": "6.0.0",
+        "version": "7.0.0.156",
+        "compatVersion": "7.0.0",
         "format": "1",
         "output": "${framework.dir}/build/packages/${package.name}",
         "local": true,

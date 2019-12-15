@@ -3,7 +3,7 @@
  * Ext.Date.parse("2006-01-15 3:20:01 FM", "Y-m-d g:i:s A")           -> Sun Jan 15 2006 15:20:01
  */
 
-if (Ext.util && Ext.util.Format) { 
+if (Ext.util && Ext.util.Format) {
 
     Ext.define('Ext.locale.sv_SE.util.Format', {
         override: 'Ext.util.Format',

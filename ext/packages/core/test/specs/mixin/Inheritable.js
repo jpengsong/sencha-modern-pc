@@ -1,7 +1,4 @@
-topSuite("Ext.mixin.Inheritable", [
-    'Ext.Component',
-    'Ext.Container'
-], function() {
+topSuite("Ext.mixin.Inheritable", ['Ext.Component', 'Ext.Container'], function() {
     var ct;
 
     function makeCt(cfg) {
@@ -45,9 +42,11 @@ topSuite("Ext.mixin.Inheritable", [
 
                 constructor: function(config) {
                     this.foo = new Ext.Component();
+
                     this.foo.getRefOwner = function() {
                         return ct;
                     };
+
                     this.callParent([config]);
                 },
 
@@ -115,6 +114,7 @@ topSuite("Ext.mixin.Inheritable", [
 
         it("should return false for a component outside the hierarchy", function() {
             var c = new Ext.Component();
+
             makeCt();
             expect(ct.isAncestor(c)).toBe(false);
             c.destroy();
@@ -154,9 +154,11 @@ topSuite("Ext.mixin.Inheritable", [
 
                 constructor: function(config) {
                     this.foo = new Ext.Component();
+
                     this.foo.getRefOwner = function() {
                         return ct;
                     };
+
                     this.callParent([config]);
                 },
 
@@ -224,6 +226,7 @@ topSuite("Ext.mixin.Inheritable", [
 
         it("should return false for a component outside the hierarchy", function() {
             var c = new Ext.Component();
+
             makeCt();
             expect(c.isDescendantOf(ct)).toBe(false);
             c.destroy();

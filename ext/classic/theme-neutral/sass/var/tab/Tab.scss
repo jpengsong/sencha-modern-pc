@@ -823,7 +823,7 @@ $tab-plain-closable-icon-glyph-color-disabled: dynamic($tab-plain-closable-icon-
  * @var {string/list}
  * Glyph for the Tab close icon when {@link Global_CSS#$enable-font-icons} is `true`.
  */
-$tab-closable-icon-glyph: dynamic($fa-var-close 12px $font-icon-font-family);
+$tab-closable-icon-glyph: dynamic($fa-var-times 12px $font-icon-font-family);
 
 /**
  * @var {boolean}

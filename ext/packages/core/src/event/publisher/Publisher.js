@@ -5,7 +5,7 @@
 Ext.define('Ext.event.publisher.Publisher', {
 
     isEventPublisher: true,
-    
+
     $vetoClearingPrototypeOnDestroy: true,
 
     /**
@@ -49,6 +49,7 @@ Ext.define('Ext.event.publisher.Publisher', {
         if (!type) {
             Ext.raise("Event publisher '" + me.$className + "' defined without a 'type' property.");
         }
+
         if (me.self.instance) {
             Ext.raise("Cannot create multiple instances of '" + me.$className + "'. " +
                 "Use '" + me.$className + ".instance' to retrieve the singleton instance.");
@@ -82,14 +83,16 @@ Ext.define('Ext.event.publisher.Publisher', {
 
     //<debug>
     subscribe: function() {
-        Ext.raise("Ext.event.publisher.Publisher subclass '" + this.$className + '" has no subscribe method.');
+        Ext.raise("Ext.event.publisher.Publisher subclass '" + this.$className +
+                  '" has no subscribe method.');
     },
 
     unsubscribe: function() {
-        Ext.raise("Ext.event.publisher.Publisher subclass '" + this.$className + '" has no unsubscribe method.');
+        Ext.raise("Ext.event.publisher.Publisher subclass '" + this.$className +
+                  '" has no unsubscribe method.');
     },
     //</debug>
-    
+
     fire: function(element, eventName, args) {
         var event;
 

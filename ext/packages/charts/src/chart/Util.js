@@ -14,7 +14,7 @@ Ext.define('Ext.chart.Util', {
      * @param {Number[]} range
      * @param {Number[]} data
      */
-    expandRange: function (range, data) {
+    expandRange: function(range, data) {
         var length = data.length,
             min = range[0],
             max = range[1],
@@ -22,14 +22,17 @@ Ext.define('Ext.chart.Util', {
 
         for (i = 0; i < length; i++) {
             value = data[i];
+
             // `null` is a "finite" number in JavaScript
             // and greater than any negative number.
             if (value == null || !isFinite(value)) {
                 continue;
             }
+
             if (value < min || !isFinite(min)) {
                 min = value;
             }
+
             if (value > max || !isFinite(max)) {
                 max = value;
             }
@@ -70,10 +73,13 @@ Ext.define('Ext.chart.Util', {
      * @param {Number} [padding=0.5]
      * @return {Number[]}
      */
-    validateRange: function (range, defaultRange, padding) {
+    validateRange: function(range, defaultRange, padding) {
+        var isFin0, isFin1;
+
         defaultRange = defaultRange || this.defaultRange.slice();
+
         if (!(padding === 0 || padding > 0)) {
-            padding = 0.5
+            padding = 0.5;
         }
 
         if (!range || range.length !== 2) {
@@ -85,6 +91,7 @@ Ext.define('Ext.chart.Util', {
         if (!range[0]) {
             range[0] = 0;
         }
+
         if (!range[1]) {
             range[1] = 0;
         }
@@ -94,6 +101,7 @@ Ext.define('Ext.chart.Util', {
                 range[0] - padding,
                 range[0] + padding
             ];
+
             // In case the range values are at Infinity, the expansion above by the value
             // of 'padding' won't do us much good, so we still have to fall back to the
             // 'defaultRange'.
@@ -101,10 +109,11 @@ Ext.define('Ext.chart.Util', {
                 return defaultRange;
             }
         }
+
         // Same sign infinities are ruled out at this point.
 
-        var isFin0 = isFinite(range[0]);
-        var isFin1 = isFinite(range[1]);
+        isFin0 = isFinite(range[0]);
+        isFin1 = isFinite(range[1]);
 
         if (!isFin0 && !isFin1) {
             return defaultRange;
@@ -113,11 +122,13 @@ Ext.define('Ext.chart.Util', {
 
         if (isFin0 && !isFin1) {
             range[1] = range[0] +
-                Ext.Number.sign(range[1]) * (defaultRange[1] - defaultRange[0]);
-        } else if (isFin1 && !isFin0) {
-            range[0] = range[1] +
-                Ext.Number.sign(range[0]) * (defaultRange[1] - defaultRange[0]);
+                       Ext.Number.sign(range[1]) * (defaultRange[1] - defaultRange[0]);
         }
+        else if (isFin1 && !isFin0) {
+            range[0] = range[1] +
+                       Ext.Number.sign(range[0]) * (defaultRange[1] - defaultRange[0]);
+        }
+
         // All infinities are ruled out at this point.
 
         return [
@@ -126,18 +137,19 @@ Ext.define('Ext.chart.Util', {
         ];
     },
 
-    applyAnimation: function (animation, oldAnimation) {
+    applyAnimation: function(animation, oldAnimation) {
         if (!animation) {
             animation = {
                 duration: 0
             };
-        } else if (animation === true) {
+        }
+        else if (animation === true) {
             animation = {
                 easing: 'easeInOut',
                 duration: 500
             };
         }
+
         return oldAnimation ? Ext.apply({}, animation, oldAnimation) : animation;
     }
-
 });

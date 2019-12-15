@@ -1,7 +1,8 @@
 /**
  * A simple class used to mask any {@link Ext.Container}.
  *
- * This should rarely be used directly, instead look at the {@link Ext.Container#masked} configuration.
+ * This should rarely be used directly, instead look at the {@link Ext.Container#masked}
+ * configuration.
  *
  * ## Example
  *
@@ -67,17 +68,35 @@ Ext.define('Ext.Mask', {
         me.callParent();
         me.element.on('tap', 'onTap', me);
         me.on('hide', 'onHide', me);
+        me.on('show', 'onShow', me);
     },
 
-    onHide: function(){
+    onHide: function(me) {
+        var firstChild;
+
+        // Enable Tabbing only if tabbing is disabled
+        if (me.sender && me.tabbingDisabled) {
+            me.sender.enableTabbing();
+            me.tabbingDisabled = false;
+        }
+
         Ext.util.InputBlocker.unblockInputs();
 
         // Oh how I loves the Android
         if (Ext.browser.is.AndroidStock4 && Ext.os.version.getMinor() === 0) {
-            var firstChild = this.element.getFirstChild();
+            firstChild = this.element.getFirstChild();
+
             if (firstChild) {
                 firstChild.redraw();
             }
+        }
+    },
+
+    onShow: function(me) {
+        // Disable Tabbing only if tabbing is enabled
+        if (me.sender && !me.tabbingDisabled) {
+            me.sender.disableTabbing();
+            me.tabbingDisabled = true;
         }
     },
 

@@ -5,7 +5,8 @@
  * If failed it will call the {@link #feeder} to create that object. If there are too many
  * objects in the container, the old ones are removed.
  * 
- * __Note:__ This is not using a Least Recently Used policy due to simplicity and performance consideration.
+ * __Note:__ This is not using a Least Recently Used policy due to simplicity and performance
+ * consideration.
  * @private
  */
 Ext.define('Ext.draw.LimitedCache', {
@@ -22,7 +23,7 @@ Ext.define('Ext.draw.LimitedCache', {
          * Function that generates the object when look-up failed.
          * @return {Number}
          */
-        feeder: function () {
+        feeder: function() {
             return 0;
         },
 
@@ -35,7 +36,7 @@ Ext.define('Ext.draw.LimitedCache', {
 
     cache: null,
 
-    constructor: function (config) {
+    constructor: function(config) {
         this.cache = {};
         this.cache.list = [];
         this.cache.tail = 0;
@@ -47,7 +48,7 @@ Ext.define('Ext.draw.LimitedCache', {
      * @param {String} id
      * @return {Object}
      */
-    get: function (id) {
+    get: function(id) {
         // TODO: Implement cache hit optimization
         var cache = this.cache,
             limit = this.getLimit(),
@@ -57,24 +58,28 @@ Ext.define('Ext.draw.LimitedCache', {
         if (cache[id]) {
             return cache[id].value;
         }
+
         if (cache.list[cache.tail]) {
             delete cache[cache.list[cache.tail].cacheId];
         }
+
         cache[id] = cache.list[cache.tail] = {
             value: feeder.apply(scope, Array.prototype.slice.call(arguments, 1)),
             cacheId: id
         };
         cache.tail++;
+
         if (cache.tail === limit) {
             cache.tail = 0;
         }
+
         return cache[id].value;
     },
 
     /**
      * Clear all the objects.
      */
-    clear: function () {
+    clear: function() {
         this.cache = {};
         this.cache.list = [];
         this.cache.tail = 0;

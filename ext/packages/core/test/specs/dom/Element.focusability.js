@@ -10,7 +10,7 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
         FIELDSET: true
     },
     topEl, el, dom;
-    
+
     function createElement(useFly, markup, selector) {
         if (topEl) {
             if (topEl.isFly) {
@@ -21,29 +21,31 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                 topEl = topEl.destroy();
             }
         }
-        
+
         if (Ext.isArray(markup)) {
             markup = markup.join('');
         }
-        
+
         var topDom = Ext.dom.Helper.insertFirst(Ext.getBody(), markup);
-        
+
         topEl = useFly ? new Ext.dom.Fly().attach(topDom) : new Ext.dom.Element(topDom);
-        
+
         el = selector ? new Ext.dom.Fly().attach(topEl.down(selector, true)) : topEl;
         dom = el.dom;
     }
-    
+
     function syncFocusAndExpect(el, shouldBeFocused) {
         var want = el.isElement ? el.dom : el,
             have;
-        
+
         // IE8 will throw if the node is not focusable
         try {
             want.focus();
         }
-        catch (e) {}
-        
+        catch (e) {
+            // ignore
+        }
+
         // There is a strange inconsistent bug in IE where trying to focus a freshly added node
         // might fail if it's a textbox, textarea, or an iframe. Trying to focus it the second time
         // usually succeeds; and if an element is not focusable at all it won't help.
@@ -53,12 +55,14 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
             try {
                 want.focus();
             }
-            catch (e) {};
+            catch (e) {
+                // ignore
+            }
         }
-        
+
         // NOT document.activeElement here! See comment in getActiveElement!
         have = Ext.Element.getActiveElement();
-        
+
         if (shouldBeFocused) {
             expect(have).toBe(want);
         }
@@ -66,20 +70,20 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
             expect(have).not.toBe(want);
         }
     }
-    
+
     function focusAndExpect(el, wantFocus) {
         return syncFocusAndExpect(el, wantFocus);
     }
-    
+
     beforeAll(function() {
         // We don't need tons of focusenter/focusleave invocations here
         Ext.event.publisher.Focus.$suppressEvents = true;
     });
-    
+
     afterAll(function() {
         delete Ext.event.publisher.Focus.$suppressEvents;
     });
-    
+
     afterEach(function() {
         if (topEl) {
             if (topEl.isFly) {
@@ -95,60 +99,60 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
 
         topEl = el = dom = null;
     });
-    
+
     function createTopSuite(useFly) {
         describe("methods using " + (useFly ? 'Ext.fly()' : 'new Ext.dom.Element()'), function() {
             describe("focusables", function() {
                 function createFocusableSpecs(name, beforeFn, wantFocusable) {
                     return describe(name, function() {
                         beforeEach(beforeFn || function() {});
-                        
+
                         it("isFocusable should return " + wantFocusable, function() {
                             expect(el.isFocusable()).toBe(wantFocusable);
                         });
-                        
+
                         it("element should " + (wantFocusable ? "" : "not ") + "focus", function() {
                             focusAndExpect(el, wantFocusable);
                         });
                     });
                 }
-                
+
                 // Keep in mind that we're testing focusability here, not tabbability!
                 // Elements with tabIndex < should be programmatically focusable!
                 function createStandardSuite(wantFocusable) {
                     createFocusableSpecs(
                         "with tabIndex < 0",
-                        function() { dom.setAttribute('tabIndex', -1) },
+                        function() { dom.setAttribute('tabIndex', -1); },
                         wantFocusable
                     );
-                    
+
                     createFocusableSpecs(
                         "with tabIndex = 0",
-                        function() { dom.setAttribute('tabIndex', 0) },
+                        function() { dom.setAttribute('tabIndex', 0); },
                         wantFocusable
                     );
-                    
+
                     createFocusableSpecs(
                         "with tabIndex > 0",
-                        function() { dom.setAttribute('tabIndex', 1) },
+                        function() { dom.setAttribute('tabIndex', 1); },
                         wantFocusable
                     );
                 }
-                
+
                 function createVisibilitySuites(clipMode, debug) {
                     function createVisibilitySpecs(mode, wantFocusable) {
                         var realMode = Ext.Element[mode];
-                        
+
                         return describe("hidden with mode: " + mode, function() {
                             beforeEach(function() {
                                 el.setVisibilityMode(realMode);
                                 el.setVisible(false);
                             });
-                            
+
                             createStandardSuite(!!wantFocusable);
                         });
                     }
-                    
+
                     // When an element is hidden it should not be focusable,
                     // *unless* it is hidden with CLIP visibility mode.
                     // Clipping is used specifically for visually hiding elements
@@ -157,14 +161,14 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                     createVisibilitySpecs('VISIBILITY');
                     createVisibilitySpecs('DISPLAY');
                     createVisibilitySpecs('OFFSETS');
-                    
+
                     if (clipMode !== 'skip') {
                         clipMode = clipMode != null ? clipMode : false;
-                    
+
                         createVisibilitySpecs('CLIP', clipMode);
                     }
                 }
-                
+
                 describe("isFocusable", function() {
                     describe("absolutely non-focusable elements", function() {
                         function createSuite(name, elConfig) {
@@ -172,112 +176,112 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                                 beforeEach(function() {
                                     createElement(useFly, elConfig);
                                 });
-                                
+
                                 createFocusableSpecs("with no tabIndex", null, false);
-                                
+
                                 createStandardSuite(false);
-                                
+
                                 createVisibilitySuites();
                             });
                         }
-                        
+
                         createSuite('hidden input', { tag: 'input', type: 'hidden' });
                     });
-                    
+
                     describe("naturally focusable elements", function() {
                         function createSuite(name, elConfig) {
                             return describe(name, function() {
                                 beforeEach(function() {
                                     createElement(useFly, elConfig);
                                 });
-                                
+
                                 describe("no special attributes", function() {
                                     it("is true with no tabIndex on " + name, function() {
                                         expect(el.isFocusable()).toBe(true);
                                     });
-                                    
+
                                     it("is true for " + name + " with tabIndex = 0", function() {
                                         dom.tabIndex = 0;
-                                        
+
                                         expect(el.isFocusable()).toBe(true);
                                     });
-                                    
+
                                     it("is true for " + name + " with tabIndex > 0", function() {
                                         dom.tabIndex = 42;
-                                        
+
                                         expect(el.isFocusable()).toBe(true);
                                     });
-                                    
+
                                     it("is true for " + name + " with tabIndex < 0", function() {
                                         dom.tabIndex = -100;
-                                        
+
                                         expect(el.isFocusable()).toBe(true);
                                     });
-                                    
+
                                     createVisibilitySuites(true);
                                 });
-                                
-                                if ( disableableTags[ (elConfig.tag || 'div').toUpperCase() ] ) {
+
+                                if (disableableTags[(elConfig.tag || 'div').toUpperCase()]) {
                                     describe("disabled=true " + name, function() {
                                         beforeEach(function() {
                                             dom.setAttribute('disabled', true);
                                         });
-                                        
+
                                         it("is false with no tabIndex", function() {
                                             expect(el.isFocusable()).toBe(false);
                                         });
-                                        
+
                                         it("is false with tabIndex < 0", function() {
                                             dom.tabIndex = -42;
-                                            
+
                                             expect(el.isFocusable()).toBe(false);
                                         });
-                                        
+
                                         it("is false with tabIndex = 0", function() {
                                             dom.setAttribute('tabIndex', 0);
-                                            
+
                                             expect(el.isFocusable()).toBe(false);
                                         });
-                                        
+
                                         it("is false with tabIndex > 0", function() {
                                             dom.tabIndex = 42;
-                                            
+
                                             expect(el.isFocusable()).toBe(false);
                                         });
-                                        
+
                                         // disabled and invisible should not be focusable
                                         // even when clipped
                                         createVisibilitySuites(false);
                                     });
                                 }
-                                
+
                                 describe("editable " + name, function() {
                                     beforeEach(function() {
                                         dom.setAttribute('contenteditable', true);
                                     });
-                                    
+
                                     it("is true for " + name + " with no tabIndex", function() {
                                         expect(el.isFocusable()).toBeTruthy();
                                     });
-                                    
+
                                     it("is true for " + name + " with tabIndex < 0", function() {
                                         dom.tabIndex = -1;
-                                        
+
                                         expect(el.isFocusable()).toBeTruthy();
                                     });
-                                    
+
                                     it("is true for " + name + " with tabIndex = 0", function() {
                                         dom.tabIndex = 0;
-                                        
+
                                         expect(el.isFocusable()).toBeTruthy();
                                     });
-                                    
+
                                     it("is true for " + name + " with tabIndex > 0", function() {
                                         dom.tabIndex = 1;
-                                        
+
                                         expect(el.isFocusable()).toBeTruthy();
                                     });
-                                    
+
                                     // editable but invisible should not be focusable
                                     // TODO This is a crude hack! Safari 7 fails to focus
                                     // editable buttons (can buttons be editable in Safari?)
@@ -287,20 +291,20 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                                 });
                             });
                         }
-                        
+
                         createSuite('anchor with href', { tag: 'a', href: '#' });
                         createSuite('button', { tag: 'button' });
                         createSuite('iframe', { tag: 'iframe' });
                         createSuite('bare input', { tag: 'input' });
                         createSuite('button input', { tag: 'input', type: 'button' });
                         createSuite('text input', { tag: 'input', type: 'text' });
-                        
+
                         // File input consistently fails to focus programmatically in Firefox.
                         // I guess that could be a lame security feature, or just a bug.
                         if (!Ext.isGecko) {
                             createSuite('file input', { tag: 'input', type: 'file' });
                         }
-                        
+
                         createSuite('image input', { tag: 'input', type: 'image' });
                         createSuite('password input', { tag: 'input', type: 'password' });
                         createSuite('submit input', { tag: 'input', type: 'submit' });
@@ -308,7 +312,7 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                         createSuite('radio button', { tag: 'input', type: 'radio' });
                         createSuite('select', { tag: 'select', cn: [{ tag: 'option', value: 'foo' }] });
                         createSuite('textarea', { tag: 'textarea' });
-                        
+
                         // There are various failures in IE9-11 and Edge that we don't care enough
                         // to clean up because <embed> and <object> are rarely used.
                         if (!Ext.isIE && !Ext.isEdge) {
@@ -319,7 +323,7 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                                 type: 'image/gif',
                                 src: 'resources/images/foo.gif'
                             });
-        
+
                             createSuite('object', {
                                 tag: 'object',
                                 style: 'height: 100px; width: 100px',
@@ -328,93 +332,93 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                             });
                         }
                     });
-                    
+
                     if (Ext.isIE) {
                         describe("documentElement", function() {
                             it("should report as focusable", function() {
                                 var focusable = Ext.fly(document.documentElement).isFocusable();
-                                
+
                                 expect(focusable).toBe(true);
                             });
                         });
                     }
-                    
+
                     describe("non-naturally focusable elements", function() {
                         function createSuite(name, elConfig, selector, testClipping) {
                             testClipping = testClipping == null ? true : testClipping;
-                            
+
                             return describe(name, function() {
                                 beforeEach(function() {
                                     createElement(useFly, elConfig, selector);
                                 });
-                                
+
                                 describe("no special attributes", function() {
                                     it("is false with no tabIndex", function() {
                                         expect(el.isFocusable()).toBe(false);
                                     });
-                                    
+
                                     it("is true with tabIndex < 0", function() {
                                         dom.setAttribute('tabIndex', '-1');
-                                        
+
                                         expect(el.isFocusable()).toBe(true);
                                     });
-                                    
+
                                     it("is true with tabIndex = 0", function() {
                                         dom.tabIndex = 0;
-                                        
+
                                         expect(el.isFocusable()).toBe(true);
                                     });
-                                    
+
                                     it("is true with tabIndex > 0", function() {
                                         dom.setAttribute('tabIndex', 10);
-                                        
+
                                         expect(el.isFocusable()).toBe(true);
                                     });
-                                    
+
                                     // Should be focusable when clipped
                                     createVisibilitySuites(testClipping ? true : 'skip');
                                 });
-                                
+
                                 describe("editable " + name, function() {
                                     beforeEach(function() {
                                         dom.setAttribute('contenteditable', true);
                                     });
-                                    
+
                                     it("is true with no tabIndex", function() {
                                         expect(el.isFocusable()).toBe(true);
                                     });
-                                    
+
                                     it("is true with tabIndex < 0", function() {
                                         dom.tabIndex = -1;
-                                        
+
                                         expect(el.isFocusable()).toBe(true);
                                     });
-                                    
+
                                     it("is true with tabIndex = 0", function() {
                                         dom.tabIndex = 0;
-                                        
+
                                         expect(el.isFocusable()).toBe(true);
                                     });
-                                    
+
                                     it("is true with tabIndex > 0", function() {
                                         dom.tabIndex = 1;
-                                        
+
                                         expect(el.isFocusable()).toBe(true);
                                     });
-                                    
+
                                     // editable but invisible should not be focusable
                                     // unless clipped
                                     createVisibilitySuites(testClipping ? true : 'skip');
                                 });
                             });
                         }
-                        
+
                         createSuite('anchor w/o href', { tag: 'a' });
                         createSuite('div', { tag: 'div' });
                         createSuite('span', { tag: 'span' });
                         createSuite('p', { tag: 'p' });
                         createSuite('ul li', { tag: 'ul', cn: [{ tag: 'li' }] }, 'li');
-                        createSuite('ol li', { tag: 'ol', cn: [{ tag: 'li' }] }, 'li' );
+                        createSuite('ol li', { tag: 'ol', cn: [{ tag: 'li' }] }, 'li');
                         createSuite('img', { tag: 'img' });
                         createSuite('td', {
                             tag: 'table',
@@ -429,47 +433,47 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                     });
                 });
             });
-            
+
             describe("tabbables", function() {
                 function createVisibilitySuites(clipMode) {
                     function createSuite(mode, wantTabbable) {
                         var realMode = Ext.Element[mode];
-                        
+
                         wantTabbable = wantTabbable != null ? wantTabbable : false;
-                        
+
                         return describe("hidden with mode: " + mode, function() {
                             beforeEach(function() {
                                 el.setVisibilityMode(realMode);
                                 el.setVisible(false);
                             });
-                            
+
                             // tabindex < 0 makes an element always untabbable
                             it("is false with tabIndex < 0", function() {
                                 el.set({ tabIndex: -1 });
-                            
+
                                 expect(el.isTabbable()).toBe(false);
                             });
-                            
+
                             it("is " + wantTabbable + " with tabIndex = 0", function() {
                                 el.set({ tabIndex: 0 });
-                                
+
                                 expect(el.isTabbable()).toBe(wantTabbable);
                             });
-                        
+
                             it("is " + wantTabbable + " with tabIndex > 0", function() {
                                 el.set({ tabIndex: 1 });
-                                
+
                                 expect(el.isTabbable()).toBe(wantTabbable);
                             });
                         });
                     }
-                    
+
                     createSuite('VISIBILITY');
                     createSuite('DISPLAY');
                     createSuite('OFFSETS');
                     createSuite('CLIP', clipMode);
                 }
-                
+
                 describe("isTabbable", function() {
                     describe("absolutely non-tabbable elements", function() {
                         function createSuite(name, elConfig) {
@@ -477,146 +481,146 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                                 beforeEach(function() {
                                     createElement(useFly, elConfig);
                                 });
-                                
+
                                 it("should be non-tabbable naturally", function() {
                                     expect(el.isTabbable()).toBeFalsy();
                                 });
-                                
+
                                 it("should be non-tabbable with tabIndex < 0", function() {
                                     dom.setAttribute('tabIndex', -1);
-                                    
+
                                     expect(el.isTabbable()).toBeFalsy();
                                 });
-                                
+
                                 it("should be non-tabbable with tabIndex = 0", function() {
                                     dom.setAttribute('tabIndex', 0);
-                                    
+
                                     expect(el.isTabbable()).toBeFalsy();
                                 });
-                                
+
                                 it("should be non-tabbable with tabIndex > 0", function() {
                                     dom.setAttribute('tabIndex', 1);
-                                    
+
                                     expect(el.isTabbable()).toBeFalsy();
                                 });
-                                
+
                                 it("should be non-tabbable with contentEditable", function() {
                                     dom.setAttribute('tabIndex', 0);
                                     dom.setAttribute('contenteditable', true);
-                                    
+
                                     expect(el.isTabbable()).toBeFalsy();
                                 });
-                                
+
                                 // Should not be tabbable even if clipped
                                 createVisibilitySuites(false);
                             });
                         }
-                        
+
                         createSuite('hidden input', { tag: 'input', type: 'hidden' });
                     });
-                    
+
                     describe("naturally tabbable elements", function() {
                         function createSuite(name, elConfig) {
                             return describe(name, function() {
                                 beforeEach(function() {
                                     createElement(useFly, elConfig);
                                 });
-                                
+
                                 describe("no special attributes", function() {
                                     it("is true with no tabIndex", function() {
                                         expect(el.isTabbable()).toBe(true);
                                     });
-                                    
+
                                     it("is false with tabIndex < 0", function() {
                                         dom.tabIndex = -100;
-                                        
+
                                         expect(el.isTabbable()).toBe(false);
                                     });
-                                    
+
                                     it("is true with tabIndex = 0", function() {
                                         dom.tabIndex = 0;
-                                        
+
                                         expect(el.isTabbable()).toBe(true);
                                     });
-                                    
+
                                     it("is true with tabIndex > 0", function() {
                                         dom.tabIndex = 42;
-                                        
+
                                         expect(el.isTabbable()).toBe(true);
                                     });
-                                    
+
                                     // Should be tabbable when clipped
                                     createVisibilitySuites(true);
                                 });
-                            
-                                if ( disableableTags[ (elConfig.tag || 'div').toUpperCase() ] ) {
+
+                                if (disableableTags[(elConfig.tag || 'div').toUpperCase()]) {
                                     describe("disabled=true " + name, function() {
                                         beforeEach(function() {
                                             dom.setAttribute('disabled', true);
                                         });
-                                        
+
                                         it("is false with no tabIndex", function() {
                                             expect(el.isTabbable()).toBe(false);
                                         });
-                                        
+
                                         it("is false for disabled " + name + " with tabIndex < 0", function() {
                                             dom.tabIndex = -42;
-                                            
+
                                             expect(el.isTabbable()).toBe(false);
                                         });
-                                        
+
                                         it("is false with tabIndex = 0", function() {
                                             dom.setAttribute('tabIndex', 0);
-                                            
+
                                             expect(el.isTabbable()).toBe(false);
                                         });
-                                        
+
                                         it("is false with tabIndex > 0", function() {
                                             dom.tabIndex = 42;
-                                
+
                                             expect(el.isTabbable()).toBe(false);
                                         });
-                                        
+
                                         // disabled and invisible should not be tabbable
                                         // even when clipped
                                         createVisibilitySuites(false);
                                     });
                                 }
-                                
+
                                 describe("editable " + name, function() {
                                     beforeEach(function() {
                                         dom.setAttribute('contenteditable', true);
                                     });
-                                    
+
                                     it("is true with no tabIndex", function() {
                                         expect(el.isTabbable()).toBeTruthy();
                                     });
-                                
+
                                     it("is false with tabIndex < 0", function() {
                                         dom.tabIndex = -1;
-                                    
+
                                         expect(el.isTabbable()).toBeFalsy();
                                     });
-                                
+
                                     it("is true with tabIndex = 0", function() {
                                         dom.tabIndex = 0;
-                                        
+
                                         expect(el.isTabbable()).toBeTruthy();
                                     });
-                                    
+
                                     it("is true with tabIndex > 0", function() {
                                         dom.tabIndex = 1;
-                                        
+
                                         expect(el.isTabbable()).toBeTruthy();
                                     });
-                                    
+
                                     // editable and invisible should not be tabbable
                                     // unless we're clipping
                                     createVisibilitySuites(true);
                                 });
                             });
                         }
-                    
+
                         createSuite('anchor with href', { tag: 'a', href: '#' });
                         createSuite('button', { tag: 'button' });
                         createSuite('iframe', { tag: 'iframe' });
@@ -632,81 +636,81 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                         createSuite('select', { tag: 'select', cn: [{ tag: 'option', value: 'foo' }] });
                         createSuite('textarea', { tag: 'textarea' });
                     });
-                    
+
                     describe("non-naturally tabbable elements", function() {
                         function createSuite(name, elConfig, selector) {
                             return describe(name, function() {
                                 beforeEach(function() {
                                     createElement(useFly, elConfig, selector);
                                 });
-                                
+
                                 describe("no special attributes", function() {
                                     it("is false with no tabIndex", function() {
                                         expect(el.isTabbable()).toBe(false);
                                     });
-                                
+
                                     it("is false with tabIndex < 0", function() {
                                         dom.setAttribute('tabIndex', '-1');
-                                    
+
                                         expect(el.isTabbable()).toBe(false);
                                     });
-                                
+
                                     it("is true with tabIndex = 0", function() {
                                         dom.tabIndex = 0;
-                                    
+
                                         expect(el.isTabbable()).toBe(true);
                                     });
-                                
+
                                     it("is true with tabIndex > 0", function() {
                                         dom.setAttribute('tabIndex', 10);
-                                    
+
                                         expect(el.isTabbable()).toBe(true);
                                     });
-                                    
+
                                     // Should not be tabbable unless we're clippng
                                     createVisibilitySuites(true);
                                 });
-                                
+
                                 describe("editable " + name, function() {
                                     beforeEach(function() {
                                         dom.setAttribute('contenteditable', true);
                                     });
-                                    
+
                                     it("is true with no tabIndex", function() {
                                         expect(el.isTabbable()).toBeTruthy();
                                     });
-                                
+
                                     it("is false with tabIndex < 0", function() {
                                         dom.tabIndex = -1;
-                                    
+
                                         expect(el.isTabbable()).toBeFalsy();
                                     });
-                                
+
                                     it("is true with tabIndex = 0", function() {
                                         dom.tabIndex = 0;
-                                        
+
                                         expect(el.isTabbable()).toBeTruthy();
                                     });
-                                    
+
                                     it("is true with tabIndex > 0", function() {
                                         dom.tabIndex = 1;
-                                        
+
                                         expect(el.isTabbable()).toBeTruthy();
                                     });
-                                    
+
                                     // editable but invisible should not be tabbable
                                     // unless we're clipping
                                     createVisibilitySuites(true);
                                 });
                             });
                         }
-                        
+
                         createSuite('anchor w/o href', { tag: 'a' });
                         createSuite('div', { tag: 'div' });
                         createSuite('span', { tag: 'span' });
                         createSuite('p', { tag: 'p' });
                         createSuite('ul li', { tag: 'ul', cn: [{ tag: 'li' }] }, 'li');
-                        createSuite('ol li', { tag: 'ol', cn: [{ tag: 'li' }] }, 'li' );
+                        createSuite('ol li', { tag: 'ol', cn: [{ tag: 'li' }] }, 'li');
                         createSuite('img', { tag: 'img' });
                         createSuite('td', {
                             tag: 'table',
@@ -720,7 +724,7 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                         }, 'td');
                     });
                 });
-                
+
                 describe("finding", function() {
                     beforeEach(function() {
                         createElement(useFly, [
@@ -761,28 +765,28 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                             '<div>'
                         ]);
                     });
-                    
+
                     describe("all nodes", function() {
                         it("should find all tabbable elements including self by default", function() {
                             var els = el.findTabbableElements();
-                        
+
                             expect(els.length).toBe(14);
                         });
                     });
-                    
+
                     describe("children", function() {
                         var els;
-                        
+
                         beforeEach(function() {
                             els = el.findTabbableElements({
                                 skipSelf: true
                             });
                         });
-                        
+
                         it("should find all tabbable sub-elements", function() {
                             expect(els.length).toBe(13);
                         });
-                    
+
                         it("should return correct sub-elements in correct order", function() {
                             expect(els[0].id).toBe('test7');
                             expect(els[1].id).toBe('test9');
@@ -799,10 +803,10 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                             expect(els[12].id).toBe('test33');
                         });
                     });
-                    
+
                     describe("excludeRoot", function() {
                         var els, test1;
-                        
+
                         beforeEach(function() {
                             test1 = Ext.fly('test1');
                             els = el.findTabbableElements({
@@ -810,11 +814,11 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                                 excludeRoot: test1
                             });
                         });
-                        
+
                         it("should exclude nodes within excludeRoot", function() {
                             expect(els.length).toBe(11);
                         });
-                        
+
                         it("should return correct children in order", function() {
                             expect(els[0].id).toBe('test7');
                             expect(els[1].id).toBe('test9');
@@ -829,7 +833,7 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                             expect(els[10].id).toBe('test33');
                         });
                     });
-                    
+
                     describe("nested tabbable elements", function() {
                         beforeEach(function() {
                             createElement(useFly, [
@@ -896,10 +900,10 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                                 '</div>'
                             ]);
                         });
-                        
+
                         it("should return elements in the right order", function() {
                             var els = topEl.findTabbableElements();
-                            
+
                             expect(els[0].id).toBe('window-1009-tabGuardBeforeEl');
                             expect(els[1].id).toBe('window-1009_header');
                             expect(els[2].id).toBe('textfield-1010-inputEl');
@@ -909,21 +913,21 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                         });
                     });
                 });
-                
+
                 describe("state attributes", function() {
                     function createSuite(name, elConfig, selector, deep) {
                         return describe(name, function() {
                             var defaultAttr = Ext.Element.tabbableSavedValueAttribute,
                                 counterAttr = Ext.Element.tabbableSavedCounterAttribute;
-                            
+
                             beforeEach(function() {
                                 createElement(useFly, elConfig, selector);
                             });
-                            
+
                             it("should be tabbable before the test (sanity check)", function() {
                                 expect(el.isTabbable()).toBeTruthy();
                             });
-                            
+
                             describe("saving", function() {
                                 beforeEach(function() {
                                     el.saveTabbableState({
@@ -931,40 +935,40 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                                         skipChildren: !deep
                                     });
                                 });
-                        
+
                                 it("should have the tabbable state saved", function() {
                                     var attr = el.getAttribute(defaultAttr);
-                        
+
                                     expect(attr).toBeTruthy();
                                 });
-                        
+
                                 it("should become non-tabbable", function() {
                                     expect(el.isTabbable()).toBeFalsy();
                                 });
-                                
+
                                 it("should set the counter", function() {
                                     var counter = +el.getAttribute(counterAttr);
-                                    
+
                                     expect(counter).toBe(1);
                                 });
-                                
+
                                 it("should increment the counter", function() {
                                     el.saveTabbableState({
                                         skipSelf: false,
                                         skipChildren: !deep
                                     });
-                                    
+
                                     var counter = +el.getAttribute(counterAttr);
-                                    
+
                                     expect(counter).toBe(2);
                                 });
                             });
-                    
+
                             describe("restoring", function() {
                                 it("should be tabbable before the test (sanity check)", function() {
                                     expect(el.isTabbable()).toBeTruthy();
                                 });
-                        
+
                                 describe("saved", function() {
                                     beforeEach(function() {
                                         el.saveTabbableState({
@@ -973,24 +977,24 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                                         });
                                         el.restoreTabbableState();
                                     });
-                            
+
                                     it("should have the saved attribute removed", function() {
                                         var hasIt = dom.hasAttribute(defaultAttr);
-                                        
+
                                         expect(hasIt).toBeFalsy();
                                     });
-                                    
+
                                     it("should be tabbable again", function() {
                                         expect(el.isTabbable()).toBe(true);
                                     });
-                                    
+
                                     it("should remove the counter", function() {
                                         var hasIt = dom.hasAttribute(counterAttr);
-                                        
+
                                         expect(hasIt).toBeFalsy();
                                     });
                                 });
-                                
+
                                 describe("counter", function() {
                                     beforeEach(function() {
                                         el.saveTabbableState({
@@ -1002,38 +1006,38 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                                             skipChildren: !deep
                                         });
                                     });
-                                    
+
                                     it("should have counter set (sanity check)", function() {
                                         var counter = +el.getAttribute(counterAttr);
-                                        
+
                                         expect(counter).toBe(2);
                                     });
-                                    
+
                                     describe("> 0", function() {
                                         beforeEach(function() {
                                             el.restoreTabbableState();
                                         });
-                                        
+
                                         it("should not restore tabbability", function() {
                                             expect(el.isTabbable()).toBe(false);
                                         });
-                                        
+
                                         it("should decrement the counter", function() {
                                             var counter = +el.getAttribute(counterAttr);
-                                            
+
                                             expect(counter).toBe(1);
                                         });
                                     });
-                                    
+
                                     describe("reset", function() {
                                         beforeEach(function() {
                                             el.restoreTabbableState({ reset: true });
                                         });
-                                        
+
                                         it("should restore tabbability", function() {
                                             expect(el.isTabbable()).toBe(true);
                                         });
-                                        
+
                                         it("should remove the counter", function() {
                                             expect(el).not.toHaveAttr(counterAttr);
                                         });
@@ -1042,13 +1046,13 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                             });
                         });
                     }
-                    
+
                     // Standalone elements
                     createSuite('a w/ href', { tag: 'a', href: '#' });
                     createSuite('button', { tag: 'button' });
                     createSuite('input', { tag: 'input', type: 'text' });
                     createSuite('div', { tag: 'div', tabIndex: 0 });
-                            
+
                     // Hierarchies
                     createSuite('div w/ children', {
                         tag: 'div',
@@ -1064,7 +1068,7 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                         }]
                     }, '#foo', true);
                 });
-                
+
                 describe("state", function() {
                     function createSuite(name, elConfig, selector, deep) {
                         return describe(name, function() {
@@ -1072,11 +1076,11 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                                 beforeEach(function() {
                                     createElement(useFly, elConfig, selector);
                                 });
-                            
+
                                 it("should be tabbable before the test (sanity check)", function() {
                                     expect(el.isTabbable()).toBe(true);
                                 });
-                            
+
                                 describe(name + " element", function() {
                                     beforeEach(function() {
                                         el.saveTabbableState({
@@ -1084,22 +1088,22 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                                             skipChildren: true
                                         });
                                     });
-                                
+
                                     it("should be removed from tab order", function() {
                                         expect(el.isTabbable()).toBe(false);
                                     });
-                                
+
                                     if (deep) {
                                         it("should not disable children tabbable state", function() {
                                             var cn = el.findTabbableElements({
                                                 skipSelf: true
                                             });
-                                        
+
                                             expect(cn.length).toBeTruthy();
                                         });
                                     }
                                 });
-                            
+
                                 if (deep) {
                                     describe(name + " children", function() {
                                         beforeEach(function() {
@@ -1108,57 +1112,57 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                                                 skipChildren: !deep
                                             });
                                         });
-                                    
+
                                         it("should remove children from tab order", function() {
                                             var cn = el.findTabbableElements({
                                                 skipSelf: true
                                             });
-                                        
+
                                             expect(cn.length).toBe(0);
                                         });
                                     });
                                 }
                             });
-                            
+
                             describe(name + " restoring", function() {
                                 var saved;
-                                
+
                                 beforeEach(function() {
                                     createElement(useFly, elConfig, selector);
                                     saved = undefined;
                                 });
-                                
+
                                 it("should be tabbable before the test (sanity check)", function() {
                                     expect(el.isTabbable()).toBe(true);
                                 });
-                                
+
                                 describe(name + " element saved", function() {
                                     beforeEach(function() {
                                         saved = dom.getAttribute('tabIndex');
                                         el.saveTabbableState();
                                     });
-                                    
+
                                     it("should not be tabbable when state is saved", function() {
                                         expect(el.isTabbable()).toBe(false);
                                     });
-                                    
+
                                     describe(name + " element restored", function() {
                                         beforeEach(function() {
                                             el.restoreTabbableState();
                                         });
-                                        
+
                                         it("should have the tabIndex attribute restored", function() {
                                             var idx = dom.getAttribute('tabIndex');
-                                            
+
                                             expect(idx).toBe(saved);
                                         });
-                                        
+
                                         it("should be tabbable again", function() {
                                             expect(el.isTabbable()).toBe(true);
                                         });
                                     });
                                 });
-                                
+
                                 if (deep) {
                                     describe(name + " children saved", function() {
                                         beforeEach(function() {
@@ -1167,37 +1171,37 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                                                 skipChildren: !deep
                                             }) || [];
                                         });
-                                        
+
                                         it("should have no tabbable children when saved", function() {
                                             var cn = el.findTabbableElements({
                                                 skipSelf: true
                                             });
-                                            
+
                                             expect(cn.length).toBe(0);
                                         });
-                                        
+
                                         describe(name + " children restored", function() {
                                             beforeEach(function() {
                                                 el.restoreTabbableState({ skipSelf: true });
                                             });
-                                            
+
                                             it("should have the same number of tabbable children", function() {
                                                 var cn = el.findTabbableElements({
                                                     skipSelf: true
                                                 });
-                                                
+
                                                 expect(cn.length).toBe(saved.length);
                                             });
-                                            
+
                                             it("should have the same tabbable children", function() {
                                                 var cn = el.findTabbableElements({
                                                     skipSelf: true
                                                 });
-                                                
+
                                                 for (var i = 0; i < saved.length; i++) {
                                                     var c1 = saved[i],
                                                         c2 = cn[i];
-                                                    
+
                                                     expect(c1.id).toBe(c2.id);
                                                 }
                                             });
@@ -1207,10 +1211,10 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                             });
                         });
                     }
-                    
+
                     createSuite('anchor with href natural', { tag: 'a', href: '#' });
                     createSuite('anchor with href w/ tabIndex', { tag: 'a', href: '#', tabIndex: 0 });
-                    
+
                     createSuite('anchor w/o href', { tag: 'a', tabIndex: 0 });
                     createSuite('anchor w/o href w/ children', {
                         tag: 'a',
@@ -1220,16 +1224,16 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                             tabIndex: 1
                         }]
                     }, '', true);
-                    
+
                     createSuite('button natural', { tag: 'button' });
                     createSuite('button w/ tabIndex', { tag: 'button', tabIndex: 0 });
-                    
+
                     createSuite('iframe natural', { tag: 'iframe' });
                     createSuite('iframe w/ tabIndex', { tag: 'iframe', tabIndex: 42 });
-                    
+
                     createSuite('input natural', { tag: 'input' });
                     createSuite('input w/ tabIndex', { tag: 'input', tabIndex: 1 });
-                    
+
                     createSuite('select natural', {
                         tag: 'select',
                         cn: [{
@@ -1245,10 +1249,10 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                             value: 'bar'
                         }]
                     });
-                    
+
                     createSuite('textarea natural', { tag: 'textarea' });
                     createSuite('textarea w/ tabIndex', { tag: 'textarea', tabIndex: 1 });
-                    
+
                     createSuite('div', { tag: 'div', tabIndex: 0 });
                     createSuite('div w/ children', {
                         tag: 'div',
@@ -1262,11 +1266,11 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                             }]
                         }]
                     }, '', true);
-                    
+
                     createSuite('span', { tag: 'span', tabIndex: 0 });
                     createSuite('p', { tag: 'p', tabIndex: 0 });
                     createSuite('img', { tag: 'img', tabIndex: 0 });
-                    
+
                     createSuite('ul li', {
                         tag: 'ul',
                         tabIndex: 0,
@@ -1278,7 +1282,7 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                             tabIndex: 2
                         }]
                     }, null, true);
-                    
+
                     createSuite('ol li', {
                         tag: 'ol',
                         tabIndex: 100,
@@ -1290,7 +1294,7 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
                             tabIndex: 102
                         }]
                     }, null, true);
-                    
+
                     createSuite('table', {
                         tag: 'table',
                         tabIndex: 0,
@@ -1311,7 +1315,7 @@ topSuite("Ext.dom.Element.focusability", [false, 'Ext.dom.Element'], function() 
             });
         });
     }
-    
+
     createTopSuite(true);
     createTopSuite(false);
 });

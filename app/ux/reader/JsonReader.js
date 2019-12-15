@@ -1,4 +1,15 @@
-﻿Ext.define('App.ux.reader.JsonReader', {
+﻿/**
+ *  proxy请求(本地/远程)json数据,返回来做统一处理：
+ *  默认和（本地/远程）所有请求交互，按照统一往返标准格式交互，返回数据格式如下
+ *  ResponseData:{
+ *        Data: {}, 返回数据
+ *        Success: true,是否正确返回
+ *        Message: "",系统消息
+ *        Code: "",系统格式编码 例：Public.I_0001(执行成功),Public.E_0001(公共错误),Public.E_0002(用户缺少某个权限)
+ *  }
+ * 
+*/
+Ext.define('App.ux.reader.JsonReader', {
     extend: 'Ext.data.reader.Json',
     alias: "reader.jsonreader",
     total: 0,
@@ -20,7 +31,11 @@
     getResponseData: function (response) {
         var me, data, error; me = this;
         try {
-            data = Ext.decode(response.responseText);
+            if(!Ext.isEmpty(response.responseText)){
+                data = Ext.decode(response.responseText);
+            }else{
+                data = response.responseJson;
+            }
             if (data.Code == "Public.I_0001") {
                 if (Ext.isEmpty(data.Data)) {
                     return new Ext.data.ResultSet({

@@ -21,7 +21,7 @@ Ext.define('Ext.google.data.AbstractProxy', {
     reader: {
         type: 'json',
         rootProperty: 'items',
-        messageProperty : 'error'
+        messageProperty: 'error'
     },
 
     /**
@@ -39,7 +39,7 @@ Ext.define('Ext.google.data.AbstractProxy', {
     doRequest: function(operation) {
         var me = this,
             request = me.buildRequest(operation),
-            writer  = me.getWriter(),
+            writer = me.getWriter(),
             error = false;
 
         if (writer && operation.allowWrite()) {
@@ -73,17 +73,18 @@ Ext.define('Ext.google.data.AbstractProxy', {
             // See https://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=4528
             // TODO: use the following code once fixed! also check that it doesn't break
             // maxResults limit for event list requests.
-            //var batch = gapi.client.newBatch();
-            //Ext.Array.each(requests, function(r, i) { batch.add(r, { id: i }); });
-            //return batch.execute();
+            // var batch = gapi.client.newBatch();
+            // Ext.Array.each(requests, function(r, i) { batch.add(r, { id: i }); });
+            // return batch.execute();
 
             // WORKAROUND for the issue above (REMOVE ME)
             var results = [];
+
             return Ext.Array.reduce(requests, function(sequence, r) {
                 return sequence.then(function() {
                     return r.then(function(result) {
                         results.push(result);
-                    })
+                    });
                 });
             }, Ext.Deferred.resolved()).then(function() {
                 return { result: results };
@@ -97,8 +98,10 @@ Ext.define('Ext.google.data.AbstractProxy', {
             // responses.result is not a regular Object, can't iterate with Ext.Object.each()
             Ext.each(Object.keys(responses.result), function(index) {
                 var result = responses.result[index].result;
+
                 if (result.error) {
                     error = result.error.message;
+
                     return false;
                 }
 
@@ -106,7 +109,7 @@ Ext.define('Ext.google.data.AbstractProxy', {
             });
 
             this.processResponse(true, operation, request, {
-                results: error? [] : results,
+                results: error ? [] : results,
                 success: !error,
                 error: error
             });

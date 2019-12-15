@@ -34,48 +34,51 @@ Ext.define('Ext.grid.cell.Boolean', {
         undefinedText: '\xA0'
     },
 
-    updateColumn: function (column, oldColumn) {
+    updateColumn: function(column, oldColumn) {
+        var text;
+
         this.callParent([ column, oldColumn ]);
 
         if (column && column.isBooleanColumn) {
-            var text = column.getFalseText();
+            text = column.getFalseText();
 
             if (text !== null) {
                 this.setFalseText(text);
             }
 
             text = column.getTrueText();
+
             if (text !== null) {
                 this.setTrueText(text);
             }
 
             text = column.getUndefinedText();
+
             if (text !== null) {
                 this.setUndefinedText(text);
             }
         }
     },
 
-    updateFalseText: function () {
+    updateFalseText: function() {
         if (!this.isConfiguring) {
             this.writeValue();
         }
     },
 
-
-    updateTrueText: function () {
+    updateTrueText: function() {
         if (!this.isConfiguring) {
             this.writeValue();
         }
     },
 
-    updateUndefinedText: function () {
+    updateUndefinedText: function() {
         if (!this.isConfiguring) {
             this.writeValue();
         }
     },
 
-    formatValue: function (value) {
+    formatValue: function(value) {
         var me = this;
 
         if (value === undefined) {

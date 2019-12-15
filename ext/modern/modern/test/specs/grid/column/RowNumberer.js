@@ -19,7 +19,8 @@ function() {
 
             Ext.testHelper.touchStart(targetEl, { x: x, y: y });
             Ext.testHelper.touchEnd(targetEl, { x: x, y: y });
-        } else {
+        }
+ else {
             jasmine.fireMouseEvent(targetEl, 'mouseover');
         }
     }
@@ -28,10 +29,10 @@ function() {
         store = new Ext.data.Store(Ext.apply({
             fields: ['name', 'email', 'phone'],
             data: [
-                { 'name': 'Lisa',  'email':'lisa@simpsons.com',  'phone':'555-111-1224'  },
-                { 'name': 'Bart',  'email':'bart@simpsons.com',  'phone':'555-222-1234'  },
-                { 'name': 'Homer', 'email':'homer@simpsons.com', 'phone':'555-222-1244'  },
-                { 'name': 'Marge', 'email':'marge@simpsons.com', 'phone':'555-222-1254'  }
+                { 'name': 'Lisa',  'email': 'lisa@simpsons.com',  'phone': '555-111-1224'  },
+                { 'name': 'Bart',  'email': 'bart@simpsons.com',  'phone': '555-222-1234'  },
+                { 'name': 'Homer', 'email': 'homer@simpsons.com', 'phone': '555-222-1244'  },
+                { 'name': 'Marge', 'email': 'marge@simpsons.com', 'phone': '555-222-1254'  }
             ],
             autoDestroy: true
         }, storeCfg));
@@ -39,7 +40,7 @@ function() {
         panel = new Ext.grid.Grid(Ext.apply({
             store: store,
             columns: [
-                Ext.apply({ xtype: 'rownumberer'}, rowNumbererConfig),
+                Ext.apply({ xtype: 'rownumberer' }, rowNumbererConfig),
                 { text: 'Name',  dataIndex: 'name', width: 100 },
                 { text: 'Email', dataIndex: 'email', width: 100 },
                 { text: 'Phone', dataIndex: 'phone', width: 100 }
@@ -88,11 +89,12 @@ function() {
             }]
         }, treeCfg));
     }
-    
+
     function getCell(row, column) {
         if (typeof row === 'number') {
             row = panel.itemFromRecord(row);
         }
+
         return row.getCellByColumn(panel.getColumns()[column]);
     }
 
@@ -100,13 +102,15 @@ function() {
         // Override so that we can control asynchronous loading
         loadStore = Ext.data.ProxyStore.prototype.load = function() {
             proxyStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         };
     });
-    
+
     afterEach(function() {
         // Undo the overrides.
         Ext.data.ProxyStore.prototype.load = proxyStoreLoad;
@@ -115,24 +119,26 @@ function() {
         panel = store = null;
     });
 
-    describe('grids', function () {
-        it('should create numbered rows', function () {
+    describe('grids', function() {
+        it('should create numbered rows', function() {
             createGrid({
                 renderTo: Ext.getBody()
             });
 
-            var cell = getCell(0,0);
+            var cell = getCell(0, 0);
+
             expect(cell.el).toHaveCls('x-rownumberercell');
 
             expect(cell.el.down('.x-body-el', true).innerHTML).toBe('1');
 
-            cell = getCell(1,0);
+            cell = getCell(1, 0);
             expect(cell.el.down('.x-body-el', true).innerHTML).toBe('2');
         });
 
         it("should be able to survive a full row update", function() {
             createGrid();
             var rec = store.first();
+
             rec.set('name', 'Foo');
             expect(function() {
                 rec.commit();
@@ -151,6 +157,7 @@ function() {
                     name: '555 123 ' + rowNumber
                 });
             }
+
             Ext.util.CSS.createStyleSheet('.row-numberer-test {font-size:20px}', 'row-numberer-test');
             createGrid({
                 renderTo: Ext.getBody()
@@ -165,6 +172,7 @@ function() {
             // Scroll to the end to expose the overflowing cell "100"
             jasmine.waitsForScroll(panel.getScrollable(), function(scroller, x, y) {
                 scroller.scrollBy(0, 10000);
+
                 return panel.renderInfo.atEnd && panel;
             });
 
@@ -178,7 +186,7 @@ function() {
             }, 1000, 'RowNumberer to calculate the correct column width');
         });
 
-        it('should not show in columns menu', function () {
+        it('should not show in columns menu', function() {
             createGrid({
                 renderTo: Ext.getBody()
             });
@@ -190,19 +198,19 @@ function() {
 
             Ext.testHelper.tap(column.triggerElement);
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return menuItem.rendered;
             });
 
-            runs(function () {
+            runs(function() {
                 doItemMouseover(menuItem);
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return menu.rendered;
             });
 
-            runs(function () {
+            runs(function() {
                 var items = menu.getItems();
 
                 expect(items.length).toBe(3);
@@ -211,8 +219,8 @@ function() {
         });
     });
 
-    describe('trees', function () {
-        it('should create numbered rows', function () {
+    describe('trees', function() {
+        it('should create numbered rows', function() {
             createTree({
                 renderTo: Ext.getBody()
             });

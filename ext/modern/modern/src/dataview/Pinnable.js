@@ -16,12 +16,12 @@ Ext.define('Ext.dataview.Pinnable', {
 
     pinnedCls: Ext.baseCSSPrefix + 'pinned',
 
-    updatePinned: function (value) {
+    updatePinned: function(value) {
         var me = this,
             el = me.el,
             pinnedCls = me.pinnedCls,
             pinnedClsMap = me._pinnedClsMap,
-            classes = el.getClassMap(/*clone=*/false);
+            classes = el.getClassMap(/* clone= */false);
 
         delete classes[pinnedClsMap.top];
         delete classes[pinnedClsMap.bottom];
@@ -30,14 +30,16 @@ Ext.define('Ext.dataview.Pinnable', {
             classes[pinnedCls] = true;
 
             pinnedCls = pinnedClsMap[value];
+
             if (pinnedCls) {
                 classes[pinnedCls] = true;
             }
-        } else {
+        }
+        else {
             delete classes[pinnedCls];
         }
 
-        el.setClassMap(classes, /*keep=*/true);
+        el.setClassMap(classes, /* keep= */true);
     },
 
     _pinnedClsMap: {

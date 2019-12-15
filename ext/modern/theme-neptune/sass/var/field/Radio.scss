@@ -42,13 +42,13 @@ $radiofield-checkbox-margin-big: dynamic(null);
  * @var {string/list}
  * Radio Field checkbox icon
  */
-$radiofield-checkbox-icon: dynamic($fa-var-circle-o);
+$radiofield-checkbox-icon: dynamic($fa-var-circle);
 
 /**
  * @var {string/list}
  * Radio Field checkbox icon when checked
  */
-$radiofield-checked-checkbox-icon: dynamic($fa-var-dot-circle-o);
+$radiofield-checked-checkbox-icon: dynamic($fa-var-dot-circle);
 
 /**
  * @var {color}

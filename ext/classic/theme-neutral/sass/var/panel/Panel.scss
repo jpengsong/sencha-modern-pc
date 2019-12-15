@@ -955,7 +955,7 @@ $panel-ignore-frame-padding: dynamic(false);
                     &:after {
                         
                         font-size: ($ui-header-line-height + vertical($ui-header-padding)) * 0.75;
-                        ;
+                        
                         position: absolute;
                         top: 0;
                         right: 0;
@@ -975,7 +975,7 @@ $panel-ignore-frame-padding: dynamic(false);
                     &:after {
                         
                         font-size: ($ui-header-line-height + vertical($ui-header-padding)) * 0.75;
-                        content: 'b';
+                        
                         position: absolute;
                         top: 0;
                         right: 0;

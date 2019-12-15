@@ -1,16 +1,18 @@
 .ux-page-dialog-container {
+    
+    .x-dialogheader{
+        background-color: $base-color;
+        color: #fff;
+    }
+
     .ux-page-dialog-inner-container {
         margin-top: -50px;
     }
 
-    .x-window-body-default {
+    .x-dialog-body-el {
         background-image: url('images/pages/error-page-background.jpg');
         background-size: cover;
-        color:#fff;
-    }
-
-    &.x-window-default {
-        border: none;
+        color:#fff !important;
     }
 
     .ux-page-dialog-top-text {

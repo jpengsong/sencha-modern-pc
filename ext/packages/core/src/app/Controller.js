@@ -192,14 +192,14 @@ Ext.define('Ext.app.Controller', {
         profileRegex: /^(.*)\.profile\./,
 
         createGetter: function(baseGetter, name) {
-            return function () {
+            return function() {
                 return this[baseGetter](name);
             };
         },
 
         getGetterName: function(name, kindUpper) {
-            var fn       = 'get',
-                parts    = name.split('.'),
+            var fn = 'get',
+                parts = name.split('.'),
                 numParts = parts.length,
                 index;
 
@@ -215,8 +215,12 @@ Ext.define('Ext.app.Controller', {
 
         resolveNamespace: function(cls, data) {
             var Controller = Ext.app.Controller,
-                namespaceRe = cls.prototype.isProfile ? Controller.profileRegex : Controller.controllerRegex,
-                className, namespace, match;
+                namespaceRe, className, namespace, match;
+
+            namespaceRe = cls.prototype.isProfile
+                ? Controller.profileRegex
+                : Controller.controllerRegex;
+
             /*
              * Namespace resolution is tricky business: we should know what namespace
              * this Controller descendant belongs to, or model/store/view dependency
@@ -236,8 +240,8 @@ Ext.define('Ext.app.Controller', {
 
             //<debug>
             if (!namespace) {
-                Ext.log.warn("Missing namespace for " + className + ", please define it "+
-                    "in namespaces property of your Application class.");
+                Ext.log.warn("Missing namespace for " + className + ", please define it " +
+                             "in namespaces property of your Application class.");
             }
             //</debug>
 
@@ -263,13 +267,14 @@ Ext.define('Ext.app.Controller', {
                 return;
             }
 
+            /* eslint-disable-next-line vars-on-top */
             var me = this,
                 strings = me.strings[kind],
                 o, absoluteName, shortName, name, j, subLn, getterName, getter;
 
-             if (!Ext.isArray(names)) {
-                 names = [names];
-             }
+            if (!Ext.isArray(names)) {
+                names = [names];
+            }
 
             for (j = 0, subLn = names.length; j < subLn; j++) {
                 name = names[j];
@@ -286,7 +291,8 @@ Ext.define('Ext.app.Controller', {
                 }
                 //<debug>
                 else if (getterName === 'getMainView') {
-                    Ext.log.warn('Cannot have a view named \'Main\' - getter conflicts with mainView config.')
+                    Ext.log.warn('Cannot have a view named \'Main\' - getter conflicts ' +
+                                 'with mainView config.');
                 }
                 //</debug>
 
@@ -310,7 +316,7 @@ Ext.define('Ext.app.Controller', {
                 // which contains both the short name ("Model" or "space.Model") and
                 // the full name (Name.space.Model).
                 //
-                shortName    = name.substring(0, sep); // "Model"
+                shortName = name.substring(0, sep); // "Model"
                 absoluteName = name.substring(sep + 1) + '.' + shortName; //  ex: "Name.space.Model"
             }
             // Deciding if a class name must be qualified:
@@ -332,7 +338,8 @@ Ext.define('Ext.app.Controller', {
                      this.hasRegisteredPrefix(name))) {
                 absoluteName = name;
                 shortName = name.replace(namespace + '.' + kind + '.', '');
-            } else {
+            }
+            else {
                 //<debug>
                 if (!namespace) {
                     Ext.log.warn("Cannot find namespace for " + kind + " " + name + ", " +
@@ -343,7 +350,7 @@ Ext.define('Ext.app.Controller', {
                 if (namespace) {
                     absoluteName = namespace + '.' + kind + '.' +
                                     (profileName ? profileName + '.' + name : name);
-                    shortName    = name;
+                    shortName = name;
                 }
                 else {
                     absoluteName = name;
@@ -352,11 +359,11 @@ Ext.define('Ext.app.Controller', {
 
             return {
                 absoluteName: absoluteName,
-                shortName:    shortName
+                shortName: shortName
             };
         },
 
-        hasRegisteredPrefix: function (className) {
+        hasRegisteredPrefix: function(className) {
             var inventory = Ext.ClassManager,
                 prefix = inventory.getPrefix(className);
 
@@ -470,7 +477,7 @@ Ext.define('Ext.app.Controller', {
     // @cmd-auto-dependency {aliasPrefix: "controller.", mvc: true, blame: "all"}
     controllers: null,
 
-    config : {
+    config: {
         /**
          * @cfg {Ext.app.Application} application
          * The {@link Ext.app.Application} for this controller accessible via the
@@ -543,7 +550,7 @@ Ext.define('Ext.app.Controller', {
 
         hooks.onBeforeCreated = function(cls, data) {
             var Controller = Ext.app.Controller,
-                requires   = [],
+                requires = [],
                 namespace, proto;
 
             proto = cls.prototype;
@@ -554,10 +561,11 @@ Ext.define('Ext.app.Controller', {
                 proto.$namespace = namespace;
             }
 
-            Controller.processDependencies(proto, requires, namespace, 'model',      data.models);
-            Controller.processDependencies(proto, requires, namespace, 'view',       data.views);
-            Controller.processDependencies(proto, requires, namespace, 'store',      data.stores);
-            Controller.processDependencies(proto, requires, namespace, 'controller', data.controllers);
+            Controller.processDependencies(proto, requires, namespace, 'model', data.models);
+            Controller.processDependencies(proto, requires, namespace, 'view', data.views);
+            Controller.processDependencies(proto, requires, namespace, 'store', data.stores);
+            Controller.processDependencies(proto, requires, namespace, 'controller',
+                                           data.controllers);
 
             Ext.require(requires, Ext.Function.pass(onBeforeClassCreated, arguments, this));
         };
@@ -607,7 +615,7 @@ Ext.define('Ext.app.Controller', {
                 Ext.Object.each(refs, function(key, value) {
                     if (Ext.isString(value)) {
                         value = {
-                            selector : value
+                            selector: value
                         };
                     }
 
@@ -615,7 +623,8 @@ Ext.define('Ext.app.Controller', {
 
                     newRefs.push(value);
                 });
-            } else if (Ext.isArray(refs)) {
+            }
+            else if (Ext.isArray(refs)) {
                 newRefs = Ext.Array.merge(newRefs, refs);
             }
         }
@@ -660,7 +669,8 @@ Ext.define('Ext.app.Controller', {
     },
 
     applyId: function(id) {
-        return id || Ext.app.Controller.getFullName(this.$className, 'controller', this.$namespace).shortName;
+        return id || Ext.app.Controller.getFullName(this.$className, 'controller',
+                                                    this.$namespace).shortName;
     },
 
     applyRefs: function(refs) {
@@ -780,12 +790,13 @@ Ext.define('Ext.app.Controller', {
 
         for (; i < length; i++) {
             info = refs[i];
-            ref  = info.ref;
-            fn   = 'get' + Ext.String.capitalize(ref);
+            ref = info.ref;
+            fn = 'get' + Ext.String.capitalize(ref);
 
             if (!me[fn]) {
                 me[fn] = Ext.Function.pass(me.getRef, [ref, info], me);
             }
+
             me.references.push(ref.toLowerCase());
         }
     },
@@ -840,6 +851,7 @@ Ext.define('Ext.app.Controller', {
      */
     hasRef: function(ref) {
         var references = this.references;
+
         return references && Ext.Array.indexOf(references, ref.toLowerCase()) !== -1;
     },
 
@@ -876,7 +888,7 @@ Ext.define('Ext.app.Controller', {
         var storeId, store;
 
         storeId = (name.indexOf('@') === -1) ? name : name.split('@')[0];
-        store   = Ext.StoreManager.get(storeId);
+        store = Ext.StoreManager.get(storeId);
 
         if (!store) {
             name = Ext.app.Controller.getFullName(name, 'store', this.$namespace);
@@ -899,7 +911,7 @@ Ext.define('Ext.app.Controller', {
      * @param {String} modelName
      * @return {Ext.Class} A class ultimately derived from `Ext.data.Model`.
      */
-    getModel: function (modelName) {
+    getModel: function(modelName) {
         var name = Ext.app.Controller.getFullName(modelName, 'model', this.$namespace),
             ret = Ext.ClassManager.get(name.absoluteName);
 
@@ -919,6 +931,7 @@ Ext.define('Ext.app.Controller', {
      */
     getProfile: function(name) {
         name = Ext.app.Controller.getFullName(name, 'profile', this.$namespace);
+
         return name;
     },
 
@@ -934,6 +947,7 @@ Ext.define('Ext.app.Controller', {
      */
     getView: function(view) {
         var name = Ext.app.Controller.getFullName(view, 'view', this.$namespace);
+
         return name && Ext.ClassManager.get(name.absoluteName);
     },
 
@@ -957,12 +971,14 @@ Ext.define('Ext.app.Controller', {
         if (destroyRefs) {
             // Possible destroy stores here too?
             refCache = me.refCache;
+
             for (ref in refCache) {
                 if (refCache.hasOwnProperty(ref)) {
                     Ext.destroy(refCache[ref]);
                 }
             }
         }
+
         me.callParent();
     }
 });

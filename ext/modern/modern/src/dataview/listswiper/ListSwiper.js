@@ -39,8 +39,9 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
 
         /**
          * @cfg {Number} commitDelay
-         * Number of milliseconds before actions in the undo state are automatically committed (`0` to
-         * disable this behavior). Only applicable for {@link #actions} with `undoable: true`.
+         * Number of milliseconds before actions in the undo state are automatically committed 
+         * (`0` to disable this behavior). Only applicable for {@link #actions} with 
+         * `undoable: true`.
          */
         commitDelay: 0,
 
@@ -65,7 +66,7 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
          * The section of the list item that is swipable.  Supports the following values:
          *
          * - `'inner'` - the default value. the body of the list item, which includes any
-         * tools is swipable, and any docked items remain fixed in place while swiping.
+         *   tools is swipable, and any docked items remain fixed in place while swiping.
          * - `'outer'` - the entire list item including the docked items is swipable
          */
         target: null
@@ -73,7 +74,7 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
 
     shadowCls: Ext.baseCSSPrefix + 'listswiper-shadow',
 
-    init: function (list) {
+    init: function(list) {
         var me = this,
             scrollable = list.getScrollable();
 
@@ -100,7 +101,7 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
         me.updateDismissOnScroll(me.getDismissOnScroll());
     },
 
-    destroy: function () {
+    destroy: function() {
         var list = this.cmp;
 
         list.un({
@@ -118,7 +119,7 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
         this.callParent();
     },
 
-    createWidget: function (config) {
+    createWidget: function(config) {
         var me = this,
             leftItems = me.getLeft(),
             rightItems = me.getRight();
@@ -131,26 +132,26 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
         }, config);
     },
 
-    onScrollStart: function () {
+    onScrollStart: function() {
         if (this.getDismissOnScroll()) {
             this.dismissAll();
         }
     },
 
-    onItemAdd: function (list, item) {
+    onItemAdd: function(list, item) {
         item.setTouchAction({
             panX: false
-        })
+        });
     },
 
-    onItemUpdateData: function (item) {
+    onItemUpdateData: function(item) {
         // In order to migrate contexts in case of one or more records have been inserted
         // or removed at a lower index, resyncing needs to be differed until all records
         // have been reassigned to their associated item.
         Ext.asap(this.resyncItem, this, [item]);
     },
 
-    onDragStart: function (evt) {
+    onDragStart: function(evt) {
         var me = this,
             list = me.cmp,
             record = list.mapToRecord(evt),
@@ -162,8 +163,10 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
 
         if (record) {
             item = list.mapToItem(record);
+
             if (item) {
                 widget = item.$swiperWidget;
+
                 if (!widget) {
                     widget = me.createWidget(me.getWidget());
                     widget.ownerCmp = item;
@@ -174,11 +177,12 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
                         // the element that gets translated could be either the body or the
                         // dock wrapper depending on whether or not there are docked items
                         translationTarget = item.el.first();
-                    } else {
+                    }
+                    else {
                         renderTarget = item.bodyElement;
-                        translationTarget = item.hasToolZones ?
-                            renderTarget.child('.' + Ext.baseCSSPrefix + 'tool-dock') :
-                            item.innerElement;
+                        translationTarget = item.hasToolZones
+                            ? renderTarget.child('.' + Ext.baseCSSPrefix + 'tool-dock')
+                            : item.innerElement;
                     }
 
                     translationTarget.addCls(me.shadowCls);
@@ -188,9 +192,11 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
                     item.$swiperWidget = widget = Ext.create(widget);
                     renderTarget.insertFirst(widget.el);
                     widget.setRendered(true);
+
                     if (list.infinite) {
                         list.stickItem(item, true);
                     }
+
                     this.items.push(item);
                 }
 
@@ -200,7 +206,7 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
 
     },
 
-    onDragMove: function (evt) {
+    onDragMove: function(evt) {
         var me = this,
             list = me.cmp,
             item = list.mapToItem(evt),
@@ -217,7 +223,7 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
         }
     },
 
-    onDragEnd: function (evt) {
+    onDragEnd: function(evt) {
         var me = this,
             list = me.cmp,
             item = list.mapToItem(evt),
@@ -225,6 +231,7 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
 
         if (item) {
             swiperItem = item.$swiperWidget;
+
             if (!me.hasActions() || !swiperItem) {
                 return;
             }
@@ -233,7 +240,7 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
         }
     },
 
-    updateDismissOnScroll: function (value) {
+    updateDismissOnScroll: function(value) {
         var list = this.getCmp(),
             scrollable, listeners;
 
@@ -242,6 +249,7 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
         }
 
         scrollable = list.getScrollable();
+
         if (!scrollable) {
             return;
         }
@@ -253,7 +261,8 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
 
         if (value === true) {
             scrollable.on(listeners);
-        } else {
+        }
+        else {
             scrollable.un(listeners);
         }
     },
@@ -271,18 +280,20 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
     },
 
     privates: {
-        destroyItem: function (item) {
+        destroyItem: function(item) {
             var me = this,
                 list = me.cmp,
                 swiperWidget = item.$swiperWidget,
                 i = me.items.indexOf(item);
+
             if (i !== -1) {
                 me.items.splice(i, 1);
             }
 
             if (swiperWidget) {
-                swiperWidget.destroy()
+                swiperWidget.destroy();
             }
+
             item.$swiperWidget = null;
 
             if (list.infinite && !item.destroyed) {
@@ -290,11 +301,12 @@ Ext.define('Ext.dataview.listswiper.ListSwiper', {
             }
         },
 
-        dismissAll: function () {
+        dismissAll: function() {
             var me = this;
-            me.items.map(function (item) {
+
+            me.items.map(function(item) {
                 return item.$swiperWidget;
-            }).forEach(function (swiperItem) {
+            }).forEach(function(swiperItem) {
                 swiperItem.dismiss();
             });
         }

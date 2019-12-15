@@ -99,9 +99,11 @@ Ext.define('Ext.slider.Slider', {
     * @param {Ext.event.Event} e
     */
     config: {
+        // eslint-disable-next-line max-len
         // @cmd-auto-dependency { defaultType: "Ext.slider.Thumb", aliasPrefix:'widget.',typeProperty: 'xtype' }
         /**
-         * @cfg {Object} thumbDefaults The config object to factory {@link Ext.slider.Thumb} instances
+         * @cfg {Object} thumbDefaults The config object to factory 
+         * {@link Ext.slider.Thumb} instances
          * @accessor
          */
         thumbDefaults: {
@@ -116,9 +118,10 @@ Ext.define('Ext.slider.Slider', {
         },
 
         /**
-         * @cfg {Number} increment The increment by which to snap each thumb when its value changes. Any thumb movement
-         * will be snapped to the nearest value that is a multiple of the increment (e.g. if increment is 10 and the user
-         * tries to move the thumb to 67, it will be snapped to 70 instead)
+         * @cfg {Number} increment The increment by which to snap each thumb when its value
+         * changes. Any thumb movement will be snapped to the nearest value that is a multiple 
+         * of the increment (e.g. if increment is 10 and the user tries to move the thumb to 67, 
+         * it will be snapped to 70 instead)
          * @accessor
          */
         increment: 1,
@@ -152,9 +155,10 @@ Ext.define('Ext.slider.Slider', {
         maxValue: 100,
 
         /**
-         * @cfg {Boolean} allowThumbsOverlapping Whether or not to allow multiple thumbs to overlap each other.
-         * Setting this to true guarantees the ability to select every possible value in between {@link #minValue}
-         * and {@link #maxValue} that satisfies {@link #increment}
+         * @cfg {Boolean} allowThumbsOverlapping Whether or not to allow multiple thumbs to
+         * overlap each other. Setting this to true guarantees the ability to select every 
+         * possible value in between {@link #minValue} and {@link #maxValue} that 
+         * satisfies {@link #increment}
          * @accessor
          */
         allowThumbsOverlapping: false,
@@ -235,7 +239,7 @@ Ext.define('Ext.slider.Slider', {
         this.whenVisible('refreshSizes');
     },
 
-    applyThumbDefaults: function (defaults) {
+    applyThumbDefaults: function(defaults) {
         return Ext.apply({
             slider: this,
             ownerCmp: this
@@ -282,7 +286,7 @@ Ext.define('Ext.slider.Slider', {
         me.offsetValueRatio = valueRange === 0 ? 0 : trackWidth / valueRange;
     },
 
-    onThumbResize: function (thumb, thumbWidth) {
+    onThumbResize: function(thumb, thumbWidth) {
         this.thumbWidth = thumbWidth;
 
         this.refresh();
@@ -318,7 +322,7 @@ Ext.define('Ext.slider.Slider', {
         }
     },
 
-    onThumbDragStart: function (thumb, e) {
+    onThumbDragStart: function(thumb, e) {
         var me = this;
 
         if (me.getAllowThumbsOverlapping()) {
@@ -329,7 +333,7 @@ Ext.define('Ext.slider.Slider', {
         me.fireEvent('dragstart', me, thumb, me.dragStartValue, e);
     },
 
-    onThumbDragMove: function (thumb, e, offsetX) {
+    onThumbDragMove: function(thumb, e, offsetX) {
         var me = this,
             index = me.getThumbIndex(thumb),
             offsetValueRatio = me.offsetValueRatio,
@@ -344,7 +348,7 @@ Ext.define('Ext.slider.Slider', {
         return false;
     },
 
-    setIndexValue: function (index, value, animation) {
+    setIndexValue: function(index, value, animation) {
         var me = this,
             thumb = me.thumbs[index],
             values = me.getArrayValues(),
@@ -364,12 +368,13 @@ Ext.define('Ext.slider.Slider', {
 
     onChange: function(thumb, newValue, oldValue) {
         var me = this;
+
         if (me.hasListeners.change) {
             me.fireEvent('change', me, thumb, newValue, oldValue);
         }
     },
 
-    onThumbDragEnd: function (thumb, e) {
+    onThumbDragEnd: function(thumb, e) {
         var me = this,
             index = me.getThumbIndex(thumb),
             newValue = me.getArrayValues()[index],
@@ -377,6 +382,7 @@ Ext.define('Ext.slider.Slider', {
 
         me.snapThumbPosition(thumb, newValue);
         me.fireEvent('dragend', me, thumb, me.getArrayValues(), e);
+
         if (oldValue !== newValue) {
             me.onChange(thumb, newValue, oldValue);
         }
@@ -386,7 +392,7 @@ Ext.define('Ext.slider.Slider', {
         return this.thumbs.indexOf(thumb);
     },
 
-    refreshAdjacentThumbConstraints: function (thumb) {
+    refreshAdjacentThumbConstraints: function(thumb) {
         var me = this,
             offsetX = thumb.getLeft(),
             thumbs = me.thumbs,
@@ -420,7 +426,10 @@ Ext.define('Ext.slider.Slider', {
 
         targetElement = Ext.get(e.target);
 
-        if (!targetElement || (Ext.browser.engineName == 'WebKit' && targetElement.hasCls('x-thumb'))) {
+        if (
+            !targetElement ||
+            (Ext.browser.engineName === 'WebKit' && targetElement.hasCls('x-thumb'))
+        ) {
             return;
         }
 
@@ -433,7 +442,8 @@ Ext.define('Ext.slider.Slider', {
 
         if (ln === 1) {
             closestIndex = 0;
-        } else {
+        }
+        else {
             for (i = 0; i < ln; i++) {
                 testValue = values[i];
                 absDistance = Math.abs(testValue - value);
@@ -470,7 +480,7 @@ Ext.define('Ext.slider.Slider', {
             previousFilteredValue = me.getMinValue(),
             filteredValue, i, ln;
 
-        for (i = 0,ln = values.length; i < ln; i++) {
+        for (i = 0, ln = values.length; i < ln; i++) {
             filteredValue = me.constrainValue(values[i]);
 
             if (filteredValue < previousFilteredValue) {
@@ -530,16 +540,18 @@ Ext.define('Ext.slider.Slider', {
 
     /**
      * @private
-     * Takes a desired value of a thumb and returns the nearest snap value. e.g if minValue = 0, maxValue = 100, increment = 10 and we
-     * pass a value of 67 here, the returned value will be 70. The returned number is constrained within {@link #minValue} and {@link #maxValue},
-     * so in the above example 68 would be returned if {@link #maxValue} was set to 68.
+     * Takes a desired value of a thumb and returns the nearest snap value. 
+     * e.g if minValue = 0, maxValue = 100, increment = 10 and we pass a value of 67 here, 
+     * the returned value will be 70. The returned number is constrained 
+     * within {@link #minValue} and {@link #maxValue}, so in the above example 68 would 
+     * be returned if {@link #maxValue} was set to 68.
      * @param {Number} value The value to snap
      * @return {Number} The snapped value
      */
     constrainValue: function(value) {
         var me = this,
-            minValue  = me.getMinValue(),
-            maxValue  = me.getMaxValue(),
+            minValue = me.getMinValue(),
+            maxValue = me.getMaxValue(),
             increment = me.getIncrement(),
             remainder;
 
@@ -593,9 +605,11 @@ Ext.define('Ext.slider.Slider', {
 
                 if (count > 2) {
                     thumb.setFillTrack(false);
-                } else if (count === 2) {
+                }
+                else if (count === 2) {
                     thumb.setFillTrack(i === 1);
-                } else {
+                }
+                else {
                     thumb.setFillTrack(true);
                 }
             }
@@ -622,7 +636,7 @@ Ext.define('Ext.slider.Slider', {
     /**
      * @private
      */
-    getArrayValues: function () {
+    getArrayValues: function() {
         return this.values;
     },
 
@@ -643,7 +657,7 @@ Ext.define('Ext.slider.Slider', {
      * @private
      */
     updateAllowThumbsOverlapping: function(newValue, oldValue) {
-        if (typeof oldValue != 'undefined') {
+        if (typeof oldValue !== 'undefined') {
             this.refreshValue();
         }
     },
@@ -652,7 +666,7 @@ Ext.define('Ext.slider.Slider', {
      * @private
      */
     updateMinValue: function(newValue, oldValue) {
-        if (typeof oldValue != 'undefined') {
+        if (typeof oldValue !== 'undefined') {
             this.refreshValue();
         }
     },
@@ -661,7 +675,7 @@ Ext.define('Ext.slider.Slider', {
      * @private
      */
     updateMaxValue: function(newValue, oldValue) {
-        if (typeof oldValue != 'undefined') {
+        if (typeof oldValue !== 'undefined') {
             this.refreshValue();
         }
     },
@@ -670,17 +684,18 @@ Ext.define('Ext.slider.Slider', {
      * @private
      */
     updateIncrement: function(newValue, oldValue) {
-        if (typeof oldValue != 'undefined') {
+        if (typeof oldValue !== 'undefined') {
             this.refreshValue();
         }
     },
 
     updateDisabled: function(disabled) {
+        var thumbs, ln, i;
+
         this.callParent(arguments);
 
-        var thumbs = this.thumbs,
-            ln = thumbs.length,
-            i;
+        thumbs = this.thumbs;
+        ln = thumbs.length;
 
         for (i = 0; i < ln; i++) {
             thumbs[i].setDisabled(disabled);
@@ -702,7 +717,7 @@ Ext.define('Ext.slider.Slider', {
          * allowed to adjust the constraints at this point so we fix them all up.
          * @private
          */
-        refreshAllThumbConstraints: function () {
+        refreshAllThumbConstraints: function() {
             var me = this,
                 thumbs = me.thumbs,
                 len = thumbs.length,
@@ -722,9 +737,11 @@ Ext.define('Ext.slider.Slider', {
                 thumb = me.thumbs[0];
 
             me.elementWidth = me.element.measure('w');
+
             if (thumb) {
                 me.thumbWidth = thumb.element.measure('w');
             }
+
             me.refresh();
         },
 
@@ -753,8 +770,9 @@ Ext.define('Ext.slider.Slider', {
             for (i = 0; i < ln; i++) {
                 thumb = thumbs[i];
                 fillElement = fillElements[i];
-                thumbOffset = (i === thumbIndex) ? offset :
-                    thumb.getLeft() + (thumb.element.getWidth() / 2);
+                thumbOffset = (i === thumbIndex)
+                    ? offset
+                    : thumb.getLeft() + (thumb.element.getWidth() / 2);
 
                 fillElement.setWidth(thumbOffset - prevOffset);
                 fillElement.setLocalX(prevOffset);

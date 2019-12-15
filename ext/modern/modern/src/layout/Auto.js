@@ -80,7 +80,7 @@ Ext.define('Ext.layout.Auto', {
         this.mixins.observable.constructor.call(this, config);
     },
 
-    updateContainer: function(container,  oldContainer) {
+    updateContainer: function(container, oldContainer) {
         var me = this;
 
         me.dockedItems = [];
@@ -88,18 +88,19 @@ Ext.define('Ext.layout.Auto', {
         container.getRenderTarget().addCls(me.cls);
 
         if (container.initialized) {
-            me.onContainerInitialized();
-        } else {
+            me.onContainerInitialized(container);
+        }
+        else {
             container.onInitialized('onContainerInitialized', me);
         }
     },
 
-    onContainerInitialized: function() {
+    onContainerInitialized: function(container) {
         var me = this;
 
         me.handleDockedItemBorders();
 
-        me.getContainer().on({
+        container.on({
             delegate: '> component',
 
             beforecenteredchange: 'onItemCenteredChange',
@@ -117,18 +118,22 @@ Ext.define('Ext.layout.Auto', {
 
         if (item.getDocked() != null) {
             me.dockItem(item);
-        } else if (item.isCentered()) {
+        }
+        else if (item.isCentered()) {
             me.onItemCenteredChange(item, true);
-        } else if (item.isPositioned()) {
+        }
+        else if (item.isPositioned()) {
             me.onItemPositionedChange(item, true);
-        } else if (!floated) {
+        }
+        else if (!floated) {
             me.onItemInnerStateChange(item, true);
         }
 
         if (container.rendered && !floated) {
             if (item.isInnerItem()) {
                 me.renderInnerItem(item, true);
-            } else {
+            }
+            else {
                 item.setRendered(true, true);
             }
         }
@@ -145,7 +150,8 @@ Ext.define('Ext.layout.Auto', {
         if (isInner) {
             this.insertInnerItem(item, this.getContainer().innerIndexOf(item));
             item.addCls(itemCls);
-        } else {
+        }
+        else {
             this.removeInnerItem(item);
             item.removeCls(itemCls);
         }
@@ -161,7 +167,8 @@ Ext.define('Ext.layout.Auto', {
             if (renderTarget === container.getRenderTarget()) {
                 nextSibling = container.getInnerAt(index + 1);
                 nextSibling = nextSibling ? nextSibling.element.dom : null;
-            } else {
+            }
+            else {
                 nextSibling = renderTarget.dom.childNodes[index];
             }
         }
@@ -196,11 +203,14 @@ Ext.define('Ext.layout.Auto', {
 
         if (item.getDocked()) {
             me.undockItem(item);
-        } else if (item.isCentered()) {
+        }
+        else if (item.isCentered()) {
             me.onItemCenteredChange(item, false);
-        } else if (item.isPositioned()) {
+        }
+        else if (item.isPositioned()) {
             me.onItemPositionedChange(item, false);
-        } else if (!item.getFloated()) {
+        }
+        else if (!item.getFloated()) {
             me.onItemInnerStateChange(item, false, destroying);
         }
     },
@@ -223,7 +233,8 @@ Ext.define('Ext.layout.Auto', {
 
         if (item.getFloated()) {
             item.center();
-        } else {
+        }
+        else {
             if (centered) {
                 this.insertPositionedItem(item);
                 item.link(wrapperName, new Ext.util.Wrapper({
@@ -253,6 +264,7 @@ Ext.define('Ext.layout.Auto', {
             if (oldDocked) {
                 this.undockItem(item, oldDocked);
             }
+
             if (docked) {
                 this.dockItem(item);
             }
@@ -271,7 +283,8 @@ Ext.define('Ext.layout.Auto', {
             dockInnerWrapper = me.dockInnerWrapper,
             needsInnerWrapper = !dockInnerWrapper,
             referenceDirection, i, dockedItem, index, previousItem, slice,
-            referenceItem, referenceDocked, referenceWrapper, newWrapper, nestedWrapper, oldInnerWrapper;
+            referenceItem, referenceDocked, referenceWrapper, newWrapper,
+            nestedWrapper, oldInnerWrapper;
 
         if (needsInnerWrapper) {
             dockInnerWrapper = new Ext.layout.wrapper.Inner({
@@ -395,6 +408,7 @@ Ext.define('Ext.layout.Auto', {
                 item.lastBorderMask = 0;
                 item.removeCls(me.noBorderClassTable[lastBorderMask]);
             }
+
             if (lastBorderCollapse) {
                 item.lastBorderCollapse = 0;
                 item.removeCls(me.getBorderCollapseTable()[lastBorderCollapse]);
@@ -480,7 +494,7 @@ Ext.define('Ext.layout.Auto', {
         addCls = [];
         removeCls = [];
 
-        borderCls   = me.getBorderCollapseTable();
+        borderCls = me.getBorderCollapseTable();
         noBorderCls = me.getBorderClassTable ? me.getBorderClassTable() : noBorderCls;
 
         me.initializedBorders = dockedItemsGen;
@@ -510,51 +524,66 @@ Ext.define('Ext.layout.Auto', {
             if (dock !== 'bottom') {
                 if (edges & maskT) { // if (not touching the top edge)
                     b = item.border;
-                } else {
+                }
+                else {
                     b = containerBorder;
+
                     if (b !== false) {
                         edgesTouched += maskT;
                     }
                 }
+
                 if (b === false) {
                     mask += maskT;
                 }
             }
+
             if (dock !== 'left') {
                 if (edges & maskR) { // if (not touching the right edge)
                     b = item.border;
-                } else {
+                }
+                else {
                     b = containerBorder;
+
                     if (b !== false) {
                         edgesTouched += maskR;
                     }
                 }
+
                 if (b === false) {
                     mask += maskR;
                 }
             }
+
             if (dock !== 'top') {
                 if (edges & maskB) { // if (not touching the bottom edge)
                     b = item.border;
-                } else {
+                }
+                else {
                     b = containerBorder;
+
                     if (b !== false) {
                         edgesTouched += maskB;
                     }
                 }
+
                 if (b === false) {
                     mask += maskB;
                 }
             }
+
             if (dock !== 'right') {
                 if (edges & maskL) { // if (not touching the left edge)
                     b = item.border;
-                } else {
+                }
+                else {
                     b = containerBorder;
+
                     if (b !== false) {
                         edgesTouched += maskL;
                     }
                 }
+
                 if (b === false) {
                     mask += maskL;
                 }
@@ -562,9 +591,11 @@ Ext.define('Ext.layout.Auto', {
 
             if ((lastValue = item.lastBorderMask) !== mask) {
                 item.lastBorderMask = mask;
+
                 if (lastValue) {
                     removeCls[0] = noBorderCls[lastValue];
                 }
+
                 if (mask) {
                     addCls[0] = noBorderCls[mask];
                 }
@@ -572,9 +603,11 @@ Ext.define('Ext.layout.Auto', {
 
             if ((lastValue = item.lastBorderCollapse) !== edgesTouched) {
                 item.lastBorderCollapse = edgesTouched;
+
                 if (lastValue) {
                     removeCls.push.apply(removeCls, borderCls[lastValue]);
                 }
+
                 if (edgesTouched) {
                     addCls.push.apply(addCls, borderCls[edgesTouched]);
                 }
@@ -583,6 +616,7 @@ Ext.define('Ext.layout.Auto', {
             if (removeCls.length) {
                 item.removeCls(removeCls);
             }
+
             if (addCls.length) {
                 item.addCls(addCls);
             }
@@ -599,57 +633,71 @@ Ext.define('Ext.layout.Auto', {
 
         if (edges & maskT) { // if (not touching the top edge)
             b = bodyBorder;
-        } else {
+        }
+        else {
             b = containerBorder;
+
             if (b !== false) {
                 edgesTouched += maskT;
             }
         }
+
         if (b === false) {
             mask += maskT;
         }
 
         if (edges & maskR) { // if (not touching the right edge)
             b = bodyBorder;
-        } else {
+        }
+        else {
             b = containerBorder;
+
             if (b !== false) {
                 edgesTouched += maskR;
             }
         }
+
         if (b === false) {
             mask += maskR;
         }
 
         if (edges & maskB) { // if (not touching the bottom edge)
             b = bodyBorder;
-        } else {
+        }
+        else {
             b = containerBorder;
+
             if (b !== false) {
                 edgesTouched += maskB;
             }
         }
+
         if (b === false) {
             mask += maskB;
         }
 
         if (edges & maskL) { // if (not touching the left edge)
             b = bodyBorder;
-        } else {
+        }
+        else {
             b = containerBorder;
+
             if (b !== false) {
                 edgesTouched += maskL;
             }
         }
+
         if (b === false) {
             mask += maskL;
         }
 
         if ((lastValue = me.lastBodyBorderMask) !== mask) {
             me.lastBodyBorderMask = mask;
+
             if (lastValue) {
                 removeCls[0] = noBorderCls[lastValue];
             }
+
             if (mask) {
                 addCls[0] = noBorderCls[mask];
             }
@@ -657,9 +705,11 @@ Ext.define('Ext.layout.Auto', {
 
         if ((lastValue = me.lastBodyBorderCollapse) !== edgesTouched) {
             me.lastBodyBorderCollapse = edgesTouched;
+
             if (lastValue) {
                 removeCls.push.apply(removeCls, borderCls[lastValue]);
             }
+
             if (edgesTouched) {
                 addCls.push.apply(addCls, borderCls[edgesTouched]);
             }
@@ -668,6 +718,7 @@ Ext.define('Ext.layout.Auto', {
         if (removeCls.length) {
             bodyClsEl.removeCls(removeCls);
         }
+
         if (addCls.length) {
             bodyClsEl.addCls(addCls);
         }
@@ -699,7 +750,7 @@ Ext.define('Ext.layout.Auto', {
      * collapsed.
      * @private
      */
-    getBorderCollapseTable: function () {
+    getBorderCollapseTable: function() {
         var me = this,
             map = me.borderCollapseMap,
             container = me.getContainer(),
@@ -713,7 +764,7 @@ Ext.define('Ext.layout.Auto', {
 
         if (!table) {
             classClsList = container.classClsList;
-            map[uiKey] = table = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
+            map[uiKey] = table = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []];
 
             uiList = [0];
 
@@ -753,7 +804,7 @@ Ext.define('Ext.layout.Auto', {
         return table;
     },
 
-    setConfig: function (name, value, options) {
+    setConfig: function(name, value, options) {
         var config = name,
             alias = this.alias,
             type = config.type;
@@ -772,7 +823,7 @@ Ext.define('Ext.layout.Auto', {
             }
             //<debug>
             else {
-                Ext.raise('Cannot change layout from '+this.$className+' to "'+type+'"');
+                Ext.raise('Cannot change layout from ' + this.$className + ' to "' + type + '"');
             }
             //</debug>
         }

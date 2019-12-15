@@ -44,7 +44,7 @@ Ext.define('Ext.util.FilterCollection', {
      */
     filterFn: null,
 
-    constructor: function (config) {
+    constructor: function(config) {
         var me = this;
 
         // Because this closure operates on the collection, we are able to use it for as
@@ -60,7 +60,7 @@ Ext.define('Ext.util.FilterCollection', {
      * @param {Array} data The array you want to have filtered.
      * @return {Array} The array you passed after it is filtered.
      */
-    filterData: function (data) {
+    filterData: function(data) {
         return this.filtered ? Ext.Array.filter(data, this.filterFn) : data;
     },
 
@@ -68,11 +68,11 @@ Ext.define('Ext.util.FilterCollection', {
      * Returns the filter function.
      * @return {Function} The filter function.
      */
-    getFilterFn: function () {
+    getFilterFn: function() {
         return this.filterFn;
     },
 
-    isItemFiltered: function (item) {
+    isItemFiltered: function(item) {
         return !this.filterFn(item);
     },
 
@@ -90,22 +90,24 @@ Ext.define('Ext.util.FilterCollection', {
                 len--;
             }
         }
+
         return len;
     },
 
     //-------------------------------------------------------------------------
     // Private
 
-    decodeFilter: function (filter) {
+    decodeFilter: function(filter) {
         var options = this.getOptions(),
             filterRoot = options.getRootProperty(),
             filterConfig;
 
         if (filter.isFilter) {
-            if (!filter.getRoot()) {
+            if (filter.setRoot && !filter.getRoot()) {
                 filter.setRoot(filterRoot);
             }
-        } else {
+        }
+        else {
             filterConfig = {
                 root: filterRoot
             };
@@ -117,11 +119,11 @@ Ext.define('Ext.util.FilterCollection', {
             // this case we create an instance of Ext.util.Filter passing the config.
             else {
                 // Finally we get to the point where it has to be invalid
-                // <debug>
-                if (!Ext.isObject(filter))  {
+                //<debug>
+                if (!Ext.isObject(filter)) {
                     Ext.raise('Invalid filter specified: ' + filter);
                 }
-                // </debug>
+                //</debug>
 
                 filterConfig = Ext.apply(filterConfig, filter);
 
@@ -129,7 +131,7 @@ Ext.define('Ext.util.FilterCollection', {
                     filterConfig.filterFn = filterConfig.fn;
                     delete filterConfig.fn;
                 }
-                
+
                 if (Ext.util.Filter.isInvalid(filterConfig)) {
                     return false;
                 }
@@ -141,7 +143,7 @@ Ext.define('Ext.util.FilterCollection', {
         return filter;
     },
 
-    decodeRemoveItems: function (args, index) {
+    decodeRemoveItems: function(args, index) {
         var me = this,
             ret = (index === undefined) ? args : args[index];
 
@@ -150,6 +152,7 @@ Ext.define('Ext.util.FilterCollection', {
                 ret = Ext.Array.slice(args, index);
             }
 
+            // eslint-disable-next-line vars-on-top
             var currentFilters = me.items,
                 ln = ret.length,
                 remove = [],
@@ -160,7 +163,8 @@ Ext.define('Ext.util.FilterCollection', {
 
                 if (filter && filter.isFilter) {
                     remove.push(filter);
-                } else {
+                }
+                else {
                     type = typeof filter;
 
                     isFunction = type === 'function';
@@ -173,7 +177,7 @@ Ext.define('Ext.util.FilterCollection', {
                     }
                     //</debug>
 
-                    for (n = currentFilters.length; n-- > 0; ) {
+                    for (n = currentFilters.length; n-- > 0;) {
                         item = currentFilters[n];
                         match = false;
 
@@ -202,7 +206,7 @@ Ext.define('Ext.util.FilterCollection', {
         return ret;
     },
 
-    getOptions: function () {
+    getOptions: function() {
         // Odd thing this. We need a Filterable to know how to manage our collection, but
         // we may not have one. Of course as a Collection, we *are* one as well... just
         // that is not really useful to filter the filters themselves, but we do have the

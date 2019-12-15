@@ -23,7 +23,8 @@ Ext.define('Ext.chart.series.sprite.StackedCartesian', {
 
                 /**
                  * @private
-                 * @cfg {Object} [dataStartY=null] The starting point of the data used in the series.
+                 * @cfg {Object} [dataStartY=null] The starting point of the data
+                 * used in the series.
                  */
                 dataStartY: 'data'
             },
@@ -38,5 +39,4 @@ Ext.define('Ext.chart.series.sprite.StackedCartesian', {
             }
         }
     }
-
 });

@@ -521,13 +521,13 @@ $gridcolumn-resizer-background-color: dynamic(darken($gridcolumn-background-colo
  * @var {string/list}
  * Column menu sort ascending item icon.
  */
-$gridcolumn-menu-sort-asc-icon: dynamic($fa-var-sort-alpha-asc);
+$gridcolumn-menu-sort-asc-icon: dynamic($fa-var-sort-alpha-down);
 
 /**
  * @var {string/list}
  * Column menu sort descending item icon.
  */
-$gridcolumn-menu-sort-desc-icon: dynamic($fa-var-sort-alpha-desc);
+$gridcolumn-menu-sort-desc-icon: dynamic($fa-var-sort-alpha-up);
 
 /**
  * @var {string/list}

@@ -40,18 +40,20 @@ Ext.define('Ext.dataview.selection.Model', {
      * @param {Ext.dataview.DataView} view this DataView
      * @param {Ext.data.Model[]} records The records whose selection has changed.
      * @param {Boolean} selected `true` if the records are now selected, `false` if not.
-     * @param {Ext.dataview.selection.Selection} selection An object whicn encapsulates the selection.
+     * @param {Ext.dataview.selection.Selection} selection An object whicn encapsulates the
+     * selection.
      * @member Ext.dataview.DataView
      */
 
     /**
      * @event rowselection
-     * Fires when a selection changes and a {@link Ext.data.virtual.Store VirtualStore} is being used.
+     * Fires when a selection changes and a {@link Ext.data.virtual.Store VirtualStore} is
+     * being used.
      * @param {Ext.dataview.DataView} view this DataView
-     * @param {Ext.dataview.selection.Rows} selection An object whicn encapsulates the selected row range(s).
+     * @param {Ext.dataview.selection.Rows} selection An object whicn encapsulates the selected
+     * row range(s).
      * @member Ext.dataview.DataView
      */
-
 
     config: {
         view: null,
@@ -68,19 +70,32 @@ Ext.define('Ext.dataview.selection.Model', {
 
         /**
          * @cfg {'single'/'simple'/'multi'} mode
-         * Modes of selection.
+         * Modes of selection. Valid values are:
+         *
+         * - **"single"** - Only allows selecting one item at a time.  Use {@link #deselectable}
+         *   to allow deselecting that item.  Also see {@link #toggleOnClick}. This is the default.
+         * - **"simple"** - Allows simple selection of multiple items one-by-one. Each click in grid
+         *   will either select or deselect an item.
+         * - **"multi"** - Allows complex selection of multiple items using Ctrl and Shift keys.
          * @accessor
          */
         mode: 'single',
 
         /**
-         * @cfg {Boolean} [deselectable=true]
-         * Allow users to deselect the last selected *record* in a DataView and reduce the selected
-         * *record* count to zero. Configure this as `false` if there must always be at least one
-         * record selected.
-         * @accessor
+         * @cfg {Boolean} deselectable
+         * Allow users to deselect the last selected record in a DataView and reduce the
+         * selected record count to zero. Configure this as `false` if there must always
+         * be at least one record selected.
          */
         deselectable: true,
+
+        /**
+         * @cfg {Boolean} toggleOnClick
+         * `true` to toggle the selection state of an item when clicked.
+         * Only applicable when the {@link #mode} is 'single'.
+         * Only applicable when the {@link #deselectable} is 'true'.
+         */
+        toggleOnClick: true,
 
         /**
          * @cfg {Ext.data.Model} lastSelected
@@ -93,7 +108,8 @@ Ext.define('Ext.dataview.selection.Model', {
         /**
          * @cfg {Ext.util.Collection} selected
          * A {@link Ext.util.Collection} instance, or configuration object used to create
-         * the collection of selected records. Not used if the store is a {@link Ext.data.virtual.Store VirtualStore}.
+         * the collection of selected records. Not used if the store is a
+         * {@link Ext.data.virtual.Store VirtualStore}.
          * @readonly
          * @member Ext.dataview.DataView
          */
@@ -111,19 +127,21 @@ Ext.define('Ext.dataview.selection.Model', {
         /**
          * @private
          * @readonly
-         * An instance of a subclass of {@link Ext.dataview.selection.Selection} which encapsulates the
-         * user's selection.
+         * An instance of a subclass of {@link Ext.dataview.selection.Selection} which
+         * encapsulates the user's selection.
          *
-         * The actual class of this object depends upon configuration, and upon the user gestures used
-         * to create the selection.
+         * The actual class of this object depends upon configuration, and upon the user
+         * gestures used to create the selection.
          *
          * Provided classes are:
          *
-         *     - {@link Ext.dataview.selection.Records Records} A collection of {@link Ext.data.Record record} instances.
-         *     - {@link Ext.dataview.selection.Rows Rows} A numeric range of selected rows.
-         *     - {@link Ext.grid.selection.Cells Cells} A rectanguliar selection of {@link Ext.grid.Location grid cells}.
-         *     - {@link Ext.grid.selection.Columns Columns} A list of selected {@link Ext.grid.column.Column columns}.
-         *
+         * - {@link Ext.dataview.selection.Records Records} A collection of
+         *  {@link Ext.data.Record record} instances.
+         * - {@link Ext.dataview.selection.Rows Rows} A numeric range of selected rows.
+         * - {@link Ext.grid.selection.Cells Cells} A rectanguliar selection of
+         *  {@link Ext.grid.Location grid cells}.
+         * - {@link Ext.grid.selection.Columns Columns} A list of selected
+         *  {@link Ext.grid.column.Column columns}.
          */
         selection: {
             type: 'records'
@@ -195,6 +213,7 @@ Ext.define('Ext.dataview.selection.Model', {
         if (oldSelected) {
             // If we autocreated it, destroy it
             oldSelected.removeObserver(me);
+
             if (me.destroySelected) {
                 oldSelected.destroy();
                 me.destroySelected = false;
@@ -206,7 +225,8 @@ Ext.define('Ext.dataview.selection.Model', {
         if (selected && selected.isCollection) {
             me.destroySelected = false;
             selected.setConfig(collectionConfig);
-        } else {
+        }
+        else {
             // We own the selected Collection and must destroy it in the destroy method
             me.destroySelected = true;
             selected = new Ext.util.Collection(Ext.apply(collectionConfig, selected));
@@ -240,6 +260,15 @@ Ext.define('Ext.dataview.selection.Model', {
         return this.modes[mode] ? mode : 'single';
     },
 
+    updateMode: function(mode) {
+        var selection = this.getSelection();
+
+        // Clear down to the last selected record if we're dropping back to single select
+        if (mode !== 'multi' && selection.getCount() > 1) {
+            selection.add(this.getLastSelected(), false);
+        }
+    },
+
     updateView: function(view) {
         this.setStore(view ? view.getStore() : null);
     },
@@ -247,7 +276,7 @@ Ext.define('Ext.dataview.selection.Model', {
     /**
      * @private
      */
-    applyStore: function (store) {
+    applyStore: function(store) {
         return store ? Ext.data.StoreManager.lookup(store) : null;
     },
 
@@ -263,6 +292,7 @@ Ext.define('Ext.dataview.selection.Model', {
 
         if (newStore) {
             newStore.on(bindEvents);
+
             if (oldStore) {
                 me.refreshSelection();
             }
@@ -275,6 +305,7 @@ Ext.define('Ext.dataview.selection.Model', {
             Ext.raise('selectByLocation MUST be passed an Ext.dataview.Location');
         }
         //</debug>
+
         this.select(location.record);
     },
 
@@ -301,6 +332,7 @@ Ext.define('Ext.dataview.selection.Model', {
         if (selectedRecord === false) {
             selectedRecord = null;
         }
+
         return selectedRecord;
     },
 
@@ -316,16 +348,20 @@ Ext.define('Ext.dataview.selection.Model', {
             if (selected.last() !== selectedRecord) {
                 if (me.getMode() === 'single') {
                     selected.splice(0, selectionCount, selectedRecord);
-                } else {
+                }
+                else {
                     selected.add(selectedRecord);
                 }
             }
+
             me.setLastSelected(selectedRecord);
-        } else {
+        }
+        else {
             if (!me.isConfiguring && selectionCount) {
                 me.deselectAll();
             }
         }
+
         me.getView().publishState('selection', selectedRecord);
     },
 
@@ -338,12 +374,16 @@ Ext.define('Ext.dataview.selection.Model', {
 
         if (mode === 'multi') {
             me.selectWithEventMulti(record, e, isSelected);
-        } else {
+        }
+        else {
             if (isSelected) {
-                // Deselecting. Allow CTRL to maintain selection if simple selection
-                me.deselect(record, mode === 'simple' && e.ctrlKey);
-            } else {
-                me.select(record, false);
+                if (me.getDeselectable() &&
+                (mode === 'single' && me.getToggleOnClick()) || mode === 'simple' || e.ctrlKey) {
+                    me.deselect(record);
+                }
+            }
+            else {
+                me.select(record, mode === 'simple');
             }
         }
 
@@ -363,9 +403,13 @@ Ext.define('Ext.dataview.selection.Model', {
         if (shift && start) {
             me.selectRange(start, record, ctrl);
         }
-
         else {
-            me[isSelected ? 'deselect' : 'select'](record, true);
+            if (isSelected) {
+                me.deselect(record);
+            }
+            else {
+                me.select(record, true);
+            }
         }
     },
 
@@ -377,13 +421,14 @@ Ext.define('Ext.dataview.selection.Model', {
      * @param {Boolean} [keepExisting] `true` to retain existing selections.
      */
     selectRange: function(startRecord, endRecord, keepExisting) {
-        var store = this.getStore();
+        var store = this.getStore(),
+            tmp;
 
         startRecord = (typeof startRecord === 'number') ? startRecord : store.indexOf(startRecord);
         endRecord = (typeof endRecord === 'number') ? endRecord : store.indexOf(endRecord);
 
         if (startRecord > endRecord) {
-            var tmp = startRecord;
+            tmp = startRecord;
             startRecord = endRecord;
             endRecord = tmp;
         }
@@ -397,9 +442,10 @@ Ext.define('Ext.dataview.selection.Model', {
     },
 
     /**
-     * Adds the given records to the currently selected set if not {@link #cfg!disabled}..
+     * Adds the given records to the currently selected set if not {@link #cfg!disabled}.
      * @param {Ext.data.Model/Array/Number} records The records to select.
-     * @param {Boolean} [keepExisting] If `true`, the existing selection will be added to (if not, the old selection is replaced).
+     * @param {Boolean} [keepExisting] If `true`, the existing selection will be added to
+     * (if not, the old selection is replaced).
      * @param {Boolean} [suppressEvent] If `true`, the `select` event will not be fired.
      */
     select: function(records, keepExisting, suppressEvent) {
@@ -411,17 +457,18 @@ Ext.define('Ext.dataview.selection.Model', {
         }
 
         if (typeof records === "number") {
-            records = [me.getStore().getAt(records)];
+            records = [ me.getStore().getAt(records) ];
         }
 
         if (!records) {
             return;
         }
 
-        if (me.getMode() == "single" && records) {
+        if (me.getMode() === "single" && records) {
             record = records.length ? records[0] : records;
             me.doSingleSelect(record, suppressEvent);
-        } else {
+        }
+        else {
             me.doMultiSelect(records, keepExisting, suppressEvent);
         }
     },
@@ -442,16 +489,20 @@ Ext.define('Ext.dataview.selection.Model', {
         if (records === null || this.getDisabled()) {
             return;
         }
+
         this.getSelection().add(records, keepExisting, suppressEvent);
     },
 
     /**
-     * Deselects the given record(s). If many records are currently selected, it will only deselect those you pass in.
-     * @param {Number/Array/Ext.data.Model} records The record(s) to deselect. Can also be a number to reference by index.
+     * Deselects the given record(s). If many records are currently selected, it will only
+     * deselect those you pass in.
+     * @param {Number/Array/Ext.data.Model} records The record(s) to deselect. Can also be
+     * a number to reference by index.
      * @param {Boolean} suppressEvent If `true` the `deselect` event will not be fired.
      */
     deselect: function(records, suppressEvent) {
-        var me = this;
+        var me = this,
+            selection, store, len, i, record;
 
         if (me.getDisabled()) {
             return;
@@ -459,14 +510,14 @@ Ext.define('Ext.dataview.selection.Model', {
 
         records = Ext.isArray(records) ? records : [records];
 
-        var selection = me.getSelection(),
-            store    = me.getStore(),
-            len        = records.length,
-            i, record;
+        selection = me.getSelection();
+        store = me.getStore();
+        len = records.length;
 
         // Ensure they are all records
         for (i = 0; i < len; i++) {
             record = records[i];
+
             if (typeof record === 'number') {
                 records[i] = store.getAt(record);
             }
@@ -515,12 +566,16 @@ Ext.define('Ext.dataview.selection.Model', {
         if (view.destroyed) {
             return;
         }
-        selection.allSelected = this.allSelected = selection.getCount() === view.getStore().getCount();
+
+        selection.allSelected = this.allSelected =
+            selection.getCount() === view.getStore().getCount();
 
         // Keep selection up to date
         me.setSelectedRecord(selectedCollection.last() || null);
 
-        view.onItemSelect(me.getMode() === 'single' ? records[0] : records, selectedCollection.suppressEvent);
+        view.onItemSelect(
+            me.getMode() === 'single' ? records[0] : records, selectedCollection.suppressEvent
+        );
 
         if (!selectedCollection.suppressEvent) {
             me.fireSelectionChange(records, true);
@@ -552,10 +607,11 @@ Ext.define('Ext.dataview.selection.Model', {
 
         if (sel && (sel.isRows || sel.isRecords)) {
             record = Ext.isNumber(record) ? me.getStore().getAt(record) : record;
+
             return sel.isSelected(record);
-        } else {
-            return false;
         }
+
+        return false;
     },
 
     /**
@@ -634,6 +690,28 @@ Ext.define('Ext.dataview.selection.Model', {
     onEditorKey: Ext.emptyFn,
 
     privates: {
+        // Used in SelectField to allow the picker's selection model
+        // to ignore transient, system filters which are added such as
+        // a ComboBox's primaryFilter, and the selectField's filterPickList filter.
+        addIgnoredFilter: function(filter) {
+            if (filter) {
+                Ext.Array.include(this.ignoredFilters || (this.ignoredFilters = []), filter);
+            }
+        },
+
+        // See above
+        removeIgnoredFilter: function(filter) {
+            var ignoredFilters = this.ignoredFilters;
+
+            if (ignoredFilters) {
+                Ext.Array.remove(ignoredFilters, filter);
+
+                if (!ignoredFilters.length) {
+                    this.ignoredFilters = null;
+                }
+            }
+        },
+
         // Template method implemented in grid/selection/Model
         onSelectionFinish: Ext.privateFn,
 
@@ -642,12 +720,15 @@ Ext.define('Ext.dataview.selection.Model', {
                 // Reconfigure if type not changing
                 if (oldSelection.type === selection.type) {
                     oldSelection.setConfig(selection);
+
                     return oldSelection;
                 }
+
                 Ext.destroy(oldSelection);
             }
 
             if (selection) {
+                // eslint-disable-next-line vars-on-top
                 var store = this.getStore();
 
                 selection = Ext.Factory.selection(Ext.apply({
@@ -658,6 +739,125 @@ Ext.define('Ext.dataview.selection.Model', {
             }
 
             return selection;
+        }
+    },
+
+    statics: {
+        /**
+         * This method is used to evict from the passed `collection`, records which
+         * are no longer in the `filteredCollection` due to being filtered out, and refresh
+         * the instances of records who's IDs are still in the `collection`, but which may
+         * be new instances.
+         *
+         * This is used by {@link Ext.dataview.selection.Records#refresh} in response
+         * to a selection model's store's `refresh` event.
+         *
+         * It is also used in {@link Ext.field.Select#onStoreRefresh} to refresh its
+         * {@link Ext.field.Select#valueCollection value collection} in response to
+         * its store's `refresh` event if it has not yet created a picker with a
+         * selection model who's collection is the value collection.
+         *
+         * Filters which are to be ignored in this process are passed as `ignoredFilters`
+         * @param {Ext.util.Collection} collection The collection to be refreshed.
+         * @param {Ext.util.Collection} filteredCollection The filtered source of which the
+         * `collection` must be a subset.
+         * @param {Ext.util.Filter[]} [ignoredFilters] Filters to ignore, that is, allow
+         * records to remain
+         * in `collection` if they were only filtered out by these filters.
+         * @param {Function} [beforeRefresh] A callback (which must be bound to the desired
+         * run time scope) to call before the {@link Ext.util.Collection#splice splice} call
+         * which refreshes the collection.
+         * @param {Ext.data.Model[]} [beforeRefresh.toRemove] The records to remove from
+         * `collection` due to being filtered.
+         * @param {Ext.data.Model[]} [beforeRefresh.toAdd] The records which are still in
+         * the `filteredCollection`.
+         * @private
+         */
+        refreshCollection: function(collection, filteredCollection, ignoredFilters, beforeRefresh) {
+            var filterFn = filteredCollection.getFilters().getFilterFn(),
+                selections,
+                toRemove = [],
+                toAdd = [],
+                len, selectionLength, i, rec, matchingSelection, toReEnable;
+
+            // By default, we use the filtered collection to prune out no longer present records.
+            // However ComboBoxes and SelectFields add filters which hide records from visibility
+            // but must not cause them to be deselected.
+            // The ComboBox's primaryFilter, and the SelectField's filterPickList fall
+            // into this category and must temporarily be disabled.
+            if (ignoredFilters) {
+                toReEnable = [];
+                len = ignoredFilters.length;
+
+                for (i = 0; i < len; i++) {
+                    if (!ignoredFilters[i].getDisabled()) {
+                        toReEnable.push(ignoredFilters[i]);
+                        ignoredFilters[i].setDisabled(true);
+                    }
+                }
+
+                if (toReEnable.length) {
+                    filteredCollection = filteredCollection.getSource() || filteredCollection;
+                }
+                else {
+                    ignoredFilters = null;
+                }
+            }
+
+            // If there is a current selection, build the toDeselect and toReselect lists
+            if (collection.getCount()) {
+                selections = collection.getRange();
+                selectionLength = selections.length;
+
+                for (i = 0; i < selectionLength; i++) {
+                    rec = selections[i];
+                    matchingSelection = filteredCollection.get(filteredCollection.getKey(rec));
+
+                    // If we are using the unfiltered source because of having to ignore one or more
+                    // filters, then test the filter condition here with those filters disabled.
+                    // Evict the record if it still does not pass the filter.
+                    if (matchingSelection && ignoredFilters && !filterFn(matchingSelection)) {
+                        matchingSelection = null;
+                    }
+
+                    if (matchingSelection) {
+                        if (matchingSelection !== rec) {
+                            toRemove.push(rec);
+                            toAdd.push(matchingSelection);
+                        }
+                    }
+                    else {
+                        toRemove.push(rec);
+                    }
+                }
+
+                // Give an observer (likely a DataView) an opportunity to intervene in the
+                // selection model refresh.
+                // BoundLists remove any interactively added "isEntered" records from the
+                // toDeselect array because they are outside the scope of the field's
+                // supplied Store.
+                if (beforeRefresh) {
+                    beforeRefresh(toRemove, toAdd);
+                }
+
+                // Update the selected Collection.
+                // Records which are no longer present will be in the toDeselect list
+                // Records which have the same id which have returned will be in the toSelect list.
+                // The SelectionModel will react to successful removal as an observer.
+                // It will need to know at that time whether the event is suppressed.
+                collection.suppressEvent = true;
+                collection.splice(collection.getCount(), toRemove, toAdd);
+                collection.suppressEvent = false;
+            }
+
+            // Re-enable the filters that we are ignoring.
+            if (toReEnable) {
+                len = toReEnable.length;
+
+                for (i = 0; i < len; i++) {
+                    toReEnable[i].setDisabled(false);
+                }
+            }
         }
     }
 });

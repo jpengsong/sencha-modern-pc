@@ -1,6 +1,10 @@
 {
-    "name": "@extjs/ext-react-classic",
-    "version": "6.5.3.57",
+    "name": "@extjs/ext-classic",
+    "ext-react-name": "@extjs/ext-react-classic",
+    "ext-name": "@extjs/ext-classic",
+    "SenchaExtName": "@sencha/ext-classic",
+    "SenchaExtReactName": "@sencha/ext-react-classic",
+    "version": "7.0.0.156",
     "sencha": {
         "name": "classic",
         "namespace": "Ext",
@@ -12,8 +16,8 @@
         "creator": "Sencha",
         "summary": "The Classic UI Toolkit",
         "detailedDescription": "UI components for desktops and legacy browsers",
-        "version": "6.5.3.57",
-        "compatVersion": "6.0.0",
+        "version": "7.0.0.156",
+        "compatVersion": "7.0.0",
         "format": "1",
         "output": "${framework.dir}/build",
         "local": true,
@@ -50,7 +54,9 @@
                 "theme-crisp-touch",
                 "aria",
                 "theme-aria",
-                "theme-triton"
+                "theme-triton",
+                "theme-graphite",
+                "theme-material"
             ]
         },
         "language": {

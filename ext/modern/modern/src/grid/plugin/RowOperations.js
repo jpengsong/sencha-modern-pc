@@ -105,8 +105,8 @@ Ext.define('Ext.grid.plugin.RowOperations', {
          * @cfg {Boolean} useTriggerButton
          * Determines whether or not the trigger button is show when the grid is loaded.
          * This most commonly be set to false if you wanted to have the selectionColumn
-         * shown 100% of the time instead of hidden by default. You could show the {@link #selectionColumn}
-         * by modifying its hidden value to be false.
+         * shown 100% of the time instead of hidden by default. You could show the 
+         * {@link #selectionColumn} by modifying its hidden value to be false.
          */
         useTriggerButton: true,
 
@@ -146,7 +146,7 @@ Ext.define('Ext.grid.plugin.RowOperations', {
         selecting: null
     },
 
-    init: function (grid) {
+    init: function(grid) {
         if (!this.useSelectButton()) {
             this.setSelecting(true);
         }
@@ -156,20 +156,20 @@ Ext.define('Ext.grid.plugin.RowOperations', {
         }
     },
 
-    destroy: function () {
+    destroy: function() {
         this.setOperation(null);
         this.setSelectButton(null);
 
         this.callParent();
     },
 
-    getRecords: function () {
+    getRecords: function() {
         var grid = this.cmp;
 
         return grid.getSelections();
     },
 
-    onOperationTap: function () {
+    onOperationTap: function() {
         this.deleteSelectedRecords();
     },
 
@@ -179,11 +179,11 @@ Ext.define('Ext.grid.plugin.RowOperations', {
 
     // operation
 
-    applyOperation: function (config, button) {
+    applyOperation: function(config, button) {
         return Ext.updateWidget(button, config, this, 'createOperation');
     },
 
-    createOperation: function (config) {
+    createOperation: function(config) {
         var me = this,
             ret = Ext.apply({
                 text: me.getDeleteText()
@@ -199,11 +199,12 @@ Ext.define('Ext.grid.plugin.RowOperations', {
         return ret;
     },
 
-    updateOperation: function (operation) {
+    updateOperation: function(operation) {
+        var selectButton, titleBar, container;
+
         if (operation) {
-            var selectButton = this.useSelectButton(),
-                titleBar = this.cmp.getTitleBar(),
-                container;
+            selectButton = this.useSelectButton();
+            titleBar = this.cmp.getTitleBar();
 
             if (titleBar) {
                 if (selectButton) {
@@ -220,11 +221,11 @@ Ext.define('Ext.grid.plugin.RowOperations', {
 
     // selectButton
 
-    applySelectButton: function (config, button) {
+    applySelectButton: function(config, button) {
         return Ext.updateWidget(button, config, this, 'createSelectButton');
     },
 
-    createSelectButton: function (config) {
+    createSelectButton: function(config) {
         var me = this,
             ret = Ext.apply({
                 text: me.getTriggerText()
@@ -236,13 +237,13 @@ Ext.define('Ext.grid.plugin.RowOperations', {
         return ret;
     },
 
-    updateSelectButton: function (selectButton) {
+    updateSelectButton: function(selectButton) {
         if (selectButton) {
             this.cmp.getTitleBar().add(selectButton);
         }
     },
 
-    updateSelecting: function (selecting) {
+    updateSelecting: function(selecting) {
         var me = this,
             grid = me.cmp,
             disableSelection = me.getDisableSelection(),
@@ -271,14 +272,14 @@ Ext.define('Ext.grid.plugin.RowOperations', {
     },
 
     privates: {
-        deleteSelectedRecords: function () {
+        deleteSelectedRecords: function() {
             var records = this.getRecords(),
                 store = this.cmp.getStore();
 
             store.remove(records);
         },
 
-        useSelectButton: function () {
+        useSelectButton: function() {
             var me = this,
                 titleBar = me.cmp.getTitleBar();
 

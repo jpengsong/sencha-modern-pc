@@ -1,12 +1,12 @@
 /**
  * @class Ext.sparkline.Base
  */
-
 Ext.define('Ext.override.sparkline.Base', {
     override: 'Ext.sparkline.Base',
 
     statics: {
         constructTip: function() {
+            // eslint-disable-next-line dot-notation
             return new Ext.tip['ToolTip']({
                 id: 'sparklines-tooltip',
                 showDelay: 0,
@@ -16,7 +16,7 @@ Ext.define('Ext.override.sparkline.Base', {
         }
     },
 
-    onMouseMove: function (e) {
+    onMouseMove: function(e) {
         this.getSharedTooltip().triggerEvent = e;
         this.callParent([e]);
     },
@@ -29,12 +29,14 @@ Ext.define('Ext.override.sparkline.Base', {
     privates: {
         hideTip: function() {
             var tip = this.getSharedTooltip();
-            tip.target = null;  
+
+            tip.target = null;
             tip.hide();
         },
 
         showTip: function() {
             var tip = this.getSharedTooltip();
+
             tip.target = this.el;
             tip.onTargetOver(tip.triggerEvent);
         }

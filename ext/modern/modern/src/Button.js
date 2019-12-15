@@ -74,9 +74,9 @@
  * - **back** - a back button
  * - **forward** - a forward button
  * - **round** - a round button
- * - **action** - shaded using the {@link Global_CSS#$active-color $active-color} (dark blue by default)
- * - **decline** - shaded using the {@link Global_CSS#$alert-color $alert-color} (red by default)
- * - **confirm** - shaded using the {@link Global_CSS#$confirm-color $confirm-color} (green by default)
+ * - **action** - shaded using the {@link Global_CSS#$active-color $active-color}
+ * - **decline** - shaded using the {@link Global_CSS#$alert-color $alert-color}
+ * - **confirm** - shaded using the {@link Global_CSS#$confirm-color $confirm-color}
  *
  * You can also append `-round` to each of the last three UI's to give it a round shape:
  *
@@ -161,7 +161,9 @@
  *
  *                         // update the iconCls of the button with the next iconCls, if one exists.
  *                         // if not, use the first one
- *                         button.setIconCls(availableIconCls[(index === availableIconCls.length) ? 0 : index]);
+ *                         button.setIconCls(availableIconCls[(index === availableIconCls.length)
+ *                         ? 0
+ *                         : index]);
  *                     });
  *                 }
  *             },
@@ -229,8 +231,8 @@ Ext.define('Ext.Button', {
         /**
          * @cfg {String} buttonType
          * By default, all buttons have `type="button"`. If a button is intended to be invoked as
-         * the default action button inside an {@link Ext.form.Panel}, then setting this to `'submit'`
-         * will cause the button to be clicked whenever the `ENTER` key is pressed.
+         * the default action button inside an {@link Ext.form.Panel}, then setting this to
+         * `'submit'` will cause the button to be clicked whenever the `ENTER` key is pressed.
          *
          * @since 6.5.0
          */
@@ -280,7 +282,8 @@ Ext.define('Ext.Button', {
 
         /**
          * @cfg {String} menuAlign
-         * The position to align the menu to (see {@link Ext.util.Positionable#alignTo} for more details).
+         * The position to align the menu to (see {@link Ext.util.Positionable#alignTo} for more
+         * details).
          */
         menuAlign: 'tl-bl?',
 
@@ -300,15 +303,7 @@ Ext.define('Ext.Button', {
          * the menu will override this.
          * @since 6.5.1
          */
-        stretchMenu: false,
-
-        /**
-         * @cfg eventHandlers
-         * @inheritdoc
-         */
-        eventHandlers: {
-            click: 'onClick'
-        }
+        stretchMenu: false
     },
 
     config: {
@@ -324,7 +319,9 @@ Ext.define('Ext.Button', {
 
         /**
          * @cfg {String} badgeText
-         * Optional badge text.  Badges appear as small numbers, letters, or icons that sit on top of your button.  For instance, a small red number indicating how many updates are available.
+         * Optional badge text.  Badges appear as small numbers, letters, or icons that sit on top
+         * of your button.  For instance, a small red number indicating how many updates are
+         * available.
          * @accessor
          */
         badgeText: null,
@@ -370,7 +367,8 @@ Ext.define('Ext.Button', {
 
         /**
          * @cfg {Boolean} [arrow=true]
-         * By default, if the button has a {@link #cfg!menu}, an arrow icon is shown to indicate this.
+         * By default, if the button has a {@link #cfg!menu}, an arrow icon is shown to indicate
+         * this.
          *
          * Configure `arrow: false` to hide the menu arrow.
          */
@@ -404,7 +402,7 @@ Ext.define('Ext.Button', {
 
         /**
          * @cfg {Object} scope
-         * The scope (`this` refeence) in which the configured {@link #handler} will be executed,
+         * The scope (`this` reference) in which the configured {@link #handler} will be executed,
          * unless the scope is a ViewController method nmame.
          * @accessor
          */
@@ -426,9 +424,9 @@ Ext.define('Ext.Button', {
          * - `'forward'` - a forward button.
          * - `'round'` - a round button.
          * - `'plain'`
-         * - `'action'` - shaded using the {@link Global_CSS#$active-color $active-color} (dark blue by default).
-         * - `'decline'` - shaded using the {@link Global_CSS#$alert-color $alert-color} (red by default).
-         * - `'confirm'` - shaded using the {@link Global_CSS#$confirm-color $confirm-color} (green by default).
+         * - `'action'` - shaded using the {@link Global_CSS#$active-color $active-color}
+         * - `'decline'` - shaded using the {@link Global_CSS#$alert-color $alert-color}
+         * - `'confirm'` - shaded using the {@link Global_CSS#$confirm-color $confirm-color}
          *
          * You can also append `-round` to each of the last three UI's to give it a round shape:
          *
@@ -457,7 +455,8 @@ Ext.define('Ext.Button', {
 
         /**
          * @cfg {String/Number} value
-         * The value of this button.  Only applicable when used as an item of a {@link Ext.SegmentedButton Segmented Button}.
+         * The value of this button.  Only applicable when used as an item of a
+         * {@link Ext.SegmentedButton Segmented Button}.
          */
         value: null
     },
@@ -499,7 +498,7 @@ Ext.define('Ext.Button', {
      * @inheritdoc
      */
     defaultBindProperty: 'text',
-    
+
     /**
      * @cfg publishes
      * @inheritdoc
@@ -512,7 +511,9 @@ Ext.define('Ext.Button', {
      */
     element: {
         reference: 'element',
-        onclick: 'return Ext.doEv(this, event);'
+        listeners: {
+            click: 'onClick'
+        }
     },
 
     /**
@@ -520,20 +521,20 @@ Ext.define('Ext.Button', {
      * @inheritdoc
      */
     focusable: true,
-    
+
     /**
      * @property focusEl
      * @inheritdoc
      */
     focusEl: 'buttonElement',
-    
+
     /**
      * @property ariaEl
      * @inheritdoc
      */
     ariaEl: 'buttonElement',
     backgroundColorEl: 'innerElement',
-    
+
     /**
      * @property focusClsEl
      * @inheritdoc
@@ -572,16 +573,18 @@ Ext.define('Ext.Button', {
                 }, {
                     reference: 'textElement',
                     cls: Ext.baseCSSPrefix + 'text-el'
-                }]
+                }
+                ]
             }, {
                 reference: 'arrowElement',
                 cls: Ext.baseCSSPrefix + 'arrow-el ' + Ext.baseCSSPrefix + 'font-icon'
-            }]
+            }
+            ]
         }, {
             reference: 'badgeElement',
             cls: Ext.baseCSSPrefix + 'badge-el'
-        },
-            this.getButtonTemplate()];
+        }, this.getButtonTemplate()
+        ];
     },
 
     /**
@@ -589,7 +592,7 @@ Ext.define('Ext.Button', {
      * Returns a for an absolutely positioned transparent button element that overlays the
      * entire component and captures tabs and clicks for accessibility purposes.
      *
-     * Overridden by {@link Ext.field.FileButton} to replace the `<button` element with
+     * Overridden by {@link Ext.field.FileButton} to replace the `<button>` element with
      * an `<input type="file">` element.
      */
     getButtonTemplate: function() {
@@ -597,8 +600,10 @@ Ext.define('Ext.Button', {
             tag: 'button',
             reference: 'buttonElement',
             cls: Ext.baseCSSPrefix + 'button-el',
-            onfocus: 'return Ext.doEv(this, event);',
-            onblur: 'return Ext.doEv(this, event);'
+            listeners: {
+                focus: 'handleFocusEvent',
+                blur: 'handleBlurEvent'
+            }
         };
     },
 
@@ -606,13 +611,12 @@ Ext.define('Ext.Button', {
      * @private
      * Intercept ripple config to return unbound ripples for icon only buttons
      */
-    shouldRipple: function(e) {
+    shouldRipple: function() {
         var me = this,
             ui = me.getUi(),
             ripple = me.getRipple(),
             isFab = ui ? ui.split(" ").indexOf("fab") >= 0 : false,
             text, icon;
-
 
         if (!isFab && ripple && ripple.bound === undefined) {
             text = me.getText();
@@ -656,7 +660,8 @@ Ext.define('Ext.Button', {
         if (badgeText) {
             badgeElement.setText(badgeText);
             el.addCls(hasBadgeCls);
-        } else {
+        }
+        else {
             el.removeCls(hasBadgeCls);
         }
     },
@@ -685,6 +690,7 @@ Ext.define('Ext.Button', {
         if (toggleHandler && !me.isConfiguring) {
             Ext.callback(toggleHandler, me.getScope(), [me, pressed], 0, me);
         }
+
         me.element.toggleCls(me.pressedCls, pressed);
     },
 
@@ -696,8 +702,10 @@ Ext.define('Ext.Button', {
         if (icon) {
             me.addCls(hasIconCls);
             element.setStyle('background-image', 'url(' + icon + ')');
-        } else {
+        }
+        else {
             element.setStyle('background-image', '');
+
             if (!me.getIconCls()) {
                 me.removeCls(hasIconCls);
             }
@@ -712,8 +720,10 @@ Ext.define('Ext.Button', {
         if (iconCls) {
             me.addCls(hasIconCls);
             element.replaceCls(oldIconCls, iconCls);
-        } else {
+        }
+        else {
             element.removeCls(oldIconCls);
+
             if (!me.getIcon()) {
                 me.removeCls(hasIconCls);
             }
@@ -785,7 +795,8 @@ Ext.define('Ext.Button', {
         if (oldMenu && !oldMenu.destroyed) {
             if (this.getDestroyMenu()) {
                 oldMenu.destroy();
-            } else if (oldMenu.isMenu) {
+            }
+            else if (oldMenu.isMenu) {
                 oldMenu.un(listener);
             }
         }
@@ -805,7 +816,7 @@ Ext.define('Ext.Button', {
     applyAutoEvent: function(autoEvent) {
         var me = this;
 
-        if (typeof autoEvent == 'string') {
+        if (typeof autoEvent === 'string') {
             autoEvent = {
                 name: autoEvent,
                 scope: me.scope || me
@@ -830,6 +841,7 @@ Ext.define('Ext.Button', {
         if (Ext.isNumber(delay)) {
             return delay;
         }
+
         return (delay) ? 100 : 0;
     },
 
@@ -848,7 +860,7 @@ Ext.define('Ext.Button', {
     /**
      * @private
      */
-    findEventTarget: function(e) {
+    findEventTarget: function() {
         return this.element;
     },
 
@@ -866,13 +878,16 @@ Ext.define('Ext.Button', {
             if (pressedDelay > 0) {
                 me.pressedTimeout = Ext.defer(function() {
                     delete me.pressedTimeout;
+
                     if (element) {
                         element.addCls(pressingCls);
                     }
                 }, pressedDelay);
-            } else {
+            }
+            else {
                 element.addCls(pressingCls);
             }
+
             Ext.GlobalEvents.setPressedComponent(me, e);
         }
     },
@@ -896,7 +911,8 @@ Ext.define('Ext.Button', {
             if (me.hasOwnProperty('pressedTimeout')) {
                 Ext.undefer(me.pressedTimeout);
                 delete me.pressedTimeout;
-            } else {
+            }
+            else {
                 if (element) {
                     element.removeCls(me.pressingCls);
                 }
@@ -936,7 +952,8 @@ Ext.define('Ext.Button', {
             me.toggleMenu(e, menu);
         }
         else {
-            if ((me.getToggleHandler() || me.getEnableToggle()) && (me.getAllowDepress() || !me.isPressed())) {
+            if ((me.getToggleHandler() || me.getEnableToggle()) && (me.getAllowDepress() ||
+                !me.isPressed())) {
                 me.toggle();
             }
 
@@ -989,16 +1006,17 @@ Ext.define('Ext.Button', {
             });
             this.keyHandlersAdded = true;
         }
+
         this.callParent([e]);
     },
 
-    onMenuHide: function (menu) {
+    onMenuHide: function(menu) {
         if (menu.isMenu && !this.$buttonWasPressed) {
             this.setPressed(false);
         }
     },
 
-    toggleMenu: function (e, menu) {
+    toggleMenu: function(e, menu) {
         var me = this;
 
         menu = menu || me.getMenu();
@@ -1006,13 +1024,14 @@ Ext.define('Ext.Button', {
         if (menu) {
             if (menu.isVisible()) {
                 me.hideMenu(e, menu);
-            } else {
+            }
+            else {
                 me.showMenu(e, menu);
             }
         }
     },
 
-    hideMenu: function (e, menu) {
+    hideMenu: function(e, menu) {
         menu = menu || this.getMenu();
 
         if (menu) {
@@ -1056,9 +1075,11 @@ Ext.define('Ext.Button', {
                     if (!pressed) {
                         me.setPressed(true);
                     }
-                } else if (menu.isViewportMenu) {
+                }
+                else if (menu.isViewportMenu) {
                     menu.setDisplayed(!menu.getDisplayed());
-                } else {
+                }
+                else {
                     menu.show();
                 }
             }
@@ -1084,11 +1105,13 @@ Ext.define('Ext.Button', {
     privates: {
         setupMenuStretch: function(menu) {
             var me = this;
+
             // Only stretch to our width if the menu doesn't already have a minWidth
             if (!me.menuMinWidth) {
                 if (me.getStretchMenu()) {
                     menu.setMinWidth(me.el.measure('w'));
-                } else {
+                }
+                else {
                     menu.setMinWidth(null);
                 }
             }

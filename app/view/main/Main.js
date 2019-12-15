@@ -1,156 +1,83 @@
 Ext.define("App.view.main.Main", {
     id: "mainCardPanel",
-    reference: "mainCardPanel",
-    extend: "Ext.container.Viewport",
+    extend: 'Ext.panel.Panel',
     controller: "main",
     viewModel: "main",
     layout: 'card',
-    activeItem: 0,
     items: [
         {
             xtype: "container",
             routeId: "main",
+            reference: "main",
             layout: {
-                type: "vbox",
+                type: 'vbox',
                 align: "stretch"
             },
             items: [
+                { xtype: "main-toolbar" },
                 {
-                    xtype: "container",
-                    reference: "header",
+                    xtype: "main-menu",
+                    reference:"navigationMenuList",
+                    bind: { store: '{navigationtree}' },
                     height: 50,
-                    layout: {
-                        type: "hbox",
-                        align: "stretch"
-                    },
-                    items: [
-                        {
-                            xtype: "container",
-                            reference: "logo",
-                            width: 220,
-                            cls: "ext",
-                            border: 10,
-                            html: "sencha",
-                            bind: {
-                                UI: "main-logo-{theme}"
-                            },
-                        },
-                        {
-                            xtype: "toolbar",
-                            reference: "headerToolbar",
-                            padding: "0 0",
-                            flex: 1,
-                            style: { "box-shadow": "0px 0px 0px 0.1px black" },
-                            bind:{
-                                UI:"main-toolbar-{theme}"
-                            },
-                            defaults: {
-                                margin: '0 15',
-                                bind:{
-                                    UI:"main-toolbar-button-{theme}"
-                                }
-                            },
-                            items: [
-                                {
-                                    iconCls: "x-fa fa-bars",
-                                    listeners: {
-                                        click: "onMicro"
-                                    }
-                                },
-                                {
-                                    iconCls: "x-fa  fa-cog",
-                                },
-                                {
-                                    iconCls: "x-fa  fa-refresh",
-                                },
-                                {
-                                    xtype: "textfield",
-                                    emptyText: "搜索...",
-                                    ui: "default"
-                                },
-                                '->',
-                                {
-                                    iconCls: "x-fa  fa-bell-o",
-                                },
-                                {
-                                    iconCls: "x-fa  x-fa fa-tachometer",
-                                    handler: "onThemeWindow"
-                                },
-                                {
-                                    iconCls: "x-fa  fa-arrows-alt",
-                                    handler: "onFullScreen"
-                                },
-                                {
-                                    text: "小靳一郎",
-                                    menu: [
-                                        { text: '个人资料', iconCls: "x-fa fa-address-card-o", handler: "onBasicInfo" },
-                                        { text: '修改密码', iconCls: "x-fa fa-cc", handler: "onUpdatePassWord" },
-                                        { text: '锁定', iconCls: "x-fa fa-lock", handler: "onLock" },
-                                        { text: '退出', iconCls: "x-fa fa-power-off", handler: "onLogout" }
-                                    ]
-                                },
-                                {
-                                    iconCls: "x-fa  fa-ellipsis-v",
-                                    handler: "onVersionWindow"
-                                }
-                            ]
-                        }]
+                    listeners: {
+                        selectionchange:"onSelectionchange"
+                    }
                 },
                 {
                     xtype: "container",
                     flex: 1,
                     layout: {
                         type: "hbox",
-                        align: 'stretch'
+                        align: "stretch"
                     },
                     items: [
                         {
-                            xtype: "container",
-                            width: 220,
-                            reference: "navcontainer",
-                            bind: {
-                                UI: "{theme}"
-                            },
-                            scrollable: Ext.scroll.Scroller({ y: true, x: false, scrollbars: false }),
-                            items: [
-                                {
-                                    xtype: 'treelist',
-                                    reference: "navigationTreeList",
-                                    id: "navigationTreeList",
-                                    bind: {
-                                        ui: "main-navigation-{theme}",
-                                        store: '{navigation}'
-                                    },
-                                    defaults: {
-                                        xtype: 'treelistitem',
-                                        textProperty: "MenuName",
-                                        iconClsProperty: "IconCls"
-                                    },
-                                    scrollable: true,
-                                    singleExpand: true,
-                                    expanderOnly: false,
-                                    listeners: {
-                                        selectionchange: "onNavigationTreeListChange"
-                                    }
-                                }
-                            ]
+                            xtype: 'main-tree',
+                            singleExpand :true,
+                            border:true,
+                            bind: { store: '{navigationtree}' },
+                            reference: "navigationTreeList",
+                            width: 250,
+                            listeners:{
+                                selectionchange :"onSelectionchange"
+                            }
                         },
                         {
-                            xtype: "tabpanel",
+                            xtype: 'tabpanel',
                             id: "mainTabPanel",
-                            reference: "mainTabPanel",
-                            ui: "tabpanel-default",
-                            flex:1,
-                            defaults: {
-                                style: {
-                                    background: '#f2f2f2'
+                            cls: "main-tabpanel",
+                            flex: 1,
+                            layout: {
+                                type: 'card',
+                                animation: {
+                                    type: 'fade',
+                                    duration: 250
+                                }
+                            },
+                            tabBar: {
+                                ui: "main-tabBar",
+                                defaultTabUI: "main-tabbar-tab",
+                                defaultType: "tab",
+                                defaults: {
+                                    height: 25,
+                                    scrollable: true,
+                                    margin: "3px 5px 2px 3px",
+                                    flex: null
+                                },
+                                layout: {
+                                    pack: 'start',
+                                    overflow: 'scroller'
                                 }
                             },
                             items: [
-                                { xtype: "home" }
+                                {
+                                    title: '首页',
+                                    xtype: "home"
+                                }
                             ],
-                            listeners: {
-                                tabchange: "onTabChange"
+                            listeners:{
+                                activeItemchange:"onTabChange"
                             }
                         }
                     ]
@@ -159,6 +86,6 @@ Ext.define("App.view.main.Main", {
         }
     ],
     listeners: {
-        render: 'onMainViewRender'
+        painted: 'onMainViewRender'
     }
-})  
+})

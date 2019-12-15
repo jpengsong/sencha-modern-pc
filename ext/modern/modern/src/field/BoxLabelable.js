@@ -28,7 +28,7 @@ Ext.define('Ext.field.BoxLabelable', {
 
     boxLabeledCls: Ext.baseCSSPrefix + 'box-labeled',
 
-    getBodyTemplate: function () {
+    getBodyTemplate: function() {
         return [{
             reference: 'boxWrapElement',
             cls: Ext.baseCSSPrefix + 'box-wrap-el',
@@ -41,17 +41,17 @@ Ext.define('Ext.field.BoxLabelable', {
                 reference: 'boxLabelElement',
                 cls: Ext.baseCSSPrefix + 'box-label-el'
             }]
-        }]
+        }];
     },
 
     getBoxTemplate: Ext.emptyFn,
 
-    updateBoxLabel: function (boxLabel) {
+    updateBoxLabel: function(boxLabel) {
         this.boxLabelElement.setHtml(boxLabel);
         this.el.toggleCls(this.boxLabeledCls, !!boxLabel);
     },
 
-    updateBoxLabelAlign: function (boxLabelAlign, oldBoxLabelAlign) {
+    updateBoxLabelAlign: function(boxLabelAlign, oldBoxLabelAlign) {
         var me = this,
             el = me.el;
 

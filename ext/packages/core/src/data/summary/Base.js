@@ -18,7 +18,7 @@ Ext.define('Ext.data.summary.Base', {
         cacheable: true
     },
 
-    constructor: function (config) {
+    constructor: function(config) {
         var calculate = config && config.calculate;
 
         if (calculate) {
@@ -59,18 +59,19 @@ Ext.define('Ext.data.summary.Base', {
             if (root) {
                 record = record[root];
             }
+
             ret = record[property];
         }
+
         return ret;
     }
-},
-function () {
-    Ext.Factory.on('dataSummary', function (factory, config) {
+}, function() {
+    Ext.Factory.on('dataSummary', function(factory, config) {
         if (typeof config === 'function') {
             return factory({
                 calculate: config
             });
         }
         // by not returning anything, the normal factory logic is applied
-    })
+    });
 });

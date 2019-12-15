@@ -88,7 +88,7 @@ Ext.define('Ext.chart.sprite.Bar3D', {
         }
     },
 
-    constructor: function (config) {
+    constructor: function(config) {
         this.callParent([config]);
 
         this.topGradient = new Ext.draw.gradient.Linear({});
@@ -96,7 +96,7 @@ Ext.define('Ext.chart.sprite.Bar3D', {
         this.frontGradient = new Ext.draw.gradient.Linear({});
     },
 
-    updatePlainBBox: function (plain) {
+    updatePlainBBox: function(plain) {
         var attr = this.attr,
             x = attr.x,
             y = attr.y,
@@ -110,13 +110,14 @@ Ext.define('Ext.chart.sprite.Bar3D', {
         if (height > 0) {
             plain.y = y;
             plain.height = height + depth;
-        } else {
+        }
+        else {
             plain.y = y + depth;
             plain.height = height - depth;
         }
     },
 
-    render: function (surface, ctx) {
+    render: function(surface, ctx) {
         var me = this,
             attr = me.attr,
             center = attr.x,
@@ -129,9 +130,9 @@ Ext.define('Ext.chart.sprite.Bar3D', {
             isTransparent = attr.globalAlpha < 1,
             fillStyle = attr.fillStyle,
             color = Ext.util.Color.create(
-                fillStyle.isGradient ?
-                    fillStyle.getStops()[0].color :
-                    fillStyle
+                fillStyle.isGradient
+                    ? fillStyle.getStops()[0].color
+                    : fillStyle
             ),
             saturationFactor = attr.saturationFactor,
             brightnessFactor = attr.brightnessFactor,
@@ -187,15 +188,18 @@ Ext.define('Ext.chart.sprite.Bar3D', {
                 offset: 1,
                 color: Ext.util.Color.fromHSV(
                     hsv[0],
-                    Ext.Number.constrain(hsv[1] * (1.0 + colorSpread * 0.4) * saturationFactor, 0, 1),
+                    Ext.Number.constrain(hsv[1] * (1.0 + colorSpread * 0.4) * saturationFactor,
+                                         0, 1),
                     Ext.Number.constrain((0.5 - colorSpread * 0.32) * brightnessFactor, 0, 1)
                 )
             }
         ]);
 
         if (isHorizontal) {
-            me.frontGradient.setDegrees(0); // 0° angle looks like 90° angle because the chart is flipped
-        } else {
+            // 0° angle looks like 90° angle because the chart is flipped
+            me.frontGradient.setDegrees(0);
+        }
+        else {
             me.frontGradient.setRadians(Math.atan2(top - bottom, halfWidth * 2));
         }
 
@@ -204,7 +208,8 @@ Ext.define('Ext.chart.sprite.Bar3D', {
                 offset: 0,
                 color: Ext.util.Color.fromHSV(
                     hsv[0],
-                    Ext.Number.constrain(hsv[1] * (1.0 - colorSpread * 0.1) * saturationFactor, 0, 1),
+                    Ext.Number.constrain(hsv[1] * (1.0 - colorSpread * 0.1) * saturationFactor,
+                                         0, 1),
                     Ext.Number.constrain((0.5 + colorSpread * 0.1) * brightnessFactor, 0, 1)
                 )
             },
@@ -212,7 +217,8 @@ Ext.define('Ext.chart.sprite.Bar3D', {
                 offset: 1,
                 color: Ext.util.Color.fromHSV(
                     hsv[0],
-                    Ext.Number.constrain(hsv[1] * (1.0 + colorSpread * 0.1) * saturationFactor, 0, 1),
+                    Ext.Number.constrain(hsv[1] * (1.0 + colorSpread * 0.1) * saturationFactor,
+                                         0, 1),
                     Ext.Number.constrain((0.5 - colorSpread * 0.23) * brightnessFactor, 0, 1)
                 )
             }
@@ -233,6 +239,7 @@ Ext.define('Ext.chart.sprite.Bar3D', {
             bbox.width = halfWidth + depth;
             bbox.height = depth;
 
+            // eslint-disable-next-line max-len
             ctx.fillStyle = (isHorizontal ? me.rightGradient : me.topGradient).generateGradient(ctx, bbox);
 
             ctx.fillStroke(attr);
@@ -253,6 +260,7 @@ Ext.define('Ext.chart.sprite.Bar3D', {
             bbox.width = depth;
             bbox.height = top + depth - bottom;
 
+            // eslint-disable-next-line max-len
             ctx.fillStyle = (isHorizontal ? me.topGradient : me.rightGradient).generateGradient(ctx, bbox);
 
             ctx.fillStroke(attr);
@@ -273,6 +281,7 @@ Ext.define('Ext.chart.sprite.Bar3D', {
         bbox.width = halfWidth + depth;
         bbox.height = depth;
 
+        // eslint-disable-next-line max-len
         ctx.fillStyle = (isHorizontal ? me.rightGradient : me.topGradient).generateGradient(ctx, bbox);
 
         ctx.fillStroke(attr);
@@ -292,6 +301,7 @@ Ext.define('Ext.chart.sprite.Bar3D', {
         bbox.width = depth;
         bbox.height = top + depth - bottom;
 
+        // eslint-disable-next-line max-len
         ctx.fillStyle = (isHorizontal ? me.topGradient : me.rightGradient).generateGradient(ctx, bbox);
 
         ctx.fillStroke(attr);
@@ -316,5 +326,4 @@ Ext.define('Ext.chart.sprite.Bar3D', {
 
         ctx.fillStroke(attr);
     }
-
 });

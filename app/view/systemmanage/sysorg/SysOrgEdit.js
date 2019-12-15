@@ -1,98 +1,96 @@
 Ext.define("App.view.systemmanage.sysorg.SysOrgEdit", {
     alias: "widget.sysorgedit",
-    extend: "Ext.window.Window",
-    autoShow: true,
-    maximizable: true,
+    extend: "Ext.Dialog",
+    displayed: true,
+    closable: true,
     modal: true,
     width: 450,
-    height: 400,
-    layout: "fit",
-    items: [
-        {
-            xtype: "form",
-            reference: "form",
-            layout: "form",
-            items: [
-                {
-                    xtype: "comboxtree",
-                    fieldLabel: '所属机构',
-                    editable: false,
-                    hideTrigger: true,
-                    displayField: "OrgName",
-                    valueField: "SysOrgId",
-                    width: "100%",
-                    height: 200,
-                    rootVisible: false,
-                    params: function () {
-                        return { SysOrgId: "00000000-0000-0000-0000-000000000000" };
-                    },
-                    bind: {
-                        defautvalue: "{org.ParentOrgId}",
-                        store: "{treestore}"
-                    },
-                    allowBlank: false,
-                    afterLabelTextTpl: config.AfterLabelTextRequired
-                },
-                {
-                    xtype: "textfield",
-                    fieldLabel: '级别',
-                    editable: false,
-                    allowBlank: false,
-                    bind: "{org.Level}",
-                    afterLabelTextTpl: config.AfterLabelTextRequired
-                },
-                {
-                    xtype: "textfield",
-                    fieldLabel: '机构名称',
-                    allowBlank: false,
-                    bind: "{org.OrgName}",
-                    afterLabelTextTpl: config.AfterLabelTextRequired
-                },
-                {
-                    xtype: "textfield",
-                    fieldLabel: '机构代码',
-                    allowBlank: false,
-                    bind: "{org.OrgCode}",
-                    afterLabelTextTpl: config.AfterLabelTextRequired
-                },
-                {
-                    xtype: "numberfield",
-                    fieldLabel: '排序',
-                    allowBlank: false,
-                    bind: "{org.Sort}",
-                    afterLabelTextTpl: config.AfterLabelTextRequired
-                },
-                {
-                    fieldLabel: '描述',
-                    bind: "{org.Description}",
-                    xtype: 'textareafield'
-                }
-            ]
-        }
-    ],
-    dockedItems: [
-        {
+    height: 550,
+    layout:"fit",
+    padding:"0 0",
+    items:[
+    {
+        xtype:"formpanel",
+        reference:"form",
+        defaults: {
+            labelAlign: "left",
+            labelTextAlign: "center",
+            labelWrap: true,
+            border: true,
+            width: "100%",
+            labelWidth: 70,
+            margin: "0",
+            clearable: false
+        },
+        buttonToolbar: {
             xtype: 'toolbar',
-            dock: 'bottom',
-            ui: "footer",
+            docked: 'bottom',
+            defaultType: 'button',
+            weighted: true,
+            ui: 'footer',
+            defaultButtonUI: 'action',
             layout: {
-                type: "hbox",
-                align: "center",
-                pack: "center"
+                type: 'box',
+                vertical: false,
+                pack: 'center'
             },
-            items: [
-                {
-                    text: '保存',
-                    iconCls: "x-fa fa-floppy-o",
-                    handler: "onSave"
+            defaults: {
+                margin: "0px 5px"
+            }
+        },
+        items: [
+            {
+                xtype: "comboxtree",
+                label: '所属机构',
+                hideSearchfield: false,
+                treeheight: 300,
+                querylocal: true,
+                displayField: "OrgName",
+                valueField: "SysOrgId",
+                bind: {
+                    store: "{treestore}",
+                    value: "{org.ParentOrgId}"
                 },
-                {
-                    text: '重置',
-                    iconCls: "x-fa fa-refresh",
-                    handler: "onReset"
+                params:{
+                  SysOrgId: "00000000-0000-0000-0000-000000000000"
                 }
-            ]
-        }
+            },
+            {
+                xtype: "textfield",
+                label: '级别',
+                editable: false,
+                required: true,
+                bind: "{org.Level}"
+            },
+            {
+                xtype: "textfield",
+                label: '机构名称',
+                required: true,
+                bind: "{org.OrgName}"
+            },
+            {
+                xtype: "textfield",
+                label: '机构代码',
+                required: true,
+                bind: "{org.OrgCode}"
+            },
+            {
+                xtype: "numberfield",
+                label: '排序',
+                required: true,
+                bind: "{org.Sort}"
+            },
+            {
+                label: '描述',
+                bind: "{org.Description}",
+                xtype: 'textareafield'
+            }
+        ],
+        buttons: [
+            { text: '保存', iconCls: "x-far fa-save", handler: 'onSave' },
+            { text: '重置', iconCls: "x-far fa-history", handler: 'onReset' }
+        ]
+    }
     ],
     controller: {
 
@@ -101,9 +99,9 @@ Ext.define("App.view.systemmanage.sysorg.SysOrgEdit", {
             var me = this,
                 view = me.getView(),
                 vm = me.getViewModel(),
-                scope = view.scope,
-                form = me.getReferences().form;
-            if (form.isValid()) {
+                refs = me.getReferences(),
+                scope = view.scope;
+            if (refs.form.validate()) {
                 App.Ajax.request({
                     url: "/api/SystemManage/SysOrg/" + (view.status == "add" ? "AddSysOrg" : "EditSysOrg"),
                     method: (view.status == "add" ? "POST" : "PUT"),
@@ -120,14 +118,14 @@ Ext.define("App.view.systemmanage.sysorg.SysOrgEdit", {
                                 App.TreeNode.updateNode(scope.tree.getStore().findNode("SysOrgId", data.Data.SysOrgId), data.Data);
                             }
                             scope.grid.getStore().loadPage(1);
-                            App.Msg.Info("保存成功");
+                            Ext.Msg.alert("提示","保存成功");
                             view.close();
                         } else {
-                            App.Msg.Info("保存失败");
+                            Ext.Msg.alert("提示","保存失败");
                         }
                     },
                     error: function (msg) {
-                        App.Msg.Error(msg);
+                        Ext.Msg.alert("提示",msg);
                     }
                 })
             }

@@ -27,8 +27,8 @@ Ext.define('Ext.layout.card.fx.ScrollReveal', {
             outTranslate = outItem.setTranslatable(true).getTranslatable();
             inTranslate = inItem.setTranslatable(true).getTranslatable();
             outTranslate.getWrapper().dom.style.setProperty('z-index', '100', 'important');
-            outTranslate.translate({ x: 0, y: 0});
-            inTranslate.translate({ x: 0, y: 0});
+            outTranslate.translate({ x: 0, y: 0 });
+            inTranslate.translate({ x: 0, y: 0 });
 
             inItem.show();
 
@@ -37,15 +37,20 @@ Ext.define('Ext.layout.card.fx.ScrollReveal', {
                 scope: this
             });
 
-            outTranslate.translateAnimated({ x: xy.x, y: xy.y}, animConfig);
+            outTranslate.translateAnimated({ x: xy.x, y: xy.y }, animConfig);
 
             controller.pause();
         }
     },
 
     onOutAnimationEnd: function() {
+        var wrapper;
+
         if (!this.destroyed) {
-            this.outItem.getTranslatable().getWrapper().dom.style.removeProperty('z-index'); // Remove this when we can remove translatable
+            wrapper = this.outItem.getTranslatable().getWrapper();
+
+            // Remove this when we can remove translatable
+            wrapper.dom.style.removeProperty('z-index');
             this.currentEventController.resume();
         }
     }

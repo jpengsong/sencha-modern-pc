@@ -1,12 +1,9 @@
 /**
  * 操作Cookie的工具类。需要处理cookie时，使用此类的SetCookie和GetCookie方法来设置和获取cookie值。
  * 例子如下：
- * 
- * 
  *       @example
  *       App.Cookie.SetCookie('username', 'abc');//设置cookie
  *       var name = App.Cookie.GetCookie('username');//获取cookie值
- * 
  */
 Ext.define('App.ux.utility.Cookie', {
     alternateClassName: ['App.Cookie'],

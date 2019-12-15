@@ -2,10 +2,22 @@ Ext.define("App.view.systemmanage.sysuser.SysUserController", {
     extend: 'Ext.app.ViewController',
     alias: 'controller.sysuser',
 
+    //查询
+    onSearch: function () {
+        var me = this, refs = me.getReferences(), gridStore = refs.grid.getStore();
+        App.Page.setQueryItems(gridStore, App.Page.getQueryItems(refs.search));
+        gridStore.loadPage(1);
+    },
+
+    //重置
+    onReset: function () {
+        var me = this, refs = me.getReferences();
+        App.Page.resetQueryItems(refs.search);
+    },
+
     //新增
     onAdd: function () {
         var me = this, record = Ext.create("App.model.systemmanage.SysUser");
-        console.info(record);
         Ext.widget({
             title: "新增用户",
             xtype: "sysuseredit",
@@ -28,7 +40,7 @@ Ext.define("App.view.systemmanage.sysuser.SysUserController", {
     onEdit: function () {
         var me = this, refs = me.getReferences(), record;
         if (App.Page.selectionModel(refs.grid, false)) {
-            record = refs.grid.getSelectionModel().getSelection()[0].clone();
+            record = refs.grid.getSelectable().getSelectedRecord().clone();
             Ext.widget({
                 title: "编辑用户",
                 xtype: "sysuseredit",
@@ -52,7 +64,7 @@ Ext.define("App.view.systemmanage.sysuser.SysUserController", {
     onDelete: function () {
         var me = this, refs = me.getReferences(), grid = refs.grid, records, idArray = [];;
         if (App.Page.selectionModel(grid, true)) {
-            records = grid.getSelectionModel().getSelection();
+            records = grid.getSelectable().getSelectedRecords();
             Ext.each(records, function (record, index) {
                 idArray.push(record.id);
             })
@@ -68,15 +80,15 @@ Ext.define("App.view.systemmanage.sysuser.SysUserController", {
                             maskmsg: "正在删除...",
                             params: idArray.join(","),
                             success: function (data) {
-                                if (data.Data=="1") {
-                                    App.Msg.Info("删除成功");
+                                if (data.Data == "1") {
+                                    Ext.Msg.alert("提示","删除成功");
                                     grid.getStore().loadPage(1);
                                 } else {
-                                    App.Msg.Error("删除失败");
+                                    Ext.Msg.alert("提示","删除失败");
                                 }
                             },
                             error: function (data) {
-                                App.Msg.Error("删除异常");
+                                Ext.Msg.alert("提示","删除异常");
                             }
                         })
                     }
@@ -86,54 +98,17 @@ Ext.define("App.view.systemmanage.sysuser.SysUserController", {
 
     //分配角色
     onUserRole: function () {
-        var me = this,refs = me.getReferences(), grid =refs.grid, sysUserId;
+        var me = this, refs = me.getReferences(), grid = refs.grid, sysUserId;
         if (App.Page.selectionModel(grid, false)) {
-            sysUserId = grid.getSelection()[0].get("SysUserId");
+            sysUserId = grid.getSelectable().getSelectedRecord().get("SysUserId");
             Ext.widget("sysuserrole", {
+                title: "分配角色",
                 viewModel: {
                     data: {
                         UserId: sysUserId
-                    },
-                    stores: {
-                        rolestore: {
-                            type: "systemmanage.sysuser.comboxroleStore"
-                        }
-                    },
-                    formulas: {
-                        value: {
-                            get: function () {
-                                var value = [], vm = this;
-                                App.Ajax.request({
-                                    url: "/api/SystemManage/SysUserRole/GetSysUserRoleByRule",
-                                    method: "GET",
-                                    nosim: false,
-                                    type: "JSON",
-                                    params: { UserId: sysUserId },
-                                    success: function (data) {
-                                        for (var i = 0; i < data.Data.length; i++) {
-                                            value.push(data.Data[i]["RoleId"]);
-                                        }
-                                        vm.set("value", value);
-                                    }
-                                })
-                            }
-                        }
                     }
                 }
             })
         }
-    },
-
-    //导入
-    onImport: function () {
-        Ext.create({
-            xtype: "window",
-            height: 200,
-            width: 400,
-            layout: 'fit',
-            items: [
-                { xtype: "fileupload" }
-            ]
-        })
     }
 })

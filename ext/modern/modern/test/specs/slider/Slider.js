@@ -11,7 +11,7 @@ topSuite("Ext.slider.Slider", function() {
 
     describe('value', function() {
         it('should be a number, in case a number was given', function() {
-            createField({value: 50});
+            createField({ value: 50 });
             var value = slider.getValue();
 
             expect(value).toBe(50);
@@ -28,7 +28,7 @@ topSuite("Ext.slider.Slider", function() {
         });
 
         it('should be an array, in case an array was given', function() {
-            createField({value: [30, 70]});
+            createField({ value: [30, 70] });
             var value = slider.getValue();
 
             expect(value[0]).toBe(30);

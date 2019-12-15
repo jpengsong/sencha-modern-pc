@@ -29,9 +29,21 @@ $button-pressed-background-color: dynamic(button-pressed-background-color($butto
 
 /**
  * @var {color}
+ * Button background-color when pressed and hovered
+ */
+$button-pressed-hovered-background-color: dynamic(null);
+
+/**
+ * @var {color}
  * Button background-color when focused
  */
 $button-focused-background-color: dynamic(button-focused-background-color($button-background-color));
+
+/**
+ * @var {color}
+ * Button background-color when focused and hovered
+ */
+$button-focused-hovered-background-color: dynamic(null);
 
 /**
  * @var {color}
@@ -100,10 +112,24 @@ $button-pressed-background-gradient: dynamic(button-pressed-background-gradient(
 
 /**
  * @var {string/list}
+ * Button background-gradient when pressed and hovered.  Can be either the name of a gradient
+ * defined by {@link Global_CSS#background-gradient} or a list of color stops.
+ */
+$button-pressed-hovered-background-gradient: dynamic(null);
+
+/**
+ * @var {string/list}
  * Button background-gradient when focused.  Can be either the name of a gradient
  * defined by {@link Global_CSS#background-gradient} or a list of color stops.
  */
 $button-focused-background-gradient: dynamic(button-focused-background-gradient($button-focused-background-color));
+
+/**
+ * @var {string/list}
+ * Button background-gradient when focused and hovered.  Can be either the name of a gradient
+ * defined by {@link Global_CSS#background-gradient} or a list of color stops.
+ */
+$button-focused-hovered-background-gradient: dynamic(null);
 
 /**
  * @var {string/list}
@@ -693,8 +719,14 @@ $button-raised-ui: dynamic((
  * @param {color} $pressed-background-color
  * Button background-color when pressed
  *
+ * @param {color} $pressed-hovered-background-color
+ * Button background-color when pressed and hovered
+ *
  * @param {color} $focused-background-color
  * Button background-color when focused
+ *
+ * @param {color} $focused-hovered-background-color
+ * Button background-color when focused and hovered
  *
  * @param {color} $disabled-background-color
  * Button background-color when disabled
@@ -729,8 +761,16 @@ $button-raised-ui: dynamic((
  * Button background-gradient when pressed.  Can be either the name of a gradient
  * defined by {@link Global_CSS#background-gradient} or a list of color stops.
  *
+ * @param {string/list} $pressed-hovered-background-gradient
+ * Button background-gradient when pressed and hovered.  Can be either the name of a gradient
+ * defined by {@link Global_CSS#background-gradient} or a list of color stops.
+ *
  * @param {string/list} $focused-background-gradient
  * Button background-gradient when focused.  Can be either the name of a gradient
+ * defined by {@link Global_CSS#background-gradient} or a list of color stops.
+ *
+ * @param {string/list} $focused-hovered-background-gradient
+ * Button background-gradient when focused and govered.  Can be either the name of a gradient
  * defined by {@link Global_CSS#background-gradient} or a list of color stops.
  *
  * @param {string/list} $disabled-background-gradient
@@ -1000,7 +1040,9 @@ $button-raised-ui: dynamic((
     $background-color: null,
     $hovered-background-color: null,
     $pressed-background-color: null,
+    $pressed-hovered-background-color: null,
     $focused-background-color: null,
+    $focused-hovered-background-color: null,
     $disabled-background-color: null,
     $box-shadow: null,
     $hovered-box-shadow: null,
@@ -1011,7 +1053,9 @@ $button-raised-ui: dynamic((
     $background-gradient: null,
     $hovered-background-gradient: null,
     $pressed-background-gradient: null,
+    $pressed-hovered-background-gradient: null,
     $focused-background-gradient: null,
+    $focused-hovered-background-gradient: null,
     $disabled-background-gradient: null,
     $color: null,
     $hovered-color: null,
@@ -1280,7 +1324,7 @@ $button-raised-ui: dynamic((
                 $size: $icon-size,
                 $size-big: $icon-size-big,
                 $font-size: $icon-font-size,
-                $font-size-big: $icon-font-size-big,
+                $font-size-big: $icon-font-size-big
             );
         }
 
@@ -1422,7 +1466,13 @@ $button-raised-ui: dynamic((
         &.#{$prefix}pressing, &.#{$prefix}pressed {
             color: $pressed-color;
 
-            .#{$prefix}inner-el {
+            .#{$prefix}keyboard-mode &.#{$prefix}hovered, &.#{$prefix}hovered {
+                .#{$prefix}inner-el {
+                    @include background-gradient($pressed-hovered-background-color, $pressed-hovered-background-gradient);
+                }
+            }
+
+            .#{$prefix}inner-el, .#{$prefix}keyboard-mode & .#{$prefix}inner-el {
                 border-color: $pressed-border-color;
                 @include background-gradient($pressed-background-color, $pressed-background-gradient);
             }
@@ -1436,45 +1486,47 @@ $button-raised-ui: dynamic((
             }
         }
 
-        &.#{$prefix}focused {
-            .#{$prefix}keyboard-mode & {
-                color: $focused-color;
-                box-shadow: $focused-box-shadow;
+        .#{$prefix}keyboard-mode &.#{$prefix}focused.#{$prefix}hovered .#{$prefix}inner-el {
+            @include background-gradient($focused-hovered-background-color, $focused-hovered-background-gradient);
+        }
 
-                .#{$prefix}inner-el {
-                    border-color: $focused-border-color;
-                    @include background-gradient($focused-background-color, $focused-background-gradient);
+        .#{$prefix}keyboard-mode &.#{$prefix}focused {
+            color: $focused-color;
+            box-shadow: $focused-box-shadow;
+
+            .#{$prefix}inner-el {
+                border-color: $focused-border-color;
+                @include background-gradient($focused-background-color, $focused-background-gradient);
+            }
+
+            .#{$prefix}icon-el {
+                color: $focused-icon-color;
+            }
+
+            .#{$prefix}arrow-el {
+                color: $focused-arrow-icon-color;
+            }
+
+
+            &:after {
+                // This is a pseudo element for simulating a focus outline.
+                // We can't use regular css outline because it does not support radius.
+                // We also can't simulate an outline using box-shadow because buttons may
+                // already have a box-shadow configured using the $button-shadow var.
+                @if $focused-outline-offset != null {
+                    margin-top: -$focused-outline-offset;
+                    margin-right: -$focused-outline-offset;
+                    margin-left: -$focused-outline-offset;
+                    margin-bottom: -$focused-outline-offset;
                 }
 
-                .#{$prefix}icon-el {
-                    color: $focused-icon-color;
-                }
+                @include border($focused-outline-width, $focused-outline-style, $focused-outline-color);
 
-                .#{$prefix}arrow-el {
-                    color: $focused-arrow-icon-color;
-                }
+                border-radius: $border-radius;
 
-
-                &:after {
-                    // This is a pseudo element for simulating a focus outline.
-                    // We can't use regular css outline because it does not support radius.
-                    // We also can't simulate an outline using box-shadow because buttons may
-                    // already have a box-shadow configured using the $button-shadow var.
-                    @if $focused-outline-offset != null {
-                        margin-top: -$focused-outline-offset;
-                        margin-right: -$focused-outline-offset;
-                        margin-left: -$focused-outline-offset;
-                        margin-bottom: -$focused-outline-offset;
-                    }
-
-                    @include border($focused-outline-width, $focused-outline-style, $focused-outline-color);
-
-                    border-radius: $border-radius;
-
-                    @if $enable-big {
-                        .#{$prefix}big & {
-                            border-radius: $border-radius-big;
-                        }
+                @if $enable-big {
+                    .#{$prefix}big & {
+                        border-radius: $border-radius-big;
                     }
                 }
             }
@@ -1486,8 +1538,8 @@ $button-raised-ui: dynamic((
             box-shadow: $disabled-box-shadow;
 
             .#{$prefix}inner-el {
-                border-color: $disabled-border-color;
-                @include background-gradient($disabled-background-color, $disabled-background-gradient);
+            border-color: $disabled-border-color;
+            @include background-gradient($disabled-background-color, $disabled-background-gradient);
             }
 
             .#{$prefix}icon-el {

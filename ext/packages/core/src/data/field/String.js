@@ -25,6 +25,7 @@ Ext.define('Ext.data.field.String', {
 
     convert: function(v) {
         var defaultValue = this.allowNull ? null : '';
+
         return (v === undefined || v === null) ? defaultValue : String(v);
     },
 

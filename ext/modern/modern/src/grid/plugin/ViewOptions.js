@@ -167,7 +167,7 @@ Ext.define('Ext.grid.plugin.ViewOptions', {
         this.setGrid(grid);
     },
 
-    destroy: function () {
+    destroy: function() {
         this.destroyMembers('sheet', 'columnList');
 
         this.callParent();
@@ -211,6 +211,7 @@ Ext.define('Ext.grid.plugin.ViewOptions', {
         if (list && !list.isComponent) {
             list = Ext.factory(list, Ext.Container);
         }
+
         return list;
     },
 
@@ -248,6 +249,7 @@ Ext.define('Ext.grid.plugin.ViewOptions', {
 
         for (i = 0, ln = newIndex; i < ln; i++) {
             sibling = siblings[i];
+
             if (!sibling.isHeaderGroup && sibling.getIgnore()) {
                 newIndex += 1;
             }
@@ -260,6 +262,7 @@ Ext.define('Ext.grid.plugin.ViewOptions', {
 
     attachTapListeners: function() {
         var activeList = this.getColumnList().getActiveItem();
+
         if (!activeList.hasAttachedTapListeners) {
             activeList.onBefore({
                 childtap: 'onListChildTap',
@@ -294,7 +297,8 @@ Ext.define('Ext.grid.plugin.ViewOptions', {
         if (Ext.fly(e.target).is(me.getVisibleIndicatorSelector())) {
             me.onVisibleIndicatorTap(location.row, location.record);
             handled = true;
-        } else if (Ext.fly(e.target).is(me.getGroupIndicatorSelector())) {
+        }
+        else if (Ext.fly(e.target).is(me.getGroupIndicatorSelector())) {
             me.onGroupIndicatorTap(location.row, location.record);
             handled = true;
         }
@@ -325,7 +329,8 @@ Ext.define('Ext.grid.plugin.ViewOptions', {
                 property: record.get('dataIndex')
             });
             record.set('grouped', true);
-        } else {
+        }
+        else {
             store.setGrouper(null);
         }
     },
@@ -353,32 +358,36 @@ Ext.define('Ext.grid.plugin.ViewOptions', {
     },
 
     onColumnAdd: function(grid, column) {
+        var me = this,
+            nestedList, mainHeaderCt, header, store, parentNode, isGridGrouped,
+            grouper, dataIndex, data, idx, headerNode;
+
         if (column.getIgnore() || this.isMoving) {
             return;
         }
 
-        var me = this,
-            nestedList = me.getColumnList(),
-            mainHeaderCt = grid.getHeaderContainer(),
-            header = column.getParent(),
-            store = nestedList.getStore(),
-            parentNode = store.getRoot(),
-            isGridGrouped = grid.getGrouped(),
-            grouper = grid.getStore().getGrouper(),
-            dataIndex = column.getDataIndex(),
-            data = {
-                id: column.getId(),
-                text: column.getText() || '\xA0',
-                groupable: isGridGrouped && column.canGroup(),
-                hidden: column.isHidden(),
-                hideable: column.getHideable(),
-                grouped: !!(isGridGrouped && grouper && grouper.getProperty() === dataIndex),
-                dataIndex: column.getDataIndex(),
-                leaf: true
-            }, idx, headerNode;
+        nestedList = me.getColumnList();
+        mainHeaderCt = grid.getHeaderContainer();
+        header = column.getParent();
+        store = nestedList.getStore();
+        parentNode = store.getRoot();
+        isGridGrouped = grid.getGrouped();
+        grouper = grid.getStore().getGrouper();
+        dataIndex = column.getDataIndex();
+        data = {
+            id: column.getId(),
+            text: column.getText() || '\xA0',
+            groupable: isGridGrouped && column.canGroup(),
+            hidden: column.isHidden(),
+            hideable: column.getHideable(),
+            grouped: !!(isGridGrouped && grouper && grouper.getProperty() === dataIndex),
+            dataIndex: column.getDataIndex(),
+            leaf: true
+        };
 
         if (header !== mainHeaderCt) {
             headerNode = parentNode.findChild('id', header.getId());
+
             if (!headerNode) {
                 idx = header.getParent().indexOf(header);
                 headerNode = parentNode.insertChild(idx, {
@@ -389,9 +398,11 @@ Ext.define('Ext.grid.plugin.ViewOptions', {
                     text: header.getText()
                 });
             }
+
             idx = header.indexOf(column);
             parentNode = headerNode;
-        } else {
+        }
+        else {
             idx = mainHeaderCt.indexOf(column);
         }
 
@@ -404,12 +415,14 @@ Ext.define('Ext.grid.plugin.ViewOptions', {
     },
 
     onColumnRemove: function(headerContainer, column) {
+        var root, record;
+
         if (column.getIgnore() || this.isMoving) {
             return;
         }
 
-        var root = this.getListRoot(),
-            record = root.findChild('id', column.getId(), true);
+        root = this.getListRoot();
+        record = root.findChild('id', column.getId(), true);
 
         if (record) {
             record.parentNode.removeChild(record, true);
@@ -475,6 +488,7 @@ Ext.define('Ext.grid.plugin.ViewOptions', {
             if (me.doneSetup) {
                 return;
             }
+
             me.doneSetup = true;
 
             root = this.getListRoot();
@@ -495,7 +509,6 @@ Ext.define('Ext.grid.plugin.ViewOptions', {
                 columnshow: 'onColumnShow',
                 scope: me
             });
-
 
             sheet = me.getSheet();
 
@@ -520,6 +533,7 @@ Ext.define('Ext.grid.plugin.ViewOptions', {
                     dataIndex = node.get('dataIndex');
                     grouped = dataIndex && dataIndex === grouperProp;
                 }
+
                 node.set('grouped', dataIndex && grouped);
             });
         }

@@ -29,8 +29,8 @@ function() {
         store = chart = Ext.destroy(chart, store);
     });
 
-    describe('interactions', function () {
-        it("should not be created, unless configured", function () {
+    describe('interactions', function() {
+        it("should not be created, unless configured", function() {
             makeStore(2);
             chart = new Ext.chart.PolarChart({
                 width: 400,
@@ -46,8 +46,8 @@ function() {
         });
     });
 
-    describe('layout', function () {
-        it("should size chart's body to the size of the parent element", function () {
+    describe('layout', function() {
+        it("should size chart's body to the size of the parent element", function() {
             var value = 400,
                 bodySize;
 
@@ -63,7 +63,7 @@ function() {
                     angleField: 'value'
                 },
                 listeners: {
-                    afterLayout: function () {
+                    afterLayout: function() {
                         bodySize = this.body.getSize();
                     }
                 }

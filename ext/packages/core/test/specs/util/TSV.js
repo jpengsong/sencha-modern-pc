@@ -30,11 +30,11 @@ topSuite("Ext.util.TSV", function() {
                     '3.141592653589793\t1\tfalse');
         });
 
-        it('should handle empty rows', function () {
+        it('should handle empty rows', function() {
             expect(TSV.encode([[]])).toBe('');
         });
 
-        it('should handle null cell', function () {
+        it('should handle null cell', function() {
             expect(TSV.encode([[null]])).toBe('');
         });
 
@@ -73,27 +73,27 @@ topSuite("Ext.util.TSV", function() {
                 TSV.encode([[Ext.global]]);
             }).toThrow();
         });
-        
+
         it("should allow overriding quote char via arguments", function() {
             var result = TSV.encode(
                 [['3', 'Deal with "High" priority items', '23 days', '10/31/2017 9:00']],
                 undefined, null
             );
-            
-            expect(result).toBe('3\tDeal with "High" priority items\t'+
+
+            expect(result).toBe('3\tDeal with "High" priority items\t' +
                                 '23 days\t10/31/2017 9:00');
         });
-        
+
         it("should allow overriding quote char via config", function() {
             var TSV = new Ext.util.TsvDecoder({
                 quote: null
             });
-            
+
             var result = TSV.encode(
                 [['3', 'Deal with "High" priority items', '23 days', '10/31/2017 9:00']]
             );
-            
-            expect(result).toBe('3\tDeal with "High" priority items\t'+
+
+            expect(result).toBe('3\tDeal with "High" priority items\t' +
                                 '23 days\t10/31/2017 9:00');
         });
     });
@@ -110,7 +110,7 @@ topSuite("Ext.util.TSV", function() {
                 [ '3.141592653589793', '1', 'false' ]
             ]);
         });
-        
+
         it('should decode TSV back into an array of string arrays', function() {
             var result = TSV.decode(
                     hostileEnc + '\tNormal String\t2010-01-01T21:45:32.004Z' +
@@ -123,26 +123,37 @@ topSuite("Ext.util.TSV", function() {
             ]);
         });
 
-        it("should should support non-quoted format via config", function() {
-            var TSV = new Ext.util.TsvDecoder({
-                quote: null
-            });
-            
-            var result = TSV.decode('3\tDeal with "High" priority items\t'+
+        it("should decote quotes by default", function() {
+            var TSV = new Ext.util.TsvDecoder();
+
+            var result = TSV.decode('3\tDeal with "High" priority items\t' +
                                     '23 days\t10/31/2017 9:00\n');
-            
-            expect(result).toEqual([
+
+            expect(result[0]).toEqual(
                 ['3', 'Deal with "High" priority items', '23 days', '10/31/2017 9:00']
-            ]);
+            );
         });
 
-        it("should should support non-quoted format via argument", function() {
-            var result = TSV.decode('3\tDeal with "High" priority items\t'+
-                                    '23 days\t10/31/2017 9:00\n', undefined, null);
-            
-            expect(result).toEqual([
-                ['3', 'Deal with "High" priority items', '23 days', '10/31/2017 9:00']
-            ]);
+        it("should should support custom quoted format via config", function() {
+            var TSV = new Ext.util.TsvDecoder({
+                quote: "'"
+            });
+
+            var result = TSV.decode("3\tDeal with 'High' priority items\t" +
+                                    "23 days\t10/31/2017 9:00\n");
+
+            expect(result[0]).toEqual(
+                ['3', 'Deal with \'High\' priority items', '23 days', '10/31/2017 9:00']
+            );
+        });
+
+        it("should should support custom quotes via argument", function() {
+            var result = TSV.decode("3\tDeal with 'High' priority items\t" +
+                                    "23 days\t10/31/2017 9:00\n", undefined, "'");
+
+            expect(result[0]).toEqual(
+                ["3", "Deal with 'High' priority items", "23 days", "10/31/2017 9:00"]
+            );
         });
 
         it("should return an empty array for null, undefined and empty string", function() {
@@ -160,18 +171,20 @@ topSuite("Ext.util.TSV", function() {
             expect(TSV.decode(test1)).toEqual([
                 ['John', 'Doe', '42'],
                 ['Jane', 'Henry', '31'],
-                ['', '', '']
+                ['', '', ''],
+                ['']
             ]);
 
             // one row of data, one empty row, another row of data with \n end variant
             expect(TSV.decode(test2)).toEqual([
                 ['John', 'Doe', '42'],
                 ['', '', ''],
-                ['Jane', 'Henry', '31']                
+                ['Jane', 'Henry', '31'],
+                ['']
             ]);
 
             // just one row of data with \r end variant
-            expect(TSV.decode(test3)).toEqual([['John', 'Doe', '42']]);
+            expect(TSV.decode(test3)).toEqual([['John', 'Doe', '42'], ['']]);
         });
     });
 });

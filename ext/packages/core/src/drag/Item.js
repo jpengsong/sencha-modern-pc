@@ -36,9 +36,9 @@ Ext.define('Ext.drag.Item', {
 
         /**
          * @cfg {String/String[]} groups
-         * A group controls which {@link Ext.drag.Source sources} and {@link Ext.drag.Target} targets
-         * can interact with each other. Only items that have the same (or intersecting) groups will
-         * react to each other. Items with no groups will be in the default pool.
+         * A group controls which {@link Ext.drag.Source sources} and {@link Ext.drag.Target}
+         * targets can interact with each other. Only items that have the same (or intersecting)
+         * groups will react to each other. Items with no groups will be in the default pool.
          */
         groups: null
     },
@@ -71,7 +71,7 @@ Ext.define('Ext.drag.Item', {
         this.disabled = false;
     },
 
-    updateComponent: function (comp, was) {
+    updateComponent: function(comp, was) {
         var el;
 
         if (comp) {
@@ -87,11 +87,11 @@ Ext.define('Ext.drag.Item', {
         this.setElement(el);
     },
 
-    applyElement: function (element) {
+    applyElement: function(element) {
         return element ? Ext.get(element) : null;
     },
 
-    updateElement: function () {
+    updateElement: function() {
         this.setupListeners();
     },
 
@@ -99,6 +99,7 @@ Ext.define('Ext.drag.Item', {
         if (typeof group === 'string') {
             group = [group];
         }
+
         return group;
     },
 
@@ -108,11 +109,15 @@ Ext.define('Ext.drag.Item', {
 
         me.destroying = true;
         me.setElement(null);
+
         if (el && me.getAutoDestroy()) {
             el.destroy();
         }
+
         me.callParent();
-        me.destroying = false;
+
+        // This just makes it hard to ask "was destroy() called?":
+        // me.destroying = false; // removed in 7.0
     },
 
     privates: {
@@ -129,7 +134,8 @@ Ext.define('Ext.drag.Item', {
 
             if (c) {
                 xy = c.convertToLocalXY(xy);
-            } else {
+            }
+            else {
                 xy = this.getElement().translateXY(xy[0], xy[1]);
                 xy = [xy.x, xy.y];
             }

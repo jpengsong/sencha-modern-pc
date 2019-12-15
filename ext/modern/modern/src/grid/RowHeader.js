@@ -14,19 +14,30 @@ Ext.define('Ext.grid.RowHeader', {
     },
 
     privates: {
-        augmentToolHandler: function (tool, args) {
+        augmentToolHandler: function(tool, args) {
             // args = [ itemHeader, tool, ev ]   ==>   [ grid, info ]
             this.callParent([tool, args]);
 
-            var info = args[1];
-
-            info.grid = info.list;
+            args[1].grid = args[1].list;
         },
 
-        getGroupHeaderTplData: function () {
-            var data = this.callParent([ /*skipHtml=*/true ]),
+        getGroupHeaderTplData: function() {
+            var data = this.callParent([ /* skipHtml= */true ]),
                 grid = this.parent,
-                column = data && grid.getColumnForField(data.groupField);
+                partners = grid.allPartners || [grid],
+                len = partners.length,
+                i, p, column;
+
+            if (data) {
+                for (i = 0; i < len; ++i) {
+                    p = partners[i];
+                    column = p.getColumnForField(data.groupField);
+
+                    if (column) {
+                        break;
+                    }
+                }
+            }
 
             if (column) {
                 data.columnName = column.getText();

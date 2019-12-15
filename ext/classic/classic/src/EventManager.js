@@ -27,78 +27,94 @@ Ext.define('Ext.EventManager', {
      *
      * {@link Ext.EventManager#on} is an alias for {@link Ext.EventManager#addListener}.
      *
-     * @param {String/Ext.dom.Element/HTMLElement/Window} element The html element or id to assign the event handler to.
+     * @param {String/Ext.dom.Element/HTMLElement/Window} element The html element or id to assign
+     * the event handler to.
      *
      * @param {String} eventName The name of the event to listen for.
      * May also be an object who's property names are event names.
      *
      * @param {Function/String} [fn] The handler function the event invokes. A String parameter
      * is assumed to be method name in `scope` object, or Element object if no scope is provided.
-     * @param {Ext.event.Event} fn.event The {@link Ext.event.Event EventObject} describing the event.
+     * @param {Ext.event.Event} fn.event The {@link Ext.event.Event EventObject} describing
+     * the event.
      * @param {Ext.dom.Element} fn.target The Element which was the target of the event.
      * Note that this may be filtered by using the `delegate` option.
      * @param {Object} fn.options The options object from the addListener call.
      *
-     * @param {Object} [scope] The scope (`this` reference) in which the handler function is executed.
-     * Defaults to the Element.
+     * @param {Object} [scope] The scope (`this` reference) in which the handler function
+     * is executed. Defaults to the Element.
      *
      * @param {Object} [options] An object containing handler configuration properties.
      * This may contain any of the following properties (See {@link Ext.dom.Element#addListener}
      * for examples of how to use these options.):
-     * @param {Object} options.scope The scope (`this` reference) in which the handler function is executed. Defaults to the Element.
-     * @param {String} options.delegate A simple selector to filter the target or look for a descendant of the target. See {@link Ext.dom.Query} for
-     * information about simple selectors.
-     * @param {Boolean} options.stopEvent True to stop the event. That is stop propagation, and prevent the default action.
+     * @param {Object} options.scope The scope (`this` reference) in which the handler function
+     * is executed. Defaults to the Element.
+     * @param {String} options.delegate A simple selector to filter the target or look for
+     * a descendant of the target. See {@link Ext.dom.Query} for information about simple selectors.
+     * @param {Boolean} options.stopEvent True to stop the event. That is stop propagation,
+     * and prevent the default action.
      * @param {Boolean} options.preventDefault True to prevent the default action
      * @param {Boolean} options.stopPropagation True to prevent event propagation
-     * @param {Boolean} options.normalized False to pass a browser event to the handler function instead of an Ext.event.Event
-     * @param {Number} options.delay The number of milliseconds to delay the invocation of the handler after te event fires.
-     * @param {Boolean} options.single True to add a handler to handle just the next firing of the event, and then remove itself.
-     * @param {Number} options.buffer Causes the handler to be scheduled to run in an {@link Ext.util.DelayedTask} delayed
-     * by the specified number of milliseconds. If the event fires again within that time, the original
-     * handler is *not* invoked, but the new handler is scheduled in its place.
-     * @param {Ext.dom.Element} options.target Only call the handler if the event was fired on the target Element,
-     * *not* if the event was bubbled up from a child node.
-     * @param {Boolean} options.capture `true` to initiate capture which will fire the listeners on the target Element *before* any descendant Elements.
-     * Normal events start with the target element and propagate upward to ancestor elements, whereas captured events propagate from the top of the DOM
-     * downward to descendant elements. This option is the same as the useCapture parameter in the javascript addEventListener method.
+     * @param {Boolean} options.normalized False to pass a browser event to the handler function
+     * instead of an Ext.event.Event
+     * @param {Number} options.delay The number of milliseconds to delay the invocation of the
+     * handler after te event fires.
+     * @param {Boolean} options.single True to add a handler to handle just the next firing of the
+     * event, and then remove itself.
+     * @param {Number} options.buffer Causes the handler to be scheduled to run in an
+     * {@link Ext.util.DelayedTask} delayed by the specified number of milliseconds. If the event
+     * fires again within that time, the original handler is *not* invoked, but the new handler
+     * is scheduled in its place.
+     * @param {Ext.dom.Element} options.target Only call the handler if the event was fired
+     * on the target Element, *not* if the event was bubbled up from a child node.
+     * @param {Boolean} options.capture `true` to initiate capture which will fire the listeners
+     * on the target Element *before* any descendant Elements. Normal events start with the target
+     * element and propagate upward to ancestor elements, whereas captured events propagate
+     * from the top of the DOM downward to descendant elements. This option is the same
+     * as the useCapture parameter in the javascript addEventListener method.
      */
     addListener: function(element, eventName, fn, scope, options) {
         //<debug>
         Ext.log.warn("Ext.EventManager is deprecated. " +
-            "Use Ext.dom.Element#addListener to attach an event listener.");
+                     "Use Ext.dom.Element#addListener to attach an event listener.");
         //</debug>
+
         Ext.get(element).addListener(eventName, fn, scope, options);
     },
 
     /**
-     * Adds a listener to be notified when the browser window is resized and provides resize event buffering (100 milliseconds),
-     * passes new viewport width and height to handlers.
+     * Adds a listener to be notified when the browser window is resized and provides resize event
+     * buffering (100 milliseconds), passes new viewport width and height to handlers.
      * @param {Function} fn      The handler function the window resize event invokes.
-     * @param {Object}   scope   The scope (<code>this</code> reference) in which the handler function executes. Defaults to the browser window.
+     * @param {Object}   scope   The scope (<code>this</code> reference) in which the handler
+     * function executes. Defaults to the browser window.
      * @param {Boolean}  [options] Options object as passed to {@link Ext.dom.Element#addListener}
-     * @deprecated 5.0.0 Use {@link Ext#method-on Ext.on}('resize', fn) to attach a window resize listener.
+     * @deprecated 5.0.0 Use {@link Ext#method-on Ext.on}('resize', fn) to attach a window resize
+     * listener.
      */
     onWindowResize: function(fn, scope, options) {
         //<debug>
         Ext.log.warn("Ext.EventManager is deprecated. " +
-            "Use Ext.on('resize', fn) to attach a window resize listener.");
+                     "Use Ext.on('resize', fn) to attach a window resize listener.");
         //</debug>
+
         Ext.GlobalEvents.on('resize', fn, scope, options);
     },
 
     /**
      * Adds a listener to be notified when the browser window is unloaded.
      * @param {Function} fn      The handler function the window unload event invokes.
-     * @param {Object}   scope   The scope (<code>this</code> reference) in which the handler function executes. Defaults to the browser window.
+     * @param {Object}   scope   The scope (<code>this</code> reference) in which the handler
+     * function executes. Defaults to the browser window.
      * @param {Boolean}  options Options object as passed to {@link Ext.dom.Element#addListener}
      * @deprecated 5.0.0 This method is deprecated.
      */
     onWindowUnload: function(fn, scope, options) {
         //<debug>
         Ext.log.warn("Ext.EventManager is deprecated. " +
-            "Use Ext.getWin().on('unload', fn) to attach a window unload listener.");
+                     "Use Ext.getWin().on('unload', fn) to attach a window unload listener.");
         //</debug>
+
         Ext.getWin().on('unload', fn, scope, options);
     },
 
@@ -114,8 +130,9 @@ Ext.define('Ext.EventManager', {
     purgeElement: function(element, eventName) {
         //<debug>
         Ext.log.warn("Ext.EventManager is deprecated. " +
-            "Call clearListeners() on a Ext.dom.Element to remove all listeners.");
+                     "Call clearListeners() on a Ext.dom.Element to remove all listeners.");
         //</debug>
+
         Ext.get(element).clearListeners();
     },
 
@@ -129,58 +146,64 @@ Ext.define('Ext.EventManager', {
     removeAll: function(element) {
         //<debug>
         Ext.log.warn("Ext.EventManager is deprecated. " +
-            "Call clearListeners() on a Ext.dom.Element to remove all listeners.");
+                     "Call clearListeners() on a Ext.dom.Element to remove all listeners.");
         //</debug>
+
         Ext.get(element).clearListeners();
     },
 
     /**
-     * Removes an event handler from an element.  The shorthand version {@link #un} is equivalent.  Typically
-     * you will use {@link Ext.dom.Element#removeListener} directly on an Element in favor of calling this version.
+     * Removes an event handler from an element.  The shorthand version {@link #un} is equivalent.
+     * Typically you will use {@link Ext.dom.Element#removeListener} directly on an Element in favor
+     * of calling this version.
      *
      * {@link Ext.EventManager#on} is an alias for {@link Ext.EventManager#addListener}.
      *
-     * @param {String/Ext.dom.Element/HTMLElement/Window} element The id or html element from which to remove the listener.
+     * @param {String/Ext.dom.Element/HTMLElement/Window} element The id or html element from which
+     * to remove the listener.
      * @param {String} eventName The name of the event.
-     * @param {Function} fn The handler function to remove. **This must be a reference to the function passed
-     * into the {@link #addListener} call.**
-     * @param {Object} scope If a scope (`this` reference) was specified when the listener was added.
-     * @param {Object} options
-     * then this must refer to the same object.
+     * @param {Function} fn The handler function to remove. **This must be a reference to the
+     * function passed into the {@link #addListener} call.**
+     * @param {Object} [scope] If a scope (`this` reference) was specified when the listener
+     * was added, then this must refer to the same object.
+     * @param {Object} [options]
      */
     removeListener: function(element, eventName, fn, scope, options) {
         //<debug>
         Ext.log.warn("Ext.EventManager is deprecated. " +
-            "Use Ext.dom.Element#removeListener to remove an event listener.");
+                     "Use Ext.dom.Element#removeListener to remove an event listener.");
         //</debug>
+
         Ext.get(element).removeListener(eventName, fn, scope, options);
     },
 
     /**
      * Removes the passed window resize listener.
      * @param {Function} fn        The method the event invokes
-     * @param {Object}   scope    The scope of handler
+     * @param {Object}   [scope]  The scope of handler
      * @deprecated 5.0.0 This method is deprecated.
      */
     removeResizeListener: function(fn, scope) {
         //<debug>
         Ext.log.warn("Ext.EventManager is deprecated. " +
-            "Use Ext.on('resize', fn) to detach a window resize listener.");
+                     "Use Ext.on('resize', fn) to detach a window resize listener.");
         //</debug>
+
         Ext.GlobalEvents.un('resize', fn, scope);
     },
 
     /**
      * Removes the passed window unload listener.
      * @param {Function} fn        The method the event invokes
-     * @param {Object}   scope    The scope of handler
+     * @param {Object}   [scope]  The scope of handler
      * @deprecated 5.0.0 This method is deprecated.
      */
     removeUnloadListener: function(fn, scope) {
         //<debug>
         Ext.log.warn("Ext.EventManager is deprecated. " +
-            "Use Ext.getWin().un('unload', fn) to detach a window unload listener.");
+                     "Use Ext.getWin().un('unload', fn) to detach a window unload listener.");
         //</debug>
+
         Ext.getWin().un('unload', fn, scope);
     },
 
@@ -192,8 +215,9 @@ Ext.define('Ext.EventManager', {
     stopEvent: function(event) {
         //<debug>
         Ext.log.warn("Ext.EventManager.stopEvent() is deprecated. " +
-            "Call stopEvent() directly on the Ext.event.Event instance instead.");
+                     "Call stopEvent() directly on the Ext.event.Event instance instead.");
         //</debug>
+
         this.stopPropagation(event);
         this.preventDefault(event);
     },
@@ -206,12 +230,15 @@ Ext.define('Ext.EventManager', {
     stopPropagation: function(event) {
         //<debug>
         Ext.log.warn("Ext.EventManager.stopPropagation() is deprecated. " +
-            "Call stopPropagation() directly on the Ext.event.Event instance instead.");
+                     "Call stopPropagation() directly on the Ext.event.Event instance instead.");
         //</debug>
+
         event = event.browserEvent || event;
+
         if (event.stopPropagation) {
             event.stopPropagation();
-        } else {
+        }
+        else {
             event.cancelBubble = true;
         }
     },
@@ -224,21 +251,27 @@ Ext.define('Ext.EventManager', {
     preventDefault: function(event) {
         //<debug>
         Ext.log.warn("Ext.EventManager.preventDefault() is deprecated. " +
-            "Call preventDefault() directly on the Ext.event.Event instance instead.");
+                     "Call preventDefault() directly on the Ext.event.Event instance instead.");
         //</debug>
+
         event = event.browserEvent || event;
+
         if (event.preventDefault) {
             event.preventDefault();
-        } else {
+        }
+        else {
             event.returnValue = false;
+
             // Some keys events require setting the keyCode to -1 to be prevented
             try {
-              // all ctrl + X and F1 -> F12
-              if (event.ctrlKey || event.keyCode > 111 && event.keyCode < 124) {
-                  event.keyCode = -1;
-              }
-            } catch (e) {
-                // see this outdated document http://support.microsoft.com/kb/934364/en-us for more info
+                // all ctrl + X and F1 -> F12
+                if (event.ctrlKey || event.keyCode > 111 && event.keyCode < 124) {
+                    event.keyCode = -1;
+                }
+            }
+            catch (e) {
+                // see this outdated document http://support.microsoft.com/kb/934364/en-us
+                // for more info
             }
         }
     },
@@ -252,9 +285,11 @@ Ext.define('Ext.EventManager', {
     getId: function(element) {
         //<debug>
         Ext.log.warn("Ext.EventManager.getId() is deprecated. " +
-            "Call Ext.get() to assign ids to elements.");
+                     "Call Ext.get() to assign ids to elements.");
         //</debug>
+
         element = Ext.get(element);
+
         return element.id;
     },
 
@@ -265,19 +300,25 @@ Ext.define('Ext.EventManager', {
      * @deprecated 5.0.0 This method is deprecated.
      */
     getRelatedTarget: function(event) {
+        var target;
+
         //<debug>
         Ext.log.warn("Ext.EventManager.getRelatedTarget() is deprecated. " +
-            "Call getRelatedTarget() directly on the Ext.event.Event instance instead.");
+                     "Call getRelatedTarget() directly on the Ext.event.Event instance instead.");
         //</debug>
+
         event = event.browserEvent || event;
-        var target = event.relatedTarget;
+        target = event.relatedTarget;
+
         if (!target) {
             if (this.mouseLeaveRe.test(event.type)) {
                 target = event.toElement;
-            } else if (this.mouseEnterRe.test(event.type)) {
+            }
+            else if (this.mouseEnterRe.test(event.type)) {
                 target = event.fromElement;
             }
         }
+
         return this.resolveTextNode(target);
     },
 
@@ -290,8 +331,9 @@ Ext.define('Ext.EventManager', {
     getPageX: function(event) {
         //<debug>
         Ext.log.warn("Ext.EventManager.getPageX() is deprecated. " +
-            "Call getX() directly on the Ext.event.Event instance instead.");
+                     "Call getX() directly on the Ext.event.Event instance instead.");
         //</debug>
+
         return this.getPageXY(event)[0];
     },
 
@@ -304,9 +346,12 @@ Ext.define('Ext.EventManager', {
     getPageXY: function(event) {
         //<debug>
         Ext.log.warn("Ext.EventManager.getPageXY() is deprecated. " +
-            "Call getXY() directly on the Ext.event.Event instance instead.");
+                     "Call getXY() directly on the Ext.event.Event instance instead.");
         //</debug>
+
         event = event.browserEvent || event;
+
+        // eslint-disable-next-line vars-on-top
         var x = event.pageX,
             y = event.pageY,
             docEl = document.documentElement,
@@ -314,9 +359,12 @@ Ext.define('Ext.EventManager', {
 
         // pageX/pageY not available (undefined, not null), use clientX/clientY instead
         if (!x && x !== 0) {
-            x = event.clientX + (docEl && docEl.scrollLeft || body && body.scrollLeft || 0) - (docEl && docEl.clientLeft || body && body.clientLeft || 0);
-            y = event.clientY + (docEl && docEl.scrollTop  || body && body.scrollTop  || 0) - (docEl && docEl.clientTop  || body && body.clientTop  || 0);
+            x = event.clientX + (docEl && docEl.scrollLeft || body && body.scrollLeft || 0) -
+                (docEl && docEl.clientLeft || body && body.clientLeft || 0);
+            y = event.clientY + (docEl && docEl.scrollTop || body && body.scrollTop || 0) -
+                (docEl && docEl.clientTop || body && body.clientTop || 0);
         }
+
         return [x, y];
     },
 
@@ -329,8 +377,9 @@ Ext.define('Ext.EventManager', {
     getPageY: function(event) {
         //<debug>
         Ext.log.warn("Ext.EventManager.getPageY() is deprecated. " +
-            "Call getY() directly on the Ext.event.Event instance instead.");
+                     "Call getY() directly on the Ext.event.Event instance instead.");
         //</debug>
+
         return this.getPageXY(event)[1];
     },
 
@@ -343,9 +392,11 @@ Ext.define('Ext.EventManager', {
     getTarget: function(event) {
         //<debug>
         Ext.log.warn("Ext.EventManager.getTarget() is deprecated. " +
-            "Call getTarget() directly on the Ext.event.Event instance instead.");
+                     "Call getTarget() directly on the Ext.event.Event instance instead.");
         //</debug>
+
         event = event.browserEvent || event;
+
         return Ext.EventManager.resolveTextNode(event.target || event.srcElement);
     },
 
@@ -360,19 +411,21 @@ Ext.define('Ext.EventManager', {
      * @return {HTMLElement} The resolved node
      * @deprecated 5.0.0 This method is deprecated.
      */
-    resolveTextNode: Ext.isGecko ?
-        function(node) {
+    resolveTextNode: Ext.isGecko
+        ? function(node) {
+            var s;
+
             if (node) {
                 // work around firefox bug, https://bugzilla.mozilla.org/show_bug.cgi?id=101197
-                var s = HTMLElement.prototype.toString.call(node);
+                s = HTMLElement.prototype.toString.call(node);
+
                 if (s !== '[xpconnect wrapped native prototype]' && s !== '[object XULElement]') {
-                    return node.nodeType === 3 ? node.parentNode: node;
+                    return node.nodeType === 3 ? node.parentNode : node;
                 }
             }
         }
-        :
-        function(node) {
-            return node && node.nodeType === 3 ? node.parentNode: node;
+        : function(node) {
+            return node && node.nodeType === 3 ? node.parentNode : node;
         }
 }, function(EventManager) {
     /**

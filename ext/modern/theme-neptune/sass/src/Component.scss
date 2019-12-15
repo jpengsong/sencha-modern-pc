@@ -18,3 +18,19 @@
 .#{$prefix}draggable {
 	cursor: $draggable-cursor !important;
 }
+
+.#{$prefix}fi:before {
+    @extend .#{$fi-class-name};
+}
+
+.#{$prefix}fi-angle-left {
+    @extend .#{$fi-icon-angle-left};
+}
+
+.#{$prefix}fi-angle-right {
+    @extend .#{$fi-icon-angle-right};
+}
+
+.#{$prefix}fi-arrow-left {
+    @extend .#{$fi-icon-arrow-left};
+}

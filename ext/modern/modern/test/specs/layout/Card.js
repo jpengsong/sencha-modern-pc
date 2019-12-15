@@ -1,4 +1,4 @@
-describe("Ext.layout.Card", function() {
+topSuite("Ext.layout.Card", ['Ext.form.Panel', 'Ext.field.*', 'Ext.app.ViewModel'], function() {
     var ct,
         layout,
         animation;
@@ -34,6 +34,59 @@ describe("Ext.layout.Card", function() {
         layout.setAnimation(newAnimation);
         animation = layout.getAnimation();
     }
+
+    describe("rendering", function() {
+        it("should not render when adding the first child until the container is rendered", function() {
+            createContainer({
+                renderTo: null,
+                items: null
+            });
+
+            var c1 = ct.add({
+                xtype: 'component'
+            });
+
+            var c2 = ct.add({
+                xtype: 'component'
+            });
+
+            expect(c1.rendered).toBe(false);
+            expect(c2.rendered).toBe(false);
+            ct.render(Ext.getBody());
+            expect(c1.rendered).toBe(true);
+            expect(c2.rendered).toBe(false);
+        });
+
+        it("should defer viewmodel creation until render", function() {
+            createContainer({
+                renderTo: null,
+                items: null
+            });
+
+            var c = ct.add({
+                xtype: 'component',
+                viewModel: {},
+                bind: '{text}'
+            });
+
+            expect(c.getHtml()).not.toBe('New');
+
+            var outerCt = new Ext.Container({
+                renderTo: Ext.getBody(),
+                items: [ct],
+                viewModel: {
+                    data: {
+                        text: 'New'
+                    }
+                }
+            });
+
+            outerCt.getViewModel().notify();
+            expect(c.getHtml()).toBe('New');
+
+            outerCt.destroy();
+        });
+    });
 
     describe("deferRender", function() {
         var fields;
@@ -391,8 +444,8 @@ describe("Ext.layout.Card", function() {
         });
     });
 
-    describe('indicator', function () {
-        it('should not create an indicator', function () {
+    describe('indicator', function() {
+        it('should not create an indicator', function() {
             ct = Ext.create({
                 xtype: 'container',
                 layout: 'card'
@@ -403,7 +456,7 @@ describe("Ext.layout.Card", function() {
             expect(layout.getConfig('indicator', null, true)).toBe(null);
         });
 
-        it('should create an indicator', function () {
+        it('should create an indicator', function() {
             ct = Ext.create({
                 xtype: 'container',
                 layout: 'card'
@@ -414,7 +467,7 @@ describe("Ext.layout.Card", function() {
             expect(layout.getIndicator()).not.toBe(null);
         });
 
-        it('should create number of dots', function () {
+        it('should create number of dots', function() {
             ct = Ext.create({
                 xtype: 'container',
                 layout: 'card',
@@ -433,7 +486,7 @@ describe("Ext.layout.Card", function() {
             expect(dots.length).toBe(4);
         });
 
-        it('should add a dot when an item is added', function () {
+        it('should add a dot when an item is added', function() {
             ct = Ext.create({
                 xtype: 'container',
                 layout: 'card',
@@ -456,7 +509,7 @@ describe("Ext.layout.Card", function() {
             expect(dots.length).toBe(5);
         });
 
-        it('should remove a dot when an item is removed', function () {
+        it('should remove a dot when an item is removed', function() {
             ct = Ext.create({
                 xtype: 'container',
                 layout: 'card',
@@ -479,7 +532,7 @@ describe("Ext.layout.Card", function() {
             expect(dots.length).toBe(3);
         });
 
-        it('should set the first dot as active', function () {
+        it('should set the first dot as active', function() {
             ct = Ext.create({
                 xtype: 'container',
                 layout: 'card',
@@ -499,7 +552,7 @@ describe("Ext.layout.Card", function() {
             expect(indicator.getActiveIndex()).toBe(0);
         });
 
-        it('should set proper dot as active when active item changes', function () {
+        it('should set proper dot as active when active item changes', function() {
             ct = Ext.create({
                 xtype: 'container',
                 layout: 'card',
@@ -525,7 +578,7 @@ describe("Ext.layout.Card", function() {
             expect(indicator.getActiveIndex()).toBe(3);
         });
 
-        it('should set first dot active when current active item is removed', function () {
+        it('should set first dot active when current active item is removed', function() {
             ct = Ext.create({
                 xtype: 'container',
                 layout: 'card',
@@ -550,8 +603,8 @@ describe("Ext.layout.Card", function() {
         });
     });
 
-    describe('next', function () {
-        it('should set the next item active', function () {
+    describe('next', function() {
+        it('should set the next item active', function() {
             ct = Ext.create({
                 xtype: 'container',
                 layout: 'card',
@@ -570,7 +623,7 @@ describe("Ext.layout.Card", function() {
             expect(ct.getActiveItem()).toBe(ct.getAt(1));
         });
 
-        it('should not try to go next if on last item', function () {
+        it('should not try to go next if on last item', function() {
             ct = Ext.create({
                 xtype: 'container',
                 layout: 'card',
@@ -591,7 +644,7 @@ describe("Ext.layout.Card", function() {
             expect(ct.getActiveItem()).toBe(ct.getAt(1));
         });
 
-        it('should keep the indicator in sync', function () {
+        it('should keep the indicator in sync', function() {
             ct = Ext.create({
                 xtype: 'container',
                 layout: 'card',
@@ -628,7 +681,7 @@ describe("Ext.layout.Card", function() {
             expect(indicators[1].hasCls('x-indicator-active')).toBe(false);
             expect(indicators[2].hasCls('x-indicator-active')).toBe(true);
 
-            //shouldn't go next, on last item
+            // shouldn't go next, on last item
             layout.next();
 
             expect(ct.getActiveItem()).toBe(ct.getAt(2));
@@ -639,8 +692,8 @@ describe("Ext.layout.Card", function() {
         });
     });
 
-    describe('previous', function () {
-        it('should set the previous item active', function () {
+    describe('previous', function() {
+        it('should set the previous item active', function() {
             ct = Ext.create({
                 xtype: 'container',
                 layout: 'card',
@@ -661,7 +714,7 @@ describe("Ext.layout.Card", function() {
             expect(ct.getActiveItem()).toBe(ct.getAt(0));
         });
 
-        it('should not try to go previous if on first item', function () {
+        it('should not try to go previous if on first item', function() {
             ct = Ext.create({
                 xtype: 'container',
                 layout: 'card',
@@ -680,7 +733,7 @@ describe("Ext.layout.Card", function() {
             expect(ct.getActiveItem()).toBe(ct.getAt(0));
         });
 
-        it('should keep the indicator in sync', function () {
+        it('should keep the indicator in sync', function() {
             ct = Ext.create({
                 xtype: 'container',
                 layout: 'card',
@@ -719,7 +772,7 @@ describe("Ext.layout.Card", function() {
             expect(indicators[1].hasCls('x-indicator-active')).toBe(false);
             expect(indicators[2].hasCls('x-indicator-active')).toBe(false);
 
-            //shouldn't go next, on first item
+            // shouldn't go next, on first item
             layout.previous();
 
             expect(ct.getActiveItem()).toBe(ct.getAt(0));

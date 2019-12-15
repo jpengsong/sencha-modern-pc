@@ -37,7 +37,7 @@ Ext.define('Ext.fx.animation.Abstract', {
 
         states: {},
 
-        duration:  300,
+        duration: 300,
 
         /**
          * @cfg {String} easing
@@ -84,7 +84,7 @@ Ext.define('Ext.fx.animation.Abstract', {
 
     DIRECTION_RIGHT: 'right',
 
-    stateNameRegex: /^(?:[\d\.]+)%$/,
+    stateNameRegex: /^(?:[\d.]+)%$/,
 
     constructor: function() {
         this.states = {};

@@ -10,7 +10,7 @@ Ext.define('Ext.draw.ContainerBase', {
         this.initAnimator();
     },
 
-    onResize: function (width, height, oldWidth, oldHeight) {
+    onResize: function(width, height, oldWidth, oldHeight) {
         this.handleResize({
             width: width,
             height: height
@@ -19,15 +19,17 @@ Ext.define('Ext.draw.ContainerBase', {
 
     addElementListener: function() {
         var el = this.element;
+
         el.on.apply(el, arguments);
     },
 
     removeElementListener: function() {
         var el = this.element;
+
         el.un.apply(el, arguments);
     },
 
-    preview: function (image) {
+    preview: function(image) {
         var item;
 
         image = image || this.getImage();
@@ -37,7 +39,8 @@ Ext.define('Ext.draw.ContainerBase', {
                 xtype: 'container',
                 html: image.data
             };
-        } else {
+        }
+        else {
             item = {
                 xtype: 'image',
                 mode: 'img',
@@ -65,7 +68,7 @@ Ext.define('Ext.draw.ContainerBase', {
             closeAction: 'hide',
             items: [item],
             listeners: {
-                hide: function () {
+                hide: function() {
                     this.destroy();
                 }
             }

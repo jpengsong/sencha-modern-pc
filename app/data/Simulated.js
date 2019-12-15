@@ -3,7 +3,6 @@
  * 
  * 功能包括 (获取请求数据源，分页查询，操作树节点数据)
  * 
- * 
  */
 Ext.define('App.data.Simulated', {
     requires: [

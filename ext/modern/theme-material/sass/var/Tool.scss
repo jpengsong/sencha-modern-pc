@@ -53,7 +53,7 @@ $tool-scroll-down-icon: dynamic('keyboard_arrow_down' $font-icon-font-family);
 $tool-scroll-left-icon: dynamic('keyboard_arrow_left' $font-icon-font-family);
 $tool-scroll-right-icon: dynamic('keyboard_arrow_right' $font-icon-font-family);
 
-$tool-pin-icon: dynamic($fa-var-thumb-tack 'FontAwesome');
+$tool-pin-icon: dynamic($fa-var-thumbtack 'Font Awesome 5 Free');
 $tool-unpin-icon: dynamic($ext-var-unpin ExtJS);
 
 $tool-right-icon: dynamic('keyboard_arrow_right' $font-icon-font-family);
@@ -76,7 +76,7 @@ $tool-print-icon: dynamic('print' $font-icon-font-family);
 
 $tool-expand-icon: dynamic('expand_more' $font-icon-font-family);
 $tool-collapse-icon: dynamic('expand_less' $font-icon-font-family);
-$tool-resize-icon: dynamic($fa-var-arrows-h 'FontAwesome');
+$tool-resize-icon: dynamic($fa-var-arrows-h 'Font Awesome 5 Free');
 
 $tool-move-icon: dynamic('open_with' $font-icon-font-family);
 
@@ -91,3 +91,6 @@ $tool-collapse-left-icon: dynamic('keyboard_arrow_left' $font-icon-font-family);
 
 $tool-expand-right-icon: dynamic('keyboard_arrow_right' $font-icon-font-family);
 $tool-collapse-right-icon: dynamic('keyboard_arrow_right' $font-icon-font-family);
+
+$tool-edit-icon: dynamic('create' $font-icon-font-family);
+$tool-trash-icon: dynamic('delete' $font-icon-font-family);

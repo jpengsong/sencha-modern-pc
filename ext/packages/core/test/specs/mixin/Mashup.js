@@ -1,8 +1,8 @@
-describe('Ext.mixin.Mashup', function () {
+topSuite('Ext.mixin.Mashup', function() {
     var oldLoadScripts = Ext.Loader.loadScripts,
         mashup;
 
-    beforeEach(function () {
+    beforeEach(function() {
         mashup = {};
 
         Ext.manifest = {
@@ -10,7 +10,7 @@ describe('Ext.mixin.Mashup', function () {
         };
     });
 
-    afterEach(function () {
+    afterEach(function() {
         Ext.Loader.loadScripts = oldLoadScripts;
 
         Ext.undefine('MyTest');
@@ -18,12 +18,12 @@ describe('Ext.mixin.Mashup', function () {
         mashup = Ext.manifest = null;
     });
 
-    it('should load script', function () {
+    it('should load script', function() {
         var spy = spyOn({
             test: Ext.emptyFn
         }, 'test');
 
-        Ext.Loader.loadScripts = function (options) {
+        Ext.Loader.loadScripts = function(options) {
             var url = options.url;
 
             spy.call(this, options);
@@ -50,12 +50,12 @@ describe('Ext.mixin.Mashup', function () {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('should replace options', function () {
+    it('should replace options', function() {
         var spy = spyOn({
             test: Ext.emptyFn
         }, 'test');
 
-        Ext.Loader.loadScripts = function (options) {
+        Ext.Loader.loadScripts = function(options) {
             var url = options.url;
 
             spy.call(this, options);
@@ -70,7 +70,7 @@ describe('Ext.mixin.Mashup', function () {
         };
 
         mashup.test = {
-            options : '?some_options'
+            options: '?some_options'
         };
 
         Ext.define('MyTest', {
@@ -90,13 +90,13 @@ describe('Ext.mixin.Mashup', function () {
         expect(spy).toHaveBeenCalled();
     });
 
-    describe('redirect', function () {
-        it('should replace script', function () {
+    describe('redirect', function() {
+        it('should replace script', function() {
             var spy = spyOn({
                 test: Ext.emptyFn
             }, 'test');
 
-            Ext.Loader.loadScripts = function (options) {
+            Ext.Loader.loadScripts = function(options) {
                 var url = options.url;
 
                 spy.call(this, options);
@@ -129,7 +129,7 @@ describe('Ext.mixin.Mashup', function () {
             expect(spy).toHaveBeenCalled();
         });
 
-        it('should skip loading script', function () {
+        it('should skip loading script', function() {
             var spy = spyOn(Ext.Loader, 'loadScripts');
 
             mashup.redirect = {
@@ -149,12 +149,12 @@ describe('Ext.mixin.Mashup', function () {
             expect(spy).not.toHaveBeenCalled();
         });
 
-        it('should skip loading script but load other', function () {
+        it('should skip loading script but load other', function() {
             var spy = spyOn({
                 test: Ext.emptyFn
             }, 'test');
 
-            Ext.Loader.loadScripts = function (options) {
+            Ext.Loader.loadScripts = function(options) {
                 var url = options.url;
 
                 spy.call(this, options);
@@ -186,12 +186,12 @@ describe('Ext.mixin.Mashup', function () {
             expect(spy).toHaveBeenCalled();
         });
 
-        it('should replace options still', function () {
+        it('should replace options still', function() {
             var spy = spyOn({
                 test: Ext.emptyFn
             }, 'test');
 
-            Ext.Loader.loadScripts = function (options) {
+            Ext.Loader.loadScripts = function(options) {
                 var url = options.url;
 
                 spy.call(this, options);

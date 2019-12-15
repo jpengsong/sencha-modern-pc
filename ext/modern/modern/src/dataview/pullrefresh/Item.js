@@ -36,19 +36,19 @@ Ext.define('Ext.dataview.pullrefresh.Item', {
             holding: Ext.baseCSSPrefix + 'pullrefresh-holding'
         },
 
-        isLoading: function (state) {
+        isLoading: function(state) {
             state = state || this.getState();
 
             return state === 'loading' || state === 'loaded';
         },
 
-        updateState: function (value) {
+        updateState: function(value) {
             var el = this.el,
                 map = this.clsMap,
                 classes;
 
             if (el) {
-                classes = el.getClassMap(/*clone=*/false);
+                classes = el.getClassMap(/* clone= */false);
 
                 delete classes[map.loaded];
                 delete classes[map.loading];
@@ -57,7 +57,7 @@ Ext.define('Ext.dataview.pullrefresh.Item', {
 
                 classes[map[value]] = 1;
 
-                el.setClassMap(classes, /*keep=*/true);
+                el.setClassMap(classes, /* keep= */true);
 
             }
         }

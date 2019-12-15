@@ -14,11 +14,11 @@ topSuite("Ext.dataview.pullrefresh.PullRefresh", [
             fields: ['id', 'title'],
 
             data: [
-                {id: 11, title: 'First Item'},
-                {id: 12, title: 'Second Item'},
-                {id: 13, title: 'Third Item'},
-                {id: 14, title: 'Fourth Item'},
-                {id: 15, title: 'Fifth Item'}
+                { id: 11, title: 'First Item' },
+                { id: 12, title: 'Second Item' },
+                { id: 13, title: 'Third Item' },
+                { id: 14, title: 'Fourth Item' },
+                { id: 15, title: 'Fifth Item' }
             ],
 
             proxy: {
@@ -42,7 +42,7 @@ topSuite("Ext.dataview.pullrefresh.PullRefresh", [
     afterEach(function() {
         list.destroy();
         list = null;
-        
+
         Ext.supports.Touch = supportsTouch;
         Ext.supports.touchScroll = supportsTouchScroll;
     });
@@ -88,6 +88,7 @@ topSuite("Ext.dataview.pullrefresh.PullRefresh", [
     describe("when latest fetched items come back", function() {
         describe("if there are no new items", function() {
             var operation;
+
             beforeEach(function() {
                 operation = new Ext.data.operation.Read({
                     model: model,
@@ -109,18 +110,18 @@ topSuite("Ext.dataview.pullrefresh.PullRefresh", [
                 newRecords = [];
 
                 var raw = [
-                    {id: 1, title: 'New First Item'},
-                    {id: 2, title: 'New Second Item'},
-                    {id: 3, title: 'New Third Item'},
-                    {id: 4, title: 'New Fourth Item'},
-                    {id: 5, title: 'New Fifth Item'},
-                    {id: 6, title: 'New Sixth Item'},
-                    {id: 7, title: 'New Seventh Item'},
-                    {id: 8, title: 'New Eighth Item'},
-                    {id: 9, title: 'New Ninth Item'},
-                    {id: 10, title: 'New Tenth Item'},
-                    {id: 11, title: 'Updated First Item'},
-                    {id: 12, title: 'Updated Second Item'}
+                    { id: 1, title: 'New First Item' },
+                    { id: 2, title: 'New Second Item' },
+                    { id: 3, title: 'New Third Item' },
+                    { id: 4, title: 'New Fourth Item' },
+                    { id: 5, title: 'New Fifth Item' },
+                    { id: 6, title: 'New Sixth Item' },
+                    { id: 7, title: 'New Seventh Item' },
+                    { id: 8, title: 'New Eighth Item' },
+                    { id: 9, title: 'New Ninth Item' },
+                    { id: 10, title: 'New Tenth Item' },
+                    { id: 11, title: 'Updated First Item' },
+                    { id: 12, title: 'Updated Second Item' }
                 ];
 
                 Ext.each(raw, function(data, i) {
@@ -152,11 +153,11 @@ topSuite("Ext.dataview.pullrefresh.PullRefresh", [
                 newRecords = [];
 
                 var raw = [
-                    {id: 1, title: 'New First Item'},
-                    {id: 2, title: 'New Second Item'},
-                    {id: 3, title: 'New Third Item'},
-                    {id: 4, title: 'New Fourth Item'},
-                    {id: 5, title: 'New Fifth Item'}
+                    { id: 1, title: 'New First Item' },
+                    { id: 2, title: 'New Second Item' },
+                    { id: 3, title: 'New Third Item' },
+                    { id: 4, title: 'New Fourth Item' },
+                    { id: 5, title: 'New Fifth Item' }
                 ];
 
                 Ext.each(raw, function(data, i) {

@@ -107,8 +107,8 @@
  *  Now, upon opening the editor, you would see a textfield populated with the editable value from
  *  its corresponding record.
  *
- *  If you want to alter certain form configurations, but still have the default editor fields applied, use
- *  the defaultFormConfig instead.
+ *  If you want to alter certain form configurations, but still have the default editor fields 
+ *  applied, use the defaultFormConfig instead.
  */
 Ext.define('Ext.grid.plugin.Editable', {
     extend: 'Ext.plugin.Abstract',
@@ -136,10 +136,11 @@ Ext.define('Ext.grid.plugin.Editable', {
 
         /**
          * @cfg {Object} formConfig
-         * By changing the formConfig you can hardcode the form that gets created when editing a row.
-         * Note that the fields are not set on this form, so you will have to define them yourself in this config.
-         * If you want to alter certain form configurations, but still have the default editor fields applied, use
-         * the defaultFormConfig instead.
+         * By changing the formConfig you can hardcode the form that gets created when 
+         * editing a row.
+         * Note that the fields are not set on this form, so you will have to define them 
+         * yourself in this config. If you want to alter certain form configurations, but 
+         * still have the default editor fields applied, use the defaultFormConfig instead.
          */
         formConfig: null,
 
@@ -199,6 +200,7 @@ Ext.define('Ext.grid.plugin.Editable', {
 
     updateGrid: function(grid, oldGrid) {
         var triggerEvent = this.getTriggerEvent();
+
         if (oldGrid) {
             oldGrid.un(triggerEvent, 'onTrigger', this);
         }
@@ -224,34 +226,29 @@ Ext.define('Ext.grid.plugin.Editable', {
     getEditorFields: function(columns) {
         var fields = [],
             ln = columns.length,
-            // <debug>
+            //<debug>
             map = {},
-            // </debug>
-            i, column, editor, editable, cfg;
+            //</debug>
+            i, column, editor;
 
         for (i = 0; i < ln; i++) {
             column = columns[i];
-            editable = column.getEditable();
-            editor = editable !== false && column.getEditor();
-
-            if (!editor && editable) {
-                cfg = column.getDefaultEditor();
-                editor = Ext.create(cfg);
-                column.setEditor(editor);
-            }
+            editor = column.ensureEditor();
 
             if (editor) {
-                // <debug>
+                //<debug>
                 if (map[column.getDataIndex()]) {
-                    Ext.raise('An editable column with the same dataIndex "' + 
+                    Ext.raise('An editable column with the same dataIndex "' +
                         column.getDataIndex() + '" already exists.');
                 }
+
                 map[column.getDataIndex()] = true;
-                // </debug>
+                //</debug>
 
                 if (editor.isEditor) {
                     editor = editor.getField();
                 }
+
                 editor.setLabel(column.getText());
                 editor.setName(column.getDataIndex());
                 fields.push(editor);
@@ -275,7 +272,8 @@ Ext.define('Ext.grid.plugin.Editable', {
 
         if (formConfig) {
             me.form = form = Ext.factory(formConfig, Ext.form.Panel);
-        } else {
+        }
+        else {
             me.form = form = Ext.factory(me.getDefaultFormConfig());
 
             fields = me.getEditorFields(grid.getColumns());

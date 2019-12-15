@@ -34,11 +34,12 @@ Ext.define('Ext.data.validator.AbstractDate', {
         return format;
     },
 
-    parse: function (value) {
+    parse: function(value) {
         if (Ext.isDate(value)) {
             return value;
         }
 
+        /* eslint-disable-next-line vars-on-top */
         var me = this,
             format = me.getFormat(),
             len = format.length,

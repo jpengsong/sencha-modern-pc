@@ -49,7 +49,7 @@ Ext.define('Ext.Progress', {
 
     defaultBindProperty: 'value',
 
-    updateCls: function (cls, oldCls) {
+    updateCls: function(cls, oldCls) {
         var el = this.element;
 
         if (oldCls) {
@@ -61,7 +61,7 @@ Ext.define('Ext.Progress', {
         }
     },
 
-    updateUi: function (ui, oldUi) {
+    updateUi: function(ui, oldUi) {
         var element = this.element,
             barEl = this.barEl,
             baseCls = this.baseCls + '-';
@@ -77,12 +77,12 @@ Ext.define('Ext.Progress', {
         barEl.addCls(baseCls + 'bar-' + ui);
     },
 
-    updateTextCls: function (textCls) {
+    updateTextCls: function(textCls) {
         this.backgroundEl.addCls(textCls + ' ' + textCls + '-back');
         this.textEl.addCls(textCls);
     },
 
-    updateValue: function (value, oldValue) {
+    updateValue: function(value, oldValue) {
         var me = this,
             textTpl = me.getTextTpl();
 
@@ -92,6 +92,7 @@ Ext.define('Ext.Progress', {
                 percent: Math.round(value * 100)
             }));
         }
+
         if (!me.isConfiguring && me.getAnimate()) {
             me.stopBarAnimation();
             me.startBarAnimation(Ext.apply({
@@ -102,12 +103,13 @@ Ext.define('Ext.Progress', {
                     width: (value * 100) + '%'
                 }
             }, me.animate));
-        } else {
+        }
+        else {
             me.barEl.setStyle('width', (value * 100) + '%');
         }
     },
 
-    updateText: function (text) {
+    updateText: function(text) {
         this.backgroundEl.setHtml(text);
         this.textEl.setHtml(text);
     },

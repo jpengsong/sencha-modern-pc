@@ -1,7 +1,7 @@
 /**
  * The text field is the basis for most of the input fields. It provides a baseline of shared
- * functionality such as input validation, standard events, state management and look and feel. Typically we create
- * text fields inside a form, like this:
+ * functionality such as input validation, standard events, state management and look and
+ * feel. Typically we create text fields inside a form, like this:
  *
  *     @example
  *     Ext.create('Ext.form.Panel', {
@@ -26,7 +26,8 @@
  *         ]
  *     });
  *
- * This creates two text fields inside a form. Text Fields can also be created outside of a Form, like this:
+ * This creates two text fields inside a form. Text Fields can also be created outside of a
+ * Form, like this:
  *
  *     Ext.create('Ext.field.Text', {
  *         label: 'Your Name',
@@ -35,10 +36,12 @@
  *
  * ## Configuring
  *
- * Text field offers several configuration options, including {@link #placeholder}, {@link #maxLength},
- * {@link #autoComplete}, {@link #autoCapitalize} and {@link #autoCorrect}. For example, here is how we would configure
- * a text field to have a maximum length of 10 characters, with placeholder text that disappears when the field is
- * focused:
+ * Text field offers several configuration options, including {@link #placeholder},
+ * {@link #maxLength}, {@link #autoComplete}, {@link #autoCapitalize} and
+ * {@link #autoCorrect}.
+ *
+ * For example, here is how we would configure a text field to have a maximum length of
+ * 10 characters, with placeholder text that disappears when the field is focused:
  *
  *     Ext.create('Ext.field.Text', {
  *         label: 'Username',
@@ -46,9 +49,9 @@
  *         placeholder: 'Enter your username'
  *     });
  *
- * The autoComplete, autoCapitalize and autoCorrect configs simply set those attributes on the text field and allow the
- * native browser to provide those capabilities. For example, to enable auto complete and auto correct, simply
- * configure your text field like this:
+ * The autoComplete, autoCapitalize and autoCorrect configs simply set those attributes on
+ * the text field and allow the native browser to provide those capabilities. For example,
+ * to enable auto complete and auto correct, simply configure your text field like this:
  *
  *     Ext.create('Ext.field.Text', {
  *         label: 'Username',
@@ -56,11 +59,13 @@
  *         autoCorrect: true
  *     });
  *
- * These configurations will be picked up by the native browser, which will enable the options at the OS level.
+ * These configurations will be picked up by the native browser, which will enable the
+ * options at the OS level.
  *
- * Text field inherits from {@link Ext.field.Field}, which is the base class for all fields and provides
- * a lot of shared functionality for all fields, including setting values, clearing and basic validation. See the
- * {@link Ext.field.Field} documentation to see how to leverage its capabilities.
+ * Text field inherits from {@link Ext.field.Field}, which is the base class for all
+ * fields and provides a lot of shared functionality for all fields, including setting
+ * values, clearing and basic validation. See the {@link Ext.field.Field} documentation
+ * to see how to leverage its capabilities.
  */
 Ext.define('Ext.field.Text', {
     extend: 'Ext.field.Input',
@@ -101,6 +106,15 @@ Ext.define('Ext.field.Text', {
      */
 
     /**
+     * @event keydown
+     * @preventable
+     * Fires when a key is pressed on the input element
+     * @param {Ext.field.Text} this This field
+     * @param {Ext.event.Event} e
+     * @since 7.0
+     */
+
+    /**
      * @event keyup
      * @preventable
      * Fires when a key is released on the input element
@@ -125,6 +139,13 @@ Ext.define('Ext.field.Text', {
      * that this event bubbles up to parent containers.
      * @param {Ext.field.Text} this This field
      * @param {Mixed} e The key event object
+     */
+
+    /**
+     * @cfg {RegExp} stripCharsRe
+     * A JavaScript RegExp object used to strip unwanted content from the value
+     * during input. If `stripCharsRe` is specified,
+     * every *character sequence* matching `stripCharsRe` will be removed.
      */
 
     config: {
@@ -163,7 +184,8 @@ Ext.define('Ext.field.Text', {
 
         /**
          * @cfg {Boolean} autoCapitalize
-         * True to set the field's DOM element autocapitalize attribute to "on", false to set to "off".
+         * True to set the field's DOM element auto-capitalize attribute to "on", false to
+         * set to "off".
          */
         autoCapitalize: null,
 
@@ -195,7 +217,7 @@ Ext.define('Ext.field.Text', {
          * The value for the HTML5 `pattern` attribute. You can use this to change which
          * keyboard layout will be used.
          *
-         *     Ext.define('App.ux.field.Pattern', {
+         *     Ext.define('Ux.field.Pattern', {
          *         extend : 'Ext.field.Text',
          *         xtype  : 'patternfield',
          *
@@ -274,8 +296,6 @@ Ext.define('Ext.field.Text', {
          */
         editable: true,
 
-        bubbleEvents: ['action'],
-
         /**
          * @cfg bodyAlign
          * @hide
@@ -312,6 +332,8 @@ Ext.define('Ext.field.Text', {
         parseValidator: null
     },
 
+    bubbleEvents: ['action'],
+
     /**
      * @cfg {String} badFormatMessage
      * The error message that will be displayed if the value cannot be parsed (for some
@@ -320,11 +342,6 @@ Ext.define('Ext.field.Text', {
      * @since 6.5.0
      */
     badFormatMessage: 'Value does not match the required format',
-
-    /**
-     * @cfg bodyAlign
-     * @hide
-     */
 
     /**
      * @property defaultBindProperty
@@ -365,7 +382,7 @@ Ext.define('Ext.field.Text', {
 
     requiredIndicator: '*',
 
-    getBodyTemplate: function () {
+    getBodyTemplate: function() {
         var template = [{
             reference: 'beforeInputElement',
             cls: Ext.baseCSSPrefix + 'before-input-el'
@@ -381,7 +398,9 @@ Ext.define('Ext.field.Text', {
         return [{
             reference: 'inputWrapElement',
             cls: Ext.baseCSSPrefix + 'input-wrap-el' +
-                (Ext.supports.WebKitInputTableBoxModelBug ? (' ' + this.webkitBorderBoxBugCls) : ''),
+                (Ext.supports.WebKitInputTableBoxModelBug
+                    ? (' ' + this.webkitBorderBoxBugCls)
+                    : ''),
             children: template
         }, {
             reference: 'underlineElement',
@@ -389,7 +408,7 @@ Ext.define('Ext.field.Text', {
         }];
     },
 
-    initialize: function () {
+    initialize: function() {
         var me = this;
 
         if (Ext.isRobot) {
@@ -404,6 +423,10 @@ Ext.define('Ext.field.Text', {
             keypress: 'onKeyPress',
             paste: 'onPaste',
             mousedown: 'onMouseDown',
+            input: {
+                fn: 'onInput',
+                delegated: false
+            },
             scope: me
         });
 
@@ -413,23 +436,35 @@ Ext.define('Ext.field.Text', {
     /**
      * Clears the value of this field.
      */
-    clearValue: function () {
+    clearValue: function() {
         var me = this,
             inputMask = me.getInputMask();
 
         if (inputMask) {
             // show empty mask and move caret to first editable position
             inputMask.showEmptyMask(me, true);
-        } else {
-            me.forceInputChange = true;
-            me.setValue('');
-            me.forceInputChange = false;
+        }
+        else {
+            me.forceSetValue('');
         }
 
         me.syncEmptyState();
     },
 
-    transformValue: function (value) {
+    isEqual: function(value1, value2) {
+        var v1 = this.transformValue(value1),
+            v2 = this.transformValue(value2);
+
+        return v1 === v2;
+    },
+
+    forceSetValue: function(value) {
+        this.forceInputChange = true;
+        this.setValue(value);
+        this.forceInputChange = false;
+    },
+
+    transformValue: function(value) {
         if (value == null) {
             value = '';
         }
@@ -437,7 +472,8 @@ Ext.define('Ext.field.Text', {
         return value;
     },
 
-    applyInputMask: function (value, instance) {
+    applyInputMask: function(value, instance) {
+        // eslint-disable-next-line dot-notation
         var InputMask = Ext.field['InputMask']; // prevent Cmd detection
 
         //<debug>
@@ -451,23 +487,25 @@ Ext.define('Ext.field.Text', {
         return value ? InputMask.from(value, instance) : null;
     },
 
-    updateInputMask: function (inputMask, previous) {
+    updateInputMask: function(inputMask, previous) {
         this.hasMask = false;
+
         if (previous) {
             previous.release();
         }
 
         if (inputMask) {
             this.hasMask = true;
-            //Synchronize pattern in case we have changed it and ensure that initial mask is being shown
+            // Synchronize pattern in case we'e changed it and ensure that initial mask is shown
             inputMask.syncPattern(this);
         }
     },
 
-    doValidate: function (value, errors, skipLazy) {
+    doValidate: function(value, errors, skipLazy) {
         this.callParent([ value, errors, skipLazy ]);
 
         if (!skipLazy) {
+            // eslint-disable-next-line vars-on-top
             var inputMask = this.getInputMask();
 
             // Field will be marked invalid if user has entered some chars.
@@ -508,7 +546,7 @@ Ext.define('Ext.field.Text', {
      * @protected
      * @since 6.5.1
      */
-    parseValue: function (value, errors) {
+    parseValue: function(value, errors) {
         var me = this,
             parser = me.getParseValidator(),
             field, i, k, len, v, validators;
@@ -519,7 +557,7 @@ Ext.define('Ext.field.Text', {
             // specific validator, followed by the bound model field (if we have one).
             field = me._validationField;
 
-            for (k = 2; k-- > 0; ) {
+            for (k = 2; k-- > 0; /* empty */) {
                 validators = k ? me.getValidators() : (field && field.getValidators());
                 len = validators && validators.length;
 
@@ -550,12 +588,13 @@ Ext.define('Ext.field.Text', {
         return value;
     },
 
-    applyValue: function (value, oldValue) {
+    applyValue: function(value, oldValue) {
         // This converts the raw, textual value into whatever form the field uses
         // So Number and Date subclasses convert to number or date here.
         // If the validation fails, undefined return will abort the setter.
         if (value && typeof value === 'string') {
             value = this.parseValue(value);
+
             if (value === null) {
                 return;
             }
@@ -564,7 +603,7 @@ Ext.define('Ext.field.Text', {
         return this.transformValue(this.callParent([value, oldValue]));
     },
 
-    updateInputValue: function (value, oldValue) {
+    updateInputValue: function(value, oldValue) {
         var me = this,
             inputMask = me.getInputMask();
 
@@ -578,7 +617,7 @@ Ext.define('Ext.field.Text', {
         }
     },
 
-    updateTextAlign: function (newAlign, oldAlign) {
+    updateTextAlign: function(newAlign, oldAlign) {
         var element = this.element;
 
         if (oldAlign) {
@@ -590,48 +629,49 @@ Ext.define('Ext.field.Text', {
         }
     },
 
-    updatePlaceholder: function (value) {
+    updatePlaceholder: function(value) {
         this.setInputAttribute('placeholder', value);
     },
 
     //<debug>
-    applyMaxLength: function (maxLength) {
-        if (maxLength !== null && typeof maxLength != 'number') {
-            throw new Error("Ext.field.Text: [applyMaxLength] trying to pass a value which is not a number");
+    applyMaxLength: function(maxLength) {
+        if (maxLength !== null && typeof maxLength !== 'number') {
+            Ext.raise("Ext.field.Text: [applyMaxLength] value which is not a number");
         }
+
         return maxLength;
     },
     //</debug>
 
-    updateMaxLength: function (newMaxLength) {
+    updateMaxLength: function(newMaxLength) {
         this.setInputAttribute('maxlength', newMaxLength);
     },
 
-    applyAutoComplete: function (value) {
+    applyAutoComplete: function(value) {
         return value === true || value === 'on';
     },
 
-    updateAutoComplete: function (value) {
+    updateAutoComplete: function(value) {
         this.setInputAttribute('autocomplete', value ? 'on' : 'off');
     },
 
-    applyAutoCapitalize: function (value) {
+    applyAutoCapitalize: function(value) {
         return value === true || value === 'on';
     },
 
-    updateAutoCapitalize: function (value) {
+    updateAutoCapitalize: function(value) {
         this.setInputAttribute('autocapitalize', value ? 'on' : 'off');
     },
 
-    applyAutoCorrect: function (value) {
+    applyAutoCorrect: function(value) {
         return value === true || value === 'on';
     },
 
-    updateAutoCorrect: function (value) {
+    updateAutoCorrect: function(value) {
         this.setInputAttribute('autocorrect', value ? 'on' : 'off');
     },
 
-    updateReadOnly: function (newReadOnly) {
+    updateReadOnly: function(newReadOnly) {
         var me = this,
             triggers = me.getTriggers(),
             isEditable = me.getEditable(),
@@ -650,12 +690,13 @@ Ext.define('Ext.field.Text', {
         me.syncEmptyState();
     },
 
-    updateEditable: function (newEditable) {
+    updateEditable: function(newEditable) {
         var triggers = this.getTriggers(),
             isReadOnly = this.getReadOnly(),
             triggerName, trigger;
 
         this.updateReadOnly(!newEditable);
+
         for (triggerName in triggers) {
             trigger = triggers[triggerName];
 
@@ -665,16 +706,16 @@ Ext.define('Ext.field.Text', {
         }
     },
 
-    updatePattern: function (pattern) {
+    updatePattern: function(pattern) {
         this.setInputAttribute('pattern', pattern);
     },
 
-    updateDisabled: function (disabled, oldDisabled) {
+    updateDisabled: function(disabled, oldDisabled) {
         this.callParent([disabled, oldDisabled]);
         this.syncEmptyState();
     },
 
-    updateClearable: function (clearable, oldClearable) {
+    updateClearable: function(clearable, oldClearable) {
         var me = this,
             triggers, clearTrigger;
 
@@ -686,13 +727,14 @@ Ext.define('Ext.field.Text', {
                 if (!clearTrigger) {
                     me.addTrigger('clear', 'clear');
                 }
-            } else if (clearTrigger) {
+            }
+            else if (clearTrigger) {
                 me.removeTrigger('clear');
             }
         }
     },
 
-    applyTriggers: function (triggers, oldTriggers) {
+    applyTriggers: function(triggers, oldTriggers) {
         var me = this,
             instances = oldTriggers || {},
             clearable = me.getClearable(),
@@ -722,7 +764,7 @@ Ext.define('Ext.field.Text', {
         return instances;
     },
 
-    updateTriggers: function () {
+    updateTriggers: function() {
         this.syncTriggers();
     },
 
@@ -734,7 +776,7 @@ Ext.define('Ext.field.Text', {
      * object for a trigger to add
      * @return {Ext.field.trigger.Trigger} The trigger that was added
      */
-    addTrigger: function (name, trigger) {
+    addTrigger: function(name, trigger) {
         var me = this,
             triggers = me.getTriggers(),
             triggerConfig;
@@ -743,11 +785,13 @@ Ext.define('Ext.field.Text', {
         if (triggers && triggers[name]) {
             Ext.raise('Trigger with name "' + name + '" already exists.');
         }
+
         if (typeof name !== 'string') {
             Ext.raise('Cannot add trigger. Key must be a string.');
         }
+
         if (typeof trigger !== 'string' && !Ext.isObject(trigger)) {
-            Ext.raise('Cannot add trigger "' + name + '". A trigger config or instance is required.');
+            Ext.raise('Cannot add trigger "' + name + '". A config or instance is required.');
         }
         //</debug>
 
@@ -756,9 +800,11 @@ Ext.define('Ext.field.Text', {
         if (triggers) {
             triggers[name] = trigger;
             me.syncTriggers();
-        } else {
+        }
+        else {
             triggerConfig = {};
             triggerConfig[name] = trigger;
+
             me.setTriggers(triggerConfig);
         }
 
@@ -773,7 +819,7 @@ Ext.define('Ext.field.Text', {
      * on removal.  Only use this option if you want to reuse the trigger instance.
      * @return {Ext.field.trigger.Trigger} The trigger that was removed
      */
-    removeTrigger: function (trigger, destroy) {
+    removeTrigger: function(trigger, destroy) {
         var me = this,
             triggers = me.getTriggers(),
             name = trigger,
@@ -781,14 +827,16 @@ Ext.define('Ext.field.Text', {
 
         if (name.isTrigger) {
             name = trigger.getName();
-        } else {
+        }
+        else {
             trigger = triggers[name];
         }
 
         //<debug>
         if (!name) {
             Ext.raise('Trigger not found.');
-        } else if (!triggers[name]) {
+        }
+        else if (!triggers[name]) {
             Ext.raise('Cannot remove trigger. Trigger with name "' + name + '" not found.');
         }
         //</debug>
@@ -797,7 +845,8 @@ Ext.define('Ext.field.Text', {
 
         if (destroy !== false) {
             trigger.destroy();
-        } else {
+        }
+        else {
             triggerEl = trigger.el.dom;
             triggerEl.parentNode.removeChild(triggerEl);
         }
@@ -807,11 +856,36 @@ Ext.define('Ext.field.Text', {
         return trigger;
     },
 
-    onKeyDown: function (event) {
+    /**
+     * @private
+     */
+    fireKey: function(e) {
+        if (e.isSpecialKey()) {
+            this.fireEvent('specialkey', this, e);
+        }
+    },
+
+    onKeyPress: function(event) {
+        var me = this,
+            inputMask = me.getInputMask();
+
+        if (inputMask) {
+            inputMask.onKeyPress(me, me.getValue(), event);
+        }
+
+        me.fireEvent('keypress', me, event);
+
+        if (!Ext.supports.SpecialKeyDownRepeat) {
+            me.fireKey(event);
+        }
+    },
+
+    onKeyDown: function(event) {
         var me = this,
             inputMask = me.getInputMask();
 
         me.lastKeyTime = Date.now();
+
         if (inputMask) {
             inputMask.onKeyDown(me, me.getValue(), event);
         }
@@ -823,9 +897,33 @@ Ext.define('Ext.field.Text', {
         if (Ext.supports.SpecialKeyDownRepeat) {
             me.fireKey(event);
         }
+
+        me.fireAction('keydown', [me, event], 'doKeyDown');
     },
 
-    onInput: function (e) {
+    /**
+     * Called when a key has been pressed in the `<input>`
+     * @protected
+     */
+    doKeyDown: Ext.emptyFn,
+
+    onKeyUp: function(e) {
+        this.fireAction('keyup', [this, e], 'doKeyUp');
+    },
+
+    /**
+     * Called when a key has been pressed in the `<input>`
+     * @private
+     */
+    doKeyUp: function(me, e) {
+        me.syncEmptyState();
+
+        if (e.browserEvent.keyCode === 13) {
+            me.fireAction('action', [me, e], 'doAction');
+        }
+    },
+
+    onInput: function(e) {
         var me = this,
             inputEl = me.inputElement.dom,
             value = inputEl.value,
@@ -840,6 +938,10 @@ Ext.define('Ext.field.Text', {
         // Keep our config up to date:
         me._inputValue = value;
 
+        if (!me.hasFocus && me.getLabelAlign() === 'placeholder') {
+            me.syncLabelPlaceholder(true);
+        }
+
         // If the value is empty don't try and parse it, use the result
         // of parseValue as the default. For text fields it will be empty string,
         // for other typed fields (number/date) it will be null
@@ -847,9 +949,11 @@ Ext.define('Ext.field.Text', {
             parseErrors = [];
             value = me.parseValue(value, parseErrors);
         }
+
         if (parseErrors && parseErrors.length) {
             me.setError(parseErrors);
-        } else {
+        }
+        else {
             oldValue = me.getValue();
             me.setValue(value);
 
@@ -865,12 +969,13 @@ Ext.define('Ext.field.Text', {
         // if we should ignore input, stop now.
         if (me.ignoreInput) {
             me.ignoreInput = false;
+
             return;
         }
 
         // set a timeout for 10ms to check if we want to stop the input event.
         // if not, then continue with the event (keyup)
-        Ext.defer(function () {
+        Ext.defer(function() {
             if (!me.ignoreInput && !me.destroyed) {
                 me.fireEvent('keyup', e);
                 me.ignoreInput = false;
@@ -878,47 +983,7 @@ Ext.define('Ext.field.Text', {
         }, 10);
     },
 
-    /**
-     * @private
-     */
-    fireKey: function (e) {
-        if (e.isSpecialKey()) {
-            this.fireEvent('specialkey', this, e);
-        }
-    },
-
-    onKeyPress: function (event) {
-        var me = this,
-            inputMask = me.getInputMask();
-
-        if (inputMask) {
-            inputMask.onKeyPress(me, me.getValue(), event);
-        }
-
-        me.fireEvent('keypress', me, event);
-
-        if (!Ext.supports.SpecialKeyDownRepeat) {
-            me.fireKey(event);
-        }
-    },
-
-    onKeyUp: function (e) {
-        this.fireAction('keyup', [this, e], 'doKeyUp');
-    },
-
-    /**
-     * Called when a key has been pressed in the `<input>`
-     * @private
-     */
-    doKeyUp: function (me, e) {
-        me.syncEmptyState();
-
-        if (e.browserEvent.keyCode === 13) {
-            me.fireAction('action', [me, e], 'doAction');
-        }
-    },
-
-    doAction: function () {
+    doAction: function() {
         // Blur fields on enter on virtual keyboard platforms.
         // The virtual keyboard pushes the document up outside the viewport bounds.
         if (document.documentElement.getBoundingClientRect().top < 0) {
@@ -926,18 +991,18 @@ Ext.define('Ext.field.Text', {
         }
     },
 
-    onClearIconTap: function (input, e) {
+    onClearIconTap: function(input, e) {
         this.fireAction('clearicontap', [this, input, e], 'doClearIconTap');
     },
 
     /**
      * @private
      */
-    doClearIconTap: function () {
+    doClearIconTap: function() {
         this.clearValue();
     },
 
-    onFocusEnter: function (event) {
+    onFocusEnter: function(event) {
         var me = this,
             inputMask = me.getInputMask();
 
@@ -951,7 +1016,7 @@ Ext.define('Ext.field.Text', {
         }
     },
 
-    onFocusLeave: function (event) {
+    onFocusLeave: function(event) {
         var me = this,
             inputMask = me.getInputMask();
 
@@ -965,17 +1030,17 @@ Ext.define('Ext.field.Text', {
         }
     },
 
-    onPaste: function (e) {
+    onPaste: function(e) {
         this.forceInputChange = true;
         this.handlePaste(e);
         this.forceInputChange = false;
     },
 
-    getCaretPos: function () {
+    getCaretPos: function() {
         return this.inputElement.getCaretPos();
     },
 
-    setCaretPos: function (pos) {
+    setCaretPos: function(pos) {
         this.inputElement.setCaretPos(pos);
     },
 
@@ -988,7 +1053,7 @@ Ext.define('Ext.field.Text', {
      * @return {Array}
      * @since 6.5.0
      */
-    getTextSelection: function () {
+    getTextSelection: function() {
         return this.inputElement.getTextSelection();
     },
 
@@ -1001,7 +1066,7 @@ Ext.define('Ext.field.Text', {
      * @return {Ext.field.Text} this
      * @chainable
      */
-    select: function (start, end, direction) {
+    select: function(start, end, direction) {
         // Safari has a bug where selecting text in an input element focuses that
         // input element. If we do not contain focus, do nothing. We select on focus
         // anyway.
@@ -1012,21 +1077,21 @@ Ext.define('Ext.field.Text', {
         return this;
     },
 
-    reset: function () {
+    reset: function() {
         this.callParent();
 
         this.syncEmptyState();
     },
 
-    onClick: function (e) {
+    onClick: function(e) {
         this.fireEvent('click', e);
     },
 
-    onMouseDown: function (e) {
+    onMouseDown: function(e) {
         this.fireEvent('mousedown', e);
     },
 
-    trimValueToMaxLength: function () {
+    trimValueToMaxLength: function() {
         var me = this,
             maxLength = me.getMaxLength(),
             value = me.getValue();
@@ -1036,7 +1101,7 @@ Ext.define('Ext.field.Text', {
         }
     },
 
-    doDestroy: function () {
+    doDestroy: function() {
         var me = this,
             triggers = me.getTriggers(),
             triggerGroups = me.triggerGroups,
@@ -1052,6 +1117,7 @@ Ext.define('Ext.field.Text', {
             for (name in triggerGroups) {
                 triggerGroups[name].destroy();
             }
+
             me.triggerGroups = null;
         }
 
@@ -1065,13 +1131,13 @@ Ext.define('Ext.field.Text', {
         me.callParent();
     },
 
-    onRender: function () {
+    onRender: function() {
         this.callParent();
 
         this.syncLabelPlaceholder();
     },
 
-    getRefItems: function (deep) {
+    getRefItems: function(deep) {
         var me = this,
             triggers = me.getTriggers(),
             items = [],
@@ -1096,11 +1162,11 @@ Ext.define('Ext.field.Text', {
         hasMask: false,
         lastKeyTime: 0,
 
-        applyParseValidator: function (config) {
+        applyParseValidator: function(config) {
             return this.decodeValidator(config);
         },
 
-        updateLabelInPlaceholder: function (inside) {
+        updateLabelInPlaceholder: function(inside) {
             var me = this,
                 placeHolder = me.getPlaceholder() || '',
                 anim = me._animPlaceholderLabel;
@@ -1108,6 +1174,7 @@ Ext.define('Ext.field.Text', {
             if (me.getLabelAlign() !== 'placeholder' || !me.getLabel()) {
                 me.clearWhenVisible('doPositionPlaceholder');
                 me.setInputAttribute('placeholder', placeHolder);
+
                 return;
             }
 
@@ -1115,12 +1182,13 @@ Ext.define('Ext.field.Text', {
             me.el.toggleCls(Ext.baseCSSPrefix + 'label-inside', inside);
         },
 
-        updateAnimateUnderline: function (value) {
+        updateAnimateUnderline: function(value) {
             this.toggleCls(Ext.baseCSSPrefix + 'animate-underline', value);
         },
 
-        canSetInputValue: function () {
+        canSetInputValue: function() {
             var me = this;
+
             // If we're using an inputMask, the field is updated dynamically
             // as typing occurs. forceInputChange is for when the component wants
             // to force the value to change, for example selecting from a picker,
@@ -1133,20 +1201,23 @@ Ext.define('Ext.field.Text', {
                 Date.now() - me.lastKeyTime > me.focusedInputDelay;
         },
 
-        doPositionPlaceholder: function (inside, doAnimate) {
+        doPositionPlaceholder: function(inside, doAnimate) {
             var me = this,
                 labelElement = me.labelElement,
                 anim, animation, info, insideInfo, outsideInfo;
 
             animation = labelElement.getActiveAnimation();
+
             if (animation) {
                 animation.stop();
             }
 
             info = me.lastPlaceholderAnimInfo;
+
             if (!info) {
                 me.lastPlaceholderAnimInfo = info = me.getPlaceholderAnimInfo();
             }
+
             insideInfo = info.inside;
             outsideInfo = info.outside;
 
@@ -1160,12 +1231,13 @@ Ext.define('Ext.field.Text', {
 
             if (doAnimate) {
                 labelElement.animate(anim);
-            } else {
+            }
+            else {
                 labelElement.setStyle(anim.to);
             }
         },
 
-        getPlaceholderLabel: function () {
+        getPlaceholderLabel: function() {
             var me = this,
                 label = me.getLabel();
 
@@ -1176,7 +1248,7 @@ Ext.define('Ext.field.Text', {
             return label;
         },
 
-        getPlaceholderAnimInfo: function () {
+        getPlaceholderAnimInfo: function() {
             var me = this,
                 element = me.element,
                 labelElement = me.labelElement,
@@ -1187,8 +1259,10 @@ Ext.define('Ext.field.Text', {
                 inputLeftPadding = inputElement.getPadding('l'),
                 labelTopPadding = labelElement.getPadding('t'),
                 inputTopPadding = inputElement.getPadding('t'),
-                translateX = inputOffsets[0] - labelOffsets[0] + (inputLeftPadding - labelLeftPadding),
-                translateY = inputOffsets[1] - labelOffsets[1] + (inputTopPadding - labelTopPadding);
+                translateX = inputOffsets[0] - labelOffsets[0] +
+                    (inputLeftPadding - labelLeftPadding),
+                translateY = inputOffsets[1] - labelOffsets[1] +
+                    (inputTopPadding - labelTopPadding);
 
             return {
                 inside: {
@@ -1208,7 +1282,7 @@ Ext.define('Ext.field.Text', {
             };
         },
 
-        handlePaste: function (e) {
+        handlePaste: function(e) {
             var me = this,
                 inputMask = me.getInputMask();
 
@@ -1222,13 +1296,14 @@ Ext.define('Ext.field.Text', {
         /**
          * @private
          */
-        createTrigger: function (name, trigger) {
+        createTrigger: function(name, trigger) {
             if (!trigger.isTrigger) {
                 if (trigger === true) {
                     trigger = {
                         type: name
                     };
-                } else if (typeof trigger === 'string') {
+                }
+                else if (typeof trigger === 'string') {
                     trigger = {
                         type: trigger
                     };
@@ -1245,16 +1320,17 @@ Ext.define('Ext.field.Text', {
             return trigger;
         },
 
-        syncLabelPlaceholder: function (animate) {
+        syncLabelPlaceholder: function(animate) {
             var me = this,
-                inputEl = me.inputElement,
-                value = inputEl && inputEl.dom.value,
                 inside;
 
             me._animPlaceholderLabel = animate;
 
             if (me.rendered) {
-                if (value !== '') {
+                // We will test the inputElement's raw value
+                // Subclasses may have other ways to determine value presence.
+                // eg: SelectFields.
+                if (me.hasValue()) {
                     // The cardinal rule: if there is a value do NOT put the label on
                     // top of it!
                     inside = false;
@@ -1275,11 +1351,55 @@ Ext.define('Ext.field.Text', {
             me._animPlaceholderLabel = false;
         },
 
+        hasValue: function() {
+            return this.inputElement && this.inputElement.dom.value;
+        },
+
+        /**
+         * Performs any necessary manipulation of a raw String value to prepare
+         * it for conversion and/or
+         * {@link #validate validation}. For text fields this applies the configured
+         * {@link #stripCharsRe} to the raw value.
+         * @param {String} value The unprocessed string value
+         * @return {String} The processed string value
+         * @since 7.0
+         */
+        processRawValue: function(value) {
+            var me = this,
+                stripRe = me.stripCharsRe,
+                mod, newValue;
+
+            if (stripRe) {
+            // This will force all instances that match stripRe to be removed
+                if (!stripRe.global) {
+                    mod = 'g';
+                    mod += (stripRe.ignoreCase) ? 'i' : '';
+                    mod += (stripRe.multiline) ? 'm' : '';
+                    stripRe = new RegExp(stripRe.source, mod);
+                }
+
+                newValue = value.replace(stripRe, '');
+
+                if (newValue !== value) {
+
+                    if (!me.transformRawValue.$nullFn) {
+                        newValue = me.transformRawValue(newValue);
+                    }
+
+                    me.inputElement.dom.value = newValue;
+
+                    value = newValue;
+                }
+            }
+
+            return value;
+        },
+
         /**
          * Synchronizes the DOM to match the triggers' configured weight, side, and grouping
          * @private
          */
-        syncTriggers: function () {
+        syncTriggers: function() {
             var me = this,
                 triggers = me.getTriggers(),
                 beforeInputElement = me.beforeInputElement,
@@ -1288,7 +1408,7 @@ Ext.define('Ext.field.Text', {
                 beforeTriggers = [],
                 afterTriggers = [],
                 triggersByGroup = {},
-                TriggerBase = Ext.field.trigger['Base'],
+                TriggerBase = Ext.field.trigger['Base'], // eslint-disable-line dot-notation
                 name, trigger, groupName, triggerGroup, i, ln;
 
             for (name in triggers) {
@@ -1298,9 +1418,11 @@ Ext.define('Ext.field.Text', {
 
                 if (groupName) {
                     (triggersByGroup[groupName] || (triggersByGroup[groupName] = [])).push(trigger);
-                } else if (trigger.getSide() === 'left') {
+                }
+                else if (trigger.getSide() === 'left') {
                     beforeTriggers.push(trigger);
-                } else {
+                }
+                else {
                     afterTriggers.push(trigger);
                 }
             }
@@ -1309,7 +1431,8 @@ Ext.define('Ext.field.Text', {
                 triggerGroup = triggerGroups[groupName];
 
                 if (!triggerGroup) {
-                    triggerGroup = triggers[groupName]; // just in case the user configured a group trigger
+                    // In case the user configured a group trigger:
+                    triggerGroup = triggers[groupName];
 
                     if (!triggerGroup) {
                         triggerGroup = new TriggerBase();
@@ -1322,7 +1445,8 @@ Ext.define('Ext.field.Text', {
 
                 if (triggerGroup.getSide() === 'left') {
                     beforeTriggers.push(triggerGroup);
-                } else {
+                }
+                else {
                     afterTriggers.push(triggerGroup);
                 }
             }
@@ -1344,12 +1468,13 @@ Ext.define('Ext.field.Text', {
                     triggerGroup = triggerGroups[groupName];
                     triggerGroup.setTriggers(null);
                     triggerGroup.destroy();
+
                     delete triggerGroups[groupName];
                 }
             }
         },
 
-        syncEmptyState: function () {
+        syncEmptyState: function() {
             var me = this,
                 triggers = me.getTriggers(),
                 inputMask = me.getInputMask(),
@@ -1361,7 +1486,10 @@ Ext.define('Ext.field.Text', {
 
             if (clearTrigger) {
                 if (me.getClearable()) {
-                    if (value !== '' && !me.getDisabled() && !me.getReadOnly()) {
+                    // We will test the inputElement's raw value
+                    // Subclasses may have other ways to determine value presence.
+                    // eg: SelectFields.
+                    if (me.hasValue() && !me.getDisabled() && !me.getReadOnly()) {
                         visible = true;
                     }
 
@@ -1375,7 +1503,8 @@ Ext.define('Ext.field.Text', {
 
                 if (visible) {
                     clearTrigger.show();
-                } else {
+                }
+                else {
                     clearTrigger.hide();
                 }
             }
@@ -1399,16 +1528,28 @@ Ext.define('Ext.field.Text', {
             }
         }
     }
-},
-function() {
+
+}, function() {
     // Fix for android active field not scrolled into view when keyboard is shown
     if (Ext.os.is.Android) {
-        window.addEventListener('resize', function () {
+        window.addEventListener('resize', function() {
             var el = document.activeElement,
-                tag = el && el.tagName;
-            
+                tag = el && el.tagName,
+                focusedField, focusedDom;
+
             if (tag === 'INPUT' || tag === 'TEXTAREA') {
-                el.scrollIntoView();
+                focusedField = Ext.Component.from(el);
+                focusedDom = focusedField && focusedField.element && focusedField.element.dom;
+
+                // scroll field into view if it's needed
+                if (focusedDom) {
+                    if (focusedDom.scrollIntoViewIfNeeded) {
+                        focusedDom.scrollIntoViewIfNeeded();
+                    }
+                    else {
+                        focusedDom.scrollIntoView();
+                    }
+                }
             }
         });
     }

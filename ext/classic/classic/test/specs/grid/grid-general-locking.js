@@ -1,5 +1,3 @@
-/* global Ext, expect, spyOn, jasmine, xit, MockAjaxManager, it */
-
 topSuite("grid-general-locking",
     [false, 'Ext.grid.Panel', 'Ext.data.ArrayStore', 'Ext.layout.container.Border',
      'Ext.grid.plugin.CellEditing', 'Ext.form.field.Text'],
@@ -9,18 +7,22 @@ function() {
         proxyStoreLoad = Ext.data.ProxyStore.prototype.load,
         loadStore = function() {
             proxyStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         };
 
     function spyOnEvent(object, eventName, fn) {
         var obj = {
-            fn: fn || Ext.emptyFn
-        },
-        spy = spyOn(obj, "fn");
+                fn: fn || Ext.emptyFn
+            },
+            spy = spyOn(obj, "fn");
+
         object.addListener(eventName, obj.fn);
+
         return spy;
     }
 
@@ -56,8 +58,8 @@ function() {
         navModel = grid.getNavigationModel();
     }
 
-    describe("Locking configuration", function () {
-        beforeEach(function () {
+    describe("Locking configuration", function() {
+        beforeEach(function() {
             store = new Ext.data.ArrayStore({
                 data: [
                     [ 1, 'Lorem'],
@@ -68,8 +70,8 @@ function() {
             });
         });
 
-        describe("on init", function () {
-            beforeEach(function () {
+        describe("on init", function() {
+            beforeEach(function() {
                 createGrid({
                     enableColumnHide: true,
                     rowLines: true,
@@ -83,22 +85,22 @@ function() {
                 });
             });
 
-            it("should pass down configs to normalGrid", function () {
+            it("should pass down configs to normalGrid", function() {
                 expect(grid.enableColumnMove).toBe(false);
                 expect(grid.normalGrid.enableColumnMove).toBe(false);
             });
 
-            it("should pass down configs to lockedGrid", function () {
+            it("should pass down configs to lockedGrid", function() {
                 expect(grid.enableColumnMove).toBe(false);
                 expect(grid.lockedGrid.enableColumnMove).toBe(false);
             });
 
-            it("should not pass down configs specified in normalGridConfig", function () {
+            it("should not pass down configs specified in normalGridConfig", function() {
                 expect(grid.enableColumnHide).toBe(true);
                 expect(grid.normalGrid.enableColumnHide).toBe(false);
             });
 
-            it("should not pass down configs specified in lockedGridConfig", function () {
+            it("should not pass down configs specified in lockedGridConfig", function() {
                 expect(grid.rowLines).toBe(true);
                 expect(grid.lockedGrid.rowLines).toBe(false);
             });
@@ -106,7 +108,7 @@ function() {
             it("should set both sides with xtype gridpanel when creating form extended classes", function() {
                 grid.destroy();
 
-                Ext.define('BaseGrid',{
+                Ext.define('BaseGrid', {
                     extend: 'Ext.grid.Panel',
                     xtype: 'base-grid',
                     title: 'foo'
@@ -118,12 +120,12 @@ function() {
                     columns: [{
                         dataIndex: 'foo',
                         locked: true
-                    },{
-                        dataIndex:'bar'
+                    }, {
+                        dataIndex: 'bar'
                     }]
                 });
 
-                grid = Ext.create('MyGrid',{
+                grid = Ext.create('MyGrid', {
                     renderTo: document.body,
                     store: {
                         data: {
@@ -141,12 +143,12 @@ function() {
             });
         });
 
-        describe("when stateful", function () {
-            afterEach(function () {
+        describe("when stateful", function() {
+            afterEach(function() {
                 Ext.state.Manager.set(grid.getStateId(), null);
             });
 
-            describe("retaining state across page loads", function () {
+            describe("retaining state across page loads", function() {
                 function makeGrid(stateId) {
                     createGrid({
                         columns: [{
@@ -178,41 +180,91 @@ function() {
                 function testStateId(stateId) {
                     var maybe = !!stateId ? '' : 'not';
 
-                    describe("when columns are " + maybe + ' configured with a stateId', function () {
+                    describe("when columns are " + maybe + ' configured with a stateId', function() {
                         function testLockingPartner(which) {
-                            describe(which + ' locking partner', function () {
+                            describe(which + ' locking partner', function() {
                                 var partner = which + 'Grid';
 
-                                beforeEach(function () {
+                                beforeEach(function() {
                                     makeGrid(stateId);
                                 });
 
-                                it("should retain column width", function () {
-                                    grid[partner].columnManager.getColumns()[0].setWidth(250);
-                                    saveAndRecreate(stateId);
+                                it("should retain column width", function() {
+                                    var columnManager = grid[partner].columnManager;
 
-                                    expect(grid[partner].columnManager.getColumns()[0].getWidth()).toBe(250);
+                                    waitsFor(function() {
+                                        return columnManager.getColumns()[0];
+                                    });
+                                    runs(function() {
+                                        columnManager.getColumns()[0].setWidth(250);
+                                        saveAndRecreate(stateId);
+                                        columnManager = grid[partner].columnManager;
+                                    });
+
+                                    waitsFor(function() {
+                                        return columnManager.getColumns()[0];
+                                    });
+
+                                    runs(function() {
+                                        expect(columnManager.getColumns()[0].getWidth()).toBe(250);
+                                    });
+
                                 });
 
-                                it("should retain column visibility", function () {
-                                    grid[partner].columnManager.getColumns()[0].hide();
-                                    saveAndRecreate(stateId);
+                                it("should retain column visibility", function() {
+                                    var columnManager = grid[partner].columnManager;
 
-                                    expect(grid[partner].columnManager.getColumns()[0].hidden).toBe(true);
+                                    waitsFor(function() {
+                                        return columnManager.getColumns()[0];
+                                    });
+
+                                    runs(function() {
+                                        columnManager.getColumns()[0].hide();
+                                        saveAndRecreate(stateId);
+                                        columnManager = grid[partner].columnManager;
+                                    });
+
+                                    waitsFor(function() {
+                                        return columnManager.getColumns()[0];
+                                    });
+
+                                    runs(function() {
+                                        expect(columnManager.getColumns()[0].hidden).toBe(true);
+                                    });
                                 });
 
-                                it("should retain the column sort", function () {
-                                    var column = grid[partner].columnManager.getColumns()[0];
+                                it("should retain the column sort", function() {
+                                    var columnManager = grid[partner].columnManager,
+                                        column;
 
-                                    column.sort();
-                                    expect(column.sortState).toBe('ASC');
+                                    waitsFor(function() {
+                                        return columnManager.getColumns()[0];
+                                    });
 
-                                    // Let's sort again.
-                                    column.sort();
+                                    runs(function() {
+                                        column = columnManager.getColumns()[0];
+                                        column.sort();
+                                    });
 
-                                    saveAndRecreate(stateId);
+                                    waitsFor(function() {
+                                        return column.sortState;
+                                    });
 
-                                    expect(grid[partner].columnManager.getColumns()[0].sortState).toBe('DESC');
+                                    runs(function() {
+                                        expect(column.sortState).toBe('ASC');
+                                        // Let's sort again.
+                                        column.sort();
+                                        saveAndRecreate(stateId);
+                                        columnManager = grid[partner].columnManager;
+                                    });
+
+                                    waitsFor(function() {
+                                        return columnManager.getColumns()[0] && columnManager.getColumns()[0].sortState;
+                                    });
+
+                                    runs(function() {
+                                        expect(columnManager.getColumns()[0].sortState).toBe('DESC');
+                                    });
                                 });
 
                                 it("should restore state when columns are moved between sides", function() {
@@ -241,7 +293,7 @@ function() {
                 testStateId(null);
             });
         });
-        
+
         describe('border layout locking', function() {
             var GridEventModel = Ext.define(null, {
                 extend: 'Ext.data.Model',
@@ -261,11 +313,11 @@ function() {
             lockedGrid, lockedView,
             normalGrid, normalView;
 
-            function makeGrid(lockedColumnCount, cfg, lockedGridConfig, normalGridConfig) {               
+            function makeGrid(lockedColumnCount, cfg, lockedGridConfig, normalGridConfig) {
                 var data = [],
                     defaultCols = [],
                     i;
-                    
+
                 for (i = 1; i <= 10; ++i) {
                     defaultCols.push({
                         text: 'F' + i,
@@ -288,12 +340,12 @@ function() {
                         field10: i + '.' + 10
                     });
                 }
-                
+
                 store = new Ext.data.Store({
                     model: GridEventModel,
                     data: data
                 });
-                
+
                 grid = new Ext.grid.Panel(Ext.apply({
                     columns: defaultCols,
                     store: store,
@@ -371,7 +423,7 @@ function() {
             (Ext.getScrollbarSize().height ? describe : xdescribe)("collpasing and expanding", function() {
                 it("should display the scroller if needed", function() {
                     var spy = jasmine.createSpy();
-                    
+
                     makeGrid(2, null, {
                         width: 100,
                         collapsible: true,
@@ -405,7 +457,7 @@ function() {
 
                 it("should display the scroller if need and the normal side continued to be scrollable during expand/collapse", function() {
                     var spy = jasmine.createSpy();
-                    
+
                     makeGrid(2, {
                         width: 400
                     }, {
@@ -416,7 +468,6 @@ function() {
                             collapse: spy
                         }
                     });
-
 
                     grid.lockedGrid.collapse();
 
@@ -479,7 +530,7 @@ function() {
     });
 
     describe('Focusing the view el, not a cell', function() {
-        Ext.isIE8 ? xit: it('should move to the same row on the other side', function() {
+        (Ext.isIE8 ? xit : it)('should move to the same row on the other side', function() {
             var errorSpy = jasmine.createSpy('error handler'),
                 old = window.onError;
 
@@ -543,26 +594,38 @@ function() {
         });
     });
 
+    describe("enable/disable", function() {
+        it("should be able to enable a grid that was initially disabled", function() {
+            createGrid({
+                disabled: true
+            });
+
+            grid.enable();
+
+            expect(grid.el.down('.x-mask').isVisible(true)).toBeFalsy();
+        });
+    });
+
     describe("scrolling", function() {
         beforeEach(function() {
             store = new Ext.data.Store({
                 fields: ['name', 'email', 'phone'],
                 data: [
-                { name: 'Lisa',  email: 'lisa@simpsons.com',  phone: '555-111-1224' }, 
-                { name: 'Bart',  email: 'bart@simpsons.com',  phone: '555-222-1234' }, 
-                { name: 'Homer', email: 'homer@simpsons.com', phone: '555-222-1244' }, 
+                { name: 'Lisa',  email: 'lisa@simpsons.com',  phone: '555-111-1224' },
+                { name: 'Bart',  email: 'bart@simpsons.com',  phone: '555-222-1234' },
+                { name: 'Homer', email: 'homer@simpsons.com', phone: '555-222-1244' },
                 { name: 'Marge', email: 'marge@simpsons.com', phone: '555-222-1254' },
-                { name: 'Lisa',  email: 'lisa@simpsons.com',  phone: '555-111-1224' }, 
-                { name: 'Bart',  email: 'bart@simpsons.com',  phone: '555-222-1234' }, 
-                { name: 'Homer', email: 'homer@simpsons.com', phone: '555-222-1244' }, 
+                { name: 'Lisa',  email: 'lisa@simpsons.com',  phone: '555-111-1224' },
+                { name: 'Bart',  email: 'bart@simpsons.com',  phone: '555-222-1234' },
+                { name: 'Homer', email: 'homer@simpsons.com', phone: '555-222-1244' },
                 { name: 'Marge', email: 'marge@simpsons.com', phone: '555-222-1254' },
-                { name: 'Lisa',  email: 'lisa@simpsons.com',  phone: '555-111-1224' }, 
-                { name: 'Bart',  email: 'bart@simpsons.com',  phone: '555-222-1234' }, 
-                { name: 'Homer', email: 'homer@simpsons.com', phone: '555-222-1244' }, 
+                { name: 'Lisa',  email: 'lisa@simpsons.com',  phone: '555-111-1224' },
+                { name: 'Bart',  email: 'bart@simpsons.com',  phone: '555-222-1234' },
+                { name: 'Homer', email: 'homer@simpsons.com', phone: '555-222-1244' },
                 { name: 'Marge', email: 'marge@simpsons.com', phone: '555-222-1254' },
-                { name: 'Lisa',  email: 'lisa@simpsons.com',  phone: '555-111-1224' }, 
-                { name: 'Bart',  email: 'bart@simpsons.com',  phone: '555-222-1234' }, 
-                { name: 'Homer', email: 'homer@simpsons.com', phone: '555-222-1244' }, 
+                { name: 'Lisa',  email: 'lisa@simpsons.com',  phone: '555-111-1224' },
+                { name: 'Bart',  email: 'bart@simpsons.com',  phone: '555-222-1234' },
+                { name: 'Homer', email: 'homer@simpsons.com', phone: '555-222-1244' },
                 { name: 'Marge', email: 'marge@simpsons.com', phone: '555-222-1254' }
                 ]
             });
@@ -590,8 +653,6 @@ function() {
                 width: 400
             });
 
-
-
             scroller = grid.getScrollable();
             scroller.scrollTo(null, 100);
             scroller.scrollTo(100, null);
@@ -600,7 +661,7 @@ function() {
                 return scroller.position.y === scroller.position.x && scroller.position.y === 100;
             });
 
-            runs(function(){ 
+            runs(function() {
                 cell = grid.normalGrid.view.getCell(7, 0);
                 jasmine.fireMouseEvent(cell, 'mousedown');
             });
@@ -611,19 +672,67 @@ function() {
             runs(function() {
                 expect(scroller.getPosition().y).toBe(100);
                 // finish the click to avoid even publisher leaks
-                jasmine.fireMouseEvent(cell, 'mouseup'); 
+                jasmine.fireMouseEvent(cell, 'mouseup');
+            });
+        });
+
+        it("should not change scroll position when bufferedRenderer is false", function() {
+            var scroller,
+                cell;
+
+             createGrid({
+                bufferedRenderer: false,
+                columns: [{
+                    text: 'Name',
+                    dataIndex: 'name',
+                    locked: true
+                }, {
+                    text: 'Email',
+                    dataIndex: 'email',
+                    width: 300
+                }, {
+                    text: 'Phone',
+                    dataIndex: 'phone',
+                    width: 300
+                }],
+                height: 200,
+                width: 400
+            });
+
+            scroller = grid.getScrollable();
+            scroller.scrollTo(null, 100);
+            scroller.scrollTo(100, null);
+
+             waitsFor(function() {
+                return scroller.position.y === scroller.position.x && scroller.position.y === 100;
+            });
+
+             runs(function() {
+                cell = grid.normalGrid.view.getCell(7, 0);
+                jasmine.fireMouseEvent(cell, 'mousedown');
+            });
+
+             grid.updateLayout();
+
+             // Need waits here because we are waitign for the scroller not to move
+            waits(100);
+
+             runs(function() {
+                expect(scroller.getPosition().y).toBe(100);
+                // finish the click to avoid even publisher leaks
+                jasmine.fireMouseEvent(cell, 'mouseup');
             });
         });
     });
-    
-    describe('View focus from cell editor', function () {
-        it('should set position to the closest cell', function () {
+
+    describe('View focus from cell editor', function() {
+        it('should set position to the closest cell', function() {
             var rowIdx = 0,
                 colIdx = 2,
                 editor, editorActive, position,
                 record, cellEl, cellRegion, viewRegion,
                 x, y;
-    
+
             store = new Ext.data.ArrayStore({
                 data: [
                     [ 1, 'Lorem'],
@@ -632,12 +741,12 @@ function() {
                 ],
                 fields: ['row', 'lorem']
             });
-            
+
             createGrid({
                 plugins: [{
                     ptype: 'cellediting',
                     listeners: {
-                        beforeedit: function () {
+                        beforeedit: function() {
                             editorActive = true;
                         }
                     }
@@ -656,52 +765,52 @@ function() {
                     editor: 'textfield'
                 }]
             });
-            
+
             view = grid.normalGrid.view;
             editor = grid.findPlugin('cellediting');
             navModel = grid.normalGrid.getNavigationModel();
             record = store.getAt(0);
-            
-            editor.startEditByPosition({row: rowIdx, column: colIdx});
-    
-            waitFor(function () {
+
+            editor.startEditByPosition({ row: rowIdx, column: colIdx });
+
+            waitFor(function() {
                 return editorActive;
             });
-    
-            run(function () {
-                cellEl = view.getCell(record, colIdx-1, true);
+
+            runs(function() {
+                cellEl = view.getCell(record, colIdx - 1, true);
                 cellRegion = cellEl.getRegion();
                 viewRegion = view.getRegion();
-                
+
                 // get the XY position in the middle between the grid cell and the
                 // bottom of the view
                 x = (cellRegion.left + cellRegion.right) / 2;
                 y = (cellRegion.bottom + viewRegion.bottom) / 2;
-                
+
                 // mousedown in the view container below the cell being edited
                 jasmine.fireMouseEvent(view, 'mousedown', x, y);
                 position = navModel.getPosition();
                 jasmine.fireMouseEvent(view, 'mouseup', x, y);
-                
+
                 // position should remain on the same cell
                 expect({
                     rowIdx: position.rowIdx,
-                    colIdx: position.colIdx}).
-                toEqual({
+                    colIdx: position.colIdx })
+                .toEqual({
                     rowIdx: rowIdx,
                     colIdx: --colIdx
                 });
-                
+
                 // mousedown below the cell to the left
                 jasmine.fireMouseEvent(view.el, 'mousedown', x - cellRegion.width, y);
                 position = navModel.getPosition();
                 jasmine.fireMouseEvent(view.el, 'mouseup', x - cellRegion.width, y);
-    
+
                 // position should be moved to the cell to the left
                 expect({
                     rowIdx: position.rowIdx,
-                    colIdx: position.colIdx}).
-                toEqual({
+                    colIdx: position.colIdx })
+                .toEqual({
                     rowIdx: rowIdx,
                     colIdx: --colIdx
                 });

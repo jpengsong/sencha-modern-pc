@@ -41,15 +41,15 @@
 Ext.define('Ext.app.ViewController', {
     extend: 'Ext.app.BaseController',
     alias: 'controller.controller',
-    
+
     requires: [
         'Ext.app.domain.View'
     ],
-    
+
     mixins: [
         'Ext.mixin.Factoryable'
     ],
-    
+
     isViewController: true,
 
     /**
@@ -88,7 +88,7 @@ Ext.define('Ext.app.ViewController', {
          *          },
          *
          *          onProductChange: function(productInfo) {
-         *              console.log('Amount: ', productInfo.amount, ' Rating: ', productInfo.rating);
+         *              console.log('Amount: ', productInfo.amount,' Rating: ', productInfo.rating);
          *          }
          *     });
          *
@@ -147,8 +147,10 @@ Ext.define('Ext.app.ViewController', {
 
         if (me.$hasBinds) {
             bind = me.getBindings();
+
             for (key in bind) {
                 b = bind[key];
+
                 if (b) {
                     b.destroy();
                 }
@@ -159,6 +161,7 @@ Ext.define('Ext.app.ViewController', {
             domain.unlisten(me);
             domain.destroy();
         }
+
         me.compDomain = me.view = null;
         me.callParent();
     },
@@ -170,7 +173,7 @@ Ext.define('Ext.app.ViewController', {
      * It is common for views to map one or more events to this method to allow the view
      * to be closed.
      */
-    closeView: function () {
+    closeView: function() {
         var view = this.getView(),
             action;
 
@@ -182,6 +185,7 @@ Ext.define('Ext.app.ViewController', {
 
     control: function(selectors, listeners) {
         var obj = selectors;
+
         if (Ext.isString(selectors)) {
             obj = {};
             obj[selectors] = listeners;
@@ -189,14 +193,16 @@ Ext.define('Ext.app.ViewController', {
 
         this.compDomain.listen(obj, this);
     },
-    
+
     listen: function(to, controller) {
         var component = to.component;
+
         if (component) {
             to = Ext.apply({}, to);
             delete to.component;
             this.control(component);
         }
+
         this.callParent([to, controller]);
     },
 
@@ -204,6 +210,7 @@ Ext.define('Ext.app.ViewController', {
         if (!id) {
             id = Ext.id(null, 'controller-');
         }
+
         return id;
     },
 
@@ -212,8 +219,9 @@ Ext.define('Ext.app.ViewController', {
      * @inheritdoc Ext.mixin.Container#method!getReferences
      * @since 5.0.0
      */
-    getReferences: function () {
+    getReferences: function() {
         var view = this.view;
+
         return view && view.getReferences();
     },
 
@@ -235,8 +243,9 @@ Ext.define('Ext.app.ViewController', {
      * @return {Ext.Component} The component, `null` if the reference doesn't exist.
      * @since 6.0.1
      */
-    lookup: function (key) {
+    lookup: function(key) {
         var view = this.view;
+
         return view && view.lookup(key);
     },
 
@@ -250,7 +259,7 @@ Ext.define('Ext.app.ViewController', {
      * @return {Ext.Component} The component, `null` if the reference doesn't exist.
      * @since 5.0.0
      */
-    lookupReference: function (key) {
+    lookupReference: function(key) {
         return this.lookup(key);
     },
 
@@ -262,8 +271,9 @@ Ext.define('Ext.app.ViewController', {
      *
      * @since 5.0.0
      */
-    getSession: function () {
+    getSession: function() {
         var view = this.view;
+
         return view && view.lookupSession();
     },
 
@@ -275,8 +285,9 @@ Ext.define('Ext.app.ViewController', {
      *
      * @since 5.0.0
      */
-    getViewModel: function () {
+    getViewModel: function() {
         var view = this.view;
+
         return view && view.lookupViewModel();
     },
 
@@ -291,6 +302,7 @@ Ext.define('Ext.app.ViewController', {
      */
     getStore: function(name) {
         var viewModel = this.getViewModel();
+
         return viewModel ? viewModel.getStore(name) : null;
     },
 
@@ -298,10 +310,11 @@ Ext.define('Ext.app.ViewController', {
      * Fires an event on the view. See {@link Ext.Component#fireEvent}.
      * @param {String} eventName The name of the event to fire.
      * @param {Object...} args Variable number of parameters are passed to handlers.
-     * @return {Boolean} returns false if any of the handlers return false otherwise it returns true.
+     * @return {Boolean} returns false if any of the handlers return false otherwise it returns
+     * true.
      * @protected
      */
-    fireViewEvent: function (eventName, args) {
+    fireViewEvent: function(eventName, args) {
         var view = this.view,
             result = false,
             a = arguments;
@@ -329,12 +342,14 @@ Ext.define('Ext.app.ViewController', {
             return null;
         }
 
+        /* eslint-disable-next-line vars-on-top */
         var me = this,
             viewModel = me.getViewModel(),
             getBindTemplateScope = me.getBindTemplateScope(),
             b, fn, descriptor;
 
         me.$hasBinds = true;
+
         //<debug>
         if (!viewModel) {
             Ext.raise('Cannot use bind config without a viewModel');
@@ -349,6 +364,7 @@ Ext.define('Ext.app.ViewController', {
                 b = viewModel.bind(descriptor, fn, me);
                 b.getTemplateScope = getBindTemplateScope;
             }
+
             bindings[fn] = b;
         }
 
@@ -364,8 +380,9 @@ Ext.define('Ext.app.ViewController', {
          * @param {Ext.Component} component The component to reference
          * @private
          */
-        attachReference: function (component) {
+        attachReference: function(component) {
             var view = this.view;
+
             if (view) {
                 view.attachReference(component);
             }

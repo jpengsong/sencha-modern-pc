@@ -1,6 +1,10 @@
 {
-    "name": "@extjs/ext-react-theme-ios",
-    "version": "6.5.3.57",
+    "name": "@extjs/ext-modern-theme-ios",
+    "ext-react-name": "@extjs/ext-react-modern-theme-ios",
+    "ext-name": "@extjs/ext-modern-theme-ios",
+    "SenchaExtName": "@sencha/ext-modern-theme-ios",
+    "SenchaExtReactName": "@sencha/ext-react-modern-theme-ios",
+    "version": "7.0.0.156",
     "sencha": {
         "name": "theme-ios",
         "namespace": "Ext",
@@ -10,8 +14,8 @@
         "creator": "Sencha",
         "summary": "Ext JS iOS Theme",
         "detailedDescription": "A modern-toolkit theme that emulates the native look and feel of iOS",
-        "version": "6.5.3.57",
-        "compatVersion": "6.2.0",
+        "version": "7.0.0.156",
+        "compatVersion": "7.0.0",
         "format": "1",
         "output": "${workspace.subpkg.prefix}/${package.name}",
         "local": true,

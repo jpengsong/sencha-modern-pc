@@ -1,15 +1,20 @@
 /**
- * A ListItem is a container for {@link Ext.dataview.List} with 
- * useSimpleItems: false. 
+ * A ListItem is a container for {@link Ext.dataview.List}.
  * 
  * ListItem configures and updates the {@link Ext.data.Model records} for  
  * the sub-component items in a list. 
  *
  * *Note*: Use of ListItem increases overhead since it generates more markup than
- * using the List class with useSimpleItems: true. This overhead is more
- * noticeable in Internet Explorer. If at all possible, use
- * {@link Ext.dataview.SimpleListItem} instead via the List's
- * {@link Ext.dataview.List#useSimpleItems useSimpleItems} config.
+ * using the `SimpleListItem`. This overhead is more noticeable in Internet Explorer. If
+ * possible, use the default {@link Ext.dataview.SimpleListItem}. To use the additional
+ * features of this class, use the {@link Ext.dataview.List#itemConfig itemConfig} config:
+ *
+ *      {
+ *          xtype: 'list',
+ *          itemConfig: {
+ *              xtype: 'listitem'
+ *          }
+ *      }
  *
  * The following example shows how to configure and update sub-component items
  * in a list:
@@ -94,7 +99,7 @@ Ext.define('Ext.dataview.ListItem', {
 
         if (!me.destroying && !me.destroyed) {
             me.callParent([record]);
-            
+
             me.syncDisclosure(record);
         }
     },
@@ -105,7 +110,7 @@ Ext.define('Ext.dataview.ListItem', {
     },
 
     privates: {
-        invokeToolHandler: function (tool, handler, scope, args, e) {
+        invokeToolHandler: function(tool, handler, scope, args, e) {
             if (this.invokeDisclosure(tool, handler, e)) {
                 return false;
             }

@@ -12,7 +12,8 @@
  *          plugins: {
  *              sortablelist: true
  *          },
- *          itemTpl: '<span class="myStyle ' + Ext.baseCSSPrefix + 'list-sortablehandle"></span>{text}',
+ *          itemTpl: '<span class="myStyle ' + Ext.baseCSSPrefix + 'list-sortablehandle">' +
+ *                   '</span>{text}',
  *          data: [{
  *              text: 'Item 1'
  *          }, {
@@ -71,6 +72,7 @@ Ext.define('Ext.dataview.plugin.SortableList', {
 
         if (list) {
             source = this.getSource();
+
             if (source) {
                 source.list = list;
                 source.setElement(list.getRenderTarget());
@@ -82,6 +84,7 @@ Ext.define('Ext.dataview.plugin.SortableList', {
         if (source) {
             source = Ext.create(source);
         }
+
         return source;
     },
 
@@ -142,17 +145,17 @@ Ext.define('Ext.dataview.plugin.SortableList', {
             item = info.item,
             style = info.item.el.dom.style,
             compareItem = list.mapToItem(info.index),
-            top, pos;
+            top, pos, store, startIndex, index, rec;
 
         item.getTranslatable().on('animationend', function() {
             if (me.destroyed) {
                 return;
             }
 
-            var store = list.getStore(),
-                startIndex = info.startIndex,
-                index = compareItem ? compareItem.getRecordIndex() : list.getStore().getCount(),
-                rec = item.getRecord();
+            store = list.getStore();
+            startIndex = info.startIndex;
+            index = compareItem ? compareItem.getRecordIndex() : list.getStore().getCount();
+            rec = item.getRecord();
 
             list.stickItem(item);
             list.setGaps(null);
@@ -165,12 +168,14 @@ Ext.define('Ext.dataview.plugin.SortableList', {
                 item = list.mapToItem(rec);
                 list.fireEvent('dragsort', list, item, index);
             }
+
             item.removeCls(Ext.baseCSSPrefix + 'item-no-ripple');
-        }, me, {single: true});
+        }, me, { single: true });
 
         if (!compareItem) {
             pos = list.mapToItem(info.index - 1).$y1;
-        } else {
+        }
+        else {
             pos = compareItem.$y0;
         }
 
@@ -178,6 +183,6 @@ Ext.define('Ext.dataview.plugin.SortableList', {
         top = item.element.getTop(true);
         style.left = style.top = '';
         item.translate(0, top);
-        item.translate(null, pos, {duration: 100});
+        item.translate(null, pos, { duration: 100 });
     }
 });

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * @class Ext.chart.interactions.Rotate
  * @extends Ext.chart.interactions.Abstract
@@ -36,6 +37,7 @@
  *         }
  *     });
  */
+/* eslint-enable max-len */
 Ext.define('Ext.chart.interactions.Rotate', {
     extend: 'Ext.chart.interactions.Abstract',
 
@@ -94,7 +96,8 @@ Ext.define('Ext.chart.interactions.Rotate', {
 
         /**
          * @cfg {Number} rotation
-         * Saves the current rotation of the series. Accepts negative values and values > 360 ( / 180 * Math.PI)
+         * Saves the current rotation of the series. Accepts negative values
+         * and values > 360 ( / 180 * Math.PI)
          * @private
          */
         rotation: 0
@@ -102,7 +105,7 @@ Ext.define('Ext.chart.interactions.Rotate', {
 
     oldRotations: null,
 
-    getAngle: function (e) {
+    getAngle: function(e) {
         var me = this,
             chart = me.getChart(),
             xy = chart.getEventXY(e),
@@ -114,7 +117,7 @@ Ext.define('Ext.chart.interactions.Rotate', {
         );
     },
 
-    onGestureStart: function (e) {
+    onGestureStart: function(e) {
         var me = this;
 
         e.claimGesture();
@@ -128,12 +131,13 @@ Ext.define('Ext.chart.interactions.Rotate', {
         return false;
     },
 
-    onGesture: function (e) {
+    onGesture: function(e) {
         var me = this,
             angle = me.getAngle(e) - me.angle;
 
         if (me.getLocks().drag === me) {
             me.doRotateTo(angle, true);
+
             return false;
         }
     },
@@ -141,7 +145,7 @@ Ext.define('Ext.chart.interactions.Rotate', {
     /**
      * @private
      */
-    doRotateTo: function (angle, relative) {
+    doRotateTo: function(angle, relative) {
         var me = this,
             chart = me.getChart(),
             axes = chart.getAxes(),
@@ -165,7 +169,7 @@ Ext.define('Ext.chart.interactions.Rotate', {
             id = series.getId();
             oldRotation = oldRotations[id] || (oldRotations[id] = series.getRotation());
             // Unline axis's 'rotation', Polar series' 'rotation' is a public config and in degrees.
-            rotation = Ext.draw.Draw.degrees( angle + (relative ? oldRotation : 0) );
+            rotation = Ext.draw.Draw.degrees(angle + (relative ? oldRotation : 0));
 
             series.setRotation(rotation);
         }
@@ -180,10 +184,11 @@ Ext.define('Ext.chart.interactions.Rotate', {
     /**
      * Rotates a polar chart about its center point to the specified angle.
      * @param {Number} angle The angle to rotate to.
-     * @param {Boolean} [relative=false] Whether the rotation is relative to the current angle or not.
+     * @param {Boolean} [relative=false] Whether the rotation is relative to the current angle
+     * or not.
      * @param {Boolean} [animate=false] Whether to animate the rotation or not.
      */
-    rotateTo: function (angle, relative, animate) {
+    rotateTo: function(angle, relative, animate) {
         var me = this,
             chart = me.getChart();
 
@@ -199,7 +204,7 @@ Ext.define('Ext.chart.interactions.Rotate', {
         }
     },
 
-    onGestureEnd: function (e) {
+    onGestureEnd: function(e) {
         var me = this;
 
         if (me.getLocks().drag === me) {
@@ -212,5 +217,4 @@ Ext.define('Ext.chart.interactions.Rotate', {
             return false;
         }
     }
-
 });

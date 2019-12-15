@@ -1,4 +1,4 @@
-describe('Ext.panel.Panel_layout', function () {
+topSuite('Ext.panel.Panel_layout', [false, 'Ext.Panel'], function() {
     var shortText = 'MMMMMMMM',
         mediumText = 'MMMMMMMMMMMMMMMMMMMM',
         longText = 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
@@ -43,7 +43,7 @@ describe('Ext.panel.Panel_layout', function () {
         document.body.removeChild(el);
     });
 
-    beforeEach(function () {
+    beforeEach(function() {
         Ext.util.CSS.createStyleSheet(
             // make the title text el have a 6px character width so we get the same
             // measurements across all browsers
@@ -52,7 +52,7 @@ describe('Ext.panel.Panel_layout', function () {
         );
     });
 
-    afterEach(function () {
+    afterEach(function() {
         Ext.util.CSS.removeStyleSheet('panelTitleStyleSheet');
 
         panel = Ext.destroy(panel);
@@ -64,12 +64,12 @@ describe('Ext.panel.Panel_layout', function () {
         beforeEach(function() {
             width = height = 200;
         });
-        
+
         describe('short text', function() {
             beforeEach(function() {
                 title = shortText;
             });
-            
+
             describe('headerPosition: top', function() {
                 it('should layout with titleAlign: left and iconAlign: left', function() {
                     create({
@@ -96,7 +96,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: top', function () {
+                it('should layout with titleAlign: left and iconAlign: top', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'left',
@@ -121,7 +121,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: right', function () {
+                it('should layout with titleAlign: left and iconAlign: right', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'left',
@@ -146,7 +146,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: bottom', function () {
+                it('should layout with titleAlign: left and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'left',
@@ -171,7 +171,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: left', function () {
+                it('should layout with titleAlign: center and iconAlign: left', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'center',
@@ -196,7 +196,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: top', function () {
+                it('should layout with titleAlign: center and iconAlign: top', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'center',
@@ -221,7 +221,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: right', function () {
+                it('should layout with titleAlign: center and iconAlign: right', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'center',
@@ -246,7 +246,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: bottom', function () {
+                it('should layout with titleAlign: center and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'center',
@@ -271,7 +271,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: left', function () {
+                it('should layout with titleAlign: right and iconAlign: left', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'right',
@@ -296,7 +296,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: top', function () {
+                it('should layout with titleAlign: right and iconAlign: top', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'right',
@@ -321,7 +321,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: right', function () {
+                it('should layout with titleAlign: right and iconAlign: right', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'right',
@@ -346,7 +346,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: bottom', function () {
+                it('should layout with titleAlign: right and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'right',
@@ -372,12 +372,12 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            describe('headerPosition: right', function () {
+            describe('headerPosition: right', function() {
                 beforeEach(function() {
                     width = height = 200;
                 });
 
-                it('should layout with titleAlign: left and iconAlign: left', function () {
+                it('should layout with titleAlign: left and iconAlign: left', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'left',
@@ -402,7 +402,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: top', function () {
+                it('should layout with titleAlign: left and iconAlign: top', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'left',
@@ -427,7 +427,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: right', function () {
+                it('should layout with titleAlign: left and iconAlign: right', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'left',
@@ -452,7 +452,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: bottom', function () {
+                it('should layout with titleAlign: left and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'left',
@@ -477,7 +477,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: left', function () {
+                it('should layout with titleAlign: center and iconAlign: left', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'center',
@@ -502,7 +502,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: top', function () {
+                it('should layout with titleAlign: center and iconAlign: top', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'center',
@@ -527,7 +527,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: right', function () {
+                it('should layout with titleAlign: center and iconAlign: right', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'center',
@@ -552,7 +552,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: bottom', function () {
+                it('should layout with titleAlign: center and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'center',
@@ -577,7 +577,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: left', function () {
+                it('should layout with titleAlign: right and iconAlign: left', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'right',
@@ -602,7 +602,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: top', function () {
+                it('should layout with titleAlign: right and iconAlign: top', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'right',
@@ -627,7 +627,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: right', function () {
+                it('should layout with titleAlign: right and iconAlign: right', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'right',
@@ -652,7 +652,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: bottom', function () {
+                it('should layout with titleAlign: right and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'right',
@@ -704,7 +704,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: top', function () {
+                it('should layout with titleAlign: left and iconAlign: top', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'left',
@@ -729,7 +729,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: right', function () {
+                it('should layout with titleAlign: left and iconAlign: right', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'left',
@@ -754,7 +754,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: bottom', function () {
+                it('should layout with titleAlign: left and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'left',
@@ -779,7 +779,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: left', function () {
+                it('should layout with titleAlign: center and iconAlign: left', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'center',
@@ -804,7 +804,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: top', function () {
+                it('should layout with titleAlign: center and iconAlign: top', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'center',
@@ -829,7 +829,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: right', function () {
+                it('should layout with titleAlign: center and iconAlign: right', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'center',
@@ -854,7 +854,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: bottom', function () {
+                it('should layout with titleAlign: center and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'center',
@@ -879,7 +879,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: left', function () {
+                it('should layout with titleAlign: right and iconAlign: left', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'right',
@@ -904,7 +904,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: top', function () {
+                it('should layout with titleAlign: right and iconAlign: top', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'right',
@@ -929,7 +929,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: right', function () {
+                it('should layout with titleAlign: right and iconAlign: right', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'right',
@@ -954,7 +954,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: bottom', function () {
+                it('should layout with titleAlign: right and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'right',
@@ -980,8 +980,8 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            describe('headerPosition: left', function () {
-                it('should layout with titleAlign: left and iconAlign: left', function () {
+            describe('headerPosition: left', function() {
+                it('should layout with titleAlign: left and iconAlign: left', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'left',
@@ -1006,7 +1006,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: top', function () {
+                it('should layout with titleAlign: left and iconAlign: top', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'left',
@@ -1031,7 +1031,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: right', function () {
+                it('should layout with titleAlign: left and iconAlign: right', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'left',
@@ -1056,7 +1056,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: bottom', function () {
+                it('should layout with titleAlign: left and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'left',
@@ -1081,7 +1081,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: left', function () {
+                it('should layout with titleAlign: center and iconAlign: left', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'center',
@@ -1106,7 +1106,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: top', function () {
+                it('should layout with titleAlign: center and iconAlign: top', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'center',
@@ -1131,7 +1131,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: right', function () {
+                it('should layout with titleAlign: center and iconAlign: right', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'center',
@@ -1156,7 +1156,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: bottom', function () {
+                it('should layout with titleAlign: center and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'center',
@@ -1181,7 +1181,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: left', function () {
+                it('should layout with titleAlign: right and iconAlign: left', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'right',
@@ -1206,7 +1206,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: top', function () {
+                it('should layout with titleAlign: right and iconAlign: top', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'right',
@@ -1231,7 +1231,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: right', function () {
+                it('should layout with titleAlign: right and iconAlign: right', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'right',
@@ -1256,7 +1256,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: bottom', function () {
+                it('should layout with titleAlign: right and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'right',
@@ -1284,12 +1284,12 @@ describe('Ext.panel.Panel_layout', function () {
         });
 
         describe('long text', function() {
-            beforeEach(function () {
+            beforeEach(function() {
                 title = longText;
             });
 
-            describe('headerPosition: top', function () {
-                it('should layout with titleAlign: left and iconAlign: left', function () {
+            describe('headerPosition: top', function() {
+                it('should layout with titleAlign: left and iconAlign: left', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'left',
@@ -1314,7 +1314,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: top', function () {
+                it('should layout with titleAlign: left and iconAlign: top', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'left',
@@ -1339,7 +1339,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: right', function () {
+                it('should layout with titleAlign: left and iconAlign: right', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'left',
@@ -1364,7 +1364,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: bottom', function () {
+                it('should layout with titleAlign: left and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'left',
@@ -1389,7 +1389,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: left', function () {
+                it('should layout with titleAlign: center and iconAlign: left', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'center',
@@ -1414,7 +1414,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: top', function () {
+                it('should layout with titleAlign: center and iconAlign: top', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'center',
@@ -1439,7 +1439,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: right', function () {
+                it('should layout with titleAlign: center and iconAlign: right', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'center',
@@ -1464,7 +1464,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: bottom', function () {
+                it('should layout with titleAlign: center and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'center',
@@ -1489,7 +1489,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: left', function () {
+                it('should layout with titleAlign: right and iconAlign: left', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'right',
@@ -1514,7 +1514,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: top', function () {
+                it('should layout with titleAlign: right and iconAlign: top', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'right',
@@ -1539,7 +1539,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: right', function () {
+                it('should layout with titleAlign: right and iconAlign: right', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'right',
@@ -1564,7 +1564,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: bottom', function () {
+                it('should layout with titleAlign: right and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'top',
                         titleAlign: 'right',
@@ -1590,8 +1590,8 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            describe('headerPosition: right', function () {
-                it('should layout with titleAlign: left and iconAlign: left', function () {
+            describe('headerPosition: right', function() {
+                it('should layout with titleAlign: left and iconAlign: left', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'left',
@@ -1616,7 +1616,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: top', function () {
+                it('should layout with titleAlign: left and iconAlign: top', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'left',
@@ -1641,7 +1641,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: right', function () {
+                it('should layout with titleAlign: left and iconAlign: right', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'left',
@@ -1666,7 +1666,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: bottom', function () {
+                it('should layout with titleAlign: left and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'left',
@@ -1691,7 +1691,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: left', function () {
+                it('should layout with titleAlign: center and iconAlign: left', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'center',
@@ -1716,7 +1716,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: top', function () {
+                it('should layout with titleAlign: center and iconAlign: top', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'center',
@@ -1741,7 +1741,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: right', function () {
+                it('should layout with titleAlign: center and iconAlign: right', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'center',
@@ -1766,7 +1766,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: bottom', function () {
+                it('should layout with titleAlign: center and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'center',
@@ -1791,7 +1791,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: left', function () {
+                it('should layout with titleAlign: right and iconAlign: left', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'right',
@@ -1816,7 +1816,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: top', function () {
+                it('should layout with titleAlign: right and iconAlign: top', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'right',
@@ -1841,7 +1841,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: right', function () {
+                it('should layout with titleAlign: right and iconAlign: right', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'right',
@@ -1866,7 +1866,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: bottom', function () {
+                it('should layout with titleAlign: right and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'right',
                         titleAlign: 'right',
@@ -1892,9 +1892,8 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-
-            describe('headerPosition: bottom', function () {
-                it('should layout with titleAlign: left and iconAlign: left', function () {
+            describe('headerPosition: bottom', function() {
+                it('should layout with titleAlign: left and iconAlign: left', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'left',
@@ -1902,24 +1901,24 @@ describe('Ext.panel.Panel_layout', function () {
                     });
 
                     expect(header).toHaveLayout({
-                        element: {xywh: '0 0 200 36'},
+                        element: { xywh: '0 0 200 36' },
                         items: {
                             0: {
-                                element: {xywh: '10 3 136 30'},
-                                iconElement: {xywh: '10 10 16 16'},
-                                textElement: {xywh: '32 10 114 16'}
+                                element: { xywh: '10 3 136 30' },
+                                iconElement: { xywh: '10 10 16 16' },
+                                textElement: { xywh: '32 10 114 16' }
                             },
                             1: {
-                                element: {xywh: '152 10 16 16'}
+                                element: { xywh: '152 10 16 16' }
                             },
                             2: {
-                                element: {xywh: '174 10 16 16'}
+                                element: { xywh: '174 10 16 16' }
                             }
                         }
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: top', function () {
+                it('should layout with titleAlign: left and iconAlign: top', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'left',
@@ -1927,24 +1926,24 @@ describe('Ext.panel.Panel_layout', function () {
                     });
 
                     expect(header).toHaveLayout({
-                        element: {xywh: '0 0 200 48'},
+                        element: { xywh: '0 0 200 48' },
                         items: {
                             0: {
-                                element: {xywh: '10 0 136 48'},
-                                iconElement: {xywh: '70 7 16 16'},
-                                textElement: {xywh: '10 25 136 16'}
+                                element: { xywh: '10 0 136 48' },
+                                iconElement: { xywh: '70 7 16 16' },
+                                textElement: { xywh: '10 25 136 16' }
                             },
                             1: {
-                                element: {xywh: '152 16 16 16'}
+                                element: { xywh: '152 16 16 16' }
                             },
                             2: {
-                                element: {xywh: '174 16 16 16'}
+                                element: { xywh: '174 16 16 16' }
                             }
                         }
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: right', function () {
+                it('should layout with titleAlign: left and iconAlign: right', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'left',
@@ -1952,24 +1951,24 @@ describe('Ext.panel.Panel_layout', function () {
                     });
 
                     expect(header).toHaveLayout({
-                        element: {xywh: '0 0 200 36'},
+                        element: { xywh: '0 0 200 36' },
                         items: {
                             0: {
-                                element: {xywh: '10 3 136 30'},
-                                iconElement: {xywh: '130 10 16 16'},
-                                textElement: {xywh: '10 10 114 16'}
+                                element: { xywh: '10 3 136 30' },
+                                iconElement: { xywh: '130 10 16 16' },
+                                textElement: { xywh: '10 10 114 16' }
                             },
                             1: {
-                                element: {xywh: '152 10 16 16'}
+                                element: { xywh: '152 10 16 16' }
                             },
                             2: {
-                                element: {xywh: '174 10 16 16'}
+                                element: { xywh: '174 10 16 16' }
                             }
                         }
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: bottom', function () {
+                it('should layout with titleAlign: left and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'left',
@@ -1977,24 +1976,24 @@ describe('Ext.panel.Panel_layout', function () {
                     });
 
                     expect(header).toHaveLayout({
-                        element: {xywh: '0 0 200 48'},
+                        element: { xywh: '0 0 200 48' },
                         items: {
                             0: {
-                                element: {xywh: '10 0 136 48'},
-                                iconElement: {xywh: '70 25 16 16'},
-                                textElement: {xywh: '10 7 136 16'}
+                                element: { xywh: '10 0 136 48' },
+                                iconElement: { xywh: '70 25 16 16' },
+                                textElement: { xywh: '10 7 136 16' }
                             },
                             1: {
-                                element: {xywh: '152 16 16 16'}
+                                element: { xywh: '152 16 16 16' }
                             },
                             2: {
-                                element: {xywh: '174 16 16 16'}
+                                element: { xywh: '174 16 16 16' }
                             }
                         }
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: left', function () {
+                it('should layout with titleAlign: center and iconAlign: left', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'center',
@@ -2002,24 +2001,24 @@ describe('Ext.panel.Panel_layout', function () {
                     });
 
                     expect(header).toHaveLayout({
-                        element: {xywh: '0 0 200 36'},
+                        element: { xywh: '0 0 200 36' },
                         items: {
                             0: {
-                                element: {xywh: '10 3 136 30'},
-                                iconElement: {xywh: '10 10 16 16'},
-                                textElement: {xywh: '32 10 114 16'}
+                                element: { xywh: '10 3 136 30' },
+                                iconElement: { xywh: '10 10 16 16' },
+                                textElement: { xywh: '32 10 114 16' }
                             },
                             1: {
-                                element: {xywh: '152 10 16 16'}
+                                element: { xywh: '152 10 16 16' }
                             },
                             2: {
-                                element: {xywh: '174 10 16 16'}
+                                element: { xywh: '174 10 16 16' }
                             }
                         }
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: top', function () {
+                it('should layout with titleAlign: center and iconAlign: top', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'center',
@@ -2027,24 +2026,24 @@ describe('Ext.panel.Panel_layout', function () {
                     });
 
                     expect(header).toHaveLayout({
-                        element: {xywh: '0 0 200 48'},
+                        element: { xywh: '0 0 200 48' },
                         items: {
                             0: {
-                                element: {xywh: '10 0 136 48'},
-                                iconElement: {xywh: '70 7 16 16'},
-                                textElement: {xywh: '10 25 136 16'}
+                                element: { xywh: '10 0 136 48' },
+                                iconElement: { xywh: '70 7 16 16' },
+                                textElement: { xywh: '10 25 136 16' }
                             },
                             1: {
-                                element: {xywh: '152 16 16 16'}
+                                element: { xywh: '152 16 16 16' }
                             },
                             2: {
-                                element: {xywh: '174 16 16 16'}
+                                element: { xywh: '174 16 16 16' }
                             }
                         }
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: right', function () {
+                it('should layout with titleAlign: center and iconAlign: right', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'center',
@@ -2052,24 +2051,24 @@ describe('Ext.panel.Panel_layout', function () {
                     });
 
                     expect(header).toHaveLayout({
-                        element: {xywh: '0 0 200 36'},
+                        element: { xywh: '0 0 200 36' },
                         items: {
                             0: {
-                                element: {xywh: '10 3 136 30'},
-                                iconElement: {xywh: '130 10 16 16'},
-                                textElement: {xywh: '10 10 114 16'}
+                                element: { xywh: '10 3 136 30' },
+                                iconElement: { xywh: '130 10 16 16' },
+                                textElement: { xywh: '10 10 114 16' }
                             },
                             1: {
-                                element: {xywh: '152 10 16 16'}
+                                element: { xywh: '152 10 16 16' }
                             },
                             2: {
-                                element: {xywh: '174 10 16 16'}
+                                element: { xywh: '174 10 16 16' }
                             }
                         }
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: bottom', function () {
+                it('should layout with titleAlign: center and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'center',
@@ -2077,24 +2076,24 @@ describe('Ext.panel.Panel_layout', function () {
                     });
 
                     expect(header).toHaveLayout({
-                        element: {xywh: '0 0 200 48'},
+                        element: { xywh: '0 0 200 48' },
                         items: {
                             0: {
-                                element: {xywh: '10 0 136 48'},
-                                iconElement: {xywh: '70 25 16 16'},
-                                textElement: {xywh: '10 7 136 16'}
+                                element: { xywh: '10 0 136 48' },
+                                iconElement: { xywh: '70 25 16 16' },
+                                textElement: { xywh: '10 7 136 16' }
                             },
                             1: {
-                                element: {xywh: '152 16 16 16'}
+                                element: { xywh: '152 16 16 16' }
                             },
                             2: {
-                                element: {xywh: '174 16 16 16'}
+                                element: { xywh: '174 16 16 16' }
                             }
                         }
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: left', function () {
+                it('should layout with titleAlign: right and iconAlign: left', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'right',
@@ -2102,24 +2101,24 @@ describe('Ext.panel.Panel_layout', function () {
                     });
 
                     expect(header).toHaveLayout({
-                        element: {xywh: '0 0 200 36'},
+                        element: { xywh: '0 0 200 36' },
                         items: {
                             0: {
-                                element: {xywh: '10 3 136 30'},
-                                iconElement: {xywh: '10 10 16 16'},
-                                textElement: {xywh: '32 10 114 16'}
+                                element: { xywh: '10 3 136 30' },
+                                iconElement: { xywh: '10 10 16 16' },
+                                textElement: { xywh: '32 10 114 16' }
                             },
                             1: {
-                                element: {xywh: '152 10 16 16'}
+                                element: { xywh: '152 10 16 16' }
                             },
                             2: {
-                                element: {xywh: '174 10 16 16'}
+                                element: { xywh: '174 10 16 16' }
                             }
                         }
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: top', function () {
+                it('should layout with titleAlign: right and iconAlign: top', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'right',
@@ -2127,24 +2126,24 @@ describe('Ext.panel.Panel_layout', function () {
                     });
 
                     expect(header).toHaveLayout({
-                        element: {xywh: '0 0 200 48'},
+                        element: { xywh: '0 0 200 48' },
                         items: {
                             0: {
-                                element: {xywh: '10 0 136 48'},
-                                iconElement: {xywh: '70 7 16 16'},
-                                textElement: {xywh: '10 25 136 16'}
+                                element: { xywh: '10 0 136 48' },
+                                iconElement: { xywh: '70 7 16 16' },
+                                textElement: { xywh: '10 25 136 16' }
                             },
                             1: {
-                                element: {xywh: '152 16 16 16'}
+                                element: { xywh: '152 16 16 16' }
                             },
                             2: {
-                                element: {xywh: '174 16 16 16'}
+                                element: { xywh: '174 16 16 16' }
                             }
                         }
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: right', function () {
+                it('should layout with titleAlign: right and iconAlign: right', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'right',
@@ -2152,24 +2151,24 @@ describe('Ext.panel.Panel_layout', function () {
                     });
 
                     expect(header).toHaveLayout({
-                        element: {xywh: '0 0 200 36'},
+                        element: { xywh: '0 0 200 36' },
                         items: {
                             0: {
-                                element: {xywh: '10 3 136 30'},
-                                iconElement: {xywh: '130 10 16 16'},
-                                textElement: {xywh: '10 10 114 16'}
+                                element: { xywh: '10 3 136 30' },
+                                iconElement: { xywh: '130 10 16 16' },
+                                textElement: { xywh: '10 10 114 16' }
                             },
                             1: {
-                                element: {xywh: '152 10 16 16'}
+                                element: { xywh: '152 10 16 16' }
                             },
                             2: {
-                                element: {xywh: '174 10 16 16'}
+                                element: { xywh: '174 10 16 16' }
                             }
                         }
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: bottom', function () {
+                it('should layout with titleAlign: right and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'bottom',
                         titleAlign: 'right',
@@ -2177,26 +2176,26 @@ describe('Ext.panel.Panel_layout', function () {
                     });
 
                     expect(header).toHaveLayout({
-                        element: {xywh: '0 0 200 48'},
+                        element: { xywh: '0 0 200 48' },
                         items: {
                             0: {
-                                element: {xywh: '10 0 136 48'},
-                                iconElement: {xywh: '70 25 16 16'},
-                                textElement: {xywh: '10 7 136 16'}
+                                element: { xywh: '10 0 136 48' },
+                                iconElement: { xywh: '70 25 16 16' },
+                                textElement: { xywh: '10 7 136 16' }
                             },
                             1: {
-                                element: {xywh: '152 16 16 16'}
+                                element: { xywh: '152 16 16 16' }
                             },
                             2: {
-                                element: {xywh: '174 16 16 16'}
+                                element: { xywh: '174 16 16 16' }
                             }
                         }
                     });
                 });
             });
 
-            describe('headerPosition: left', function () {
-                it('should layout with titleAlign: left and iconAlign: left', function () {
+            describe('headerPosition: left', function() {
+                it('should layout with titleAlign: left and iconAlign: left', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'left',
@@ -2221,7 +2220,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: top', function () {
+                it('should layout with titleAlign: left and iconAlign: top', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'left',
@@ -2246,7 +2245,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: right', function () {
+                it('should layout with titleAlign: left and iconAlign: right', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'left',
@@ -2271,7 +2270,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: left and iconAlign: bottom', function () {
+                it('should layout with titleAlign: left and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'left',
@@ -2296,7 +2295,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: left', function () {
+                it('should layout with titleAlign: center and iconAlign: left', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'center',
@@ -2321,7 +2320,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: top', function () {
+                it('should layout with titleAlign: center and iconAlign: top', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'center',
@@ -2346,7 +2345,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: right', function () {
+                it('should layout with titleAlign: center and iconAlign: right', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'center',
@@ -2371,7 +2370,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: center and iconAlign: bottom', function () {
+                it('should layout with titleAlign: center and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'center',
@@ -2396,7 +2395,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: left', function () {
+                it('should layout with titleAlign: right and iconAlign: left', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'right',
@@ -2421,7 +2420,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: top', function () {
+                it('should layout with titleAlign: right and iconAlign: top', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'right',
@@ -2446,7 +2445,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: right', function () {
+                it('should layout with titleAlign: right and iconAlign: right', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'right',
@@ -2471,7 +2470,7 @@ describe('Ext.panel.Panel_layout', function () {
                     });
                 });
 
-                it('should layout with titleAlign: right and iconAlign: bottom', function () {
+                it('should layout with titleAlign: right and iconAlign: bottom', function() {
                     create({
                         headerPosition: 'left',
                         titleAlign: 'right',
@@ -2499,14 +2498,14 @@ describe('Ext.panel.Panel_layout', function () {
         });
     });
 
-    describe('shrink wrap size', function () {
-        beforeEach(function () {
+    describe('shrink wrap size', function() {
+        beforeEach(function() {
             title = mediumText;
             style = 'position:absolute';
         });
 
-        describe('headerPosition: top', function () {
-            it('should layout with titleAlign: left and iconAlign: left', function () {
+        describe('headerPosition: top', function() {
+            it('should layout with titleAlign: left and iconAlign: left', function() {
                 create({
                     headerPosition: 'top',
                     titleAlign: 'left',
@@ -2531,7 +2530,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: left and iconAlign: top', function () {
+            it('should layout with titleAlign: left and iconAlign: top', function() {
                 create({
                     headerPosition: 'top',
                     titleAlign: 'left',
@@ -2556,7 +2555,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: left and iconAlign: right', function () {
+            it('should layout with titleAlign: left and iconAlign: right', function() {
                 create({
                     headerPosition: 'top',
                     titleAlign: 'left',
@@ -2581,7 +2580,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: left and iconAlign: bottom', function () {
+            it('should layout with titleAlign: left and iconAlign: bottom', function() {
                 create({
                     headerPosition: 'top',
                     titleAlign: 'left',
@@ -2606,7 +2605,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: left', function () {
+            it('should layout with titleAlign: center and iconAlign: left', function() {
                 create({
                     headerPosition: 'top',
                     titleAlign: 'center',
@@ -2631,7 +2630,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: top', function () {
+            it('should layout with titleAlign: center and iconAlign: top', function() {
                 create({
                     headerPosition: 'top',
                     titleAlign: 'center',
@@ -2656,7 +2655,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: right', function () {
+            it('should layout with titleAlign: center and iconAlign: right', function() {
                 create({
                     headerPosition: 'top',
                     titleAlign: 'center',
@@ -2681,7 +2680,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: bottom', function () {
+            it('should layout with titleAlign: center and iconAlign: bottom', function() {
                 create({
                     headerPosition: 'top',
                     titleAlign: 'center',
@@ -2706,7 +2705,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: left', function () {
+            it('should layout with titleAlign: right and iconAlign: left', function() {
                 create({
                     headerPosition: 'top',
                     titleAlign: 'right',
@@ -2731,7 +2730,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: top', function () {
+            it('should layout with titleAlign: right and iconAlign: top', function() {
                 create({
                     headerPosition: 'top',
                     titleAlign: 'right',
@@ -2756,7 +2755,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: right', function () {
+            it('should layout with titleAlign: right and iconAlign: right', function() {
                 create({
                     headerPosition: 'top',
                     titleAlign: 'right',
@@ -2781,7 +2780,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: bottom', function () {
+            it('should layout with titleAlign: right and iconAlign: bottom', function() {
                 create({
                     headerPosition: 'top',
                     titleAlign: 'right',
@@ -2807,8 +2806,8 @@ describe('Ext.panel.Panel_layout', function () {
             });
         });
 
-        describe('headerPosition: right', function () {
-            it('should layout with titleAlign: left and iconAlign: left', function () {
+        describe('headerPosition: right', function() {
+            it('should layout with titleAlign: left and iconAlign: left', function() {
                 create({
                     headerPosition: 'right',
                     titleAlign: 'left',
@@ -2833,7 +2832,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: left and iconAlign: top', function () {
+            it('should layout with titleAlign: left and iconAlign: top', function() {
                 create({
                     headerPosition: 'right',
                     titleAlign: 'left',
@@ -2858,7 +2857,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: left and iconAlign: right', function () {
+            it('should layout with titleAlign: left and iconAlign: right', function() {
                 create({
                     headerPosition: 'right',
                     titleAlign: 'left',
@@ -2883,7 +2882,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: left and iconAlign: bottom', function () {
+            it('should layout with titleAlign: left and iconAlign: bottom', function() {
                 create({
                     headerPosition: 'right',
                     titleAlign: 'left',
@@ -2908,7 +2907,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: left', function () {
+            it('should layout with titleAlign: center and iconAlign: left', function() {
                 create({
                     headerPosition: 'right',
                     titleAlign: 'center',
@@ -2933,7 +2932,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: top', function () {
+            it('should layout with titleAlign: center and iconAlign: top', function() {
                 create({
                     headerPosition: 'right',
                     titleAlign: 'center',
@@ -2958,7 +2957,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: right', function () {
+            it('should layout with titleAlign: center and iconAlign: right', function() {
                 create({
                     headerPosition: 'right',
                     titleAlign: 'center',
@@ -2983,7 +2982,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: bottom', function () {
+            it('should layout with titleAlign: center and iconAlign: bottom', function() {
                 create({
                     headerPosition: 'right',
                     titleAlign: 'center',
@@ -3008,7 +3007,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: left', function () {
+            it('should layout with titleAlign: right and iconAlign: left', function() {
                 create({
                     headerPosition: 'right',
                     titleAlign: 'right',
@@ -3033,7 +3032,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: top', function () {
+            it('should layout with titleAlign: right and iconAlign: top', function() {
                 create({
                     headerPosition: 'right',
                     titleAlign: 'right',
@@ -3058,7 +3057,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: right', function () {
+            it('should layout with titleAlign: right and iconAlign: right', function() {
                 create({
                     headerPosition: 'right',
                     titleAlign: 'right',
@@ -3083,7 +3082,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: bottom', function () {
+            it('should layout with titleAlign: right and iconAlign: bottom', function() {
                 create({
                     headerPosition: 'right',
                     titleAlign: 'right',
@@ -3109,8 +3108,8 @@ describe('Ext.panel.Panel_layout', function () {
             });
         });
 
-        describe('headerPosition: bottom', function () {
-            it('should layout with titleAlign: left and iconAlign: left', function () {
+        describe('headerPosition: bottom', function() {
+            it('should layout with titleAlign: left and iconAlign: left', function() {
                 create({
                     headerPosition: 'bottom',
                     titleAlign: 'left',
@@ -3118,24 +3117,24 @@ describe('Ext.panel.Panel_layout', function () {
                 });
 
                 expect(header).toHaveLayout({
-                    element: {xywh: '0 0 206 36'},
+                    element: { xywh: '0 0 206 36' },
                     items: {
                         0: {
-                            element: {xywh: '10 3 142 30'},
-                            iconElement: {xywh: '10 10 16 16'},
-                            textElement: {xywh: '32 10 120 16'}
+                            element: { xywh: '10 3 142 30' },
+                            iconElement: { xywh: '10 10 16 16' },
+                            textElement: { xywh: '32 10 120 16' }
                         },
                         1: {
-                            element: {xywh: '158 10 16 16'}
+                            element: { xywh: '158 10 16 16' }
                         },
                         2: {
-                            element: {xywh: '180 10 16 16'}
+                            element: { xywh: '180 10 16 16' }
                         }
                     }
                 });
             });
 
-            it('should layout with titleAlign: left and iconAlign: top', function () {
+            it('should layout with titleAlign: left and iconAlign: top', function() {
                 create({
                     headerPosition: 'bottom',
                     titleAlign: 'left',
@@ -3143,24 +3142,24 @@ describe('Ext.panel.Panel_layout', function () {
                 });
 
                 expect(header).toHaveLayout({
-                    element: {xywh: '0 0 184 48'},
+                    element: { xywh: '0 0 184 48' },
                     items: {
                         0: {
-                            element: {xywh: '10 0 120 48'},
-                            iconElement: {xywh: '62 7 16 16'},
-                            textElement: {xywh: '10 25 120 16'}
+                            element: { xywh: '10 0 120 48' },
+                            iconElement: { xywh: '62 7 16 16' },
+                            textElement: { xywh: '10 25 120 16' }
                         },
                         1: {
-                            element: {xywh: '136 16 16 16'}
+                            element: { xywh: '136 16 16 16' }
                         },
                         2: {
-                            element: {xywh: '158 16 16 16'}
+                            element: { xywh: '158 16 16 16' }
                         }
                     }
                 });
             });
 
-            it('should layout with titleAlign: left and iconAlign: right', function () {
+            it('should layout with titleAlign: left and iconAlign: right', function() {
                 create({
                     headerPosition: 'bottom',
                     titleAlign: 'left',
@@ -3168,24 +3167,24 @@ describe('Ext.panel.Panel_layout', function () {
                 });
 
                 expect(header).toHaveLayout({
-                    element: {xywh: '0 0 206 36'},
+                    element: { xywh: '0 0 206 36' },
                     items: {
                         0: {
-                            element: {xywh: '10 3 142 30'},
-                            iconElement: {xywh: '136 10 16 16'},
-                            textElement: {xywh: '10 10 120 16'}
+                            element: { xywh: '10 3 142 30' },
+                            iconElement: { xywh: '136 10 16 16' },
+                            textElement: { xywh: '10 10 120 16' }
                         },
                         1: {
-                            element: {xywh: '158 10 16 16'}
+                            element: { xywh: '158 10 16 16' }
                         },
                         2: {
-                            element: {xywh: '180 10 16 16'}
+                            element: { xywh: '180 10 16 16' }
                         }
                     }
                 });
             });
 
-            it('should layout with titleAlign: left and iconAlign: bottom', function () {
+            it('should layout with titleAlign: left and iconAlign: bottom', function() {
                 create({
                     headerPosition: 'bottom',
                     titleAlign: 'left',
@@ -3193,24 +3192,24 @@ describe('Ext.panel.Panel_layout', function () {
                 });
 
                 expect(header).toHaveLayout({
-                    element: {xywh: '0 0 184 48'},
+                    element: { xywh: '0 0 184 48' },
                     items: {
                         0: {
-                            element: {xywh: '10 0 120 48'},
-                            iconElement: {xywh: '62 25 16 16'},
-                            textElement: {xywh: '10 7 120 16'}
+                            element: { xywh: '10 0 120 48' },
+                            iconElement: { xywh: '62 25 16 16' },
+                            textElement: { xywh: '10 7 120 16' }
                         },
                         1: {
-                            element: {xywh: '136 16 16 16'}
+                            element: { xywh: '136 16 16 16' }
                         },
                         2: {
-                            element: {xywh: '158 16 16 16'}
+                            element: { xywh: '158 16 16 16' }
                         }
                     }
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: left', function () {
+            it('should layout with titleAlign: center and iconAlign: left', function() {
                 create({
                     headerPosition: 'bottom',
                     titleAlign: 'center',
@@ -3218,24 +3217,24 @@ describe('Ext.panel.Panel_layout', function () {
                 });
 
                 expect(header).toHaveLayout({
-                    element: {xywh: '0 0 206 36'},
+                    element: { xywh: '0 0 206 36' },
                     items: {
                         0: {
-                            element: {xywh: '10 3 142 30'},
-                            iconElement: {xywh: '10 10 16 16'},
-                            textElement: {xywh: '32 10 120 16'}
+                            element: { xywh: '10 3 142 30' },
+                            iconElement: { xywh: '10 10 16 16' },
+                            textElement: { xywh: '32 10 120 16' }
                         },
                         1: {
-                            element: {xywh: '158 10 16 16'}
+                            element: { xywh: '158 10 16 16' }
                         },
                         2: {
-                            element: {xywh: '180 10 16 16'}
+                            element: { xywh: '180 10 16 16' }
                         }
                     }
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: top', function () {
+            it('should layout with titleAlign: center and iconAlign: top', function() {
                 create({
                     headerPosition: 'bottom',
                     titleAlign: 'center',
@@ -3243,24 +3242,24 @@ describe('Ext.panel.Panel_layout', function () {
                 });
 
                 expect(header).toHaveLayout({
-                    element: {xywh: '0 0 184 48'},
+                    element: { xywh: '0 0 184 48' },
                     items: {
                         0: {
-                            element: {xywh: '10 0 120 48'},
-                            iconElement: {xywh: '62 7 16 16'},
-                            textElement: {xywh: '10 25 120 16'}
+                            element: { xywh: '10 0 120 48' },
+                            iconElement: { xywh: '62 7 16 16' },
+                            textElement: { xywh: '10 25 120 16' }
                         },
                         1: {
-                            element: {xywh: '136 16 16 16'}
+                            element: { xywh: '136 16 16 16' }
                         },
                         2: {
-                            element: {xywh: '158 16 16 16'}
+                            element: { xywh: '158 16 16 16' }
                         }
                     }
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: right', function () {
+            it('should layout with titleAlign: center and iconAlign: right', function() {
                 create({
                     headerPosition: 'bottom',
                     titleAlign: 'center',
@@ -3268,24 +3267,24 @@ describe('Ext.panel.Panel_layout', function () {
                 });
 
                 expect(header).toHaveLayout({
-                    element: {xywh: '0 0 206 36'},
+                    element: { xywh: '0 0 206 36' },
                     items: {
                         0: {
-                            element: {xywh: '10 3 142 30'},
-                            iconElement: {xywh: '136 10 16 16'},
-                            textElement: {xywh: '10 10 120 16'}
+                            element: { xywh: '10 3 142 30' },
+                            iconElement: { xywh: '136 10 16 16' },
+                            textElement: { xywh: '10 10 120 16' }
                         },
                         1: {
-                            element: {xywh: '158 10 16 16'}
+                            element: { xywh: '158 10 16 16' }
                         },
                         2: {
-                            element: {xywh: '180 10 16 16'}
+                            element: { xywh: '180 10 16 16' }
                         }
                     }
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: bottom', function () {
+            it('should layout with titleAlign: center and iconAlign: bottom', function() {
                 create({
                     headerPosition: 'bottom',
                     titleAlign: 'center',
@@ -3293,24 +3292,24 @@ describe('Ext.panel.Panel_layout', function () {
                 });
 
                 expect(header).toHaveLayout({
-                    element: {xywh: '0 0 184 48'},
+                    element: { xywh: '0 0 184 48' },
                     items: {
                         0: {
-                            element: {xywh: '10 0 120 48'},
-                            iconElement: {xywh: '62 25 16 16'},
-                            textElement: {xywh: '10 7 120 16'}
+                            element: { xywh: '10 0 120 48' },
+                            iconElement: { xywh: '62 25 16 16' },
+                            textElement: { xywh: '10 7 120 16' }
                         },
                         1: {
-                            element: {xywh: '136 16 16 16'}
+                            element: { xywh: '136 16 16 16' }
                         },
                         2: {
-                            element: {xywh: '158 16 16 16'}
+                            element: { xywh: '158 16 16 16' }
                         }
                     }
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: left', function () {
+            it('should layout with titleAlign: right and iconAlign: left', function() {
                 create({
                     headerPosition: 'bottom',
                     titleAlign: 'right',
@@ -3318,24 +3317,24 @@ describe('Ext.panel.Panel_layout', function () {
                 });
 
                 expect(header).toHaveLayout({
-                    element: {xywh: '0 0 206 36'},
+                    element: { xywh: '0 0 206 36' },
                     items: {
                         0: {
-                            element: {xywh: '10 3 142 30'},
-                            iconElement: {xywh: '10 10 16 16'},
-                            textElement: {xywh: '32 10 120 16'}
+                            element: { xywh: '10 3 142 30' },
+                            iconElement: { xywh: '10 10 16 16' },
+                            textElement: { xywh: '32 10 120 16' }
                         },
                         1: {
-                            element: {xywh: '158 10 16 16'}
+                            element: { xywh: '158 10 16 16' }
                         },
                         2: {
-                            element: {xywh: '180 10 16 16'}
+                            element: { xywh: '180 10 16 16' }
                         }
                     }
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: top', function () {
+            it('should layout with titleAlign: right and iconAlign: top', function() {
                 create({
                     headerPosition: 'bottom',
                     titleAlign: 'right',
@@ -3343,24 +3342,24 @@ describe('Ext.panel.Panel_layout', function () {
                 });
 
                 expect(header).toHaveLayout({
-                    element: {xywh: '0 0 184 48'},
+                    element: { xywh: '0 0 184 48' },
                     items: {
                         0: {
-                            element: {xywh: '10 0 120 48'},
-                            iconElement: {xywh: '62 7 16 16'},
-                            textElement: {xywh: '10 25 120 16'}
+                            element: { xywh: '10 0 120 48' },
+                            iconElement: { xywh: '62 7 16 16' },
+                            textElement: { xywh: '10 25 120 16' }
                         },
                         1: {
-                            element: {xywh: '136 16 16 16'}
+                            element: { xywh: '136 16 16 16' }
                         },
                         2: {
-                            element: {xywh: '158 16 16 16'}
+                            element: { xywh: '158 16 16 16' }
                         }
                     }
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: right', function () {
+            it('should layout with titleAlign: right and iconAlign: right', function() {
                 create({
                     headerPosition: 'bottom',
                     titleAlign: 'right',
@@ -3368,24 +3367,24 @@ describe('Ext.panel.Panel_layout', function () {
                 });
 
                 expect(header).toHaveLayout({
-                    element: {xywh: '0 0 206 36'},
+                    element: { xywh: '0 0 206 36' },
                     items: {
                         0: {
-                            element: {xywh: '10 3 142 30'},
-                            iconElement: {xywh: '136 10 16 16'},
-                            textElement: {xywh: '10 10 120 16'}
+                            element: { xywh: '10 3 142 30' },
+                            iconElement: { xywh: '136 10 16 16' },
+                            textElement: { xywh: '10 10 120 16' }
                         },
                         1: {
-                            element: {xywh: '158 10 16 16'}
+                            element: { xywh: '158 10 16 16' }
                         },
                         2: {
-                            element: {xywh: '180 10 16 16'}
+                            element: { xywh: '180 10 16 16' }
                         }
                     }
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: bottom', function () {
+            it('should layout with titleAlign: right and iconAlign: bottom', function() {
                 create({
                     headerPosition: 'bottom',
                     titleAlign: 'right',
@@ -3393,26 +3392,26 @@ describe('Ext.panel.Panel_layout', function () {
                 });
 
                 expect(header).toHaveLayout({
-                    element: {xywh: '0 0 184 48'},
+                    element: { xywh: '0 0 184 48' },
                     items: {
                         0: {
-                            element: {xywh: '10 0 120 48'},
-                            iconElement: {xywh: '62 25 16 16'},
-                            textElement: {xywh: '10 7 120 16'}
+                            element: { xywh: '10 0 120 48' },
+                            iconElement: { xywh: '62 25 16 16' },
+                            textElement: { xywh: '10 7 120 16' }
                         },
                         1: {
-                            element: {xywh: '136 16 16 16'}
+                            element: { xywh: '136 16 16 16' }
                         },
                         2: {
-                            element: {xywh: '158 16 16 16'}
+                            element: { xywh: '158 16 16 16' }
                         }
                     }
                 });
             });
         });
 
-        describe('headerPosition: left', function () {
-            it('should layout with titleAlign: left and iconAlign: left', function () {
+        describe('headerPosition: left', function() {
+            it('should layout with titleAlign: left and iconAlign: left', function() {
                 create({
                     headerPosition: 'left',
                     titleAlign: 'left',
@@ -3437,7 +3436,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: left and iconAlign: top', function () {
+            it('should layout with titleAlign: left and iconAlign: top', function() {
                 create({
                     headerPosition: 'left',
                     titleAlign: 'left',
@@ -3462,7 +3461,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: left and iconAlign: right', function () {
+            it('should layout with titleAlign: left and iconAlign: right', function() {
                 create({
                     headerPosition: 'left',
                     titleAlign: 'left',
@@ -3487,7 +3486,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: left and iconAlign: bottom', function () {
+            it('should layout with titleAlign: left and iconAlign: bottom', function() {
                 create({
                     headerPosition: 'left',
                     titleAlign: 'left',
@@ -3512,7 +3511,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: left', function () {
+            it('should layout with titleAlign: center and iconAlign: left', function() {
                 create({
                     headerPosition: 'left',
                     titleAlign: 'center',
@@ -3537,7 +3536,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: top', function () {
+            it('should layout with titleAlign: center and iconAlign: top', function() {
                 create({
                     headerPosition: 'left',
                     titleAlign: 'center',
@@ -3562,7 +3561,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: right', function () {
+            it('should layout with titleAlign: center and iconAlign: right', function() {
                 create({
                     headerPosition: 'left',
                     titleAlign: 'center',
@@ -3587,7 +3586,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: center and iconAlign: bottom', function () {
+            it('should layout with titleAlign: center and iconAlign: bottom', function() {
                 create({
                     headerPosition: 'left',
                     titleAlign: 'center',
@@ -3612,7 +3611,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: left', function () {
+            it('should layout with titleAlign: right and iconAlign: left', function() {
                 create({
                     headerPosition: 'left',
                     titleAlign: 'right',
@@ -3637,7 +3636,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: top', function () {
+            it('should layout with titleAlign: right and iconAlign: top', function() {
                 create({
                     headerPosition: 'left',
                     titleAlign: 'right',
@@ -3662,7 +3661,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: right', function () {
+            it('should layout with titleAlign: right and iconAlign: right', function() {
                 create({
                     headerPosition: 'left',
                     titleAlign: 'right',
@@ -3687,7 +3686,7 @@ describe('Ext.panel.Panel_layout', function () {
                 });
             });
 
-            it('should layout with titleAlign: right and iconAlign: bottom', function () {
+            it('should layout with titleAlign: right and iconAlign: bottom', function() {
                 create({
                     headerPosition: 'left',
                     titleAlign: 'right',

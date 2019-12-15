@@ -3,6 +3,7 @@ topSuite("Ext.data.validator.NotNull", function() {
 
     function validate(value, cfg) {
         v = new Ext.data.validator.NotNull(cfg);
+
         return v.validate(value);
     }
 
@@ -22,7 +23,7 @@ topSuite("Ext.data.validator.NotNull", function() {
 
     describe("valid values", function() {
         it("should validate if passed an empty string", function() {
-            expect(validate('', {allowEmpty: true})).toBe(true);
+            expect(validate('', { allowEmpty: true })).toBe(true);
         });
 
         it("should validate if passed false", function() {

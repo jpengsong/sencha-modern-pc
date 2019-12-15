@@ -15,6 +15,7 @@ Ext.define('Ext.drag.Info', {
             return;
         }
 
+        /* eslint-disable-next-line vars-on-top */
         var me = this,
             local = source.getLocal(),
             el, proxyEl, proxy, x, xy, y, pageXY, elPageXY;
@@ -98,6 +99,7 @@ Ext.define('Ext.drag.Info', {
 
         proxy.isElement = proxyEl === source.getElement();
         proxy.element = proxyEl;
+
         if (proxyEl) {
             proxy.width = proxyEl.getWidth();
             proxy.height = proxyEl.getHeight();
@@ -341,13 +343,16 @@ Ext.define('Ext.drag.Info', {
 
         if (dt) {
             ret = dt.getData(type);
-        } else {
+        }
+        else {
             //<debug>
             if (!me.finalized) {
                 Ext.raise('Unable to call getData until the drop is complete');
             }
             //</debug>
+
             ret = data[type];
+
             if (typeof ret === 'function') {
                 data[type] = ret = ret.call(me.source, me);
             }
@@ -356,6 +361,7 @@ Ext.define('Ext.drag.Info', {
                 ret = '';
             }
         }
+
         return Ext.Promise.resolve(ret);
     },
 
@@ -376,8 +382,8 @@ Ext.define('Ext.drag.Info', {
     destroy: function() {
         var me = this;
 
-        me.eventTarget = me.data = me.proxy = me.targetMap = me.targetMap = 
-            me.types = me.elementMap = me.possibleTargets = me.target = null;
+        me.eventTarget = me.data = me.proxy = me.targetMap = me.targetMap =
+        me.types = me.elementMap = me.possibleTargets = me.target = null;
 
         me.callParent();
     },
@@ -444,6 +450,7 @@ Ext.define('Ext.drag.Info', {
                 target = me.target;
 
             me.finalized = true;
+
             if (target) {
                 target.info = null;
                 target.handleDrop(me);
@@ -473,7 +480,8 @@ Ext.define('Ext.drag.Info', {
                 if (me.proxy.isElement) {
                     xy[0] -= cursorOffset.x;
                     xy[1] -= cursorOffset.y;
-                } else {
+                }
+                else {
                     xy = proxy.adjustCursorOffset(me, xy);
                 }
 
@@ -481,10 +489,11 @@ Ext.define('Ext.drag.Info', {
                     xy = constrain.constrain(xy, me);
                 }
             }
+
             return xy;
         },
 
-        getEventXY: function (e) {
+        getEventXY: function(e) {
             var xy = e.getXY(), // page coordinates
                 source = this.source;
 
@@ -500,11 +509,13 @@ Ext.define('Ext.drag.Info', {
 
             me.valid = target.accepts(me);
             target.info = me;
+
             me.copyNativeData(target, e);
         },
 
         onNativeDragLeave: function(target, e) {
             var me = this;
+
             // With native events, enter fires before leave, so when the leave fires
             // check that we are the current target, another target may have already
             // taken over here
@@ -549,8 +560,10 @@ Ext.define('Ext.drag.Info', {
                     target.handleDragEnter(me);
                     target.info = me;
                 }
+
                 target.handleDragMove(me);
-            } else {
+            }
+            else {
                 me.valid = false;
             }
 
@@ -598,7 +611,7 @@ Ext.define('Ext.drag.Info', {
             delta.y = alignY - initial.y;
 
             if (me.needsCursorCheck) {
-                proxyData.isUnderCursor = !(x < alignX || y < alignY || x > proxyData.width + alignX || y > proxyData.height + alignY);
+                proxyData.isUnderCursor = !(x < alignX || y < alignY || x > proxyData.width + alignX || y > proxyData.height + alignY); // eslint-disable-line max-len
             }
 
             if (!beforeStart && proxy) {

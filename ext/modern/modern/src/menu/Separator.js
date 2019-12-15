@@ -25,7 +25,7 @@
  */
 Ext.define('Ext.menu.Separator', {
     extend: 'Ext.Component',
-    alias: 'widget.menuseparator',
+    xtype: 'menuseparator',
 
     isMenuSeparator: true,
 

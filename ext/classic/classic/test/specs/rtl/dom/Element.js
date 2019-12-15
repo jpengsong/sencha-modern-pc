@@ -24,7 +24,7 @@ topSuite("Ext.rtl.dom.Element", function() {
                 }]
             }]
         });
-        
+
         el = Ext.fly(wrap.first(null, true)).first();
     });
 
@@ -34,15 +34,15 @@ topSuite("Ext.rtl.dom.Element", function() {
     });
 
     describe("rtlGetLocalX", function() {
-        it("should return the local x position", function(){
+        it("should return the local x position", function() {
             expect(el.rtlGetLocalX()).toBe(6);
-        });  
+        });
     });
 
     describe("rtlGetLocalXY", function() {
-        it("should return the local xy position", function(){
-            expect(el.rtlGetLocalXY()).toEqual([6,7]);
-        });  
+        it("should return the local xy position", function() {
+            expect(el.rtlGetLocalXY()).toEqual([6, 7]);
+        });
     });
 
     describe("rtlSetLocalX", function() {

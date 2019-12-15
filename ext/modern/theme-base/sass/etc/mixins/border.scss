@@ -28,32 +28,9 @@
             length($width) == 1 and length($style) == 1 and length($color) == 1 {
         border: $width $style $color;
     } @else {
-        @if length($width) > 1 and boxContainsNull($width) {
-            border-top-width: top($width);
-            border-right-width: right($width);
-            border-bottom-width: bottom($width);
-            border-left-width: left($width);
-        } @else {
-            border-width: $width;
-        }
-
-        @if length($style) > 1 and boxContainsNull($style) {
-            border-top-style: top($style);
-            border-right-style: right($style);
-            border-bottom-style: bottom($style);
-            border-left-style: left($style);
-        } @else {
-            border-style: $style;
-        }
-
-        @if length($color) > 1 and boxContainsNull($color) {
-            border-top-color: top($color);
-            border-right-color: right($color);
-            border-bottom-color: bottom($color);
-            border-left-color: left($color);
-        } @else {
-            border-color: $color;
-        }
+        @include border-width($width);
+        @include border-style($style);
+        @include border-color($color);
     }
 }
 
@@ -168,3 +145,47 @@
     }
 }
 
+@mixin border-color(
+    $color: null
+) {
+    @if $color != null {
+        @if length($color) > 1 and boxContainsNull($color) {
+            border-top-color: top($color);
+            border-right-color: right($color);
+            border-bottom-color: bottom($color);
+            border-left-color: left($color);
+        } @else {
+            border-color: $color;
+        }
+    }
+}
+
+@mixin border-style(
+    $style: null
+) {
+    @if $style != null {
+        @if length($style) > 1 and boxContainsNull($style) {
+            border-top-style: top($style);
+            border-right-style: right($style);
+            border-bottom-style: bottom($style);
+            border-left-style: left($style);
+        } @else {
+            border-style: $style;
+        }
+    }
+}
+
+@mixin border-width(
+    $width: null
+) {
+    @if $width != null {
+        @if length($width) > 1 and boxContainsNull($width) {
+            border-top-width: top($width);
+            border-right-width: right($width);
+            border-bottom-width: bottom($width);
+            border-left-width: left($width);
+        } @else {
+            border-width: $width;
+        }
+    }
+}

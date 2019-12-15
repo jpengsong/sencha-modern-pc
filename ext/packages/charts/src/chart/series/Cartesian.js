@@ -62,31 +62,31 @@ Ext.define('Ext.chart.series.Cartesian', {
     fieldCategoryX: ['X'],
     fieldCategoryY: ['Y'],
 
-    applyXAxis: function (newAxis, oldAxis) {
+    applyXAxis: function(newAxis, oldAxis) {
         return this.getChart().getAxis(newAxis) || oldAxis;
     },
 
-    applyYAxis: function (newAxis, oldAxis) {
+    applyYAxis: function(newAxis, oldAxis) {
         return this.getChart().getAxis(newAxis) || oldAxis;
     },
 
-    updateXAxis: function (axis) {
+    updateXAxis: function(axis) {
         axis.processData(this);
     },
 
-    updateYAxis: function (axis) {
+    updateYAxis: function(axis) {
         axis.processData(this);
     },
 
-    coordinateX: function () {
+    coordinateX: function() {
         return this.coordinate('X', 0, 2);
     },
 
-    coordinateY: function () {
+    coordinateY: function() {
         return this.coordinate('Y', 1, 2);
     },
 
-    getItemForPoint: function (x, y) {
+    getItemForPoint: function(x, y) {
         var me = this,
             sprite = me.getSprites()[0],
             store = me.getStore(),
@@ -96,18 +96,20 @@ Ext.define('Ext.chart.series.Cartesian', {
             point = sprite.getNearestDataPoint(x, y);
         }
 
-        return point ? {
-            series: me,
-            sprite: sprite,
-            category: me.getItemInstancing() ? 'items' : 'markers',
-            index: point.index,
-            record: store.getData().items[point.index],
-            field: me.getYField(),
-            distance: point.distance
-        } : null;
+        return point
+            ? {
+                series: me,
+                sprite: sprite,
+                category: me.getItemInstancing() ? 'items' : 'markers',
+                index: point.index,
+                record: store.getData().items[point.index],
+                field: me.getYField(),
+                distance: point.distance
+            }
+            : null;
     },
 
-    createSprite: function () {
+    createSprite: function() {
         var me = this,
             sprite = me.callParent(),
             chart = me.getChart(),
@@ -117,17 +119,20 @@ Ext.define('Ext.chart.series.Cartesian', {
             flipXY: chart.getFlipXY(),
             xAxis: xAxis
         });
+
         if (sprite.setAggregator && xAxis && xAxis.getAggregator) {
             if (xAxis.getAggregator) {
-                sprite.setAggregator({strategy: xAxis.getAggregator()});
-            } else {
+                sprite.setAggregator({ strategy: xAxis.getAggregator() });
+            }
+            else {
                 sprite.setAggregator({});
             }
         }
+
         return sprite;
     },
 
-    getSprites: function () {
+    getSprites: function() {
         var me = this,
             chart = this.getChart(),
             sprites = me.sprites;
@@ -143,11 +148,11 @@ Ext.define('Ext.chart.series.Cartesian', {
         return sprites;
     },
 
-    getXRange: function () {
+    getXRange: function() {
         return [this.dataRange[0], this.dataRange[2]];
     },
 
-    getYRange: function () {
+    getYRange: function() {
         return [this.dataRange[1], this.dataRange[3]];
     }
 });

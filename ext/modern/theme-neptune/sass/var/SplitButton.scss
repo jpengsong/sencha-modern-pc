@@ -436,7 +436,7 @@ $splitButton-arrow-icon-font-size-big: dynamic(null);
  * @var {number}
  * The space between the button arrow and text when {@link #arrowAlign} is `'right'`
  */
-$splitButton-arrow-horizontal-spacing: dynamic(5px);
+$splitButton-arrow-horizontal-spacing: dynamic(3px);
 
 /**
  * @var {number}
@@ -1090,7 +1090,6 @@ $splitButton-raised-ui: dynamic((
 
         .#{$prefix}splitInner-el {
             padding: $splitButton-Inner-padding;
-            @include background-gradient($background-color, $background-gradient);
             position: relative;
         }
 
@@ -1098,7 +1097,6 @@ $splitButton-raised-ui: dynamic((
             padding: $splitButton-Inner-padding;
             padding-left: $splitButton-arrow-horizontal-padding;
             padding-right: $splitButton-arrow-horizontal-padding;
-            @include background-gradient($background-color, $background-gradient);
             position: relative;
         }
 
@@ -1256,6 +1254,7 @@ $splitButton-raised-ui: dynamic((
 
         &.#{$prefix}arrow-align-right .#{$prefix}arrow-el {
             margin-left: $arrow-horizontal-spacing;
+            margin-right: $arrow-horizontal-spacing;
 
             @if $enable-big {
                 .#{$prefix}big & {
@@ -1407,12 +1406,12 @@ $splitButton-raised-ui: dynamic((
 
         &.#{$prefix}disabled {
             opacity: $disabled-opacity;
-            color: $disabled-color;
             box-shadow: $disabled-box-shadow;
 
             .#{$prefix}splitBody-el {
-                    border-color: $disabled-border-color;
-                    @include background-gradient($disabled-background-color, $disabled-background-gradient);
+                color: $disabled-color;
+                border-color: $disabled-border-color;
+                @include background-gradient($disabled-background-color, $disabled-background-gradient);    
             }
 
             .#{$prefix}icon-el {
@@ -1424,13 +1423,9 @@ $splitButton-raised-ui: dynamic((
             }
 
             .#{$prefix}splitInner-el {
-                    border-color: $disabled-border-color;
-                    @include background-gradient($disabled-background-color, $disabled-background-gradient);
             }
 
             .#{$prefix}splitArrow-el {
-                border-color: $disabled-border-color;
-                @include background-gradient($disabled-background-color, $disabled-background-gradient);
             }
 
             &.#{$prefix}arrow-align-right .#{$prefix}splitArrow-el {
@@ -1474,11 +1469,9 @@ $splitButton-raised-ui: dynamic((
         }
 
         .#{$prefix}splitInner-el {
-            background-color: $background-color;
         }
 
         .#{$prefix}splitArrow-el {
-            background-color: $background-color;
         }
 
         &.#{$prefix}arrow-align-right .#{$prefix}splitArrow-el {

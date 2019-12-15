@@ -2,12 +2,13 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
     var panel,
         items;
 
-    function createPanel (config) {
+    function createPanel(config) {
         if (Ext.isArray(config)) {
             config = {
                 items: config
             };
-        } else {
+        }
+ else {
             config = Ext.apply({}, config);
         }
 
@@ -22,7 +23,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
         items = panel.getItems().items;
     }
 
-    afterEach(function () {
+    afterEach(function() {
         panel = Ext.destroy(panel);
     });
 
@@ -84,21 +85,21 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
         });
     });
 
-    describe("configuration", function () {
-        describe("title", function () {
-            it("should not create a header no title is provided", function () {
+    describe("configuration", function() {
+        describe("title", function() {
+            it("should not create a header no title is provided", function() {
                 createPanel();
                 expect(panel.getHeader()).toBeNull();
             });
 
-            it("should create a header if title is provided", function () {
+            it("should create a header if title is provided", function() {
                 createPanel({
                     title: 'Foo'
                 });
                 expect(panel.getHeader().getTitle().getText()).toBe('Foo');
             });
 
-            it("should not create header if title is provided, but header:false", function () {
+            it("should not create header if title is provided, but header:false", function() {
                 createPanel({
                     title: 'Foo',
                     header: false
@@ -111,11 +112,13 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
     describe("header", function() {
         function expectHeaderEl() {
             var el = panel.element.down('.x-panelheader');
+
             expect(el).not.toBeNull();
         }
 
         function expectNoHeaderEl() {
             var el = panel.element.down('.x-panelheader');
+
             expect(el).toBeNull();
         }
 
@@ -201,6 +204,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
                         title: 'Foo'
                     });
                     var h = panel.getHeader();
+
                     panel.setHeader(false);
                     expect(h.destroyed).toBe(true);
 
@@ -213,6 +217,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
                         title: 'Foo'
                     });
                     var h = panel.getHeader();
+
                     panel.setHeader(null);
                     expect(h.destroyed).toBe(true);
 
@@ -230,6 +235,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
                         titleAlign: 'right'
                     });
                     var h = panel.getHeader();
+
                     expect(h.isXType('panelheader')).toBe(true);
                     expectHeaderEl();
                     expect(h.getTitle().getText()).toBe('Foo');
@@ -248,9 +254,9 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
         });
     });
 
-    describe("methods", function () {
-        describe("setTitle", function () {
-            it("should update title when a header exists", function () {
+    describe("methods", function() {
+        describe("setTitle", function() {
+            it("should update title when a header exists", function() {
                 createPanel({
                     title: 'Foo'
                 });
@@ -259,7 +265,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
                 expect(panel.getHeader().getTitle().getText()).toBe('Bar');
             });
 
-            it("should not create a header when header:false", function () {
+            it("should not create a header when header:false", function() {
                 createPanel({
                     title: 'Foo',
                     header: false
@@ -372,7 +378,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
                     floated: true
                 });
                 panel.showBy(byCmp);
-                expect(panel.el.getX()).toBe(byCmp.el.getAnchorXY('b')[0] - panel.el.getWidth() / 2);
+                expect(panel.el.getX()).toBeApprox(byCmp.el.getAnchorXY('b')[0] - panel.el.getWidth() / 2);
                 expect(panel.el.getY()).toBe(byCmp.el.getRegion().bottom);
             });
 
@@ -384,7 +390,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
                 });
 
                 panel.showBy(byCmp, 'tl-bl', [10, 10]);
-                
+
                 expect(panel.el.getX()).toBe(byCmp.el.getX() + 10);
                 expect(panel.el.getY()).toBe(byCmp.el.getY() + byCmp.el.getHeight() + 10);
 
@@ -393,7 +399,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
     });
 
     describe("bodyStyle", function() {
-        it("should initialize style using a string", function () {
+        it("should initialize style using a string", function() {
             createPanel({
                 bodyStyle: 'position: absolute; cursor: pointer'
             });
@@ -402,7 +408,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
             expect(panel.bodyElement.getStyle('cursor')).toBe('pointer');
         });
 
-        it("should initialize bodyStyle using an object", function () {
+        it("should initialize bodyStyle using an object", function() {
             createPanel({
                 bodyStyle: {
                     position: 'absolute',
@@ -414,7 +420,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
             expect(panel.bodyElement.getStyle('cursor')).toBe('pointer');
         });
 
-        it("should set bodyStyle using a string", function () {
+        it("should set bodyStyle using a string", function() {
             createPanel();
 
             panel.setBodyStyle('position: absolute; cursor: pointer');
@@ -423,7 +429,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
             expect(panel.bodyElement.getStyle('cursor')).toBe('pointer');
         });
 
-        it("should set bodyStyle using an object", function () {
+        it("should set bodyStyle using an object", function() {
             createPanel();
 
             panel.setBodyStyle({
@@ -435,13 +441,49 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
             expect(panel.bodyElement.getStyle('cursor')).toBe('pointer');
         });
 
-        it("should throw an error when getStyle is called", function () {
+        it("should throw an error when getStyle is called", function() {
             createPanel();
 
-            expect(function () {
+            expect(function() {
                 panel.getBodyStyle();
             }).toThrow("'bodyStyle' is a write-only config.  To query element styles use the Ext.dom.Element API.");
         });
+
+        it("should set bodyStyle background transparent", function() {
+           createPanel();
+
+           var bodyEl = panel.bodyElement,
+               backgroundColor;
+
+           expect(bodyEl.dom.style.backgroundColor).toBe('');
+
+           backgroundColor = bodyEl.getStyle('backgroundColor');
+           expect(backgroundColor).toBe("rgb(255, 255, 255)");
+
+           panel.setBodyStyle({
+               background: 'transparent'
+           });
+
+           expect(bodyEl.dom.style.backgroundColor).toBe('transparent');
+
+           backgroundColor = bodyEl.getStyle('backgroundColor');
+
+           if (jasmine.browser.isEdge || jasmine.browser.isIE) {
+                expect(backgroundColor).toBe('transparent');
+           }
+ else {
+                expect(backgroundColor).toBe("rgba(0, 0, 0, 0)");
+           }
+
+           panel.setBodyStyle({
+               background: 'red'
+           });
+
+           expect(bodyEl.dom.style.backgroundColor).toBe('red');
+
+           backgroundColor = bodyEl.getStyle('backgroundColor');
+           expect(backgroundColor).toBe("rgb(255, 0, 0)");
+       });
     });
 
     describe("headerPosition", function() {
@@ -471,6 +513,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
 
         function expectBox(t, r, b, l) {
             var box = getBox();
+
             expect(box.top).toBe(t);
             expect(box.right).toBe(r);
             expect(box.bottom).toBe(b);
@@ -612,6 +655,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
 
     describe("ui", function() {
         var header, title;
+
         beforeEach(function() {
             createPanel({
                 html: 'Panel with ui',
@@ -656,11 +700,11 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
         });
     });
 
-    describe('convenient docked configs', function () {
-        function createDockTest (property, docked, options) {
+    describe('convenient docked configs', function() {
+        function createDockTest(property, docked, options) {
             options = options || {};
 
-            describe(property, function () {
+            describe(property, function() {
                 it('should add docked toolbar when specified as an array', function() {
                     var config = {
                         referenceHolder: true,
@@ -716,7 +760,9 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
                     panel.getViewModel().notify();
 
                     var tb = panel.lookup('a');
+
                     var item = panel.lookup('b');
+
                     var ca = panel.down('#compA');
 
                     expect(tb).toBe(ca);
@@ -733,6 +779,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
 
                 it("should not create a toolbar if the config is set to null", function() {
                     var config = {};
+
                     config[property] = null;
 
                     createPanel(config);
@@ -741,6 +788,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
 
                 describe("dynamic", function() {
                     var setter = Ext.Config.get(property).names.set;
+
                     describe("setting a value", function() {
                         it("should be able to set an array", function() {
                             createPanel();
@@ -750,6 +798,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
                             }]);
 
                             var tb = panel.down('toolbar');
+
                             expect(tb).not.toBeNull();
                             expect(tb.isAncestor(Ext.getCmp('a'))).toBe(true);
                         });
@@ -765,6 +814,7 @@ topSuite("Ext.Panel", ['Ext.app.ViewModel', 'Ext.Button'], function() {
                             });
 
                             var tb = panel.down('toolbar');
+
                             expect(tb).not.toBeNull();
                             expect(panel.down('#tb')).toBe(tb);
                             expect(tb.isAncestor(Ext.getCmp('a'))).toBe(true);

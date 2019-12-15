@@ -1,17 +1,17 @@
-describe('Ext.draw.modifier.Highlight', function () {
-    describe('filterChanges', function () {
+topSuite('Ext.draw.modifier.Highlight', ['Ext.draw.*'], function() {
+    describe('filterChanges', function() {
         var draw;
 
-        afterEach(function () {
+        afterEach(function() {
             Ext.destroy(draw);
         });
-
 
         // A visual test should be the most robust way to test this.
         // It's engine specific, but the Canvas engine is used by default on almost every platform,
         // except for IE8 and old (pre-Chrome) Android.
-        (!Ext.isChrome ? xit : it)('should not delete properties from the changes object', function () {
+        (!Ext.isChrome ? xit : it)('should not delete properties from the changes object', function() {
             var side = 100;
+
             draw = new Ext.draw.Container({
                 renderTo: document.body,
                 engine: 'Ext.draw.engine.Canvas',
@@ -19,6 +19,7 @@ describe('Ext.draw.modifier.Highlight', function () {
                 height: side
             });
             var surface = draw.getSurface();
+
             var instancing = new Ext.draw.sprite.Instancing({
                 template: {
                     type: 'square',
@@ -29,6 +30,7 @@ describe('Ext.draw.modifier.Highlight', function () {
                     translationY: 20
                 }
             });
+
             instancing.add({
                 translationX: 50,
                 translationY: 50

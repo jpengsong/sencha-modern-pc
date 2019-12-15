@@ -1,7 +1,6 @@
 /**
  * @class Ext.list.Tree
  */
-
 Ext.define('Ext.overrides.list.Tree', {
     override: 'Ext.list.Tree',
 
@@ -9,6 +8,7 @@ Ext.define('Ext.overrides.list.Tree', {
 
     constructor: function(config) {
         this.callParent([config]);
+
         // Track size so that we can track the expanded size
         // for use by the floated state of items when in micro mode.
         // Browsers where this event is not supported, fall back to a width
@@ -18,7 +18,7 @@ Ext.define('Ext.overrides.list.Tree', {
         }
     },
 
-    beforeLayout: function () {
+    beforeLayout: function() {
         this.syncIconSize();
     },
 

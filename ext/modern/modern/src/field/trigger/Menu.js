@@ -9,7 +9,8 @@ Ext.define('Ext.field.trigger.Menu', {
     cachedConfig: {
         /**
          * @cfg {String} menuAlign
-         * The position to align the menu to (see {@link Ext.util.Positionable#alignTo} for more details).
+         * The position to align the menu to (see {@link Ext.util.Positionable#alignTo} 
+         * for more details).
          */
         menuAlign: 'tl-bl?',
 
@@ -36,13 +37,13 @@ Ext.define('Ext.field.trigger.Menu', {
         }
     },
 
-    doDestroy: function () {
+    doDestroy: function() {
         this.setMenu(null);
 
         this.callParent();
     },
 
-    applyMenu: function (menu, oldMenu) {
+    applyMenu: function(menu, oldMenu) {
         if (menu) {
             if (Ext.isArray(menu)) {
                 menu = {
@@ -52,14 +53,14 @@ Ext.define('Ext.field.trigger.Menu', {
         }
 
         if (oldMenu && !this.getDestroyMenu()) {
-            //do not allow Ext.factory to destroy the old menu
+            // do not allow Ext.factory to destroy the old menu
             oldMenu = null;
         }
 
         return Ext.factory(menu, Ext.menu.Menu, oldMenu);
     },
 
-    updateMenu: function (menu, oldMenu) {
+    updateMenu: function(menu, oldMenu) {
         if (oldMenu && oldMenu.ownerCmp === this) {
             delete oldMenu.ownerCmp;
         }
@@ -69,17 +70,18 @@ Ext.define('Ext.field.trigger.Menu', {
         }
     },
 
-    onClick: function (e) {
+    onClick: function(e) {
         var menu = this.getMenu();
 
         if (menu) {
             this.showMenu(e, menu);
-        } else {
+        }
+        else {
             this.callParent([e]);
         }
     },
 
-    showMenu: function (e, menu) {
+    showMenu: function(e, menu) {
         var isPointerEvent = !e || e.pointerType;
 
         menu = menu || this.getMenu();
@@ -89,17 +91,21 @@ Ext.define('Ext.field.trigger.Menu', {
                 // Click/tap toggles the menu visibility.
                 if (isPointerEvent) {
                     menu.hide();
-                } else {
+                }
+                else {
                     menu.focus();
                 }
-            } else {
+            }
+            else {
                 menu.autoFocus = !isPointerEvent;
 
                 if (menu.isMenu) {
                     menu.showBy(this.element, this.getMenuAlign());
-                } else if (menu.isViewportMenu) {
+                }
+                else if (menu.isViewportMenu) {
                     menu.setDisplayed(!menu.getDisplayed());
-                } else {
+                }
+                else {
                     menu.show();
                 }
             }

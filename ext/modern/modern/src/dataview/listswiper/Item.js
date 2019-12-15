@@ -11,7 +11,6 @@ Ext.define('Ext.dataview.listswiper.Item', {
         leftActions: null,
         rightActions: null,
 
-
         /**
          * @cfg {Object} undo
          * A config object for the undo button.
@@ -59,12 +58,14 @@ Ext.define('Ext.dataview.listswiper.Item', {
 
     applyUndo: function(config) {
         var action = this.getAction();
+
         return Ext.apply({}, action && action.undoable, config);
     },
 
     onItemDestroy: function(item) {
         var me = this,
             plugin = me.owner;
+
         plugin.destroyItem(item);
     },
 
@@ -83,16 +84,16 @@ Ext.define('Ext.dataview.listswiper.Item', {
         list.fireEvent('itemaction' + type, list, obj);
 
         return Ext.callback(fn,
-            action.getScope && action.getScope() || action.scope,
-            [list, obj],
-            0, me);
+                            action.getScope && action.getScope() || action.scope,
+                            [list, obj],
+                            0, me);
     },
 
     updateState: function(state, oldState) {
         if (oldState) {
             this.removeCls(Ext.baseCSSPrefix + oldState);
         }
-        
+
         if (state) {
             this.addCls(Ext.baseCSSPrefix + state);
         }

@@ -64,7 +64,7 @@ $breadcrumb-glyph-color: dynamic($button-toolbar-glyph-color);
  * @var {string/list}
  * Glyph for the "folder" icon when {@link Global_CSS#$enable-font-icons} is `true`.
  */
-$breadcrumb-folder-glyph: dynamic($fa-var-folder-o $breadcrumb-glyph-font-size $font-icon-font-family);
+$breadcrumb-folder-glyph: dynamic($fa-var-folder $breadcrumb-glyph-font-size $font-icon-font-family);
 
 /**
  * @var {color}
@@ -76,7 +76,7 @@ $breadcrumb-folder-glyph-color: dynamic($breadcrumb-glyph-color);
  * @var {string/list}
  * Glyph for the "open folder" icon when {@link Global_CSS#$enable-font-icons} is `true`.
  */
-$breadcrumb-folder-open-glyph: dynamic($fa-var-folder-open-o $breadcrumb-glyph-font-size $font-icon-font-family);
+$breadcrumb-folder-open-glyph: dynamic($fa-var-folder-open $breadcrumb-glyph-font-size $font-icon-font-family);
 
 /**
  * @var {color}
@@ -88,7 +88,7 @@ $breadcrumb-folder-open-glyph-color: dynamic($breadcrumb-folder-glyph-color);
  * @var {string/list}
  * Glyph for the "leaf" icon when {@link Global_CSS#$enable-font-icons} is `true`.
  */
-$breadcrumb-leaf-glyph: dynamic($fa-var-file-o $breadcrumb-glyph-font-size $font-icon-font-family);
+$breadcrumb-leaf-glyph: dynamic($fa-var-file $breadcrumb-glyph-font-size $font-icon-font-family);
 
 /**
  * @var {color}

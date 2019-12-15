@@ -38,7 +38,8 @@ Ext.define('Ext.form.Borders', {
 
         if (fieldSeparators) {
             bodyElement.addCls(cls);
-        } else if (oldFieldSeparators) {
+        }
+        else if (oldFieldSeparators) {
             bodyElement.removeCls(cls);
         }
     },
@@ -49,7 +50,8 @@ Ext.define('Ext.form.Borders', {
 
         if (inputBorders === false) {
             bodyElement.addCls(cls);
-        } else if (oldInputBorders === false) {
+        }
+        else if (oldInputBorders === false) {
             bodyElement.removeCls(cls);
         }
     }

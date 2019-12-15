@@ -1,15 +1,27 @@
 /* global expect, Ext */
 
-topSuite("Ext.mixin.Responsive",
-    Ext.isModern ? ['Ext.viewport.Default', 'Ext.layout.*']
-                 :['Ext.container.Viewport', 'Ext.layout.container.*'],
-function () {
-    function stashProps (object, backup, props) {
-        for (var i = props.length; i-- > 0; ) {
+topSuite("Ext.mixin.Responsive", [
+        'Ext.Responsive'
+    ].concat(
+        Ext.isModern
+            ? [
+                'Ext.viewport.Default',
+                'Ext.layout.*',
+                'Ext.Panel'
+            ]
+            : [
+                'Ext.container.Viewport',
+                'Ext.layout.container.*'
+            ]),
+function() {
+    function stashProps(object, backup, props) {
+        for (var i = props.length; i-- > 0; /* empty */) {
             var name = props[i];
+
             if (name in backup) {
                 object[name] = backup[name];
-            } else {
+            }
+            else {
                 delete object[name];
             }
         }
@@ -45,22 +57,22 @@ function () {
         },
         env;
 
-    beforeEach(function () {
+    beforeEach(function() {
         Responsive = Ext.mixin.Responsive;
 
         oldGetOrientation = Ext.dom.Element.getOrientation;
         oldGetViewWidth = Ext.dom.Element.getViewportWidth;
         oldGetViewHeight = Ext.dom.Element.getViewportHeight;
 
-        Ext.dom.Element.getOrientation = function () {
+        Ext.dom.Element.getOrientation = function() {
             return env.orientation;
         };
 
-        Ext.dom.Element.getViewportWidth = function () {
+        Ext.dom.Element.getViewportWidth = function() {
             return env.width;
         };
 
-        Ext.dom.Element.getViewportHeight = function () {
+        Ext.dom.Element.getViewportHeight = function() {
             return env.height;
         };
 
@@ -99,13 +111,13 @@ function () {
                 }
             },
 
-            constructor: function (config) {
+            constructor: function(config) {
                 this.initConfig(config);
             }
         });
     });
 
-    afterEach(function () {
+    afterEach(function() {
         Ext.dom.Element.getOrientation = oldGetOrientation;
         Ext.dom.Element.getViewportWidth = oldGetViewWidth;
         Ext.dom.Element.getViewportHeight = oldGetViewHeight;
@@ -117,11 +129,11 @@ function () {
         expect(Responsive.count).toBe(0);
     });
 
-    describe('initialization', function () {
+    describe('initialization', function() {
         var backupProps = ['tablet', 'desktop'],
             backup;
 
-        beforeEach(function () {
+        beforeEach(function() {
             env = environments.ipad.landscape;
 
             backup = {};
@@ -131,35 +143,38 @@ function () {
             Ext.platformTags.tablet = true;
         });
 
-        afterEach(function () {
+        afterEach(function() {
             stashProps(backup, Ext.platformTags, backupProps);
         });
 
-        it('should init with landscape from class', function () {
+        it('should init with landscape from class', function() {
             instance = new Cls();
 
             var title = instance.getTitle();
+
             expect(title).toBe('Landscape');
         });
 
-        it('should init with landscape from class over instanceConfig', function () {
+        it('should init with landscape from class over instanceConfig', function() {
             instance = new Cls({
                 title: 'Foo' // the responsiveConfig will win
             });
 
             var title = instance.getTitle();
+
             expect(title).toBe('Landscape');
         });
 
-        it('should init with portrait from class', function () {
+        it('should init with portrait from class', function() {
             env = environments.ipad.portrait;
             instance = new Cls();
 
             var title = instance.getTitle();
+
             expect(title).toBe('Portrait');
         });
 
-        it('should init with wide from instanceConfig', function () {
+        it('should init with wide from instanceConfig', function() {
             instance = new Cls({
                 responsiveConfig: {
                     wide: {
@@ -172,10 +187,11 @@ function () {
             });
 
             var foo = instance.getFoo();
+
             expect(foo).toBe('Wide');
         });
 
-        it('should init with tall from instanceConfig', function () {
+        it('should init with tall from instanceConfig', function() {
             env = environments.ipad.portrait;
             instance = new Cls({
                 responsiveConfig: {
@@ -189,10 +205,11 @@ function () {
             });
 
             var foo = instance.getFoo();
+
             expect(foo).toBe('Tall');
         });
 
-        it('should init with landscape from instanceConfig', function () {
+        it('should init with landscape from instanceConfig', function() {
             instance = new Cls({
                 responsiveConfig: {
                     landscape: {
@@ -202,10 +219,11 @@ function () {
             });
 
             var title = instance.getTitle();
+
             expect(title).toBe('Landscape 2'); // instanceConfig wins
         });
 
-        it('should init with portrait not hidden by instanceConfig', function () {
+        it('should init with portrait not hidden by instanceConfig', function() {
             env = environments.ipad.portrait;
             instance = new Cls({
                 responsiveConfig: {
@@ -216,10 +234,11 @@ function () {
             });
 
             var title = instance.getTitle();
+
             expect(title).toBe('Portrait'); // not replaced by instanceConfig
         });
 
-        it('should init with platform.tablet from instanceConfig', function () {
+        it('should init with platform.tablet from instanceConfig', function() {
             instance = new Cls({
                 responsiveConfig: {
                     'platform.tablet': {
@@ -229,10 +248,11 @@ function () {
             });
 
             var foo = instance.getFoo();
+
             expect(foo).toBe('Tablet');
         });
 
-        it('should init with tablet from instanceConfig', function () {
+        it('should init with tablet from instanceConfig', function() {
             instance = new Cls({
                 responsiveConfig: {
                     tablet: {
@@ -242,10 +262,11 @@ function () {
             });
 
             var foo = instance.getFoo();
+
             expect(foo).toBe('Tablet');
         });
 
-        it('should preserve instanceConfig if responsiveConfig has no match', function () {
+        it('should preserve instanceConfig if responsiveConfig has no match', function() {
             instance = new Cls({
                 foo: 'Foo',
                 responsiveConfig: {
@@ -256,10 +277,11 @@ function () {
             });
 
             var foo = instance.getFoo();
+
             expect(foo).toBe('Foo');
         });
 
-        it('should preserve instanceConfig if responsiveConfig has no match w/o prefix', function () {
+        it('should preserve instanceConfig if responsiveConfig has no match w/o prefix', function() {
             instance = new Cls({
                 foo: 'Foo',
                 responsiveConfig: {
@@ -270,10 +292,11 @@ function () {
             });
 
             var foo = instance.getFoo();
+
             expect(foo).toBe('Foo');
         });
 
-        it('should pick responsiveConfig over instanceConfig', function () {
+        it('should pick responsiveConfig over instanceConfig', function() {
             instance = new Cls({
                 foo: 'Foo',
                 responsiveConfig: {
@@ -284,10 +307,11 @@ function () {
             });
 
             var foo = instance.getFoo();
+
             expect(foo).toBe('Tablet');
         });
 
-        it('should pick responsiveConfig over instanceConfig w/o prefix', function () {
+        it('should pick responsiveConfig over instanceConfig w/o prefix', function() {
             instance = new Cls({
                 foo: 'Foo',
                 responsiveConfig: {
@@ -298,15 +322,16 @@ function () {
             });
 
             var foo = instance.getFoo();
+
             expect(foo).toBe('Tablet');
         });
     }); // initializing
 
-    describe('formulas', function () {
+    describe('formulas', function() {
         var backupProps = ['tablet', 'desktop'],
             backup;
 
-        beforeEach(function () {
+        beforeEach(function() {
             env = environments.ipad.landscape;
 
             backup = {};
@@ -316,40 +341,43 @@ function () {
             Ext.platformTags.tablet = true;
         });
 
-        afterEach(function () {
+        afterEach(function() {
             stashProps(backup, Ext.platformTags, backupProps);
         });
 
-        it('should init on iPad Landscape using formulas from class', function () {
+        it('should init on iPad Landscape using formulas from class', function() {
             instance = new Cls();
 
             var bar = instance.getBar();
+
             expect(bar).toBe('L');
         });
 
-        it('should init on iPad Portrait using formulas from class', function () {
+        it('should init on iPad Portrait using formulas from class', function() {
             env = environments.ipad.portrait;
             instance = new Cls();
 
             var bar = instance.getBar();
+
             expect(bar).toBe('M');
         });
 
-        it('should init on iPhone Portrait using formulas from class', function () {
+        it('should init on iPhone Portrait using formulas from class', function() {
             env = environments.iphone.portrait;
             instance = new Cls();
 
             var bar = instance.getBar();
+
             expect(bar).toBe('S');
         });
 
     }); // formulas
 
-    describe('dynamic', function () {
+    describe('dynamic', function() {
         var backupProps = ['tablet', 'desktop'],
             backup;
 
-        beforeEach(function () {
+        beforeEach(function() {
             env = environments.ipad.landscape;
 
             backup = {};
@@ -359,11 +387,11 @@ function () {
             Ext.platformTags.tablet = true;
         });
 
-        afterEach(function () {
+        afterEach(function() {
             stashProps(backup, Ext.platformTags, backupProps);
         });
 
-        it('should update when responsive state changes', function () {
+        it('should update when responsive state changes', function() {
             instance = new Cls({
                 responsiveConfig: {
                     wide: {
@@ -376,6 +404,7 @@ function () {
             });
 
             var foo = instance.getFoo();
+
             expect(foo).toBe('Wide');
 
             env = environments.ipad.portrait;
@@ -385,10 +414,11 @@ function () {
             expect(foo).toBe('Tall');
         });
 
-        it('should update formulas when responsive state changes', function () {
+        it('should update formulas when responsive state changes', function() {
             instance = new Cls();
 
             var bar = instance.getBar();
+
             expect(bar).toBe('L');
 
             env = environments.ipad.portrait;
@@ -398,11 +428,11 @@ function () {
             expect(bar).toBe('M');
         });
     });
-    
+
     describe('use by responsive plugin', function() {
         var viewport,
             envWidth;
-        
+
         beforeEach(function() {
             env = environments.ipad.landscape;
             envWidth = env.width;
@@ -411,7 +441,7 @@ function () {
             env.width = envWidth;
             Ext.destroy(viewport);
         });
-        
+
         /**
          * This test tests reconfiguring container layouts in response to environment
          * changes.
@@ -449,7 +479,6 @@ function () {
                         region: 'west',
                         title: Ext.isModern ? 'Top Dock' : 'North Region',
                         width: 200,
-                        plugins: 'responsive',
                         layout: {
                             type: 'box',
                             align: 'stretch'
@@ -500,12 +529,11 @@ function () {
                         region: 'center',
                         title: 'Center Region',
                         html: 'Center Body Content',
-                        plugins: 'responsive',
-                            responsiveConfig: {
-                                'width < 600': {
+                        responsiveConfig: {
+                            'width < 600': {
                                 html: 'Should have a north region using hbox layout'
                             },
-                                'width >= 600': {
+                            'width >= 600': {
                                 html: 'Should have a west region using vbox layout'
                             }
                         }
@@ -519,12 +547,13 @@ function () {
 
             // While we're wide, buttons are in a vbox layout docked left
             expect(buttonContainer.getLayout().getVertical()).toBe(true);
-            
-            if (Ext.isClassic) {
+
+            if (Ext.isClassic) { // TODO
                 expect(buttonContainer.region).toBe('west');
                 haveText = Ext.String.trim(center.body.dom.innerText);
                 expect(haveText).toBe('Should have a west region using vbox layout');
-            } else {
+            }
+            else {
                 expect(buttonContainer.getDocked()).toBe('left');
                 expect(center.getHtml()).toBe('Should have a west region using vbox layout');
             }
@@ -532,15 +561,16 @@ function () {
             // Switch to narrow width, should change the whole arrangement.
             env.width = 400;
             Responsive.notify();
-            
+
             // Now we're narrow, buttons are in a hbox layout docked top
             expect(buttonContainer.getLayout().getVertical()).toBe(false);
-            
+
             if (Ext.isClassic) {
                 expect(buttonContainer.region).toBe('north');
                 haveText = Ext.String.trim(center.body.dom.innerText);
                 expect(haveText).toBe('Should have a north region using hbox layout');
-            } else {
+            }
+            else {
                 expect(buttonContainer.getDocked()).toBe('top');
                 expect(center.getHtml()).toBe('Should have a north region using hbox layout');
             }

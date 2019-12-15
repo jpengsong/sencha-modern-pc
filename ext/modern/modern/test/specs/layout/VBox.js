@@ -1,4 +1,4 @@
-describe("Ext.layout.VBox", function(){
+topSuite("Ext.layout.VBox", function() {
     var ct, c, hasWebkitHeightConstraintBug;
 
     (function() {
@@ -31,10 +31,10 @@ describe("Ext.layout.VBox", function(){
         return ct.items.getAt(index).element.getHeight();
     }
 
-    afterEach(function(){
+    afterEach(function() {
         ct = c = Ext.destroy(ct, c);
     });
-    
+
     describe("defaults", function() {
         var layout;
 
@@ -51,22 +51,22 @@ describe("Ext.layout.VBox", function(){
         afterEach(function() {
             layout = null;
         });
-        
+
         it("should have align: stretch", function() {
             expect(layout.getAlign()).toBe('stretch');
         });
 
-        it("should have constrainAlign: false", function () {
+        it("should have constrainAlign: false", function() {
             expect(layout.getConstrainAlign()).toBe(false);
         });
-        
+
         it("should have pack start", function() {
             expect(layout.getPack()).toBe('start');
-        });  
+        });
     });
 
-    describe('sizes as percentages', function () {
-        it('should correctly size items using percentages', function () {
+    describe('sizes as percentages', function() {
+        it('should correctly size items using percentages', function() {
             ct = Ext.widget({
                 xtype: 'container',
                 layout: {
@@ -97,18 +97,18 @@ describe("Ext.layout.VBox", function(){
             });
 
             expect(ct).toHaveLayout({
-                el: {w: 200, h: 300},
+                el: { w: 200, h: 300 },
                 items: {
-                    0: {el: {xywh: '0 0 100 60'}},
-                    1: {el: {xywh: '0 60 150 30'}},
-                    2: {el: {xywh: '0 90 200 70'}},
-                    3: {el: {xywh: '0 160 50 140'}}
+                    0: { el: { xywh: '0 0 100 60' } },
+                    1: { el: { xywh: '0 60 150 30' } },
+                    2: { el: { xywh: '0 90 200 70' } },
+                    3: { el: { xywh: '0 160 50 140' } }
                 }
             });
         });
     });
 
-    it("should apply margin to components", function(){
+    it("should apply margin to components", function() {
         ct = new Ext.container.Container({
             width: 200,
             height: 200,
@@ -123,16 +123,16 @@ describe("Ext.layout.VBox", function(){
                 margin: 5
             },
             items: [{}, {}]
-        });        
-        
+        });
+
         expect(getY(0)).toBe(5);
         expect(getX(0)).toBe(5);
-        
+
         expect(getY(1)).toBe(105);
         expect(getX(1)).toBe(5);
     });
-    
-    describe("pack", function(){
+
+    describe("pack", function() {
         function makeCt(pack, cfg) {
             ct = new Ext.container.Container(Ext.apply({
                 defaultType: 'component',
@@ -152,54 +152,54 @@ describe("Ext.layout.VBox", function(){
                 }]
             }, cfg));
         }
-            
+
         function getY(index) {
-            return ct.items.getAt(index).el.getY();    
+            return ct.items.getAt(index).el.getY();
         }
-        
-        it("should pack at the top with pack: start", function(){
+
+        it("should pack at the top with pack: start", function() {
             makeCt('start');
             expect(getY(0)).toBe(0);
             expect(getY(1)).toBe(30);
             expect(getY(2)).toBe(70);
         });
-        
-        it("should pack in the middle with pack: center", function(){
+
+        it("should pack in the middle with pack: center", function() {
             makeCt('center');
             expect(getY(0)).toBe(255);
             expect(getY(1)).toBe(285);
             expect(getY(2)).toBe(325);
         });
-        
-        it("should pack at the bottom with pack: cend", function(){
+
+        it("should pack at the bottom with pack: cend", function() {
             makeCt('end');
             expect(getY(0)).toBe(510);
             expect(getY(1)).toBe(540);
             expect(getY(2)).toBe(580);
         });
 
-        it("should pack: justify", function () {
+        it("should pack: justify", function() {
             makeCt('justify');
             expect(getY(0)).toBe(0);
             expect(getY(1)).toBe(285);
             expect(getY(2)).toBe(580);
         });
 
-        it("should pack: space-between", function () {
+        it("should pack: space-between", function() {
             makeCt('space-between');
             expect(getY(0)).toBe(0);
             expect(getY(1)).toBe(285);
             expect(getY(2)).toBe(580);
         });
 
-        it("should pack: space-around", function () {
+        it("should pack: space-around", function() {
             makeCt('space-around');
             expect(getY(0)).toBe(85);
             expect(getY(1)).toBe(285);
             expect(getY(2)).toBe(495);
         });
 
-        it("should pack start with maxHeighted items", function () {
+        it("should pack start with maxHeighted items", function() {
             // https://sencha.jira.com/browse/EXTJS-25260
             makeCt('start', {
                 // These items must not have a "height", only a "maxHeight"
@@ -224,7 +224,7 @@ describe("Ext.layout.VBox", function(){
             expect(getHeight(2)).toBe(100);
         });
 
-        it("should pack center with maxHeighted items", function () {
+        it("should pack center with maxHeighted items", function() {
             // https://sencha.jira.com/browse/EXTJS-25260
             makeCt('center', {
                 // These items must not have a "height", only a "maxHeight"
@@ -249,7 +249,7 @@ describe("Ext.layout.VBox", function(){
             expect(getHeight(2)).toBe(100);
         });
 
-        it("should pack end with maxHeighted items", function () {
+        it("should pack end with maxHeighted items", function() {
             // https://sencha.jira.com/browse/EXTJS-25260
             makeCt('end', {
                 // These items must not have a "height", only a "maxHeight"
@@ -276,7 +276,7 @@ describe("Ext.layout.VBox", function(){
     });
 
     describe("reverse", function() {
-        function makeCt (reverse){
+        function makeCt(reverse) {
             ct = new Ext.container.Container({
                 defaultType: 'component',
                 renderTo: Ext.getBody(),
@@ -310,8 +310,8 @@ describe("Ext.layout.VBox", function(){
             expect(getY(0)).toBe(400);
         });
     });
-    
-    describe("align", function(){
+
+    describe("align", function() {
         function makeCt(align, items, options) {
             options = options || {};
             ct = new Ext.container.Container({
@@ -331,10 +331,10 @@ describe("Ext.layout.VBox", function(){
                 items: items
             });
         }
-        
+
         describe("left/center/right", function() {
-        
-            it("should keep items at the left when using align: start", function(){
+
+            it("should keep items at the left when using align: start", function() {
                 makeCt('start', [{
                     html: '<div style="width: 20px"></div>'
                 }, {
@@ -343,18 +343,18 @@ describe("Ext.layout.VBox", function(){
                 expect(getX(0)).toBe(0);
                 expect(getX(1)).toBe(0);
             });
-        
-            it("should align items in the middle when using align: center", function(){
+
+            it("should align items in the middle when using align: center", function() {
                 makeCt('center', [{
-                    width: 100 
+                    width: 100
                 }, {
                     width: 300
-                }]);   
+                }]);
                 expect(getX(0)).toBe(250);
                 expect(getX(1)).toBe(150);
             });
-        
-            it("should keep items to the right when using align: end", function(){
+
+            it("should keep items to the right when using align: end", function() {
                 makeCt('end', [{
                     html: '<div style="width: 20px"></div>'
                 }, {
@@ -363,19 +363,20 @@ describe("Ext.layout.VBox", function(){
                 expect(getX(0)).toBe(600 - getWidth(0));
                 expect(getX(1)).toBe(600 - getWidth(1));
             });
-            
-            describe("constrainAlign", function(){
+
+            describe("constrainAlign", function() {
                 function makeLongString(c, len) {
                     var out = [],
                         i = 0;
-                        
+
                     for (; i < len; ++i) {
                         out.push(c);
                     }
+
                     return out.join(' ');
                 }
-                
-                it("should constrain a shrink wrapped item with align: left", function(){
+
+                it("should constrain a shrink wrapped item with align: left", function() {
                     makeCt('left', [{
                         html: makeLongString('A', 100)
                     }], {
@@ -385,8 +386,8 @@ describe("Ext.layout.VBox", function(){
                     expect(getWidth(0)).toBe(600);
                     expect(getX(0)).toBe(0);
                 });
-                
-                it("should constrain a shrink wrapped item with align: center", function(){
+
+                it("should constrain a shrink wrapped item with align: center", function() {
                     makeCt('center', [{
                         html: makeLongString('A', 100)
                     }], {
@@ -396,8 +397,8 @@ describe("Ext.layout.VBox", function(){
                     expect(getWidth(0)).toBe(600);
                     expect(getX(0)).toBe(0);
                 });
-                
-                it("should constrain a shrink wrapped item with align: right", function(){
+
+                it("should constrain a shrink wrapped item with align: right", function() {
                     makeCt('center', [{
                         html: makeLongString('A', 100)
                     }], {
@@ -407,8 +408,8 @@ describe("Ext.layout.VBox", function(){
                     expect(getWidth(0)).toBe(600);
                     expect(getX(0)).toBe(0);
                 });
-                
-                it("should not constrain a fixed width item", function(){
+
+                it("should not constrain a fixed width item", function() {
                     makeCt('left', [{
                         html: 'A',
                         width: 1000
@@ -418,8 +419,8 @@ describe("Ext.layout.VBox", function(){
                     });
                     expect(getWidth(0)).toBe(1000);
                 });
-                
-                it("should recalculate the top positions", function(){
+
+                it("should recalculate the top positions", function() {
                     makeCt('left', [{
                         html: makeLongString('A', 100)
                     }, {
@@ -428,16 +429,16 @@ describe("Ext.layout.VBox", function(){
                         constrainAlign: true,
                         autoSize: Ext.supports.PercentageSizeFlexBug ? false : null
                     });
-                    
+
                     expect(getY(0)).toBe(0);
-                    expect(getY(1)).toBe(getHeight(0));  
+                    expect(getY(1)).toBe(getHeight(0));
                 });
             });
         });
-        
+
         describe("stretch", function() {
-        
-            it("should stretch all items to the size of the largest when using align: stretch", function(){
+
+            it("should stretch all items to the size of the largest when using align: stretch", function() {
                 makeCt('stretch', [{
                     html: 'foo'
                 }, {
@@ -445,7 +446,7 @@ describe("Ext.layout.VBox", function(){
                 }, {
                     html: 'foo'
                 }], { width: null, floated: true });
-            
+
                 c = new Ext.Component({
                     html: 'foo bar baz',
                     floated: true,
@@ -453,14 +454,15 @@ describe("Ext.layout.VBox", function(){
                 });
 
                 var expected = c.element.getWidth();
+
                 c.destroy();
 
                 expect(getWidth(0)).toBe(expected);
                 expect(getWidth(1)).toBe(expected);
                 expect(getWidth(2)).toBe(expected);
             });
-            
-            it("should always use a fixed width over stretch", function(){
+
+            it("should always use a fixed width over stretch", function() {
                 makeCt('stretch', [{
                     width: 30
                 }, {
@@ -468,14 +470,14 @@ describe("Ext.layout.VBox", function(){
                 }, {
                     html: 'foo'
                 }]);
-            
+
                 expect(getWidth(0)).toBe(30);
                 expect(getWidth(1)).toBe(600);
                 expect(getWidth(2)).toBe(600);
             });
-            
+
             describe("minWidth", function() {
-                it("should stretch an item with a minWidth", function(){
+                it("should stretch an item with a minWidth", function() {
                     makeCt('stretch', [{
                         width: 30
                     }, {
@@ -484,8 +486,8 @@ describe("Ext.layout.VBox", function(){
                     expect(getWidth(0)).toBe(30);
                     expect(getWidth(1)).toBe(600);
                 });
-                
-                it("should stretch to the item with the largest minWidth", function(){
+
+                it("should stretch to the item with the largest minWidth", function() {
                     makeCt('stretch', [{
                         minWidth: 30
                     }, {
@@ -494,8 +496,8 @@ describe("Ext.layout.VBox", function(){
                     expect(getWidth(0)).toBe(50);
                     expect(getWidth(1)).toBe(50);
                 });
-                
-                it("should stretch a single item outside the bounds of the container", function(){
+
+                it("should stretch a single item outside the bounds of the container", function() {
                     makeCt('stretch', [{
                         minWidth: 1000,
                         html: 'Content...'
@@ -505,8 +507,8 @@ describe("Ext.layout.VBox", function(){
                     expect(getWidth(0)).toBe(1000);
                 });
             });
-            
-            it("should respect a maxWidth", function(){
+
+            it("should respect a maxWidth", function() {
                 makeCt('stretch', [{
                     width: 30
                 }, {
@@ -516,8 +518,8 @@ describe("Ext.layout.VBox", function(){
                 expect(getWidth(1)).toBe(20);
             });
         });
-        
-        it("should stretch all items to the container width", function(){
+
+        it("should stretch all items to the container width", function() {
             makeCt('stretch', [{
              }, {
              }]);
@@ -525,8 +527,8 @@ describe("Ext.layout.VBox", function(){
             expect(getWidth(1)).toBe(600);
         });
     });
-    
-    describe("height", function(){
+
+    describe("height", function() {
         function makeCt(items, options) {
             options = options || {};
             ct = new Ext.container.Container({
@@ -543,19 +545,19 @@ describe("Ext.layout.VBox", function(){
             });
         }
 
-        describe("flex only", function(){
-            it("should stretch a single flex item to the height of the container", function(){
+        describe("flex only", function() {
+            it("should stretch a single flex item to the height of the container", function() {
                 makeCt({
                     flex: 1
                 });
                 expect(getHeight(0)).toBe(600);
             });
-        
-            it("should stretch 3 equally flexed items equally", function(){
+
+            it("should stretch 3 equally flexed items equally", function() {
                 makeCt([{
                     flex: 1
                 }, {
-                    flex: 1    
+                    flex: 1
                 }, {
                     flex: 1
                 }]);
@@ -563,20 +565,20 @@ describe("Ext.layout.VBox", function(){
                 expect(getHeight(1)).toBe(200);
                 expect(getHeight(2)).toBe(200);
             });
-            
-            it("should flex 2 items according to ratio", function(){
+
+            it("should flex 2 items according to ratio", function() {
                 makeCt([{
-                    flex: 3    
+                    flex: 3
                 }, {
                     flex: 1
                 }]);
                 expect(getHeight(0)).toBe(450);
                 expect(getHeight(1)).toBe(150);
             });
-            
-            it("should flex 4 items according to ratio", function(){
+
+            it("should flex 4 items according to ratio", function() {
                 makeCt([{
-                    flex: 3    
+                    flex: 3
                 }, {
                     flex: 1
                 }, {
@@ -589,8 +591,8 @@ describe("Ext.layout.VBox", function(){
                 expect(getHeight(2)).toBe(225);
                 expect(getHeight(3)).toBe(75);
             });
-            
-            it("should use flex as a ratio", function(){
+
+            it("should use flex as a ratio", function() {
                 makeCt([{
                     flex: 4
                 }, {
@@ -600,33 +602,33 @@ describe("Ext.layout.VBox", function(){
                 expect(getHeight(1)).toBe(200);
             });
         });
-        
-        describe("fixed height only", function(){
-            it("should set the height of a single item", function(){
+
+        describe("fixed height only", function() {
+            it("should set the height of a single item", function() {
                 makeCt({
                     height: 200
-                });    
+                });
                 expect(getHeight(0)).toBe(200);
             });
-            
-            it("should set the height of multiple items", function(){
+
+            it("should set the height of multiple items", function() {
                 makeCt([{
                     height: 500
                 }, {
                     height: 50
-                }]);    
+                }]);
                 expect(getHeight(0)).toBe(500);
                 expect(getHeight(1)).toBe(50);
             });
-            
-            it("should allow a single item to exceed the container height", function(){
+
+            it("should allow a single item to exceed the container height", function() {
                 makeCt({
                     height: 900
                 });
                 expect(getHeight(0)).toBe(900);
             });
 
-            (hasWebkitHeightConstraintBug ? xit : it)("should not allow a single item with shrink: 1 to exceed the container height", function(){
+            (hasWebkitHeightConstraintBug ? xit : it)("should not allow a single item with shrink: 1 to exceed the container height", function() {
                 makeCt({
                     height: 900,
                     flex: {
@@ -636,7 +638,7 @@ describe("Ext.layout.VBox", function(){
                 expect(getHeight(0)).toBe(600);
             });
 
-            it("should allow multiple items to exceed the container height", function(){
+            it("should allow multiple items to exceed the container height", function() {
                 makeCt([{
                     height: 400
                 }, {
@@ -646,7 +648,7 @@ describe("Ext.layout.VBox", function(){
                 expect(getHeight(1)).toBe(400);
             });
 
-            (hasWebkitHeightConstraintBug ? xit : it)("should not allow multiple items with shrink: 1 to exceed the container height", function(){
+            (hasWebkitHeightConstraintBug ? xit : it)("should not allow multiple items with shrink: 1 to exceed the container height", function() {
                 makeCt([{
                     height: 400,
                     flex: {
@@ -663,8 +665,8 @@ describe("Ext.layout.VBox", function(){
             });
         });
 
-        describe("%age", function(){
-            it("should be able to use %age height", function(){
+        describe("%age", function() {
+            it("should be able to use %age height", function() {
                 makeCt([{
                     height: '50%'
                 }, {
@@ -675,8 +677,8 @@ describe("Ext.layout.VBox", function(){
                 expect(getHeight(0)).toBe(300);
                 expect(getHeight(1)).toBe(300);
             });
-            
-            it("should work with fixed height", function(){
+
+            it("should work with fixed height", function() {
                 makeCt([{
                     height: 100
                 }, {
@@ -690,8 +692,8 @@ describe("Ext.layout.VBox", function(){
                 expect(getHeight(1)).toBe(120);
                 expect(getHeight(2)).toBe(380);
             });
-            
-            it("should work with flex", function(){
+
+            it("should work with flex", function() {
                 makeCt([{
                     flex: 2
                 }, {
@@ -706,9 +708,9 @@ describe("Ext.layout.VBox", function(){
                 expect(getHeight(2)).toBe(120);
             });
         });
-        
-        describe("mixed", function(){
-            it("should give any remaining space to a single flexed item", function(){
+
+        describe("mixed", function() {
+            it("should give any remaining space to a single flexed item", function() {
                 makeCt([{
                     height: 200
                 }, {
@@ -717,8 +719,8 @@ describe("Ext.layout.VBox", function(){
                 expect(getHeight(0)).toBe(200);
                 expect(getHeight(1)).toBe(400);
             });
-            
-            it("should flex a single item with 2 fixed", function(){
+
+            it("should flex a single item with 2 fixed", function() {
                 makeCt([{
                     height: 100
                 }, {
@@ -730,21 +732,21 @@ describe("Ext.layout.VBox", function(){
                 expect(getHeight(1)).toBe(200);
                 expect(getHeight(2)).toBe(300);
             });
-            
-            it("should flex 2 items with 1 fixed", function(){
+
+            it("should flex 2 items with 1 fixed", function() {
                 makeCt([{
                     flex: 2
                 }, {
                     height: 300
                 }, {
                     flex: 1
-                }]);    
+                }]);
                 expect(getHeight(0)).toBe(200);
                 expect(getHeight(1)).toBe(300);
                 expect(getHeight(2)).toBe(100);
             });
 
-            it("should give priority to flex over a fixed height", function(){
+            it("should give priority to flex over a fixed height", function() {
                 makeCt([{
                     flex: 1,
                     height: 200
@@ -757,8 +759,8 @@ describe("Ext.layout.VBox", function(){
             });
         });
 
-        describe("min/max", function(){
-            it("should assign a 0 height if there is no more flex height", function(){
+        describe("min/max", function() {
+            it("should assign a 0 height if there is no more flex height", function() {
                 makeCt([{
                     flex: 1,
                     style: 'line-height:0'
@@ -768,8 +770,8 @@ describe("Ext.layout.VBox", function(){
                 expect(getHeight(0)).toBe(0);
                 expect(getHeight(1)).toBe(700);
             });
-            
-            it("should respect a minWidth on a flex even if there is no more flex width", function(){
+
+            it("should respect a minWidth on a flex even if there is no more flex width", function() {
                 makeCt([{
                     flex: 1,
                     minHeight: 50
@@ -779,8 +781,8 @@ describe("Ext.layout.VBox", function(){
                 expect(getHeight(0)).toBe(50);
                 expect(getHeight(1)).toBe(700);
             });
-            
-            it("should respect a minWidth on a flex even if there is no excess flex width", function(){
+
+            it("should respect a minWidth on a flex even if there is no excess flex width", function() {
                 makeCt([{
                     flex: 1,
                     maxHeight: 100
@@ -788,62 +790,71 @@ describe("Ext.layout.VBox", function(){
                     height: 300
                 }]);
                 expect(getHeight(0)).toBe(100);
-                expect(getHeight(1)).toBe(300);    
+                expect(getHeight(1)).toBe(300);
             });
 
             // Disabled in IE11 because it computes flex values incorrectly when using min-height
-            (Ext.isIE11 ? xit: it)("should update flex values based on min constraint", function(){
+            (Ext.isIE11 ? xit : it)("should update flex values based on min constraint", function() {
                 var c1 = new Ext.Component({
                     flex: 1,
                     minHeight: 500
-                }), c2 = new Ext.Component({
+                }),
+c2 = new Ext.Component({
                     flex: 1
                 });
+
                 makeCt([c1, c2]);
                 expect(c1.el.getHeight()).toBe(500);
                 expect(c2.el.getHeight()).toBe(100);
             });
 
             // Disabled in IE11 because it computes flex values incorrectly when using min-height
-            (Ext.isIE11 ? xit: it)("should handle multiple min constraints", function(){
+            (Ext.isIE11 ? xit : it)("should handle multiple min constraints", function() {
                  var c1 = new Ext.Component({
                     flex: 1,
                     minHeight: 250
-                }), c2 = new Ext.Component({
+                }),
+c2 = new Ext.Component({
                     flex: 1,
                     minHeight: 250
-                }), c3 = new Ext.Component({
+                }),
+c3 = new Ext.Component({
                     flex: 1
                 });
-                
+
                 makeCt([c1, c2, c3]);
                 expect(c1.el.getHeight()).toBe(250);
                 expect(c2.el.getHeight()).toBe(250);
                 expect(c3.el.getHeight()).toBe(100);
             });
-            
-            it("should update flex values based on max constraint", function(){
+
+            it("should update flex values based on max constraint", function() {
                 var c1 = new Ext.Component({
                     flex: 1,
                     maxHeight: 100
-                }), c2 = new Ext.Component({
+                }),
+c2 = new Ext.Component({
                     flex: 1
                 });
+
                 makeCt([c1, c2]);
                 expect(c1.el.getHeight()).toBe(100);
                 expect(c2.el.getHeight()).toBe(500);
             });
-            
-            it("should update flex values based on multiple max constraints", function(){
+
+            it("should update flex values based on multiple max constraints", function() {
                 var c1 = new Ext.Component({
                     flex: 1,
                     maxHeight: 100
-                }), c2 = new Ext.Component({
+                }),
+c2 = new Ext.Component({
                     flex: 1,
                     maxHeight: 100
-                }), c3 = new Ext.Component({
+                }),
+c3 = new Ext.Component({
                     flex: 1
                 });
+
                 makeCt([c1, c2, c3]);
                 expect(c1.el.getHeight()).toBe(100);
                 expect(c2.el.getHeight()).toBe(100);
@@ -854,13 +865,16 @@ describe("Ext.layout.VBox", function(){
                 var c1 = new Ext.Component({
                     flex: 1,
                     minHeight: 200
-                }), c2 = new Ext.Component({
+                }),
+c2 = new Ext.Component({
                     flex: 3,
                     minHeight: 200
-                }), c3 = new Ext.Component({
+                }),
+c3 = new Ext.Component({
                     flex: 1,
                     minHeight: 200
                 });
+
                 makeCt([c1, c2, c3]);
                 expect(c1.el.getHeight()).toBe(200);
                 expect(c2.el.getHeight()).toBe(200);
@@ -871,13 +885,16 @@ describe("Ext.layout.VBox", function(){
                 var c1 = new Ext.Component({
                     flex: 1,
                     maxHeight: 100
-                }), c2 = new Ext.Component({
+                }),
+c2 = new Ext.Component({
                     flex: 3,
                     maxHeight: 100
-                }), c3 = new Ext.Component({
+                }),
+c3 = new Ext.Component({
                     flex: 1,
                     maxHeight: 100
                 });
+
                 makeCt([c1, c2, c3]);
                 expect(c1.el.getHeight()).toBe(100);
                 expect(c2.el.getHeight()).toBe(100);
@@ -891,7 +908,7 @@ describe("Ext.layout.VBox", function(){
                     makeCt([{
                         height: '10%',
                         minHeight: 250
-                    },{
+                    }, {
                         flex: 1
                     }]);
                     expect(getHeight(0)).toBe(250);
@@ -905,7 +922,7 @@ describe("Ext.layout.VBox", function(){
                     makeCt([{
                         height: '90%',
                         maxHeight: 100
-                    },{
+                    }, {
                         flex: 1
                     }], {
                         autoSize: Ext.supports.PercentageSizeFlexBug ? false : null
@@ -917,7 +934,7 @@ describe("Ext.layout.VBox", function(){
             });
         });
 
-        describe("flex config parsing", function () {
+        describe("flex config parsing", function() {
             var item;
 
             function makeFlex(flex) {
@@ -933,7 +950,7 @@ describe("Ext.layout.VBox", function(){
                 item = ct.items.getAt(0);
             }
 
-            it("should not set any flex values by default", function () {
+            it("should not set any flex values by default", function() {
                 makeFlex();
 
                 expect(item.el.getStyle('flex-grow')).toBe('0');
@@ -941,7 +958,7 @@ describe("Ext.layout.VBox", function(){
                 expect(item.el.getStyle('flex-basis')).toBe('auto');
             });
 
-            it("should parse flex-grow as a string", function () {
+            it("should parse flex-grow as a string", function() {
                 makeFlex('1');
 
                 expect(item.el.getStyle('flex-grow')).toBe('1');
@@ -949,7 +966,7 @@ describe("Ext.layout.VBox", function(){
                 expect(parseInt(item.el.getStyle('flex-basis'))).toBe(0);
             });
 
-            it("should parse flex-grow and flex-shrink as a string", function () {
+            it("should parse flex-grow and flex-shrink as a string", function() {
                 makeFlex('1 2');
 
                 expect(item.el.getStyle('flex-grow')).toBe('1');
@@ -957,7 +974,7 @@ describe("Ext.layout.VBox", function(){
                 expect(parseInt(item.el.getStyle('flex-basis'))).toBe(0);
             });
 
-            it("should parse flex-grow, flex-shrink, and flex-basis as a string", function () {
+            it("should parse flex-grow, flex-shrink, and flex-basis as a string", function() {
                 makeFlex('1 2 100px');
 
                 expect(item.el.getStyle('flex-grow')).toBe('1');
@@ -965,7 +982,7 @@ describe("Ext.layout.VBox", function(){
                 expect(item.el.getStyle('flex-basis')).toBe('100px');
             });
 
-            it("should parse flex-grow as an object", function () {
+            it("should parse flex-grow as an object", function() {
                 makeFlex({
                     grow: 1
                 });
@@ -975,7 +992,7 @@ describe("Ext.layout.VBox", function(){
                 expect(item.el.getStyle('flex-basis')).toBe('auto');
             });
 
-            it("should parse flex-shrink as an object", function () {
+            it("should parse flex-shrink as an object", function() {
                 makeFlex({
                     shrink: 2
                 });
@@ -985,7 +1002,7 @@ describe("Ext.layout.VBox", function(){
                 expect(item.el.getStyle('flex-basis')).toBe('auto');
             });
 
-            it("should parse flex-basis as an object", function () {
+            it("should parse flex-basis as an object", function() {
                 makeFlex({
                     basis: '100px'
                 });
@@ -995,7 +1012,7 @@ describe("Ext.layout.VBox", function(){
                 expect(item.el.getStyle('flex-basis')).toBe('100px');
             });
 
-            it("should parse flex-grow, flex-shrink, and flex-basis as an object", function () {
+            it("should parse flex-grow, flex-shrink, and flex-basis as an object", function() {
                 makeFlex({
                     grow: 1,
                     shrink: 2,

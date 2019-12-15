@@ -1,7 +1,6 @@
 /**
  * @class Ext.list.TreeItem
  */
-
 Ext.define('Ext.overrides.list.TreeItem', {
     override: 'Ext.list.TreeItem',
 
@@ -27,10 +26,12 @@ Ext.define('Ext.overrides.list.TreeItem', {
                 el.dom.parentNode.insertBefore(placeholder, el.dom);
 
                 me.floater = me.createFloater(); // toolkit-specific
-            } else if (placeholder) {
+            }
+            else if (placeholder) {
                 wasExpanded = me.wasExpanded;
                 node = me.getNode();
                 me.setExpanded(wasExpanded);
+
                 if (!wasExpanded && node.isExpanded()) {
                     // If we have been floating and expanded a child, we may have been
                     // expanded as part of the ancestors. Attempt to restore state.
@@ -38,6 +39,7 @@ Ext.define('Ext.overrides.list.TreeItem', {
                     node.collapse();
                     me.preventAnimation = false;
                 }
+
                 me.floater.remove(me, false); // don't destroy
                 el.removeCls(me.floatedCls);
                 placeholder.dom.parentNode.insertBefore(el.dom, placeholder.dom);
@@ -66,7 +68,7 @@ Ext.define('Ext.overrides.list.TreeItem', {
     },
 
     privates: {
-        createFloater: function () {
+        createFloater: function() {
             var me = this,
                 owner = me.getOwner(),
                 ownerTree = me.up('treelist'),
@@ -80,7 +82,9 @@ Ext.define('Ext.overrides.list.TreeItem', {
             }
 
             me.floater = floater = new Ext.container.Container({
-                cls: ownerTree.self.prototype.element.cls + ' ' + ownerTree.uiPrefix + ownerTree.getUi() + ' ' + Ext.baseCSSPrefix + 'treelist-floater',
+                cls: ownerTree.self.prototype.element.cls + ' ' +
+                     ownerTree.uiPrefix + ownerTree.getUi() + ' ' +
+                     Ext.baseCSSPrefix + 'treelist-floater',
                 floating: true,
                 // We do not get element resize events on IE8
                 // so fall back to 6.0.1 sizing to 200 wide.
@@ -90,7 +94,7 @@ Ext.define('Ext.overrides.list.TreeItem', {
                 renderTo: Ext.getBody(),
                 listeners: {
                     element: 'el',
-                    click: function (e) {
+                    click: function(e) {
                         return owner.onClick(e);
                     }
                 }

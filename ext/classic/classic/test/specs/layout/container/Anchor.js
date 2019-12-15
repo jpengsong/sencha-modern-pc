@@ -47,7 +47,7 @@ function() {
 
             describe("configured width and height", function() {
                 var parentConfig = {
-                    height:100,
+                    height: 100,
                     width: 100
                 };
 
@@ -95,7 +95,7 @@ function() {
 
                 describe("naturally widthed child with long text", function() {
                     beforeEach(function() {
-                        makePanel(parentConfig, {html: longText});
+                        makePanel(parentConfig, { html: longText });
                     });
 
                     it("should wrap the text", function() {
@@ -109,10 +109,10 @@ function() {
 
                 describe("naturally widthed child with short text", function() {
                     beforeEach(function() {
-                        makePanel(parentConfig, {html: shortText});
+                        makePanel(parentConfig, { html: shortText });
                     });
 
-                    it("should not wrap the text", function (){
+                    it("should not wrap the text", function() {
                         expect(panel.child().getHeight()).toBe(20);
                     });
 
@@ -123,7 +123,7 @@ function() {
 
                 describe("naturally widthed child with long word", function() {
                     beforeEach(function() {
-                        makePanel(parentConfig, {html: shortText + ' ' + longWord});
+                        makePanel(parentConfig, { html: shortText + ' ' + longWord });
                     });
 
                     it("should wrap the text", function() {
@@ -137,7 +137,7 @@ function() {
 
                 describe("naturally widthed child without text", function() {
                     beforeEach(function() {
-                        makePanel(parentConfig, {height: 20});
+                        makePanel(parentConfig, { height: 20 });
                     });
 
                     it("should natuarally width the child", function() {
@@ -167,11 +167,11 @@ function() {
                 describe("overflow", function() {
 
                     describe("overflow x and y auto", function() {
-                        var overflowParentConfig = Ext.apply({}, {autoScroll: true}, parentConfig);
+                        var overflowParentConfig = Ext.apply({}, { autoScroll: true }, parentConfig);
 
                         describe("large vertical, no horizontal", function() {
                             beforeEach(function() {
-                                makePanel(overflowParentConfig, {anchor: '-2', height: 180});
+                                makePanel(overflowParentConfig, { anchor: '-2', height: 180 });
                             });
 
                             it("should have the correct scroll height", function() {
@@ -189,9 +189,9 @@ function() {
 
                         describe("small vertical, no horizontal", function() {
                             beforeEach(function() {
-                                makePanel(overflowParentConfig, {anchor: '-2', height: 79});
+                                makePanel(overflowParentConfig, { anchor: '-2', height: 79 });
                             });
-                            
+
                             var todoIt = Ext.isIE9m && !shrinkWrap ? xit : it;
 
                             todoIt("should have the correct scroll height", function() {
@@ -209,9 +209,9 @@ function() {
 
                         describe("large horizontal, no vertical", function() {
                             beforeEach(function() {
-                                makePanel(overflowParentConfig, {height: 20, width: 180});
+                                makePanel(overflowParentConfig, { height: 20, width: 180 });
                             });
-                            
+
                             var todoIt = Ext.isIE9 ? xit : it;
 
                             it("should have the correct scroll width", function() {
@@ -225,7 +225,7 @@ function() {
 
                         describe("small horizontal, no vertical", function() {
                             beforeEach(function() {
-                                makePanel(overflowParentConfig, {height: 20, width: 79});
+                                makePanel(overflowParentConfig, { height: 20, width: 79 });
                             });
 
                             var todoIt = Ext.isIE9m ? xit : it;
@@ -241,7 +241,7 @@ function() {
 
                         describe("large vertical, large horizontal", function() {
                             beforeEach(function() {
-                                makePanel(overflowParentConfig, {height: 180, width: 180});
+                                makePanel(overflowParentConfig, { height: 180, width: 180 });
                             });
 
                             it("should have the correct scroll height", function() {
@@ -255,7 +255,7 @@ function() {
 
                         describe("large vertical, small horizontal", function() {
                             beforeEach(function() {
-                                makePanel(overflowParentConfig, {height: 180, width: 79 - scrollbarWidth});
+                                makePanel(overflowParentConfig, { height: 180, width: 79 - scrollbarWidth });
                             });
 
                             it("should have the correct scroll height", function() {
@@ -269,7 +269,7 @@ function() {
 
                         describe("small vertical, large horizontal", function() {
                             beforeEach(function() {
-                                makePanel(overflowParentConfig, {height: 79 - scrollbarWidth, width: 180});
+                                makePanel(overflowParentConfig, { height: 79 - scrollbarWidth, width: 180 });
                             });
 
                             it("should have the correct scroll height", function() {
@@ -283,19 +283,19 @@ function() {
                     });
 
                     describe("overflow x auto, overflow y scroll", function() {
-                        var overflowParentConfig = Ext.apply({}, {style: 'overflow-x:auto;overflow-y:scroll;'}, parentConfig);
+                        var overflowParentConfig = Ext.apply({}, { style: 'overflow-x:auto;overflow-y:scroll;' }, parentConfig);
                         // TODO
 
                     });
 
                     describe("overflow x scroll, overflow y auto", function() {
-                        var overflowParentConfig = Ext.apply({}, {style: 'overflow-x:scroll;overflow-y:auto;'}, parentConfig);
+                        var overflowParentConfig = Ext.apply({}, { style: 'overflow-x:scroll;overflow-y:auto;' }, parentConfig);
 
                         // TODO
                     });
 
                     describe("overflow x and y scroll", function() {
-                        var overflowParentConfig = Ext.apply({}, {style: 'overflow:scroll;'}, parentConfig);
+                        var overflowParentConfig = Ext.apply({}, { style: 'overflow:scroll;' }, parentConfig);
 
                         // TODO
                     });
@@ -304,9 +304,9 @@ function() {
                 describe("percentage sized children", function() {
                     describe("overflow hidden", function() {
                         beforeEach(function() {
-                            makePanel(parentConfig, {style: 'height: 50%; width: 50%;'});
+                            makePanel(parentConfig, { style: 'height: 50%; width: 50%;' });
                         });
-                        
+
                         it("should width the child correctly", function() {
                             expect(panel.child().getWidth()).toBe(43);
                         });
@@ -317,10 +317,10 @@ function() {
                     });
 
                     describe("overflow auto", function() {
-                        var overflowParentConfig = Ext.apply({}, {style: 'overflow:scroll;'}, parentConfig);
+                        var overflowParentConfig = Ext.apply({}, { style: 'overflow:scroll;' }, parentConfig);
 
                         beforeEach(function() {
-                            makePanel(overflowParentConfig, {style: 'height: 50%; width: 50%;'});
+                            makePanel(overflowParentConfig, { style: 'height: 50%; width: 50%;' });
                         });
 
                         it("should width the child correctly", function() {
@@ -334,7 +334,7 @@ function() {
                 });
 
                 describe("autoScroll with no scrollbars", function() {
-                    var overflowParentConfig = Ext.apply({}, {autoScroll: true}, parentConfig);
+                    var overflowParentConfig = Ext.apply({}, { autoScroll: true }, parentConfig);
 
                     beforeEach(function() {
                         makePanel(overflowParentConfig, [
@@ -352,13 +352,12 @@ function() {
                 });
             });
 
-
             describe("configured height, shrink wrap width", function() {
                 var parentConfig = {
                     height: 100,
                     shrinkWrap: 1
                 };
-                 
+
                 describe("anchoring items using percentages", function() {
                     beforeEach(function() {
                         makePanel(parentConfig, [
@@ -407,7 +406,7 @@ function() {
 
                 describe("auto width child with text", function() {
                     beforeEach(function() {
-                        makePanel(parentConfig, {html: longText, height: 20});
+                        makePanel(parentConfig, { html: longText, height: 20 });
                     });
 
                     it("should not wrap the text", function() {
@@ -420,11 +419,11 @@ function() {
                 });
 
                 describe("overflow", function() {
-                    var overflowParentConfig = Ext.apply({}, {bodyStyle: 'overflow:auto;'}, parentConfig);
+                    var overflowParentConfig = Ext.apply({}, { bodyStyle: 'overflow:auto;' }, parentConfig);
 
                     describe("vertical", function() {
                         beforeEach(function() {
-                            makePanel(overflowParentConfig, {anchor: '0', height: 180, html: '<div style="width:80px;"></div>'});
+                            makePanel(overflowParentConfig, { anchor: '0', height: 180, html: '<div style="width:80px;"></div>' });
                         });
 
                         it("should have the correct scroll height", function() {
@@ -435,7 +434,7 @@ function() {
                         xit("should shrink wrap the width", function() {
                             expect(panel.getWidth()).toBe(100);
                         });
-                        
+
                         // TODO: enable this spec when https://sencha.jira.com/browse/EXTJSIV-5895 is fixed.
                         xit("should not have horizontal overflow", function() {
                             expect(panel.body.dom.scrollWidth).toBe(panel.getWidth() - scrollbarWidth);
@@ -500,7 +499,7 @@ function() {
 
                 describe("naturally widthed child with long text", function() {
                     beforeEach(function() {
-                        makePanel(parentConfig, {html: longText});
+                        makePanel(parentConfig, { html: longText });
                     });
 
                     it("should wrap the text", function() {
@@ -518,17 +517,17 @@ function() {
 
                 describe("naturally widthed child with short text", function() {
                     beforeEach(function() {
-                        makePanel(parentConfig, {html: shortText});
+                        makePanel(parentConfig, { html: shortText });
                     });
 
-                    it("should not wrap the text", function (){
+                    it("should not wrap the text", function() {
                         expect(panel.child().getHeight()).toBe(20);
                     });
 
                     it("should naturally width the child", function() {
                         expect(panel.child().getWidth()).toBe(78);
                     });
-                    
+
                     it("should shrink wrap the height", function() {
                         expect(panel.getHeight()).toBe(42);
                     });
@@ -536,7 +535,7 @@ function() {
 
                 describe("naturally widthed child with long word", function() {
                     beforeEach(function() {
-                        makePanel(parentConfig, {html: shortText + ' ' + longWord});
+                        makePanel(parentConfig, { html: shortText + ' ' + longWord });
                     });
 
                     it("should wrap the text", function() {
@@ -554,7 +553,7 @@ function() {
 
                 describe("naturally widthed child without text", function() {
                     beforeEach(function() {
-                        makePanel(parentConfig, {height: 20});
+                        makePanel(parentConfig, { height: 20 });
                     });
 
                     it("should naturally width the child", function() {
@@ -590,11 +589,11 @@ function() {
                 });
 
                 describe("overflow", function() {
-                    var overflowParentConfig = Ext.apply({}, {bodyStyle: 'overflow:auto;'}, parentConfig);
+                    var overflowParentConfig = Ext.apply({}, { bodyStyle: 'overflow:auto;' }, parentConfig);
 
                     describe("horizontal", function() {
                         beforeEach(function() {
-                            makePanel(overflowParentConfig, {height: 78 - scrollbarHeight, width: 180});
+                            makePanel(overflowParentConfig, { height: 78 - scrollbarHeight, width: 180 });
                         });
 
                         it("should have the correct scroll width", function() {
@@ -642,7 +641,7 @@ function() {
 
                 describe("auto width child with text", function() {
                     beforeEach(function() {
-                        makePanel(parentConfig, {html: longText, height: 20});
+                        makePanel(parentConfig, { html: longText, height: 20 });
                     });
 
                     it("should not wrap the text", function() {
@@ -660,7 +659,7 @@ function() {
 
                 describe("child with configured width", function() {
                     beforeEach(function() {
-                        makePanel(parentConfig, {width: 78, height: 78});
+                        makePanel(parentConfig, { width: 78, height: 78 });
                     });
 
                     it("should shrink wrap the width", function() {
@@ -687,40 +686,40 @@ function() {
                         xtype: 'form',
                         layout: 'absolute',
                         defaultType: 'textfield',
-                        items:[
+                        items: [
                             {
                                 x: 0,
                                 y: 5,
                                 xtype: 'label',
                                 text: 'From:'
-                            },{
+                            }, {
                                 x: 55,
                                 y: 0,
                                 name: 'from',
                                 hideLabel: true,
-                                anchor:'100%'  // anchor width by %
-                            },{
+                                anchor: '100%'  // anchor width by %
+                            }, {
                                 x: 0,
                                 y: 32,
                                 xtype: 'label',
                                 text: 'To:'
-                            },{
+                            }, {
                                 x: 55,
                                 y: 27,
                                 xtype: 'button',
                                 text: 'Contacts...'
-                            },{
+                            }, {
                                 x: 127,
                                 y: 27,
                                 name: 'to',
                                 hideLabel: true,
                                 anchor: '100%'  // anchor width by %
-                            },{
+                            }, {
                                 x: 0,
                                 y: 59,
                                 xtype: 'label',
                                 text: 'Subject:'
-                            },{
+                            }, {
                                 x: 55,
                                 y: 54,
                                 name: 'subject',
@@ -738,7 +737,7 @@ function() {
                                 border: "solid red 1px"
                             }
                         },
-                        items:[
+                        items: [
                             // these three will all end up with odd widths
                             // all three need to stretch to the 150 minWidth
                             // of the first
@@ -766,9 +765,9 @@ function() {
                                 border: "solid red 1px"
                             }
                         },
-                        items:[
+                        items: [
                             {
-                                x:0,
+                                x: 0,
                                 y: 0,
                                 value: 'a fairly long lable value',
                                 minWidth: 150
@@ -779,7 +778,7 @@ function() {
                                 value: 'a label'
                             },
                             {
-                                x:0,
+                                x: 0,
                                 y: 60,
                                 value: 'a'
                             },
@@ -790,8 +789,8 @@ function() {
                             // it's concievable that we may need to stretch the first one
                             // down to match the second one
                             {
-                                x:0,
-                                y:90,
+                                x: 0,
+                                y: 90,
                                 value: ['a', 'b', 'c', 'd']
                                     .join('<br>'),
                                 anchor: '-30 100%'
@@ -807,15 +806,15 @@ function() {
                             }
                         ]
                     },
-                    getChildren = function (comp) {
+                    getChildren = function(comp) {
                         return comp.items.items;
                     },
                     comp,
-                    getFailedLayoutCount = function(){
+                    getFailedLayoutCount = function() {
                         return (Ext.failedLayouts || 0) - failedLayouts;
                     };
 
-                beforeEach(function(){
+                beforeEach(function() {
                     Ext.define('AnchorTest.StretchPanel', {
                         extend: 'Ext.container.Container',
                         xtype: 'stretchpanel',
@@ -824,10 +823,11 @@ function() {
                             type: 'table',
                             columns: 1
                         },
-                        initComponent: function () {
+                        initComponent: function() {
                             if (this.columns) {
-                                this.layout = Ext.apply(this.layout, {columns: this.columns})
+                                this.layout = Ext.apply(this.layout, { columns: this.columns });
                             }
+
                             this.callParent();
                         }
                     });
@@ -835,21 +835,22 @@ function() {
                     failedLayouts = (Ext.failedLayouts || 0);
                 });
 
-                afterEach(function(){
+                afterEach(function() {
                     Ext.undefine('AnchorTest.StretchPanel');
-                    if(comp){
+
+                    if (comp) {
                         comp.destroy();
                         comp = null;
                     }
                 });
 
-                describe("shrinkWrap", function(){
+                describe("shrinkWrap", function() {
 
-                    it("should not cause layout failures when shrinkWrapped", function(){
+                    it("should not cause layout failures when shrinkWrapped", function() {
                         comp = Ext.ComponentManager.create({
                             renderTo: Ext.getBody(),
                             xtype: 'stretchpanel',
-                            items:[
+                            items: [
                                 absoluteDef
                             ]
                         });
@@ -857,12 +858,12 @@ function() {
                         expect(getFailedLayoutCount()).toBe(0);
                     });
 
-                    it("should shrinkWrap horizontally", function(){
+                    it("should shrinkWrap horizontally", function() {
 
                         comp = Ext.ComponentManager.create({
                             renderTo: Ext.getBody(),
                             xtype: 'stretchpanel',
-                            items:[
+                            items: [
                                 horizontalTest
                             ]
                         });
@@ -870,12 +871,12 @@ function() {
                         expect(comp.getWidth()).toBe(150);
                     });
 
-                    it("should stretchMax components horizontally when shrinkWrapped", function(){
+                    it("should stretchMax components horizontally when shrinkWrapped", function() {
 
                         comp = Ext.ComponentManager.create({
                             renderTo: Ext.getBody(),
                             xtype: 'stretchpanel',
-                            items:[
+                            items: [
                                 horizontalTest
                             ]
                         });
@@ -890,12 +891,12 @@ function() {
 
                     });
 
-                    it("should shrinkWrap vertically", function(){
+                    it("should shrinkWrap vertically", function() {
 
                         comp = Ext.ComponentManager.create({
                             renderTo: Ext.getBody(),
                             xtype: 'stretchpanel',
-                            items:[
+                            items: [
                                 verticalTest
                             ]
                         });
@@ -905,12 +906,12 @@ function() {
                         expect(comp.getHeight()).toBe(290);
                     });
 
-                    it("should stretchMax compnents vertically when shrinkWrapped", function(){
+                    it("should stretchMax compnents vertically when shrinkWrapped", function() {
 
                         comp = Ext.ComponentManager.create({
                             renderTo: Ext.getBody(),
                             xtype: 'stretchpanel',
-                            items:[
+                            items: [
                                 verticalTest
                             ]
                         });
@@ -934,9 +935,9 @@ function() {
 
     createSuite();
     createSuite(true);
-    
-    describe("layout failures", function(){
-        it("should work with a minHeight child", function(){
+
+    describe("layout failures", function() {
+        it("should work with a minHeight child", function() {
             var ct = new Ext.container.Container({
                 renderTo: Ext.getBody(),
                 width: 200,
@@ -946,9 +947,10 @@ function() {
                     minHeight: 70
                 }]
             });
+
             expect(ct.items.first().getHeight()).toBe(70);
             ct.destroy();
-        });  
+        });
     });
 
     it("should shrinkwrap height correctly when it contains both liquidLayout and non-liquidLayout items", function() {

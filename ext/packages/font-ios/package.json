@@ -1,6 +1,10 @@
 {
-    "name": "@extjs/ext-react-font-ios",
-    "version": "6.5.3.57",
+    "name": "@extjs/ext-font-ios",
+    "ext-react-name": "@extjs/ext-react-font-ios",
+    "ext-name": "@extjs/ext-font-ios",
+    "SenchaExtName": "@sencha/ext-font-ios",
+    "SenchaExtReactName": "@sencha/ext-react-font-ios",
+    "version": "7.0.0.156",
     "sencha": {
         "name": "font-ios",
         "namespace": "Ext",
@@ -8,8 +12,8 @@
         "creator": "Sencha",
         "summary": "iOS font icons",
         "detailedDescription": "Font icons used in the modern toolkit iOS theme",
-        "version": "6.5.3.57",
-        "compatVersion": "6.2.0",
+        "version": "7.0.0.156",
+        "compatVersion": "7.0.0",
         "format": "1",
         "output": "${framework.dir}/build/packages/${package.name}",
         "local": true,

@@ -105,7 +105,7 @@ Ext.define('Ext.app.bind.Template', {
     /**
      * @param {String} text The text of the template.
      */
-    constructor: function (text) {
+    constructor: function(text) {
         var me = this,
             initters = me._initters,
             name;
@@ -125,10 +125,10 @@ Ext.define('Ext.app.bind.Template', {
      * @since 5.0.0
      */
     _initters: {
-        apply: function (values, scope) {
+        apply: function(values, scope) {
             return this.parse().apply(values, scope);
         },
-        getTokens: function () {
+        getTokens: function() {
             return this.parse().getTokens();
         }
     },
@@ -143,7 +143,7 @@ Ext.define('Ext.app.bind.Template', {
      * @return {String}
      * @since 5.0.0
      */
-    apply: function (values, scope) {
+    apply: function(values, scope) {
         var me = this,
             slots = me.slots,
             buffer = me.buffer,
@@ -152,6 +152,7 @@ Ext.define('Ext.app.bind.Template', {
 
         for (i = 0; i < length; ++i) {
             slot = slots[i];
+
             if (slot) {
                 buffer[i] = slot(values, scope);
             }
@@ -174,7 +175,7 @@ Ext.define('Ext.app.bind.Template', {
      * Returns the distinct set of binding tokens for this template.
      * @return {String[]} The `tokens` for this template.
      */
-    getTokens: function () {
+    getTokens: function() {
         return this.tokens;
     },
 
@@ -184,7 +185,7 @@ Ext.define('Ext.app.bind.Template', {
      *
      * @private
      */
-    isStatic: function(){
+    isStatic: function() {
         var tokens = this.getTokens(),
             slots = this.slots;
 
@@ -201,7 +202,7 @@ Ext.define('Ext.app.bind.Template', {
          * @return {Ext.app.bind.Template} this
          * @private
          */
-        parse: function () {
+        parse: function() {
             // NOTE: The particulars of what is stored here, while private, are likely to be
             // important to Sencha Architect so changes need to be coordinated.
             var me = this,
@@ -216,16 +217,15 @@ Ext.define('Ext.app.bind.Template', {
                 i = 0,
                 esc = me.escapeChar,
                 lit = me.literalChar,
-                escaped, tokens, tokensMap,
-                lastEscaped, c, prev, key;
+                escaped, lastEscaped, c, prev, key;
 
             // Remove the initters so that we don't get called here again.
             for (key in me._initters) {
                 delete me[key];
             }
 
-            me.tokens = tokens = [];
-            me.tokensMap = tokensMap = {};
+            me.tokens = [];
+            me.tokensMap = {};
 
             // text = 'Hello {foo:this.fmt(2,4)} World {bar} - {1}'
             while (i < length) {
@@ -236,21 +236,27 @@ Ext.define('Ext.app.bind.Template', {
                 if (escaped) {
                     c = text[i + 1];
                     ++i;
-                } else if (c === lit && prev === lit && !lastEscaped) {
+                }
+                else if (c === lit && prev === lit && !lastEscaped) {
                     current = current.slice(0, -1);
                     current += text.substring(i + 1);
+
                     break;
-                } else if (c === '{') {
+                }
+                else if (c === '{') {
                     if (current) {
                         buffer[pos++] = current;
                         current = '';
                     }
+
                     // parse expression
                     parser.reset(text, i + 1);
                     i = me.parseExpression(parser, pos);
                     ++pos;
+
                     continue;
                 }
+
                 current += c;
                 ++i;
                 prev = c;
@@ -269,10 +275,11 @@ Ext.define('Ext.app.bind.Template', {
 
         parseExpression: function(parser, pos) {
             var i;
+
             this.slots[pos] = parser.compileExpression(this.tokens, this.tokensMap);
 
-            i = parser.token.at + 1;  // skip over the "}" token
-            parser.expect('}');      // ensure the next token is "}"
+            i = parser.token.at + 1; // skip over the "}" token
+            parser.expect('}'); // ensure the next token is "}"
 
             return i;
         }

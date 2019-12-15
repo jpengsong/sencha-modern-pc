@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * A special type of Grid {@link Ext.grid.column.Column} that provides automatic
  * row numbering.
@@ -15,13 +16,15 @@
  *
  */
 Ext.define('Ext.grid.column.RowNumberer', {
+    /* eslint-enable max-len */
     extend: 'Ext.grid.column.Column',
     alternateClassName: 'Ext.grid.RowNumberer',
     alias: 'widget.rownumberer',
 
     /**
      * @property {Boolean} isRowNumberer
-     * `true` in this class to identify an object as an instantiated RowNumberer, or subclass thereof.
+     * `true` in this class to identify an object as an instantiated RowNumberer,
+     * or subclass thereof.
      */
     isRowNumberer: true,
 
@@ -73,11 +76,13 @@ Ext.define('Ext.grid.column.RowNumberer', {
      */
     ignoreExport: true,
 
-    constructor: function (config) {
+    constructor: function(config) {
         var me = this;
 
         // Copy the prototype's default width setting into an instance property to provide
-        // a default width which will not be overridden by Container.applyDefaults use of Ext.applyIf
+        // a default width which will not be overridden by Container.applyDefaults
+        // use of Ext.applyIf
+        // eslint-disable-next-line no-self-assign
         me.width = me.width;
 
         me.callParent(arguments);
@@ -93,31 +98,31 @@ Ext.define('Ext.grid.column.RowNumberer', {
      * @inheritdoc
      */
     resizable: false,
-    
+
     /**
      * @cfg hideable
      * @inheritdoc
      */
     hideable: false,
-    
+
     /**
      * @cfg menuDisabled
      * @inheritdoc
      */
     menuDisabled: true,
-    
+
     /**
      * @cfg dataIndex
      * @inheritdoc
      */
     dataIndex: '',
-    
+
     /**
      * @cfg cls
      * @inheritdoc
      */
     cls: Ext.baseCSSPrefix + 'row-numberer',
-    
+
     /**
      * @cfg tdCls
      * @inheritdoc
@@ -128,7 +133,7 @@ Ext.define('Ext.grid.column.RowNumberer', {
 
     onAdded: function() {
         var me = this;
-        
+
         // Coalesce multiple item mutation events by routing them to a buffered function
         me.renumberRows = Ext.Function.createBuffered(me.renumberRows, 1, me);
 
@@ -145,15 +150,15 @@ Ext.define('Ext.grid.column.RowNumberer', {
         var me = this;
 
         me.callParent(arguments);
-        
+
         if (me.storeListener) {
             me.storeListener = me.storeListener.destroy();
         }
-        
+
         if (me.renumberRows.timer) {
             Ext.undefer(me.renumberRows.timer);
         }
-        
+
         me.renumberRows = null;
         delete me.renumberRows;
     },
@@ -171,14 +176,16 @@ Ext.define('Ext.grid.column.RowNumberer', {
         if (page > 1) {
             result += (page - 1) * dataSource.pageSize;
         }
+
         return result + 1;
     },
 
     updater: function(cell, value, record, view, dataSource) {
         var cellInner = cell && cell.querySelector(this.getView().innerSelector);
-        
+
         if (cellInner) {
-            cellInner.innerHTML = this.defaultRenderer(value, null, record, null, null, dataSource, view);
+            cellInner.innerHTML =
+                this.defaultRenderer(value, null, record, null, null, dataSource, view);
         }
     },
 
@@ -186,7 +193,8 @@ Ext.define('Ext.grid.column.RowNumberer', {
         if (this.destroying || this.destroyed) {
             return;
         }
-        
+
+        // eslint-disable-next-line vars-on-top
         var me = this,
             view = me.getView(),
             dataSource = view.dataSource,

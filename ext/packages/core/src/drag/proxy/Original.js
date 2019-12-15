@@ -5,11 +5,11 @@ Ext.define('Ext.drag.proxy.Original', {
     extend: 'Ext.drag.proxy.None',
     alias: 'drag.proxy.original',
 
-    getElement: function (info) {
+    getElement: function(info) {
         return info.source.getElement();
     },
 
-    getPositionable: function (info) {
+    getPositionable: function(info) {
         var source = info.source;
 
         return source.getComponent() || source.getElement();

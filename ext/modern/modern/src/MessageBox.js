@@ -1,13 +1,15 @@
 /**
- * Utility class for generating different styles of message boxes. The framework provides a global singleton
- * {@link Ext.Msg} for common usage which you should use in most cases.
+ * Utility class for generating different styles of message boxes. The framework provides a global
+ * singleton {@link Ext.Msg} for common usage which you should use in most cases.
  *
- * If you want to use {@link Ext.MessageBox} directly, just think of it as a modal {@link Ext.Container}.
+ * If you want to use {@link Ext.MessageBox} directly, just think of it as a modal
+ * {@link Ext.Container}.
  *
- * Note that the MessageBox is asynchronous. Unlike a regular JavaScript `alert` (which will halt browser execution),
- * showing a MessageBox will not cause the code to stop. For this reason, if you have code that should only run _after_
- * some user feedback from the MessageBox, you must use a callback function (see the `fn` configuration option parameter
- * for the {@link #method-show show} method for more details).
+ * Note that the MessageBox is asynchronous. Unlike a regular JavaScript `alert` (which will halt
+ * browser execution), showing a MessageBox will not cause the code to stop. For this reason, if
+ * you have code that should only run _after_ some user feedback from the MessageBox, you must use
+ * a callback function (see the `fn` configuration option parameter for the
+ * {@link #method-show show} method for more details).
  *
  *     @example
  *     Ext.Msg.alert('Title', 'The quick brown fox jumped over the lazy dog.', Ext.emptyFn);
@@ -39,7 +41,8 @@ Ext.define('Ext.MessageBox', {
         // @cmd-auto-dependency {defaultType: 'Ext.Button', requires: ['Ext.Toolbar']}
         /**
          * @cfg {Array/Object} buttons
-         * An array of buttons, or an object of a button to be displayed in the toolbar of this {@link Ext.MessageBox}.
+         * An array of buttons, or an object of a button to be displayed in the toolbar of this
+         * {@link Ext.MessageBox}.
          */
         buttons: null,
 
@@ -59,12 +62,14 @@ Ext.define('Ext.MessageBox', {
         // @cmd-auto-dependency { requires: ['Ext.field.Text', 'Ext.field.TextArea'] }
         /**
          * @cfg {Object} prompt
-         * The configuration to be passed if you want an {@link Ext.field.Text} or {@link Ext.field.TextArea} field
-         * in your {@link Ext.MessageBox}.
+         * The configuration to be passed if you want an {@link Ext.field.Text} or
+         * {@link Ext.field.TextArea} field in your {@link Ext.MessageBox}.
          *
-         * Pass an object with the property `multiLine` with a value of `true`, if you want the prompt to use a TextArea.
+         * Pass an object with the property `multiLine` with a value of `true`, if you want the
+         * prompt to use a TextArea.
          *
-         * Alternatively, you can just pass in an object which has an xtype/xclass of another component.
+         * Alternatively, you can just pass in an object which has an xtype/xclass of another
+         * component.
          *
          *     prompt: {
          *         xtype: 'textareafield',
@@ -116,14 +121,14 @@ Ext.define('Ext.MessageBox', {
     ],
 
     statics: {
-        INFO    : Ext.baseCSSPrefix + 'msgbox-info',
-        WARNING : Ext.baseCSSPrefix + 'msgbox-warning',
+        INFO: Ext.baseCSSPrefix + 'msgbox-info',
+        WARNING: Ext.baseCSSPrefix + 'msgbox-warning',
         QUESTION: Ext.baseCSSPrefix + 'msgbox-question',
-        ERROR   : Ext.baseCSSPrefix + 'msgbox-error',
+        ERROR: Ext.baseCSSPrefix + 'msgbox-error',
 
-        OK    : { ok: 'me.onClick' },
-        YES   : { yes: 'me.onClick' },
-        NO    : { no: 'me.onClick' },
+        OK: { ok: 'me.onClick' },
+        YES: { yes: 'me.onClick' },
+        NO: { no: 'me.onClick' },
         CANCEL: { cancel: 'me.onClick' },
 
         OKCANCEL: {
@@ -147,6 +152,12 @@ Ext.define('Ext.MessageBox', {
      * @private
      */
     constructor: function(config) {
+        var allowedConfigs = [
+                'ui', 'showAnimation', 'hideAnimation', 'title', 'message', 'prompt',
+                'iconCls', 'buttons', 'defaultTextHeight'
+            ],
+            ln, i, allowedConfig;
+
         config = config || {};
 
         if (config.hasOwnProperty('multiline') || config.hasOwnProperty('multiLine')) {
@@ -160,9 +171,7 @@ Ext.define('Ext.MessageBox', {
         }
 
         this.defaultAllowedConfig = {};
-        var allowedConfigs = ['ui', 'showAnimation', 'hideAnimation', 'title', 'message', 'prompt', 'iconCls', 'buttons', 'defaultTextHeight'],
-            ln = allowedConfigs.length,
-            i, allowedConfig;
+        ln = allowedConfigs.length;
 
         for (i = 0; i < ln; i++) {
             allowedConfig = allowedConfigs[i];
@@ -194,7 +203,8 @@ Ext.define('Ext.MessageBox', {
         if (Ext.isSimpleObject(header)) {
             header.title = newTitle;
             this.setHeader(header);
-        } else if (Ext.isFunction(header.setTitle)) {
+        }
+        else if (Ext.isFunction(header.setTitle)) {
             header.setTitle(newTitle);
         }
     },
@@ -204,8 +214,8 @@ Ext.define('Ext.MessageBox', {
      */
     applyMessage: function(config) {
         config = {
-            html : config,
-            cls  : this.baseCls + '-text'
+            html: config,
+            cls: this.baseCls + '-text'
         };
 
         return Ext.factory(config, Ext.Component, this._message);
@@ -242,6 +252,7 @@ Ext.define('Ext.MessageBox', {
                 hidden: (config) ? false : true,
                 cls: Ext.baseCSSPrefix + 'icon ' + config
             };
+
             return Ext.factory(config, Ext.Component, this._iconCls);
         }
 
@@ -252,7 +263,7 @@ Ext.define('Ext.MessageBox', {
      * @private
      */
     updateIconCls: function(newIconCls, oldIconCls) {
-        //ensure the title and button elements are added first
+        // ensure the title and button elements are added first
         this.getTitle();
         this.getButtons();
 
@@ -270,6 +281,7 @@ Ext.define('Ext.MessageBox', {
 
         if (icon) {
             iconCls = icon.getCls();
+
             return (iconCls) ? iconCls[0] : null;
         }
 
@@ -280,8 +292,10 @@ Ext.define('Ext.MessageBox', {
      * @private
      */
     applyPrompt: function(prompt) {
+        var config;
+
         if (prompt) {
-            var config = {
+            config = {
                 label: false
             };
 
@@ -290,9 +304,15 @@ Ext.define('Ext.MessageBox', {
             }
 
             if (config.multiLine) {
-                config.height = Ext.isNumber(config.multiLine) ? parseFloat(config.multiLine) : this.getDefaultTextHeight();
+                config.height = Ext.isNumber(config.multiLine)
+                    ? parseFloat(config.multiLine)
+                    : this.getDefaultTextHeight();
+
+                // eslint-disable-next-line dot-notation
                 return Ext.factory(config, Ext.field['TextArea'], this.getPrompt());
-            } else {
+            }
+            else {
+                // eslint-disable-next-line dot-notation
                 return Ext.factory(config, Ext.field['Text'], this.getPrompt());
             }
         }
@@ -317,7 +337,7 @@ Ext.define('Ext.MessageBox', {
      * @private
      * Pass `fn` config to show method instead.
      */
-    onClick: function (button) {
+    onClick: function(button) {
         var me = this,
             msgBoxOptions = me.msgBoxOptions,
             prompt = me.getPrompt(),
@@ -325,7 +345,7 @@ Ext.define('Ext.MessageBox', {
             which;
 
         if (button) {
-            if (typeof fn == 'function') {
+            if (typeof fn === 'function') {
                 button.disable();
 
                 prompt = prompt ? prompt.getValue() : null;
@@ -333,7 +353,7 @@ Ext.define('Ext.MessageBox', {
 
                 me.on({
                     single: true,
-                    hiddenchange: function () {
+                    hiddenchange: function() {
                         fn.call(msgBoxOptions.scope || me, which, prompt, msgBoxOptions);
                         button.enable();
                     }
@@ -368,17 +388,20 @@ Ext.define('Ext.MessageBox', {
      * @param {Object} msgBoxOptions An object with the following config msgBoxOptions:
      *
      * @param {Object/Array} [msgBoxOptions.buttons=false]
-     * A button config object or Array of the same(e.g., `Ext.MessageBox.OKCANCEL` or `{text:'Foo', itemId:'cancel'}`),
-     * or false to not show any buttons.
+     * A button config object or Array of the same(e.g., `Ext.MessageBox.OKCANCEL` or
+     * `{text:'Foo', itemId:'cancel'}`), or false to not show any buttons.
      *
      * @param {String} msgBoxOptions.cls
      * A custom CSS class to apply to the message box's container element.
      *
      * @param {Function} msgBoxOptions.fn
-     * A callback function which is called when the dialog is dismissed by clicking on the configured buttons.
+     * A callback function which is called when the dialog is dismissed by clicking on the
+     * configured buttons.
      *
-     * @param {String} msgBoxOptions.fn.buttonId The `itemId` of the button pressed, one of: 'ok', 'yes', 'no', 'cancel'.
-     * @param {String} msgBoxOptions.fn.value Value of the input field if either `prompt` or `multiline` option is `true`.
+     * @param {String} msgBoxOptions.fn.buttonId The `itemId` of the button pressed, one of: 'ok',
+     * 'yes', 'no', 'cancel'.
+     * @param {String} msgBoxOptions.fn.value Value of the input field if either `prompt` or
+     * `multiline` option is `true`.
      * @param {Object} msgBoxOptions.fn.opt The config object passed to show.
      *
      * @param {Number} [msgBoxOptions.width=auto]
@@ -405,8 +428,9 @@ Ext.define('Ext.MessageBox', {
      * The default height in pixels of the message box's multiline textarea if displayed.
      *
      * @param {Boolean} [msgBoxOptions.prompt=false]
-     * `true` to prompt the user to enter single-line text. Please view the {@link Ext.MessageBox#method-prompt} documentation in {@link Ext.MessageBox}.
-     * for more information.
+     * `true` to prompt the user to enter single-line text. Please view the
+     * {@link Ext.MessageBox#method-prompt} documentation in {@link Ext.MessageBox} for more
+     * information.
      *
      * @param {Boolean} [msgBoxOptions.multiline=false]
      * `true` to prompt the user to enter multi-line text.
@@ -421,7 +445,7 @@ Ext.define('Ext.MessageBox', {
      *
      * @return {Ext.MessageBox} this
      */
-    show: function (msgBoxOptions, options) {
+    show: function(msgBoxOptions, options) {
         var me = this,
             buttons, config, prompt;
 
@@ -454,9 +478,11 @@ Ext.define('Ext.MessageBox', {
         me.msgBoxOptions = msgBoxOptions;
 
         buttons = me.getButtons();
-        buttons.items.each(function (btn) {
+        buttons.items.each(function(btn) {
+            var value;
+
             if (btn.isButton) {
-                var value = btn.getScope();
+                value = btn.getScope();
 
                 if (btn.fn && value) {
                     btn.fn = btn.fn.bind(value);
@@ -472,6 +498,7 @@ Ext.define('Ext.MessageBox', {
         });
 
         prompt = me.getPrompt();
+
         if (prompt) {
             prompt.setValue(msgBoxOptions.value || '');
         }
@@ -482,15 +509,19 @@ Ext.define('Ext.MessageBox', {
     },
 
     /**
-     * Displays a standard read-only message box with an OK button (comparable to the basic JavaScript alert prompt). If
-     * a callback function is passed it will be called after the user clicks the button, and the `itemId` of the button
-     * that was clicked will be passed as the only parameter to the callback.
+     * Displays a standard read-only message box with an OK button (comparable to the basic
+     * JavaScript alert prompt). If a callback function is passed it will be called after the user
+     * clicks the button, and the `itemId` of the button that was clicked will be passed as the
+     * only parameter to the callback.
      *
      * @param {String} title The title bar text.
      * @param {String} message The message box body text.
-     * @param {Function} [fn] A callback function which is called when the dialog is dismissed by clicking on the configured buttons.
-     * @param {String} fn.buttonId The `itemId` of the button pressed, one of: 'ok', 'yes', 'no', 'cancel'.
-     * @param {String} fn.value Value of the input field if either `prompt` or `multiLine` option is `true`.
+     * @param {Function} [fn] A callback function which is called when the dialog is dismissed by
+     * clicking on the configured buttons.
+     * @param {String} fn.buttonId The `itemId` of the button pressed, one of: 'ok', 'yes', 'no',
+     * 'cancel'.
+     * @param {String} fn.value Value of the input field if either `prompt` or `multiLine` option
+     * is `true`.
      * @param {Object} fn.opt The config object passed to show.
      * @param {Object} [scope] The scope (`this` reference) in which the callback is executed.
      * Defaults to: the browser window
@@ -514,15 +545,21 @@ Ext.define('Ext.MessageBox', {
     },
 
     /**
-     * Displays a confirmation message box with Yes and No buttons (comparable to JavaScript's confirm). If a callback
-     * function is passed it will be called after the user clicks either button, and the id of the button that was
-     * clicked will be passed as the only parameter to the callback (could also be the top-right close button).
+     * Displays a confirmation message box with Yes and No buttons (comparable to JavaScript's
+     * confirm). If a callback
+     * function is passed it will be called after the user clicks either button, and the id of the
+     * button that was
+     * clicked will be passed as the only parameter to the callback (could also be the top-right
+     * close button).
      *
      * @param {String} title The title bar text.
      * @param {String} message The message box body text.
-     * @param {Function} fn A callback function which is called when the dialog is dismissed by clicking on the configured buttons.
-     * @param {String} fn.buttonId The `itemId` of the button pressed, one of: 'ok', 'yes', 'no', 'cancel'.
-     * @param {String} fn.value Value of the input field if either `prompt` or `multiLine` option is `true`.
+     * @param {Function} fn A callback function which is called when the dialog is dismissed by
+     * clicking on the configured buttons.
+     * @param {String} fn.buttonId The `itemId` of the button pressed, one of: 'ok', 'yes', 'no',
+     * 'cancel'.
+     * @param {String} fn.value Value of the input field if either `prompt` or `multiLine` option
+     * is `true`.
      * @param {Object} fn.opt The config object passed to show.
      * @param {Object} [scope] The scope (`this` reference) in which the callback is executed.
      *
@@ -548,10 +585,11 @@ Ext.define('Ext.MessageBox', {
     },
 
     /**
-     * Displays a message box with OK and Cancel buttons prompting the user to enter some text (comparable to
-     * JavaScript's prompt). The prompt can be a single-line or multi-line textbox. If a callback function is passed it
-     * will be called after the user clicks either button, and the id of the button that was clicked (could also be the
-     * top-right close button) and the text that was entered will be passed as the two parameters to the callback.
+     * Displays a message box with OK and Cancel buttons prompting the user to enter some text
+     * (comparable to JavaScript's prompt). The prompt can be a single-line or multi-line textbox.
+     * If a callback function is passed it will be called after the user clicks either button, and
+     * the id of the button that was clicked (could also be the top-right close button) and the
+     * text that was entered will be passed as the two parameters to the callback.
      *
      * Example usage:
      *
@@ -573,35 +611,39 @@ Ext.define('Ext.MessageBox', {
      *
      * @param {String} title The title bar text.
      * @param {String} message The message box body text.
-     * @param {Function} fn A callback function which is called when the dialog is dismissed by clicking on the configured buttons.
-     * @param {String} fn.buttonId The `itemId` of the button pressed, one of: 'ok', 'yes', 'no', 'cancel'.
-     * @param {String} fn.value Value of the input field if either `prompt` or `multiLine` option is `true`.
+     * @param {Function} fn A callback function which is called when the dialog is dismissed by
+     * clicking on the configured buttons.
+     * @param {String} fn.buttonId The `itemId` of the button pressed, one of: 'ok', 'yes', 'no',
+     * 'cancel'.
+     * @param {String} fn.value Value of the input field if either `prompt` or `multiLine` option
+     * is `true`.
      * @param {Object} fn.opt The config object passed to show.
      * @param {Object} scope The scope (`this` reference) in which the callback is executed.
      *
      * Defaults to: the browser window.
      *
-     * @param {Boolean/Number} [multiLine=false] `true` to create a multiline textbox using the `defaultTextHeight` property,
+     * @param {Boolean/Number} [multiLine=false] `true` to create a multiline textbox using the
+     * `defaultTextHeight` property,
      * or the height in pixels to create the textbox.
      *
      * @param {String} [value] Default value of the text input element.
      *
      * @param {Object} [prompt=true]
-     * The configuration for the prompt. See the {@link Ext.MessageBox#cfg-prompt prompt} documentation in {@link Ext.MessageBox}
-     * for more information.
+     * The configuration for the prompt. See the {@link Ext.MessageBox#cfg-prompt prompt}
+     * documentation in {@link Ext.MessageBox} for more information.
      *
      * @return {Ext.MessageBox} this
      */
     prompt: function(title, message, fn, scope, multiLine, value, prompt) {
         return this.show({
-            title    : title || null,
-            message  : message || null,
-            buttons  : Ext.MessageBox.OKCANCEL,
-            scope    : scope,
-            prompt   : prompt || true,
+            title: title || null,
+            message: message || null,
+            buttons: Ext.MessageBox.OKCANCEL,
+            scope: scope,
+            prompt: prompt || true,
             defaultFocus: 'textfield',
             multiLine: multiLine,
-            value    : value,
+            value: value,
 
             fn: function() {
                 if (fn) {

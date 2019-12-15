@@ -44,7 +44,7 @@
  *         }]
  *     });
  */
-Ext.define('Ext.field.InputMask', function (InputMask) { return {
+Ext.define('Ext.field.InputMask', function(InputMask) { return { // eslint-disable-line brace-style
     requires: [
         'Ext.util.LRU'
     ],
@@ -77,7 +77,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
     statics: {
         active: {},
 
-        from: function (value, existing) {
+        from: function(value, existing) {
             var active = InputMask.active,
                 ret;
 
@@ -116,21 +116,23 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         }
     },
 
-    constructor: function (config) {
+    constructor: function(config) {
         this.initConfig(config);
     },
 
-    release: function () {
+    release: function() {
         var me = this,
             cache = InputMask.cache,
             key;
 
         if (me._cached && !--me._cached) {
             key = me.getPattern();
+
             //<debug>
             if (InputMask.active[key] !== me) {
                 Ext.raise('Invalid call to InputMask#release (not active)');
             }
+
             if (cache.map[key]) {
                 Ext.raise('Invalid call to InputMask#release (already cached)');
             }
@@ -147,7 +149,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         //</debug>
     },
 
-    clearRange: function (value, start, len) {
+    clearRange: function(value, start, len) {
         var me = this,
             blank = me.getBlank(),
             end = start + len,
@@ -185,7 +187,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         return s;
     },
 
-    formatValue: function (value) {
+    formatValue: function(value) {
         var me = this,
             blank = me.getBlank(),
             i, length, mask, prefix, s;
@@ -223,8 +225,10 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         return s;
     },
 
-    getEditPosLeft: function (pos) {
-        for (var i = pos; i >= 0; --i) {
+    getEditPosLeft: function(pos) {
+        var i;
+
+        for (i = pos; i >= 0; --i) {
             if (!this.isFixedChar(i)) {
                 return i;
             }
@@ -233,7 +237,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         return null;
     },
 
-    getEditPosRight: function (pos) {
+    getEditPosRight: function(pos) {
         var mask = this._mask,
             len = mask.length,
             i;
@@ -247,7 +251,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         return null;
     },
 
-    getFilledLength: function (value) {
+    getFilledLength: function(value) {
         var me = this,
             blank = me.getBlank(),
             c, i;
@@ -267,7 +271,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         return ++i || me._prefix.length;
     },
 
-    getSubLength: function (value, substr, pos) {
+    getSubLength: function(value, substr, pos) {
         var me = this,
             mask = me.getPattern(),
             k = 0,
@@ -289,7 +293,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         return i - pos;
     },
 
-    insertRange: function (value, substr, pos) {
+    insertRange: function(value, substr, pos) {
         var me = this,
             mask = me.getPattern(),
             blank = me.getBlank(),
@@ -341,7 +345,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         return s;
     },
 
-    isAllowedChar: function (character, pos, allowBlankChar) {
+    isAllowedChar: function(character, pos, allowBlankChar) {
         var me = this,
             mask = me.getPattern(),
             c, characters, rule;
@@ -354,11 +358,14 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         characters = me.getCharacters();
         rule = characters[c];
 
-        return !rule || rule.test(character || '') || (allowBlankChar && character === me.getBlank());
+        return !rule || rule.test(character || '') ||
+               (allowBlankChar && character === me.getBlank());
     },
 
-    isEmpty: function (value) {
-        for (var i = 0, len = value.length; i < len; ++i) {
+    isEmpty: function(value) {
+        var i, len;
+
+        for (i = 0, len = value.length; i < len; ++i) {
             if (!this.isFixedChar(i) && this.isAllowedChar(value[i], i)) {
                 return false;
             }
@@ -369,15 +376,15 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
 
     // TODO This function would benefit from optimization
     // Used during validation and range insert
-    isFilled: function (value) {
+    isFilled: function(value) {
         return this.getFilledLength(value) === this._mask.length;
     },
 
-    isFixedChar: function (pos) {
+    isFixedChar: function(pos) {
         return Ext.Array.indexOf(this._fixedCharPositions, pos) > -1;
     },
 
-    setCaretToEnd: function (field, value) {
+    setCaretToEnd: function(field, value) {
         var filledLen = this.getFilledLength(value),
             pos = this.getEditPosRight(filledLen);
 
@@ -386,11 +393,11 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
             // down the new caret position to the next frame or else the browser will
             // position the caret at the end of the text. Note, Ext.asap() does *not*
             // work reliably for this.
-            Ext.raf(function () {
+            Ext.raf(function() {
                 if (!field.destroyed) {
                     field.setCaretPos(pos);
 
-                    Ext.raf(function () {
+                    Ext.raf(function() {
                         if (!field.destroyed) {
                             field.setCaretPos(pos);
                         }
@@ -403,7 +410,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
     //---------------------------------------------------------------------
     // Event Handling
 
-    onBlur: function (field, value) {
+    onBlur: function(field, value) {
         if (field.getAutoHideInputMask() !== false) {
             if (this.isEmpty(value)) {
                 field.maskProcessed = true;
@@ -412,9 +419,10 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         }
     },
 
-    onFocus: function (field, value) {
+    onFocus: function(field, value) {
         // On focus we have to show the mask and move caret to the last editable position
-        // If field has autoHideInputMask === false, inputMask is always shown so we only move the caret
+        // If field has autoHideInputMask === false, inputMask is always shown so we only
+        // move the caret
         if (field.getAutoHideInputMask() !== false) {
             if (!value) {
                 field.maskProcessed = true;
@@ -425,12 +433,13 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         this.setCaretToEnd(field, value);
     },
 
-    onChange: function (field, value, oldValue) {
+    onChange: function(field, value, oldValue) {
         var me = this,
             s;
 
         if (field.maskProcessed || value === oldValue) {
             field.maskProcessed = false;
+
             return true;
         }
 
@@ -441,7 +450,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         }
     },
 
-    processAutocomplete: function (field, value) {
+    processAutocomplete: function(field, value) {
         var me = this,
             s;
 
@@ -452,8 +461,9 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
 
             s = me.formatValue(value);
             field.maskProcessed = true;
-            field.inputElement.dom.value = s; //match DOM
+            field.inputElement.dom.value = s; // match DOM
             field.setValue(s);
+
             this.setCaretToEnd(field, value);
         }
     },
@@ -463,7 +473,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
      * @param field
      * @param adjustCaret {Boolean} move caret to the first editable position
      */
-    showEmptyMask: function (field, adjustCaret) {
+    showEmptyMask: function(field, adjustCaret) {
         var s = this.formatValue();
 
         field.maskProcessed = true;
@@ -474,13 +484,14 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         }
     },
 
-    onKeyDown: function (field, value, event) {
+    onKeyDown: function(field, value, event) {
         if (event.ctrlKey || event.metaKey) {
             return;
         }
 
+        // eslint-disable-next-line vars-on-top
         var me = this,
-            //key = event.key(), // Does not work on mobile
+            // key = event.key(), // Does not work on mobile
             key = event.keyCode === event.DELETE,
             del = key === 'Delete',
             handled = del || (event.keyCode === event.BACKSPACE),
@@ -519,7 +530,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         }
     },
 
-    onKeyPress: function (field, value, event) {
+    onKeyPress: function(field, value, event) {
         var me = this,
             key = event.keyCode,
             ch = event.getChar(),
@@ -532,7 +543,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
             return;
         }
 
-        //TODO Windows Phone may need to return here
+        // TODO Windows Phone may need to return here
 
         caretPos = field.getCaretPos();
         textSelection = field.getTextSelection();
@@ -567,7 +578,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         field.setCaretPos(caretPos);
     },
 
-    onPaste: function (field, value, event) {
+    onPaste: function(field, value, event) {
         // TODO Android browser issues
         // https://bugs.chromium.org/p/chromium/issues/detail?id=369101
         var text,
@@ -587,7 +598,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         event.preventDefault();
     },
 
-    paste: function (field, value, text, selection) {
+    paste: function(field, value, text, selection) {
         var me = this,
             caretPos = selection[0],
             len = selection[1] - caretPos,
@@ -606,23 +617,25 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         field.setCaretPos(caretPos);
     },
 
-    syncPattern: function (field) {
+    syncPattern: function(field) {
         var fieldValue = field.getValue(),
             s;
 
         if (field.getAutoHideInputMask() === false) {
-            //show blank input mask if there is no initial value
+            // show blank input mask if there is no initial value
             if (!fieldValue) {
                 this.showEmptyMask(field);
-            } else {
-                //format any value and combine with mask
+            }
+            else {
+                // format any value and combine with mask
                 s = this.formatValue(fieldValue);
                 field.maskProcessed = true;
                 field.setValue(s);
             }
-        } else {
-            //field has auto hide mask, but there might be an initial value
-            //don't process empty value as that will set value to match the mask
+        }
+        else {
+            // field has auto hide mask, but there might be an initial value
+            // don't process empty value as that will set value to match the mask
             if (fieldValue) {
                 s = this.formatValue(fieldValue);
                 field.maskProcessed = true;
@@ -634,7 +647,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
     //---------------------------------------------------------------------
     // Configs
 
-    applyCharacters: function (map) {
+    applyCharacters: function(map) {
         var ret = {},
             flags = this.getIgnoreCase() ? 'i' : '',
             c, v;
@@ -652,7 +665,7 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         return ret;
     },
 
-    updatePattern: function (mask) {
+    updatePattern: function(mask) {
         var me = this,
             characters = me.getCharacters(),
             lastEditablePos = 0,
@@ -669,7 +682,8 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
             if (!characters[c]) {
                 fixedPosArr.push(str.length);
                 str += c;
-            } else {
+            }
+            else {
                 lastEditablePos = str.length + 1;
                 str += blank;
             }
@@ -679,15 +693,15 @@ Ext.define('Ext.field.InputMask', function (InputMask) { return {
         me._mask = str;
         me._fixedCharPositions = fixedPosArr;
 
-        //Now that _fixedCharPositions are populated, isFixedChar can be used
+        // Now that _fixedCharPositions are populated, isFixedChar can be used
         for (i = 0; i < str.length && me.isFixedChar(i); ++i) {
             prefix += str[i];
         }
 
         me._prefix = prefix;
     }
-};},
-function (InputMask) {
+};
+}, function(InputMask) {
     InputMask.cache = new Ext.util.LRU();
     InputMask.cache.maxSize = 100;
 });

@@ -5,7 +5,7 @@ topSuite("Ext.picker.Date", [
 
     jasmine.usesViewport();  // setup in beforeAll, teardown in afterAll
 
-    function makeDatePicker (value, slotCfg) {
+    function makeDatePicker(value, slotCfg) {
         var cfg = {
             value: value || null
         };
@@ -17,8 +17,8 @@ topSuite("Ext.picker.Date", [
         datePicker = Ext.create('Ext.picker.Date', cfg);
 
         Ext.Viewport.add(datePicker);
-    } 
-    
+    }
+
     afterEach(function() {
         datePicker = Ext.destroy(datePicker);
     });

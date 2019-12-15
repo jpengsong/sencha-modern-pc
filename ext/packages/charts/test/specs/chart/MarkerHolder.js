@@ -1,6 +1,6 @@
 topSuite("Ext.chart.MarkerHolder", ['Ext.chart.*', 'Ext.data.ArrayStore'], function() {
-    describe('bindMarker', function () {
-        it("should release the bound marker when the marker is destroyed", function () {
+    describe('bindMarker', function() {
+        it("should release the bound marker when the marker is destroyed", function() {
             var surface = new Ext.draw.Surface({}),
                 markerHolder = new Ext.chart.series.sprite.PieSlice({}),
                 markers = new Ext.chart.Markers({}),

@@ -1,5 +1,11 @@
-topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ext.app.ViewModel'], function() {
-    var field, 
+topSuite("Ext.field.Select", [
+    'Ext.data.ArrayStore',
+    'Ext.viewport.Default',
+    'Ext.app.ViewModel',
+    'Ext.mixin.Watchable'
+],
+function() {
+    var field,
         viewport,
         store,
         picker,
@@ -19,13 +25,15 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
             }, config));
 
             s = field.getStore();
+
             if (s) {
                 store = s;
             }
+
             valueCollection = field.getValueCollection();
 
             Ext.override(field, {
-                getPicker: function () {
+                getPicker: function() {
                     picker = this.callParent(arguments);
 
                     // It's a picker which contains a "slot" which is a List.
@@ -52,6 +60,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
 
     function getByVal(val) {
         var index = store.findExact('value', val);
+
         return store.getAt(index);
     }
 
@@ -59,9 +68,11 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
         // Override so that we can control asynchronous loading
         loadStore = Ext.data.ProxyStore.prototype.load = function() {
             proxyStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         };
     });
@@ -75,18 +86,21 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
         if (field) {
             toDestroy.push(field);
         }
+
         if (store) {
             toDestroy.push(store);
         }
+
         if (viewport && viewport !== Ext.Viewport) {
             toDestroy.push(viewport);
         }
+
         viewport = Ext.Viewport = Ext.destroy(toDestroy);
     });
 
     describe("configurations", function() {
-        describe('clearable', function () {
-            it('should respond properly to the clear trigger', function () {
+        describe('clearable', function() {
+            it('should respond properly to the clear trigger', function() {
                 createField({
                     clearable: true,
                     options: [
@@ -102,6 +116,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                 field.setValue(2);
 
                 var v = field.getInputValue();
+
                 var vc = field.getValueCollection();
 
                 expect(v).toBe('Two');
@@ -147,9 +162,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                 createField({
                     autoSelect: 'initial',
                     options: [
-                        {text: 'One', value: 1},
-                        {text: 'Two', value: 2},
-                        {text: 'Three', value: 3}
+                        { text: 'One', value: 1 },
+                        { text: 'Two', value: 2 },
+                        { text: 'Three', value: 3 }
                     ]
                 });
             });
@@ -167,9 +182,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                     createField({
                         value: 3,
                         options: [
-                            {text: 'One', value: 1},
-                            {text: 'Two', value: 2},
-                            {text: 'Three', value: 3}
+                            { text: 'One', value: 1 },
+                            { text: 'Two', value: 2 },
+                            { text: 'Three', value: 3 }
                         ]
                     });
                 });
@@ -193,9 +208,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                     store: {
                         fields: ['text', 'value'],
                         data: [
-                            {text: 'One', value: 1},
-                            {text: 'Two', value: 2},
-                            {text: 'Three', value: 3}
+                            { text: 'One', value: 1 },
+                            { text: 'Two', value: 2 },
+                            { text: 'Three', value: 3 }
                         ]
                     }
                 });
@@ -212,9 +227,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         store: {
                             fields: ['text', 'value'],
                             data: [
-                                {text: 'One', value: 1},
-                                {text: 'Two', value: 2},
-                                {text: 'Three', value: 3}
+                                { text: 'One', value: 1 },
+                                { text: 'Two', value: 2 },
+                                { text: 'Three', value: 3 }
                             ]
                         }
                     });
@@ -239,9 +254,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                     createField({
                         value: 0,
                         options: [
-                            {text: 'One', value: 0},
-                            {text: 'Two', value: 1},
-                            {text: 'Three', value: 2}
+                            { text: 'One', value: 0 },
+                            { text: 'Two', value: 1 },
+                            { text: 'Three', value: 2 }
                         ]
                     });
                 });
@@ -256,9 +271,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                     createField({
                         value: 1,
                         options: [
-                            {text: 'One', value: 0},
-                            {text: 'Two', value: 1},
-                            {text: 'Three', value: 2}
+                            { text: 'One', value: 0 },
+                            { text: 'Two', value: 1 },
+                            { text: 'Three', value: 2 }
                         ]
                     });
                 });
@@ -273,9 +288,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                     createField({
                         value: false,
                         options: [
-                            {text: 'One', value: false},
-                            {text: 'Two', value: 1},
-                            {text: 'Three', value: 2}
+                            { text: 'One', value: false },
+                            { text: 'Two', value: 1 },
+                            { text: 'Three', value: 2 }
                         ]
                     });
                 });
@@ -299,13 +314,13 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         field.setStore({
                             fields: ['text', 'value'],
                             data: [
-                                {text: 'One', value: 1},
-                                {text: 'Two', value: 2},
-                                {text: 'Three', value: 3}
+                                { text: 'One', value: 1 },
+                                { text: 'Two', value: 2 },
+                                { text: 'Three', value: 3 }
                             ]
                         });
 
-                        //autoSelect
+                        // autoSelect
                         expect(field.getValue()).toEqual(1);
                     });
                 });
@@ -323,9 +338,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         field.setStore({
                             fields: ['text', 'value'],
                             data: [
-                                {text: 'One', value: 1},
-                                {text: 'Two', value: 2},
-                                {text: 'Three', value: 3}
+                                { text: 'One', value: 1 },
+                                { text: 'Two', value: 2 },
+                                { text: 'Three', value: 3 }
                             ]
                         });
 
@@ -343,9 +358,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                                 store: {
                                     fields: ['text', 'value'],
                                     data: [
-                                        {text: 'One', value: 1},
-                                        {text: 'Two', value: 2},
-                                        {text: 'Three', value: 3}
+                                        { text: 'One', value: 1 },
+                                        { text: 'Two', value: 2 },
+                                        { text: 'Three', value: 3 }
                                     ]
                                 }
                             });
@@ -370,9 +385,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             field.setStore({
                                 fields: ['text', 'value'],
                                 data: [
-                                    {text: 'One', value: 1},
-                                    {text: 'Two', value: 2},
-                                    {text: 'Three', value: 3}
+                                    { text: 'One', value: 1 },
+                                    { text: 'Two', value: 2 },
+                                    { text: 'Three', value: 3 }
                                 ]
                             });
                             expect(field.getValue()).toEqual(1);
@@ -381,7 +396,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         });
                     });
 
-                    describe("with value and late store", function(){
+                    describe("with value and late store", function() {
                         beforeEach(function() {
                             createField({
                                 clearable: true
@@ -395,9 +410,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             field.setStore({
                                 fields: ['text', 'value'],
                                 data: [
-                                    {text: 'One', value: 1},
-                                    {text: 'Two', value: 2},
-                                    {text: 'Three', value: 3}
+                                    { text: 'One', value: 1 },
+                                    { text: 'Two', value: 2 },
+                                    { text: 'Three', value: 3 }
                                 ]
                             });
                             expect(field.getValue()).toEqual(2);
@@ -406,7 +421,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         });
                     });
 
-                    describe("with 0 value and late store", function(){
+                    describe("with 0 value and late store", function() {
                         beforeEach(function() {
                             createField({
                                 clearable: true
@@ -420,9 +435,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             field.setStore({
                                 fields: ['text', 'value'],
                                 data: [
-                                    {text: 'One', value: 1},
-                                    {text: 'Two', value: 0},
-                                    {text: 'Three', value: 3}
+                                    { text: 'One', value: 1 },
+                                    { text: 'Two', value: 0 },
+                                    { text: 'Three', value: 3 }
                                 ]
                             });
                             expect(field.getValue()).toEqual(0);
@@ -431,7 +446,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         });
                     });
 
-                    describe("with false value and late store", function(){
+                    describe("with false value and late store", function() {
                         beforeEach(function() {
                             createField({
                                 clearable: true
@@ -445,9 +460,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             field.setStore({
                                 fields: ['text', 'value'],
                                 data: [
-                                    {text: 'One', value: 1},
-                                    {text: 'Two', value: false},
-                                    {text: 'Three', value: 3}
+                                    { text: 'One', value: 1 },
+                                    { text: 'Two', value: false },
+                                    { text: 'Three', value: 3 }
                                 ]
                             });
                             expect(field.getValue()).toEqual(false);
@@ -467,9 +482,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         store: {
                             fields: ['text', 'value'],
                             data: [
-                                {text: 'One', value: 1},
-                                {text: 'Two', value: 2},
-                                {text: 'Three', value: 3}
+                                { text: 'One', value: 1 },
+                                { text: 'Two', value: 2 },
+                                { text: 'Three', value: 3 }
                             ]
                         }
                     });
@@ -487,9 +502,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         store: {
                             fields: ['text', 'value'],
                             data: [
-                                {text: 'One', value: 1},
-                                {text: 'Two', value: 2},
-                                {text: 'Three', value: 3}
+                                { text: 'One', value: 1 },
+                                { text: 'Two', value: 2 },
+                                { text: 'Three', value: 3 }
                             ]
                         }
                     });
@@ -525,8 +540,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
             });
 
             var select = Ext.create('Ext.MySelect');
+
             expect(select.getStore().getCount()).toEqual(2);
-            
+
             select.destroy();
         });
     });
@@ -546,9 +562,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                     field.on('change', spy);
 
                     field.setOptions([
-                        {text: 'One', value: 1},
-                        {text: 'Two', value: 2},
-                        {text: 'Three', value: 3}
+                        { text: 'One', value: 1 },
+                        { text: 'Two', value: 2 },
+                        { text: 'Three', value: 3 }
                     ]);
 
                     expect(spy.callCount).toBe(1);
@@ -560,9 +576,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                     createField({
                         autoSelect: 'initial',
                         options: [
-                            {text: 'One', value: 1},
-                            {text: 'Two', value: 2},
-                            {text: 'Three', value: 3}
+                            { text: 'One', value: 1 },
+                            { text: 'Two', value: 2 },
+                            { text: 'Three', value: 3 }
                         ]
                     });
                 });
@@ -619,13 +635,13 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
             describe("when autoSelect is off", function() {
                 beforeEach(function() {
                     createField({
-                        autoSelect : false,
-                        store      : {
-                            fields  : ['text', 'value'],
-                            data    : [
-                                { text : 'One',   value : 1 },
-                                { text : 'Two',   value : 2 },
-                                { text : 'Three', value : 3 }
+                        autoSelect: false,
+                        store: {
+                            fields: ['text', 'value'],
+                            data: [
+                                { text: 'One',   value: 1 },
+                                { text: 'Two',   value: 2 },
+                                { text: 'Three', value: 3 }
                             ]
                         }
                     });
@@ -652,10 +668,13 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                     store: {
                         fields: ['text', 'value'],
                         data: (function() {
-                            var data = [], i;
-                            for(i=0; i<100; i++) {
-                                data.push({text: i, value: i});
+                            var data = [],
+i;
+
+                            for (i = 0; i < 100; i++) {
+                                data.push({ text: i, value: i });
                             }
+
                             return data;
                         })()
                     }
@@ -672,26 +691,26 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
 
                 field.setValue(45);
                 field.showPicker();
-                
+
                 picker = field.getPicker();
                 list = picker;
                 scroller = list.getScrollable();
 
                 scroller.on('scrollend', function() {
                     scrollComplete = true;
-                }); 
+                });
 
                 waitsFor(function() {
                     return scrollComplete;
                 }, 'slot to scroll selection into view', 800);
-                
+
                 waitsForSpy(resizeSpy);
 
                 runs(function() {
                     item = list.getItemAt(45);
                     scrollHeight = picker.element.getHeight();
-                    scrollMin = scroller.getPosition().y;                    
-                    scrollMax = scrollMin+scrollHeight;
+                    scrollMin = scroller.getPosition().y;
+                    scrollMax = scrollMin + scrollHeight;
                     offset = item.renderElement.dom.offsetTop;
                 });
             });
@@ -715,8 +734,8 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                 runs(function() {
                     item = list.getItemAt(78);
                     scrollHeight = picker.element.getHeight();
-                    scrollMin = scroller.getPosition().y;                    
-                    scrollMax = scrollMin+scrollHeight;
+                    scrollMin = scroller.getPosition().y;
+                    scrollMax = scrollMin + scrollHeight;
                     offset = item.renderElement.dom.offsetTop;
 
                     expect(scrollSpy).toHaveBeenCalled();
@@ -726,7 +745,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
             });
         });
 
-        describe('should edge picker', function () {
+        describe('should edge picker', function() {
             beforeEach(function() {
                 viewport = Ext.Viewport = new Ext.viewport.Default();
 
@@ -735,17 +754,20 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                     store: {
                         fields: ['text', 'value'],
                         data: (function() {
-                            var data = [], i;
-                            for(i=0; i<100; i++) {
-                                data.push({text: i, value: i});
+                            var data = [],
+i;
+
+                            for (i = 0; i < 100; i++) {
+                                data.push({ text: i, value: i });
                             }
+
                             return data;
                         })()
                     }
                 });
             });
 
-            it('should open edge picker', function () {
+            it('should open edge picker', function() {
                 field.showPicker();
 
                 var picker = field.getPicker();
@@ -757,8 +779,9 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
     });
 
     describe('With valueField: null', function() {
-        beforeEach(function () {
+        beforeEach(function() {
             store = Ext.create('Ext.data.Store');
+
             for (var i = 0; i < 10; ++i) {
                 store.add({ title: 'item-' + i });
             }
@@ -868,15 +891,15 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
             // The arrival of the store on the next bind tick should
             // set the values of the fields and the selection of s3.
             waitsFor(function() {
-                return s3.inputElement.dom.value === 'item-2'
-                    && s3.getSelection() === store.getAt(2);
+                return s3.inputElement.dom.value === 'item-2' &&
+                    s3.getSelection() === store.getAt(2);
             }, 'store arrival to trigger field value reconciliation', 500);
         });
     });
-    
+
     describe("pointer interaction", function() {
         var picker, item;
-        
+
         beforeEach(function() {
             createField({
                 renderTo: Ext.getBody(),
@@ -887,26 +910,26 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                 ]
             });
         });
-        
+
         afterEach(function() {
             picker = item = null;
         });
-        
+
         it("should select value when item is clicked", function() {
             field.expand();
-            
+
             picker = field.getPicker();
             picker.refresh();
             item = picker.getViewItems()[1];
-            
+
             jasmine.fireMouseEvent(item.el, 'click');
-            
+
             expect(field.getValue()).toBe(2);
         });
 
         it("should not deselect value when the selected item is clicked", function() {
             field.expand();
-            
+
             picker = field.getPicker();
             picker.refresh();
             item = picker.getViewItems()[1];
@@ -923,8 +946,8 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
         var CBTestModel = Ext.define(null, {
                 extend: 'Ext.data.Model',
                 fields: [
-                    {type: 'string', name: 'text'},
-                    {type: 'string', name: 'value'}
+                    { type: 'string', name: 'text' },
+                    { type: 'string', name: 'value' }
                 ]
             }),
             preventStore, viewModel, spy;
@@ -933,23 +956,23 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
             spy = jasmine.createSpy();
             viewModel = new Ext.app.ViewModel();
 
-            Ext.define('spec.MyStore',{
-                extend : 'Ext.data.Store',
-                alias : 'store.foo',
+            Ext.define('spec.MyStore', {
+                extend: 'Ext.data.Store',
+                alias: 'store.foo',
                 proxy: {
                     type: 'memory'
                 },
                 model: CBTestModel,
                 data: [
-                    {id: 1, text: 'text 1', value: 'value 1'},
-                    {id: 2, text: 'text 2', value: 'value 2'},
-                    {id: 3, text: 'text 3', value: 'value 3'},
-                    {id: 4, text: 'text 31', value: 'value 31'},
-                    {id: 5, text: 'text 32', value: 'value 32'},
-                    {id: 6, text: 'text 33', value: 'value 33'},
-                    {id: 7, text: 'text 34', value: 'value 34'},
-                    {id: 8, text: 'Foo', value: 'foo1'},
-                    {id: 9, text: 'Foo', value: 'foo2'}
+                    { id: 1, text: 'text 1', value: 'value 1' },
+                    { id: 2, text: 'text 2', value: 'value 2' },
+                    { id: 3, text: 'text 3', value: 'value 3' },
+                    { id: 4, text: 'text 31', value: 'value 31' },
+                    { id: 5, text: 'text 32', value: 'value 32' },
+                    { id: 6, text: 'text 33', value: 'value 33' },
+                    { id: 7, text: 'text 34', value: 'value 34' },
+                    { id: 8, text: 'Foo', value: 'foo1' },
+                    { id: 9, text: 'Foo', value: 'foo2' }
                 ]
             });
             store = new spec.MyStore();
@@ -971,6 +994,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                 viewModel: viewModel,
                 renderTo: Ext.getBody()
             }, cfg);
+
             field = new Ext.field.Select(config);
         }
 
@@ -995,14 +1019,17 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
 
                     it("should publish null by default", function() {
                         var args = spy.mostRecentCall.args;
+
                         expect(args[0]).toBeNull();
                         expect(args[1]).toBeUndefined();
                     });
 
                     it("should publish the value when selected", function() {
                         var rec = getByVal('value 1');
+
                         selectNotify(rec);
                         var args = spy.mostRecentCall.args;
+
                         expect(args[0]).toBe(rec);
                         expect(args[1]).toBeNull();
                         expect(field.getValue()).toBe('value 1');
@@ -1016,6 +1043,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         spy.reset();
                         selectNotify(rec2);
                         var args = spy.mostRecentCall.args;
+
                         expect(args[0]).toBe(rec2);
                         expect(args[1]).toBe(rec1);
                         expect(field.getValue()).toBe('value 2');
@@ -1025,6 +1053,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         field.setValue('value 1');
                         viewModel.notify();
                         var args = spy.mostRecentCall.args;
+
                         expect(args[0]).toBe(getByVal('value 1'));
                         expect(args[1]).toBeNull();
                     });
@@ -1036,6 +1065,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         field.setValue('value 2');
                         viewModel.notify();
                         var args = spy.mostRecentCall.args;
+
                         expect(args[0]).toBe(getByVal('value 2'));
                         expect(args[1]).toBe(getByVal('value 1'));
                     });
@@ -1047,6 +1077,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         field.setValue(null);
                         viewModel.notify();
                         var args = spy.mostRecentCall.args;
+
                         expect(args[0]).toBeNull();
                         expect(args[1]).toBe(getByVal('value 1'));
                     });
@@ -1064,6 +1095,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
 
                     it("should publish the record", function() {
                         var args = spy.mostRecentCall.args;
+
                         expect(args[0]).toBe(getByVal('value 2'));
                         expect(args[1]).toBeUndefined();
                     });
@@ -1102,6 +1134,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             spy.reset();
                             selectNotify(rec2);
                             var args = spy.mostRecentCall.args;
+
                             expect(args[0]).toBe(rec2);
                             expect(args[1]).toBe(rec1);
                         });
@@ -1110,6 +1143,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             field.setValue('value 1');
                             viewModel.notify();
                             var args = spy.mostRecentCall.args;
+
                             expect(args[0]).toBe(getByVal('value 1'));
                             expect(args[1]).toBeUndefined();
                         });
@@ -1121,6 +1155,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             field.setValue('value 2');
                             viewModel.notify();
                             var args = spy.mostRecentCall.args;
+
                             expect(args[0]).toBe(getByVal('value 2'));
                             expect(args[1]).toBe(getByVal('value 1'));
                         });
@@ -1132,6 +1167,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             field.setValue(null);
                             viewModel.notify();
                             var args = spy.mostRecentCall.args;
+
                             expect(args[0]).toBeNull();
                             expect(args[1]).toBe(getByVal('value 1'));
                         });
@@ -1140,6 +1176,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                     describe("changing the view model value", function() {
                         it("should set the value when setting the record", function() {
                             var rec = getByVal('value 1');
+
                             viewModel.set('foo', rec);
                             viewModel.notify();
                             expect(field.getValue()).toBe('value 1');
@@ -1175,6 +1212,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         });
                         viewModel.notify();
                         var args = spy.mostRecentCall.args;
+
                         expect(args[0]).toBe(getByVal('value 2'));
                         expect(args[1]).toBeUndefined();
                     });
@@ -1212,8 +1250,8 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             Ext.Ajax.mockComplete({
                                 status: 200,
                                 responseText: Ext.encode([
-                                    {id: 1, text: 'text 1', value: 'value 1'},
-                                    {id: 2, text: 'text 2', value: 'value 2'}
+                                    { id: 1, text: 'text 1', value: 'value 1' },
+                                    { id: 2, text: 'text 2', value: 'value 2' }
                                 ])
                             });
 
@@ -1245,8 +1283,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
         });
     });
 
-    // TODO: multiselect
-    xdescribe('multiSelect: true', function() {
+    describe('multiSelect: true', function() {
         var createMultiSelectField = function(config) {
             config = Ext.apply({
                 renderTo: document.body,
@@ -1274,16 +1311,13 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
         };
 
         describe('General tests', function() {
-            // TODO: Update this when https://sencha.jira.com/browse/EXT-486 is fixed
-            // and we have a Chip dataview
             it('should update the value and the selected item UI upon record mutation', function() {
                 createMultiSelectField();
                 field.setValue('ExtJS');
 
                 expect(field.getValue()).toEqual(['ExtJS']);
 
-                // This wull not be right when https://sencha.jira.com/browse/EXT-486 is fixed
-                expect(field.getInputValue()).toEqual('ExtJS');
+                expect(field.chipView.bodyElement.dom.innerText.trim()).toEqual('ExtJS');
 
                 store.getAt(0).set({
                     value: 'Sencha',
@@ -1292,8 +1326,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
 
                 expect(field.getValue()).toEqual(['Sencha']);
 
-                // This wull not be right when https://sencha.jira.com/browse/EXT-486 is fixed
-                expect(field.getInputValue()).toEqual('Our Framework');
+                expect(field.chipView.bodyElement.dom.innerText.trim()).toEqual('Our Framework');
             });
         });
 
@@ -1310,44 +1343,8 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                 expect(field.getValue()).toEqual([store.getAt(0).get(field.getValueField())]);
                 expect(field.getSelection()).toEqual([store.getAt(0)]);
 
-                // Tap the second item
-                Ext.testHelper.tap(picker.itemFromRecord(1).el);
-
-                // Now field has two values in the array
-                expect(field.getValue()).toEqual([
-                    store.getAt(0).get(field.getValueField()),
-                    store.getAt(1).get(field.getValueField())
-                ]);
-                expect(field.getSelection()).toEqual([
-                    store.getAt(0),
-                    store.getAt(1)
-                ]);
-
-                // Should deselect item 0
-                Ext.testHelper.tap(picker.itemFromRecord(0).getTools()[0].el);
-
-                expect(field.getValue()).toEqual([store.getAt(1).get(field.getValueField())]);
-                expect(field.getSelection()).toEqual([store.getAt(1)]);
-            });
-        });
-
-        describe('Adding to the valueCollection on BoundList ENTER key', function() {
-            it('should set the value to an array', function() {
-                createMultiSelectField();
-                focusAndWait(field);
-
-                runs(function() {
-                    jasmine.fireKeyEvent(field.inputElement, 'keydown', Ext.event.Event.DOWN);
-
-                    // Select item 0
-                    jasmine.fireKeyEvent(field.inputElement, 'keydown', Ext.event.Event.ENTER);
-
-                    expect(field.getValue()).toEqual([store.getAt(0).get(field.getValueField())]);
-                    expect(field.getSelection()).toEqual([store.getAt(0)]);
-
-                    // Select the second item
-                    jasmine.fireKeyEvent(field.inputElement, 'keydown', Ext.event.Event.DOWN);
-                    jasmine.fireKeyEvent(field.inputElement, 'keydown', Ext.event.Event.ENTER);
+                    // Tap the second item
+                    Ext.testHelper.tap(picker.itemFromRecord(1).el);
 
                     // Now field has two values in the array
                     expect(field.getValue()).toEqual([
@@ -1360,8 +1357,79 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                     ]);
 
                     // Should deselect item 0
-                    jasmine.fireKeyEvent(field.inputElement, 'keydown', Ext.event.Event.UP);
-                    jasmine.fireKeyEvent(field.inputElement, 'keydown', Ext.event.Event.ENTER);
+                    Ext.testHelper.tap(picker.itemFromRecord(0).getTools()[0].el);
+
+                    expect(field.getValue()).toEqual([store.getAt(1).get(field.getValueField())]);
+                    expect(field.getSelection()).toEqual([store.getAt(1)]);
+
+                });
+
+                it('should single select when switched from multiselect', function() {
+                    createMultiSelectField();
+                    field.expand();
+                    // Tapping on the tool should select.
+                    // The default List behaviour of ignoring tool taps
+                    // should be defeated by passive: true Tools
+                    Ext.testHelper.tap(picker.itemFromRecord(0).getTools()[0].el);
+                    Ext.testHelper.tap(picker.itemFromRecord(1).el);
+
+                    // Now field has two values in the array
+                    expect(field.getValue()).toEqual([
+                        store.getAt(0).get(field.getValueField()),
+                        store.getAt(1).get(field.getValueField())
+                    ]);
+                    expect(field.getSelection()).toEqual([
+                        store.getAt(0),
+                        store.getAt(1)
+                    ]);
+
+                    // Now converting it into single select
+                    field.setMultiSelect(false);
+
+                    Ext.testHelper.tap(picker.itemFromRecord(0).getTools()[0].el);
+                    Ext.testHelper.tap(picker.itemFromRecord(1).el);
+
+                    // Now field has single selected value of latest selection
+                    expect(field.getValue()).toEqual(
+                        store.getAt(1).get(field.getValueField())
+                    );
+                    expect(field.getSelection()).toEqual(
+                        store.getAt(1)
+                    );
+                });
+            });
+
+            describe('Adding to the valueCollection on BoundList ENTER key', function() {
+                it('should set the value to an array', function() {
+                    createMultiSelectField();
+                    focusAndWait(field);
+
+                    runs(function() {
+                        jasmine.fireKeyEvent(field.inputElement, 'keydown', Ext.event.Event.DOWN);
+
+                        // Select item 0
+                        jasmine.fireKeyEvent(field.inputElement, 'keydown', Ext.event.Event.ENTER);
+
+                        expect(field.getValue()).toEqual([store.getAt(0).get(field.getValueField())]);
+                        expect(field.getSelection()).toEqual([store.getAt(0)]);
+
+                        // Select the second item
+                        jasmine.fireKeyEvent(field.inputElement, 'keydown', Ext.event.Event.DOWN);
+                        jasmine.fireKeyEvent(field.inputElement, 'keydown', Ext.event.Event.ENTER);
+
+                        // Now field has two values in the array
+                        expect(field.getValue()).toEqual([
+                            store.getAt(0).get(field.getValueField()),
+                            store.getAt(1).get(field.getValueField())
+                        ]);
+                        expect(field.getSelection()).toEqual([
+                            store.getAt(0),
+                            store.getAt(1)
+                        ]);
+
+                        // Should deselect item 0
+                        jasmine.fireKeyEvent(field.inputElement, 'keydown', Ext.event.Event.UP);
+                        jasmine.fireKeyEvent(field.inputElement, 'keydown', Ext.event.Event.ENTER);
 
                     expect(field.getValue()).toEqual([store.getAt(1).get(field.getValueField())]);
                     expect(field.getSelection()).toEqual([store.getAt(1)]);
@@ -1465,6 +1533,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         },
                         renderTo: Ext.getBody()
                     }, cfg);
+
                     createField(config);
                 }
 
@@ -1475,16 +1544,16 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                     field.collapse();
                 }
 
-                describe("no initial value", function () {
-                    beforeEach(function () {
+                describe("no initial value", function() {
+                    beforeEach(function() {
                         viewModel.bind('{selection}', selectionSpy);
                         viewModel.bind('{value}', valueSpy);
                         makeViewModelMultiSelectField();
                         viewModel.notify();
                     });
 
-                    describe("changing the selection", function () {
-                        it("should trigger the binding when adding a selection", function () {
+                    describe("changing the selection", function() {
+                        it("should trigger the binding when adding a selection", function() {
                             var rec = getByVal('ExtJS');
 
                             selectNotify(rec);
@@ -1495,7 +1564,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             expect(args[1]).toBeUndefined();
                         });
 
-                        it("should trigger the binding when changing the selection", function () {
+                        it("should trigger the binding when changing the selection", function() {
                             var rec1 = getByVal('ExtJS'),
                                 rec2 = getByVal('COBOL');
 
@@ -1503,19 +1572,21 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             selectionSpy.reset();
                             selectNotify(rec2, true);
                             var args = selectionSpy.mostRecentCall.args;
+
                             expect(args[0]).toEqual([rec1, rec2]);
                             expect(args[1]).toEqual([rec1]);
                         });
 
-                        it("should trigger the binding when setting the value", function () {
+                        it("should trigger the binding when setting the value", function() {
                             field.setValue('ExtJS');
                             viewModel.notify();
                             var args = selectionSpy.mostRecentCall.args;
+
                             expect(args[0]).toEqual([getByVal('ExtJS')]);
                             expect(args[1]).toBeUndefined();
                         });
 
-                        it("should trigger the binding when the value is changed", function () {
+                        it("should trigger the binding when the value is changed", function() {
                             var rec1 = getByVal('ExtJS'),
                                 rec2 = getByVal('COBOL');
 
@@ -1525,32 +1596,35 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             field.setValue(['ExtJS', 'COBOL']);
                             viewModel.notify();
                             var args = selectionSpy.mostRecentCall.args;
+
                             expect(args[0]).toEqual([rec1, rec2]);
                             expect(args[1]).toEqual([rec1]);
                         });
 
-                        it("should trigger the binding when the value is cleared", function () {
+                        it("should trigger the binding when the value is cleared", function() {
                             field.setValue('ExtJS');
                             viewModel.notify();
                             selectionSpy.reset();
                             field.setValue(null);
                             viewModel.notify();
                             var args = selectionSpy.mostRecentCall.args;
+
                             expect(args[0]).toBeNull();
                             expect(args[1]).toEqual([getByVal('ExtJS')]);
                         });
                     });
 
-                    describe("setting the ViewModel selection property", function () {
-                        it("should set the value when setting the record", function () {
+                    describe("setting the ViewModel selection property", function() {
+                        it("should set the value when setting the record", function() {
                             var rec = getByVal('ExtJS');
+
                             viewModel.set('selection', rec);
                             viewModel.notify();
                             expect(field.getValue()).toEqual(['ExtJS']);
                             expect(viewModel.get('value')).toEqual(['ExtJS']);
                         });
 
-                        it("should set the value when updating the record", function () {
+                        it("should set the value when updating the record", function() {
                             viewModel.set('selection', [getByVal('ExtJS'), getByVal('COBOL')]);
                             viewModel.notify();
                             viewModel.set('selection', [getByVal('Java'), getByVal('PHP')]);
@@ -1559,7 +1633,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             expect(viewModel.get('value')).toEqual(['Java', 'PHP']);
                         });
 
-                        it("should deselect when clearing the value", function () {
+                        it("should deselect when clearing the value", function() {
                             viewModel.set('selection', getByVal('ExtJS'));
                             viewModel.notify();
                             viewModel.set('selection', null);
@@ -1569,16 +1643,17 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         });
                     });
 
-                    describe("setting the ViewModel value property", function () {
-                        it("should set the value when setting the record", function () {
+                    describe("setting the ViewModel value property", function() {
+                        it("should set the value when setting the record", function() {
                             var rec = getByVal('ExtJS');
+
                             viewModel.set('value', 'ExtJS');
                             viewModel.notify();
                             expect(field.getValue()).toEqual(['ExtJS']);
                             expect(viewModel.get('selection')).toEqual([rec]);
                         });
 
-                        it("should set the value when updating the record", function () {
+                        it("should set the value when updating the record", function() {
                             viewModel.set('value', ['ExtJS', 'COBOL']);
                             viewModel.notify();
                             viewModel.set('value', ['Java', 'PHP']);
@@ -1587,7 +1662,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             expect(viewModel.get('selection')).toEqual([getByVal('Java'), getByVal('PHP')]);
                         });
 
-                        it("should deselect when clearing the value", function () {
+                        it("should deselect when clearing the value", function() {
                             viewModel.set('value', 'ExtJS');
                             viewModel.notify();
                             viewModel.set('value', null);
@@ -1599,21 +1674,22 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                 });
 
                 // Not sure if we want to support this, leave this out for now
-                xdescribe("with initial value", function () {
-                    it("should trigger the binding with an initial value in the select field", function () {
+                xdescribe("with initial value", function() {
+                    it("should trigger the binding with an initial value in the select field", function() {
                         viewModel.bind('{selection}', selectionSpy);
                         makeViewModelMultiSelectField({
                             value: 'COBOL'
                         });
                         viewModel.notify();
                         var args = selectionSpy.mostRecentCall.args;
+
                         expect(args[0]).toEqual([getByVal('COBOL')]);
                         expect(args[1]).toBeUndefined();
                     });
                 });
 
-                describe("reloading the store", function () {
-                    beforeEach(function () {
+                describe("reloading the store", function() {
+                    beforeEach(function() {
                         MockAjaxManager.addMethods();
                         viewModel.bind('{selection}', selectionSpy);
                         makeViewModelMultiSelectField();
@@ -1629,19 +1705,19 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         store.load();
                     });
 
-                    afterEach(function () {
+                    afterEach(function() {
                         MockAjaxManager.removeMethods();
                     });
 
-                    describe("when the selected record is in the result set", function () {
-                        it("should trigger the selection binding", function () {
+                    describe("when the selected record is in the result set", function() {
+                        it("should trigger the selection binding", function() {
                             field.expand();
 
                             Ext.Ajax.mockComplete({
                                 status: 200,
                                 responseText: Ext.encode([
-                                    {id: 'ExtJS', text: 'ExtJS', value: 'ExtJS'},
-                                    {id: 'COBOL', text: 'COBOL', value: 'COBOL'}
+                                    { id: 'ExtJS', text: 'ExtJS', value: 'ExtJS' },
+                                    { id: 'COBOL', text: 'COBOL', value: 'COBOL' }
                                 ])
                             });
 
@@ -1657,8 +1733,8 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         });
                     });
 
-                    describe("when the selected record is not in the result set", function () {
-                        it("should trigger the selection binding", function () {
+                    describe("when the selected record is not in the result set", function() {
+                        it("should trigger the selection binding", function() {
                             Ext.Ajax.mockComplete({
                                 status: 200,
                                 responseText: '[]'
@@ -1705,6 +1781,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         },
                         renderTo: Ext.getBody()
                     }, cfg);
+
                     createField(config);
 
                     // Steal the Store that was auto-created from the options and
@@ -1726,8 +1803,8 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                     field.collapse();
                 }
 
-                describe("no initial value", function () {
-                    beforeEach(function () {
+                describe("no initial value", function() {
+                    beforeEach(function() {
                         viewModel.bind('{selection}', selectionSpy);
                         viewModel.bind('{value}', valueSpy);
                         makeViewModelMultiSelectField();
@@ -1735,8 +1812,8 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         viewModel.set('skillsStore', store);
                     });
 
-                    describe("Setting the value before the store arrives", function () {
-                        it("should trigger the binding when the store arrives and the value finds a match", function () {
+                    describe("Setting the value before the store arrives", function() {
+                        it("should trigger the binding when the store arrives and the value finds a match", function() {
                             field.setValue('ExtJS');
 
                             // No store yet, so can't have a selection
@@ -1751,8 +1828,8 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         });
                     });
 
-                    describe("Setting the selection before the store arrives", function () {
-                        it("should trigger the binding when the store arrives and the value finds a match", function () {
+                    describe("Setting the selection before the store arrives", function() {
+                        it("should trigger the binding when the store arrives and the value finds a match", function() {
                             // Selection is a temporary, value holding record
                             field.setSelection(new Ext.data.Model({
                                 id: 'ExtJS',
@@ -1765,26 +1842,32 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             var args = selectionSpy.mostRecentCall.args;
 
                             // Selection should now be the real, matching record
-                            expect(args[0]).toEqual([getByVal('ExtJS')]);
+                            // expect(args[0]).toEqual([getByVal('ExtJS')]);
+                            var storeRec = getByVal('ExtJS');
+
+                            var selectRec = args[0][0];
+
+                            expect(selectRec.id).toBe(storeRec.id);
+                            expect(selectRec.data).toEqual(storeRec.data);
                             expect(args[1]).toBeUndefined();
 
                             args = valueSpy.mostRecentCall.args;
 
                             expect(args[0]).toEqual(['ExtJS']);
-                            expect(args[1]).toBeUndefined();
                         });
                     });
 
-                    describe("setting the ViewModel selection property", function () {
-                        it("should set the value when setting the record", function () {
+                    describe("setting the ViewModel selection property", function() {
+                        it("should set the value when setting the record", function() {
                             var rec = getByVal('ExtJS');
+
                             viewModel.set('selection', rec);
                             viewModel.notify();
                             expect(field.getValue()).toEqual(['ExtJS']);
                             expect(viewModel.get('value')).toEqual(['ExtJS']);
                         });
 
-                        it("should set the value when updating the record", function () {
+                        it("should set the value when updating the record", function() {
                             viewModel.set('selection', [getByVal('ExtJS'), getByVal('COBOL')]);
                             viewModel.notify();
                             viewModel.set('selection', [getByVal('Java'), getByVal('PHP')]);
@@ -1793,7 +1876,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             expect(viewModel.get('value')).toEqual(['Java', 'PHP']);
                         });
 
-                        it("should deselect when clearing the value", function () {
+                        it("should deselect when clearing the value", function() {
                             viewModel.set('selection', getByVal('ExtJS'));
                             viewModel.notify();
                             viewModel.set('selection', null);
@@ -1803,16 +1886,17 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         });
                     });
 
-                    describe("setting the ViewModel value property", function () {
-                        it("should set the value when setting the record", function () {
+                    describe("setting the ViewModel value property", function() {
+                        it("should set the value when setting the record", function() {
                             var rec = getByVal('ExtJS');
+
                             viewModel.set('value', 'ExtJS');
                             viewModel.notify();
                             expect(field.getValue()).toEqual(['ExtJS']);
                             expect(viewModel.get('selection')).toEqual([rec]);
                         });
 
-                        it("should set the value when updating the record", function () {
+                        it("should set the value when updating the record", function() {
                             viewModel.set('value', ['ExtJS', 'COBOL']);
                             viewModel.notify();
                             viewModel.set('value', ['Java', 'PHP']);
@@ -1821,7 +1905,7 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                             expect(viewModel.get('selection')).toEqual([getByVal('Java'), getByVal('PHP')]);
                         });
 
-                        it("should deselect when clearing the value", function () {
+                        it("should deselect when clearing the value", function() {
                             viewModel.set('value', 'ExtJS');
                             viewModel.notify();
                             viewModel.set('value', null);
@@ -1833,21 +1917,22 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                 });
 
                 // Not sure if we want to support this, leave this out for now
-                xdescribe("with initial value", function () {
-                    it("should trigger the binding with an initial value in the select field", function () {
+                xdescribe("with initial value", function() {
+                    it("should trigger the binding with an initial value in the select field", function() {
                         viewModel.bind('{selection}', selectionSpy);
                         makeViewModelMultiSelectField({
                             value: 'COBOL'
                         });
                         viewModel.notify();
                         var args = selectionSpy.mostRecentCall.args;
+
                         expect(args[0]).toEqual([getByVal('COBOL')]);
                         expect(args[1]).toBeUndefined();
                     });
                 });
 
-                describe("reloading the store", function () {
-                    beforeEach(function () {
+                describe("reloading the store", function() {
+                    beforeEach(function() {
                         MockAjaxManager.addMethods();
                         viewModel.bind('{selection}', selectionSpy);
                         makeViewModelMultiSelectField();
@@ -1863,19 +1948,19 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         store.load();
                     });
 
-                    afterEach(function () {
+                    afterEach(function() {
                         MockAjaxManager.removeMethods();
                     });
 
-                    describe("when the selected record is in the result set", function () {
-                        it("should trigger the selection binding", function () {
+                    describe("when the selected record is in the result set", function() {
+                        it("should trigger the selection binding", function() {
                             field.expand();
 
                             Ext.Ajax.mockComplete({
                                 status: 200,
                                 responseText: Ext.encode([
-                                    {id: 'ExtJS', text: 'ExtJS', value: 'ExtJS'},
-                                    {id: 'COBOL', text: 'COBOL', value: 'COBOL'}
+                                    { id: 'ExtJS', text: 'ExtJS', value: 'ExtJS' },
+                                    { id: 'COBOL', text: 'COBOL', value: 'COBOL' }
                                 ])
                             });
 
@@ -1891,8 +1976,8 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
                         });
                     });
 
-                    describe("when the selected record is not in the result set", function () {
-                        it("should trigger the selection binding", function () {
+                    describe("when the selected record is not in the result set", function() {
+                        it("should trigger the selection binding", function() {
                             Ext.Ajax.mockComplete({
                                 status: 200,
                                 responseText: '[]'
@@ -1908,13 +1993,77 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
         });
     });
 
-    describe('chained select fields', function() {
-        var CountriesStore,
-            StatesStore,
-            panel,
-            vm,
-            countries,
-            states;
+        describe('multiSelect: false', function() {
+            var createSingleSelectField = function(config) {
+                config = Ext.apply({
+                    renderTo: document.body,
+                    multiSelect: false,
+                    autoSelect: false,
+                    options: [
+                        'ExtJS',
+                        'Javascript',
+                        'CSS',
+                        'Git',
+                        'Java',
+                        'PHP',
+                        'COBOL',
+                        'Node.js',
+                        'JSON',
+                        'HTML5',
+                        'RIA',
+                        'OOP',
+                        'Scrum',
+                        'REST',
+                        'MVC'
+                    ]
+                }, config);
+                createField(config);
+
+                it('should multiselect when switched from single select', function() {
+                    createSingleSelectField();
+                    field.expand();
+
+                    // Tapping on the tool should select
+                    Ext.testHelper.tap(picker.itemFromRecord(0).getTools()[0].el);
+                    Ext.testHelper.tap(picker.itemFromRecord(1).el);
+
+                    // Now field has single selected value of latest selection
+                    expect(field.getValue()).toEqual(
+                        store.getAt(1).get(field.getValueField())
+                    );
+                    expect(field.getSelection()).toEqual(
+                        [store.getAt(1)]
+                    );
+
+                    // Now converting it into multi select
+                    field.setMultiSelect(true);
+
+                    // Tapping on the tool should select.
+                    // The default List behaviour of ignoring tool taps
+                    // should be defeated by passive: true Tools
+                    Ext.testHelper.tap(picker.itemFromRecord(0).getTools()[0].el);
+                    Ext.testHelper.tap(picker.itemFromRecord(1).el);
+
+                    // Now field has two values in the array
+                    expect(field.getValue()).toEqual([
+                        store.getAt(0).get(field.getValueField()),
+                        store.getAt(1).get(field.getValueField())
+                    ]);
+                    expect(field.getSelection()).toEqual([
+                        store.getAt(0),
+                        store.getAt(1)
+                    ]);
+                });
+            };
+        });
+        describe('chained select fields', function() {
+            var CountriesStore,
+                StatesStore,
+                panel,
+                vm,
+                countries,
+                states,
+                viewport;
 
         beforeEach(function() {
             CountriesStore = Ext.define('Ext.test.ChainedSelectTestCountries', {
@@ -2056,7 +2205,8 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
 
         });
         afterEach(function() {
-            Ext.destroy(panel);
+            Ext.destroy(viewport, panel);
+            Ext.Viewport = null;
             Ext.undefine('Ext.test.ChainedSelectTestCountries');
             Ext.undefine('Ext.test.ChainedSelectTestStates');
         });
@@ -2077,6 +2227,31 @@ topSuite("Ext.field.Select", ['Ext.data.ArrayStore', 'Ext.viewport.Default', 'Ex
             waitsFor(function() {
                 return states.getValue() == null;
             });
+        });
+
+        // Note that this expectation will only work when the dependent combobox
+        // has had its value picked from the open picker.
+        it('should clear the dependent field when its selected record is filtered out and edge pickers are being used', function() {
+            Ext.Viewport = viewport = new Ext.viewport.Default();
+            viewport.add(panel);
+
+            countries.setPicker('edge');
+            states.setPicker('edge');
+
+            // Select Colorado
+            states.expand();
+            states.getPicker().innerItems[0].getSelectable().select(5);
+            states.getPicker().onDoneButtonTap();
+            expect(states.getValue()).toBe('CO');
+
+            // This will refresh the picker's selmodel and evict the state.
+            countries.setValue('Canada');
+
+            // When binding ticks, the states should be cleared because its
+            // selected record is no longer in its store.
+            waitsFor(function() {
+                return states.getValue() == null;
+            }, 1000, 'State field to be cleared');
         });
     });
 });

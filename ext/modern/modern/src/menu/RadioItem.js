@@ -46,7 +46,7 @@
  */
 Ext.define('Ext.menu.RadioItem', {
     extend: 'Ext.menu.CheckItem',
-    alias: 'widget.menuradioitem',
+    xtype: 'menuradioitem',
 
     classCls: Ext.baseCSSPrefix + 'menuradioitem',
 
@@ -84,24 +84,25 @@ Ext.define('Ext.menu.RadioItem', {
         if (!this.getGroup()) {
             Ext.raise('Menu RadioItems must be configured with a group');
         }
+
         this.callParent();
     },
     //</debug>
 
     privates: {
-        onSpace: function (e) {
+        onSpace: function(e) {
             // Veto uncheck for radio items.
             if (this.checkboxElement.dom.checked) {
                 e.preventDefault();
             }
         },
 
-        updateGroup: function (group) {
+        updateGroup: function(group) {
             // Inheritable will update the NameHolder upon add.
             this.name = group;
         },
 
-        onCheckboxChange: function () {
+        onCheckboxChange: function() {
             var checkboxElement = this.checkboxElement.dom,
                 isChecked = checkboxElement.checked;
 
@@ -126,7 +127,7 @@ Ext.define('Ext.menu.RadioItem', {
             }
         },
 
-        onCheckChange: function () {
+        onCheckChange: function() {
             var me = this,
                 checkboxElement = me.checkboxElement.dom,
                 parentMenu = me.getParent(),
@@ -138,7 +139,7 @@ Ext.define('Ext.menu.RadioItem', {
 
             // Sync state of all siblings in group via the parent menu *before* we call parent.
             // State must be correct.
-            if (parentMenu && name) {
+            if (name && parentMenu && !parentMenu.updatingGroups) {
                 groups = {};
 
                 if (checkboxElement.checked) {
@@ -150,9 +151,9 @@ Ext.define('Ext.menu.RadioItem', {
                 else {
                     siblings = parentMenu.lookupName(name);
                     len = siblings && siblings.length;
-                    
+
                     for (i = 0; i < len && !siblings[i].checkboxElement.dom.checked; i++) {
-                         // just loop
+                        // just loop
                     }
 
                     // If we ran out the end of the loop without finding a check item,

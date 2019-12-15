@@ -1,10 +1,12 @@
-/* global jasmine, describe, it, beforeEach, afterEach, expect, waitsFor, runs, xit, xdescribe, Ext */
-
 /*
  Adapted from:
  Copyright (c) 2013 [DeftJS Framework Contributors](http://deftjs.org)
  Open source under the [MIT License](http://en.wikipedia.org/wiki/MIT_License).
  */
+
+/* global Promise, assert, Logger */
+/* eslint-disable no-sparse-arrays */
+
 topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*'], function() {
     var Deferred = Ext.Deferred,
         ExtPromise = Ext.promise.Promise,
@@ -20,13 +22,13 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
         // Prevent raised errors from polluting the console
         extLog = Ext.log;
         Ext.log = Ext.emptyFn;
-        
+
         deferred = promise = null;
     });
-    
+
     afterEach(function() {
         Ext.log = extLog;
-        
+
         deferred = promise = extLog = null;
     });
 
@@ -43,7 +45,8 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
         runs(function() {
             if (equals) {
                 expect(result).toEqual(value);
-            } else {
+            }
+            else {
                 expect(result).toBe(value);
             }
         });
@@ -70,7 +73,8 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
             if (typeof error === 'string') {
                 expect(reason).toBe(error);
-            } else {
+            }
+            else {
                 expect(reason instanceof error).toBe(true);
 
                 if (message) {
@@ -82,32 +86,33 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
     function formatValue(value) {
         var formattedValues;
-        
+
         if (value instanceof ExtPromise) {
             return 'Promise';
         }
-        
+
         if (value instanceof Deferred) {
             return 'Deferred';
         }
-        
+
         if (value instanceof Ext.ClassManager.get('Ext.Base')) {
             return Ext.ClassManager.getName(value);
         }
-        
+
         if (Ext.isArray(value)) {
             formattedValues = Ext.Array.map(value, formatValue);
+
             return "[" + (formattedValues.join(', ')) + "]";
         }
-        
+
         if (Ext.isObject(value)) {
             return 'Object';
         }
-        
+
         if (Ext.isString(value)) {
             return '"' + value + '"';
         }
-        
+
         return '' + value;
     }
 
@@ -130,6 +135,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             Ext.each(values, function(value) {
                 it(formatValue(value), function() {
                     var deferred = new Deferred();
+
                     deferred.resolve(value);
 
                     promise = Deferred.resolved(deferred.promise);
@@ -163,6 +169,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             MockThirdPartyPromise.prototype.then = function(successCallback, failureCallback) {
                 this.successCallback = successCallback;
                 this.failureCallback = failureCallback;
+
                 switch (this.state) {
                     case 'resolved':
                         this.successCallback(this.value);
@@ -175,6 +182,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             MockThirdPartyPromise.prototype.resolve = function(value) {
                 this.value = value;
                 this.state = 'resolved';
+
                 if (this.successCallback != null) {
                     this.successCallback(this.value);
                 }
@@ -183,6 +191,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             MockThirdPartyPromise.prototype.reject = function(value) {
                 this.value = value;
                 this.state = 'rejected';
+
                 if (this.failureCallback != null) {
                     this.failureCallback(this.value);
                 }
@@ -190,6 +199,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
             it('resolves when resolved', function() {
                 var mockThirdPartyPromise = new MockThirdPartyPromise();
+
                 mockThirdPartyPromise.resolve('expected value');
 
                 promise = Deferred.resolved(mockThirdPartyPromise);
@@ -202,6 +212,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
             it('rejects when rejected', function() {
                 var mockThirdPartyPromise = new MockThirdPartyPromise();
+
                 mockThirdPartyPromise.reject('error message');
 
                 promise = Deferred.resolved(mockThirdPartyPromise);
@@ -218,7 +229,9 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
         it('should resolve when returning a resolved deferred', function() {
             promise = Deferred.resolved('initial').then(function(v) {
                 var other = new Deferred();
+
                 other.resolve(v + 'ok');
+
                 return other.promise;
             });
             eventuallyResolvesTo(promise, 'initialok');
@@ -236,7 +249,9 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
         it('should reject when returning a rejected deferred', function() {
             promise = Deferred.resolved('initial').then(function(v) {
                 var other = new Deferred();
+
                 other.reject(v + 'ok');
+
                 return other.promise;
             });
             eventuallyRejectedWith(promise, 'initialok');
@@ -258,7 +273,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 promise = new Deferred().promise;
                 expect(ExtPromise.is(promise)).toBe(true);
             });
-            
+
             it('returns true for any then()-able', function() {
                 promise = {
                     then: function() {}
@@ -270,6 +285,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             if (hasNativePromise) {
                 it('returns true for a native Promise', function() {
                     var p = new Promise(function() {});
+
                     expect(ExtPromise.is(p)).toBe(true);
                 });
             }
@@ -290,6 +306,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
         describe('returns a new Promise that will resolve with the resolved values for the specified Array of Promises(s) or values.', function() {
             it('Empty Array', function() {
                 var value = [];
+
                 promise = ExtPromise.all(value);
 
                 expect(promise instanceof ExtPromise).toBe(true);
@@ -299,6 +316,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
             it('Array with one value', function() {
                 var value = ['expected value'];
+
                 promise = ExtPromise.all(value);
 
                 expect(promise instanceof ExtPromise).toBe(true);
@@ -308,6 +326,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
             it('Array of values', function() {
                 var value = [1, 2, 3];
+
                 promise = ExtPromise.all(value);
 
                 expect(promise instanceof ExtPromise).toBe(true);
@@ -317,6 +336,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
             it('Sparse Array', function() {
                 var value = [, 2, , 4, 5];
+
                 promise = ExtPromise.all(value);
 
                 expect(promise instanceof ExtPromise).toBe(true);
@@ -406,7 +426,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                     Deferred.resolved(4),
                     new Deferred().promise
                 ]);
-                
+
                 expect(promise instanceof ExtPromise).toBe(true);
                 eventuallyRejectedWith(promise, Error, 'error message');
             });
@@ -661,7 +681,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
     });
 
     describe('some()', function() {
-        function eventuallyResolvesToSomeOf (promise, length, values) {
+        function eventuallyResolvesToSomeOf(promise, length, values) {
             var done = false,
                 result;
 
@@ -681,6 +701,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 for (var i = 0; i < result.length; ++i) {
                     var index = Ext.Array.indexOf(values, result[i]);
+
                     expect(index).not.toBe(-1);
                     expect(map[index]).not.toBe(true);
                     map[index] = true;
@@ -890,25 +911,25 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                     return Deferred.some();
                 }).toThrow('Invalid parameter: expected an Array or Promise of an Array.');
             });
-            
+
             it('a single non-Array parameter', function() {
                 expect(function() {
                     return Deferred.some(1);
                 }).toThrow('Invalid parameter: expected an Array or Promise of an Array.');
             });
-            
+
             it('multiple non-Array parameters', function() {
                 expect(function() {
                     return Deferred.some(1, 2, 3);
                 }).toThrow('Invalid parameter: expected an Array or Promise of an Array.');
             });
-            
+
             it('a single Array parameter', function() {
                 expect(function() {
                     return Deferred.some([1, 2, 3]);
                 }).toThrow('Invalid parameter: expected a positive integer.');
             });
-            
+
             it('a single Array parameter and a non-numeric value', function() {
                 expect(function() {
                     return Deferred.some([1, 2, 3], 'value');
@@ -936,6 +957,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 promise = promise.then(function(value) {
                     expect(Ext.now() - start).toBeGE(84);
+
                     return value;
                 });
 
@@ -967,6 +989,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 promise = promise.then(function(value) {
                     expect(Ext.now() - start).toBeGE(84);
+
                     return value;
                 });
 
@@ -982,6 +1005,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 promise = promise.then(function(value) {
                     expect(Ext.now() - start).toBeGE(84);
+
                     return value;
                 });
 
@@ -1008,7 +1032,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
         });
     }); // delay
-    
+
     describe('timeout()', function() {
         describe('returns a new Promise that will resolve with the specified Promise or value if it resolves before the specified timeout', function() {
             it('value with 100 ms timeout', function() {
@@ -1040,11 +1064,11 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
         describe('returns a new Promise that will reject after the specified timeout if the specified Promise or value has not yet resolved or rejected', function() {
             var delayedPromise;
-            
+
             afterEach(function() {
                 Ext.undefer(delayedPromise.owner.timeoutId);
             });
-            
+
             it('Promise that resolves in 100 ms with a 50 ms timeout', function() {
                 delayedPromise = Deferred.delay('expected value', 100);
                 promise = Deferred.timeout(delayedPromise, 50);
@@ -1066,13 +1090,14 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
     }); // timeout
 
     describe('memoize()', function() {
-        function fib (n) {
+        function fib(n) {
             return (n < 2) ? n : fib(n - 1) + fib(n - 2);
         }
 
-        function fibonacci (n) {
+        function fibonacci(n) {
             ++fibonacci.calls;
             fibonacci.scope = this;
+
             return fib(n);
         }
 
@@ -1087,6 +1112,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 promise = ExtPromise.all([memoFn(12), memoFn(12)]).then(function(value) {
                     expect(fibonacci.calls).toBe(1);
+
                     return value;
                 }, function(error) {
                     throw error;
@@ -1100,6 +1126,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 promise = ExtPromise.all([memoFn(Deferred.resolved(12)), memoFn(Deferred.resolved(12))]).then(function(value) {
                     expect(fibonacci.calls).toBe(1);
+
                     return value;
                 }, function(error) {
                     throw error;
@@ -1115,6 +1142,8 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 promise = memoFn(12).then(function(value) {
                     expect(fibonacci.calls).toBe(1);
+
+                    // eslint-disable-next-line eqeqeq
                     expect(fibonacci.scope == window).toBe(true); // IE needs == not ===
 
                     return value;
@@ -1158,6 +1187,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             expect(array instanceof Array).toBe(true);
             expect(index).toBeGE(0);
             expect(index).toBeLT(array.length);
+
             return value * 2;
         }
 
@@ -1166,14 +1196,16 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             expect(array instanceof Array).toBe(true);
             expect(index).toBeGE(0);
             expect(index).toBeLT(array.length);
+
             return Deferred.resolved(value * 2);
         }
-        
+
         function rejectFunction(value, index, array) {
             expect(arguments.length).toBe(3);
             expect(array instanceof Array).toBe(true);
             expect(index).toBeGE(0);
             expect(index).toBeLT(array.length);
+
             return Deferred.rejected(new Error('error message'));
         }
 
@@ -1536,25 +1568,25 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
     describe('race', function() {
         var promises;
-        
+
         beforeEach(function() {
             promises = [];
         });
-        
+
         afterEach(function() {
             for (var i = 0; i < promises.length; i++) {
                 Ext.undefer(promises[i].owner.timeoutId);
             }
-            
+
             promises = null;
         });
-        
+
         function makeTimeoutPromise(timeout, value, isResolve) {
             var deferred = new Deferred();
-            
+
             deferred.timeoutId = Ext.defer(function() {
                 Ext.undefer(deferred.timeoutId);
-                
+
                 if (isResolve) {
                     deferred.resolve(value);
                 }
@@ -1562,7 +1594,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                     deferred.reject(value);
                 }
             }, timeout);
-            
+
             promises.push(deferred.promise);
 
             return deferred.promise;
@@ -1663,7 +1695,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             expect(array instanceof Array).toBe(true);
             expect(index).toBeGE(0);
             expect(index).toBeLT(array.length);
-            
+
             return previousValue + currentValue;
         }
 
@@ -1672,7 +1704,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             expect(array instanceof Array).toBe(true);
             expect(index).toBeGE(0);
             expect(index).toBeLT(array.length);
-            
+
             return Deferred.resolved(previousValue + currentValue);
         }
 
@@ -1681,7 +1713,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             expect(array instanceof Array).toBe(true);
             expect(index).toBeGE(0);
             expect(index).toBeLT(array.length);
-            
+
             return Deferred.rejected(new Error('error message'));
         }
 
@@ -2379,6 +2411,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
     describe('then()', function() {
         describe('with a progress handler', function() {
             var progressHandler;
+
             describe('attaches a progress handler that will be called on progress updates', function() {
                 it('called with progress update when updated', function() {
                     progressHandler = jasmine.createSpy();
@@ -2388,7 +2421,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                     promise.then(null, null, progressHandler);
 
                     deferred.update('progress');
-                    
+
                     waitsForSpy(progressHandler);
                     runs(function() {
                         expect(progressHandler.callCount).toBe(1);
@@ -2404,7 +2437,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                     promise.then(null, null, progressHandler, targetScope);
 
                     deferred.update('progress');
-                    
+
                     waitsForSpy(progressHandler);
                     runs(function() {
                         expect(progressHandler.callCount).toBe(1);
@@ -2423,7 +2456,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                     promise.then().then(null, null, progressHandler);
 
                     deferred.update('progress');
-                    
+
                     waitsForSpy(progressHandler);
                     runs(function() {
                         expect(progressHandler.callCount).toBe(1);
@@ -2432,25 +2465,27 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
 
                 it('propagates transformed progress updates to subsequent Promises in the chain if a progress handler transforms the progress update', function() {
-                    //var deferred, progressHandler, promise, transformedProgressHandler, transformedTransformedProgressHandler;
+                    // var deferred, progressHandler, promise, transformedProgressHandler, transformedTransformedProgressHandler;
 
-                    //progressHandler = sinon.stub().returns('transformed progress');
+                    // progressHandler = sinon.stub().returns('transformed progress');
                     progressHandler = jasmine.createSpy();
                     progressHandler.andReturn('transformed progress');
 
                     var transformedProgressHandler = jasmine.createSpy();
+
                     transformedProgressHandler.andReturn('transformed transformed progress');
 
                     var transformedTransformedProgressHandler = jasmine.createSpy();
+
                     deferred = new Deferred();
                     promise = deferred.promise;
 
-                    promise.then(null, null, progressHandler).
-                        then(null, null, transformedProgressHandler).
-                        then(null, null, transformedTransformedProgressHandler);
+                    promise.then(null, null, progressHandler)
+                        .then(null, null, transformedProgressHandler)
+                        .then(null, null, transformedTransformedProgressHandler);
 
                     deferred.update('progress');
-                    
+
                     waitsForSpy(progressHandler);
                     runs(function() {
 
@@ -2461,8 +2496,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                         expect(transformedProgressHandler.calls[0].args).toEqual(['transformed progress']);
 
                         expect(transformedTransformedProgressHandler.callCount).toBe(1);
-                        expect(transformedTransformedProgressHandler.calls[0].args).
-                            toEqual(['transformed transformed progress']);
+                        expect(transformedTransformedProgressHandler.calls[0].args).toEqual(['transformed transformed progress']);
                     });
                 });
             });
@@ -2511,7 +2545,9 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 describe('when success, failure and progress handlers are specified', function() {
                     it('called with resolved value when resolved', function() {
                         var onResolved = jasmine.createSpy();
+
                         var onRejected = jasmine.createSpy();
+
                         var onProgress = jasmine.createSpy();
 
                         promise = Deferred.resolved('resolved value');
@@ -2535,7 +2571,9 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                     it('called with resolved value in the specified scope when resolved', function() {
                         var onResolved = jasmine.createSpy();
+
                         var onRejected = jasmine.createSpy();
+
                         var onProgress = jasmine.createSpy();
 
                         promise = Deferred.resolved('resolved value');
@@ -2603,7 +2641,9 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 describe('when success, failure and progress handlers are specified', function() {
                     it('called with rejection reason when rejected', function() {
                         var onResolved = jasmine.createSpy();
+
                         var onRejected = jasmine.createSpy();
+
                         var onProgress = jasmine.createSpy();
 
                         promise = Deferred.rejected('rejection reason');
@@ -2699,7 +2739,9 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 describe('when success, failure and progress handlers are specified', function() {
                     it('called with progress update when updated', function() {
                         var onResolved = jasmine.createSpy();
+
                         var onRejected = jasmine.createSpy();
+
                         var onProgress = jasmine.createSpy();
 
                         deferred = new Deferred();
@@ -2724,7 +2766,9 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                     it('called with progress update in specified scope when updated', function() {
                         var onResolved = jasmine.createSpy();
+
                         var onRejected = jasmine.createSpy();
+
                         var onProgress = jasmine.createSpy();
 
                         deferred = new Deferred();
@@ -2753,13 +2797,13 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
         });
     }); // then
 
-
     // Cannot use catch as a method name in older browsers, so use the bracketed form
     describe('catch()', function() {
         describe('attaches a callback that will be called if this Promise is rejected', function() {
             describe('with parameters specified via function arguments', function() {
                 it('called if rejected', function() {
                     var onRejected = jasmine.createSpy();
+
                     var error = new Error('error message');
 
                     promise = Deferred.rejected(error);
@@ -2778,6 +2822,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('called in specified scope if rejected', function() {
                     var onRejected = jasmine.createSpy();
+
                     var error = new Error('error message');
 
                     promise = Deferred.rejected(error);
@@ -2796,6 +2841,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('not called if resolved', function() {
                     var onRejected = jasmine.createSpy();
+
                     var onResolved = jasmine.createSpy();
 
                     promise = Deferred.resolved('value');
@@ -2815,6 +2861,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             describe('with parameters specified via a configuration object', function() {
                 it('called if rejected', function() {
                     var onRejected = jasmine.createSpy();
+
                     var error = new Error('error message');
 
                     promise = Deferred.rejected(error);
@@ -2833,7 +2880,9 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('called in specified scope if rejected', function() {
                     var onRejected = jasmine.createSpy();
+
                     var onFailure = jasmine.createSpy();
+
                     var error = new Error('error message');
 
                     promise = Deferred.rejected(error);
@@ -2857,6 +2906,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('not called if resolved', function() {
                     var onRejected = jasmine.createSpy();
+
                     var onResolved = jasmine.createSpy();
 
                     promise = Deferred.resolved('value');
@@ -2927,6 +2977,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             describe('with parameters specified via function arguments', function() {
                 it('called if rejected', function() {
                     var onRejected = jasmine.createSpy();
+
                     var error = new Error('error message');
 
                     promise = Deferred.rejected(error);
@@ -2945,14 +2996,15 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('called in specified scope if rejected', function() {
                     var onRejected = jasmine.createSpy();
+
                     var error = new Error('error message');
 
                     promise = Deferred.rejected(error);
 
                     promise.otherwise(onRejected, targetScope);
-                    
+
                     waitsForSpy(onRejected);
-                    
+
                     runs(function() {
                         expect(onRejected.callCount).toBe(1);
                         expect(onRejected.calls[0].args.length).toBe(1);
@@ -2963,6 +3015,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('not called if resolved', function() {
                     var onRejected = jasmine.createSpy();
+
                     var onResolved = jasmine.createSpy();
 
                     promise = Deferred.resolved('value');
@@ -2972,7 +3025,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                     promise.then(onResolved);
 
                     waitsForSpy(onResolved);
-                    
+
                     runs(function() {
                         expect(onRejected.callCount).toBe(0);
                     });
@@ -2982,6 +3035,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             describe('with parameters specified via a configuration object', function() {
                 it('called if rejected', function() {
                     var onRejected = jasmine.createSpy();
+
                     var error = new Error('error message');
 
                     promise = Deferred.rejected(error);
@@ -3000,7 +3054,9 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('called in specified scope if rejected', function() {
                     var onRejected = jasmine.createSpy();
+
                     var onFailure = jasmine.createSpy();
+
                     var error = new Error('error message');
 
                     promise = Deferred.rejected(error);
@@ -3009,11 +3065,11 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                         fn: onRejected,
                         scope: targetScope
                     });
-                    
+
                     promise.then(null, onFailure);
 
                     waitsForSpy(onFailure);
-                    
+
                     runs(function() {
                         expect(onRejected.callCount).toBe(1);
                         expect(onRejected.calls[0].args.length).toBe(1);
@@ -3024,6 +3080,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('not called if resolved', function() {
                     var onRejected = jasmine.createSpy();
+
                     var onResolved = jasmine.createSpy();
 
                     promise = Deferred.resolved('value');
@@ -3034,7 +3091,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                     promise.then(onResolved);
 
                     waitsForSpy(onResolved);
-                    
+
                     runs(function() {
                         expect(onRejected.callCount).toBe(0);
                     });
@@ -3094,6 +3151,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             describe('with parameters specified via function arguments', function() {
                 it('called with no parameters when resolved', function() {
                     var onComplete = jasmine.createSpy();
+
                     var onResolve = jasmine.createSpy();
 
                     promise = Deferred.resolved('value');
@@ -3109,6 +3167,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('called with no parameters in the specified scope when resolved', function() {
                     var onComplete = jasmine.createSpy();
+
                     var onResolve = jasmine.createSpy();
 
                     promise = Deferred.resolved('value');
@@ -3125,6 +3184,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('called with no parameters when rejected', function() {
                     var onComplete = jasmine.createSpy();
+
                     var onRejected = jasmine.createSpy();
 
                     promise = Deferred.rejected(new Error('error message'));
@@ -3140,6 +3200,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('called with no parameters in the specified scope when rejected', function() {
                     var onComplete = jasmine.createSpy();
+
                     var onRejected = jasmine.createSpy();
 
                     promise = Deferred.rejected(new Error('error message'));
@@ -3147,9 +3208,9 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                     promise.always(onComplete, targetScope);
 
                     promise.then(null, onRejected);
-                    
+
                     waitsForSpy(onRejected);
-                    
+
                     runs(function() {
                         expect(onComplete.callCount).toBeGT(0);
                     });
@@ -3159,6 +3220,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             describe('with parameters specified via a configuration object', function() {
                 it('called with no parameters when resolved', function() {
                     var onComplete = jasmine.createSpy();
+
                     var onResolved = jasmine.createSpy();
 
                     promise = Deferred.resolved('value');
@@ -3168,9 +3230,9 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                     });
 
                     promise.then(onResolved);
-                    
+
                     waitsForSpy(onResolved);
-                    
+
                     runs(function() {
                         expect(onComplete.callCount).toBeGT(0);
                     });
@@ -3178,6 +3240,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('called with no parameters in the specified scope when resolved', function() {
                     var onComplete = jasmine.createSpy();
+
                     var onResolved = jasmine.createSpy();
 
                     promise = Deferred.resolved('value');
@@ -3188,9 +3251,9 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                     });
 
                     promise.then(onResolved);
-                    
+
                     waitsForSpy(onResolved);
-                    
+
                     runs(function() {
                         expect(onComplete.callCount).toBeGT(0);
                     });
@@ -3198,6 +3261,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('called with no parameters when rejected', function() {
                     var onComplete = jasmine.createSpy();
+
                     var onFailure = jasmine.createSpy();
 
                     promise = Deferred.rejected(new Error('error message'));
@@ -3206,7 +3270,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                         fn: onComplete
                     });
                     promise.then(null, onFailure);
-                    
+
                     waitsForSpy(onFailure);
 
                     runs(function() {
@@ -3216,6 +3280,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('called with no parameters in the specified scope when rejected', function() {
                     var onComplete = jasmine.createSpy();
+
                     var onFailure = jasmine.createSpy();
 
                     promise = Deferred.rejected(new Error('error message'));
@@ -3236,7 +3301,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
         describe('return a new "pass-through" Promise that resolves with the original value or rejects with the original reason', function() {
             it('if the originating Promise resolves, ignores value returned by callback', function() {
-                function onComplete () {
+                function onComplete() {
                     return 'callback return value';
                 }
 
@@ -3248,7 +3313,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
 
             xit('if the originating Promise resolves, ignores and later rethrows Error thrown by callback', function(done) {
-                function onComplete () {
+                function onComplete() {
                     throw new Error('callback error message');
                 }
 
@@ -3279,7 +3344,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
 
             it('if the originating Promise rejects, ignores value returned by callback', function() {
-                function onComplete () {
+                function onComplete() {
                     return 'callback return value';
                 }
 
@@ -3292,7 +3357,8 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
             xit('if the originating Promise rejects, ignores and later rethrows Error thrown by callback', function(done) {
                 var me = this;
-                function onComplete () {
+
+                function onComplete() {
                     throw new Error('callback error message');
                 }
 
@@ -3305,7 +3371,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                     done();
                 }, function(reason) {
                     expect(reason.message).toBe('rejection value');
-                    //?? expect(reason.message).toBe('callback error message');
+                    // ?? expect(reason.message).toBe('callback error message');
                     done();
                 });
 
@@ -3326,7 +3392,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
         });
     });  // always
 
-    //TODO - not sure the conversion for these
+    // TODO - not sure the conversion for these
     xdescribe('done()', function() {
         describe('terminates a Promise chain, ensuring that unhandled rejections will be thrown as Errors', function() {
             it('rethrows the rejection as an error if the originating Promise rejects', function(done) {
@@ -3335,7 +3401,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 assert.eventuallyThrows(new Error('rejection reason'), done, 100);
             });
             it('rethrows the rejection as an error if an ancestor Promise rejects and that rejection is unhandled', function(done) {
-                
+
                 this.slow(250);
                 promise = Deferred.rejected(new Error('rejection reason')).then(function(value) {
                     return value;
@@ -3395,64 +3461,76 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
             it('logs a fulfilled promise', function(done) {
                 var promise, value;
+
                 value = 'resolved value';
                 promise = Deferred.resolved(value).log();
                 expect(promise instanceof ExtPromise).toBe(true);
                 promise.always(function() {
                     var error;
+
                     try {
                         expect(Logger.log).to.be.calledOnce.and.calledWith("Promise resolved with value: " + value);
                         done();
-                    } catch (e) {
-                        me.fail(e);
+                    }
+                    catch (e) {
+                        this.fail(e);
                         done(e);
                     }
                 });
             });
             it('logs a fulfilled promise, with the optional name specified', function(done) {
                 var promise, value;
+
                 value = 'resolved value';
                 promise = Deferred.resolved(value).log('Test Promise');
                 expect(promise instanceof ExtPromise).toBe(true);
                 promise.always(function() {
                     var error;
+
                     try {
                         expect(Logger.log).to.be.calledOnce.and.calledWith("Test Promise resolved with value: " + value);
                         done();
-                    } catch (e) {
-                        me.fail(e);
+                    }
+                    catch (e) {
+                        this.fail(e);
                         done();
                     }
                 });
             });
             it('logs a rejected promise', function(done) {
                 var promise, reason;
+
                 reason = new Error('rejection reason');
                 promise = Deferred.rejected(reason).log();
                 expect(promise instanceof ExtPromise).toBe(true);
                 promise.always(function() {
                     var error;
+
                     try {
                         expect(Logger.log).to.be.calledOnce.and.calledWith("Promise rejected with reason: " + reason);
                         done();
-                    } catch (e) {
-                        me.fail(e);
+                    }
+                    catch (e) {
+                        this.fail(e);
                         done();
                     }
                 });
             });
             it('logs a rejected promise, with the optional name specified', function(done) {
                 var promise, reason;
+
                 reason = new Error('rejection reason');
                 promise = Deferred.rejected(reason).log('Test Promise');
                 expect(promise instanceof ExtPromise).toBe(true);
                 promise.always(function() {
                     var error;
+
                     try {
                         expect(Logger.log).to.be.calledOnce.and.calledWith("Test Promise rejected with reason: " + reason);
                         done();
-                    } catch (e) {
-                        me.fail(e);
+                    }
+                    catch (e) {
+                        this.fail(e);
                         done();
                     }
                 });
@@ -3461,32 +3539,35 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
         describe('return a new "pass-through" Promise that resolves with the original value or rejects with the original reason', function() {
             it('resolves if the originating Promise resolves', function() {
-                
+
                 promise = Deferred.resolved('resolved value').log();
                 expect(promise instanceof ExtPromise).toBe(true);
                 eventuallyResolvesTo(promise, 'resolved value', true);
             });
             it('rejects if the originating Promise rejects', function() {
-                
+
                 promise = Deferred.rejected(new Error('rejection reason')).log();
                 expect(promise instanceof ExtPromise).toBe(true);
                 eventuallyRejectedWith(promise, Error, 'rejection reason');
             });
         });
     }); // log
-    
+
     describe('Extras', function() {
-        function verifyScope (fn, expectedScope) {
+        function verifyScope(fn, expectedScope) {
             return function() {
                 expect(this).toBe(expectedScope);
+
                 return fn.apply(this, arguments);
             };
         }
 
-        function verifyArgs (fn, expectedArgs) {
+        function verifyArgs(fn, expectedArgs) {
             return function() {
                 var args = Ext.Array.slice(arguments, 0);
+
                 expect(args).toEqual(expectedArgs);
+
                 return fn.apply(this, arguments);
             };
         }
@@ -3496,6 +3577,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 ++fn1.callCount;
                 expect(fn2.callCount).toBe(0);
                 expect(fn3.callCount).toBe(0);
+
                 return 1;
             };
 
@@ -3503,6 +3585,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 ++fn2.callCount;
                 expect(fn1.callCount).toBe(1);
                 expect(fn3.callCount).toBe(0);
+
                 return 2;
             };
 
@@ -3510,6 +3593,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 ++fn3.callCount;
                 expect(fn1.callCount).toBe(1);
                 expect(fn2.callCount).toBe(1);
+
                 return 3;
             };
 
@@ -3538,6 +3622,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Empty Array with the optional scope and arguments specified', function() {
                     var args = ['a', 'b', 'c'];
+
                     var fns = [];
 
                     promise = Deferred.sequence(fns, targetScope, 'a', 'b', 'c');
@@ -3566,6 +3651,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Array with one function with the optional scope and arguments specified', function() {
                     var args, fns;
+
                     args = ['a', 'b', 'c'];
                     fns = [verifyArgs(verifyScope(fn1, targetScope), args)];
                     promise = Deferred.sequence(fns, targetScope, 'a', 'b', 'c');
@@ -3574,6 +3660,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Array of two functions', function() {
                     var fns;
+
                     fns = [fn1, fn2];
                     promise = Deferred.sequence(fns);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3581,6 +3668,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Array of two functions with the optional scope specified', function() {
                     var fns;
+
                     fns = [verifyScope(fn1, targetScope), verifyScope(fn2, targetScope)];
                     promise = Deferred.sequence(fns, targetScope);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3588,6 +3676,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Array of two functions with the optional scope and arguments specified', function() {
                     var args, fns;
+
                     args = ['a', 'b', 'c'];
                     fns = [verifyArgs(verifyScope(fn1, targetScope), args), verifyArgs(verifyScope(fn2, targetScope), args)];
                     promise = Deferred.sequence(fns, targetScope, 'a', 'b', 'c');
@@ -3596,6 +3685,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Array of three functions', function() {
                     var fns;
+
                     fns = [fn1, fn2, fn3];
                     promise = Deferred.sequence(fns);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3603,6 +3693,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Array of three functions with the optional scope specified', function() {
                     var fns;
+
                     fns = [verifyScope(fn1, targetScope), verifyScope(fn2, targetScope), verifyScope(fn3, targetScope)];
                     promise = Deferred.sequence(fns, targetScope);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3610,6 +3701,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Array of three functions with the optional scope and arguments specified', function() {
                     var args, fns;
+
                     args = ['a', 'b', 'c'];
                     fns = [verifyArgs(verifyScope(fn1, targetScope), args), verifyArgs(verifyScope(fn2, targetScope), args), verifyArgs(verifyScope(fn3, targetScope), args)];
                     promise = Deferred.sequence(fns, targetScope, 'a', 'b', 'c');
@@ -3621,6 +3713,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             describe('returns a new Promise that will resolve with an Array of the results returned by calling the specified resolved Promise of an Array of functions in sequence order', function() {
                 it('Promise of an empty Array', function() {
                     var fns;
+
                     fns = [];
                     promise = Deferred.sequence(Deferred.resolved(fns));
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3628,6 +3721,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Promise of an empty Array with the optional scope specified', function() {
                     var fns;
+
                     fns = [];
                     promise = Deferred.sequence(Deferred.resolved(fns), targetScope);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3635,6 +3729,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Promise of an empty Array with the optional scope and arguments specified', function() {
                     var args, fns;
+
                     args = ['a', 'b', 'c'];
                     fns = [];
                     promise = Deferred.sequence(fns, targetScope, 'a', 'b', 'c');
@@ -3643,12 +3738,14 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Promise of an Array with one function', function() {
                     var fns = [fn1];
+
                     promise = Deferred.sequence(Deferred.resolved(fns));
                     expect(promise instanceof ExtPromise).toBe(true);
                     eventuallyResolvesTo(promise, [1], true);
                 });
                 it('Promise of an Array with one function with the optional scope specified', function() {
                     var fns;
+
                     fns = [verifyScope(fn1, targetScope)];
                     promise = Deferred.sequence(Deferred.resolved(fns), targetScope);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3656,6 +3753,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Promise of an Array with one function with the optional scope and arguments specified', function() {
                     var args, fns;
+
                     args = ['a', 'b', 'c'];
                     fns = [verifyArgs(verifyScope(fn1, targetScope), args)];
                     promise = Deferred.sequence(Deferred.resolved(fns), targetScope, 'a', 'b', 'c');
@@ -3664,6 +3762,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Promise of an Array of two functions', function() {
                     var fns;
+
                     fns = [fn1, fn2];
                     promise = Deferred.sequence(Deferred.resolved(fns));
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3671,6 +3770,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Promise of an Array of two functions with the optional scope specified', function() {
                     var fns;
+
                     fns = [verifyScope(fn1, targetScope), verifyScope(fn2, targetScope)];
                     promise = Deferred.sequence(Deferred.resolved(fns), targetScope);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3678,6 +3778,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Promise of an Array of two functions with the optional scope and arguments specified', function() {
                     var args, fns;
+
                     args = ['a', 'b', 'c'];
                     fns = [verifyArgs(verifyScope(fn1, targetScope), args), verifyArgs(verifyScope(fn2, targetScope), args)];
                     promise = Deferred.sequence(Deferred.resolved(fns), targetScope, 'a', 'b', 'c');
@@ -3686,6 +3787,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Promise of an Array of three functions', function() {
                     var fns;
+
                     fns = [fn1, fn2, fn3];
                     promise = Deferred.sequence(Deferred.resolved(fns));
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3693,6 +3795,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Promise of an Array of three functions with the optional scope specified', function() {
                     var fns;
+
                     fns = [verifyScope(fn1, targetScope), verifyScope(fn2, targetScope), verifyScope(fn3, targetScope)];
                     promise = Deferred.sequence(Deferred.resolved(fns), targetScope);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3700,6 +3803,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Promise of an Array of three functions with the optional scope and arguments specified', function() {
                     var args, fns;
+
                     args = ['a', 'b', 'c'];
                     fns = [verifyArgs(verifyScope(fn1, targetScope), args), verifyArgs(verifyScope(fn2, targetScope), args), verifyArgs(verifyScope(fn3, targetScope), args)];
                     promise = Deferred.sequence(Deferred.resolved(fns), targetScope, 'a', 'b', 'c');
@@ -3710,7 +3814,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
             describe('returns a new Promise that will reject with the Error associated with the specified rejected Promise of an Array of functions', function() {
                 it('Error: error message', function() {
-                    
+
                     promise = Deferred.sequence(Deferred.rejected(new Error('error message')));
                     expect(promise instanceof ExtPromise).toBe(true);
                     eventuallyRejectedWith(promise, Error, 'error message');
@@ -3718,12 +3822,13 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
 
             describe('returns a new Promise that will reject with the associated Error if any of the specified Array of functions throws an Error', function() {
-                function brokenFn () {
+                function brokenFn() {
                     throw new Error('Error message');
                 }
 
                 it('Array with one function that throws an Error', function() {
                     var fns;
+
                     fns = [brokenFn];
                     promise = Deferred.sequence(fns);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3731,6 +3836,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Array with one function and one function that throws an Error', function() {
                     var fns;
+
                     fns = [fn1, brokenFn];
                     promise = Deferred.sequence(fns);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3738,6 +3844,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
                 });
                 it('Array with two functions and one function that throws an Error', function() {
                     var fns;
+
                     fns = [fn1, fn2, brokenFn];
                     promise = Deferred.sequence(fns);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3746,12 +3853,13 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
 
             describe('returns a new Promise that will reject with the associated Error if any of the specified Promise of an Array of functions throws an Error', function() {
-                function brokenFn () {
+                function brokenFn() {
                     throw new Error('Error message');
                 }
 
                 it('Promise of an Array with one function that throws an Error', function() {
                     var fns;
+
                     fns = [brokenFn];
                     promise = Deferred.sequence(Deferred.resolved(fns));
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3760,6 +3868,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Promise of an Array with one function and one function that throws an Error', function() {
                     var fns;
+
                     fns = [fn1, brokenFn];
                     promise = Deferred.sequence(Deferred.resolved(fns));
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3768,6 +3877,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Promise of an Array with two functions and one function that throws an Error', function() {
                     var fns;
+
                     fns = [fn1, fn2, brokenFn];
                     promise = Deferred.sequence(Deferred.resolved(fns));
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3776,12 +3886,13 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
 
             describe('returns a new Promise that will reject with the associated Error if any of the specified Array of functions returns a rejected Promise', function() {
-                function rejectFn () {
+                function rejectFn() {
                     return Deferred.rejected(new Error('Error message'));
                 }
 
                 it('Array with one function that returns a rejected Promise', function() {
                     var fns;
+
                     fns = [rejectFn];
                     promise = Deferred.sequence(fns);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3790,6 +3901,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Array with one function and one function that returns a rejected Promise', function() {
                     var fns;
+
                     fns = [fn1, rejectFn];
                     promise = Deferred.sequence(fns);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3798,6 +3910,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Array with two functions and one function that returns a rejected Promise', function() {
                     var fns;
+
                     fns = [fn1, fn2, rejectFn];
                     promise = Deferred.sequence(fns);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3806,12 +3919,13 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
 
             describe('returns a new Promise that will reject with the associated Error if any of the specified Promise of an Array of functions returns a rejected Promise', function() {
-                function rejectFn () {
+                function rejectFn() {
                     return Deferred.rejected(new Error('Error message'));
                 }
 
                 it('Promise of an Array with one function that returns a rejected Promise', function() {
                     var fns;
+
                     fns = [rejectFn];
                     promise = Deferred.sequence(Deferred.resolved(fns));
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3820,6 +3934,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Promise of an Array with one function and one function that returns a rejected Promise', function() {
                     var fns;
+
                     fns = [fn1, rejectFn];
                     promise = Deferred.sequence(Deferred.resolved(fns));
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3828,6 +3943,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Promise of an Array with two functions and one function that returns a rejected Promise', function() {
                     var fns;
+
                     fns = [fn1, fn2, rejectFn];
                     promise = Deferred.sequence(Deferred.resolved(fns));
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3838,6 +3954,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             describe('returns a new Promise that will reject with the associated Error if any of the items in the specified Array is not a function', function() {
                 it('Array with one non-function value', function() {
                     var fns;
+
                     fns = [1];
                     promise = Deferred.sequence(fns);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3846,6 +3963,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Array with one function and one non-function value', function() {
                     var fns;
+
                     fns = [fn1, 1];
                     promise = Deferred.sequence(fns);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3854,6 +3972,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Array with two functions and one non-function value', function() {
                     var fns;
+
                     fns = [fn1, fn2, 1];
                     promise = Deferred.sequence(fns);
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3864,6 +3983,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             describe('returns a new Promise that will reject with the associated Error if any of the items in the specified resolved Promise of an Array is not a function ', function() {
                 it('Promise of an Array with one non-function value', function() {
                     var fns;
+
                     fns = [1];
                     promise = Deferred.sequence(Deferred.resolved(fns));
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3872,6 +3992,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Promise of an Array with one function and one non-function value', function() {
                     var fns;
+
                     fns = [fn1, 1];
                     promise = Deferred.sequence(Deferred.resolved(fns));
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3880,6 +4001,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Promise of an Array with two functions and one non-function value', function() {
                     var fns;
+
                     fns = [fn1, fn2, 1];
                     promise = Deferred.sequence(Deferred.resolved(fns));
                     expect(promise instanceof ExtPromise).toBe(true);
@@ -3905,16 +4027,19 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
         describe('parallel()', function() {
             var fn1 = function() {
                 ++fn1.callCount;
+
                 return 1;
             };
 
             var fn2 = function() {
                 ++fn2.callCount;
+
                 return 2;
             };
 
             var fn3 = function() {
                 ++fn3.callCount;
+
                 return 3;
             };
 
@@ -3943,6 +4068,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Empty Array with the optional scope and arguments specified', function() {
                     var args = ['a', 'b', 'c'];
+
                     var fns = [];
 
                     promise = Deferred.parallel(fns, targetScope, 'a', 'b', 'c');
@@ -3971,6 +4097,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Array with one function with the optional scope and arguments specified', function() {
                     var args = ['a', 'b', 'c'];
+
                     var fns = [verifyArgs(verifyScope(fn1, targetScope), args)];
 
                     promise = Deferred.parallel(fns, targetScope, 'a', 'b', 'c');
@@ -3999,6 +4126,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Array of two functions with the optional scope and arguments specified', function() {
                     var args = ['a', 'b', 'c'];
+
                     var fns = [verifyArgs(verifyScope(fn1, targetScope), args), verifyArgs(verifyScope(fn2, targetScope), args)];
 
                     promise = Deferred.parallel(fns, targetScope, 'a', 'b', 'c');
@@ -4027,6 +4155,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Array of three functions with the optional scope and arguments specified', function() {
                     var args = ['a', 'b', 'c'];
+
                     var fns = [verifyArgs(verifyScope(fn1, targetScope), args), verifyArgs(verifyScope(fn2, targetScope), args), verifyArgs(verifyScope(fn3, targetScope), args)];
 
                     promise = Deferred.parallel(fns, targetScope, 'a', 'b', 'c');
@@ -4057,6 +4186,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Promise of an empty Array with the optional scope and arguments specified', function() {
                     var args = ['a', 'b', 'c'];
+
                     var fns = [];
 
                     promise = Deferred.parallel(fns, targetScope, 'a', 'b', 'c');
@@ -4085,6 +4215,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Promise of an Array with one function with the optional scope and arguments specified', function() {
                     var args = ['a', 'b', 'c'];
+
                     var fns = [verifyArgs(verifyScope(fn1, targetScope), args)];
 
                     promise = Deferred.parallel(Deferred.resolved(fns), targetScope, 'a', 'b', 'c');
@@ -4113,6 +4244,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Promise of an Array of two functions with the optional scope and arguments specified', function() {
                     var args = ['a', 'b', 'c'];
+
                     var fns = [verifyArgs(verifyScope(fn1, targetScope), args), verifyArgs(verifyScope(fn2, targetScope), args)];
 
                     promise = Deferred.parallel(Deferred.resolved(fns), targetScope, 'a', 'b', 'c');
@@ -4141,6 +4273,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
 
                 it('Promise of an Array of three functions with the optional scope and arguments specified', function() {
                     var args = ['a', 'b', 'c'];
+
                     var fns = [verifyArgs(verifyScope(fn1, targetScope), args), verifyArgs(verifyScope(fn2, targetScope), args), verifyArgs(verifyScope(fn3, targetScope), args)];
 
                     promise = Deferred.parallel(Deferred.resolved(fns), targetScope, 'a', 'b', 'c');
@@ -4160,7 +4293,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
 
             describe('returns a new Promise that will reject with the associated Error if any of the specified Array of functions throws an Error', function() {
-                function brokenFn () {
+                function brokenFn() {
                     throw new Error('Error message');
                 }
 
@@ -4193,7 +4326,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
 
             describe('returns a new Promise that will reject with the associated Error if any of the specified Promise of an Array of functions throws an Error', function() {
-                function brokenFn () {
+                function brokenFn() {
                     throw new Error('Error message');
                 }
 
@@ -4226,7 +4359,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
 
             describe('returns a new Promise that will reject with the associated Error if any of the specified Array of functions returns a rejected Promise', function() {
-                function rejectFn () {
+                function rejectFn() {
                     return Deferred.rejected(new Error('Error message'));
                 }
 
@@ -4259,7 +4392,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
 
             describe('returns a new Promise that will reject with the associated Error if any of the specified Promise of an Array of functions returns a rejected Promise', function() {
-                function rejectFn () {
+                function rejectFn() {
                     return Deferred.rejected(new Error('Error message'));
                 }
 
@@ -4365,7 +4498,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
         }); // parallel
 
         describe('pipeline()', function() {
-            function createAppenderFn (v) {
+            function createAppenderFn(v) {
                 return function(x) {
                     return x ? x + v : v;
                 };
@@ -4601,7 +4734,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
 
             describe('returns a new Promise that will reject with the associated Error if any of the specified Array of functions throws an Error', function() {
-                function brokenFn () {
+                function brokenFn() {
                     throw new Error('Error message');
                 }
 
@@ -4634,7 +4767,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
 
             describe('returns a new Promise that will reject with the associated Error if any of the specified Promise of an Array of functions throws an Error', function() {
-                function brokenFn () {
+                function brokenFn() {
                     throw new Error('Error message');
                 }
 
@@ -4667,7 +4800,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
 
             describe('returns a new Promise that will reject with the associated Error if any of the specified Array of functions returns a rejected Promise', function() {
-                function rejectFn () {
+                function rejectFn() {
                     return Deferred.rejected(new Error('Error message'));
                 }
 
@@ -4700,7 +4833,7 @@ topSuite('Ext.promise.Promise', ['Ext.Promise', 'Ext.Deferred', 'Ext.promise.*']
             });
 
             describe('returns a new Promise that will reject with the associated Error if any of the specified Promise of an Array of functions returns a rejected Promise', function() {
-                function rejectFn () {
+                function rejectFn() {
                     return Deferred.rejected(new Error('Error message'));
                 }
 

@@ -25,6 +25,7 @@ Ext.define('Ext.data.validator.Format', {
     //<debug>
     constructor: function() {
         this.callParent(arguments);
+
         if (!this.getMatcher()) {
             Ext.raise('validator.Format must be configured with a matcher');
         }

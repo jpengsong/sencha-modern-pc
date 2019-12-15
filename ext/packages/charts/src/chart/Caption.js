@@ -116,24 +116,27 @@ Ext.define('Ext.chart.Caption', {
 
     surfaceName: 'caption',
 
-    constructor: function (config) {
+    constructor: function(config) {
         var me = this,
             id;
 
         if ('id' in config) {
             id = config.id;
-        } else if ('id' in me.config) {
+        }
+        else if ('id' in me.config) {
             id = me.config.id;
-        } else {
+        }
+        else {
             id = me.getId();
         }
+
         me.setId(id);
 
         me.mixins.observable.constructor.call(me, config);
         me.initBindable();
     },
 
-    updateChart: function () {
+    updateChart: function() {
         if (!this.isConfiguring) {
             // Re-create caption's sprite in another chart.
             this.setSprite({
@@ -142,7 +145,7 @@ Ext.define('Ext.chart.Caption', {
         }
     },
 
-    applySprite: function (sprite) {
+    applySprite: function(sprite) {
         var me = this,
             chart = me.getChart(),
             surface = me.surface = chart.getSurface(me.surfaceName);
@@ -153,28 +156,29 @@ Ext.define('Ext.chart.Caption', {
             fillStyle: 'yellow',
             strokeStyle: 'red'
         });
+
         //</debug>
         return sprite && surface.add(sprite);
     },
 
-    updateSprite: function (sprite, oldSprite) {
+    updateSprite: function(sprite, oldSprite) {
         if (oldSprite) {
             oldSprite.destroy();
         }
     },
 
-    updateText: function (text) {
+    updateText: function(text) {
         this.getSprite().setAttributes({
             text: text
         });
     },
 
-    updateStyle: function (style) {
+    updateStyle: function(style) {
         this.getSprite().setAttributes(style);
     },
 
     //<debug>
-    updateDebug: function (debug) {
+    updateDebug: function(debug) {
         var me = this,
             sprite = me.getSprite();
 
@@ -204,7 +208,7 @@ Ext.define('Ext.chart.Caption', {
     },
     //</debug>
 
-    updateRect: function (rect) {
+    updateRect: function(rect) {
         if (this.rectSprite) {
             this.rectSprite.setAttributes({
                 x: rect[0],
@@ -215,7 +219,7 @@ Ext.define('Ext.chart.Caption', {
         }
     },
 
-    updateDocked: function () {
+    updateDocked: function() {
         var chart = this.getChart();
 
         if (chart && !this.isConfiguring) {
@@ -232,11 +236,12 @@ Ext.define('Ext.chart.Caption', {
      * The shrink rect is {left, top, right, bottom} in `caption`
      * surface coordinates.
      */
-    computeRect: function (chartRect, shrinkRect) {
+    computeRect: function(chartRect, shrinkRect) {
         if (this.getHidden()) {
             return null;
         }
 
+        // eslint-disable-next-line vars-on-top
         var rect = [0, 0, chartRect[2], 0],
             docked = this.getDocked(),
             padding = this.getPadding(),
@@ -266,7 +271,7 @@ Ext.define('Ext.chart.Caption', {
         this.setRect(rect);
     },
 
-    alignRect: function (seriesRect) {
+    alignRect: function(seriesRect) {
         var surfaceRect = this.surface.getRect(),
             rect = this.getRect();
 
@@ -277,7 +282,7 @@ Ext.define('Ext.chart.Caption', {
         this.setRect(rect.slice());
     },
 
-    performLayout: function () {
+    performLayout: function() {
         var me = this,
             rect = me.getRect(),
             x = rect[0],
@@ -295,9 +300,11 @@ Ext.define('Ext.chart.Caption', {
             case 'left':
                 dx = x - bbox.x;
                 break;
+
             case 'right':
                 dx = (x + width) - (bbox.x + bbox.width);
                 break;
+
             case 'center':
                 dx = x + (width - bbox.width) / 2 - bbox.x;
                 break;
@@ -311,13 +318,14 @@ Ext.define('Ext.chart.Caption', {
         });
     },
 
-    destroy: function () {
+    destroy: function() {
         var me = this;
 
         //<debug>
         if (me.rectSprite) {
             me.rectSprite.destroy();
         }
+
         //</debug>
         me.getSprite().destroy();
 

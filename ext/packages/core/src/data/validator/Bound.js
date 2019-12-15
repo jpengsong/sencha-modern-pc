@@ -96,12 +96,14 @@ Ext.define('Ext.data.validator.Bound', {
                 msg = me._bothMsg ||
                     (me._bothMsg = Ext.String.format(me.getBothMessage(), min, max));
             }
-        } else if (hasMin) {
+        }
+        else if (hasMin) {
             if (value < min) {
                 msg = me._minMsg ||
                     (me._minMsg = Ext.String.format(me.getMinOnlyMessage(), min));
             }
-        } else if (hasMax) {
+        }
+        else if (hasMax) {
             if (value > max) {
                 msg = me._maxMsg ||
                     (me._maxMsg = Ext.String.format(me.getMaxOnlyMessage(), max));
@@ -115,6 +117,7 @@ Ext.define('Ext.data.validator.Bound', {
         if (value === undefined || value === null) {
             return this.getEmptyMessage();
         }
+
         return true;
     },
 

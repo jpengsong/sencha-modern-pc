@@ -103,8 +103,9 @@ Ext.define('Ext.util.Sorter', {
         sorterFn: null,
 
         /**
-         * @cfg {String} root Optional root property. This is mostly useful when sorting a Store, in which case we set the
-         * root to 'data' to make the filter pull the {@link #property} out of the data object of each item
+         * @cfg {String} root Optional root property. This is mostly useful when sorting a Store,
+         * in which case we set the root to 'data' to make the filter pull the {@link #property}
+         * out of the data object of each item
          */
         root: null,
 
@@ -144,15 +145,17 @@ Ext.define('Ext.util.Sorter', {
          * with equality.
          * @return {Function} The comparator function.
          */
-        createComparator: function (sorters, nextFn) {
+        createComparator: function(sorters, nextFn) {
             nextFn = nextFn || 0;
-            return function (lhs, rhs) {
+
+            return function(lhs, rhs) {
                 var items = sorters.isCollection ? sorters.items : sorters,
                     n = items.length,
                     comp, i;
 
                 for (i = 0; i < n; ++i) {
                     comp = items[i].sort(lhs, rhs);
+
                     if (comp) {
                         return comp;
                     }
@@ -184,21 +187,23 @@ Ext.define('Ext.util.Sorter', {
         this.initConfig(config);
     },
 
-    getId: function () {
+    getId: function() {
         var id = this._id;
 
         if (!id) {
             id = this.getProperty();
+
             if (!id) {
                 id = Ext.id(null, 'ext-sorter-');
             }
+
             this._id = id;
         }
 
         return id;
     },
 
-    sort: function (lhs, rhs) {
+    sort: function(lhs, rhs) {
         return this.multiplier * this.sortFn(lhs, rhs);
     },
 
@@ -207,7 +212,7 @@ Ext.define('Ext.util.Sorter', {
      * Basic default sorter function that just compares the defined property of each object.
      * This is hidden by the `sorterFn` provided by the user.
      */
-    sortFn: function (item1, item2) {
+    sortFn: function(item1, item2) {
         var me = this,
             transform = me._transform,
             root = me._root,
@@ -229,23 +234,23 @@ Ext.define('Ext.util.Sorter', {
 
         return (lhs > rhs) ? 1 : (lhs < rhs ? -1 : 0);
     },
-    
+
     applyDirection: function(direction) {
         return direction ? direction : 'ASC';
     },
 
-    updateDirection: function (direction) {
+    updateDirection: function(direction) {
         this.multiplier = (direction.toUpperCase() === "DESC") ? -1 : 1;
     },
 
-    updateProperty: function (property) {
+    updateProperty: function(property) {
         if (property) {
             // Unhide the default sortFn on our prototype
             delete this.sortFn;
         }
     },
 
-    updateSorterFn: function (sorterFn) {
+    updateSorterFn: function(sorterFn) {
         // Hide the default sortFn on our prototype
         this.sortFn = sorterFn;
     },
@@ -275,7 +280,7 @@ Ext.define('Ext.util.Sorter', {
         if (me._id) {
             result.id = me._id;
         }
-        
+
         return result;
     },
 
@@ -284,7 +289,7 @@ Ext.define('Ext.util.Sorter', {
      * to a server.
      * @return {Object}
      */
-    serialize: function () {
+    serialize: function() {
         return {
             property: this.getProperty(),
             direction: this.getDirection()

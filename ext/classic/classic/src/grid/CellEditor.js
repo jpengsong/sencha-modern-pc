@@ -5,16 +5,18 @@
 Ext.define('Ext.grid.CellEditor', {
     extend: 'Ext.Editor',
     alias: 'widget.celleditor',
+
     /**
      * @property {Boolean} isCellEditor
      * @readonly
-     * `true` in this class to identify an object as an instantiated CellEditor, or subclass thereof.
+     * `true` in this class to identify an object as an instantiated CellEditor,
+     * or subclass thereof.
      */
     isCellEditor: true,
-    
+
     alignment: 'l-l!',
 
-    hideEl : false,
+    hideEl: false,
 
     cls: Ext.baseCSSPrefix + 'small-editor ' +
         Ext.baseCSSPrefix + 'grid-editor ' +
@@ -36,9 +38,9 @@ Ext.define('Ext.grid.CellEditor', {
         this.grid = grid;
     },
 
-    startEdit: function(boundEl, value, doFocus) {
+    startEdit: function(boundEl, value, doFocus, isResuming) {
         this.context = this.editingPlugin.context;
-        this.callParent([boundEl, value, doFocus]);
+        this.callParent([boundEl, value, doFocus, isResuming]);
     },
 
     /**
@@ -54,7 +56,7 @@ Ext.define('Ext.grid.CellEditor', {
             if (me.isForTree) {
                 innerCell = innerCell.querySelector(me.treeNodeSelector);
             }
-            
+
             Ext.fly(innerCell).hide();
         }
 
@@ -92,6 +94,7 @@ Ext.define('Ext.grid.CellEditor', {
         // If we received an ESC, this will be cancelEdit.
         if (me[me.focusLeaveAction]() === false) {
             e.event.stopEvent();
+
             return;
         }
 
@@ -105,7 +108,7 @@ Ext.define('Ext.grid.CellEditor', {
         }
 
         me.cacheElement();
-        
+
         // Bypass Editor's onFocusLeave
         Ext.container.Container.prototype.onFocusLeave.apply(me, arguments);
     },
@@ -116,11 +119,13 @@ Ext.define('Ext.grid.CellEditor', {
 
         if (me.editing) {
             context.value = me.field.value;
+
             if (me.editingPlugin.validateEdit(context) === false) {
                 if (context.cancel) {
                     context.value = me.originalValue;
                     me.editingPlugin.cancelEdit();
                 }
+
                 return !!context.cancel;
             }
         }
@@ -131,7 +136,7 @@ Ext.define('Ext.grid.CellEditor', {
     onEditComplete: function(remainVisible, canceling) {
         var me = this,
             activeElement = Ext.Element.getActiveElement(),
-            ctx = me.context, 
+            ctx = me.context,
             store = ctx && ctx.store,
             boundEl;
 
@@ -160,6 +165,7 @@ Ext.define('Ext.grid.CellEditor', {
         // Inform it directly.
         if (canceling) {
             me.editingPlugin.cancelEdit(me);
+
             // When expanding/collapsing a node, the editor will lose focus
             // and cancel the editing, but at the same time the expand/collapse
             // will call actionable#suspend that will cause this editor to remain visible
@@ -168,14 +174,17 @@ Ext.define('Ext.grid.CellEditor', {
             if (remainVisible && store && store.isExpandingOrCollapsing) {
                 me.cacheElement();
             }
-        } else {
+        }
+        else {
             me.editingPlugin.onEditComplete(me, me.getValue(), me.startValue);
         }
     },
 
     cacheElement: function(force) {
-        if ((!this.editing || force) && !this.destroyed) {
+        if ((!this.editing || force) && !this.destroyed && !this.isDetaching) {
+            this.isDetaching = true;
             this.detachFromBody();
+            this.isDetaching = false;
         }
     },
 
@@ -193,12 +202,14 @@ Ext.define('Ext.grid.CellEditor', {
     onSpecialKey: function(field, event, eOpts) {
         var me = this,
             key = event.getKey(),
-            complete = me.completeOnEnter && key === event.ENTER && (!eOpts || !eOpts.fromBoundList),
+            complete = me.completeOnEnter && key === event.ENTER &&
+                      (!eOpts || !eOpts.fromBoundList),
             cancel = me.cancelOnEsc && key === event.ESC,
             view = me.editingPlugin.view;
 
         if (complete || cancel) {
-            // Do not let the key event bubble into the NavigationModel after we're don processing it.
+            // Do not let the key event bubble into the NavigationModel
+            // after we're done processing it.
             // We control the navigation action here; we focus the cell.
             event.stopEvent();
 
@@ -224,9 +235,9 @@ Ext.define('Ext.grid.CellEditor', {
             if (me.isForTree) {
                 innerCell = innerCell.querySelector(me.treeNodeSelector);
             }
-            
+
             Ext.fly(innerCell).show();
-        }        
+        }
     },
 
     /**
@@ -247,7 +258,7 @@ Ext.define('Ext.grid.CellEditor', {
             });
         }
     },
-    
+
     /**
      * @private
      * Because when checkbox is clicked it loses focus  completeEdit is bypassed.
@@ -255,7 +266,7 @@ Ext.define('Ext.grid.CellEditor', {
     onCheckBoxMouseDown: function() {
         this.completeEdit = Ext.emptyFn;
     },
-     
+
     /**
      * @private
      * Restore checkbox focus and completeEdit method.
@@ -264,7 +275,7 @@ Ext.define('Ext.grid.CellEditor', {
         delete this.completeEdit;
         this.field.focus(false, 10);
     },
-    
+
     /**
      * @private
      * Realigns the Editor to the grid cell, or to the text node in the grid inner cell
@@ -281,8 +292,10 @@ Ext.define('Ext.grid.CellEditor', {
             xOffset,
             v = '',
 
-            // innerCell is empty if there are no children, or there is one text node, and it contains whitespace
-            isEmpty = !innerCellTextNode || (innerCellTextNode.nodeType === 3 && !(Ext.String.trim(v = innerCellTextNode.data).length));
+            // innerCell is empty if there are no children, or there is one text node,
+            // and it contains whitespace
+            isEmpty = !innerCellTextNode || (innerCellTextNode.nodeType === 3 &&
+                      !(Ext.String.trim(v = innerCellTextNode.data).length));
 
         if (me.isForTree) {
             // When editing a tree, adjust the width and offsets of the editor to line
@@ -303,7 +316,8 @@ Ext.define('Ext.grid.CellEditor', {
             me.field.setWidth(width);
         }
 
-        // https://sencha.jira.com/browse/EXTJSIV-10871 Ensure the data bearing element has a height from text.
+        // https://sencha.jira.com/browse/EXTJSIV-10871 Ensure the data bearing element
+        // has a height from text.
         if (isEmpty) {
             innerCell.innerHTML = 'X';
         }
@@ -319,4 +333,3 @@ Ext.define('Ext.grid.CellEditor', {
         return Ext.fly(innerCell.querySelector(this.treeNodeSelector)).getOffsetsTo(innerCell)[0];
     }
 });
-

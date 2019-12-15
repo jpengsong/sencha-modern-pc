@@ -1,6 +1,10 @@
 {
-    "name": "@extjs/ext-react-google",
-    "version": "6.5.3.57",
+    "name": "@extjs/ext-google",
+    "ext-react-name": "@extjs/ext-react-google",
+    "ext-name": "@extjs/ext-google",
+    "SenchaExtName": "@sencha/ext-google",
+    "SenchaExtReactName": "@sencha/ext-react-google",
+    "version": "7.0.0.156",
     "sencha": {
         "name": "google",
         "namespace": "Ext",
@@ -12,8 +16,8 @@
         "creator": "Sencha",
         "summary": "Google APIs",
         "detailedDescription": "This package provides Google APIs support.",
-        "version": "6.5.3.57",
-        "compatVersion": "6.0.0",
+        "version": "7.0.0.156",
+        "compatVersion": "7.0.0",
         "format": "1",
         "local": true,
         "output": {

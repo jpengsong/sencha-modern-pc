@@ -1076,13 +1076,13 @@ $form-radio-background-image: dynamic('form/radio');
  * @var {string/list}
  * The glyph for the radio button when {@link Global_CSS#$enable-font-icons} is `true`.
  */
-$form-radio-glyph: dynamic($fa-var-circle-o $form-checkbox-size $font-icon-font-family);
+$form-radio-glyph: dynamic($fa-var-circle $form-checkbox-size $font-icon-font-family);
 
 /**
  * @var {string/list}
  * The glyph for the radio button in "checked" state when {@link Global_CSS#$enable-font-icons} is `true`.
  */
-$form-radio-checked-glyph: dynamic($fa-var-dot-circle-o $form-checkbox-size $font-icon-font-family);
+$form-radio-checked-glyph: dynamic($fa-var-dot-circle $form-checkbox-size $font-icon-font-family);
 
 /**
  * @var {color}

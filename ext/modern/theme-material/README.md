@@ -1,6 +1,7 @@
-# @extjs/ext-react-modern-theme-material
+# @extjs/ext-modern-theme-material
 --------------------------------------------------------
-This package contains the Sencha Cmd package `theme-material@6.5.0`  
+
+Material theme for the Modern toolkit is based on Google's Material Design, which has gained much popularity as a design foundation for many developers.  
  
 Copyright (c) 2006-2017, Sencha Inc.  
 All rights reserved.  

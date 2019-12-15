@@ -2,8 +2,8 @@
  * This class is used to display small visual icons in the header of a panel. There are a set of
  * 25 icons that can be specified by using the {@link #type} config. The {@link #handler} config
  * can be used to provide a function that will respond to any click events. In general, this class
- * will not be instantiated directly, rather it will be created by specifying the {@link Ext.Panel#tools}
- * configuration on the Panel itself.
+ * will not be instantiated directly, rather it will be created by specifying the
+ * {@link Ext.Panel#tools} configuration on the Panel itself.
  *
  *     @example
  *     Ext.create('Ext.Panel', {
@@ -115,6 +115,7 @@ Ext.define('Ext.Tool', {
          */
         iconCls: null,
 
+        /* eslint-disable max-len */
         /**
          * @cfg {String} type
          * The type of tool to render. The following types are available:
@@ -145,6 +146,7 @@ Ext.define('Ext.Tool', {
          * - <img style="vertical-align:sub;margin-right:4px;" width="16" height="14" title="" alt="" src="data:image/gif;base64,R0lGODlhEAAOAIABAGZmZv///yH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS41LWMwMjEgNzkuMTU1NzcyLCAyMDE0LzAxLzEzLTE5OjQ0OjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozNTFFNEY4NDlBQTYxMUU0OEVCNUNFMTgyMDM3Mzc3MSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozNTFFNEY4NTlBQTYxMUU0OEVCNUNFMTgyMDM3Mzc3MSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjM1MUU0RjgyOUFBNjExRTQ4RUI1Q0UxODIwMzczNzcxIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjM1MUU0RjgzOUFBNjExRTQ4RUI1Q0UxODIwMzczNzcxIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2djX1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28u7q5uLe2tbSzsrGwr66trKuqqainpqWko6KhoJ+enZybmpmYl5aVlJOSkZCPjo2Mi4qJiIeGhYSDgoGAf359fHt6eXh3dnV0c3JxcG9ubWxramloZ2ZlZGNiYWBfXl1cW1pZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAvLi0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQAAIfkEAQAAAQAsAAAAABAADgAAAhyEHakbh8wcAq1SSeGSuvsPhmLkgNyHWWqKll8BADs=" /> collapse
          */
         type: null,
+        /* eslint-enable max-len */
 
         /**
          * @cfg {Boolean} [passive=false]
@@ -159,30 +161,32 @@ Ext.define('Ext.Tool', {
      * Specify as false to allow click event to propagate.
      */
     stopEvent: true,
-    
+
     weight: 10,
 
-    updateIconCls: function (iconCls, oldValue) {
+    updateIconCls: function(iconCls, oldValue) {
         this.iconElement.replaceCls(oldValue, iconCls);
     },
 
-    updateType: function (type, oldType) {
+    updateType: function(type, oldType) {
         var me = this,
             baseCls = Ext.Tool.prototype.classCls,
             iconElement = me.iconElement;
 
         me.type = type;
-        iconElement.replaceCls(oldType && (baseCls + '-type-' + oldType),
-                          type && (baseCls + '-type-' + type));
+        iconElement.replaceCls(
+            oldType && (baseCls + '-type-' + oldType),
+            type && (baseCls + '-type-' + type)
+        );
     },
 
-    updateDisabled: function (disabled, oldDisabled) {
-        this.callParent([ disabled, oldDisabled ]);
+    updateDisabled: function(disabled, oldDisabled) {
+        this.callParent([disabled, oldDisabled]);
 
-        this.el.removeCls([ this.hoveredCls, this.pressedCls ]);
+        this.el.removeCls([this.hoveredCls, this.pressedCls]);
     },
 
-    updatePassive: function (passive) {
+    updatePassive: function(passive) {
         var me = this;
 
         me.setDisabled(passive);
@@ -198,37 +202,37 @@ Ext.define('Ext.Tool', {
     privates: {
         //<debug>
         _toolTypes: {
-            close:1,
-            collapse:1,
-            disclosure:1,
-            down:1,
-            expand:1,
-            gear:1,
-            help:1,
-            left:1,
-            maximize:1,
-            minimize:1,
-            minus:1,
+            close: 1,
+            collapse: 1,
+            disclosure: 1,
+            down: 1,
+            expand: 1,
+            gear: 1,
+            help: 1,
+            left: 1,
+            maximize: 1,
+            minimize: 1,
+            minus: 1,
             menu: 1,
-            //move:1,
-            next:1,
-            pin:1,
-            plus:1,
-            prev:1,
-            print:1,
-            refresh:1,
-            //resize:1,
-            restore:1,
-            right:1,
-            save:1,
-            search:1,
-            toggle:1,
-            unpin:1,
-            up:1
+            // move:1,
+            next: 1,
+            pin: 1,
+            plus: 1,
+            prev: 1,
+            print: 1,
+            refresh: 1,
+            // resize:1,
+            restore: 1,
+            right: 1,
+            save: 1,
+            search: 1,
+            toggle: 1,
+            unpin: 1,
+            up: 1
         },
         //</debug>
 
-        invokeToolHandler: function (me, handler, scope, args, ev) {
+        invokeToolHandler: function(me, handler, scope, args, ev) {
             if (handler) {
                 Ext.callback(handler, me.scope, args, 0, me);
             }
@@ -252,7 +256,7 @@ Ext.define('Ext.Tool', {
          * @param {Ext.event.Event} ev
          * @private
          */
-        onClick: function (ev) {
+        onClick: function(ev) {
             var me = this,
                 handler = me.handler || me.callback, // Pick up callback for classic compat
                 toolOwner = me.toolOwner,
@@ -266,10 +270,11 @@ Ext.define('Ext.Tool', {
                 ev.stopEvent();
             }
 
-            args = [ me.parent, me, ev ];
+            args = [me.parent, me, ev];
 
             if (toolOwner) {
                 args[0] = toolOwner;
+
                 if (toolOwner.augmentToolHandler) {
                     toolOwner.augmentToolHandler(me, args);
                 }
@@ -287,6 +292,7 @@ Ext.define('Ext.Tool', {
          */
         onMouseDown: function(e) {
             var me = this;
+
             if (!me.focusable) {
                 e.preventDefault();
             }
@@ -317,6 +323,7 @@ Ext.define('Ext.Tool', {
             if (this.getDisabled()) {
                 return false;
             }
+
             this.addCls(this.hoveredCls);
         },
 

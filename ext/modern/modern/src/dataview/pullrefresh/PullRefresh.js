@@ -144,16 +144,16 @@ Ext.define('Ext.dataview.pullrefresh.PullRefresh', {
         state: 'pulling'
     },
 
-    init: function (list) {
+    init: function(list) {
         this.setList(list);
     },
 
-    destroy: function () {
+    destroy: function() {
         this.setList(null);
         this.callParent();
     },
 
-    createWidget: function (config) {
+    createWidget: function(config) {
         var ret = this.mergeProxiedConfigs('widget', config);
 
         // Since widget can be set as a string we'll lose all our properties that
@@ -195,7 +195,7 @@ Ext.define('Ext.dataview.pullrefresh.PullRefresh', {
          * @param {Boolean} force Force the snapback to occur regardless of state {optional}
          * @private
          */
-        snapBack: function (force) {
+        snapBack: function(force) {
             var me = this,
                 widget = me.getWidget(),
                 state = me.getState(),
@@ -214,7 +214,8 @@ Ext.define('Ext.dataview.pullrefresh.PullRefresh', {
                             me.onSnapBackEnd(true);
                         }
                     });
-                } else {
+                }
+                else {
                     me.onSnapBackEnd();
                 }
             }
@@ -231,6 +232,7 @@ Ext.define('Ext.dataview.pullrefresh.PullRefresh', {
 
             if (me.running) {
                 me.running = false;
+
                 if (state === 'holding') {
                     if (overshotMaxDistance) {
                         widget.el.animate({
@@ -244,11 +246,13 @@ Ext.define('Ext.dataview.pullrefresh.PullRefresh', {
                                 me.fetchLatest();
                             }
                         });
-                    } else {
+                    }
+                    else {
                         me.setState('loading');
                         me.fetchLatest();
                     }
-                } else {
+                }
+                else {
                     me.snapBack(true, false);
                 }
             }
@@ -296,6 +300,7 @@ Ext.define('Ext.dataview.pullrefresh.PullRefresh', {
 
             if (me.running) {
                 e.stopEvent();
+
                 return;
             }
 
@@ -343,18 +348,21 @@ Ext.define('Ext.dataview.pullrefresh.PullRefresh', {
 
                         if (oldRecord) {
                             oldRecord.set(newRecord.getData());
-                        } else {
+                        }
+                        else {
                             toInsert.push(newRecord);
                         }
                     }
 
                     store.insert(0, toInsert);
-                } else {
+                }
+                else {
                     store.loadRecords(newRecords);
                 }
 
                 me.setLastUpdated(new Date());
             }
+
             me.setState('loaded');
             list.fireEvent('latestfetched', me, toInsert || newRecords);
 
@@ -375,12 +383,13 @@ Ext.define('Ext.dataview.pullrefresh.PullRefresh', {
                 widget.hide(null);
                 me.setState('pulling');
                 me.reset();
-            } else {
+            }
+            else {
                 widget.hide();
                 widget.on('hide', function() {
                     me.setState('pulling');
                     me.reset();
-                }, me, {single: true});
+                }, me, { single: true });
             }
         },
 
@@ -396,7 +405,7 @@ Ext.define('Ext.dataview.pullrefresh.PullRefresh', {
         /**
          * @private
          */
-        updateLastUpdated: function (value) {
+        updateLastUpdated: function(value) {
             var widget = this.getWidget();
 
             if (widget) {
@@ -409,7 +418,7 @@ Ext.define('Ext.dataview.pullrefresh.PullRefresh', {
         /**
          * @private
          */
-        updateList: function (list, oldList) {
+        updateList: function(list, oldList) {
             var me = this,
                 widget = me.widget;
 
@@ -440,7 +449,7 @@ Ext.define('Ext.dataview.pullrefresh.PullRefresh', {
 
         // overlay
 
-        updateOverlay: function (overlay) {
+        updateOverlay: function(overlay) {
             var widget = this.getWidget();
 
             if (widget) {
@@ -454,7 +463,7 @@ Ext.define('Ext.dataview.pullrefresh.PullRefresh', {
         /**
          * @private
          */
-        updateState: function (value) {
+        updateState: function(value) {
             var widget = this.getWidget();
 
             if (widget) {
@@ -464,11 +473,11 @@ Ext.define('Ext.dataview.pullrefresh.PullRefresh', {
 
         // widget
 
-        applyWidget: function (config, existing) {
+        applyWidget: function(config, existing) {
             return Ext.updateWidget(existing, config, this, 'createWidget');
         },
 
-        updateWidget: function (widget) {
+        updateWidget: function(widget) {
             var me = this,
                 list, overlay;
 

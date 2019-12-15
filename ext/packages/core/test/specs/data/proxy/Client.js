@@ -10,6 +10,6 @@ topSuite("Ext.data.proxy.Client", ['Ext.data.ArrayStore'], function() {
     });
 
     it("should throw an error on clear", function() {
-        expect(function() {proxy.clear();}).toThrow();
+        expect(function() { proxy.clear(); }).toThrow();
     });
 });

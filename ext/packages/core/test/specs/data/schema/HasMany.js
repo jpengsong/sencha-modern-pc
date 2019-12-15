@@ -49,7 +49,7 @@ topSuite("Ext.data.schema.HasMany", [false, 'Ext.data.ArrayStore'], function() {
         MockAjaxManager.addMethods();
         Ext.data.Model.schema.setNamespace('spec');
     });
-    
+
     afterEach(function() {
         if (Post) {
             Ext.undefine('spec.Post');
@@ -64,6 +64,7 @@ topSuite("Ext.data.schema.HasMany", [false, 'Ext.data.ArrayStore'], function() {
             Ext.undefine('spec.Thread');
             Thread = null;
         }
+
         Ext.data.Model.schema.clear(true);
         MockAjaxManager.removeMethods();
     });
@@ -246,6 +247,7 @@ topSuite("Ext.data.schema.HasMany", [false, 'Ext.data.ArrayStore'], function() {
                 });
 
                 var thread = new Thread();
+
                 expect(thread.posts().getAutoSync()).toBe(true);
             });
         });
@@ -261,6 +263,7 @@ topSuite("Ext.data.schema.HasMany", [false, 'Ext.data.ArrayStore'], function() {
                 });
 
                 var thread = Thread.load(1);
+
                 Ext.Ajax.mockCompleteWithData({
                     id: 1,
                     posts: [{
@@ -294,13 +297,13 @@ topSuite("Ext.data.schema.HasMany", [false, 'Ext.data.ArrayStore'], function() {
                     }
                 });
 
-                var thread = new Thread({id: 1}),
-                    post = new Post({id: 101});
+                var thread = new Thread({ id: 1 }),
+                    post = new Post({ id: 101 });
 
                 thread.posts().add(post);
                 thread.drop();
                 expect(post.dropped).toBe(true);
-            }); 
+            });
         });
     });
 
@@ -330,12 +333,14 @@ topSuite("Ext.data.schema.HasMany", [false, 'Ext.data.ArrayStore'], function() {
 
         it("should have a reference to the parent record on load", function() {
             var posts = thread.posts();
+
             expect(posts.getAt(0).getThread()).toBe(thread);
             expect(posts.getAt(1).getThread()).toBe(thread);
         });
 
         it("should have a reference to the parent record on add", function() {
             var posts = thread.posts();
+
             posts.add({
                 id: 103
             });
@@ -370,8 +375,8 @@ topSuite("Ext.data.schema.HasMany", [false, 'Ext.data.ArrayStore'], function() {
                     hasMany: 'Post'
                 });
 
-                var thread = new Thread({id: 1}),
-                    post = new Post({id: 101});
+                var thread = new Thread({ id: 1 }),
+                    post = new Post({ id: 101 });
 
                 thread.posts().add(post);
                 expect(post.get('thread_id')).toBe(1);
@@ -388,8 +393,8 @@ topSuite("Ext.data.schema.HasMany", [false, 'Ext.data.ArrayStore'], function() {
                     }
                 });
 
-                var thread = new Thread({id: 1}),
-                    post = new Post({id: 101});
+                var thread = new Thread({ id: 1 }),
+                    post = new Post({ id: 101 });
 
                 thread.posts().add(post);
                 expect(post.get('customField')).toBe(1);
@@ -432,6 +437,7 @@ topSuite("Ext.data.schema.HasMany", [false, 'Ext.data.ArrayStore'], function() {
                 }
             });
             var thread = new Thread();
+
             expect(thread.comments().getTrackRemoved()).toBe(false);
         });
 
@@ -447,6 +453,7 @@ topSuite("Ext.data.schema.HasMany", [false, 'Ext.data.ArrayStore'], function() {
                 }
             });
             var thread = new Thread();
+
             expect(thread.posts().getTrackRemoved()).toBe(false);
         });
 

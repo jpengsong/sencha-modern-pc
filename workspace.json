@@ -1,20 +1,5 @@
 {
     /**
-     *  An array of the paths to all the applications present in this workspace
-     */
-    "apps": [
-        "packages/local/theme-first/.sencha/temp/Themer",
-        "packages/local/theme-green/.sencha/temp/Themer",
-        "packages/local/skyblue/.sencha/temp/Themer",
-        "packages/local/theme-skyblue/.sencha/temp/Themer",
-        "packages/local/deee/.sencha/temp/Themer",
-        "packages/local/theme-crimson/.sencha/temp/Themer",
-        "packages/local/crimson/.sencha/temp/Themer",
-        "packages/local/thme-skyblue/.sencha/temp/Themer",
-        "packages/local/theme-purple/.sencha/temp/Themer"
-    ],
-
-    /**
      * An object containing key value pair framework descriptors.
      *
      * The value should be an object containing "path" the path inside the workspace where the framework
@@ -37,7 +22,7 @@
      */
     "frameworks": {        "ext": {
             "path":"ext",
-            "version":"6.5.3.57"
+            "version":"7.0.0.156"
         }
 
     },

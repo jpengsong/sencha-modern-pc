@@ -10,12 +10,12 @@ Ext.define('Ext.TaskQueue', {
     pending: false,
 
     mode: true, // true for 'read', false for 'write'
-    
+
     //<debug>
     protectedReadQueue: [],
     protectedWriteQueue: [],
     //</debug>
-    
+
     readQueue: [],
     writeQueue: [],
     readRequestId: 0,
@@ -27,7 +27,7 @@ Ext.define('Ext.TaskQueue', {
         var me = this;
 
         me.run = me.run.bind(me);
-        
+
         // Some global things like floated wrapper are persistent and will add tasks/
         // add timers all the time, spoiling resource checks in our unit test suite.
         // To work around that we're implementing a parallel queue where only trusted
@@ -38,12 +38,13 @@ Ext.define('Ext.TaskQueue', {
         );
         me.runProtected.$skipTimerCheck = true;
         //</debug>
-        
+
         // iOS has a nasty bug which causes pending requestAnimationFrame to not release
-        // the callback when the WebView is switched back and forth from / to being background process
-        // We use a watchdog timer to workaround this, and restore the pending state correctly if this happens
-        // This timer has to be set as an interval from the very beginning and we have to keep it running for
-        // as long as the app lives, setting it later doesn't seem to work.
+        // the callback when the WebView is switched back and forth from / to being background 
+        // process. We use a watchdog timer to workaround this, and restore the pending state
+        // correctly if this happens. This timer has to be set as an interval from the very
+        // beginning and we have to keep it running for as long as the app lives, setting it later
+        // doesn't seem to work.
         // The watchdog timer must be accessible for environments to cancel.
         if (Ext.os.is.iOS) {
             //<debug>
@@ -55,11 +56,11 @@ Ext.define('Ext.TaskQueue', {
 
     requestRead: function(fn, scope, args) {
         var request = {
-                id: ++this.readRequestId,
-                fn: fn,
-                scope: scope,
-                args: args
-            };
+            id: ++this.readRequestId,
+            fn: fn,
+            scope: scope,
+            args: args
+        };
 
         //<debug>
         if (arguments[3] === true) {
@@ -73,11 +74,10 @@ Ext.define('Ext.TaskQueue', {
         //<debug>
         }
         //</debug>
-        
-        
+
         return request.id;
     },
-    
+
     cancelRead: function(id) {
         this.cancelRequest(this.readQueue, id, true);
     },
@@ -90,7 +90,7 @@ Ext.define('Ext.TaskQueue', {
                 scope: scope,
                 args: args
             };
-        
+
         //<debug>
         if (arguments[3] === true) {
             me.protectedWriteQueue.push(request);
@@ -103,10 +103,10 @@ Ext.define('Ext.TaskQueue', {
         //<debug>
         }
         //</debug>
-        
+
         return request.id;
     },
-    
+
     cancelWrite: function(id) {
         this.cancelRequest(this.writeQueue, id, false);
     },
@@ -116,6 +116,7 @@ Ext.define('Ext.TaskQueue', {
 
         //<debug>
         // Used below to cancel the correct timer.
+        /* eslint-disable-next-line one-var */
         var oldMode = me.mode;
         //</debug>
 
@@ -123,7 +124,7 @@ Ext.define('Ext.TaskQueue', {
             me.pendingTime = Date.now();
             me.pending = true;
             me.mode = mode;
-            
+
             if (mode) {
                 me.timer = Ext.defer(me[method] || me.run, 1);
             }
@@ -131,13 +132,14 @@ Ext.define('Ext.TaskQueue', {
                 me.timer = Ext.raf(me[method] || me.run);
             }
         }
-        
+
         //<debug>
         // Last one should win
         if (me.mode === mode && me.timer) {
             if (oldMode) {
                 Ext.undefer(me.timer);
-            } else {
+            }
+            else {
                 Ext.unraf(me.timer);
             }
 
@@ -150,16 +152,18 @@ Ext.define('Ext.TaskQueue', {
         }
         //</debug>
     },
-    
+
     cancelRequest: function(queue, id, mode) {
-        for (var i = 0; i < queue.length; i++) {
+        var i;
+
+        for (i = 0; i < queue.length; i++) {
             if (queue[i].id === id) {
                 queue.splice(i, 1);
-                
+
                 break;
             }
         }
-        
+
         if (!queue.length && this.mode === mode && this.timer) {
             Ext.undefer(this.timer);
         }
@@ -175,14 +179,14 @@ Ext.define('Ext.TaskQueue', {
         var me = this,
             mode = null,
             queue, tasks, task, fn, scope, args, i, len;
-        
+
         readQueue = readQueue || me.readQueue;
         writeQueue = writeQueue || me.writeQueue;
 
         me.pending = false;
 
         me.pending = me.timer = false;
-        
+
         if (me.mode) {
             queue = readQueue;
 
@@ -203,15 +207,15 @@ Ext.define('Ext.TaskQueue', {
 
         for (i = 0, len = tasks.length; i < len; i++) {
             task = tasks[i];
-            
+
             fn = task.fn;
             scope = task.scope;
             args = task.args;
-            
+
             if (scope && (scope.destroying || scope.destroyed)) {
                 continue;
             }
-            
+
             if (typeof fn === 'string') {
                 fn = scope[fn];
             }
@@ -230,7 +234,7 @@ Ext.define('Ext.TaskQueue', {
             me.request(mode, method);
         }
     },
-    
+
     clear: function() {
         var me = this,
             timer = me.timer;
@@ -238,7 +242,8 @@ Ext.define('Ext.TaskQueue', {
         if (timer) {
             if (me.mode) {
                 Ext.undefer(timer);
-            } else {
+            }
+            else {
                 Ext.unraf(timer);
             }
         }
@@ -249,7 +254,8 @@ Ext.define('Ext.TaskQueue', {
     }
 
     //<debug>
-    ,privates: {
+    /* eslint-disable-next-line comma-style */
+    , privates: {
         flush: function() {
             var me = this,
                 mode = me.mode;
@@ -257,7 +263,8 @@ Ext.define('Ext.TaskQueue', {
             while (me.readQueue.length || me.writeQueue.length) {
                 if (mode) {
                     Ext.undefer(me.timer);
-                } else {
+                }
+                else {
                     Ext.unraf(me.timer);
                 }
 

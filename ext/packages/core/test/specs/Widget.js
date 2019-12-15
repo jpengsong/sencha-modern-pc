@@ -1,5 +1,4 @@
-/* global Ext, spec, expect, jasmine, xdescribe */
-
+/* global Foo */
 topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
     var widget;
 
@@ -21,6 +20,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
         if (widget) {
             widget.destroy();
         }
+
         Ext.undefine('spec.Widget');
     });
 
@@ -204,6 +204,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                         }
                     }
                 });
+
                 widget = ct.down('custom');
 
                 spyOn(controller, 'someFn');
@@ -386,6 +387,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                 if (superWidget) {
                     superWidget.destroy();
                 }
+
                 if (subWidget) {
                     subWidget.destroy();
                 }
@@ -700,6 +702,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                 if (superWidget) {
                     superWidget.destroy();
                 }
+
                 if (subWidget) {
                     subWidget.destroy();
                 }
@@ -1010,7 +1013,8 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                 if (name === scope) {
                     expect(spy).toHaveBeenCalled();
                     expect(spy.mostRecentCall.object).toBe(scopes[name]);
-                } else {
+                }
+                else {
                     expect(spy).not.toHaveBeenCalled();
                 }
             }
@@ -1857,6 +1861,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                             foo: handler
                         }
                     }, cfg);
+
                     if (setScope) {
                         cfg.listeners.scope = setScope;
                     }
@@ -3567,7 +3572,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             expect(widget.classClsList).toEqual(['bar', 'foo']);
         });
 
-        it("should add a UI reference after initialization", function () {
+        it("should add a UI reference after initialization", function() {
             // This is an unusual use case, but Toolable does this with its dock wrapper
             var Foo = Ext.define(null, {
                 extend: 'Ext.Widget',
@@ -3817,7 +3822,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             expect(widget.baseCls).toBe('foo');
         });
 
-        it("should default to classCls when baseCls is true", function () {
+        it("should default to classCls when baseCls is true", function() {
             var Foo = Ext.define(null, {
                 extend: 'Ext.Widget',
                 classCls: 'foo',
@@ -3844,7 +3849,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             expect(widget.baseCls).toBe('bar');
         });
 
-        it("should default to xtype when baseCls is unspecified and there is no classCls", function () {
+        it("should default to xtype when baseCls is unspecified and there is no classCls", function() {
             Ext.define('Foo', {
                 extend: 'Ext.Widget',
                 xtype: 'mywidget'
@@ -3858,7 +3863,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             Ext.undefine('Foo');
         });
 
-        it("should default to xtype when baseCls is true and there is no classCls", function () {
+        it("should default to xtype when baseCls is true and there is no classCls", function() {
             // for compat with version 6
             Ext.define('Foo', {
                 extend: 'Ext.Widget',
@@ -3874,7 +3879,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             Ext.undefine('Foo');
         });
 
-        it("should default to classCls when baseCls is null", function () {
+        it("should default to classCls when baseCls is null", function() {
             Ext.define('Foo', {
                 extend: 'Ext.Widget',
                 classCls: 'foo',
@@ -3890,7 +3895,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             Ext.undefine('Foo');
         });
 
-        it("should default to classCls when baseCls is undefined", function () {
+        it("should default to classCls when baseCls is undefined", function() {
             Ext.define('Foo', {
                 extend: 'Ext.Widget',
                 classCls: 'foo',
@@ -3906,7 +3911,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             Ext.undefine('Foo');
         });
 
-        it("should default to xtype when baseCls is null and there is no classCls", function () {
+        it("should default to xtype when baseCls is null and there is no classCls", function() {
             Ext.define('Foo', {
                 extend: 'Ext.Widget',
                 xtype: 'mywidget',
@@ -3984,7 +3989,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             expect(widget.baseCls).toBe('foo');
         });
 
-        it("should add a UI reference after initialization", function () {
+        it("should add a UI reference after initialization", function() {
             // This is an unusual use case, but Toolable does this with its dock wrapper
             var Foo = Ext.define(null, {
                 extend: 'Ext.Widget',
@@ -4235,7 +4240,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             expect(widget.bodyElement).toHaveCls('baz-xyz-body-el');
         });
 
-        it("should throw an error if uiCls is used without a reference element", function () {
+        it("should throw an error if uiCls is used without a reference element", function() {
             var Foo = Ext.define(null, {
                 extend: 'Ext.Widget',
                 classCls: 'foo',
@@ -4244,7 +4249,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                 }]
             });
 
-            expect(function () {
+            expect(function() {
                 widget = new Foo();
             }).toThrow('Cannot render element with uiCls="body-el". uiCls is only allowed on elements that have a reference name.');
         });
@@ -4267,7 +4272,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
         });
     });
 
-    describe("style", function () {
+    describe("style", function() {
         var Widget, widget;
 
         function createWidget(config) {
@@ -4287,7 +4292,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             Widget = widget = null;
         });
 
-        it("should initialize style using a string", function () {
+        it("should initialize style using a string", function() {
             createWidget({
                 style: 'position: absolute; cursor: pointer'
             });
@@ -4296,7 +4301,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             expect(widget.element.getStyle('cursor')).toBe('pointer');
         });
 
-        it("should initialize style using an object", function () {
+        it("should initialize style using an object", function() {
             createWidget({
                 style: {
                     position: 'absolute',
@@ -4308,7 +4313,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             expect(widget.element.getStyle('cursor')).toBe('pointer');
         });
 
-        it("should set style using a string", function () {
+        it("should set style using a string", function() {
             createWidget();
 
             widget.setStyle('position: absolute; cursor: pointer');
@@ -4317,7 +4322,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             expect(widget.element.getStyle('cursor')).toBe('pointer');
         });
 
-        it("should set style using an object", function () {
+        it("should set style using an object", function() {
             createWidget();
 
             widget.setStyle({
@@ -4329,19 +4334,32 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             expect(widget.element.getStyle('cursor')).toBe('pointer');
         });
 
-        it("should throw an error when getStyle is called", function () {
+        it("should throw an error when getStyle is called", function() {
             createWidget();
 
-            expect(function () {
+            expect(function() {
                 widget.getStyle();
-            }).toThrow("'style' is a write-only config.  To query element styles use the Ext.dom.Element API.");
+            }).toThrow("'style' is a write-only config. To query element styles use the Ext.dom.Element API.");
+        });
+
+        it("should support a style declared on a subclass", function() {
+            Widget = Ext.define(null, {
+                extend: 'Ext.Widget',
+                style: {
+                    borderWidth: '1px'
+                }
+            });
+            createWidget();
+            expect(widget.element.dom.style.borderWidth).toBe('1px');
         });
     });
 
-    describe('keyMap', function () {
-        it('should allow keyMap on class', function () {
+    describe('keyMap', function() {
+        it('should allow keyMap on class', function() {
             var Ev = Ext.event.Event;
+
             var log = [];
+
             var keyMap = {
                 ESC: 'onEscape',
                 A: 'onA',
@@ -4353,6 +4371,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                 1: 'onOne',
                 'Ctrl+1': 'onCtrlOne'
             };
+
             var keyCodes = [
                 ['keydown', Ev.ESC],
                 ['keydown', Ev.A],
@@ -4364,10 +4383,11 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                 ['keypress', '1'.charCodeAt(0)],
                 ['keypress', 'ctrlKey', '1'.charCodeAt(0)]
             ];
+
             var handlers = {};
 
-            Ext.iterate(keyMap, function (key, value) {
-                handlers[value] = function () {
+            Ext.iterate(keyMap, function(key, value) {
+                handlers[value] = function() {
                     log.push(value);
                 };
             });
@@ -4378,7 +4398,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                 keyMap: keyMap
             }, handlers));
 
-            Ext.each(['first','second'], function (which) {
+            Ext.each(['first', 'second'], function(which) {
                 widget = new T();
                 widget.render(Ext.getBody());
 
@@ -4389,6 +4409,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
 
                 for (var i = 0; i < keys.length; ++i) {
                     var kc = keys[i];
+
                     var ke = {
                         altKey: false,
                         ctrlKey: false,
@@ -4397,6 +4418,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                         type: kc.shift(),
                         keyCode: kc.pop()
                     };
+
                     if (ke.type === 'keypress') {
                         ke.charCode = ke.keyCode;
                         delete ke.keyCode;
@@ -4429,8 +4451,9 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             });
         });
 
-        it('should support group enable/disable', function () {
+        it('should support group enable/disable', function() {
             var log = [];
+
             var T = Ext.define(null, {
                 extend: 'Ext.Widget',
 
@@ -4438,7 +4461,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                     'ESC:GRP': 'onEscape'
                 },
 
-                onEscape: function (e) {
+                onEscape: function(e) {
                     log.push('onEscape');
                 }
             });
@@ -4463,7 +4486,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             expect(log).toEqual(['onEscape', 'onEscape']);
         });
 
-        it('should allow keyMap on class and instance', function () {
+        it('should allow keyMap on class and instance', function() {
             var log = [];
 
             var T = Ext.define(null, {
@@ -4474,18 +4497,18 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                     F2: 'onF2'
                 },
 
-                onEscape: function (e) {
+                onEscape: function(e) {
                     log.push('onEscape');
                 },
 
-                onF2: function () {
+                onF2: function() {
                     log.push('F2');
                 }
             });
 
             widget = new T({
                 keyMap: {
-                    ESC: function (e) {
+                    ESC: function(e) {
                         log.push('esc');
                     }
                 }
@@ -4505,7 +4528,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
 
             widget = new T({
                 keyMap: {
-                    ESC: function (e) {
+                    ESC: function(e) {
                         log.push('esc2');
                     }
                 }
@@ -4525,10 +4548,10 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
         });
     });
 
-    describe('Ext.updateWidget', function () {
+    describe('Ext.updateWidget', function() {
         var creator, instance;
 
-        beforeEach(function () {
+        beforeEach(function() {
             defineWidget(true, {
                 xtype: 'test-base',
 
@@ -4550,7 +4573,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
 
                 isTestConfig: true,
 
-                createInstance: function (config) {
+                createInstance: function(config) {
                     return Ext.apply({
                         foo: 'bar'
                     }, config);
@@ -4558,14 +4581,14 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             });
         });
 
-        afterEach(function () {
+        afterEach(function() {
             Ext.undefine('spec.TestWidget');
 
             creator = instance = Ext.destroy(creator, instance);
         });
 
-        describe('create tests', function () {
-            it('should create a new instance', function () {
+        describe('create tests', function() {
+            it('should create a new instance', function() {
                 widget = Ext.updateWidget(null, {
                     xclass: 'spec.Widget'
                 });
@@ -4573,13 +4596,13 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                 expect(widget.isTestBase).toBe(true);
             });
 
-            it('should create new instance passing a string as config', function () {
+            it('should create new instance passing a string as config', function() {
                 widget = Ext.updateWidget(null, 'test-base');
 
                 expect(widget.isTestBase).toBe(true);
             });
 
-            it('should create new instance with xclass mismatch', function () {
+            it('should create new instance with xclass mismatch', function() {
                 widget = new spec.Widget();
 
                 instance = Ext.updateWidget(widget, {
@@ -4592,7 +4615,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                 expect(instance.getFoo()).toBe('baz');
             });
 
-            it('should create new instance with type mismatch', function () {
+            it('should create new instance with type mismatch', function() {
                 widget = new spec.Widget();
 
                 instance = Ext.updateWidget(widget, {
@@ -4605,8 +4628,8 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                 expect(instance.getFoo()).toBe('baz');
             });
 
-            describe('creator', function () {
-                it('should use defaults from creator', function () {
+            describe('creator', function() {
+                it('should use defaults from creator', function() {
                     creator = new spec.TestWidget({
                         defaults: {
                             foo: 'bar'
@@ -4621,7 +4644,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                     expect(widget.getFoo()).toBe('bar');
                 });
 
-                it('should use defaults from creator but favor own config', function () {
+                it('should use defaults from creator but favor own config', function() {
                     creator = new spec.TestWidget({
                         defaults: {
                             foo: 'bar'
@@ -4637,7 +4660,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                     expect(widget.getFoo()).toBe('baz');
                 });
 
-                it('should use a creator method', function () {
+                it('should use a creator method', function() {
                     creator = new spec.TestWidget();
                     widget = Ext.updateWidget(null, {
                         xtype: 'test-config'
@@ -4647,7 +4670,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                     expect(widget.getFoo()).toBe('bar');
                 });
 
-                it('should use a creator method but favor own config', function () {
+                it('should use a creator method but favor own config', function() {
                     creator = new spec.TestWidget();
                     widget = Ext.updateWidget(null, {
                         xtype: 'test-config',
@@ -4660,8 +4683,8 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             });
         });
 
-        describe('update tests', function () {
-            it('should update existing instance', function () {
+        describe('update tests', function() {
+            it('should update existing instance', function() {
                 widget = new spec.Widget({
                     foo: 'bar'
                 });
@@ -4676,8 +4699,8 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
             });
         });
 
-        describe('destroy tests', function () {
-            it('should destroy old instance', function () {
+        describe('destroy tests', function() {
+            it('should destroy old instance', function() {
                 widget = new spec.Widget();
 
                 instance = Ext.updateWidget(widget);
@@ -4686,7 +4709,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                 expect(instance).toBeUndefined();
             });
 
-            it('should not destroy instance passing as config also', function () {
+            it('should not destroy instance passing as config also', function() {
                 widget = new spec.Widget();
 
                 instance = Ext.updateWidget(widget, widget);
@@ -4695,7 +4718,7 @@ topSuite("Ext.Widget", ['Ext.app.ViewController', 'Ext.Container'], function() {
                 expect(instance).toBe(instance);
             });
 
-            it('should destroy old instance passing an instance as config', function () {
+            it('should destroy old instance passing an instance as config', function() {
                 widget = new spec.Widget();
                 instance = new spec.Widget();
 

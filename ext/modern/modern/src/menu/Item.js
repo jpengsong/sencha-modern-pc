@@ -22,7 +22,7 @@
  */
 Ext.define('Ext.menu.Item', {
     extend: 'Ext.Component',
-    alias: 'widget.menuitem',
+    xtype: 'menuitem',
     alternateClassName: 'Ext.menu.TextItem',
 
     /**
@@ -62,7 +62,7 @@ Ext.define('Ext.menu.Item', {
     * The delay in milliseconds to wait before hiding the menu after clicking the menu item.
     * This only has an effect when `hideOnClick: true`.
     */
-   clickHideDelay: 0,
+    clickHideDelay: 0,
 
     /**
      * @cfg {Boolean} [hideOnClick=true]
@@ -85,7 +85,8 @@ Ext.define('Ext.menu.Item', {
 
         /**
          * @cfg {Function/String} handler
-         * A function called when the menu item is clicked (can be used instead of {@link #click} event).
+         * A function called when the menu item is clicked (can be used instead 
+         * of {@link #click} event).
          * @cfg {Ext.menu.Item} handler.item The item that was clicked
          * @cfg {Ext.event.Event} handler.e The underlying {@link Ext.event.Event}.
          * @controllable
@@ -100,8 +101,8 @@ Ext.define('Ext.menu.Item', {
 
         /**
          * @cfg {Ext.menu.Menu/Object} menu
-         * Either an instance of {@link Ext.menu.Menu} or a config object for an {@link Ext.menu.Menu}
-         * which will act as a sub-menu to this item.
+         * Either an instance of {@link Ext.menu.Menu} or a config object for 
+         * an {@link Ext.menu.Menu} which will act as a sub-menu to this item.
          */
         menu: {
             lazy: true,
@@ -110,8 +111,9 @@ Ext.define('Ext.menu.Item', {
 
         /**
          * @cfg {String} menuAlign
-         * The default {@link Ext.util.Positionable#getAlignToXY Ext.util.Positionable.getAlignToXY} anchor position value for this
-         * item's sub-menu relative to this item's position.
+         * The default 
+         * {@link Ext.util.Positionable#getAlignToXY Ext.util.Positionable.getAlignToXY} anchor
+         * position value for this item's sub-menu relative to this item's position.
          */
         menuAlign: 'tl-tr?',
 
@@ -144,7 +146,8 @@ Ext.define('Ext.menu.Item', {
 
         /**
          * @cfg {Boolean} [separator=false]
-         * If `true`, this item places an {@link Ext.menu.Separator} above itself unless it is the first visible item.
+         * If `true`, this item places an {@link Ext.menu.Separator} above 
+         * itself unless it is the first visible item.
          */
         separator: null
     },
@@ -206,9 +209,13 @@ Ext.define('Ext.menu.Item', {
 
     focusEl: 'bodyElement',
 
-    initialize: function () {
+    initialize: function() {
         this.callParent();
         this.syncHasIconCls();
+
+        if (Ext.supports.Touch) {
+            this.handleTouch();
+        }
     },
 
     getFocusClsEl: function() {
@@ -226,7 +233,8 @@ Ext.define('Ext.menu.Item', {
         // An item can be focused (active), but disabled.
         // Disabled items must not action on click (or left/right arrow)
         // http://www.w3.org/TR/2013/WD-wai-aria-practices-20130307/#menu
-        // "Disabled menu items receive focus but have no action when Enter or Left Arrow/Right Arrow is pressed."
+        // "Disabled menu items receive focus but have no action when Enter or Left Arrow/Right 
+        // Arrow is pressed."
         if (!me.getDisabled() && menu) {
 
             // Needs an upward link
@@ -240,12 +248,13 @@ Ext.define('Ext.menu.Item', {
                 if (event && event.type === 'keydown') {
                     menu.focus();
                 }
-            } else {
+            }
+            else {
                 // Pointer-invoked menus do not auto focus, key invoked ones do.
                 menu.autoFocus = !event || !event.pointerType;
                 menu.showBy(me, me.getMenuAlign(), {
                     axisLock: true  // Flips left/right when constrained
-                                    // instead of covering the menu.
+                    // instead of covering the menu.
                 });
             }
         }
@@ -261,6 +270,7 @@ Ext.define('Ext.menu.Item', {
             items = menu.getRefItems(deep);
             items.unshift(menu);
         }
+
         return items || [];
     },
 
@@ -271,10 +281,12 @@ Ext.define('Ext.menu.Item', {
 
         // We do not refuse activation if the Item is disabled.
         // http://www.w3.org/TR/2013/WD-wai-aria-practices-20130307/#menu
-        // "Disabled menu items receive focus but have no action when Enter or Left Arrow/Right Arrow is pressed."
+        // "Disabled menu items receive focus but have no action when Enter or Left Arrow/Right 
+        // Arrow is pressed."
         me.addCls(me.activeCls);
 
         me.activated = true;
+
         if (me.hasListeners.activate) {
             me.fireEvent('activate', me);
         }
@@ -292,10 +304,13 @@ Ext.define('Ext.menu.Item', {
 
         me.callParent([e]);
         me.removeCls(me.activeCls);
+
         if (menu) {
             menu.hide();
         }
+
         me.activated = false;
+
         if (me.hasListeners.deactivate) {
             me.fireEvent('deactivate', me);
         }
@@ -316,17 +331,20 @@ Ext.define('Ext.menu.Item', {
         me.separatorElement = Ext.destroy(me.separatorElement);
         me.setMenu(null);
 
+        me.linkClickListener = Ext.destroy(me.linkClickListener);
+
         me.callParent();
     },
 
-    updateText: function (text) {
+    updateText: function(text) {
         if (text == null || text === '') {
             text = '\u00a0';
         }
+
         this.textElement.dom.firstChild.data = text;
     },
 
-    applyMenu: function (menu) {
+    applyMenu: function(menu) {
         var me = this,
             ariaDom = me.ariaEl.dom;
 
@@ -334,7 +352,8 @@ Ext.define('Ext.menu.Item', {
             if (menu.isMenu) {
                 menu.setConstrainAlign(Ext.getBody());
                 menu.ownerCmp = me;
-            } else {
+            }
+            else {
                 menu = Ext.menu.Menu.create(menu, {
                     ownerCmp: me,
                     $initParent: me,
@@ -344,7 +363,8 @@ Ext.define('Ext.menu.Item', {
 
             ariaDom.setAttribute('aria-haspopup', true);
             ariaDom.setAttribute('aria-owns', menu.id);
-        } else {
+        }
+        else {
             ariaDom.removeAttribute('aria-haspopup');
             ariaDom.removeAttribute('aria-owns');
         }
@@ -358,30 +378,35 @@ Ext.define('Ext.menu.Item', {
         if (oldMenu) {
             if (this.destroyMenu) {
                 Ext.destroy(oldMenu);
-            } else {
+            }
+            else {
                 oldMenu.parentMenu = null;
             }
         }
+
         // A property which will only exist when the Menu has been instantiated.
         this.menu = menu;
     },
 
-    updateHref: function (href) {
+    updateHref: function(href) {
         this.bodyElement.dom.href = href;
         this.toggleCls(this.hasHrefCls, !!href);
     },
 
-    updateTarget: function (target) {
+    updateTarget: function(target) {
         this.bodyElement.dom.target = target;
     },
 
-    updateIcon: function (icon) {
+    updateIcon: function(icon) {
         var me = this,
-            iconElement = (me.getIconAlign() === 'left') ? this.leftIconElement: this.rightIconElement;
+            iconElement = (me.getIconAlign() === 'left')
+                ? this.leftIconElement
+                : this.rightIconElement;
 
         if (icon) {
             iconElement.setStyle('background-image', 'url(' + icon + ')');
-        } else {
+        }
+        else {
             iconElement.setStyle('background-image', '');
         }
 
@@ -390,13 +415,16 @@ Ext.define('Ext.menu.Item', {
         }
     },
 
-    updateIconCls: function (iconCls, oldIconCls) {
+    updateIconCls: function(iconCls, oldIconCls) {
         var me = this,
-            iconElement = (me.getIconAlign() === 'left') ? this.leftIconElement: this.rightIconElement;
+            iconElement = (me.getIconAlign() === 'left')
+                ? this.leftIconElement
+                : this.rightIconElement;
 
         if (iconCls) {
             iconElement.replaceCls(oldIconCls, iconCls);
-        } else {
+        }
+        else {
             iconElement.removeCls(oldIconCls);
         }
 
@@ -405,13 +433,13 @@ Ext.define('Ext.menu.Item', {
         }
     },
 
-    updateIconAlign: function (iconAlign) {
+    updateIconAlign: function(iconAlign) {
         if (!this.isConfiguring) {
             this.syncHasIconCls();
         }
     },
 
-    updateSeparator: function (separator) {
+    updateSeparator: function(separator) {
         var me = this,
             separatorElement = me.separatorElement;
 
@@ -432,21 +460,50 @@ Ext.define('Ext.menu.Item', {
     },
 
     privates: {
+
+        /**
+        * Function to add click listener for touch devices. 
+        */
+        handleTouch: function() {
+            var me = this,
+                linkEl = me.bodyElement;
+
+            me.linkClickListener = linkEl.on({
+                click: me.onClick,
+                capture: true,
+                translate: false,
+                scope: me,
+                destroyable: true
+            });
+
+        },
+
         onSpace: function(e) {
             return this.onClick(e);
         },
 
-        onClick: function (e) {
+        onClick: function(e) {
             var me = this,
                 href = me.getHref(),
                 clickHideDelay = me.clickHideDelay,
                 browserEvent = e.browserEvent,
                 handler = me.getHandler(),
+                isTouchEvent = e.pointerType === 'touch',
                 clickResult;
+
+            if (me.linkClickListener && !isTouchEvent && e.parentEvent) {
+                // If this is a touch device and event is not a touch event
+                // And is wrapped with parent event then ignore it
+                // as we already have another click listener for this
+                e.stopEvent();
+
+                return;
+            }
 
             // Stop clicks on the anchor if there's no href, or we're disabled
             if ((!href || me.getDisabled()) && me.bodyElement.dom === e.getTarget('a')) {
                 e.stopEvent();
+
                 if (me.getDisabled()) {
                     return false;
                 }
@@ -459,7 +516,8 @@ Ext.define('Ext.menu.Item', {
             if (me.hideOnClick && !me.getMenu()) {
                 if (!clickHideDelay) {
                     me.hideParentMenus();
-                } else {
+                }
+                else {
                     me.hideParentMenusTimer = Ext.defer(me.hideParentMenus, clickHideDelay, me);
                 }
             }
@@ -483,7 +541,8 @@ Ext.define('Ext.menu.Item', {
                 return;
             }
 
-            // We only manually need to trigger the click event if it's come from a key event and the event has not had preventDefault called.
+            // We only manually need to trigger the click event if it's come from a key event 
+            // and the event has not had preventDefault called.
             if (href && e.type !== 'click' && !browserEvent.defaultPrevented) {
                 me.handlingClick = true;
                 me.bodyElement.dom.click();
@@ -500,7 +559,12 @@ Ext.define('Ext.menu.Item', {
          * a non-floating ancestor.
          */
         hideParentMenus: function() {
-            for (var menu = this.getRefOwner(); menu && ((menu.isMenu && menu.getFloated()) || menu.isMenuItem); menu = menu.getRefOwner()) {
+            var menu;
+
+            for (menu = this.getRefOwner();
+                menu && ((menu.isMenu && menu.getFloated()) || menu.isMenuItem);
+                menu = menu.getRefOwner()
+            ) {
                 if (menu.isMenu) {
                     menu.hide();
                 }
@@ -520,10 +584,12 @@ Ext.define('Ext.menu.Item', {
             if (me.hasIcon()) {
                 if (iconAlign === 'left') {
                     me.replaceCls(rightCls, leftCls);
-                } else if (iconAlign === 'right') {
+                }
+                else if (iconAlign === 'right') {
                     me.replaceCls(leftCls, rightCls);
                 }
-            } else {
+            }
+            else {
                 me.removeCls([leftCls, rightCls]);
             }
         }

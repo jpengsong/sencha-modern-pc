@@ -4,7 +4,8 @@
 Ext.define('Ext.ux.colorpick.Selection', {
     mixinId: 'colorselection',
 
-    config : {
+    /* eslint-disable max-len */
+    config: {
         /**
          * @cfg {"hex6"/"hex8"/"#hex6"/"#hex8"/"rgb"/"rgba"/"HEX6"/"HEX8"/"#HEX6"/"#HEX8"/"RGB"/"RGBA"} [format=hex6]
          * The color format to for the `value` config. The `value` can be set using any
@@ -27,6 +28,7 @@ Ext.define('Ext.ux.colorpick.Selection', {
          * - RGBA - Same as "rgba" but upper case.
          */
         format: 'hex6',
+        /* eslint-enable max-len */
 
         /**
          * @cfg {String} [value=FF0000]
@@ -44,7 +46,7 @@ Ext.define('Ext.ux.colorpick.Selection', {
          */
         color: null,
         previousColor: null,
-        
+
         /**
          * @cfg {String} [alphaDecimalFormat=#.##]
          * The format used by {@link Ext.util.Format#number} to format the alpha channel's
@@ -54,38 +56,44 @@ Ext.define('Ext.ux.colorpick.Selection', {
         alphaDecimalFormat: '#.##'
     },
 
-    applyColor: function (color) {
+    applyColor: function(color) {
         var c = color;
+
         if (Ext.isString(c)) {
             c = Ext.ux.colorpick.ColorUtils.parseColor(color, this.getAlphaDecimalFormat());
         }
+
         return c;
     },
-    
-    applyFormat: function (format) {
+
+    applyFormat: function(format) {
         var formats = Ext.ux.colorpick.ColorUtils.formats;
-        
+
         if (!formats.hasOwnProperty(format)) {
             //<debug>
             Ext.raise('The specified format "' + format + '" is invalid.');
             //</debug>
+
             return;
         }
-        
+
         return format;
     },
 
-    applyValue: function (color) {
+    applyValue: function(color) {
         // Transform whatever incoming color we get to the proper format
-        var c = Ext.ux.colorpick.ColorUtils.parseColor(color || '#000000', this.getAlphaDecimalFormat());
+        var c = Ext.ux.colorpick.ColorUtils.parseColor(
+            color || '#000000', this.getAlphaDecimalFormat()
+        );
+
         return this.formatColor(c);
     },
 
-    formatColor: function (color) {
+    formatColor: function(color) {
         return Ext.ux.colorpick.ColorUtils.formats[this.getFormat()](color);
     },
 
-    updateColor: function (color) {
+    updateColor: function(color) {
         var me = this;
 
         // If the "color" is changed (via internal changes in the UI), update "value" as
@@ -98,7 +106,7 @@ Ext.define('Ext.ux.colorpick.Selection', {
         }
     },
 
-    updateValue: function (value, oldValue) {
+    updateValue: function(value, oldValue) {
         var me = this;
 
         // If the "value" is changed, update "color" as well. Since these are always

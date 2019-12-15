@@ -2,19 +2,19 @@ topSuite("Ext.Button", [
         'Ext.menu.Menu',
         'Ext.ActionSheet' ], function() {
     var button;
-    
+
     function createButton(config) {
         config = Ext.apply({
         }, config);
-        
+
         button = new Ext.Button(config);
     }
-    
+
     function makeButton(config) {
         config = Ext.apply({
             renderTo: document.body
         }, config);
-        
+
         createButton(config);
     }
 
@@ -85,6 +85,7 @@ topSuite("Ext.Button", [
             describe("events", function() {
                 it("should not fire events with pressed: false", function() {
                     var spy = jasmine.createSpy();
+
                     createRenderButton({
                         pressed: false,
                         listeners: {
@@ -97,6 +98,7 @@ topSuite("Ext.Button", [
 
                 it("should not fire events with pressed: true", function() {
                     var spy = jasmine.createSpy();
+
                     createRenderButton({
                         pressed: true,
                         listeners: {
@@ -106,7 +108,7 @@ topSuite("Ext.Button", [
                     });
                     expect(spy).not.toHaveBeenCalled();
                 });
-            }); 
+            });
         });
 
         describe("dynamic", function() {
@@ -132,6 +134,7 @@ topSuite("Ext.Button", [
                         describe("events", function() {
                             it("should not fire events", function() {
                                 var spy = jasmine.createSpy();
+
                                 createRenderButton({
                                     pressed: false,
                                     listeners: {
@@ -236,6 +239,7 @@ topSuite("Ext.Button", [
                         describe("events", function() {
                             it("should not fire events", function() {
                                 var spy = jasmine.createSpy();
+
                                 createRenderButton({
                                     pressed: true,
                                     listeners: {
@@ -338,8 +342,8 @@ topSuite("Ext.Button", [
                         expect(button.element).toHaveCls(button.pressedCls);
                     });
 
-                    describe('toggleHandler', function () {
-                        it('should not execute toggleHandler on instantiation', function () {
+                    describe('toggleHandler', function() {
+                        it('should not execute toggleHandler on instantiation', function() {
                             var spy = jasmine.createSpy();
 
                             createRenderButton({
@@ -350,7 +354,7 @@ topSuite("Ext.Button", [
                             expect(spy).not.toHaveBeenCalled();
                         });
 
-                        it('should execute toggleHandler on toggle when pressed', function () {
+                        it('should execute toggleHandler on toggle when pressed', function() {
                             var spy = jasmine.createSpy();
 
                             createRenderButton({
@@ -365,7 +369,7 @@ topSuite("Ext.Button", [
                             expect(spy).toHaveBeenCalled();
                         });
 
-                        it('should execute toggleHandler on toggle when not pressed', function () {
+                        it('should execute toggleHandler on toggle when not pressed', function() {
                             var spy = jasmine.createSpy();
 
                             createRenderButton({
@@ -805,32 +809,32 @@ topSuite("Ext.Button", [
             });
         });
     });
-    
+
     describe("configurations", function() {
         describe("autoHandler", function() {
             describe("configuration", function() {
 
                 it("should set the autoHandler configuration", function() {
-                    createButton({autoEvent: 'test'});
+                    createButton({ autoEvent: 'test' });
 
                     expect(button.getAutoEvent()).not.toBeNull();
                 });
 
                 it("should set a handler", function() {
-                    createButton({autoEvent: 'test'});
+                    createButton({ autoEvent: 'test' });
 
                     expect(button.getHandler()).not.toBeNull();
                 });
 
                 it("should set a scope", function() {
-                    createButton({autoEvent: 'test'});
+                    createButton({ autoEvent: 'test' });
 
                     expect(button.getScope()).not.toBeNull();
                 });
 
                 describe("transforming", function() {
                     it("should transform a string into an object", function() {
-                        createButton({autoEvent: 'test'});
+                        createButton({ autoEvent: 'test' });
 
                         var ae = button.getAutoEvent();
 
@@ -839,7 +843,7 @@ topSuite("Ext.Button", [
                     });
 
                     it("should set the name of the object", function() {
-                        createButton({autoEvent: 'test'});
+                        createButton({ autoEvent: 'test' });
 
                         var ae = button.getAutoEvent();
 
@@ -847,7 +851,7 @@ topSuite("Ext.Button", [
                     });
 
                     it("should set the scope of the object", function() {
-                        createButton({autoEvent: 'test'});
+                        createButton({ autoEvent: 'test' });
 
                         var ae = button.getAutoEvent();
 
@@ -913,7 +917,7 @@ topSuite("Ext.Button", [
         describe("badgeText", function() {
             describe("configuration", function() {
                 beforeEach(function() {
-                    createButton({badgeText: 'test'});
+                    createButton({ badgeText: 'test' });
                 });
 
                 it("should set the badgeText", function() {
@@ -1062,7 +1066,7 @@ topSuite("Ext.Button", [
                 beforeEach(function() {
                     createButton();
                 });
-                
+
                 it("should set the icon", function() {
                     button.setIcon('resources/images/another.gif');
                     expect(button.getIcon()).toEqual('resources/images/another.gif');
@@ -1257,7 +1261,7 @@ topSuite("Ext.Button", [
             describe("without icon", function() {
                 describe("configuration", function() {
                     beforeEach(function() {
-                        createButton({iconAlign: 'right'});
+                        createButton({ iconAlign: 'right' });
                     });
 
                     describe("after render", function() {
@@ -1304,98 +1308,98 @@ topSuite("Ext.Button", [
                 });
             });
         });
-        
+
         describe("arrowAlign", function() {
             describe("without menu", function() {
                 it("should have arrow-align-right cls", function() {
                     makeButton();
-                    
+
                     expect(button.element).toHaveCls('x-arrow-align-right');
                     expect(button.element).not.toHaveCls('x-arrow-align-bottom');
                 });
-                
+
                 it("should have arrow-align-bottom cls", function() {
                     makeButton({
                         arrowAlign: 'bottom'
                     });
-                    
+
                     expect(button.element).not.toHaveCls('x-arrow-align-right');
                     expect(button.element).toHaveCls('x-arrow-align-bottom');
                 });
-                
+
                 it("should allow setting arrowAlign: 'right'", function() {
                     makeButton({
                         arrowAlign: 'down'
                     });
-                    
+
                     button.setArrowAlign('right');
-                    
+
                     expect(button.element).toHaveCls('x-arrow-align-right');
                     expect(button.element).not.toHaveCls('x-arrow-align-bottom');
                 });
-                
+
                 it("should allow setting arrowAlign: 'bottom'", function() {
                     makeButton();
-                    
+
                     button.setArrowAlign('bottom');
-                    
+
                     expect(button.element).toHaveCls('x-arrow-align-bottom');
                     expect(button.element).not.toHaveCls('x-arrow-align-right');
                 });
             });
-            
+
             describe("with menu", function() {
                 it("should have arrow-align-right cls", function() {
                     makeButton({
                         menu: {}
                     });
-                    
+
                     expect(button.element).toHaveCls('x-arrow-align-right');
                     expect(button.element).not.toHaveCls('x-arrow-align-bottom');
                 });
-                
+
                 it("should have arrow-align-bottom cls", function() {
                     makeButton({
                         arrowAlign: 'bottom',
                         menu: {}
                     });
-                    
+
                     expect(button.element).toHaveCls('x-arrow-align-bottom');
                     expect(button.element).not.toHaveCls('x-arrow-align-right');
                 });
-                
+
                 it("should allow setting arrowAlign: 'right'", function() {
                     makeButton({
                         arrowAlign: 'down',
                         menu: {}
                     });
-                    
+
                     button.setArrowAlign('right');
-                    
+
                     expect(button.element).toHaveCls('x-arrow-align-right');
                     expect(button.element).not.toHaveCls('x-arrow-align-bottom');
                 });
-                
+
                 it("should allow setting arrowAlign: 'bottom'", function() {
                     makeButton({
                         menu: {}
                     });
-                    
+
                     button.setArrowAlign('bottom');
-                    
+
                     expect(button.element).toHaveCls('x-arrow-align-bottom');
                     expect(button.element).not.toHaveCls('x-arrow-align-right');
                 });
             });
         });
-        
+
         describe("menu", function() {
             beforeEach(function() {
                 Ext.Viewport = new Ext.viewport.Default();
             });
 
             afterEach(function() {
-                //we need to destroy the menu before Ext.Viewport is
+                // we need to destroy the menu before Ext.Viewport is
                 button.setMenu(null);
 
                 Ext.Viewport.destroy();
@@ -1434,7 +1438,7 @@ topSuite("Ext.Button", [
                         text: 'bar'
                     }]
                 });
-                
+
                 expect(button.getMenu().getItems().getCount()).toBe(2);
             });
 
@@ -1452,7 +1456,7 @@ topSuite("Ext.Button", [
                 expect(button.arrowElement.isVisible()).toBe(false);
             });
 
-            it("should show menu on button click", function () {
+            it("should show menu on button click", function() {
                 makeButton({
                     renderTo: document.body,
                     menu: [{
@@ -1467,8 +1471,8 @@ topSuite("Ext.Button", [
                 expect(button.getMenu().getHidden()).toBe(false);
             });
 
-            describe("action sheet", function () {
-                it("should create an action sheet", function () {
+            describe("action sheet", function() {
+                it("should create an action sheet", function() {
                     makeButton({
                         menu: {
                             xtype: 'actionsheet',
@@ -1479,7 +1483,7 @@ topSuite("Ext.Button", [
                     expect(button.getMenu().$className).toBe('Ext.ActionSheet');
                 });
 
-                it("should show the action sheet on button click", function () {
+                it("should show the action sheet on button click", function() {
                     makeButton({
                         menu: {
                             xtype: 'actionsheet',
@@ -1494,16 +1498,16 @@ topSuite("Ext.Button", [
 
                     expect(menu.getDisplayed()).toBe(true);
 
-                    waitsFor(function () {
+                    waitsFor(function() {
                         return !menu.isAnimating;
                     });
 
-                    runs(function () {
+                    runs(function() {
                         expect(menu.getDisplayed()).toBe(true);
                         menu.hide();
                     });
 
-                    waitsFor(function () {
+                    waitsFor(function() {
                         return !menu.isAnimating;
                     });
                 });
@@ -1512,6 +1516,7 @@ topSuite("Ext.Button", [
             describe("stretchMenu", function() {
                 function getMenuWidth() {
                     button.showMenu();
+
                     return button.getMenu().element.getWidth();
                 }
 
@@ -1650,8 +1655,8 @@ topSuite("Ext.Button", [
                 });
             });
 
-            describe('press button', function () {
-                it('should press button on menu show', function () {
+            describe('press button', function() {
+                it('should press button on menu show', function() {
                     makeButton({
                         menu: [{
                             text: 'Small'
@@ -1663,7 +1668,7 @@ topSuite("Ext.Button", [
                     expect(button.getPressed()).toBeTruthy();
                 });
 
-                it('should unpress button on menu hide', function () {
+                it('should unpress button on menu hide', function() {
                     makeButton({
                         menu: [{
                             text: 'Small'
@@ -1679,7 +1684,7 @@ topSuite("Ext.Button", [
                     expect(button.getPressed()).toBeFalsy();
                 });
 
-                it('should unpress button when hiding menu', function () {
+                it('should unpress button when hiding menu', function() {
                     makeButton({
                         menu: [{
                             text: 'Small'
@@ -1690,26 +1695,26 @@ topSuite("Ext.Button", [
 
                     jasmine.fireMouseEvent(button.el, 'click');
 
-                    waitsFor(function () {
+                    waitsFor(function() {
                         return menu.isVisible();
                     });
 
-                    runs(function () {
+                    runs(function() {
                         expect(button.getPressed()).toBeTruthy();
 
                         jasmine.fireMouseEvent(button.el, 'click');
                     });
 
-                    waitsFor(function () {
+                    waitsFor(function() {
                         return !menu.isVisible();
                     });
 
-                    runs(function () {
+                    runs(function() {
                         expect(button.getPressed()).toBeFalsy();
                     });
                 });
 
-                it('should not unpress a pressed button on menu hide', function () {
+                it('should not unpress a pressed button on menu hide', function() {
                     makeButton({
                         pressed: true,
                         menu: [{
@@ -1728,7 +1733,7 @@ topSuite("Ext.Button", [
                     expect(button.getPressed()).toBeTruthy();
                 });
 
-                it('should not press button for viewport menu', function () {
+                it('should not press button for viewport menu', function() {
                     makeButton({
                         menu: {
                             xtype: 'actionsheet',
@@ -1781,88 +1786,90 @@ topSuite("Ext.Button", [
             beforeEach(function() {
                 createButton();
             });
-    
+
             describe("no handler", function() {
                 it("should return false", function() {
                     expect(button.doTap(button)).toBeFalsy();
                 });
             });
-    
+
             describe("with handler", function() {
                 describe("string", function() {
                     it("should call the function", function() {
                         button.testFoo = function() {};
+
                         spyOn(button, 'testFoo');
-    
+
                         button.setHandler('testFoo');
-    
+
                         button.doTap(button);
-    
+
                         expect(button.testFoo).toHaveBeenCalled();
                     });
                 });
-    
+
                 describe("reference", function() {
                     it("should call the function", function() {
                         button.testFoo = function() {};
+
                         spyOn(button, 'testFoo');
-    
+
                         button.setHandler(button.testFoo);
-    
+
                         button.doTap(button);
-    
+
                         expect(button.testFoo).toHaveBeenCalled();
                     });
                 });
             });
         });
-        
+
         describe("with menu", function() {
             var handlerSpy;
-            
+
             beforeEach(function() {
                 handlerSpy = jasmine.createSpy('button handler');
-                
+
                 makeButton({
                     menu: {},
                     handler: handlerSpy
                 });
             });
-            
+
             it("should show the menu when it's hidden", function() {
                 button.doTap(button);
-                
+
                 expect(button.getMenu().isVisible()).toBe(true);
             });
-            
+
             it("should hide the menu when it's visible", function() {
                 button.showMenu();
                 button.doTap(button);
-                
+
                 expect(button.getMenu().isVisible()).toBe(false);
             });
 
-            it('should show and hide a menu', function () {
+            it('should show and hide a menu', function() {
                 var menu = button.getMenu();
 
                 jasmine.fireMouseEvent(button.el, 'click');
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return menu.isVisible();
                 });
 
-                runs(function () {
+                runs(function() {
                     jasmine.fireMouseEvent(button.el, 'click');
                 });
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return !menu.isVisible();
                 });
             });
 
             it("should not fire the handler", function() {
                 button.doTap(button);
-                
+
                 expect(handlerSpy).not.toHaveBeenCalled();
             });
         });
@@ -1873,13 +1880,13 @@ topSuite("Ext.Button", [
             createButton();
             button.render(Ext.getBody());
         });
-        
+
         describe("click", function() {
             it("should call onClick", function() {
                 spyOn(button, 'onClick');
-                
+
                 jasmine.fireMouseEvent(button.el, 'click');
-                
+
                 expect(button.onClick).toHaveBeenCalled();
             });
         });
@@ -1916,34 +1923,88 @@ topSuite("Ext.Button", [
     });
 
     describe("focusing", function() {
+        var blurEvents, focusEvents, onBlurCalls, onFocusCalls;
+
         beforeEach(function() {
+            blurEvents = focusEvents = onBlurCalls = onFocusCalls = 0;
+
             createButton({
                 text: 'blergo',
                 renderTo: Ext.getBody()
             });
-            
+
+            button.on({
+                blur: function() {
+                    ++blurEvents;
+                },
+
+                focus: function() {
+                    ++focusEvents;
+                }
+            });
+
+            Ext.Function.interceptAfter(button, 'onFocus', function() {
+                ++onFocusCalls;
+            });
+
+            Ext.Function.interceptAfter(button, 'onBlur', function() {
+                ++onBlurCalls;
+            });
+        });
+
+        it('should call onFocus once upon focus', function() {
             focusAndWait(button);
+
+            runs(function() {
+                // Ideally the focus event fires just once but the iframe/jazzman
+                // focus stuff can cause one extra...
+                expect(focusEvents).toBeIn([1, 2]);
+                expect(onFocusCalls).toBeIn([1, 2]);
+            });
         });
-        
+
         it("should be able to focus", function() {
-            expectFocused(button);
+            focusAndWait(button);
+
+            runs(function() {
+                expectFocused(button);
+            });
         });
-        
+
         it("should apply focusCls", function() {
-            expect(button.getFocusClsEl().hasCls(button.focusCls)).toBe(true);
+            focusAndWait(button);
+
+            runs(function() {
+                expect(button.getFocusClsEl().hasCls(button.focusCls)).toBe(true);
+            });
         });
-        
+
         it("should remove focusCls on blur", function() {
-            button.blur();
-            
-            expect(button.getFocusClsEl().hasCls(button.focusCls)).toBe(false);
+            focusAndWait(button);
+
+            runs(function() {
+                button.blur();
+
+                expect(button.getFocusClsEl().hasCls(button.focusCls)).toBe(false);
+            });
+
+            // The bug we are testing for involves extra, spurious calls
+            // so we must give it a chance to make these extra calls
+            waits(100);
+
+            runs(function() {
+                // Ideally the blur event fires just once but the iframe/jazzman
+                // focus stuff can cause one extra...
+                expect(blurEvents).toBeIn([1, 2]);
+                expect(onBlurCalls).toBeIn([1, 2]);
+            });
         });
     });
-    
+
     describe("keyboard interaction", function() {
         describe("with menu", function() {
             var fooItem;
-            
+
             beforeEach(function() {
                 makeButton({
                     menu: [{
@@ -1952,57 +2013,57 @@ topSuite("Ext.Button", [
                         text: 'bar'
                     }]
                 });
-                
+
                 fooItem = button.getMenu().getItems().getAt(0);
             });
-            
+
             afterEach(function() {
                 fooItem = null;
             });
-            
+
             it("should react to Space key", function() {
                 pressKey(button, 'space');
                 expectFocused(fooItem);
             });
-            
+
             it("should react to Enter key", function() {
                 pressKey(button, 'enter');
                 expectFocused(fooItem);
             });
-            
+
             it("should react to Down arrow key", function() {
                 pressKey(button, 'down');
                 expectFocused(fooItem);
             });
-            
+
             it("should react to Esc key when focus is in the menu", function() {
                 pressKey(button, 'space');
-                
+
                 waitForFocus(fooItem);
 
                 runs(function() {
                     pressKey(fooItem, 'esc');
                 });
-                
+
                 waitForFocus(button);
-                
+
                 runs(function() {
                     expect(button.getMenu().isVisible()).toBe(false);
                 });
             });
-            
+
             it("should react to Esc key when focus is on the button", function() {
                 button.showMenu();
-                
+
                 pressKey(button, 'esc');
-                
+
                 runs(function() {
                     expect(button.getMenu().isVisible()).toBe(false);
                 });
             });
         });
     });
-    
+
     describe("enable/disable", function() {
         describe("default enabled", function() {
             beforeEach(function() {
@@ -2010,16 +2071,16 @@ topSuite("Ext.Button", [
                     text: 'blergo'
                 });
             });
-            
+
             it("should not have disabled flag on the buttonElement", function() {
                 expect(button.buttonElement.dom.disabled).toBeFalsy();
             });
-            
+
             it("should not have disabled style on the element", function() {
                 expect(button.element).not.toHaveCls(button.disabledCls);
             });
         });
-        
+
         describe("default disabled", function() {
             beforeEach(function() {
                 makeButton({
@@ -2027,42 +2088,42 @@ topSuite("Ext.Button", [
                     disabled: true
                 });
             });
-            
+
             it("should have disabled flag on the buttonElement", function() {
                 expect(button.buttonElement.dom.disabled).toBeTruthy();
             });
-            
+
             it("should have disabled style on the element", function() {
                 expect(button.element).toHaveCls(button.disabledCls);
             });
         });
-        
+
         describe("disabling", function() {
             beforeEach(function() {
                 makeButton({
                     text: 'throbbe'
                 });
-                
+
                 button.disable();
             });
-            
+
             it("should set disabled flag on the buttonElement", function() {
                 expect(button.buttonElement.dom.disabled).toBeTruthy();
             });
-            
+
             it("should add disabled style to the element", function() {
                 expect(button.element).toHaveCls(button.disabledCls);
             });
-            
+
             describe("re-enabling", function() {
                 beforeEach(function() {
                     button.enable();
                 });
-                
+
                 it("should reset disabled flag on the buttonElement", function() {
                     expect(button.el.dom.disabled).toBeFalsy();
                 });
-                
+
                 it("should reset disabled style on the element", function() {
                     expect(button.element).not.toHaveCls(button.disabledCls);
                 });
@@ -2070,14 +2131,14 @@ topSuite("Ext.Button", [
         });
     });
 
-    describe('type', function () {
-        it('should set default type onto the buttonElement', function () {
+    describe('type', function() {
+        it('should set default type onto the buttonElement', function() {
             makeButton();
 
             expect(button.buttonElement.dom.type).toBe('button');
         });
 
-        it('should set configured type', function () {
+        it('should set configured type', function() {
             makeButton({
                 buttonType: 'submit'
             });
@@ -2085,7 +2146,7 @@ topSuite("Ext.Button", [
             expect(button.buttonElement.dom.type).toBe('submit');
         });
 
-        it('should set type using setType', function () {
+        it('should set type using setType', function() {
             makeButton();
 
             expect(button.buttonElement.dom.type).toBe('button');

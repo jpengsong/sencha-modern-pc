@@ -1,7 +1,7 @@
 /**
- * This is a specialized field which shows a {@link Ext.picker.Date} when tapped. If it has a predefined value,
- * or a value is selected in the {@link Ext.picker.Date}, it will be displayed like a normal {@link Ext.field.Text}
- * (but not selectable/changable).
+ * This is a specialized field which shows a {@link Ext.picker.Date} when tapped.
+ * If it has a predefined value, or a value is selected in the {@link Ext.picker.Date}, 
+ * it will be displayed like a normal {@link Ext.field.Text} (but not selectable/changable).
  *
  *     Ext.create('Ext.field.Date', {
  *         label: 'Birthday',
@@ -12,9 +12,9 @@
  *
  * ## Examples
  *
- * It can be very useful to set a default {@link #value} configuration on {@link Ext.field.Date} fields. In
- * this example, we set the {@link #value} to be the current date. You can also use the {@link #setValue} method to
- * update the value at any time.
+ * It can be very useful to set a default {@link #value} configuration on 
+ * {@link Ext.field.Date} fields. In this example, we set the {@link #value} to be 
+ * the current date.  You can also use the {@link #setValue} method to update the value at any time.
  *
  *     @example
  *     var form = Ext.create('Ext.form.Panel', {
@@ -45,8 +45,8 @@
  *         }]
  *     });
  *
- * When you need to retrieve the date from the {@link Ext.field.Date}, you can either use the {@link #getValue} or
- * {@link #getFormattedValue} methods:
+ * When you need to retrieve the date from the {@link Ext.field.Date}, you can either use 
+ * the {@link #getValue} or {@link #getFormattedValue} methods:
  *
  *     @example
  *     var form = Ext.create('Ext.form.Panel', {
@@ -95,7 +95,8 @@ Ext.define('Ext.field.Date', {
         'Ext.data.validator.Date',
         'Ext.field.trigger.Date',
         'Ext.picker.Date',
-        'Ext.panel.Date'
+        'Ext.panel.Date',
+        'Ext.data.field.Date'
     ],
 
     /**
@@ -124,12 +125,41 @@ Ext.define('Ext.field.Date', {
          */
         destroyPickerOnHide: false,
 
+        dataType: {
+            type: 'date'
+        },
+
         /**
          * @cfg {String} [dateFormat=Ext.util.Format.defaultDateFormat] The format to be
          * used when displaying the date in this field. Accepts any valid date format. You
          * can view formats over in the {@link Ext.Date} documentation.
          */
         dateFormat: '',
+
+        /**
+         * @cfg {String|String[]} altFormats
+         * Multiple date formats separated by "|" or an array of date formats
+         * to try when parsing a user input value and it doesn't match the defined format.
+         * @since 7.0
+         */
+        altFormats: 'm/d/Y|' +
+                    'n/j/Y|' +
+                    'n/j/y|' +
+                    'm/j/y|' +
+                    'n/d/y|' +
+                    'm/j/Y|' +
+                    'n/d/Y|' +
+                    'm-d-y|' +
+                    'm-d-Y|' +
+                    'm/d|' +
+                    'm-d|' +
+                    'md|' +
+                    'mdy|' +
+                    'mdY|' +
+                    'd|' +
+                    'Y-m-d|' +
+                    'n-j|' +
+                    'n/j',
 
         /**
          * @cfg {Date/String} [minDate] The minimum allowed date value for this field.
@@ -152,6 +182,7 @@ Ext.define('Ext.field.Date', {
 
     classCls: Ext.baseCSSPrefix + 'datepickerfield',
     matchFieldWidth: false,
+    isDateField: true,
 
     /**
      * @property {String}
@@ -166,6 +197,14 @@ Ext.define('Ext.field.Date', {
      * @locale
      */
     maxDateMessage: "The date in this field must be equal to or before {0}",
+
+    /**
+     * In the absence of a time value, a default value of 12 noon will be used
+     * note: 12 noon was chosen because it steers well clear of all DST timezone changes
+     * @private
+     */
+    initTime: '12', // 24 hour format
+    initTimeFormat: 'H',
 
     floatedPicker: {
         xtype: 'datepanel',
@@ -204,7 +243,11 @@ Ext.define('Ext.field.Date', {
             // The same date value may not be the same reference, so compare them by time.
             // If we have dates for both, then compare the time. If they're the same we
             // don't need to do anything.
-            if (Ext.isDate(value) && Ext.isDate(oldValue) && value.getTime() === oldValue.getTime()) {
+            if (
+                Ext.isDate(value) &&
+                Ext.isDate(oldValue) &&
+                value.getTime() === oldValue.getTime()
+            ) {
                 return;
             }
         }
@@ -213,6 +256,10 @@ Ext.define('Ext.field.Date', {
     },
 
     updateValue: function(value, oldValue) {
+        // Used picker directly instead of using getter as getter will create picker 
+        // if it does not exist. 
+        // We don't want to create the picker in value updater, this might lead to bugs as 
+        // well as performance challenges.
         var picker = this._picker;
 
         if (picker && picker.isPicker && Ext.isDate(value)) {
@@ -222,7 +269,7 @@ Ext.define('Ext.field.Date', {
         this.callParent([value, oldValue]);
     },
 
-    updatePickerValue: function (picker, value) {
+    updatePickerValue: function(picker, value) {
         picker.setValue(value);
     },
 
@@ -232,6 +279,14 @@ Ext.define('Ext.field.Date', {
         }
 
         return this.callParent([value, oldValue]);
+    },
+
+    applyAltFormats: function(altFormats) {
+        if (altFormats && !Ext.isArray(altFormats)) {
+            altFormats = altFormats.split('|');
+        }
+
+        return altFormats;
     },
 
     applyDateFormat: function(dateFormat) {
@@ -248,6 +303,7 @@ Ext.define('Ext.field.Date', {
 
         if (!me.isConfiguring && !me.hasFocus) {
             value = me.getValue();
+
             if (Ext.isDate(value)) {
                 me.setInputValue(value);
             }
@@ -291,17 +347,19 @@ Ext.define('Ext.field.Date', {
      */
     getFormattedValue: function(format) {
         var value = this.getValue();
+
         return Ext.isDate(value) ? Ext.Date.format(value, format || this.getDateFormat()) : '';
     },
 
     applyPicker: function(picker, oldPicker) {
-        var me = this,
-            type;
+        var me = this;
 
         picker = me.callParent([picker, oldPicker]);
 
-        me.pickerType = type = picker.xtype === 'datepicker' ? 'edge' : 'floated';
-        picker.ownerCmp = me;
+        if (picker) {
+            me.pickerType = picker.xtype === 'datepicker' ? 'edge' : 'floated';
+            picker.ownerCmp = me;
+        }
 
         return picker;
     },
@@ -316,8 +374,8 @@ Ext.define('Ext.field.Date', {
             maxDate = this.getMaxDate();
 
         return Ext.merge({
-            yearFrom: minDate ? minDate.getFullyear() : (new Date().getFullYear() - 20),
-            yearTo: maxDate ? maxDate.getFullyear() : (new Date().getFullYear() + 20)
+            yearFrom: minDate ? minDate.getFullYear() : (new Date().getFullYear() - 20),
+            yearTo: maxDate ? maxDate.getFullYear() : (new Date().getFullYear() + 20)
         }, me.getEdgePicker());
     },
 
@@ -329,12 +387,14 @@ Ext.define('Ext.field.Date', {
             limit;
 
         me.$ignorePickerChange = true;
+
         if (value != null) {
             picker.setValue(value);
         }
         else if (pickerType === 'edge') {
             picker.setValue(new Date());
         }
+
         delete me.$ignorePickerChange;
 
         if (pickerType === 'floated') {
@@ -363,7 +423,7 @@ Ext.define('Ext.field.Date', {
         }
     },
 
-    doValidate: function (value, errors, skipLazy) {
+    doValidate: function(value, errors, skipLazy) {
         var me = this,
             format = me.getDateFormat(),
             limit, t;
@@ -399,9 +459,8 @@ Ext.define('Ext.field.Date', {
             return;
         }
 
-        me.forceInputChange = true;
-        me.setValue(value);
-        me.forceInputChange = false;
+        me.forceSetValue(value);
+
         me.fireEvent('select', me, value);
 
         // Focus the inputEl first and then collapse. We configure
@@ -419,18 +478,45 @@ Ext.define('Ext.field.Date', {
     },
 
     parseValue: function(value, errors) {
-        var date;
+        var me = this,
+            date = value,
+            defaultFormat = me.getDateFormat(),
+            altFormats = me.getAltFormats(),
+            formats = altFormats ? [defaultFormat].concat(altFormats) : [defaultFormat],
+            formatsLength = formats.length,
+            i, format;
 
-        if (value) {
-            date = Ext.Date.parse(value, this.getDateFormat());
+        if (date) {
+            if (!Ext.isDate(date)) {
+                for (i = 0; i < formatsLength; i++) {
+                    format = formats[i];
+                    date = Ext.Date.parse(
+                        value + ' ' + me.initTime,
+                        format + ' ' + me.initTimeFormat
+                    );
+
+                    if (date) {
+                        return Ext.Date.clearTime(date);
+                    }
+                }
+            }
+
             if (date !== null) {
                 return date;
             }
         }
+
         return this.callParent([value, errors]);
     },
 
-    transformValue: function (value) {
+    isEqual: function(value1, value2) {
+        var v1 = this.transformValue(value1),
+            v2 = this.transformValue(value2);
+
+        return +v1 === +v2;
+    },
+
+    transformValue: function(value) {
         if (Ext.isObject(value)) {
             value = new Date(value.year, value.month, value.day);
 
@@ -450,6 +536,12 @@ Ext.define('Ext.field.Date', {
         }
 
         this.callParent();
+    },
+
+    rawToValue: function(rawValue) {
+        var me = this;
+
+        return me.parseValue(rawValue) || rawValue || null;
     },
 
     privates: {

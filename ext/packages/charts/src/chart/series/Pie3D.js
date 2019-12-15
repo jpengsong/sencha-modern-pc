@@ -67,7 +67,8 @@ Ext.define('Ext.chart.series.Pie3D', {
          */
 
         /**
-         * @cfg {Number} donut Specifies the radius of the donut hole, as a percentage of the chart's radius.
+         * @cfg {Number} donut Specifies the radius of the donut hole, as a percentage
+         * of the chart's radius.
          * Defaults to 0 (no donut hole).
          */
         donut: 0,
@@ -100,27 +101,29 @@ Ext.define('Ext.chart.series.Pie3D', {
     // zero value makes first pie sector start at noon, rather than 3 o'clock.
     rotationOffset: -Math.PI / 2,
 
-    setField: function (value) {
+    setField: function(value) {
         return this.setXField(value);
     },
 
-    getField: function () {
+    getField: function() {
         return this.getXField();
     },
 
-    updateRotation: function (rotation) {
-        var attributes = {baseRotation: rotation + this.rotationOffset};
+    updateRotation: function(rotation) {
+        var attributes = { baseRotation: rotation + this.rotationOffset };
 
-        this.forEachSprite(function (sprite) {
+        this.forEachSprite(function(sprite) {
             sprite.setAttributes(attributes);
         });
     },
 
-    updateColors: function (colors) {
-        this.setSubStyle({baseColor: colors});
+    updateColors: function(colors) {
+        var chart;
+
+        this.setSubStyle({ baseColor: colors });
 
         if (!this.isConfiguring) {
-            var chart = this.getChart();
+            chart = this.getChart();
 
             if (chart) {
                 chart.refreshLegendStore();
@@ -128,13 +131,14 @@ Ext.define('Ext.chart.series.Pie3D', {
         }
     },
 
-    applyShadow: function (shadow) {
+    applyShadow: function(shadow) {
         if (shadow === true) {
             shadow = {
                 shadowColor: 'rgba(0,0,0,0.8)',
                 shadowBlur: 30
             };
-        } else if (!Ext.isObject(shadow)) {
+        }
+        else if (!Ext.isObject(shadow)) {
             shadow = {
                 shadowColor: Ext.util.Color.RGBA_NONE
             };
@@ -143,7 +147,7 @@ Ext.define('Ext.chart.series.Pie3D', {
         return shadow;
     },
 
-    updateShadow: function (shadow) {
+    updateShadow: function(shadow) {
         var me = this,
             sprites = me.getSprites(),
             spritesPerSlice = me.spritesPerSlice,
@@ -152,7 +156,8 @@ Ext.define('Ext.chart.series.Pie3D', {
 
         for (i = 1; i < ln; i += spritesPerSlice) {
             sprite = sprites[i];
-            if (sprite.attr.part = 'bottom') {
+
+            if (sprite.attr.part === 'bottom') {
                 sprite.setAttributes(shadow);
             }
         }
@@ -164,7 +169,7 @@ Ext.define('Ext.chart.series.Pie3D', {
     // the 'baseColor' attribute should be set, from which the stops of the
     // gradient (used for fillStyle) will be calculated. Themes can't handle
     // situations like that properly.
-    getStyleByIndex: function (i) {
+    getStyleByIndex: function(i) {
         var indexStyle = this.callParent([i]),
             style = this.getStyle(),
             // 'fill' and 'color' are 'fillStyle' aliases
@@ -178,6 +183,7 @@ Ext.define('Ext.chart.series.Pie3D', {
             delete indexStyle.fill;
             delete indexStyle.color;
         }
+
         if (strokeStyle) {
             indexStyle.strokeStyle = strokeStyle;
         }
@@ -185,23 +191,26 @@ Ext.define('Ext.chart.series.Pie3D', {
         return indexStyle;
     },
 
-    doUpdateStyles: function () {
+    doUpdateStyles: function() {
         var me = this,
             sprites = me.getSprites(),
             spritesPerSlice = me.spritesPerSlice,
             ln = sprites && sprites.length,
-            i = 0, j = 0, k,
+            i = 0,
+            j = 0,
+            k,
             style;
 
         for (; i < ln; i += spritesPerSlice, j++) {
             style = me.getStyleByIndex(j);
+
             for (k = 0; k < spritesPerSlice; k++) {
                 sprites[i + k].setAttributes(style);
             }
         }
     },
 
-    coordinateX: function () {
+    coordinateX: function() {
         var me = this,
             store = me.getStore(),
             records = store.getData().items,
@@ -221,7 +230,7 @@ Ext.define('Ext.chart.series.Pie3D', {
             distortion = me.getDistortion(),
             renderer = me.getRenderer(),
             rendererData = me.getRendererData(),
-            highlight = me.getHighlight(),
+            highlight = me.getHighlight(), // eslint-disable-line no-unused-vars
             lastAngle = 0,
             twoPi = Math.PI * 2,
             // To avoid adjacent start/end part blinking (z-index jitter)
@@ -235,10 +244,13 @@ Ext.define('Ext.chart.series.Pie3D', {
 
         for (i = 0; i < recordCount; i++) {
             value = Math.abs(+records[i].get(xField)) || 0;
+
             if (!hidden[i]) {
                 sum += value;
             }
+
             endAngles[i] = sum;
+
             if (i >= hidden.length) {
                 hidden[i] = false;
             }
@@ -257,6 +269,7 @@ Ext.define('Ext.chart.series.Pie3D', {
 
         for (i = 0; i < recordCount; i++) {
             style = this.getStyleByIndex(i);
+
             for (j = 0; j < spritesPerSlice; j++) {
                 sprite = sprites[i * spritesPerSlice + j];
                 sprite.setAnimation(animation);
@@ -286,6 +299,7 @@ Ext.define('Ext.chart.series.Pie3D', {
                 //     // sprite.modifiers.highlight.setConfig(highlight);
                 // }
             }
+
             lastAngle = endAngles[i];
         }
 
@@ -301,14 +315,15 @@ Ext.define('Ext.chart.series.Pie3D', {
         }
     },
 
-    updateHighlight: function (highlight, oldHighlight) {
+    updateHighlight: function(highlight, oldHighlight) {
         this.callParent([highlight, oldHighlight]);
 
-        this.forEachSprite(function (sprite) {
+        this.forEachSprite(function(sprite) {
             if (highlight) {
                 if (sprite.modifiers.highlight) {
                     sprite.modifiers.highlight.setConfig(highlight);
-                } else {
+                }
+                else {
                     sprite.config.highlight = highlight;
                     sprite.addModifier(highlight, true);
                 }
@@ -316,7 +331,7 @@ Ext.define('Ext.chart.series.Pie3D', {
         });
     },
 
-    updateLabelData: function () {
+    updateLabelData: function() {
         var me = this,
             store = me.getStore(),
             items = store.getData().items,
@@ -333,22 +348,28 @@ Ext.define('Ext.chart.series.Pie3D', {
         if (sprites.length) {
             if (labelField) {
                 labels = [];
+
                 for (j = 0, ln = items.length; j < ln; j++) {
                     labels.push(items[j].get(labelField));
                 }
             }
+
             // Only set labels for the sprites that compose the top lid of the pie.
             for (i = 0, j = 0, ln = sprites.length; i < ln; i += spritesPerSlice, j++) {
                 sprite = sprites[i];
+
                 if (label) {
                     if (!sprite.getMarker(name)) {
                         sprite.bindMarker(name, label);
                     }
+
                     if (labels) {
-                        sprite.setAttributes({label: labels[j]});
+                        sprite.setAttributes({ label: labels[j] });
                     }
-                    sprite.putMarker(name, {hidden: hidden[j]}, sprite.attr.attributeId);
-                } else {
+
+                    sprite.putMarker(name, { hidden: hidden[j] }, sprite.attr.attributeId);
+                }
+                else {
                     sprite.releaseMarker(name);
                 }
             }
@@ -361,7 +382,7 @@ Ext.define('Ext.chart.series.Pie3D', {
     // distortion into account to calculate the proper radius.
     // The passed value is never used (or derived from) since the radius config
     // is not really meant to be used directly, as it will be reset by the next layout.
-    applyRadius: function () {
+    applyRadius: function() {
         var me = this,
             chart = me.getChart(),
             padding = chart.getInnerPadding(),
@@ -374,14 +395,15 @@ Ext.define('Ext.chart.series.Pie3D', {
 
         if (verticalRadius > height / 2) {
             result = height / (me.getDistortion() * 2);
-        } else {
+        }
+        else {
             result = horizontalRadius;
         }
 
         return Math.max(result, 0);
     },
 
-    forEachSprite: function (fn) {
+    forEachSprite: function(fn) {
         var sprites = this.sprites,
             ln = sprites.length,
             i;
@@ -391,7 +413,9 @@ Ext.define('Ext.chart.series.Pie3D', {
         }
     },
 
-    updateRadius: function (radius) {
+    updateRadius: function(radius) {
+        var donut;
+
         // The side effects of the 'getChart' call will result
         // in the 'coordinateX' method call, which we want to have called
         // first, to coordinate the data and create sprites for pie slices,
@@ -399,9 +423,9 @@ Ext.define('Ext.chart.series.Pie3D', {
         // updateChart -> onChartAttached -> processData -> coordinateX
         this.getChart();
 
-        var donut = this.getDonut();
+        donut = this.getDonut();
 
-        this.forEachSprite(function (sprite) {
+        this.forEachSprite(function(sprite) {
             sprite.setAttributes({
                 endRho: radius,
                 startRho: radius * donut / 100
@@ -409,28 +433,32 @@ Ext.define('Ext.chart.series.Pie3D', {
         });
     },
 
-    updateDonut: function (donut) {
+    updateDonut: function(donut) {
+        var radius;
+
         // See 'updateRadius' comments.
         this.getChart();
 
-        var radius = this.getRadius();
+        radius = this.getRadius();
 
-        this.forEachSprite(function (sprite) {
+        this.forEachSprite(function(sprite) {
             sprite.setAttributes({
                 startRho: radius * donut / 100
             });
         });
     },
 
-    updateCenter: function (center) {
+    updateCenter: function(center) {
+        var offsetX, offsetY, thickness;
+
         // See 'updateRadius' comments.
         this.getChart();
 
-        var offsetX = this.getOffsetX(),
-            offsetY = this.getOffsetY(),
-            thickness = this.getThickness();
+        offsetX = this.getOffsetX();
+        offsetY = this.getOffsetY();
+        thickness = this.getThickness();
 
-        this.forEachSprite(function (sprite) {
+        this.forEachSprite(function(sprite) {
             sprite.setAttributes({
                 centerX: center[0] + offsetX,
                 centerY: center[1] + offsetY - thickness / 2
@@ -438,17 +466,20 @@ Ext.define('Ext.chart.series.Pie3D', {
         });
     },
 
-    updateThickness: function (thickness) {
+    updateThickness: function(thickness) {
+        var center, offsetY;
+
         // See 'updateRadius' comments.
         this.getChart();
+
         // Radius depends on thickness and distortion,
         // this will trigger its recalculation in the applier.
         this.setRadius();
 
-        var center = this.getCenter(),
-            offsetY = this.getOffsetY();
+        center = this.getCenter();
+        offsetY = this.getOffsetY();
 
-        this.forEachSprite(function (sprite) {
+        this.forEachSprite(function(sprite) {
             sprite.setAttributes({
                 thickness: thickness,
                 centerY: center[1] + offsetY - thickness / 2
@@ -456,62 +487,70 @@ Ext.define('Ext.chart.series.Pie3D', {
         });
     },
 
-    updateDistortion: function (distortion) {
+    updateDistortion: function(distortion) {
         // See 'updateRadius' comments.
         this.getChart();
+
         // Radius depends on thickness and distortion,
         // this will trigger its recalculation in the applier.
         this.setRadius();
 
-        this.forEachSprite(function (sprite) {
+        this.forEachSprite(function(sprite) {
             sprite.setAttributes({
                 distortion: distortion
             });
         });
     },
 
-    updateOffsetX: function (offsetX) {
+    updateOffsetX: function(offsetX) {
+        var center;
+
         // See 'updateRadius' comments.
         this.getChart();
-        var center = this.getCenter();
 
-        this.forEachSprite(function (sprite) {
+        center = this.getCenter();
+
+        this.forEachSprite(function(sprite) {
             sprite.setAttributes({
                 centerX: center[0] + offsetX
             });
         });
     },
 
-    updateOffsetY: function (offsetY) {
+    updateOffsetY: function(offsetY) {
+        var center, thickness;
+
         // See 'updateRadius' comments.
         this.getChart();
 
-        var center = this.getCenter(),
-            thickness = this.getThickness();
+        center = this.getCenter();
+        thickness = this.getThickness();
 
-        this.forEachSprite(function (sprite) {
+        this.forEachSprite(function(sprite) {
             sprite.setAttributes({
                 centerY: center[1] + offsetY - thickness / 2
             });
         });
     },
 
-    updateAnimation: function (animation) {
+    updateAnimation: function(animation) {
         // See 'updateRadius' comments.
         this.getChart();
 
-        this.forEachSprite(function (sprite) {
+        this.forEachSprite(function(sprite) {
             sprite.setAnimation(animation);
         });
     },
 
-    updateRenderer: function (renderer) {
+    updateRenderer: function(renderer) {
+        var rendererData;
+
         // See 'updateRadius' comments.
         this.getChart();
 
-        var rendererData = this.getRendererData();
+        rendererData = this.getRendererData();
 
-        this.forEachSprite(function (sprite, itemIndex) {
+        this.forEachSprite(function(sprite, itemIndex) {
             sprite.setConfig({
                 renderer: renderer,
                 rendererData: rendererData,
@@ -520,7 +559,7 @@ Ext.define('Ext.chart.series.Pie3D', {
         });
     },
 
-    getRendererData: function () {
+    getRendererData: function() {
         return {
             store: this.getStore(),
             angleField: this.getXField(),
@@ -529,7 +568,7 @@ Ext.define('Ext.chart.series.Pie3D', {
         };
     },
 
-    getSprites: function (createMissing) {
+    getSprites: function(createMissing) {
         var me = this,
             store = me.getStore(),
             sprites = me.sprites;
@@ -542,6 +581,7 @@ Ext.define('Ext.chart.series.Pie3D', {
             return sprites;
         }
 
+        // eslint-disable-next-line vars-on-top, one-var
         var surface = me.getSurface(),
             records = store.getData().items,
             spritesPerSlice = me.spritesPerSlice,
@@ -567,7 +607,7 @@ Ext.define('Ext.chart.series.Pie3D', {
         return sprites;
     },
 
-    betweenAngle: function (x, a, b) {
+    betweenAngle: function(x, a, b) {
         var pp = Math.PI * 2,
             offset = this.rotationOffset;
 
@@ -590,25 +630,26 @@ Ext.define('Ext.chart.series.Pie3D', {
         return x < b || b === 0;
     },
 
-    getItemForPoint: function (x, y) {
+    getItemForPoint: function(x, y) {
         var me = this,
             sprites = me.getSprites(),
-            result = null;
+            spritesPerSlice = me.spritesPerSlice,
+            result = null,
+            store, records, hidden, i, ln, sprite, topPartIndex;
 
         if (!sprites) {
             return result;
         }
 
-        var store = me.getStore(),
-            records = store.getData().items,
-            spritesPerSlice = me.spritesPerSlice,
-            hidden = me.getHidden(),
-            i, ln, sprite, topPartIndex;
+        store = me.getStore();
+        records = store.getData().items;
+        hidden = me.getHidden();
 
         for (i = 0, ln = records.length; i < ln; i++) {
             if (hidden[i]) {
                 continue;
             }
+
             topPartIndex = i * spritesPerSlice;
             sprite = sprites[topPartIndex];
 
@@ -632,22 +673,22 @@ Ext.define('Ext.chart.series.Pie3D', {
         return result;
     },
 
-    provideLegendInfo: function (target) {
+    provideLegendInfo: function(target) {
         var me = this,
-            store = me.getStore();
+            store = me.getStore(),
+            items, labelField, field, hidden, style, color, i;
 
         if (store) {
-            var items = store.getData().items,
-                labelField = me.getLabel().getTemplate().getField(),
-                field = me.getField(),
-                hidden = me.getHidden(),
-                i, style, color;
+            items = store.getData().items;
+            labelField = me.getLabel().getTemplate().getField();
+            field = me.getField();
+            hidden = me.getHidden();
 
             for (i = 0; i < items.length; i++) {
                 style = me.getStyleByIndex(i);
                 color = style.baseColor;
                 target.push({
-                    name: labelField ? String(items[i].get(labelField))  : field + ' ' + i,
+                    name: labelField ? String(items[i].get(labelField)) : field + ' ' + i,
                     mark: color || 'black',
                     disabled: hidden[i],
                     series: me.getId(),
@@ -656,7 +697,7 @@ Ext.define('Ext.chart.series.Pie3D', {
             }
         }
     }
-}, function () {
+}, function() {
     var proto = this.prototype,
         definition = Ext.chart.series.sprite.Pie3DPart.def.getInitialConfig().processors.part;
 

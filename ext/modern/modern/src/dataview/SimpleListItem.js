@@ -1,12 +1,16 @@
 /**
- * This component is the default data item used by {@link Ext.dataview.List}. This can be
- * changed to `Ext.dataview.ListItem` by setting `useSimpleItems` to `false`.
+ * This component is the default data item used by {@link Ext.dataview.List}.
  *
  * This component supports disclosure icons and generates the slimmest markup possible for
  * a list data item. It doesn't support container functionality like adding or docking
- * items. If you require those features you should have your list you should set the
- * {@link Ext.dataview.List#useSimpleItems useSimpleItems} config to `false` and use
- * {@link Ext.dataview.ListItem} instances for data items.
+ * items. To enable those features, use {@link Ext.dataview.ListItem} instead:
+ *
+ *      {
+ *          xtype: 'list',
+ *          itemConfig: {
+ *              xtype: 'listitem'
+ *          }
+ *      }
  */
 Ext.define('Ext.dataview.SimpleListItem', {
     extend: 'Ext.Component',
@@ -46,14 +50,16 @@ Ext.define('Ext.dataview.SimpleListItem', {
     // It is a slave of the NavigationModel
     handleFocusEvent: Ext.emptyFn,
 
-    updateRecord: function (record) {
-        if (this.destroying || this.destroyed) {
+    updateRecord: function(record) {
+        var me = this,
+            dataview, data;
+
+        if (me.destroying || me.destroyed) {
             return;
         }
 
-        var me = this,
-            dataview = me.parent,
-            data = dataview && dataview.gatherData(record);
+        dataview = me.parent;
+        data = dataview && dataview.gatherData(record);
 
         me.updateData(data);
 
@@ -65,11 +71,11 @@ Ext.define('Ext.dataview.SimpleListItem', {
     },
 
     privates: {
-        getRenderTarget: function () {
+        getRenderTarget: function() {
             return this.innerElement;
         },
 
-        invokeToolHandler: function (tool, handler, scope, args, e) {
+        invokeToolHandler: function(tool, handler, scope, args, e) {
             if (this.invokeDisclosure(tool, handler, e)) {
                 return false;
             }

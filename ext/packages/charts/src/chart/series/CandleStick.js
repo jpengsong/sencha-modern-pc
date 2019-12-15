@@ -4,10 +4,10 @@
  * 
  * Creates a candlestick or OHLC Chart.
  *
- * CandleStick series are typically used to plot price movements of a security on an exchange over time.
- * The series can be used with the 'time' axis, but since exchanges often close for weekends,
- * and the price data has gaps for those days, it's more practical to use this series with
- * the 'category' axis to avoid rendering those data gaps. The 'category' axis has no notion
+ * CandleStick series are typically used to plot price movements of a security on an exchange
+ * over time. The series can be used with the 'time' axis, but since exchanges often close
+ * for weekends, and the price data has gaps for those days, it's more practical to use this series
+ * with the 'category' axis to avoid rendering those data gaps. The 'category' axis has no notion
  * of time (and thus gaps) and treats every Date object (value of the 'xField') as a unique
  * category. However, it also means that it doesn't support the 'dateFormat' config,
  * which can be easily remedied with a 'renderer' that formats a Date object for use
@@ -124,12 +124,14 @@ Ext.define('Ext.chart.series.CandleStick', {
         openField: null,
         /**
          * @cfg {String} highField
-         * The store record field name that represents the highest value of the time interval represented.
+         * The store record field name that represents the highest value of the time interval
+         * represented.
          */
         highField: null,
         /**
          * @cfg {String} lowField
-         * The store record field name that represents the lowest value of the time interval represented.
+         * The store record field name that represents the lowest value of the time interval
+         * represented.
          */
         lowField: null,
         /**
@@ -144,5 +146,4 @@ Ext.define('Ext.chart.series.CandleStick', {
     themeColorCount: function() {
         return 2;
     }
-
 });

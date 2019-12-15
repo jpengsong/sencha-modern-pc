@@ -2,8 +2,15 @@
 /**
  * @private
  */
-Ext.draw || (Ext.draw = {});
-Ext.draw.engine || (Ext.draw.engine = {});
+
+if (!Ext.draw) {
+    Ext.draw = {};
+}
+
+if (!Ext.draw.engine) {
+    Ext.draw.engine = {};
+}
+
 Ext.draw.engine.excanvas = true;
 
 // Copyright 2006 Google Inc.
@@ -19,7 +26,6 @@ Ext.draw.engine.excanvas = true;
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 
 // Known Issues:
 //
@@ -39,11 +45,12 @@ Ext.draw.engine.excanvas = true;
 // * Non uniform scaling does not correctly scale strokes.
 // * Optimize. There is always room for speed improvements.
 
+/* eslint-disable */
+
 // Only add this code if we do not already have a canvas implementation
 if (!document.createElement('canvas').getContext) {
 
 (function() {
-
   // alias some functions to make (compiled) code shorter
   var m = Math;
   var mr = m.round;

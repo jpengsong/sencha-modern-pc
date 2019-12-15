@@ -24,6 +24,7 @@ Ext.define('Ext.util.paintmonitor.Abstract', {
     },
 
     bindListeners: function(bind) {
+        // eslint-disable-next-line max-len
         this.monitorElement[bind ? 'addEventListener' : 'removeEventListener'](this.eventName, this.onElementPainted, true);
     },
 

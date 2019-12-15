@@ -1,5 +1,3 @@
-/* global expect, Ext, jasmine */
-
 // TODO: splitters
 // TODO: expand/collapse
 // TODO: Adding regions (done partially)
@@ -17,6 +15,7 @@ function() {
     // Assertions based on placeholders are tricky as the default placeholder size could change without that
     // necessarily counting as a failure. To handle this we capture that size in these 'constants'.
     var HORIZONTAL_PLACEHOLDER_HEIGHT = 28;
+
     var VERTICAL_PLACEHOLDER_WIDTH = 28;
 
     var ct;
@@ -64,18 +63,21 @@ function() {
     }
 
     var todoIt = Ext.isIE9 ? xit : it;
-    
-    describe("removing items", function(){
+
+    describe("removing items", function() {
         var normalize = function(style) {
-            if (style === 'auto') {
-                return '';
-            } else if (style === '0px') {
-                return '';
-            }
-            return style;
-        }, other;
-        
-        beforeEach(function(){
+                if (style === 'auto') {
+                    return '';
+                }
+                else if (style === '0px') {
+                    return '';
+                }
+
+                return style;
+            },
+            other;
+
+        beforeEach(function() {
             other = new Ext.container.Container({
                 renderTo: Ext.getBody(),
                 layout: 'fit',
@@ -83,14 +85,14 @@ function() {
                 height: 100
             });
         });
-        
-        afterEach(function(){
+
+        afterEach(function() {
             Ext.destroy(other);
         });
-        
-        it("should clear the top/left on the north region when removing", function(){
+
+        it("should clear the top/left on the north region when removing", function() {
             var c;
-            
+
             ct = new Ext.container.Container({
                 renderTo: Ext.getBody(),
                 layout: 'vbox',
@@ -110,18 +112,18 @@ function() {
                     region: 'east',
                     width: 50
                 }]
-            });    
-            
+            });
+
             ct.remove(c, false);
             other.add(c);
-            
+
             expect(normalize(c.getEl().getStyle('top'))).toBe('');
             expect(normalize(c.getEl().getStyle('left'))).toBe('');
         });
-        
-        it("should clear the top/left on the west region when removing", function(){
+
+        it("should clear the top/left on the west region when removing", function() {
             var c;
-            
+
             ct = new Ext.container.Container({
                 renderTo: Ext.getBody(),
                 layout: 'vbox',
@@ -141,18 +143,18 @@ function() {
                     region: 'east',
                     width: 50
                 }]
-            });    
-            
+            });
+
             ct.remove(c, false);
             other.add(c);
-            
+
             expect(normalize(c.getEl().getStyle('top'))).toBe('');
             expect(normalize(c.getEl().getStyle('left'))).toBe('');
         });
-        
-        it("should clear the top/left on the south region when removing", function(){
+
+        it("should clear the top/left on the south region when removing", function() {
             var c;
-            
+
             ct = new Ext.container.Container({
                 renderTo: Ext.getBody(),
                 layout: 'vbox',
@@ -172,18 +174,18 @@ function() {
                     region: 'east',
                     width: 50
                 }]
-            });    
-            
+            });
+
             ct.remove(c, false);
             other.add(c);
-            
+
             expect(normalize(c.getEl().getStyle('top'))).toBe('');
             expect(normalize(c.getEl().getStyle('left'))).toBe('');
         });
-        
-        it("should clear the top/left on the east region when removing", function(){
+
+        it("should clear the top/left on the east region when removing", function() {
             var c;
-            
+
             ct = new Ext.container.Container({
                 renderTo: Ext.getBody(),
                 layout: 'vbox',
@@ -203,15 +205,15 @@ function() {
                     region: 'east',
                     width: 50
                 })]
-            });    
-            
+            });
+
             ct.remove(c, false);
             other.add(c);
-            
+
             expect(normalize(c.getEl().getStyle('top'))).toBe('');
             expect(normalize(c.getEl().getStyle('left'))).toBe('');
         });
-        
+
         it("should remove an item when the item is not rendered and the item is not destroying", function() {
             ct = new Ext.container.Container({
                 renderTo: Ext.getBody(),
@@ -223,18 +225,19 @@ function() {
                     region: 'center'
                 }
             });
-            
+
             // When adding the item to the collapsed panel, it won't render
             var c = ct.add({});
+
             expect(function() {
                 ct.remove(c, false);
                 c.destroy();
             }).not.toThrow();
         });
     });
-    
-    describe("splitters", function(){
-        
+
+    describe("splitters", function() {
+
         var createWithCenter = function(items, cfg) {
             items = items.concat({
                 xtype: 'component',
@@ -242,30 +245,32 @@ function() {
             });
             createBorderLayout(items, cfg);
         };
-        
-        describe("creation", function(){
-            it("should create a splitter with split: true", function(){
+
+        describe("creation", function() {
+            it("should create a splitter with split: true", function() {
                 var north = new Ext.Component({
                     region: 'north',
                     height: 50,
                     split: true
                 });
+
                 createWithCenter([north]);
                 expect(north.nextSibling().isXType('splitter')).toBe(true);
-            });  
-            
+            });
+
             describe("collapsible: true && collapseMode: 'mini'", function() {
-                it("should create a splitter", function(){
+                it("should create a splitter", function() {
                     var west = new Ext.panel.Panel({
                         region: 'west',
                         height: 50,
                         collapsible: true,
                         collapseMode: 'mini'
                     });
+
                     createWithCenter([west]);
                     expect(west.nextSibling().isXType('splitter')).toBe(true);
                 });
-                
+
                 it("should not hide the splitter if region is collapsed", function() {
                     var west = new Ext.panel.Panel({
                         region: 'west',
@@ -274,14 +279,15 @@ function() {
                         collapsed: true,
                         collapseMode: 'mini'
                     });
+
                     createWithCenter([west]);
                     expect(west.nextSibling().isVisible()).toBe(true);
                 });
             });
-            
+
             describe("splitter configuration", function() {
                 var east, splitter;
-                
+
                 beforeEach(function() {
                     east = new Ext.Component({
                         region: 'east',
@@ -291,121 +297,129 @@ function() {
                             id: 'foosplitter'
                         }
                     });
-                    
+
                     createWithCenter([east]);
-                    
+
                     splitter = east.previousSibling();
                 });
-                
+
                 it("should create a splitter", function() {
                     expect(splitter.isXType('splitter')).toBe(true);
                 });
-                
+
                 it("should set custom properties passed in config", function() {
                     expect(splitter.collapseOnDblClick).toBe(false);
                 });
-                
+
                 it("should pass on default options unless overridden", function() {
                     expect(splitter.collapseTarget).toEqual(east);
                 });
-                
+
                 it("should allow to override default options", function() {
                     expect(splitter.id).toBe('foosplitter');
                 });
             });
         });
-        
-        describe("destruction", function(){
-            it("should destroy the splitter when removing it's owner", function(){
+
+        describe("destruction", function() {
+            it("should destroy the splitter when removing it's owner", function() {
                 var north = new Ext.Component({
                     region: 'north',
                     height: 50,
                     split: true
                 });
+
                 createWithCenter([north]);
                 ct.remove(north);
                 expect(ct.items.getCount()).toBe(1);
             });
         });
-        
-        describe("visibility", function(){
-            describe("initial", function(){
-                it("should show the splitter if the component is visible", function(){
+
+        describe("visibility", function() {
+            describe("initial", function() {
+                it("should show the splitter if the component is visible", function() {
                     var north = new Ext.Component({
                         region: 'north',
                         height: 50,
                         split: true
                     });
+
                     createWithCenter([north]);
                     expect(north.nextSibling().isVisible()).toBe(true);
                 });
-                
-                it("should hide the splitter if the component is hidden", function(){
+
+                it("should hide the splitter if the component is hidden", function() {
                     var north = new Ext.Component({
                         region: 'north',
                         hidden: true,
                         height: 50,
                         split: true
                     });
+
                     createWithCenter([north]);
                     expect(north.nextSibling().isVisible()).toBe(false);
                 });
-                
-                it("should show the splitter if the component is collapsed", function(){
+
+                it("should show the splitter if the component is collapsed", function() {
                     var north = new Ext.Component({
                         region: 'north',
                         height: 50,
                         split: true,
                         collapsed: true
                     });
+
                     createWithCenter([north]);
                     expect(north.nextSibling().isVisible()).toBe(true);
                 });
-            });  
-            
-            describe("dynamic", function(){
-                it("should hide the splitter when hiding the component", function(){
+            });
+
+            describe("dynamic", function() {
+                it("should hide the splitter when hiding the component", function() {
                     var north = new Ext.Component({
                         region: 'north',
                         height: 50,
                         split: true
                     });
+
                     createWithCenter([north]);
                     north.hide();
                     expect(north.nextSibling().isVisible()).toBe(false);
-                });  
-                
-                it("should show the splitter when showing the component", function(){
+                });
+
+                it("should show the splitter when showing the component", function() {
                     var north = new Ext.Component({
                         region: 'north',
                         height: 50,
                         split: true,
                         hidden: true
                     });
+
                     createWithCenter([north]);
                     north.show();
                     expect(north.nextSibling().isVisible()).toBe(true);
-                }); 
+                });
             });
-            
-            it("should not affect other splitters", function(){
+
+            it("should not affect other splitters", function() {
                 var north = new Ext.Component({
                     region: 'north',
                     height: 50,
                     split: true
                 });
+
                 var south = new Ext.Component({
                     region: 'south',
                     height: 50,
                     split: true
                 });
+
                 createWithCenter([north, south]);
                 north.hide();
                 expect(north.nextSibling().isVisible()).toBe(false);
                 expect(south.previousSibling().isVisible()).toBe(true);
             });
         });
-        
+
     });
 
     // All of these tests perform simple sizing and positioning of components within a border layout. This includes:
@@ -444,6 +458,7 @@ function() {
                 ]);
 
                 var west = ct.down('[region=west]');
+
                 var center = ct.down('[region=center]');
 
                 expect(west.getWidth()).toBe(30);
@@ -477,6 +492,7 @@ function() {
                 ]);
 
                 var east = ct.down('[region=east]');
+
                 var center = ct.down('[region=center]');
 
                 expect(east.getWidth()).toBe(30);
@@ -511,6 +527,7 @@ function() {
                 ]);
 
                 var north = ct.down('[region=north]');
+
                 var center = ct.down('[region=center]');
 
                 expect(north.getHeight()).toBe(30);
@@ -545,6 +562,7 @@ function() {
                 ]);
 
                 var south = ct.down('[region=south]');
+
                 var center = ct.down('[region=center]');
 
                 expect(south.getHeight()).toBe(30);
@@ -589,9 +607,13 @@ function() {
                 ]);
 
                 var north = ct.down('[region=north]');
+
                 var south = ct.down('[region=south]');
+
                 var east = ct.down('[region=east]');
+
                 var west = ct.down('[region=west]');
+
                 var center = ct.down('[region=center]');
 
                 expect(north.getHeight()).toBe(50);
@@ -656,9 +678,13 @@ function() {
                 ]);
 
                 var north = ct.down('[region=north]');
+
                 var south = ct.down('[region=south]');
+
                 var east = ct.down('[region=east]');
+
                 var west = ct.down('[region=west]');
+
                 var center = ct.down('[region=center]');
 
                 expect(north.getHeight()).toBe(50);
@@ -709,6 +735,7 @@ function() {
                 ]);
 
                 var west = ct.down('[region=west]');
+
                 var center = ct.down('[region=center]');
 
                 expect(west.getWidth()).toBe(30);
@@ -769,6 +796,7 @@ function() {
                 ]);
 
                 var west = ct.down('[region=west]');
+
                 var center = ct.down('[region=center]');
 
                 expect(west.getWidth()).toBe(50);
@@ -802,6 +830,7 @@ function() {
                 ]);
 
                 var east = ct.down('[region=east]');
+
                 var center = ct.down('[region=center]');
 
                 expect(east.getWidth()).toBe(80);
@@ -836,6 +865,7 @@ function() {
                 ]);
 
                 var north = ct.down('[region=north]');
+
                 var center = ct.down('[region=center]');
 
                 expect(north.getHeight()).toBe(20);
@@ -870,6 +900,7 @@ function() {
                 ]);
 
                 var south = ct.down('[region=south]');
+
                 var center = ct.down('[region=center]');
 
                 expect(south.getHeight()).toBe(170);
@@ -914,9 +945,13 @@ function() {
                 ]);
 
                 var north = ct.down('[region=north]');
+
                 var south = ct.down('[region=south]');
+
                 var east = ct.down('[region=east]');
+
                 var west = ct.down('[region=west]');
+
                 var center = ct.down('[region=center]');
 
                 expect(north.getHeight()).toBe(24);
@@ -982,9 +1017,13 @@ function() {
                 ]);
 
                 var south1 = ct.down('[region=south][weight=100]');
+
                 var south2 = ct.down('[region=south][weight=10]');
+
                 var east = ct.down('[region=east]');
+
                 var west = ct.down('[region=west]');
+
                 var center = ct.down('[region=center]');
 
                 expect(south1.getHeight()).toBe(24);
@@ -1036,6 +1075,7 @@ function() {
                 ]);
 
                 var west = ct.down('[region=west]');
+
                 var center = ct.down('[region=center]');
 
                 expect(west.getWidth()).toBe(40);
@@ -1069,6 +1109,7 @@ function() {
                 ]);
 
                 var east = ct.down('[region=east]');
+
                 var center = ct.down('[region=center]');
 
                 expect(east.getWidth()).toBe(150);
@@ -1103,6 +1144,7 @@ function() {
                 ]);
 
                 var north = ct.down('[region=north]');
+
                 var center = ct.down('[region=center]');
 
                 expect(north.getHeight()).toBe(180);
@@ -1137,6 +1179,7 @@ function() {
                 ]);
 
                 var south = ct.down('[region=south]');
+
                 var center = ct.down('[region=center]');
 
                 expect(south.getHeight()).toBe(75);
@@ -1181,9 +1224,13 @@ function() {
                 ]);
 
                 var north = ct.down('[region=north]');
+
                 var south = ct.down('[region=south]');
+
                 var east = ct.down('[region=east]');
+
                 var west = ct.down('[region=west]');
+
                 var center = ct.down('[region=center]');
 
                 expect(north.getHeight()).toBe(50);
@@ -1239,7 +1286,9 @@ function() {
                 ]);
 
                 var north = ct.down('[region=north]');
+
                 var west = ct.down('[region=west]');
+
                 var center = ct.down('[region=center]');
 
                 expect(north.getHeight()).toBe(50);
@@ -1286,6 +1335,7 @@ function() {
                 ]);
 
                 var south = ct.down('[region=south]');
+
                 var center = ct.down('[region=center]');
 
                 expect(south.getWidth()).toBe(200);
@@ -1324,6 +1374,7 @@ function() {
                 ]);
 
                 var east = ct.down('[region=east]');
+
                 var center = ct.down('[region=center]');
 
                 expect(east.getWidth()).toBe(40);
@@ -1371,7 +1422,9 @@ function() {
                 ]);
 
                 var east = ct.down('[region=east]');
+
                 var north = ct.down('[region=north]');
+
                 var center = ct.down('[region=center]');
 
                 expect(east.getWidth()).toBe(94);
@@ -1410,6 +1463,7 @@ function() {
                 ]);
 
                 var west = ct.down('[region=west]');
+
                 var center = ct.down('[region=center]');
 
                 expect(west.getWidth()).toBe(90);
@@ -1447,6 +1501,7 @@ function() {
                 ]);
 
                 var west = ct.down('[region=west]');
+
                 var center = ct.down('[region=center]');
 
                 expect(west.getWidth()).toBe(120);
@@ -1493,7 +1548,9 @@ function() {
                 ]);
 
                 var west = ct.down('[region=west]');
+
                 var inner = west.down('component');
+
                 var center = ct.down('[region=center]');
 
                 expect(west.getWidth()).toBe(50);
@@ -1543,7 +1600,9 @@ function() {
                 ]);
 
                 var east = ct.down('[region=east]');
+
                 var inner = east.down('component');
+
                 var center = ct.down('[region=center]');
 
                 expect(east.getWidth()).toBe(180);
@@ -1595,7 +1654,9 @@ function() {
                 ]);
 
                 var north = ct.down('[region=north]');
+
                 var inner = north.down('component');
+
                 var center = ct.down('[region=center]');
 
                 expect(north.getWidth()).toBe(200);
@@ -1647,7 +1708,9 @@ function() {
                 ]);
 
                 var south = ct.down('[region=south]');
+
                 var inner = south.down('component');
+
                 var center = ct.down('[region=center]');
 
                 expect(south.getWidth()).toBe(200);
@@ -1720,9 +1783,13 @@ function() {
                 ]);
 
                 var west = ct.down('[region=west]');
+
                 var cmp1 = west.down('#cmp1');
+
                 var cmp2 = west.down('#cmp2');
+
                 var cmp3 = west.down('#cmp3');
+
                 var center = ct.down('[region=center]');
 
                 expect(west.getWidth()).toBe(90);
@@ -1847,7 +1914,9 @@ function() {
                 ]);
 
                 var west = ct.down('[region=west]');
+
                 var east = ct.down('[region=east]');
+
                 var center = ct.down('[region=center]');
 
                 expect(west.getWidth()).toBe(80);
@@ -1890,7 +1959,9 @@ function() {
                 ]);
 
                 var west = ct.down('[region=west]');
+
                 var east = ct.down('[region=east]');
+
                 var center = ct.down('[region=center]');
 
                 expect(west.getWidth()).toBe(80);
@@ -1933,7 +2004,9 @@ function() {
                 ]);
 
                 var west = ct.down('[region=west]');
+
                 var east = ct.down('[region=east]');
+
                 var center = ct.down('[region=center]');
 
                 expect(west.getWidth()).toBe(80);
@@ -1977,7 +2050,9 @@ function() {
                 ]);
 
                 var west = ct.down('[region=west]');
+
                 var east = ct.down('[region=east]');
+
                 var center = ct.down('[region=center]');
 
                 expect(west.getWidth()).toBe(50);
@@ -2022,7 +2097,9 @@ function() {
                 ]);
 
                 var west = ct.down('[region=west]');
+
                 var east = ct.down('[region=east]');
+
                 var center = ct.down('[region=center]');
 
                 expect(west.getWidth()).toBe(20);
@@ -2046,6 +2123,7 @@ function() {
     describe('Collapsed regions and placeholders', function() {
         it("should not fire a collapse event when the panel starts collapsed", function() {
             var fired = false;
+
             createBorderLayout([{
                 region: 'center'
             }, {
@@ -2054,7 +2132,7 @@ function() {
                 collapsible: true,
                 collapsed: true,
                 listeners: {
-                    collapse: function(){
+                    collapse: function() {
                         fired = true;
                     }
                 }
@@ -2085,7 +2163,9 @@ function() {
             floated = false;
 
             var west = ct.down('[region=west]:not([placeholderFor])');
+
             var westPh = ct.down('[region=west][placeholderFor]');
+
             var center = ct.down('[region=center]');
 
             expect(westPh.getWidth()).toBe(VERTICAL_PLACEHOLDER_WIDTH);
@@ -2107,9 +2187,11 @@ function() {
 
             // Click the placeholder to slide out the region
             jasmine.fireMouseEvent(westPh.el, 'mouseover');
+
             if (document.createTouch) {
                 Ext.testHelper.tap(westPh.el);
-            } else {
+            }
+            else {
                 jasmine.fireMouseEvent(westPh.el, 'click');
             }
 
@@ -2117,6 +2199,7 @@ function() {
             waitsFor(function() {
                 return floated;
             });
+
             runs(function() {
                 expect(floated).toBe(true);
 
@@ -2128,6 +2211,7 @@ function() {
             waits(function() {
                 return floated === false;
             });
+
             runs(Ext.emptyFn);
         });
 
@@ -2156,7 +2240,9 @@ function() {
             westBox;
 
             var west = ct.down('[region=west]:not([placeholderFor])');
+
             var westPh = ct.down('[region=west][placeholderFor]');
+
             var center = ct.down('[region=center]');
 
             expect(westPh.getWidth()).toBe(VERTICAL_PLACEHOLDER_WIDTH);
@@ -2182,7 +2268,8 @@ function() {
             // Click the placeholder to slide out the region
             if (document.createTouch) {
                 Ext.testHelper.tap(westPh.el);
-            } else {
+            }
+            else {
                 jasmine.fireMouseEvent(westPh.el, 'click');
             }
 
@@ -2190,12 +2277,14 @@ function() {
             waitsFor(function() {
                 return floated;
             });
+
             runs(function() {
                 expect(floated).toBe(true);
 
                 if (document.createTouch) {
                     Ext.testHelper.tap(westPh.expandTool.el);
-                } else {
+                }
+                else {
                     jasmine.fireMouseEvent(westPh.expandTool.el, 'click');
                 }
             });
@@ -2204,12 +2293,14 @@ function() {
             waitsFor(function() {
                 return (!floated) && expanded;
             });
+
             runs(function() {
                 westBox = west.getBox();
 
                 if (document.createTouch) {
                     Ext.testHelper.tap(center.el);
-                } else {
+                }
+                else {
                     jasmine.fireMouseEvent(center.el, 'click');
                 }
             });
@@ -2243,6 +2334,7 @@ function() {
             ]);
 
             var eastPh = ct.down('[region=east][placeholderFor]');
+
             var center = ct.down('[region=center]');
 
             expect(eastPh.getWidth()).toBe(VERTICAL_PLACEHOLDER_WIDTH);
@@ -2279,6 +2371,7 @@ function() {
             ]);
 
             var northPh = ct.down('[region=north][placeholderFor]');
+
             var center = ct.down('[region=center]');
 
             expect(northPh.getWidth()).toBe(200);
@@ -2315,6 +2408,7 @@ function() {
             ]);
 
             var southPh = ct.down('[region=south][placeholderFor]');
+
             var center = ct.down('[region=center]');
 
             expect(southPh.getWidth()).toBe(200);
@@ -2355,7 +2449,9 @@ function() {
             ]);
 
             var northPh = ct.down('[region=north][placeholderFor]');
+
             var westPh = ct.down('[region=west][placeholderFor]');
+
             var center = ct.down('[region=center]');
 
             expect(northPh.getWidth()).toBe(200);
@@ -2405,7 +2501,9 @@ function() {
             ]);
 
             var northPh = ct.down('[region=north][placeholderFor]');
+
             var westPh = ct.down('[region=west][placeholderFor]');
+
             var center = ct.down('[region=center]');
 
             expect(northPh.getWidth()).toBe(200 - VERTICAL_PLACEHOLDER_WIDTH);
@@ -2463,9 +2561,13 @@ function() {
             ]);
 
             var northPh = ct.down('[region=north][placeholderFor]');
+
             var southPh = ct.down('[region=south][placeholderFor]');
+
             var westPh = ct.down('[region=west][placeholderFor]');
+
             var eastPh = ct.down('[region=east][placeholderFor]');
+
             var center = ct.down('[region=center]');
 
             expect(northPh.getWidth()).toBe(200);
@@ -2519,6 +2621,7 @@ function() {
             ]);
 
             var placeholder = ct.down('[region=east][placeholderFor]');
+
             var center = ct.down('[region=center]');
 
             expect(placeholder.getWidth()).toBe(70);
@@ -2557,6 +2660,7 @@ function() {
             ]);
 
             var placeholder = ct.down('[region=west][placeholderFor]');
+
             var center = ct.down('[region=center]');
 
             expect(placeholder.getWidth()).toBe(40);
@@ -2600,6 +2704,7 @@ function() {
             ]);
 
             var placeholder = ct.down('[region=south][placeholderFor]');
+
             var center = ct.down('[region=center]');
 
             expect(placeholder.getWidth()).toBe(200);
@@ -2655,8 +2760,11 @@ function() {
             ]);
 
             var cmp1 = ct.down('#cmp1');
+
             var cmp2 = ct.down('#cmp2');
+
             var placeholder = ct.down('[region=north][placeholderFor]');
+
             var center = ct.down('[region=center]');
 
             expect(cmp1.getWidth()).toBe(90);
@@ -2694,7 +2802,9 @@ function() {
             ]);
 
             var placeholder = ct.down('[region=east][placeholderFor]');
+
             var east = ct.down('[region=east][placeholder]');
+
             var center = ct.down('[region=center]');
 
             // There's no way to check the title using the public API so resort to simply checking the property
@@ -2721,6 +2831,7 @@ function() {
             ]);
 
             var east = ct.down('panel[region=east]');
+
             var center = ct.down('[region=center]');
 
             // There's no way to check the title using the public API so resort to simply checking the property
@@ -2756,7 +2867,9 @@ function() {
             ]);
 
             var placeholder = ct.down('[region=east][placeholderFor]');
+
             var east = ct.down('[region=east][placeholder]');
+
             var center = ct.down('[region=center]');
 
             expect(east.title).toBe('Original Title');
@@ -2783,7 +2896,9 @@ function() {
             ]);
 
             var placeholder = ct.down('[region=east][placeholderFor]');
+
             var east = ct.down('[region=east][placeholder]');
+
             var center = ct.down('[region=center]');
 
             // There's no way to check the title using the public API so resort to simply checking the property
@@ -2811,6 +2926,7 @@ function() {
             ]);
 
             var east = ct.down('panel[region=east]');
+
             var center = ct.down('[region=center]');
 
             // There's no way to check the title using the public API so resort to simply checking the property
@@ -2847,7 +2963,9 @@ function() {
             ]);
 
             var placeholder = ct.down('[region=east][placeholderFor]');
+
             var east = ct.down('[region=east][placeholder]');
+
             var center = ct.down('[region=center]');
 
             expect(east.iconCls).toBe('firstCls');
@@ -2872,7 +2990,9 @@ function() {
             ]);
 
             var placeholder = ct.down('[region=east][placeholderFor]');
+
             var east = ct.down('[region=east][placeholder]');
+
             var center = ct.down('[region=center]');
 
             east.setIcon(Ext.BLANK_IMAGE_URL);
@@ -2895,6 +3015,7 @@ function() {
             ]);
 
             var east = ct.down('panel[region=east]');
+
             var center = ct.down('[region=center]');
 
             east.setIcon(Ext.BLANK_IMAGE_URL);
@@ -2927,7 +3048,9 @@ function() {
             ]);
 
             var placeholder = ct.down('[region=east][placeholderFor]');
+
             var east = ct.down('[region=east][placeholder]');
+
             var center = ct.down('[region=center]');
 
             // Ensure that there isn't an exception thrown from trying to update the custom placeholder
@@ -2997,7 +3120,9 @@ function() {
                 );
 
                 var east = ct.down('[region=east]');
+
                 var north = ct.down('[region=north]');
+
                 var center = ct.down('[region=center]');
 
                 expect(east.getWidth()).toBe(150);
@@ -3015,20 +3140,20 @@ function() {
                 expect(getLeft(ct, center)).toBe(0);
                 expect(getTop(ct, center)).toBe(70);
             });
-            
+
             it("should set isViewportBorderChild flag", function() {
                 var ct = createBorderLayout([], { isViewport: true });
-                
+
                 ct.add({
                     flex: 1.5,
                     region: 'west'
                 });
-                
+
                 var west = ct.down('[region=west]');
-                
+
                 expect(west.isViewportBorderChild).toBe(true);
             });
-            
+
             it('should support adding a collapsed region', function() {
                 //
                 //      +------+------+
@@ -3055,7 +3180,9 @@ function() {
                 });
 
                 var west = ct.down('[region=west]');
+
                 var south = ct.down('[region=south]');
+
                 var center = ct.down('[region=center]');
 
                 expect(west.getWidth()).toBe(30);
@@ -3073,7 +3200,7 @@ function() {
                 expect(getLeft(ct, center)).toBe(30);
                 expect(getTop(ct, center)).toBe(0);
             });
-            
+
             it("should support re-adding previously collapsed region", function() {
                 var ct = createBorderLayout([{
                     xtype: 'panel',
@@ -3086,18 +3213,19 @@ function() {
                 }, {
                     region: 'center'
                 }]);
-                
+
                 var west = ct.down('[region=west]');
+
                 var center = ct.down('[region=center]');
-                
+
                 west.collapse();
                 ct.remove(west, false);
-                
+
                 expect(center.getWidth()).toBe(200);
                 expect(center.getHeight()).toBe(200);
-                
+
                 ct.add(west);
-                
+
                 expect(west.el.isVisible()).toBe(false);
                 expect(west.placeholder.el.isVisible()).toBe(true);
                 expect(west.placeholder.getWidth()).toBe(VERTICAL_PLACEHOLDER_WIDTH);
@@ -3131,7 +3259,9 @@ function() {
             ]);
 
             var west = ct.down('[region=west][split]');
+
             var east = ct.down('[region=east][split]');
+
             var center = ct.down('[region=center]');
 
             expect(west.getWidth()).toBe(19);
@@ -3188,6 +3318,7 @@ function() {
             });
 
             var docked = ct.down('#docked');
+
             var inner = docked.down('#inner');
 
             expect(ct.getWidth()).toBe(200);
@@ -3246,6 +3377,7 @@ function() {
             });
 
             var border1 = ct.down('#border1');
+
             var border2 = ct.down('#border2');
 
             expect(ct.getWidth()).toBe(200);
@@ -3272,16 +3404,16 @@ function() {
         // panels within a border layout to ensure that the timing of their
         // animations do not disrupt the layout.
         var positions = {
-                north: {x: 0, y: 0},
-                east: {x: 200, y: 100},
-                south: {x: 0, y: 200},
-                west: {x: 0, y: 100}
+                north: { x: 0, y: 0 },
+                east: { x: 200, y: 100 },
+                south: { x: 0, y: 200 },
+                west: { x: 0, y: 100 }
             },
             floatOffsets = {
-                north: {x: 0, y: 27},
-                east: {x: -27, y: 0},
-                south: {x: 0, y: -27},
-                west: {x: 27, y: 0}
+                north: { x: 0, y: 27 },
+                east: { x: -27, y: 0 },
+                south: { x: 0, y: -27 },
+                west: { x: 27, y: 0 }
             },
             northCollapsedPositions = Ext.clone(positions),
             panel, regions;
@@ -3369,7 +3501,7 @@ function() {
                     expect(center.getHeight()).toBeApprox(centerHeight);
                 });
             }
-            
+
             todoIt("should handle north east", function() {
                 doTest('north', 'east', 172, 172);
             });
@@ -3797,6 +3929,7 @@ function() {
                     expect(center.getHeight()).toBeApprox(100);
                 });
             }
+
             it("should handle north east", function() {
                 doTest('north', 'east');
             });
@@ -4666,7 +4799,7 @@ function() {
                     center = regions.center,
                     anim = 0,
                     floated = 0;
-                    
+
                 panel1.collapse(null, false);
                 panel2.collapse(null, false);
                 panel1.floatCollapsedPanel();
@@ -4886,9 +5019,11 @@ function() {
                 it("should position the floater below the placeholder", function() {
                     region.collapse(null, false);
                     var placeHeight = region.placeholder.getHeight();
+
                     waitForFloat(region);
                     runs(function() {
                         var box = region.getBox();
+
                         expect(box.left).toBe(0);
                         expect(box.right).toBe(ctSize);
                         expect(box.top).toBe(placeHeight);
@@ -4899,11 +5034,13 @@ function() {
                 it("should reset the position if the container resizes", function() {
                     region.collapse(null, false);
                     var placeHeight = region.placeholder.getHeight();
+
                     waitForFloat(region);
                     runs(function() {
                         ct.setSize(ctSize - 100, ctSize - 100);
 
                         var box = region.getBox();
+
                         expect(box.left).toBe(0);
                         expect(box.right).toBe(ctSize - 100);
                         expect(box.top).toBe(placeHeight);
@@ -4924,9 +5061,11 @@ function() {
                 it("should position the floater above the placeholder", function() {
                     region.collapse(null, false);
                     var placeHeight = region.placeholder.getHeight();
+
                     waitForFloat(region);
                     runs(function() {
                         var box = region.getBox();
+
                         expect(box.left).toBe(0);
                         expect(box.right).toBe(ctSize);
                         expect(box.top).toBe(ctSize - placeHeight - regionHeight);
@@ -4937,11 +5076,13 @@ function() {
                 it("should reset the position if the container resizes", function() {
                     region.collapse(null, false);
                     var placeHeight = region.placeholder.getHeight();
+
                     waitForFloat(region);
                     runs(function() {
                         ct.setSize(ctSize - 100, ctSize - 100);
 
                         var box = region.getBox();
+
                         expect(box.left).toBe(0);
                         expect(box.right).toBe(ctSize - 100);
                         expect(box.top).toBe(ctSize - placeHeight - regionHeight - 100);
@@ -4962,9 +5103,11 @@ function() {
                 it("should position the floater to the right of the placeholder", function() {
                     region.collapse(null, false);
                     var placeWidth = region.placeholder.getWidth();
+
                     waitForFloat(region);
                     runs(function() {
                         var box = region.getBox();
+
                         expect(box.left).toBe(placeWidth);
                         expect(box.right).toBe(placeWidth + regionWidth);
                         expect(box.top).toBe(0);
@@ -4975,11 +5118,13 @@ function() {
                 it("should reset the position if the container resizes", function() {
                     region.collapse(null, false);
                     var placeWidth = region.placeholder.getWidth();
+
                     waitForFloat(region);
                     runs(function() {
                         ct.setSize(ctSize - 100, ctSize - 100);
 
                         var box = region.getBox();
+
                         expect(box.left).toBe(placeWidth);
                         expect(box.right).toBe(placeWidth + regionWidth);
                         expect(box.top).toBe(0);
@@ -5000,9 +5145,11 @@ function() {
                 it("should position the floater to the left of the placeholder", function() {
                     region.collapse(null, false);
                     var placeWidth = region.placeholder.getWidth();
+
                     waitForFloat(region);
                     runs(function() {
                         var box = region.getBox();
+
                         expect(box.left).toBe(ctSize - placeWidth - regionWidth);
                         expect(box.right).toBe(ctSize - placeWidth);
                         expect(box.top).toBe(0);
@@ -5013,11 +5160,13 @@ function() {
                 it("should reset the position if the container resizes", function() {
                     region.collapse(null, false);
                     var placeWidth = region.placeholder.getWidth();
+
                     waitForFloat(region);
                     runs(function() {
                         ct.setSize(ctSize - 100, ctSize - 100);
 
                         var box = region.getBox();
+
                         expect(box.left).toBe(ctSize - placeWidth - regionWidth - 100);
                         expect(box.right).toBe(ctSize - placeWidth - 100);
                         expect(box.top).toBe(0);
@@ -5082,7 +5231,7 @@ function() {
                         height: 100
                     });
                 });
-                
+
                 it("should layout the size correctly when layout updates while floating", function() {
                     var width = region.getWidth();
 
@@ -5221,16 +5370,16 @@ function() {
             });
         });
     });
-    
-    describe("adding items dynamically", function(){
-        it("should be able to add a collapsed region", function(){
+
+    describe("adding items dynamically", function() {
+        it("should be able to add a collapsed region", function() {
             createBorderLayout([{
                 region: 'north',
                 title: 'North'
             }, {
                 region: 'center'
             }]);
-                
+
             var added = ct.add({
                 xtype: 'panel',
                 title: 'South',
@@ -5240,27 +5389,28 @@ function() {
                 height: 100,
                 animCollapse: false
             });
+
             added.expand();
             expect(added.getHeight()).toBe(100);
-        });  
+        });
     });
-    
+
     describe("focus management", function() {
         var asyncPressKey = jasmine.asyncPressKey,
             focusAndWait = jasmine.focusAndWait,
             expectFocused = jasmine.expectFocused,
             regions = ['north', 'east', 'south', 'west'],
             i, len, region;
-        
+
         function makeRegionSuite(region, animate) {
             describe(region + " animCollapse: " + !!animate, function() {
                 var panel, ph, collapseTool, expandTool, btn,
                     collapseSpy, expandSpy;
-                
+
                 beforeEach(function() {
                     collapseSpy = jasmine.createSpy('collapse');
                     expandSpy   = jasmine.createSpy('expand');
-                    
+
                     createBorderLayout([{
                         xtype: 'panel',
                         title: 'foo',
@@ -5280,127 +5430,127 @@ function() {
                             text: 'bar'
                         }]
                     }]);
-                    
+
                     panel = ct.down('panel[testRegion]');
                     btn   = ct.down('button');
-                    
+
                     collapseTool = panel.collapseTool;
                 });
-                
+
                 afterEach(function() {
                     panel = ph = collapseTool = expandTool = btn = null;
                     collapseSpy = expandSpy = null;
                 });
-                
+
                 describe("tools when expanded", function() {
                     it("should have a collapse tool", function() {
                         expect(collapseTool.type).toMatch(/^collapse-/);
                     });
-                    
+
                     // Panel header is a FocusableContainer, and tools are managed by it
                     it("tool should be focusable", function() {
                         expect(collapseTool.el.isFocusable()).toBe(true);
                     });
                 });
-                
+
                 describe("tools when collapsed", function() {
                     beforeEach(function() {
                         runs(function() {
                             panel.collapse();
                         });
-                        
+
                         waitForSpy(collapseSpy, 'collapse', 1000);
-                        
+
                         runs(function() {
                             ph = ct.down('[placeholderFor]');
                             expandTool = ph.expandTool;
                         });
                     });
-                    
+
                     it("should have an expand tool", function() {
                         expect(expandTool.type).toMatch(/^expand-/);
                     });
-                    
+
                     it("should be tabbable", function() {
                         expect(expandTool.el.isFocusable()).toBe(true);
                     });
                 });
-                
+
                 describe("pointer interaction", function() {
                     describe("collapsing", function() {
                         beforeEach(function() {
                             focusAndWait(btn);
-                            
+
                             jasmine.fireMouseEvent(collapseTool.el, 'click');
-                            
+
                             waitForSpy(collapseSpy, 'collapse', 1000);
-                            
+
                             runs(function() {
                                 ph = ct.down('[placeholderFor]');
                                 expandTool = ph.expandTool;
                             });
                         });
-                        
+
                         it("should collapse", function() {
                             expect(!!panel.collapsed).toBe(true);
                         });
-                        
+
                         it("should not steal focus from button", function() {
                             expectFocused(btn);
                         });
-                        
+
                         describe("expanding", function() {
                             it("should expand", function() {
                                 jasmine.fireMouseEvent(expandTool.el, 'click');
-                                
+
                                 waitForSpy(expandSpy, 'expand', 1000);
-                                
+
                                 runs(function() {
                                     expect(!!panel.collapsed).toBe(false);
                                 });
                             });
-                            
+
                             it("should not steal focus from button", function() {
                                 expectFocused(btn);
                             });
                         });
                     });
                 });
-                
+
                 describe("keyboard interaction", function() {
                     function makeKeySuite(key) {
                         describe("by " + key + " key", function() {
                             describe("collapsing", function() {
                                 beforeEach(function() {
                                     asyncPressKey(collapseTool, key);
-                                    
+
                                     waitForSpy(collapseSpy, 'collapse', 1000);
-                                    
+
                                     runs(function() {
                                         ph = ct.down('[placeholderFor]');
                                         expandTool = ph.expandTool;
                                     });
                                 });
-                                
+
                                 it("should collapse", function() {
                                     expect(!!panel.collapsed).toBe(true);
                                 });
-                                
+
                                 it("should place focus on expand tool", function() {
                                     expectFocused(expandTool);
                                 });
-                                
+
                                 describe("expanding", function() {
                                     beforeEach(function() {
                                         asyncPressKey(expandTool, key);
-                                        
+
                                         waitForSpy(expandSpy, 'expand', 1000);
                                     });
-                                    
+
                                     it("should expand", function() {
                                         expect(!!panel.collapsed).toBe(false);
                                     });
-                                    
+
                                     it("should place focus on collapse tool", function() {
                                         expectFocused(collapseTool);
                                     });
@@ -5408,16 +5558,16 @@ function() {
                             });
                         });
                     }
-                    
+
                     makeKeySuite('space');
                     makeKeySuite('enter');
                 });
             });
         }
-        
+
         for (i = 0, len = regions.length; i < len; i++) {
             region = regions[i];
-            
+
             makeRegionSuite(region, 100);
             makeRegionSuite(region, false);
         }

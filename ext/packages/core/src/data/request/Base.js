@@ -16,7 +16,7 @@ Ext.define('Ext.data.request.Base', {
     // to use.
     factoryConfig: {
         type: 'request',
-        defaultType: 'ajax'  // this is the default deduced from the alias
+        defaultType: 'ajax' // this is the default deduced from the alias
     },
 
     result: null,
@@ -27,31 +27,31 @@ Ext.define('Ext.data.request.Base', {
 
     constructor: function(config) {
         var me = this;
-        
+
         // ownerConfig contains default values for config options
         // applicable to every Request spawned by that owner;
         // however the values can be overridden in the options
         // object passed to owner's request() method.
         Ext.apply(me, config.options || {}, config.ownerConfig);
-        
+
         me.id = ++Ext.data.Connection.requestId;
         me.owner = config.owner;
         me.options = config.options;
         me.requestOptions = config.requestOptions;
     },
-    
+
     /**
      * Start the request.
      */
     start: function() {
         var me = this,
             timeout = me.getTimeout();
-        
+
         if (timeout && me.async) {
             me.timer = Ext.defer(me.onTimeout, timeout, me);
         }
     },
-    
+
     abort: function() {
         var me = this;
 
@@ -72,11 +72,14 @@ Ext.define('Ext.data.request.Base', {
         if (me.completed) {
             if (me.success) {
                 d.resolve(result);
-            } else {
+            }
+            else {
                 d.reject(result);
             }
         }
+
         me.deferred = d;
+
         return d;
     },
 
@@ -97,7 +100,7 @@ Ext.define('Ext.data.request.Base', {
      */
     then: function() {
         var promise = this.getPromise();
-        
+
         return promise.then.apply(promise, arguments);
     },
 
@@ -123,6 +126,7 @@ Ext.define('Ext.data.request.Base', {
                 deferred.reject(result);
             }
         }
+
         me.completed = true;
     },
 
@@ -134,7 +138,7 @@ Ext.define('Ext.data.request.Base', {
 
         me.abort(true);
     },
-    
+
     getTimeout: function() {
         return this.timeout;
     },
@@ -145,14 +149,14 @@ Ext.define('Ext.data.request.Base', {
 
     destroy: function() {
         var me = this;
-        
+
         me.abort();
-        
+
         me.owner = me.options = me.requestOptions = me.result = null;
-        
+
         me.callParent();
     },
-    
+
     privates: {
         /**
          * Creates the exception object
@@ -162,7 +166,7 @@ Ext.define('Ext.data.request.Base', {
         createException: function() {
             var me = this,
                 result;
-            
+
             result = {
                 request: me,
                 requestId: me.id,
@@ -171,20 +175,21 @@ Ext.define('Ext.data.request.Base', {
                 getResponseHeader: me._getHeader,
                 getAllResponseHeaders: me._getHeaders
             };
-            
+
             if (me.aborted) {
                 result.aborted = true;
             }
-            
+
             if (me.timedout) {
                 result.timedout = true;
             }
-            
+
             return result;
         },
 
         _getHeader: function(name) {
             var headers = this.headers;
+
             return headers && headers[name.toLowerCase()];
         },
 

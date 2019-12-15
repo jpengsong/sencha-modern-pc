@@ -122,7 +122,7 @@ Ext.define('Ext.Dialog', {
         'dialog',
         'window'  // classic compat
     ],
-    alternateClassName: [ 'Ext.Window', 'Ext.window.Window' ], // classic compat
+    alternateClassName: ['Ext.Window', 'Ext.window.Window'], // classic compat
 
     requires: [
         'Ext.Deferred',
@@ -187,7 +187,7 @@ Ext.define('Ext.Dialog', {
          *
          * @since 6.5.0
          */
-        dismissAction: [ 'cancel', 'abort', 'no', 'close' ],
+        dismissAction: ['cancel', 'abort', 'no', 'close'],
 
         /**
          * @cfg {Object} maximizeAnimation
@@ -353,31 +353,31 @@ Ext.define('Ext.Dialog', {
      * @inheritdoc
      */
     border: true,
-    
+
     /**
      * @cfg bodyBorder
      * @inheritdoc
      */
     bodyBorder: false,
-    
+
     /**
      * @cfg centered
      * @inheritdoc
      */
     centered: true,
-    
+
     /**
      * @cfg floated
      * @inheritdoc
      */
     floated: true,
-    
+
     /**
      * @property focusable
      * @inheritdoc
      */
     focusable: false,
-    
+
     /**
      * @cfg tabIndex
      * @inheritdoc
@@ -423,7 +423,7 @@ Ext.define('Ext.Dialog', {
         Ext.baseCSSPrefix + 'paneltool',
         Ext.baseCSSPrefix + 'dialogtool'
     ],
-    
+
     /**
      * @cfg hideMode
      * @inheritdoc
@@ -466,13 +466,13 @@ Ext.define('Ext.Dialog', {
         }
     },
 
-    doDestroy: function () {
+    doDestroy: function() {
         Ext.destroy(this.maximizeTool, this.restoreTool);
 
         this.callParent();
     },
 
-    close: function (event) {
+    close: function(event) {
         var me = this,
             buttons = me.getButtons(),
             actions = me.getDismissAction(),
@@ -528,7 +528,7 @@ Ext.define('Ext.Dialog', {
         }
     },
 
-    createMaximizeProxy: function (config) {
+    createMaximizeProxy: function(config) {
         var me = this;
 
         return Ext.apply({
@@ -549,7 +549,7 @@ Ext.define('Ext.Dialog', {
      * @return {Promise} A promise that resolves when the animation is complete.
      * @since 6.5.0
      */
-    maximize: function (animation) {
+    maximize: function(animation) {
         var me = this,
             maximizing = me.maximizing;
 
@@ -574,7 +574,7 @@ Ext.define('Ext.Dialog', {
      * @return {Promise} A promise that resolves when the animation is complete.
      * @since 6.5.0
      */
-    restore: function (animation) {
+    restore: function(animation) {
         var me = this,
             restoring = me.restoring;
 
@@ -590,7 +590,7 @@ Ext.define('Ext.Dialog', {
         return restoring ? restoring.promise : Ext.Promise.resolve(true);
     },
 
-    shouldRecenter: function () {
+    shouldRecenter: function() {
         return !this.getMaximized() && this.callParent();
     },
 
@@ -599,7 +599,7 @@ Ext.define('Ext.Dialog', {
 
     // constrainDrag
 
-    updateConstrainDrag: function (constrain) {
+    updateConstrainDrag: function(constrain) {
         var dragger = this.getDraggable();
 
         if (dragger) {
@@ -613,8 +613,8 @@ Ext.define('Ext.Dialog', {
 
     // draggable
 
-    updateDraggable: function (draggable, existing) {
-        this.callParent([ draggable, existing ]);
+    updateDraggable: function(draggable, existing) {
+        this.callParent([draggable, existing]);
 
         if (!this.isConfiguring) {
             this.syncHeaderItems();
@@ -623,18 +623,18 @@ Ext.define('Ext.Dialog', {
 
     // header
 
-    updateHeader: function (header, oldHeader) {
+    updateHeader: function(header, oldHeader) {
         var me = this,
             beforeGuard;
-        
-        me.callParent([ header, oldHeader ]);
+
+        me.callParent([header, oldHeader]);
 
         if (header) {
             me.syncHeaderItems();
-            
+
             if (me.tabGuard && me.getTabGuard) {
                 beforeGuard = me.getTabGuard('before');
-                
+
                 // We need to keep top tab guard at the top of the DOM order
                 if (beforeGuard && beforeGuard.dom) {
                     beforeGuard.insertBefore(header.el);
@@ -645,11 +645,16 @@ Ext.define('Ext.Dialog', {
 
     // maximizable
 
-    applyMaximizable: function (maximizable) {
+    applyMaximizable: function(maximizable) {
         var me = this;
 
-        me.maximizeTool = Ext.updateWidget(me.maximizeTool, maximizable,
-            me, 'createMaximizeTool', 'maximizeTool');
+        me.maximizeTool = Ext.updateWidget(
+            me.maximizeTool,
+            maximizable,
+            me,
+            'createMaximizeTool',
+            'maximizeTool'
+        );
 
         me.syncHeaderItems();
 
@@ -658,7 +663,7 @@ Ext.define('Ext.Dialog', {
 
     // maximized
 
-    applyMaximized: function (maximized) {
+    applyMaximized: function(maximized) {
         var me = this,
             event;
 
@@ -676,7 +681,7 @@ Ext.define('Ext.Dialog', {
         return !!maximized;
     },
 
-    updateMaximized: function (maximized) {
+    updateMaximized: function(maximized) {
         var me = this,
             el = me.el,
             maximizedCls = me.maximizedCls,
@@ -751,7 +756,7 @@ Ext.define('Ext.Dialog', {
                 after = me.captureSize();
             }
 
-            me[pendingName] = me.animateMaximizeRestore(before, after, anim, function () {
+            me[pendingName] = me.animateMaximizeRestore(before, after, anim, function() {
                 if (maximized) {
                     // Now that the proxy has animated up and is gone, snap the dialog
                     // to full screen.
@@ -767,7 +772,7 @@ Ext.define('Ext.Dialog', {
 
     // maximizeTool
 
-    createMaximizeTool: function (config) {
+    createMaximizeTool: function(config) {
         var tool = this.adjustToolDefaults(Ext.clone(config));
 
         tool.handler = 'onMaximize';
@@ -778,18 +783,22 @@ Ext.define('Ext.Dialog', {
 
     // restorable
 
-    applyRestorable: function (restorable) {
+    applyRestorable: function(restorable) {
         var me = this;
 
-        me.restoreTool = Ext.updateWidget(me.restoreTool, restorable,
-            me, 'createRestoreTool', 'restoreTool');
+        me.restoreTool = Ext.updateWidget(
+            me.restoreTool,
+            restorable,
+            me,
+            'createRestoreTool', 'restoreTool'
+        );
 
         me.syncHeaderItems();
 
         return restorable;
     },
 
-    createRestoreTool: function (config) {
+    createRestoreTool: function(config) {
         var tool = this.adjustToolDefaults(Ext.clone(config));
 
         tool.handler = 'onRestore';
@@ -800,14 +809,15 @@ Ext.define('Ext.Dialog', {
 
     //-----------------------------------------------------------
 
-    afterShow: function () {
+    afterShow: function() {
         this.callParent();
+
         if (this.getModal()) {
             this.focus();
         }
     },
 
-    onBeforeDragDialog: function (draggable, info, event) {
+    onBeforeDragDialog: function(draggable, info, event) {
         var header = this.getHeader();
 
         // The "handle" of x-draggable could match a child item... so reject any
@@ -817,32 +827,32 @@ Ext.define('Ext.Dialog', {
         }
     },
 
-    onCloseTool: function (dialog, tool, event) {
+    onCloseTool: function(dialog, tool, event) {
         this.close(event);
     },
 
-    onEscape: function (event) {
+    onEscape: function(event) {
         this.close(event);
     },
 
-    onMaximize: function () {
+    onMaximize: function() {
         this.setMaximized(true);
     },
 
-    onRestore: function () {
+    onRestore: function() {
         this.setMaximized(false);
     },
 
-    onModalMaskTap: function (e) {
+    onModalMaskTap: function(e) {
         var me = this,
             handler = me.getMaskTapHandler(),
             ret;
 
         if (handler) {
-            Ext.callback(handler, null, [ me, e ], 0, me);
+            Ext.callback(handler, null, [me, e], 0, me);
         }
         else {
-            ret = me.callParent([ e ]);  // to respect hideOnMaskTap config
+            ret = me.callParent([e]);  // to respect hideOnMaskTap config
         }
 
         return ret;
@@ -855,7 +865,7 @@ Ext.define('Ext.Dialog', {
         needsCenter: false,
         maximizedCls: Ext.baseCSSPrefix + 'maximized',
 
-        animateMaximizeRestore: function (before, after, anim, callback) {
+        animateMaximizeRestore: function(before, after, anim, callback) {
             var me = this,
                 pending = new Ext.Deferred(),
                 proxy = me.getMaximizeProxy(),
@@ -885,7 +895,8 @@ Ext.define('Ext.Dialog', {
             proxy.show();
 
             a.element = proxy.el;
-            a.callback = function () {
+
+            a.callback = function() {
                 proxy.destroy();
                 callback();
                 pending.resolve(true);
@@ -894,7 +905,7 @@ Ext.define('Ext.Dialog', {
             a = new Ext.fx.animation.Abstract(a);
             Ext.Animator.run(a);
 
-            pending.destroy = function () {
+            pending.destroy = function() {
                 pending.destroy = Ext.emptyFn;
                 a.destroy();
                 pending.destroyed = true;
@@ -903,7 +914,9 @@ Ext.define('Ext.Dialog', {
             return pending;
         },
 
-        captureSize: function (maximized) {
+        captureSize: function(maximized) {
+            var me, size;
+
             if (maximized) {
                 return {
                     x: 0,
@@ -913,8 +926,8 @@ Ext.define('Ext.Dialog', {
                 };
             }
 
-            var me = this,
-                size = me.el.measure();
+            me = this;
+            size = me.el.measure();
 
             return {
                 x: me.getX(),
@@ -924,7 +937,7 @@ Ext.define('Ext.Dialog', {
             };
         },
 
-        syncHeaderItems: function () {
+        syncHeaderItems: function() {
             var me = this,
                 maximizeTool = me.maximizeTool,
                 restoreTool = me.restoreTool,
@@ -938,6 +951,7 @@ Ext.define('Ext.Dialog', {
                 header.toggleCls(draggableCls, draggable);
 
                 title = header.getTitle();
+
                 if (title) {
                     title.toggleCls(draggableCls, draggable);
                 }
@@ -952,8 +966,8 @@ Ext.define('Ext.Dialog', {
             }
         },
 
-        updateX: function (x, oldX) {
-            this.callParent([ x, oldX ]);
+        updateX: function(x, oldX) {
+            this.callParent([x, oldX]);
 
             // a true user-drag will always involve x & y so we just need to act on
             // one of them...

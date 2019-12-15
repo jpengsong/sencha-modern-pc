@@ -1,0 +1,124 @@
+@mixin froala-toolbar-ui(
+    $ui: null,
+    $fr-glyph-color: null,
+    $fr-font-size: null,
+    $fr-background-hover: null,
+    $fr-border-radius: null,
+    $fr-wrapper-background-color: null,
+    $fr-toolbar-background-color: null,
+    $fr-toolbar-border-color: null,
+    $fr-element-color: null,
+    $fr-border-color: null,
+    $fr-border-style: null,
+    $fr-menu-expanded-background: null,
+    $fr-toolbar-border-bottom: null,
+    $fr-toolbar-active-background: null
+
+) {
+    .#{$prefix}froala#{$ui} {
+        &.fr-box.fr-basic {
+            .fr-wrapper {
+                background-color: $fr-wrapper-background-color;
+                border-color: $fr-border-color;
+                border-style: $fr-border-style;
+
+                .fr-element {
+                    color: $fr-element-color;
+                }
+            }
+        }
+
+        .second-toolbar {
+            @include border-radius($fr-border-radius);
+            background-color: $fr-wrapper-background-color;
+            border-color: $fr-border-color;
+            border-style: $fr-border-style;
+        }
+
+        .fr-toolbar,
+        .fr-popup,
+        .fr-modal {
+            background-color: $fr-toolbar-background-color;
+            border-color: $fr-border-color;
+            border-style: $fr-border-style;
+            color: $fr-element-color;
+
+            .fr-newline {
+                background: $fr-toolbar-border-color;
+                height: $fr-toolbar-border-bottom;
+            }
+
+            .fr-more-toolbar {
+                &, &.fr-expanded {
+                    background-color: $fr-menu-expanded-background;
+                }  
+            }
+
+            .fr-command.fr-btn {
+                color: $fr-glyph-color;
+                font-size: $fr-font-size;
+
+                &.fr-btn-hover:not(.fr-table-cell),
+                &:focus:not(.fr-table-cell),
+                &.fr-expanded:not(.fr-table-cell) {
+                    background: $fr-toolbar-active-background;
+                }
+
+                &.fr-open:not(:hover):not(:focus):not(:active) {
+                    background: $fr-menu-expanded-background;
+                }
+
+                &.fr-dropdown {
+                    &:after {
+                        border-top-color: $fr-btn-glyph-color;
+                    }
+                    &.fr-active {
+                       &, &:hover {
+                            background: $fr-toolbar-active-background;
+                       } 
+                    }
+                    &.fr-active:after {
+                        border-bottom-color: $fr-btn-glyph-color;
+                    }
+                }
+
+                + .fr-dropdown-menu {
+                    background: $fr-wrapper-background-color;
+
+                    .fr-dropdown-wrapper {
+                        .fr-dropdown-content {
+                            ul.fr-dropdown-list li a {
+                                &.fr-active,
+                                &:hover {
+                                    background: $fr-toolbar-active-background;
+                                }
+                            }
+                        }
+                    }  
+                }
+
+                i {
+                    color: $fr-glyph-color;
+                    font-size: $fr-font-size;  
+                }
+
+                &:hover {
+                    background: $fr-background-hover;
+                }
+            }
+
+            &.fr-top {
+                @include border-radius($fr-border-radius);
+            }
+
+            .fr-dropdown-content {
+                .fr-command {
+                    i {
+                        color: $fr-glyph-color;
+                        font-size: $fr-btn-font-size;
+                    }
+                }
+            }    
+        }
+    }
+}

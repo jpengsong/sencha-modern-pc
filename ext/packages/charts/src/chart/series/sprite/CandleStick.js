@@ -10,10 +10,10 @@ Ext.define('Ext.chart.series.sprite.CandleStick', {
     inheritableStatics: {
         def: {
             processors: {
-                raiseStyle: function (n, o) {
+                raiseStyle: function(n, o) {
                     return Ext.merge({}, o || {}, n);
                 },
-                dropStyle: function (n, o) {
+                dropStyle: function(n, o) {
                     return Ext.merge({}, o || {}, n);
                 },
 
@@ -28,7 +28,8 @@ Ext.define('Ext.chart.series.sprite.CandleStick', {
                 padding: 'number',
 
                 /**
-                 * @cfg {String} [ohlcType='candlestick'] Determines whether candlestick or ohlc is used.
+                 * @cfg {String} [ohlcType='candlestick'] Determines whether candlestick
+                 * or ohlc is used.
                  */
                 ohlcType: 'enums(candlestick,ohlc)'
             },
@@ -54,7 +55,7 @@ Ext.define('Ext.chart.series.sprite.CandleStick', {
             },
 
             updaters: {
-                raiseStyle: function () {
+                raiseStyle: function() {
                     var me = this,
                         tpl = me.raiseTemplate;
 
@@ -62,7 +63,7 @@ Ext.define('Ext.chart.series.sprite.CandleStick', {
                         tpl.setAttributes(me.attr.raiseStyle);
                     }
                 },
-                dropStyle: function () {
+                dropStyle: function() {
                     var me = this,
                         tpl = me.dropTemplate;
 
@@ -74,7 +75,7 @@ Ext.define('Ext.chart.series.sprite.CandleStick', {
         }
     },
 
-    candlestick: function (ctx, open, high, low, close, mid, halfWidth) {
+    candlestick: function(ctx, open, high, low, close, mid, halfWidth) {
         var minOC = Math.min(open, close),
             maxOC = Math.max(open, close);
 
@@ -94,7 +95,7 @@ Ext.define('Ext.chart.series.sprite.CandleStick', {
         ctx.lineTo(mid, maxOC);
     },
 
-    ohlc: function (ctx, open, high, low, close, mid, halfWidth) {
+    ohlc: function(ctx, open, high, low, close, mid, halfWidth) {
         ctx.moveTo(mid, high);
         ctx.lineTo(mid, low);
         ctx.moveTo(mid, open);
@@ -103,16 +104,16 @@ Ext.define('Ext.chart.series.sprite.CandleStick', {
         ctx.lineTo(mid + halfWidth, close);
     },
 
-    constructor: function () {
+    constructor: function() {
         var me = this,
             Rect = Ext.draw.sprite.Rect;
 
         me.callParent(arguments);
-        me.raiseTemplate = new Rect({parent: me});
-        me.dropTemplate  = new Rect({parent: me});
+        me.raiseTemplate = new Rect({ parent: me });
+        me.dropTemplate = new Rect({ parent: me });
     },
 
-    getGapWidth: function () {
+    getGapWidth: function() {
         var attr = this.attr,
             barWidth = attr.barWidth,
             padding = attr.padding;
@@ -120,7 +121,7 @@ Ext.define('Ext.chart.series.sprite.CandleStick', {
         return barWidth + padding;
     },
 
-    renderAggregates: function (aggregates, start, end, surface, ctx, clip) {
+    renderAggregates: function(aggregates, start, end, surface, ctx, clip) {
         var me = this,
             attr = me.attr,
             ohlcType = attr.ohlcType,
@@ -149,100 +150,107 @@ Ext.define('Ext.chart.series.sprite.CandleStick', {
             open, high, low, close, mid,
             i, template;
 
-        me.rendererData = me.rendererData || {store: me.getStore()};
+        me.rendererData = me.rendererData || { store: me.getStore() };
         pixelAdjust -= Math.floor(pixelAdjust);
 
         // Render raises.
         ctx.save();
-            template = me.raiseTemplate;
-            template.useAttributes(ctx, clip);
-            if (!renderer) {
-                ctx.beginPath();
-            }
-            for (i = start; i < end; i++) {
-                if (opens[i] <= closes[i]) {
+        template = me.raiseTemplate;
+        template.useAttributes(ctx, clip);
 
-                    open = Math.round(opens[i] * yy + dy) + pixelAdjust;
-                    high = Math.round(maxYs[i] * yy + dy) + pixelAdjust;
-                    low = Math.round(minYs[i] * yy + dy) + pixelAdjust;
-                    close = Math.round(closes[i] * yy + dy) + pixelAdjust;
-                    mid = Math.round(dataX[startIdxs[i]] * xx + dx) + pixelAdjust;
+        if (!renderer) {
+            ctx.beginPath();
+        }
 
-                    if (renderer) {
-                        ctx.save();
-                        ctx.beginPath();
+        for (i = start; i < end; i++) {
+            if (opens[i] <= closes[i]) {
 
-                        rendererConfig.open = open;
-                        rendererConfig.high = high;
-                        rendererConfig.low = low;
-                        rendererConfig.close = close;
-                        rendererConfig.mid = mid;
-                        rendererConfig.halfWidth = halfWidth;
+                open = Math.round(opens[i] * yy + dy) + pixelAdjust;
+                high = Math.round(maxYs[i] * yy + dy) + pixelAdjust;
+                low = Math.round(minYs[i] * yy + dy) + pixelAdjust;
+                close = Math.round(closes[i] * yy + dy) + pixelAdjust;
+                mid = Math.round(dataX[startIdxs[i]] * xx + dx) + pixelAdjust;
 
-                        rendererParams = [me, rendererConfig, me.rendererData, i];
-                        rendererChanges = Ext.callback(renderer, null, rendererParams, 0, series);
+                if (renderer) {
+                    ctx.save();
+                    ctx.beginPath();
 
-                        Ext.apply(ctx, rendererChanges);
-                    }
+                    rendererConfig.open = open;
+                    rendererConfig.high = high;
+                    rendererConfig.low = low;
+                    rendererConfig.close = close;
+                    rendererConfig.mid = mid;
+                    rendererConfig.halfWidth = halfWidth;
 
-                    me[ohlcType](ctx, open, high, low, close, mid, halfWidth);
+                    rendererParams = [me, rendererConfig, me.rendererData, i];
+                    rendererChanges = Ext.callback(renderer, null, rendererParams, 0, series);
 
-                    if (renderer) {
-                        ctx.fillStroke(template.attr);
-                        ctx.restore();
-                    }
+                    Ext.apply(ctx, rendererChanges);
+                }
+
+                me[ohlcType](ctx, open, high, low, close, mid, halfWidth);
+
+                if (renderer) {
+                    ctx.fillStroke(template.attr);
+                    ctx.restore();
                 }
             }
-            if (!renderer) {
-                ctx.fillStroke(template.attr);
-            }
-        ctx.restore();
+        }
 
+        if (!renderer) {
+            ctx.fillStroke(template.attr);
+        }
+
+        ctx.restore();
 
         // Render drops.
         ctx.save();
-            template = me.dropTemplate;
-            template.useAttributes(ctx, clip);
+        template = me.dropTemplate;
+        template.useAttributes(ctx, clip);
 
-            if (!renderer) {
-                ctx.beginPath();
-            }
-            for (i = start; i < end; i++) {
-                if (opens[i] > closes[i]) {
+        if (!renderer) {
+            ctx.beginPath();
+        }
 
-                    open = Math.round(opens[i] * yy + dy) + pixelAdjust;
-                    high = Math.round(maxYs[i] * yy + dy) + pixelAdjust;
-                    low = Math.round(minYs[i] * yy + dy) + pixelAdjust;
-                    close = Math.round(closes[i] * yy + dy) + pixelAdjust;
-                    mid = Math.round(dataX[startIdxs[i]] * xx + dx) + pixelAdjust;
+        for (i = start; i < end; i++) {
+            if (opens[i] > closes[i]) {
 
-                    if (renderer) {
-                        ctx.save();
-                        ctx.beginPath();
+                open = Math.round(opens[i] * yy + dy) + pixelAdjust;
+                high = Math.round(maxYs[i] * yy + dy) + pixelAdjust;
+                low = Math.round(minYs[i] * yy + dy) + pixelAdjust;
+                close = Math.round(closes[i] * yy + dy) + pixelAdjust;
+                mid = Math.round(dataX[startIdxs[i]] * xx + dx) + pixelAdjust;
 
-                        rendererConfig.open = open;
-                        rendererConfig.high = high;
-                        rendererConfig.low = low;
-                        rendererConfig.close = close;
-                        rendererConfig.mid = mid;
-                        rendererConfig.halfWidth = halfWidth;
+                if (renderer) {
+                    ctx.save();
+                    ctx.beginPath();
 
-                        rendererParams = [me, rendererConfig, me.rendererData, i];
-                        rendererChanges = Ext.callback(renderer, null, rendererParams, 0, me.getSeries());
-                        Ext.apply(ctx, rendererChanges);
-                    }
+                    rendererConfig.open = open;
+                    rendererConfig.high = high;
+                    rendererConfig.low = low;
+                    rendererConfig.close = close;
+                    rendererConfig.mid = mid;
+                    rendererConfig.halfWidth = halfWidth;
 
-                    me[ohlcType](ctx, open, high, low, close, mid, halfWidth);
+                    rendererParams = [me, rendererConfig, me.rendererData, i];
+                    rendererChanges =
+                        Ext.callback(renderer, null, rendererParams, 0, me.getSeries());
+                    Ext.apply(ctx, rendererChanges);
+                }
 
-                    if (renderer) {
-                        ctx.fillStroke(template.attr);
-                        ctx.restore();
-                    }
+                me[ohlcType](ctx, open, high, low, close, mid, halfWidth);
+
+                if (renderer) {
+                    ctx.fillStroke(template.attr);
+                    ctx.restore();
                 }
             }
-            if (!renderer) {
-                ctx.fillStroke(template.attr);
-            }
+        }
+
+        if (!renderer) {
+            ctx.fillStroke(template.attr);
+        }
+
         ctx.restore();
     }
 });

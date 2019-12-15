@@ -2,10 +2,11 @@
  * @class Ext.chart.series.Radar
  * @extends Ext.chart.series.Polar
  *
- * Creates a Radar Chart. A Radar Chart is a useful visualization technique for comparing different quantitative values for
- * a constrained number of categories.
- * As with all other series, the Radar series must be appended in the *series* Chart array configuration. See the Chart
- * documentation for more information. A typical configuration object for the radar series could be:
+ * Creates a Radar Chart. A Radar Chart is a useful visualization technique for comparing different
+ * quantitative values for a constrained number of categories.
+ * As with all other series, the Radar series must be appended in the *series* Chart array
+ * configuration. See the Chart documentation for more information. A typical configuration object
+ * for the radar series could be:
  *
  *     @example
  *     Ext.create({
@@ -82,23 +83,23 @@ Ext.define('Ext.chart.series.Radar', {
         return 1;
     },
 
-    updateAngularAxis: function (axis) {
+    updateAngularAxis: function(axis) {
         axis.processData(this);
     },
 
-    updateRadialAxis: function (axis) {
+    updateRadialAxis: function(axis) {
         axis.processData(this);
     },
 
-    coordinateX: function () {
+    coordinateX: function() {
         return this.coordinate('X', 0, 2);
     },
 
-    coordinateY: function () {
+    coordinateY: function() {
         return this.coordinate('Y', 1, 2);
     },
 
-    updateCenter: function (center) {
+    updateCenter: function(center) {
         this.setStyle({
             translationX: center[0] + this.getOffsetX(),
             translationY: center[1] + this.getOffsetY()
@@ -106,14 +107,14 @@ Ext.define('Ext.chart.series.Radar', {
         this.doUpdateStyles();
     },
 
-    updateRadius: function (radius) {
+    updateRadius: function(radius) {
         this.setStyle({
             endRho: radius
         });
         this.doUpdateStyles();
     },
 
-    updateRotation: function (rotation) {
+    updateRotation: function(rotation) {
         // Overrides base class method.
         var me = this,
             chart = me.getChart(),
@@ -131,11 +132,11 @@ Ext.define('Ext.chart.series.Radar', {
         me.doUpdateStyles();
     },
 
-    updateTotalAngle: function (totalAngle) {
+    updateTotalAngle: function(totalAngle) {
         this.processData();
     },
 
-    getItemForPoint: function (x, y) {
+    getItemForPoint: function(x, y) {
         var me = this,
             sprite = me.sprites && me.sprites[0],
             attr = sprite.attr,
@@ -148,12 +149,15 @@ Ext.define('Ext.chart.series.Radar', {
         if (me.getHidden()) {
             return null;
         }
+
         if (sprite && marker) {
             markers = sprite.getMarker('markers');
+
             for (i = 0; i < length; i++) {
                 bbox = markers.getBBoxFor(i);
-                threshhold = (bbox.width + bbox.height) * .25;
+                threshhold = (bbox.width + bbox.height) * 0.25;
                 xy = sprite.getDataPointXY(i);
+
                 if (Math.abs(xy[0] - x) < threshhold &&
                     Math.abs(xy[1] - y) < threshhold) {
                     item = {
@@ -164,14 +168,16 @@ Ext.define('Ext.chart.series.Radar', {
                         record: store.getData().items[i],
                         field: me.getYField()
                     };
+
                     return item;
                 }
             }
         }
+
         return me.callParent(arguments);
     },
 
-    getDefaultSpriteConfig: function () {
+    getDefaultSpriteConfig: function() {
         var config = this.callParent(),
             animation = {
                 customDurations: {
@@ -187,14 +193,15 @@ Ext.define('Ext.chart.series.Radar', {
 
         if (config.animation) {
             Ext.apply(config.animation, animation);
-        } else {
+        }
+        else {
             config.animation = animation;
         }
 
         return config;
     },
 
-    getSprites: function () {
+    getSprites: function() {
         var me = this,
             chart = me.getChart(),
             sprites = me.sprites;
@@ -202,6 +209,7 @@ Ext.define('Ext.chart.series.Radar', {
         if (!chart) {
             return Ext.emptyArray;
         }
+
         if (!sprites.length) {
             me.createSprite();
         }
@@ -209,7 +217,7 @@ Ext.define('Ext.chart.series.Radar', {
         return sprites;
     },
 
-    provideLegendInfo: function (target) {
+    provideLegendInfo: function(target) {
         var me = this,
             style = me.getSubStyleWithTheme(),
             fill = style.fillStyle;
@@ -217,14 +225,14 @@ Ext.define('Ext.chart.series.Radar', {
         if (Ext.isArray(fill)) {
             fill = fill[0];
         }
+
         target.push({
             name: me.getTitle() || me.getYField() || me.getId(),
-            mark: (Ext.isObject(fill) ? fill.stops && fill.stops[0].color : fill) || style.strokeStyle || 'black',
+            mark: (Ext.isObject(fill) ? fill.stops && fill.stops[0].color : fill) ||
+                   style.strokeStyle || 'black',
             disabled: me.getHidden(),
             series: me.getId(),
             index: 0
         });
     }
-
 });
-

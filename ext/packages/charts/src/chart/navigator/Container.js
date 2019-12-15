@@ -79,27 +79,30 @@ Ext.define('Ext.chart.navigator.Container', {
 
     layout: 'fit',
 
-    applyChart: function (chart, oldChart) {
+    applyChart: function(chart, oldChart) {
         if (oldChart) {
             oldChart.destroy();
         }
+
         if (chart) {
             if (chart.isCartesian) {
                 Ext.raise('Only cartesian charts are supported.');
             }
+
             if (!chart.isChart) {
                 chart.$initParent = this;
                 chart = new Ext.chart.CartesianChart(chart);
                 delete chart.$initParent;
             }
         }
+
         return chart;
     },
 
     legendStore: null,
     surfaceRects: null,
 
-    updateChart: function (chart, oldChart) {
+    updateChart: function(chart, oldChart) {
         var me = this;
 
         if (chart) {
@@ -108,11 +111,12 @@ Ext.define('Ext.chart.navigator.Container', {
             if (!me.items && me.initItems) {
                 me.initItems();
             }
+
             me.add(chart);
         }
     },
 
-    applyNavigator: function (navigator, oldNavigator) {
+    applyNavigator: function(navigator, oldNavigator) {
         var instance;
 
         if (oldNavigator) {
@@ -127,22 +131,22 @@ Ext.define('Ext.chart.navigator.Container', {
         return instance;
     },
 
-    preview: function () {
+    preview: function() {
         this.getNavigator().preview(this.getImage());
     },
 
-    download: function (config) {
+    download: function(config) {
         config = config || {};
         config.data = this.getImage().data;
 
         this.getNavigator().download(config);
     },
 
-    setVisibleRange: function (visibleRange) {
+    setVisibleRange: function(visibleRange) {
         this.getNavigator().setVisibleRange(visibleRange);
     },
 
-    getImage: function (format) {
+    getImage: function(format) {
         var me = this,
             chart = me.getChart(),
             navigator = me.getNavigator(),
@@ -160,7 +164,8 @@ Ext.define('Ext.chart.navigator.Container', {
 
         if (docked === 'top') {
             me.shiftSurfaces(chartSurfaces, 0, navigatorImageSize.height);
-        } else {
+        }
+        else {
             me.shiftSurfaces(navigatorSurfaces, 0, chartImageSize.height);
         }
 
@@ -174,17 +179,21 @@ Ext.define('Ext.chart.navigator.Container', {
                 data: surface.toSVG(size, surfaces),
                 type: 'svg-markup'
             };
-        } else {
+        }
+        else {
             image = surface.flatten(size, surfaces);
 
             if (format === 'image') {
                 imageElement = new Image();
                 imageElement.src = image.data;
                 image.data = imageElement;
+
                 return image;
             }
+
             if (format === 'stream') {
                 image.data = image.data.replace(/^data:image\/[^;]+/, 'data:application/octet-stream');
+
                 return image;
             }
         }
@@ -194,7 +203,7 @@ Ext.define('Ext.chart.navigator.Container', {
         return image;
     },
 
-    shiftSurfaces: function (surfaces, x, y) {
+    shiftSurfaces: function(surfaces, x, y) {
         var ln = surfaces.length,
             i = 0,
             surface;
@@ -207,7 +216,7 @@ Ext.define('Ext.chart.navigator.Container', {
         }
     },
 
-    shiftSurface: function (surface, x, y) {
+    shiftSurface: function(surface, x, y) {
         var rect = surface.getRect();
 
         this.surfaceRects[surface.getId()] = rect.slice();
@@ -216,7 +225,7 @@ Ext.define('Ext.chart.navigator.Container', {
         rect[1] += y;
     },
 
-    unshiftSurfaces: function (surfaces) {
+    unshiftSurfaces: function(surfaces) {
         var rects = this.surfaceRects,
             ln = surfaces.length,
             i = 0,
@@ -227,6 +236,7 @@ Ext.define('Ext.chart.navigator.Container', {
                 surface = surfaces[i];
                 rect = surface.getRect();
                 oldRect = rects[surface.getId()];
+
                 if (oldRect) {
                     rect[0] = oldRect[0];
                     rect[1] = oldRect[1];

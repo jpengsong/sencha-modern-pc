@@ -72,22 +72,22 @@ topSuite("Ext.grid.property.Grid", function() {
             });
         });
     });
-    
-    describe('cell editing', function () {
+
+    describe('cell editing', function() {
         beforeEach(function() {
             makeGrid();
         });
-        
-        describe('inferring editors', function () {
-            it('should infer the editor based on the data type', function () {
+
+        describe('inferring editors', function() {
+            it('should infer the editor based on the data type', function() {
                 var plugin = grid.findPlugin('cellediting'),
                     store = grid.getStore(),
                     column = grid.getHeaderContainer().getGridColumns()[1];
-                
+
                 // 'value' record must be first for testing editor issue EXTJS-15537
                 store.sort('name', 'desc');
-                
-                store.each(function (record) {
+
+                store.each(function(record) {
                     expect(plugin.getEditor(record, column).editorId).toEqual(record.get(grid.nameField));
                 });
             });

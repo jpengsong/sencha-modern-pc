@@ -23,16 +23,17 @@ topSuite("Ext.util.HashMap", function() {
             expect(hash.getValues()).toEqual([]);
         });
     });
-    
+
     describe("keyFn", function() {
         it("should have a default keyFn that returns the id of the object", function() {
             var o = {
-                id: 'foo'  
+                id: 'foo'
             };
+
             hash.add(o);
             expect(hash.get('foo')).toBe(o);
-        }); 
-        
+        });
+
         it("should accept a custom getKey function", function() {
             hash = new Ext.util.HashMap({
                 keyFn: function() {
@@ -42,6 +43,7 @@ topSuite("Ext.util.HashMap", function() {
             var o = {
                 key: 'foo'
             };
+
             hash.add(o);
             expect(hash.get('foo')).toBe(o);
         });
@@ -60,8 +62,9 @@ topSuite("Ext.util.HashMap", function() {
 
         it("should be able to add complex types", function() {
             var obj = {
-                foo: 'bar'
-            }, arr = [obj];
+                    foo: 'bar'
+                },
+                arr = [obj];
 
             hash.add('key1', obj);
             hash.add('key2', arr);
@@ -76,15 +79,15 @@ topSuite("Ext.util.HashMap", function() {
             expect(hash.get('key1')).toBe('a');
             expect(hash.get('key2')).toBe('b');
         });
-        
+
         it("should support adding undefined values", function() {
             hash.add('key1', undefined);
-            expect(hash.get('key1')).toBeUndefined();    
+            expect(hash.get('key1')).toBeUndefined();
         });
-        
+
         it("should support adding null values", function() {
             hash.add('key1', null);
-            expect(hash.get('key1')).toBeNull();    
+            expect(hash.get('key1')).toBeNull();
         });
 
         it("should support taking a single param", function() {
@@ -92,6 +95,7 @@ topSuite("Ext.util.HashMap", function() {
                 id: 'key',
                 foo: 'bar'
             };
+
             hash.add(o);
             expect(hash.get('key')).toBe(o);
         });
@@ -100,6 +104,7 @@ topSuite("Ext.util.HashMap", function() {
             var o = {
                 fn: Ext.emptyFn
             };
+
             spyOn(o, 'fn');
             hash.on('add', o.fn);
             hash.add('key', 'val');
@@ -118,16 +123,16 @@ topSuite("Ext.util.HashMap", function() {
             hash.replace('key', 'val2');
             expect(hash.get('key')).toBe('val2');
         });
-        
+
         it("should replace an old value with undefined", function() {
             hash.add('key', 'val1');
-            hash.replace('key', undefined);    
+            hash.replace('key', undefined);
             expect(hash.get('key')).toBeUndefined();
         });
-        
+
         it("should replace an old value with null", function() {
             hash.add('key', 'val1');
-            hash.replace('key', null);    
+            hash.replace('key', null);
             expect(hash.get('key')).toBeNull();
         });
 
@@ -136,6 +141,7 @@ topSuite("Ext.util.HashMap", function() {
             var o = {
                 fn: Ext.emptyFn
             };
+
             spyOn(o, 'fn');
             hash.on('replace', o.fn);
             hash.replace('key', 'val2');
@@ -156,30 +162,30 @@ topSuite("Ext.util.HashMap", function() {
             hash.add('key5', 5);
             expect(hash.getCount()).toBe(5);
         });
-        
+
         it("should increase the count when adding a new item", function() {
             expect(hash.getCount()).toBe(0);
             hash.add('key1', 1);
-            expect(hash.getCount()).toBe(1);    
+            expect(hash.getCount()).toBe(1);
         });
-        
+
         it("should decrease the count when removing an item", function() {
             hash.add('key1', 1);
-            expect(hash.getCount()).toBe(1);    
+            expect(hash.getCount()).toBe(1);
             hash.removeAtKey('key1');
             expect(hash.getCount()).toBe(0);
         });
-        
+
         it("should keep the same count when replacing an item", function() {
             hash.add('key1', 1);
-            expect(hash.getCount()).toBe(1);    
+            expect(hash.getCount()).toBe(1);
             hash.replace('key1', 2);
             expect(hash.getCount()).toBe(1);
         });
-        
+
         it("should keep the same count when adding an existing item", function() {
             hash.add('key1', 1);
-            expect(hash.getCount()).toBe(1);    
+            expect(hash.getCount()).toBe(1);
             hash.add('key1', 2);
             expect(hash.getCount()).toBe(1);
         });
@@ -207,6 +213,7 @@ topSuite("Ext.util.HashMap", function() {
                 var o = {
                     fn: Ext.emptyFn
                 };
+
                 spyOn(o, 'fn');
                 hash.on('remove', o.fn);
                 hash.removeAtKey('key');
@@ -232,7 +239,7 @@ topSuite("Ext.util.HashMap", function() {
 
                 it("should only remove the first matched value", function() {
                     hash.add('key1', 'val');
-                    hash.add('key2', 'val');    
+                    hash.add('key2', 'val');
 
                     hash.remove('val');
 
@@ -250,6 +257,7 @@ topSuite("Ext.util.HashMap", function() {
                     var o = {
                         fn: Ext.emptyFn
                     };
+
                     spyOn(o, 'fn');
                     hash.on('remove', o.fn);
                     hash.remove('val');
@@ -261,11 +269,13 @@ topSuite("Ext.util.HashMap", function() {
 
     describe("each", function() {
         var o, scope, spy;
+
         beforeEach(function() {
             o = {
-                fn: function(key){
+                fn: function(key) {
                     scope = this;
-                    if (key == 'drop') {
+
+                    if (key === 'drop') {
                         return false;
                     }
                 }
@@ -274,13 +284,13 @@ topSuite("Ext.util.HashMap", function() {
         });
 
         afterEach(function() {
-            o = spy = scope = null;    
+            o = spy = scope = null;
         });
 
         it("should not iterate if the hash is empty", function() {
             hash.each(o.fn);
-            expect(o.fn).not.toHaveBeenCalled(); 
-        }); 
+            expect(o.fn).not.toHaveBeenCalled();
+        });
 
         it("should iterate over every item", function() {
             hash.add('key1', 'val1');
@@ -294,7 +304,7 @@ topSuite("Ext.util.HashMap", function() {
             hash.add('key1', 'val1');
             hash.each(o.fn);
 
-            expect(spy.argsForCall[0]).toEqual(['key1', 'val1', 1]);           
+            expect(spy.argsForCall[0]).toEqual(['key1', 'val1', 1]);
         });
 
         it("should default to the hash as scope", function() {
@@ -323,66 +333,69 @@ topSuite("Ext.util.HashMap", function() {
     describe("checking contains", function() {
         describe("containsKey", function() {
             it("should return false if the hash is empty", function() {
-                expect(hash.containsKey('key')).toBe(false);    
+                expect(hash.containsKey('key')).toBe(false);
             });
 
             it("should return false if the key doesn't exist", function() {
                 hash.add('key1', 'a');
-                expect(hash.containsKey('key')).toBe(false);    
-            });  
+                expect(hash.containsKey('key')).toBe(false);
+            });
 
             it("should return true if the key is matched", function() {
                 hash.add('key', 'val');
-                expect(hash.containsKey('key')).toBe(true);    
+                expect(hash.containsKey('key')).toBe(true);
             });
-            
+
             it("should use a hasOwnProperty check", function() {
                 expect(hash.containsKey('toString')).toBe(false);
-            })
+            });
         });
 
         describe("contains", function() {
             it("should return false if the hash is empty", function() {
-                expect(hash.contains('val')).toBe(false);    
+                expect(hash.contains('val')).toBe(false);
             });
 
             it("should return false if the value doesn't exist", function() {
                 hash.add('key', 'v');
-                expect(hash.contains('val')).toBe(false);    
-            });  
+                expect(hash.contains('val')).toBe(false);
+            });
 
             it("should return true if the value exists", function() {
                 hash.add('key', 'val');
-                expect(hash.contains('val')).toBe(true);    
+                expect(hash.contains('val')).toBe(true);
             });
         });
     });
 
     describe("get", function() {
         it("should return undefined if the item doesn't exist", function() {
-            expect(hash.get('key')).toBeUndefined();    
-        });  
+            expect(hash.get('key')).toBeUndefined();
+        });
 
         it("should return the value if found", function() {
             hash.add('key', 'val');
-            expect(hash.get('key')).toBe('val');    
+            expect(hash.get('key')).toBe('val');
         });
 
         it("should preserve the type", function() {
-            var a = {}, b = {}, c = {};
+            var a = {},
+                b = {},
+                c = {};
+
             hash.add('key', [a, b, c]);
-            expect(hash.get('key')).toEqual([a, b, c]);    
+            expect(hash.get('key')).toEqual([a, b, c]);
         });
     });
 
     describe("clear", function() {
         it("should do nothing if the hash is empty", function() {
             hash.clear();
-            expect(hash.getCount()).toBe(0);    
-        }); 
+            expect(hash.getCount()).toBe(0);
+        });
 
         it("should remove all items from the hash", function() {
-            hash.add('key1', 'a');    
+            hash.add('key1', 'a');
             hash.add('key2', 'b');
             hash.add('key3', 'c');
             hash.add('key4', 'd');
@@ -393,18 +406,19 @@ topSuite("Ext.util.HashMap", function() {
 
         it("should fire the clear event", function() {
             var o = {
-                fn: Ext.emptyFn    
+                fn: Ext.emptyFn
             };
+
             spyOn(o, 'fn');
             hash.on('clear', o.fn);
-            hash.clear();    
+            hash.clear();
             expect(o.fn).toHaveBeenCalled();
         });
     });
 
     describe("getKeys/getValues", function() {
         it("should return an empty array if there are no keys", function() {
-            expect(hash.getKeys()).toEqual([]);    
+            expect(hash.getKeys()).toEqual([]);
         });
 
         it("should return all of the keys", function() {
@@ -413,30 +427,34 @@ topSuite("Ext.util.HashMap", function() {
             hash.add('c', 'c');
 
             var keys = hash.getKeys();
+
             expect(keys).toContain('a');
             expect(keys).toContain('b');
-            expect(keys).toContain('c');    
+            expect(keys).toContain('c');
         });
 
         it("should return an empty array if there are no values", function() {
-            expect(hash.getValues()).toEqual([]);    
+            expect(hash.getValues()).toEqual([]);
         });
 
         it("should return all of the values", function() {
             var o = {};
+
             hash.add('a', 1);
             hash.add('b', o);
 
             var values = hash.getValues();
+
             expect(values).toContain(1);
-            expect(values).toContain(o);    
+            expect(values).toContain(o);
         });
     });
 
     describe("clone", function() {
         it("should be empty when cloning an empty hash", function() {
             var newHash = hash.clone();
-            expect(newHash.getCount()).toBe(0);    
+
+            expect(newHash.getCount()).toBe(0);
         });
 
         it("should clone all items", function() {
@@ -444,18 +462,19 @@ topSuite("Ext.util.HashMap", function() {
             hash.add('b', 2);
 
             var newHash = hash.clone();
+
             expect(hash.get('a')).toBe(1);
-            expect(hash.get('b')).toBe(2);    
+            expect(hash.get('b')).toBe(2);
         });
 
         it("should only do a shallow clone", function() {
-            var o = {foo: 'bar'}, newHash;
+            var o = { foo: 'bar' },
+                newHash;
 
             hash.add('key', o);
             newHash = hash.clone();
             expect(newHash.get('key')).toBe(o);
 
         });
-
     });
 });

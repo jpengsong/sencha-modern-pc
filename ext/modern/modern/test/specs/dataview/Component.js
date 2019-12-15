@@ -18,6 +18,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
         for (i = start; i <= (rows + start - 1); ++i) {
             ret.push(makeItem(i));
         }
+
         return ret;
     }
 
@@ -47,19 +48,23 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
 
     function makeView(viewCfg, storeCfg, options) {
         viewCfg = viewCfg || {};
+
         if (!storeCfg && storeCfg !== 0) {
             storeCfg = storeCfg || {};
         }
+
         options = options || {};
 
         if (!viewCfg.store && !options.preventStore) {
             if (typeof storeCfg === 'number' || Ext.isArray(storeCfg)) {
                 storeCfg = makeStore(storeCfg);
             }
+
             viewCfg.store = storeCfg;
         }
 
         var itemCfg = viewCfg.itemConfig || {};
+
         delete viewCfg.itemConfig;
 
         view = new Ext.dataview.Component(Ext.apply({
@@ -111,6 +116,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
 
     function expectData(values) {
         var items = view.getViewItems();
+
         expect(values.length).toBe(items.length);
         values.forEach(function(v, i) {
             expect(items[i].getHtml()).toBe(v);
@@ -120,6 +126,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
     describe("cleanup", function() {
         it("should have the same component count", function() {
             var count = Ext.ComponentManager.getCount();
+
             makeView(null, 10);
             view.destroy();
             expect(Ext.ComponentManager.getCount()).toBe(count);
@@ -138,6 +145,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                         o[key] = items[key];
                     }
                 }
+
                 return o;
             }
 
@@ -185,13 +193,16 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
             describe("dynamic", function() {
                 function expectMasked(masked) {
                     var mask = view.getMasked();
+
                     if (masked) {
                         expect(mask).toBeTruthy();
                         expect(mask.isVisible()).toBe(true);
-                    } else {
+                    }
+ else {
                         if (mask) {
                             expect(mask.isVisible()).toBe(false);
-                        } else {
+                        }
+ else {
                             expect(mask).toBeNull();
                         }
                     }
@@ -304,9 +315,11 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                                     expectMasked(options.expectMaskedInLoad);
                                     view.setStore(store);
                                     expectMasked(true);
+
                                     if (options.doExtraComplete) {
                                         Ext.Ajax.mockCompleteWithData([]);
                                     }
+
                                     Ext.Ajax.mockCompleteWithData(makeData(2));
                                     expectData(['Item1', 'Item2']);
                                 });
@@ -330,6 +343,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                         describe("old store is loading", function() {
                             makeSuite(function() {
                                 var s = makeStore();
+
                                 makeView({
                                     store: s
                                 });
@@ -453,6 +467,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                     it("should load the new data", function() {
                         makeView(null, 3);
                         var s = view.getStore();
+
                         expectData(['Item1', 'Item2', 'Item3']);
                         view.setData(makeData(3, 4));
                         expect(view.getStore()).toBe(s);
@@ -469,9 +484,11 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                 if (text) {
                     expect(cmp.isVisible()).toBe(true);
                     expect(cmp.getHtml()).toBe(text);
-                } else if (cmp) {
+                }
+ else if (cmp) {
                     expect(cmp.isVisible()).toBe(false);
-                } else {
+                }
+ else {
                     expect(cmp).toBeFalsy();
                 }
             }
@@ -688,11 +705,13 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
         describe("inline", function() {
             function getX(index) {
                 var item = getElement(view.getItemAt(index));
+
                 return item.getX();
             }
 
             function getY(index) {
                 var item = getElement(view.getItemAt(index));
+
                 return item.getY();
             }
 
@@ -714,6 +733,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                         name: '<div style="width: 50px; border: 1px solid red;">Item' + i + '</div>'
                     });
                 }
+
                 return data;
             }
 
@@ -770,6 +790,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                         }, makeInlineData(10));
 
                         var h = getElement(view.getItemAt(0)).getHeight();
+
                         expectPositions(getInlineFalsePos(50, h));
                     });
                 });
@@ -782,6 +803,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                         }, makeInlineData(10));
 
                         var h = getElement(view.getItemAt(0)).getHeight();
+
                         expectPositions(getInlineTruePos(50, h));
                     });
                 });
@@ -795,7 +817,10 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                         }, makeInlineData(10));
 
                         var h = getElement(view.getItemAt(0)).getHeight();
-                        expectPositions(getInlineNoWrapPos(50, h));
+                        waits(100);
+                        runs(function(){
+                            expectPositions(getInlineNoWrapPos(50, h));
+                        });
                     });
                 });
             });
@@ -813,6 +838,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                         it("should layout horizontally and wrap", function() {
                             view.setInline(true);
                             var h = getElement(view.getItemAt(0)).getHeight();
+
                             expectPositions(getInlineTruePos(50, h));
                         });
                     });
@@ -823,7 +849,10 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                                 wrap: false
                             });
                             var h = getElement(view.getItemAt(0)).getHeight();
-                            expectPositions(getInlineNoWrapPos(50, h));
+                            waits(100);
+                            runs(function(){
+                                expectPositions(getInlineNoWrapPos(50, h));
+                            });
                         });
                     });
                 });
@@ -840,6 +869,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                         it("should lay out items vertically", function() {
                             view.setInline(false);
                             var h = getElement(view.getItemAt(0)).getHeight();
+
                             expectPositions(getInlineFalsePos(50, h));
                         });
                     });
@@ -851,7 +881,10 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                                 height: 400
                             });
                             var h = getElement(view.getItemAt(0)).getHeight();
-                            expectPositions(getInlineNoWrapPos(50, h));
+                            waits(100);
+                            runs(function(){
+                                expectPositions(getInlineNoWrapPos(50, h));
+                            });
                         });
                     });
                 });
@@ -870,6 +903,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                         it("should lay out items vertically", function() {
                             view.setInline(false);
                             var h = getElement(view.getItemAt(0)).getHeight();
+
                             expectPositions(getInlineFalsePos(50, h));
                         });
                     });
@@ -878,6 +912,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                         it("should layout horizontally and wrap", function() {
                             view.setInline(true);
                             var h = getElement(view.getItemAt(0)).getHeight();
+
                             expectPositions(getInlineTruePos(50, h));
                         });
                     });
@@ -885,18 +920,19 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
             });
         });
 
-        describe('itemInnerCls', function () {
-            it('should apply itemInnerCls at construction', function () {
+        describe('itemInnerCls', function() {
+            it('should apply itemInnerCls at construction', function() {
                 makeView({
                     itemInnerCls: 'foo'
                 }, 2);
 
                 var items = view.getViewItems();
+
                 expect(items[0].innerElement.hasCls('foo')).toBe(true);
                 expect(items[1].innerElement.hasCls('foo')).toBe(true);
             });
 
-            it('should update itemInnerCls after construction', function () {
+            it('should update itemInnerCls after construction', function() {
                 makeView({
                     itemInnerCls: 'foo'
                 }, 2);
@@ -913,8 +949,8 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
             });
         });
 
-        describe('itemContentCls', function () {
-            it('should apply itemContentCls at construction', function () {
+        describe('itemContentCls', function() {
+            it('should apply itemContentCls at construction', function() {
                 makeView({
                     itemContentCls: 'foo'
                 }, 2);
@@ -926,7 +962,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                 }
             });
 
-            it('should update itemContentCls after construction', function () {
+            it('should update itemContentCls after construction', function() {
                 makeView({
                     itemContentCls: 'foo'
                 }, 2);
@@ -953,6 +989,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                         }
                     }, 3);
                     var items = view.getViewItems();
+
                     expect(items[0].getA()).toBe(100);
                     expect(items[1].getA()).toBe(100);
                     expect(items[2].getA()).toBe(100);
@@ -968,6 +1005,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                         });
 
                         var items = view.getViewItems();
+
                         expect(items[0].getA()).toBe(101);
                         expect(items[1].getA()).toBe(101);
                         expect(items[2].getA()).toBe(101);
@@ -984,6 +1022,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                         view.setItemConfig(null);
 
                         var items = view.getViewItems();
+
                         expect(items[0].getA()).toBe(null);
                         expect(items[1].getA()).toBe(null);
                         expect(items[2].getA()).toBe(null);
@@ -1002,6 +1041,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                         });
 
                         var items = view.getViewItems();
+
                         expect(items[0].getA()).toBeNull();
                         expect(items[0].getB()).toBe(2);
                         expect(items[1].getA()).toBeNull();
@@ -1109,6 +1149,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
     describe("methods", function() {
         function expectItems(values) {
             var items = view.getViewItems();
+
             expect(values.length).toBe(items.length);
             values.forEach(function(v, idx) {
                 expectItem(items[idx], v);
@@ -1154,6 +1195,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
             it("should not return a live collection", function() {
                 makeView(null, 3);
                 var items = view.getViewItems();
+
                 store.removeAt(0);
                 expect(view.getViewItems()).not.toBe(items);
                 expect(view.getViewItems().length).not.toBe(items.length);
@@ -1180,6 +1222,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
 
                 it("should return the first item", function() {
                     var item = view.getItemAt(0);
+
                     expectItem(item, 'Item1');
 
                     // Test negative indexing. -1 means last
@@ -1189,6 +1232,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
 
                 it("should return a middle item", function() {
                     var item = view.getItemAt(2);
+
                     expectItem(item, 'Item3');
 
                     // Test negative indexing. -1 means last
@@ -1198,6 +1242,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
 
                 it("should return the last item", function() {
                     var item = view.getItemAt(4);
+
                     expectItem(item, 'Item5');
 
                     // Test negative indexing. -1 means last
@@ -1216,6 +1261,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
             it("should return -1 for an item not in the view", function() {
                 makeView(null, 3);
                 var item = view.getItemAt(0);
+
                 store.removeAt(0);
                 expect(view.getItemIndex(item)).toBe(-1);
             });
@@ -1223,6 +1269,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
             it("should return the item index", function() {
                 makeView(null, 3);
                 var items = view.getViewItems();
+
                 expect(view.getItemIndex(items[0])).toBe(0);
                 expect(view.getItemIndex(items[1])).toBe(1);
                 expect(view.getItemIndex(items[2])).toBe(2);
@@ -1299,6 +1346,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
         describe("deprecated events", function() {
             function makeWithEvent(event) {
                 var listeners = {};
+
                 listeners[event] = spy;
                 makeView({
                     listeners: listeners
@@ -1370,7 +1418,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
             it("should fire the itemlongpress event", function() {
                 makeWithEvent('itemlongpress');
                 touchStart(1);
-                waitsFor(function () {
+                waitsFor(function() {
                     return spy.callCount === 1;
                 });
                 runs(function() {
@@ -1383,7 +1431,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
             it("should fire the itemtaphold event", function() {
                 makeWithEvent('itemtaphold');
                 touchStart(1);
-                waitsFor(function () {
+                waitsFor(function() {
                     return spy.callCount === 1;
                 });
                 runs(function() {
@@ -1396,7 +1444,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
             it("should fire the itemsingletap event", function() {
                 makeWithEvent('itemsingletap');
                 tap(3);
-                waitsFor(function () {
+                waitsFor(function() {
                     return spy.callCount === 1;
                 });
                 runs(function() {
@@ -1409,7 +1457,7 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                 makeWithEvent('itemdoubletap');
                 tap(0);
                 tap(0);
-                waitsFor(function () {
+                waitsFor(function() {
                     return spy.callCount === 1;
                 });
                 runs(function() {
@@ -1462,9 +1510,11 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
         function makeSuite(renderedFirst) {
             function makeSuiteView(viewCfg, storeCfg, options) {
                 viewCfg = viewCfg || {};
+
                 if (!renderedFirst) {
                     viewCfg.renderTo = null;
                 }
+
                 makeView(viewCfg, storeCfg, options);
             }
 
@@ -1621,9 +1671,11 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                                 return rec.get('name') >= 'Item2';
                             }
                         });
+
                         if (renderedFirst) {
                             expectData(['Item2', 'Item3', 'Item4', 'Item5']);
                         }
+
                         rec.set('name', 'Item6');
                         renderIf();
                         expectData(['Item2', 'Item3', 'Item4', 'Item5', 'Item6']);
@@ -1635,9 +1687,11 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                                 return rec.get('name') <= 'Item5';
                             }
                         });
+
                         if (renderedFirst) {
                             expectData(['Item1', 'Item2', 'Item3', 'Item4', 'Item5']);
                         }
+
                         store.first().set('name', 'Item6');
                         renderIf();
                         expectData(['Item2', 'Item3', 'Item4', 'Item5']);
@@ -1722,9 +1776,11 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
             describe("sorting", function() {
                 it("should react to sorting", function() {
                     makeSuiteView(null, 7);
+
                     if (renderedFirst) {
                         expectData(['Item1', 'Item2', 'Item3', 'Item4', 'Item5', 'Item6', 'Item7']);
                     }
+
                     store.getSorters().add({
                         property: 'name',
                         direction: 'DESC'
@@ -1741,9 +1797,11 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
 
                 it("should exclude items that do not match the filter", function() {
                     makeSuiteView(null, 7);
+
                     if (renderedFirst) {
                         expectData(['Item1', 'Item2', 'Item3', 'Item4', 'Item5', 'Item6', 'Item7']);
                     }
+
                     store.getFilters().add({
                         filterFn: filter
                     });
@@ -1760,9 +1818,11 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                             }]
                         }
                     });
+
                     if (renderedFirst) {
                         expectData(['Item2', 'Item4', 'Item6']);
                     }
+
                     store.getFilters().removeAll();
                     renderIf();
                     expectData(['Item1', 'Item2', 'Item3', 'Item4', 'Item5', 'Item6', 'Item7']);
@@ -1817,7 +1877,8 @@ topSuite("Ext.dataview.Component", ['Ext.Button'], function() {
                 expect(location).toBeNull();
                 expect(view.el.contains(document.activeElement)).toBe(false);
                 expect(view.el.query('.' + view.focusedCls).length).toBe(0);
-            } else {
+            }
+ else {
                 expected = new Ext.dataview.Location(view, view.itemFromRecord(expected).el);
 
                 expect(location.equals(expected)).toBe(true);

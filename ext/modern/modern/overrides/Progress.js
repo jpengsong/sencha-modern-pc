@@ -46,14 +46,14 @@ Ext.define('Ext.overrides.Progress', {
     },
 
     onPainted: function() {
-      this.syncWidth();
+        this.syncWidth();
     },
 
-    onResize: function (width) {
+    onResize: function(width) {
         this.syncWidth(width);
     },
 
-    syncWidth: function (width) {
+    syncWidth: function(width) {
         var me = this;
 
         if (width == null) {
@@ -80,9 +80,11 @@ Ext.define('Ext.overrides.Progress', {
 
         stopBarAnimation: function() {
             var barAnim = this.barAnim;
+
             if (barAnim) {
                 barAnim.destroy();
             }
+
             this.barAnim = null;
         }
     }

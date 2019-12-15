@@ -67,16 +67,16 @@ Ext.define('Ext.mixin.Dirty', {
     /**
      * Returns `true` if this object is `dirty`.
      */
-    isDirty: function () {
+    isDirty: function() {
         // This alias matches the Ext.form.field.* family.
         return this.getDirty();
     },
 
-    applyDirty: function (dirty) {
+    applyDirty: function(dirty) {
         return this.ignoreDirty ? false : dirty;
     },
 
-    updateDirty: function (dirty) {
+    updateDirty: function(dirty) {
         var me = this;
 
         // Store the property directly in case we are used in an "_dirty" world.
@@ -92,7 +92,7 @@ Ext.define('Ext.mixin.Dirty', {
      * and `untrackRecordState`.
      * @protected
      */
-    clearRecordStates: function () {
+    clearRecordStates: function() {
         var me = this,
             counters = me._crudCounters;
 
@@ -124,9 +124,9 @@ Ext.define('Ext.mixin.Dirty', {
      * @return {Boolean} Returns `true` if the state of dirty records has changed.
      * @protected
      */
-    trackRecordState: function (record, initial) {
+    trackRecordState: function(record, initial) {
         var me = this,
-            counters = me._crudCounters || (me._crudCounters = { C:0, R:0, U:0, D:0 }),
+            counters = me._crudCounters || (me._crudCounters = { C: 0, R: 0, U: 0, D: 0 }),
             dirtyRecordCountWas = me._dirtyRecordCount,
             state = record.crudState,
             stateWas = record.crudStateWas,
@@ -166,7 +166,7 @@ Ext.define('Ext.mixin.Dirty', {
      * @return {Boolean} Returns `true` if the state of dirty records has changed.
      * @protected
      */
-    untrackRecordState: function (record) {
+    untrackRecordState: function(record) {
         var me = this,
             counters = me._crudCounters,
             dirtyRecordCountWas = me._dirtyRecordCount,
@@ -194,7 +194,7 @@ Ext.define('Ext.mixin.Dirty', {
     }
 
     //<debug>
-    ,checkCounters: function() {
+    , checkCounters: function() { // eslint-disable-line comma-style
         var counters = this._crudCounters,
             key;
 

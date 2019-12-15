@@ -1,23 +1,23 @@
-topSuite('Ext.Indicator', ['Ext.app.ViewModel'], function () {
+topSuite('Ext.Indicator', ['Ext.app.ViewModel'], function() {
     var indicator;
 
-    function createIndicator (config) {
+    function createIndicator(config) {
         return indicator = new Ext.Indicator(config);
     }
 
-    afterEach(function () {
+    afterEach(function() {
         indicator = Ext.destroy(indicator);
     });
 
-    describe('direction', function () {
-        it('should have horizontal direction by default', function () {
+    describe('direction', function() {
+        it('should have horizontal direction by default', function() {
             createIndicator();
 
             expect(indicator.getDirection()).toBe('horizontal');
             expect(indicator.element.hasCls('x-indicator-horizontal')).toBe(true);
         });
 
-        it('should have vertical direction', function () {
+        it('should have vertical direction', function() {
             createIndicator({
                 direction: 'vertical'
             });
@@ -26,7 +26,7 @@ topSuite('Ext.Indicator', ['Ext.app.ViewModel'], function () {
             expect(indicator.element.hasCls('x-indicator-vertical')).toBe(true);
         });
 
-        it('should default to horizontal when invalid direction passed', function () {
+        it('should default to horizontal when invalid direction passed', function() {
             createIndicator();
 
             spyOn(Ext, 'raise');
@@ -40,8 +40,8 @@ topSuite('Ext.Indicator', ['Ext.app.ViewModel'], function () {
         });
     });
 
-    describe('indicators', function () {
-        it('should add an indicator', function () {
+    describe('indicators', function() {
+        it('should add an indicator', function() {
             createIndicator();
 
             indicator
@@ -51,7 +51,7 @@ topSuite('Ext.Indicator', ['Ext.app.ViewModel'], function () {
             expect(indicator.indicators.length).toBe(2);
         });
 
-        it('should remove an indicator', function () {
+        it('should remove an indicator', function() {
             createIndicator();
 
             var indicators = indicator.indicators,
@@ -71,7 +71,7 @@ topSuite('Ext.Indicator', ['Ext.app.ViewModel'], function () {
             expect(indicators[0]).toBe(first);
         });
 
-        it('should remove all indicators', function () {
+        it('should remove all indicators', function() {
             createIndicator();
 
             var indicators = indicator.indicators;
@@ -88,8 +88,8 @@ topSuite('Ext.Indicator', ['Ext.app.ViewModel'], function () {
         });
     });
 
-    describe('active index', function () {
-        it('should set dot active', function () {
+    describe('active index', function() {
+        it('should set dot active', function() {
             createIndicator();
 
             var indicators = indicator.indicators;
@@ -109,7 +109,7 @@ topSuite('Ext.Indicator', ['Ext.app.ViewModel'], function () {
             expect(indicators[1].hasCls('x-indicator-active')).toBe(true);
         });
 
-        it('should not set active to more than number of dots', function () {
+        it('should not set active to more than number of dots', function() {
             createIndicator();
 
             var indicators = indicator.indicators;
@@ -122,7 +122,7 @@ topSuite('Ext.Indicator', ['Ext.app.ViewModel'], function () {
 
             expect(indicators[0].hasCls('x-indicator-active')).toBe(true);
 
-            function shouldThrow () {
+            function shouldThrow() {
                 indicator.setActiveIndex(5);
             }
 
@@ -132,9 +132,9 @@ topSuite('Ext.Indicator', ['Ext.app.ViewModel'], function () {
         });
     });
 
-    describe('tap', function () {
-        function createTapSpec (event, horizontal, touchValue) {
-            it('should fire ' + event + ' event', function () {
+    describe('tap', function() {
+        function createTapSpec(event, horizontal, touchValue) {
+            it('should fire ' + event + ' event', function() {
                 var touchProp = horizontal ? 'pageX' : 'pageY',
                     touch = {};
 
@@ -154,16 +154,17 @@ topSuite('Ext.Indicator', ['Ext.app.ViewModel'], function () {
             });
         }
 
-        function createTapSuite (horizontal) {
-            describe(horizontal ? 'horizontal' : 'vertical', function () {
-                beforeEach(function () {
+        function createTapSuite(horizontal) {
+            describe(horizontal ? 'horizontal' : 'vertical', function() {
+                beforeEach(function() {
                     if (horizontal) {
                         createIndicator({
                             renderTo: Ext.getBody(),
                             height: 30,
                             width: 100
                         });
-                    } else {
+                    }
+ else {
                         createIndicator({
                             renderTo: Ext.getBody(),
                             direction: 'vertical',
@@ -178,14 +179,14 @@ topSuite('Ext.Indicator', ['Ext.app.ViewModel'], function () {
             });
         }
 
-        //horizontal
+        // horizontal
         createTapSuite(true);
-        //vertical
+        // vertical
         createTapSuite();
     });
 
-    describe('binding', function () {
-        it('should bind to activeIndex', function () {
+    describe('binding', function() {
+        it('should bind to activeIndex', function() {
             createIndicator({
                 renderTo: Ext.getBody(),
                 bind: '{index}',

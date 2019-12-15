@@ -87,7 +87,7 @@ Ext.define('Ext.dataview.listswiper.Stepper', {
         }]
     }],
 
-    initialize: function () {
+    initialize: function() {
         this.callParent();
         this.bodyElement.on('tap', 'onTap', this);
     },
@@ -109,7 +109,7 @@ Ext.define('Ext.dataview.listswiper.Stepper', {
         return animation;
     },
 
-    updateTranslationTarget: function (target) {
+    updateTranslationTarget: function(target) {
         this.translatable = Ext.Factory.translatable({ element: target }, 'csstransform');
     },
 
@@ -154,7 +154,7 @@ Ext.define('Ext.dataview.listswiper.Stepper', {
             left = me.getLeftActions() || {},
             right = me.getRightActions() || {},
             width = el.getWidth(),
-            steps = {r: [], l: []},
+            steps = { r: [], l: [] },
             totalThreshold = 0,
             fn = function(side, index, action) {
                 var threshold = Ext.util.Format.defaultValue(action.threshold, '25%'),
@@ -188,7 +188,7 @@ Ext.define('Ext.dataview.listswiper.Stepper', {
 
     findStep: function(dx, force) {
         var me = this,
-            res = {step: null, active: true},
+            res = { step: null, active: true },
             steps = me.steps[dx > 0 ? 'l' : 'r'],
             ilen = steps.length,
             absDx = Math.abs(dx),
@@ -196,6 +196,7 @@ Ext.define('Ext.dataview.listswiper.Stepper', {
 
         for (i = ilen - 1; !res.step && i >= 0; --i) {
             step = steps[i];
+
             if (step.x < absDx) {
                 res.step = step;
             }
@@ -234,8 +235,9 @@ Ext.define('Ext.dataview.listswiper.Stepper', {
             layout = me.getLayout();
 
         me.replaceCls(classes[oldSide], classes[side]);
+
         if (layout.setPack) {
-            layout.setPack(side === 'right'? 'end' : 'start');
+            layout.setPack(side === 'right' ? 'end' : 'start');
         }
     },
 
@@ -250,7 +252,8 @@ Ext.define('Ext.dataview.listswiper.Stepper', {
             state = me.getState(),
             step = me.getStep(),
             translatable = me.translatable,
-            dx = evt.deltaX, res;
+            dx = evt.deltaX,
+            res;
 
         if (state === 'undo') {
             return;
@@ -267,7 +270,8 @@ Ext.define('Ext.dataview.listswiper.Stepper', {
         if (directionLock && (res.step && step) && (res.step.side !== step.side)) {
             me.setState('overdrag');
             res.step = null;
-        } else {
+        }
+        else {
             me.setState(res.step ? res.active ? 'active' : 'peek' : 'overdrag');
             me.setStep(res.step || null);
         }
@@ -293,15 +297,16 @@ Ext.define('Ext.dataview.listswiper.Stepper', {
         evt.stopPropagation();
 
         res = me.findStep(dx, false);
+
         if (!res.step || res.step.side !== step.side) {
             me.finalize(true);
+
             return;
         }
 
         me.setStep(res.step);
         me.commit(true);
     },
-
 
     commit: function(animate) {
         var me = this,
@@ -318,24 +323,30 @@ Ext.define('Ext.dataview.listswiper.Stepper', {
             me.setState('undo');
             undo = me.add(me.getUndo());
             undo.setHandler(me.onUndoTap.bind(me));
-            me.setSide(undo.getDocked() === 'left'? 'right' : 'left');
+            me.setSide(undo.getDocked() === 'left' ? 'right' : 'left');
 
             translatable.translateAxis('x', step.tx, me.getAnimation());
 
             delay = plugin.getCommitDelay();
+
             if (delay) {
                 if (precommitResult && precommitResult.then) {
                     precommitResult.then(function() {
                         plugin.dismissAllTask.delay(delay);
                     });
-                } else {
+                }
+                else {
                     plugin.dismissAllTask.delay(delay);
                 }
             }
-        } else {
+        }
+        else {
             if (precommitResult && precommitResult.then) {
-                precommitResult.then(me.invokeAction.bind(me, action, 'commit')).then(me.finalize.bind(me, animate));
-            } else {
+                precommitResult.then(me.invokeAction.bind(me, action, 'commit')).then(
+                    me.finalize.bind(me, animate)
+                );
+            }
+            else {
                 me.invokeAction(action, 'commit');
                 me.finalize(animate);
             }
@@ -352,6 +363,7 @@ Ext.define('Ext.dataview.listswiper.Stepper', {
 
         if (!animate) {
             me.doFinalize();
+
             return;
         }
 
@@ -377,6 +389,7 @@ Ext.define('Ext.dataview.listswiper.Stepper', {
         // before the close animation finished.
         if (state === 'consumed') {
             translatable.translateAxis('x', 0, false);
+
             if (!me.destroyed && item) {
                 plugin.destroyItem(item);
             }
@@ -404,32 +417,33 @@ Ext.define('Ext.dataview.listswiper.Stepper', {
             }
 
             data = Ext.apply({
-                    text: text
-                }, data,
-                record ?
-                    record.getData(true) :
-                    {});
+                text: text
+            }, data,
+                             record
+                                 ? record.getData(true)
+                                 : {});
 
             this.setUi(ui);
             this.setIconCls(iconCls);
             me.setData(data);
-        } else {
+        }
+        else {
             this.setUi(null);
             this.setIconCls(null);
             me.setData(null);
         }
     },
 
-    updateIconCls: function (iconCls, oldIconCls) {
+    updateIconCls: function(iconCls, oldIconCls) {
         this.iconElement.replaceCls(oldIconCls, iconCls);
     },
 
     privates: {
-        getRenderTarget: function () {
+        getRenderTarget: function() {
             return this.innerElement;
         },
 
-        onTap: function (evt) {
+        onTap: function(evt) {
             var me = this,
                 plugin = me.owner,
                 dimissOnTap = plugin.getDismissOnTap();

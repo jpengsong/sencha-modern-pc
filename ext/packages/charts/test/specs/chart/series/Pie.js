@@ -1,34 +1,39 @@
-topSuite("Ext.chart.series.Pie", function() {
-    describe("betweenAngle", function () {
-        it("should return false if the gap between start and end angles is zero", function () {
+topSuite("Ext.chart.series.Pie", ['Ext.chart.*', 'Ext.data.ArrayStore'], function() {
+    describe("betweenAngle", function() {
+        it("should return false if the gap between start and end angles is zero", function() {
             var proto = Ext.chart.series.Pie.prototype,
                 betweenAngle = proto.betweenAngle,
                 context1 = {
-                    getClockwise: function () { return true; },
+                    // eslint-disable-next-line brace-style
+                    getClockwise: function() { return true; },
                     rotationOffset: proto.rotationOffset
                 },
                 context2 = {
-                    getClockwise: function () { return true; },
+                    // eslint-disable-next-line brace-style
+                    getClockwise: function() { return true; },
                     rotationOffset: context1.rotationOffset + 0.123
                 };
 
             var result = betweenAngle.call(context1, -0.5, 0, 0);
-            expect(result).toBe(false);
-            var result = betweenAngle.call(context1, -0.5, 1.1234567, 1.1234567);
+
             expect(result).toBe(false);
 
-            var result = betweenAngle.call(context2, -0.5, 0, 0);
+            result = betweenAngle.call(context1, -0.5, 1.1234567, 1.1234567);
             expect(result).toBe(false);
-            var result = betweenAngle.call(context2, -0.5, 1.1234567, 1.1234567);
+
+            result = betweenAngle.call(context2, -0.5, 0, 0);
+            expect(result).toBe(false);
+
+            result = betweenAngle.call(context2, -0.5, 1.1234567, 1.1234567);
             expect(result).toBe(false);
         });
     });
 
-    describe('label', function () {
-        (Ext.isSafari7 ? xit : it)('should not attempt to destroy labels marker in series with no label config', function () {
+    describe('label', function() {
+        (Ext.isSafari7 ? xit : it)('should not attempt to destroy labels marker in series with no label config', function() {
             var chart;
 
-            runs(function () {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'polar',
                     renderTo: document.body,
@@ -63,12 +68,12 @@ topSuite("Ext.chart.series.Pie", function() {
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 // wait till sprites have rendered
                 return !chart.getSeries()[0].getSprites()[0].getDirty();
             });
 
-            runs(function () {
+            runs(function() {
                 chart.getStore().loadData([{
                     name: 'E', value: 20
                 }, {
@@ -78,12 +83,12 @@ topSuite("Ext.chart.series.Pie", function() {
                 }]);
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 // wait till sprites have rendered
                 return !chart.getSeries()[0].getSprites()[0].getDirty();
             });
 
-            runs(function () {
+            runs(function() {
                 Ext.destroy(chart);
             });
         });

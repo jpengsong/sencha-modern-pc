@@ -1,4 +1,4 @@
-describe('Ext.layout.Form', function() {
+topSuite('Ext.layout.Form', ['Ext.form.Panel', 'Ext.field.*'], function() {
     var container;
 
     afterEach(function() {
@@ -205,7 +205,7 @@ describe('Ext.layout.Form', function() {
         });
     });
 
-    xit('should allow containerfield as a child item', function () {
+    xit('should allow containerfield as a child item', function() {
         container = Ext.create({
             xtype: 'formpanel',
             layout: {

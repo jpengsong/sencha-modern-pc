@@ -11,7 +11,7 @@ topSuite("Ext.ux.PreviewPlugin", ['Ext.grid.Panel'], function() {
                 title: 'Preview Test',
                 store: {
                     data: [
-                        {name: 'foo', description: 'foo description' }
+                        { name: 'foo', description: 'foo description' }
                     ],
                     fields: ['name', 'description']
                 },

@@ -28,7 +28,7 @@ Ext.define('Ext.overrides.app.Application', {
      */
     quickTips: false,
 
-    destroy: function () {
+    destroy: function() {
         this.setQuickTips(false);
 
         this.callParent();
@@ -58,6 +58,8 @@ Ext.define('Ext.overrides.app.Application', {
             if (quickTips === true) {
                 quickTips = {};
             }
+
+            // eslint-disable-next-line dot-notation
             quickTips = new Ext.tip['Manager'](quickTips);
         }
 

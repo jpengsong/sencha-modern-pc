@@ -53,8 +53,10 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
 
     function createSuite(isComponent) {
         var suiteType = isComponent ? "Components" : "Elements";
-        
-        describe("aligning " + suiteType, function() {
+
+        // iOS viewport body scrolls in a different way (body grows and panning is used)
+        // so scrolling viewport tests fail.
+        (Ext.isiOS ? xdescribe : describe)("aligning " + suiteType, function() {
             var positions = [ 'tl', 't', 'tr', 'l', 'c', 'r', 'bl', 'b', 'br' ],
                 alignToPositions = {
                     tl: [60, 60],
@@ -81,7 +83,13 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
                 alignToEl;
 
             beforeEach(function() {
-                isComponent ? createComponent() : createElement();
+                if (isComponent) {
+                    createComponent();
+                }
+                else {
+                    createElement();
+                }
+
                 alignToEl = Ext.getBody().createChild({
                     style: {
                         width: '60px',
@@ -121,7 +129,6 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
                 Ext.getViewportScroller().scrollBy(0, 100);
 
                 positionsAfter = positionable.el.getAlignToRegion(Ext.getBody());
-
                 expect(positions.top).toBe(positionsAfter.top - 100);
             });
         });
@@ -217,7 +224,12 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
             alignToEl;
 
             beforeEach(function() {
-                isComponent ? createComponent() : createElement();
+                if (isComponent) {
+                    createComponent();
+                }
+                else {
+                    createElement();
+                }
 
                 wrap.setSize(120, 120);
                 wrap.dom.style.backgroundColor = 'white';
@@ -239,7 +251,7 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
             afterEach(function() {
                 alignToEl.destroy();
             });
-            
+
             Ext.each(positions, function(pos) {
                 Ext.each(positions, function(alignToPos) {
                     var posString = pos + '-' + alignToPos + '?';
@@ -255,7 +267,7 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
                 });
             });
         });
-        
+
         describe("aligning " + suiteType + ' with "!" constraining', function() {
             // Test tesult with constraining.
             // The only one test is enabled which we need to fix EXTJS-18971
@@ -347,7 +359,12 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
             alignToEl;
 
             beforeEach(function() {
-                isComponent ? createComponent() : createElement();
+                if (isComponent) {
+                    createComponent();
+                }
+                else {
+                    createElement();
+                }
 
                 wrap.setSize(120, 120);
                 wrap.dom.style.backgroundColor = 'white';
@@ -369,15 +386,15 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
             afterEach(function() {
                 alignToEl.destroy();
             });
-            
+
             Ext.each(positions, function(pos) {
                 Ext.each(positions, function(alignToPos) {
                     var posString = pos + '-' + alignToPos + '!',
                         todoIt = resultPositions[posString] ? it : xit;
-                    
+
                     todoIt('should align "' + posString + '"', function() {
                         var xy;
-                        
+
                         positionable.alignTo(alignToEl, posString);
                         xy = positionable.getXY();
                         expect(xy[0]).toBe(resultPositions[posString][0]);
@@ -386,10 +403,15 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
                 });
             });
         });
-        
+
         describe("positioning " + suiteType, function() {
             beforeEach(function() {
-                isComponent ? createComponent() : createElement();
+                if (isComponent) {
+                    createComponent();
+                }
+                else {
+                    createElement();
+                }
             });
 
             describe("getBox", function() {
@@ -455,27 +477,27 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
                     });
                 });
             });
-            
+
             describe("getConstrainVector", function() {
                 // TODO
             });
 
             describe("getLocalX", function() {
-                it("should return the local x position", function(){
+                it("should return the local x position", function() {
                     expect(positionable.getLocalX()).toBe(6);
-                });  
+                });
             });
 
             describe("getLocalXY", function() {
-                it("should return the local xy position", function(){
-                    expect(positionable.getLocalXY()).toEqual([6,7]);
-                });  
+                it("should return the local xy position", function() {
+                    expect(positionable.getLocalXY()).toEqual([6, 7]);
+                });
             });
 
             describe("getLocalY", function() {
-                it("should return the local y position", function(){
+                it("should return the local y position", function() {
                     expect(positionable.getLocalY()).toBe(7);
-                });  
+                });
             });
 
             describe("getOffsetsTo", function() {
@@ -497,68 +519,69 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
 
             describe("getRegion", function() {
                 it("should get the Region", function() {
-                    var region = positionable.getRegion(); 
+                    var region = positionable.getRegion();
+
                     expect(region.top).toBe(27);
                     expect(region.right).toBe(61);
                     expect(region.bottom).toBe(67);
                     expect(region.left).toBe(21);
                 });
             });
-            
+
             // IE9 disabled because https://sencha.jira.com/browse/EXTJS-19483
             (Ext.isIE9 ? xdescribe : describe)("getClientRegion", function() {
                 var scrollbarSize = Ext.getScrollbarSize(),
                     el, region;
-                
+
                 function addScrollStyle(axis) {
                     el.setStyle('overflow-' + axis, 'scroll');
                 }
-                
+
                 beforeEach(function() {
                     el = isComponent ? positionable.el : positionable;
-                    
+
                     // Default width and height of 40px is not enough
                     // to display scrollbars in some browsers
                     el.dom.style.width = el.dom.style.height = '100px';
                     el.dom.style.backgroundColor = 'red';
-                    
+
                     region = positionable.getRegion();
                 });
-                
+
                 it("should be the same as Region with no scrollbars", function() {
                     var clientRegion = positionable.getClientRegion();
-                    
+
                     expect(clientRegion.equals(region)).toBe(true);
                 });
-                
+
                 it("should account for vertical scrollbar", function() {
                     addScrollStyle('y');
-                    
+
                     var clientRegion = positionable.getClientRegion();
-                    
+
                     expect(clientRegion.top).toBe(region.top);
                     expect(clientRegion.right).toBe(region.right - scrollbarSize.width);
                     expect(clientRegion.bottom).toBe(region.bottom);
                     expect(clientRegion.left).toBe(region.left);
                 });
-                
+
                 it("should account for horizontal scrollbar", function() {
                     addScrollStyle('x');
-                    
+
                     var clientRegion = positionable.getClientRegion();
-                    
+
                     expect(clientRegion.top).toBe(region.top);
                     expect(clientRegion.right).toBe(region.right);
                     expect(clientRegion.bottom).toBe(region.bottom - scrollbarSize.height);
                     expect(clientRegion.left).toBe(region.left);
                 });
-                
+
                 it("should account for both scrollbars", function() {
                     addScrollStyle('x');
                     addScrollStyle('y');
-                    
+
                     var clientRegion = positionable.getClientRegion();
-                    
+
                     expect(clientRegion.top).toBe(region.top);
                     expect(clientRegion.right).toBe(region.right - scrollbarSize.width);
                     expect(clientRegion.bottom).toBe(region.bottom - scrollbarSize.height);
@@ -567,21 +590,21 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
             });
 
             describe("getX", function() {
-                it("should return the x position", function(){
+                it("should return the x position", function() {
                     expect(positionable.getX()).toBe(21);
-                });  
+                });
             });
 
-            describe("getXY", function(){
+            describe("getXY", function() {
                 var xy;
 
                 beforeEach(function() {
                     xy = positionable.getXY();
                 });
 
-                it("should return the x position", function(){
+                it("should return the x position", function() {
                     expect(xy[0]).toBe(21);
-                });  
+                });
 
                 it("should return the y position", function() {
                     expect(xy[1]).toBe(27);
@@ -589,9 +612,9 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
             });
 
             describe("getY", function() {
-                it("should return the y position", function(){
+                it("should return the y position", function() {
                     expect(positionable.getY()).toBe(27);
-                });  
+                });
             });
 
             describe("move", function() {
@@ -765,13 +788,13 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
             });
 
             describe("setX", function() {
-                it("should set the x position", function(){
+                it("should set the x position", function() {
                     positionable.setX(50);
                     expect(positionable.getX()).toBe(50);
-                });  
+                });
             });
 
-            describe("setXY", function(){
+            describe("setXY", function() {
                 var xy;
 
                 beforeEach(function() {
@@ -779,9 +802,9 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
                     xy = positionable.getXY();
                 });
 
-                it("should set the x position", function(){
+                it("should set the x position", function() {
                     expect(xy[0]).toBe(50);
-                });  
+                });
 
                 it("should set the y position", function() {
                     expect(xy[1]).toBe(60);
@@ -789,15 +812,16 @@ topSuite("Ext.util.Positionable", 'Ext.Component', function() {
             });
 
             describe("setY", function() {
-                it("should set the y position", function(){
+                it("should set the y position", function() {
                     positionable.setY(60);
                     expect(positionable.getY()).toBe(60);
-                });  
+                });
             });
         });
     }
 
     createSuite(false);
+
     if (Ext.toolkit === 'classic') {
         createSuite(true);
     }

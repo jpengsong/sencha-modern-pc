@@ -227,3 +227,11 @@ $color-by-background-light-color: dynamic($light-color);
  * Cursor for draggable components
  */
 $draggable-cursor: dynamic(move);
+
+//----------------------------------------------------------------------------------
+// Font Icons
+
+$fi-class-name: dynamic(#{$prefix}fa);
+$fi-icon-angle-left: dynamic(fa-angle-left);
+$fi-icon-angle-right: dynamic(fa-angle-right);
+$fi-icon-arrow-left: dynamic(fa-arrow-left);

@@ -63,7 +63,7 @@ Ext.define('Ext.chart.series.sprite.Polar', {
         }
     },
 
-    updatePlainBBox: function (plain) {
+    updatePlainBBox: function(plain) {
         var attr = this.attr;
 
         plain.x = attr.centerX - attr.endRho;

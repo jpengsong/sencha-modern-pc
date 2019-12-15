@@ -1,5 +1,5 @@
-Ext JS 6.5.3.57 - JavaScript Library
-Copyright (c) 2006-2018, Sencha Inc.
+Ext JS 7.0.0.156 - JavaScript Library
+Copyright (c) 2006-2019, Sencha Inc.
 All rights reserved.
 licensing@sencha.com
 
@@ -9,7 +9,7 @@ license: http://www.sencha.com/legal/sencha-sdk-software-license-agreement
 
 Evaluation/Trial License
 ------------------------------------------------------------------------------------------
-This version of Sencha Ext JS 6.5.3.57 is licensed commercially for a limited period for evaluation 
+This version of Sencha Ext JS 7.0.0.156 is licensed commercially for a limited period for evaluation 
 purposes only. Production use or use beyond the applicable evaluation period is prohibited 
 under this license.
 See http://www.sencha.com/legal/sencha-sdk-software-license-agreement (Trial License) 
@@ -18,7 +18,7 @@ for license terms.
 
 Third Party Content
 ------------------------------------------------------------------------------------------
-The following third party software is distributed with Ext JS 6.5.3.57 and is 
+The following third party software is distributed with Ext JS 7.0.0.156 and is 
 provided under other licenses and/or has source available from other locations. 
 
 Library: YUI 0.6 - drag-and-drop code
@@ -50,7 +50,7 @@ License: Apache
 Location: http://www.fontsquirrel.com/fonts/open-sans
 
 
-Ext JS 6.5.3.57 Examples:
+Ext JS 7.0.0.156 Examples:
 
 Library: Silk Icons 
 Location: http://www.famfamfam.com/lab/icons/silk/

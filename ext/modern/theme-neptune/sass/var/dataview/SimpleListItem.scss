@@ -157,13 +157,13 @@ $listitem-focused-outline-offset: dynamic($dataitem-focused-outline-offset);
 
 /**
  * @var {list}
- * ListItem border-color when pinned
+ * ListItem box-shadow when pinned
  */
-$listitem-pinned-box-shadow: dynamic(0 2px 4px 0 rgba(0, 0, 0, .2));
+$listitem-pinned-box-shadow: dynamic(0 6px 6px -4px rgba(0, 0, 0, .2));
 
 /**
  * @var {list}
- * ListItem border-color when pinned to the bottom
+ * ListItem box-shadow when pinned to the bottom
  */
 $listitem-pinned-bottom-box-shadow: dynamic(invert-shadow($listitem-pinned-box-shadow, y));
 

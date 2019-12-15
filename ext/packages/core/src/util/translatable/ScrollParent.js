@@ -25,8 +25,6 @@ Ext.define('Ext.util.translatable.ScrollParent', {
 
         parent.setScrollLeft(Math.round(-x));
         parent.setScrollTop(Math.round(-y));
-
-        this.callParent([x, y]);
     },
 
     getPosition: function() {

@@ -20,6 +20,10 @@
         z-index: 3;
     }
 
+    &.#{$prefix}listitem-placeholder {
+        height: 1px;
+    }
+
     &.#{$prefix}focused {
         // overflow: visible so that focus outline pseudo element can overlap the borders.
         // Not visible in all cases because it needs to clip listswiper shadow.

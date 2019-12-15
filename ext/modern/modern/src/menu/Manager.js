@@ -23,11 +23,13 @@ Ext.define('Ext.menu.Manager', {
         if (len) {
             // Clone here, we may modify this collection while the loop is active
             allMenus = allMenus.slice();
+
             for (i = 0; i < len; i++) {
                 allMenus[i].hide();
                 result = true;
             }
         }
+
         return result;
     },
 
@@ -43,7 +45,7 @@ Ext.define('Ext.menu.Manager', {
             var me = this;
 
             // Lazily create the mousedown listener on first menu show
-            me.onShow = function () {
+            me.onShow = function() {
                 // This is a separate method to allow calling eagerly in unit tests
                 me.registerGlobalListeners();
 
@@ -51,7 +53,7 @@ Ext.define('Ext.menu.Manager', {
             };
         },
 
-        onGlobalScroll: function (scroller) {
+        onGlobalScroll: function(scroller) {
             var allMenus = this.visible,
                 len = allMenus.length,
                 i, menu;
@@ -61,15 +63,17 @@ Ext.define('Ext.menu.Manager', {
             if (len && scroller !== Ext.scroll.Scroller.viewport) {
                 // Clone here, we may modify this collection while the loop is active
                 allMenus = allMenus.slice();
+
                 for (i = 0; i < len; ++i) {
                     menu = allMenus[i];
+
                     // If the scroller logically "owns" (the menu, or any parents),
                     // then it will impact alignment so we need to hide the menu.
                     if (scroller.contains(menu)) {
                         menu.hide();
                     }
-                 }
-             }
+                }
+            }
         },
 
         checkActiveMenus: function(e) {
@@ -81,6 +85,7 @@ Ext.define('Ext.menu.Manager', {
             if (len) {
                 // Clone here, we may modify this collection while the loop is active
                 allMenus = allMenus.slice();
+
                 for (i = 0; i < len; ++i) {
                     menu = allMenus[i];
 
@@ -88,11 +93,13 @@ Ext.define('Ext.menu.Manager', {
                     //      The menu does not own the clicked upon element AND
                     //      The menu is not the child menu of a clicked upon component AND
                     //          that component is not a menu owner (which will manage the hiding).
-                    if (!(menu.owns(e) || (mousedownCmp && mousedownCmp.isMenuOwner && mousedownCmp.getMenu() === menu))) {
+                    if (!(menu.owns(e) || (
+                        mousedownCmp && mousedownCmp.isMenuOwner && mousedownCmp.getMenu() === menu
+                    ))) {
                         menu.hide();
                     }
-                 }
-             }
+                }
+            }
         },
 
         /**
@@ -126,9 +133,13 @@ Ext.define('Ext.menu.Manager', {
                 scrollstart: me.onGlobalScroll,
                 scope: me
             });
+
             //<debug>
-            //These persistent listeners must be tolerated in unit tests
-            if (window.jasmine && jasmine.addAllowedListener) {
+            // These persistent listeners must be tolerated in unit tests
+            // eslint-disable-next-line vars-on-top
+            var jasmine = window.jasmine;
+
+            if (jasmine && jasmine.addAllowedListener) {
                 jasmine.addAllowedListener('mousedown');
                 jasmine.addAllowedListener('scrollstart');
             }

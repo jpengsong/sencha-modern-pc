@@ -1,5 +1,3 @@
-/* global Ext, jasmine, expect */
-
 topSuite('Ext.grid.NavigationModel',
     ['Ext.grid.Panel', 'Ext.grid.column.Widget', 'Ext.form.field.Number',
      'Ext.Button'],
@@ -27,25 +25,26 @@ function() {
 
     function triggerCellKeyEvent(rowIdx, cellIdx, type, key) {
         var target = findCell(rowIdx, cellIdx);
+
         jasmine.fireKeyEvent(target, type, key);
     }
 
     var describeNotTouch = jasmine.supportsTouch ? xdescribe : describe,
         GridModel = Ext.define(null, {
-        extend: 'Ext.data.Model',
-        fields: [
-            'field1',
-            'field2',
-            'field3',
-            'field4',
-            'field5',
-            'field6',
-            'field7',
-            'field8',
-            'field9',
-            'field10'
-        ]
-    });
+            extend: 'Ext.data.Model',
+            fields: [
+                'field1',
+                'field2',
+                'field3',
+                'field4',
+                'field5',
+                'field6',
+                'field7',
+                'field8',
+                'field9',
+                'field10'
+            ]
+        });
 
     function makeStore(data) {
         store = new Ext.data.Store({
@@ -63,6 +62,7 @@ function() {
                 field10: 10
             }]
         });
+
         return store;
     }
 
@@ -76,6 +76,7 @@ function() {
             var colCount = typeof columns === 'number' ? columns : 10;
 
             columns = [];
+
             for (i = 1; i <= colCount; i++) {
                 columns.push({
                     dataIndex: 'field' + i,
@@ -91,13 +92,16 @@ function() {
         if (typeof data === 'number') {
             dataCount = data;
             data = [];
+
             for (i = 0; i < dataCount; i++) {
                 dataRow = {
                     id: 'rec' + i
                 };
+
                 for (var j = 0; j < columns.length; j++) {
                     dataRow[columns[j].dataIndex] = (i + 1) + ', ' + (j + 1);
                 }
+
                 data.push(dataRow);
             }
         }
@@ -133,7 +137,7 @@ function() {
     var proto = Ext.view.Table.prototype,
         grid, colRef, store, view, selModel, navModel;
 
-    afterEach(function(){
+    afterEach(function() {
         Ext.destroy(grid);
         grid = null;
         view = null;
@@ -181,9 +185,9 @@ function() {
             // Wait until the NavigationModel has processed the onFocusEnter, and synched its position
             waitsFor(function() {
                 var pos = view.getNavigationModel().getPosition();
+
                 return pos !== null && pos.isEqual(focusContext) && Ext.Element.getActiveElement() === focusContext.getCell(true);
             }, 'for position(0,0) to be focused');
-
 
             runs(function() {
                 focusContext = new Ext.grid.CellContext(view).setPosition(2, 2);
@@ -212,6 +216,7 @@ function() {
                             bufferedRenderer: buffered
                         });
                         var cell = view.getCell(store.getAt(0), colRef[0]);
+
                         focusAndWait(cell);
                         runs(function() {
                             store.removeAt(1);
@@ -219,6 +224,7 @@ function() {
                         expectFocused(cell);
                         runs(function() {
                             var pos = new Ext.grid.CellContext(view).setPosition(0, 0);
+
                             expect(navModel.getPosition().isEqual(pos)).toBe(true);
                         });
                     });
@@ -238,6 +244,7 @@ function() {
 
                     it("should retain focus on the locked part", function() {
                         var cell = view.getCell(store.getAt(0), colRef[0]);
+
                         focusAndWait(cell);
                         runs(function() {
                             store.removeAt(1);
@@ -245,12 +252,14 @@ function() {
                         expectFocused(cell);
                         runs(function() {
                             var pos = new Ext.grid.CellContext(view).setPosition(0, 0);
+
                             expect(navModel.getPosition().isEqual(pos)).toBe(true);
                         });
                     });
 
                     it("should retain focus on the unlocked part", function() {
                         var cell = view.getCell(store.getAt(0), colRef[1]);
+
                         focusAndWait(cell);
                         runs(function() {
                             store.removeAt(1);
@@ -258,6 +267,7 @@ function() {
                         expectFocused(cell);
                         runs(function() {
                             var pos = new Ext.grid.CellContext(view).setPosition(0, 1);
+
                             expect(navModel.getPosition().isEqual(pos)).toBe(true);
                         });
                     });
@@ -268,7 +278,7 @@ function() {
         makeRemovalSuite(false);
         makeRemovalSuite(true);
     });
-    
+
     describe("navigation with keys", function() {
         var E = Ext.event.Event;
 
@@ -423,7 +433,7 @@ function() {
                 });
             });
         });
-        
+
         describe('navigation in a non-locking grid', function() {
             it('should wrap and navigate correctly', function() {
                 makeGrid(4, 100);
@@ -572,9 +582,9 @@ function() {
                 extend: 'Ext.data.Model',
                 idProperty: 'peopleId',
                 fields: [
-                    {name: 'name', type: 'string'},
-                    {name: 'age', type: 'int'},
-                    {name: 'location', type: 'string'}
+                    { name: 'name', type: 'string' },
+                    { name: 'age', type: 'int' },
+                    { name: 'location', type: 'string' }
                 ]
             }),
             store,
@@ -587,9 +597,9 @@ function() {
             store = Ext.create('Ext.data.Store', Ext.apply({
                 model: People,
                 data: [
-                    {name: 'Jimmy', age: 22, location: 'United States'},
-                    {name: 'Sally', age: 25, location: 'England'},
-                    {name: 'Billy', age: 26, location: 'Mexico'}
+                    { name: 'Jimmy', age: 22, location: 'United States' },
+                    { name: 'Sally', age: 25, location: 'England' },
+                    { name: 'Billy', age: 26, location: 'Mexico' }
                 ]
             }, storeCfg));
             grid = Ext.create('Ext.grid.Panel', Ext.apply({
@@ -607,7 +617,7 @@ function() {
                     flex: 1,
                     dataIndex: 'name'
                 }, {
-                    id : 'locId',
+                    id: 'locId',
                     text: 'Location',
                     width: 160,
                     dataIndex: 'location',
@@ -623,13 +633,13 @@ function() {
                         }
                     }
                 }, {
-                    xtype : 'widgetcolumn',
+                    xtype: 'widgetcolumn',
                     header: 'Age',
-                    width : 80,
+                    width: 80,
                     dataIndex: 'age',
-                    stopSelection : true,
-                    widget : {
-                            xtype : 'numberfield'
+                    stopSelection: true,
+                    widget: {
+                            xtype: 'numberfield'
                     }
                 }]
             }, gridCfg));
@@ -645,12 +655,13 @@ function() {
         });
         it('should select when clicking a widget and stopSelection is false', function() {
             var row0Button = widgetColumn.getWidget(store.getAt(0));
-            
+
             jasmine.fireMouseEvent(row0Button.el, 'click');
 
             // The selection must get set
             waitsFor(function() {
                 pos = grid.getSelectionModel().getPosition();
+
                 return pos && pos.rowIdx === 0 && pos.colIdx === 1;
             });
         });
@@ -683,7 +694,7 @@ function() {
                 // Sort ascending
                 jasmine.fireKeyEvent(Ext.Element.getActiveElement(), 'keydown', Ext.event.Event.RIGHT);
             });
-            
+
             waitsFor(function() {
                 return new Ext.grid.CellContext(view).setPosition(0, 2).isEqual(navModel.getPosition());
             }, 'cell 0,2 to focus');

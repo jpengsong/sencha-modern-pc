@@ -1,24 +1,22 @@
-/* global expect, Ext */
-
 topSuite("Ext.chart.series.Area", ['Ext.chart.*', 'Ext.data.ArrayStore'], function() {
     var chart;
-    
+
     beforeEach(function() {
         // Silence warnings regarding Sencha download server
         spyOn(Ext.log, 'warn');
     });
-    
+
     afterEach(function() {
         Ext.destroy(chart);
     });
 
-    describe('renderer', function () {
-        it('should work on markers with style.step = false', function () {
+    describe('renderer', function() {
+        it('should work on markers with style.step = false', function() {
             var red = '#ff0000',
                 green = '#ff0000',
                 layoutDone;
 
-            run(function () {
+            runs(function() {
                 chart = new Ext.chart.CartesianChart({
                     renderTo: Ext.getBody(),
                     width: 300,
@@ -50,7 +48,7 @@ topSuite("Ext.chart.series.Area", ['Ext.chart.*', 'Ext.data.ArrayStore'], functi
                     }],
                     series: [{
                         type: 'area',
-                        renderer: function (sprite, config, rendererData, index) {
+                        renderer: function(sprite, config, rendererData, index) {
                             return {
                                 fillStyle: index % 2 ? red : green
                             };
@@ -60,18 +58,18 @@ topSuite("Ext.chart.series.Area", ['Ext.chart.*', 'Ext.data.ArrayStore'], functi
                         marker: true
                     }],
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
 
-            waitFor(function () {
+            waitFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 var seriesSprite = chart.getSeries()[0].getSprites()[0],
                     markerCategory = seriesSprite.getId(),
                     markers = seriesSprite.getMarker('markers');
@@ -83,12 +81,12 @@ topSuite("Ext.chart.series.Area", ['Ext.chart.*', 'Ext.data.ArrayStore'], functi
             });
         });
 
-        it('should work on markers with style.step = true', function () {
+        it('should work on markers with style.step = true', function() {
             var red = '#ff0000',
                 green = '#ff0000',
                 layoutDone;
 
-            run(function () {
+            runs(function() {
                 chart = new Ext.chart.CartesianChart({
                     renderTo: Ext.getBody(),
                     width: 300,
@@ -123,7 +121,7 @@ topSuite("Ext.chart.series.Area", ['Ext.chart.*', 'Ext.data.ArrayStore'], functi
                         style: {
                             step: true
                         },
-                        renderer: function (sprite, config, rendererData, index) {
+                        renderer: function(sprite, config, rendererData, index) {
                             return {
                                 fillStyle: index % 2 ? red : green
                             };
@@ -133,18 +131,18 @@ topSuite("Ext.chart.series.Area", ['Ext.chart.*', 'Ext.data.ArrayStore'], functi
                         marker: true
                     }],
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
 
-            waitFor(function () {
+            waitFor(function() {
                 return layoutDone;
             });
 
-            run(function () {
+            runs(function() {
                 var seriesSprite = chart.getSeries()[0].getSprites()[0],
                     markerCategory = seriesSprite.getId(),
                     markers = seriesSprite.getMarker('markers');
@@ -156,5 +154,4 @@ topSuite("Ext.chart.series.Area", ['Ext.chart.*', 'Ext.data.ArrayStore'], functi
             });
         });
     });
-
 });

@@ -11,6 +11,7 @@
  * See the {@link #has} property/method for details of the features that can be detected.
  *
  */
+/* eslint-disable vars-on-top */
 Ext.feature = {
 // @define Ext.env.Feature
 // @define Ext.feature
@@ -41,7 +42,7 @@ Ext.feature = {
      * @param {String} name The feature name to check.
      * @return {Boolean}
      */
-    has: function (name) {
+    has: function(name) {
         return !!this.has[name];
     },
 
@@ -116,7 +117,7 @@ Ext.feature = {
     // This is a local copy of certain logic from Element.getStyle
     // to break a dependancy between the supports mechanism and Element
     // use this instead of element references to check for styling info
-    getStyle: function (element, styleName) {
+    getStyle: function(element, styleName) {
         var view = element.ownerDocument.defaultView,
             style = (view ? view.getComputedStyle(element, null) : element.currentStyle);
 
@@ -146,7 +147,7 @@ Ext.feature = {
      * and ensures that all flags have been set.
      * @private
      */
-    detect: function (isReady) {
+    detect: function(isReady) {
         var me = this,
             doc = document,
             toRun = me.toRun || me.tests,
@@ -165,16 +166,18 @@ Ext.feature = {
                 '<div style="height:20px;width:20px;"></div>' +
             '</div>' +
             '<div style="width: 200px; height: 200px; position: relative; padding: 5px;">' +
-                '<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>' +
+                '<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>' + // eslint-disable-line max-len
             '</div>' +
             '<div style="position: absolute; left: 10%; top: 10%;"></div>' +
             '<div style="float:left; background-color:transparent;"></div>';
+
         if (isReady) {
             doc.body.appendChild(div);
         }
         //</feature>
 
         vector = me.preDetected[Ext.browser.identity] || [];
+
         while (n--) {
             test = toRun[n];
             value = vector[n];
@@ -194,7 +197,8 @@ Ext.feature = {
             // Store test results on Ext.supports and Ext.feature.has
             if (name) {
                 supports[name] = has[name] = value;
-            } else if (names) {
+            }
+            else if (names) {
                 while (names.length) {
                     name = names.pop();
                     supports[name] = has[name] = value;
@@ -210,7 +214,7 @@ Ext.feature = {
     },
 
     //</debug>
-    report: function () {
+    report: function() {
         var values = [],
             len = this.tests.length,
             i;
@@ -246,7 +250,9 @@ Ext.feature = {
         name: 'CloneNodeCopiesExpando',
         fn: function() {
             var el = document.createElement('div');
+
             el.expandoProp = {};
+
             return el.cloneNode().expandoProp === el.expandoProp;
         }
     }, {
@@ -258,10 +264,10 @@ Ext.feature = {
          * @type {Boolean}
          */
         name: 'CSSPointerEvents',
-        fn: function (doc) {
+        fn: function(doc) {
             return 'pointerEvents' in doc.documentElement.style;
         }
-    },{
+    }, {
         /**
          * @property CSS3BoxShadow `true` if document environment supports the CSS3
          * box-shadow style.
@@ -270,8 +276,10 @@ Ext.feature = {
          * @type {Boolean}
          */
         name: 'CSS3BoxShadow',
-        fn: function (doc) {
-            return 'boxShadow' in doc.documentElement.style || 'WebkitBoxShadow' in doc.documentElement.style || 'MozBoxShadow' in doc.documentElement.style;
+        fn: function(doc) {
+            return 'boxShadow' in doc.documentElement.style ||
+                   'WebkitBoxShadow' in doc.documentElement.style ||
+                   'MozBoxShadow' in doc.documentElement.style;
         }
     }, {
         name: 'CSS3NegationSelector',
@@ -285,7 +293,7 @@ Ext.feature = {
 
             return true;
         }
-    },{
+    }, {
         /**
          * @property ClassList `true` if document environment supports the HTML5
          * classList API.
@@ -294,10 +302,10 @@ Ext.feature = {
          * @type {Boolean}
          */
         name: 'ClassList',
-        fn: function (doc) {
+        fn: function(doc) {
             return !!doc.documentElement.classList;
         }
-    },{
+    }, {
         /**
          * @property Canvas `true` if the device supports Canvas.
          *
@@ -307,9 +315,10 @@ Ext.feature = {
         name: 'Canvas',
         fn: function() {
             var element = this.getTestElement('canvas');
+
             return !!(element && element.getContext && element.getContext('2d'));
         }
-    },{
+    }, {
         /**
          * @property Svg `true` if the device supports SVG.
          *
@@ -318,9 +327,10 @@ Ext.feature = {
          */
         name: 'Svg',
         fn: function(doc) {
+            /* eslint-disable-next-line max-len */
             return !!(doc.createElementNS && !!doc.createElementNS("http:/" + "/www.w3.org/2000/svg", "svg").createSVGRect);
         }
-    },{
+    }, {
         /**
          * @property Vml `true` if the device supports VML.
          * @type {Boolean}
@@ -338,7 +348,7 @@ Ext.feature = {
 
             return ret;
         }
-    },{
+    }, {
         /**
          * @property {Boolean} Touch `true` if the browser supports touch input.
          *
@@ -348,6 +358,7 @@ Ext.feature = {
         fn: function() {
             // IE10 uses a vendor-prefixed maxTouchPoints property
             var maxTouchPoints = navigator.msMaxTouchPoints || navigator.maxTouchPoints;
+
             // if the browser has touch events we can be reasonably sure the device has
             // a touch screen
             // browsers that use pointer event have maxTouchPoints > 1 if the
@@ -358,9 +369,9 @@ Ext.feature = {
             // Chrome Desktop > 39 properly reports maxTouchPoints === 0 and
             // Chrome Desktop Device Emulation mode reports maxTouchPoints === 1
             if (Ext.browser.is.Chrome && Ext.browser.version.isLessThanOrEqual(39)) {
-                return (Ext.supports.TouchEvents && maxTouchPoints !== 1) ||
-                    maxTouchPoints > 1;
-            } else {
+                return (Ext.supports.TouchEvents && maxTouchPoints !== 1) || maxTouchPoints > 1;
+            }
+            else {
                 return Ext.supports.TouchEvents || maxTouchPoints > 0;
             }
         }
@@ -373,15 +384,19 @@ Ext.feature = {
          * `true` If the event system should use [pointer events](https://www.w3.org/TR/pointerevents/).
          * Currently only set to true if the browser supports pointer events and does not
          * also support touch events.  Touch events are preferred since they allow run-time
-         * cancellation of browser default behavior such as scrolling by invoking `e.preventDefault()`
-         * whereas pointer events require such intentions to be declared in advance via
-         * CSS [touch-action](https://www.w3.org/TR/pointerevents/#h3_the-touch-action-css-property).
+         * cancellation of browser default behavior such as scrolling by invoking
+         * `e.preventDefault()` whereas pointer events require such intentions to be declared
+         * in advance via CSS [touch-action](https://www.w3.org/TR/pointerevents/#h3_the-touch-action-css-property).
          * This means that when pointer events are used, certain interactions are not possible
          * such as long-press to drag within a scrollable element.
          */
         name: 'PointerEvents',
-        fn: function () {
-            return !!(window.PointerEvent && !Ext.supports.TouchEvents);
+        fn: function() {
+            var pointerEvent = window.PointerEvent,
+                nav = window.navigator,
+                pointerEnabled = !!(pointerEvent && (nav.pointerEnabled || !Ext.isIE));
+
+            return pointerEnabled && !Ext.supports.TouchEvents;
         }
     }, {
         /**
@@ -389,10 +404,10 @@ Ext.feature = {
          * @private
          */
         name: 'MSPointerEvents',
-        fn: function () {
+        fn: function() {
             return Ext.isIE10;
         }
-    },{
+    }, {
         /**
          * @property {Boolean} TouchEvents
          *
@@ -419,11 +434,11 @@ Ext.feature = {
          */
         name: 'TouchAction',
         ready: true,
-        fn: function (doc, div) {
+        fn: function(doc, div) {
             if (!window.getComputedStyle) {
                 return 0;
             }
-            
+
             var values = ['pan-x', 'pan-y', 'pinch-zoom', 'double-tap-zoom'],
                 flags = [1, 2, 4, 8],
                 ln = values.length,
@@ -441,7 +456,7 @@ Ext.feature = {
 
             return flag;
         }
-    },{
+    }, {
         /**
          * @property Orientation `true` if the device supports different orientations.
          * @type {Boolean}
@@ -452,7 +467,7 @@ Ext.feature = {
         fn: function() {
             return ('orientation' in window) && this.isEventSupported('orientationchange');
         }
-    },{
+    }, {
         /**
          * @property OrientationChange `true` if the device supports the `orientationchange`
          * event.
@@ -464,7 +479,7 @@ Ext.feature = {
         fn: function() {
             return this.isEventSupported('orientationchange');
         }
-    },{
+    }, {
         /**
          * @property DeviceMotion `true` if the device supports device motion (acceleration
          * and rotation rate).
@@ -476,7 +491,7 @@ Ext.feature = {
         fn: function() {
             return this.isEventSupported('devicemotion');
         }
-    },{
+    }, {
         /**
          * @property Geolocation `true` if the device supports GeoLocation.
          * @type {Boolean}
@@ -492,17 +507,17 @@ Ext.feature = {
         fn: function() {
             return 'geolocation' in window.navigator;
         }
-    },{
+    }, {
         name: 'SqlDatabase',
         fn: function() {
             return 'openDatabase' in window;
         }
-    },{
+    }, {
         name: 'WebSockets',
         fn: function() {
             return 'WebSocket' in window;
         }
-    },{
+    }, {
         /**
          * @property Range `true` if browser support document.createRange native method.
          * See https://developer.mozilla.org/en/DOM/range.
@@ -514,7 +529,7 @@ Ext.feature = {
         fn: function() {
             return !!document.createRange;
         }
-    },{
+    }, {
         /**
          * @property CreateContextualFragment `true` if browser support CreateContextualFragment
          * range native methods.
@@ -526,9 +541,10 @@ Ext.feature = {
         name: 'CreateContextualFragment',
         fn: function() {
             var range = !!document.createRange ? document.createRange() : false;
+
             return range && !!range.createContextualFragment;
         }
-    },{
+    }, {
         /**
          * @property History `true` if the device supports HTML5 history. See
          * https://developer.mozilla.org/en/DOM/Manipulating_the_browser_history
@@ -540,7 +556,7 @@ Ext.feature = {
         fn: function() {
             return ('history' in window && 'pushState' in window.history);
         }
-    },{
+    }, {
         /**
          * @property Css3DTransforms `true` if the device supports CSS3DTransform.
          * @type {Boolean}
@@ -550,27 +566,30 @@ Ext.feature = {
         name: 'Css3dTransforms',
         fn: function() {
             // See https://sencha.jira.com/browse/TOUCH-1544
+
             return this.has('CssTransforms') && this.isStyleSupported('perspective');
+
             // TODO - double check vs Ext JS flavor:
-            //return (typeof WebKitCSSMatrix != 'undefined' && new WebKitCSSMatrix().hasOwnProperty('m41'));
+            /* eslint-disable-next-line max-len */
+            // return (typeof WebKitCSSMatrix != 'undefined' && new WebKitCSSMatrix().hasOwnProperty('m41'));
         }
-    },{
+    }, {
         // Important that this goes after Css3dTransforms, since tests are run in reverse order
         name: 'CssTransforms',
         fn: function() {
             return this.isStyleSupported('transform');
         }
-    },{
+    }, {
         name: 'CssTransformNoPrefix',
         fn: function() {
             return this.isStyleSupportedWithoutPrefix('transform');
         }
-    },{
+    }, {
         name: 'CssAnimations',
         fn: function() {
             return this.isStyleSupported('animationName');
         }
-    },{
+    }, {
         /**
          * @property Transitions `true` if the device supports CSS3 Transitions.
          *
@@ -581,7 +600,7 @@ Ext.feature = {
         fn: function() {
             return this.isStyleSupported('transitionProperty');
         }
-    },{
+    }, {
         /**
          * @property Audio `true` if the device supports the HTML5 `audio` tag.
          *
@@ -597,7 +616,7 @@ Ext.feature = {
         fn: function() {
             return !!this.getTestElement('audio').canPlayType;
         }
-    },{
+    }, {
         /**
          * @property Video `true` if the device supports the HTML5 `video` tag.
          *
@@ -608,7 +627,7 @@ Ext.feature = {
         fn: function() {
             return !!this.getTestElement('video').canPlayType;
         }
-    },{
+    }, {
         /**
          * @property LocalStorage `true` if localStorage is supported.
          *
@@ -620,14 +639,18 @@ Ext.feature = {
             try {
                 // IE10/Win8 throws "Access Denied" accessing window.localStorage, so
                 // this test needs to have a try/catch
-                if ('localStorage' in window && window['localStorage'] !== null) { // jshint ignore:line
-                    //this should throw an error in private browsing mode in iOS as well
+                /* eslint-disable-next-line dot-notation */
+                if ('localStorage' in window && window['localStorage'] !== null) {
+                    // this should throw an error in private browsing mode in iOS as well
                     localStorage.setItem('sencha-localstorage-test', 'test success');
-                    //clean up if setItem worked
+
+                    // clean up if setItem worked
                     localStorage.removeItem('sencha-localstorage-test');
+
                     return true;
                 }
-            } catch ( e ) {
+            }
+            catch (e) {
                 // ignore
             }
 
@@ -644,18 +667,19 @@ Ext.feature = {
         fn: function() {
             var xmlString = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><root></root>',
                 xmlDoc;
-            
+
             // IE10 doesn't create IXMLDOMDocument via DOMParser
             if (window.ActiveXObject) {
-                xmlDoc = new ActiveXObject("Microsoft.xmlDOM");
-                xmlDoc.async = false;
+                xmlDoc = new ActiveXObject("Microsoft.xmlDOM"); // eslint-disable-line no-undef
+                xmlDoc.async = false; // eslint-disable-line id-blacklist
                 xmlDoc.loadXML(xmlString);
             }
             else if (window.DOMParser) {
                 var parser = new DOMParser();
+
                 xmlDoc = parser.parseFromString(xmlString, 'text/xml');
             }
-            
+
             return xmlDoc ? !!xmlDoc.lastChild.querySelector : false;
         }
     }, {
@@ -667,7 +691,7 @@ Ext.feature = {
          */
         name: 'XHR2',
         fn: function() {
-          return window.ProgressEvent && window.FormData && window.XMLHttpRequest &&
+            return window.ProgressEvent && window.FormData && window.XMLHttpRequest &&
               ('withCredentials' in new XMLHttpRequest());
         }
     }, {
@@ -680,10 +704,14 @@ Ext.feature = {
          */
         name: 'XHRUploadProgress',
         fn: function() {
-            if(window.XMLHttpRequest && !Ext.browser.is.AndroidStock) {
-                var xhr = new XMLHttpRequest();
+            var xhr;
+
+            if (window.XMLHttpRequest && !Ext.browser.is.AndroidStock) {
+                xhr = new XMLHttpRequest();
+
                 return xhr && ('upload' in xhr) && ('onprogress' in xhr.upload);
             }
+
             return false;
         }
     }, {
@@ -698,15 +726,14 @@ Ext.feature = {
         fn: function() {
             return !(Ext.browser.is.AndroidStock4 && Ext.os.version.getMinor() < 2);
         }
-    },
-
-    /**
-     * @property {String} matchesSelector
-     * The method name which matches an element against a selector if implemented in this environment.
-     *
-     * This property is available at application boot time, before document ready.
-     */
-    {
+    }, {
+        /**
+         * @property {String} matchesSelector
+         * The method name which matches an element against a selector if implemented in this
+         * environment.
+         *
+         * This property is available at application boot time, before document ready.
+         */
         name: 'matchesSelector',
         fn: function() {
             var el = document.documentElement,
@@ -717,58 +744,56 @@ Ext.feature = {
 
             return el[w3] ? w3 : el[wk] ? wk : el[ms] ? ms : el[mz] ? mz : null;
         }
-    },
-
-    //<feature legacyBrowser>
-    /**
-     * @property RightMargin `true` if the device supports right margin.
-     * See https://bugs.webkit.org/show_bug.cgi?id=13343 for why this is needed.
-     *
-     * This property is *NOT* available at application boot time. Only after the document ready event.
-     * @type {Boolean}
-     */
-    {
+    }, {
+        //<feature legacyBrowser>
+        /**
+         * @property RightMargin `true` if the device supports right margin.
+         * See https://bugs.webkit.org/show_bug.cgi?id=13343 for why this is needed.
+         *
+         * This property is *NOT* available at application boot time. Only after the document
+         * ready event.
+         * @type {Boolean}
+         */
         name: 'RightMargin',
         ready: true,
         fn: function(doc, div) {
             var view = doc.defaultView;
+
+            /* eslint-disable-next-line max-len */
             return !(view && view.getComputedStyle(div.firstChild.firstChild, null).marginRight !== '0px');
         }
-    },
-
-    /**
-     * @property DisplayChangeInputSelectionBug `true` if INPUT elements lose their
-     * selection when their display style is changed. Essentially, if a text input
-     * has focus and its display style is changed, the I-beam disappears.
-     *
-     * This bug is encountered due to the work around in place for the {@link #RightMargin}
-     * bug. This has been observed in Safari 4.0.4 and older, and appears to be fixed
-     * in Safari 5. It's not clear if Safari 4.1 has the bug, but it has the same WebKit
-     * version number as Safari 5 (according to http://unixpapa.com/js/gecko.html).
-     *
-     * This property is available at application boot time, before document ready.
-     */
-    {
+    }, {
+        /**
+         * @property DisplayChangeInputSelectionBug `true` if INPUT elements lose their
+         * selection when their display style is changed. Essentially, if a text input
+         * has focus and its display style is changed, the I-beam disappears.
+         *
+         * This bug is encountered due to the work around in place for the {@link #RightMargin}
+         * bug. This has been observed in Safari 4.0.4 and older, and appears to be fixed
+         * in Safari 5. It's not clear if Safari 4.1 has the bug, but it has the same WebKit
+         * version number as Safari 5 (according to http://unixpapa.com/js/gecko.html).
+         *
+         * This property is available at application boot time, before document ready.
+         */
         name: 'DisplayChangeInputSelectionBug',
         fn: function() {
             var webKitVersion = Ext.webKitVersion;
+
             // WebKit but older than Safari 5 or Chrome 6:
             return 0 < webKitVersion && webKitVersion < 533;
         }
-    },
-
-    /**
-     * @property DisplayChangeTextAreaSelectionBug `true` if TEXTAREA elements lose their
-     * selection when their display style is changed. Essentially, if a text area has
-     * focus and its display style is changed, the I-beam disappears.
-     *
-     * This bug is encountered due to the work around in place for the {@link #RightMargin}
-     * bug. This has been observed in Chrome 10 and Safari 5 and older, and appears to
-     * be fixed in Chrome 11.
-     *
-     * This property is available at application boot time, before document ready.
-     */
-    {
+    }, {
+        /**
+         * @property DisplayChangeTextAreaSelectionBug `true` if TEXTAREA elements lose their
+         * selection when their display style is changed. Essentially, if a text area has
+         * focus and its display style is changed, the I-beam disappears.
+         *
+         * This bug is encountered due to the work around in place for the {@link #RightMargin}
+         * bug. This has been observed in Chrome 10 and Safari 5 and older, and appears to
+         * be fixed in Chrome 11.
+         *
+         * This property is available at application boot time, before document ready.
+         */
         name: 'DisplayChangeTextAreaSelectionBug',
         fn: function() {
             var webKitVersion = Ext.webKitVersion;
@@ -791,58 +816,57 @@ Ext.feature = {
             */
             return 0 < webKitVersion && webKitVersion < 534.24;
         }
-    },
-
-    /**
-     * @property TransparentColor `true` if the device supports transparent color.
-     * @type {Boolean}
-     *
-     * This property is *NOT* available at application boot time. Only after the document ready event.
-     */
-    {
+    }, {
+        /**
+         * @property TransparentColor `true` if the device supports transparent color.
+         * @type {Boolean}
+         *
+         * This property is *NOT* available at application boot time. Only after the document
+         * ready event.
+         */
         name: 'TransparentColor',
         ready: true,
         fn: function(doc, div, view) {
             view = doc.defaultView;
+
+            /* eslint-disable-next-line max-len */
             return !(view && view.getComputedStyle(div.lastChild, null).backgroundColor !== 'transparent');
         }
-    },
-
-    /**
-     * @property ComputedStyle `true` if the browser supports document.defaultView.getComputedStyle().
-     * @type {Boolean}
-     *
-     * This property is *NOT* available at application boot time. Only after the document ready event.
-     */
-    {
+    }, {
+        /**
+         * @property ComputedStyle `true` if the browser supports
+         * document.defaultView.getComputedStyle().
+         * @type {Boolean}
+         *
+         * This property is *NOT* available at application boot time. Only after the document
+         * ready event.
+         */
         name: 'ComputedStyle',
         ready: true,
         fn: function(doc, div, view) {
             view = doc.defaultView;
+
             return !!(view && view.getComputedStyle);
         }
-    },
-
-    /**
-     * @property Float `true` if the device supports CSS float.
-     * @type {Boolean}
-     *
-     * This property is available at application boot time, before document ready.
-     */
-    {
+    }, {
+        /**
+         * @property Float `true` if the device supports CSS float.
+         * @type {Boolean}
+         *
+         * This property is available at application boot time, before document ready.
+         */
         name: 'Float',
         fn: function(doc) {
             return 'cssFloat' in doc.documentElement.style;
         }
-    },
-
-    /**
-     * @property CSS3BorderRadius `true` if the device supports CSS3 border radius.
-     * @type {Boolean}
-     *
-     * This property is *NOT* available at application boot time. Only after the document ready event.
-     */
-    {
+    }, {
+        /**
+         * @property CSS3BorderRadius `true` if the device supports CSS3 border radius.
+         * @type {Boolean}
+         *
+         * This property is *NOT* available at application boot time. Only after the document
+         * ready event.
+         */
         name: 'CSS3BorderRadius',
         ready: true,
         fn: function(doc) {
@@ -850,130 +874,123 @@ Ext.feature = {
                                'WebkitBorderRadius', 'OBorderRadius', 'KhtmlBorderRadius'],
                 pass = false,
                 i;
+
             for (i = 0; i < domPrefixes.length; i++) {
                 if (doc.documentElement.style[domPrefixes[i]] !== undefined) {
                     pass = true;
                 }
             }
+
             return pass && !Ext.isIE9;
         }
-    },
-
-    /**
-     * @property CSS3LinearGradient `true` if the device supports CSS3 linear gradients.
-     * @type {Boolean}
-     *
-     * This property is available at application boot time, before document ready.
-     */
-    {
+    }, {
+        /**
+         * @property CSS3LinearGradient `true` if the device supports CSS3 linear gradients.
+         * @type {Boolean}
+         *
+         * This property is available at application boot time, before document ready.
+         */
         name: 'CSS3LinearGradient',
         fn: function(doc, div) {
             var property = 'background-image:',
-                webkit   = '-webkit-gradient(linear, left top, right bottom, from(black), to(white))',
-                w3c      = 'linear-gradient(left top, black, white)',
-                moz      = '-moz-' + w3c,
-                ms       = '-ms-' + w3c,
-                opera    = '-o-' + w3c,
-                options  = [property + webkit, property + w3c, property + moz, property + ms, property + opera];
+                webkit = '-webkit-gradient(linear, left top, right bottom, from(black), to(white))',
+                w3c = 'linear-gradient(left top, black, white)',
+                moz = '-moz-' + w3c,
+                ms = '-ms-' + w3c,
+                opera = '-o-' + w3c,
+                options = [property + webkit, property + w3c, property + moz, property + ms,
+                           property + opera];
 
             div.style.cssText = options.join(';');
 
             return (("" + div.style.backgroundImage).indexOf('gradient') !== -1) && !Ext.isIE9;
         }
-    },
-
-    /**
-     * @property MouseEnterLeave `true` if the browser supports mouseenter and mouseleave events
-     * @type {Boolean}
-     *
-     * This property is available at application boot time, before document ready.
-     */
-    {
+    }, {
+        /**
+         * @property MouseEnterLeave `true` if the browser supports mouseenter and mouseleave events
+         * @type {Boolean}
+         *
+         * This property is available at application boot time, before document ready.
+         */
         name: 'MouseEnterLeave',
-        fn: function(doc){
+        fn: function(doc) {
             return ('onmouseenter' in doc.documentElement && 'onmouseleave' in doc.documentElement);
         }
-    },
-
-    /**
-     * @property MouseWheel `true` if the browser supports the mousewheel event
-     * @type {Boolean}
-     *
-     * This property is available at application boot time, before document ready.
-     */
-    {
+    }, {
+        /**
+         * @property MouseWheel `true` if the browser supports the mousewheel event
+         * @type {Boolean}
+         *
+         * This property is available at application boot time, before document ready.
+         */
         name: 'MouseWheel',
         fn: function(doc) {
             return ('onmousewheel' in doc.documentElement);
         }
-    },
-
-    /**
-     * @property Opacity `true` if the browser supports normal css opacity
-     * @type {Boolean}
-     *
-     * This property is available at application boot time, before document ready.
-     */
-    {
+    }, {
+        /**
+         * @property Opacity `true` if the browser supports normal css opacity
+         * @type {Boolean}
+         *
+         * This property is available at application boot time, before document ready.
+         */
         name: 'Opacity',
-        fn: function(doc, div){
+        fn: function(doc, div) {
             // Not a strict equal comparison in case opacity can be converted to a number.
             if (Ext.isIE8) {
                 return false;
             }
-            div.firstChild.style.cssText = 'opacity:0.73';
-            return div.firstChild.style.opacity == '0.73'; // jshint ignore:line
-        }
-    },
 
-    /**
-     * @property Placeholder `true` if the browser supports the HTML5 placeholder attribute on inputs
-     * @type {Boolean}
-     *
-     * This property is available at application boot time, before document ready.
-     */
-    {
+            div.firstChild.style.cssText = 'opacity:0.73';
+
+            return div.firstChild.style.opacity == '0.73'; // eslint-disable-line eqeqeq
+        }
+    }, {
+        /**
+         * @property Placeholder `true` if the browser supports the HTML5 placeholder attribute
+         * on inputs
+         * @type {Boolean}
+         *
+         * This property is available at application boot time, before document ready.
+         */
         name: 'Placeholder',
         fn: function(doc) {
             return 'placeholder' in doc.createElement('input');
         }
-    },
-
-    /**
-     * @property Direct2DBug `true` if when asking for an element's dimension via offsetWidth or offsetHeight,
-     * getBoundingClientRect, etc. the browser returns the subpixel width rounded to the nearest pixel.
-     *
-     * This property is available at application boot time, before document ready.
-     * @type {Boolean}
-     */
-    {
+    }, {
+        /**
+         * @property Direct2DBug `true` if when asking for an element's dimension via offsetWidth
+         * or offsetHeight, getBoundingClientRect, etc. the browser returns the subpixel width
+         * rounded to the nearest pixel.
+         *
+         * This property is available at application boot time, before document ready.
+         * @type {Boolean}
+         */
         name: 'Direct2DBug',
         fn: function(doc) {
             return Ext.isString(doc.documentElement.style.msTransformOrigin) && Ext.isIE9m;
         }
-    },
-
-    /**
-     * @property BoundingClientRect `true` if the browser supports the getBoundingClientRect method on elements
-     * @type {Boolean}
-     *
-     * This property is available at application boot time, before document ready.
-     */
-    {
+    }, {
+        /**
+         * @property BoundingClientRect `true` if the browser supports the getBoundingClientRect
+         * method on elements
+         * @type {Boolean}
+         *
+         * This property is available at application boot time, before document ready.
+         */
         name: 'BoundingClientRect',
         fn: function(doc) {
             return 'getBoundingClientRect' in doc.documentElement;
         }
-    },
-
-    /**
-     * @property RotatedBoundingClientRect `true` if the BoundingClientRect is
-     * rotated when the element is rotated using a CSS transform.
-     * @type {Boolean}
-     *
-     * This property is *NOT* available at application boot time. Only after the document ready event.
-     */
-    {
+    }, {
+        /**
+         * @property RotatedBoundingClientRect `true` if the BoundingClientRect is
+         * rotated when the element is rotated using a CSS transform.
+         * @type {Boolean}
+         *
+         * This property is *NOT* available at application boot time. Only after the document
+         * ready event.
+         */
         name: 'RotatedBoundingClientRect',
         ready: true,
         fn: function(doc) {
@@ -1000,15 +1017,15 @@ Ext.feature = {
 
             return supports;
         }
-    },
-    /**
-     * @property ChildContentClearedWhenSettingInnerHTML `true` if created child elements
-     * lose their innerHTML when modifying the innerHTML of the parent element.
-     * @type {Boolean}
-     *
-     * This property is *NOT* available at application boot time. Only after the document ready event.
-     */
-    {
+    }, {
+        /**
+         * @property ChildContentClearedWhenSettingInnerHTML `true` if created child elements
+         * lose their innerHTML when modifying the innerHTML of the parent element.
+         * @type {Boolean}
+         *
+         * This property is *NOT* available at application boot time. Only after the document
+         * ready event.
+         */
         name: 'ChildContentClearedWhenSettingInnerHTML',
         ready: true,
         fn: function() {
@@ -1018,63 +1035,59 @@ Ext.feature = {
             el.innerHTML = '<div>a</div>';
             child = el.firstChild;
             el.innerHTML = '<div>b</div>';
-            return child.innerHTML !== 'a';
 
+            return child.innerHTML !== 'a';
         }
-    },
-    {
+    }, {
         name: 'IncludePaddingInWidthCalculation',
         ready: true,
-        fn: function(doc, div){
+        fn: function(doc, div) {
             return div.childNodes[1].firstChild.offsetWidth === 210;
         }
-    },
-    {
+    }, {
         name: 'IncludePaddingInHeightCalculation',
         ready: true,
-        fn: function(doc, div){
+        fn: function(doc, div) {
             return div.childNodes[1].firstChild.offsetHeight === 210;
         }
-    },
-
-    /**
-     * @property TextAreaMaxLength `true` if the browser supports maxlength on textareas.
-     * @type {Boolean}
-     *
-     * This property is available at application boot time, before document ready.
-     */
-    {
+    }, {
+        /**
+         * @property TextAreaMaxLength `true` if the browser supports maxlength on textareas.
+         * @type {Boolean}
+         *
+         * This property is available at application boot time, before document ready.
+         */
         name: 'TextAreaMaxLength',
-        fn: function(doc){
+        fn: function(doc) {
             return ('maxlength' in doc.createElement('textarea'));
         }
-    },
-    /**
-     * @property GetPositionPercentage `true` if the browser will return the left/top/right/bottom
-     * position as a percentage when explicitly set as a percentage value.
-     *
-     * This property is *NOT* available at application boot time. Only after the document ready event.
-     * @type {Boolean}
-     */
-    // Related bug: https://bugzilla.mozilla.org/show_bug.cgi?id=707691#c7
-    {
+    }, {
+        /**
+         * @property GetPositionPercentage `true` if the browser will return the
+         * left/top/right/bottom position as a percentage when explicitly set as a percentage value.
+         *
+         * This property is *NOT* available at application boot time. Only after the document
+         * ready event.
+         * @type {Boolean}
+         */
+        // Related bug: https://bugzilla.mozilla.org/show_bug.cgi?id=707691#c7
         name: 'GetPositionPercentage',
         ready: true,
-        fn: function(doc, div){
-           return Ext.feature.getStyle(div.childNodes[2], 'left') === '10%';
+        fn: function(doc, div) {
+            return Ext.feature.getStyle(div.childNodes[2], 'left') === '10%';
         }
-    },
-    /**
-     * @property {Boolean} PercentageHeightOverflowBug
-     * In some browsers (IE quirks, IE6, IE7, IE9, chrome, safari and opera at the time
-     * of this writing) a percentage-height element ignores the horizontal scrollbar
-     * of its parent element.  This method returns true if the browser is affected
-     * by this bug.
-     *
-     * This property is *NOT* available at application boot time. Only after the document ready event.
-     * @private
-     */
-    {
+    }, {
+        /**
+         * @property {Boolean} PercentageHeightOverflowBug
+         * In some browsers (IE quirks, IE6, IE7, IE9, chrome, safari and opera at the time
+         * of this writing) a percentage-height element ignores the horizontal scrollbar
+         * of its parent element.  This method returns true if the browser is affected
+         * by this bug.
+         *
+         * This property is *NOT* available at application boot time. Only after the document
+         * ready event.
+         * @private
+         */
         name: 'PercentageHeightOverflowBug',
         ready: true,
         fn: function(doc) {
@@ -1090,6 +1103,7 @@ Ext.feature = {
                 style.overflow = 'auto';
                 style.position = 'absolute';
 
+                /* eslint-disable indent */
                 el.innerHTML = [
                     '<div style="display:table;height:100%;">',
                         // The element that causes the horizontal overflow must be 
@@ -1098,37 +1112,43 @@ Ext.feature = {
                         '<div style="width:51px;"></div>',
                     '</div>'
                 ].join('');
+                /* eslint-enable indent */
+
                 doc.body.appendChild(el);
+
                 if (el.firstChild.offsetHeight === 50) {
                     hasBug = true;
                 }
+
                 doc.body.removeChild(el);
             }
 
             return hasBug;
         }
-    },
-
-    /**
-     * @property {Boolean} xOriginBug
-     * In Chrome 24.0, an RTL element which has vertical overflow positions its right X origin incorrectly.
-     * It skips a non-existent scrollbar which has been moved to the left edge due to the RTL setting.
-     *
-     * http://code.google.com/p/chromium/issues/detail?id=174656
-     *
-     * This method returns true if the browser is affected by this bug.
-     *
-     * This property is *NOT* available at application boot time. Only after the document ready event.
-     * @private
-     */
-    {
+    }, {
+        /**
+         * @property {Boolean} xOriginBug
+         * In Chrome 24.0, an RTL element which has vertical overflow positions its right X origin
+         * incorrectly. It skips a non-existent scrollbar which has been moved to the left edge
+         * due to the RTL setting.
+         *
+         * http://code.google.com/p/chromium/issues/detail?id=174656
+         *
+         * This method returns true if the browser is affected by this bug.
+         *
+         * This property is *NOT* available at application boot time. Only after the document
+         * ready event.
+         * @private
+         */
         name: 'xOriginBug',
         ready: true,
         fn: function(doc, div) {
-           div.innerHTML = '<div id="b1" style="height:100px;width:100px;direction:rtl;position:relative;overflow:scroll">' +
+            /* eslint-disable max-len */
+            div.innerHTML = '<div id="b1" style="height:100px;width:100px;direction:rtl;position:relative;overflow:scroll">' +
                 '<div id="b2" style="position:relative;width:100%;height:20px;"></div>' +
                 '<div id="b3" style="position:absolute;width:20px;height:20px;top:0px;right:0px"></div>' +
             '</div>';
+            /* eslint-enable max-len */
 
             var outerBox = document.getElementById('b1').getBoundingClientRect(),
                 b2 = document.getElementById('b2').getBoundingClientRect(),
@@ -1136,21 +1156,20 @@ Ext.feature = {
 
             return (b2.left !== outerBox.left && b3.right !== outerBox.right);
         }
-    },
-
-    /**
-     * @property {Boolean} ScrollWidthInlinePaddingBug
-     * In some browsers the right padding of an overflowing element is not accounted
-     * for in its scrollWidth.  The result can vary depending on whether or not
-     * The element contains block-level children.  This method tests the effect
-     * of padding on scrollWidth when there are no block-level children inside the
-     * overflowing element.
-     *
-     * This method returns true if the browser is affected by this bug.
-     *
-     * This property is *NOT* available at application boot time. Only after the document ready event.
-     */
-    {
+    }, {
+        /**
+         * @property {Boolean} ScrollWidthInlinePaddingBug
+         * In some browsers the right padding of an overflowing element is not accounted
+         * for in its scrollWidth.  The result can vary depending on whether or not
+         * The element contains block-level children.  This method tests the effect
+         * of padding on scrollWidth when there are no block-level children inside the
+         * overflowing element.
+         *
+         * This method returns true if the browser is affected by this bug.
+         *
+         * This property is *NOT* available at application boot time. Only after the document
+         * ready event.
+         */
         name: 'ScrollWidthInlinePaddingBug',
         ready: true,
         fn: function(doc) {
@@ -1167,165 +1186,168 @@ Ext.feature = {
 
             el.innerHTML =
                 '<span style="display:inline-block;zoom:1;height:60px;width:60px;"></span>';
+
             doc.body.appendChild(el);
+
             if (el.scrollWidth === 70) {
                 hasBug = true;
             }
+
             doc.body.removeChild(el);
 
             return hasBug;
         }
-    },
-
-    /**
-     * @property {Boolean} rtlVertScrollbarOnRight
-     * Safari, in RTL mode keeps the scrollbar at the right side.
-     * This means that when two elements must keep their left/right positions synched, if one has no vert
-     * scrollbar, it must have some extra padding.
-     * See https://sencha.jira.com/browse/EXTJSIV-11245
-     *
-     * This property is *NOT* available at application boot time. Only after the document ready event.
-     * @private
-     */
-    {
+    }, {
+        /**
+         * @property {Boolean} rtlVertScrollbarOnRight
+         * Safari, in RTL mode keeps the scrollbar at the right side.
+         * This means that when two elements must keep their left/right positions synched, if one
+         * has no vert scrollbar, it must have some extra padding.
+         * See https://sencha.jira.com/browse/EXTJSIV-11245
+         *
+         * This property is *NOT* available at application boot time. Only after the document
+         * ready event.
+         * @private
+         */
         name: 'rtlVertScrollbarOnRight',
         ready: true,
         fn: function(doc, div) {
-           div.innerHTML = '<div style="height:100px;width:100px;direction:rtl;overflow:scroll">' +
+            div.innerHTML = '<div style="height:100px;width:100px;direction:rtl;overflow:scroll">' +
                 '<div style="width:20px;height:200px;"></div>' +
             '</div>';
 
             var outerBox = div.firstChild,
                 innerBox = outerBox.firstChild;
 
+            /* eslint-disable-next-line max-len */
             return (innerBox.offsetLeft + innerBox.offsetWidth !== outerBox.offsetLeft + outerBox.offsetWidth);
         }
-    },
-
-    /**
-     * @property {Boolean} rtlVertScrollbarOverflowBug
-     * In Chrome, in RTL mode, horizontal overflow only into the vertical scrollbar does NOT trigger horizontal scrollability.
-     * See https://code.google.com/p/chromium/issues/detail?id=179332
-     * We need to detect this for when a grid header needs to have exactly the same horizontal scrolling range as its table view.
-     * See {@link Ext.grid.ColumnLayout#publishInnerCtSize}
-     * TODO: Remove this when all supported Chrome versions are fixed.
-     *
-     * This property is *NOT* available at application boot time. Only after the document ready event.
-     * @private
-     */
-    {
+    }, {
+        /**
+         * @property {Boolean} rtlVertScrollbarOverflowBug
+         * In Chrome, in RTL mode, horizontal overflow only into the vertical scrollbar does NOT
+         * trigger horizontal scrollability.
+         * See https://code.google.com/p/chromium/issues/detail?id=179332
+         * We need to detect this for when a grid header needs to have exactly the same horizontal
+         * scrolling range as its table view. See {@link Ext.grid.ColumnLayout#publishInnerCtSize}
+         * TODO: Remove this when all supported Chrome versions are fixed.
+         *
+         * This property is *NOT* available at application boot time. Only after the document
+         * ready event.
+         * @private
+         */
         name: 'rtlVertScrollbarOverflowBug',
         ready: true,
         fn: function(doc, div) {
-           div.innerHTML = '<div style="height:100px;width:100px;direction:rtl;overflow:auto">' +
+            div.innerHTML = '<div style="height:100px;width:100px;direction:rtl;overflow:auto">' +
                 '<div style="width:95px;height:200px;"></div>' +
             '</div>';
 
             // If the bug is present, the 95 pixel wide inner div, encroaches into the
-            // vertical scrollbar, but does NOT trigger horizontal overflow, so the clientHeight remains
-            // equal to the offset height.
+            // vertical scrollbar, but does NOT trigger horizontal overflow, so the clientHeight
+            // remains equal to the offset height.
             var outerBox = div.firstChild,
                 style = div.style,
                 pos = style.position;
 
             // This issue seems to require a repaint to measure correctly
             style.position = 'absolute';
+            // eslint-disable-next-line no-unused-expressions
             outerBox.offsetHeight;
             style.position = pos;
 
             return outerBox.clientHeight === outerBox.offsetHeight;
         }
-    },
-    {
+    }, {
         identity: 'defineProperty',
-        fn: function () {
+        fn: function() {
             if (Ext.isIE8m) {
                 Ext.Object.defineProperty = Ext.emptyFn;
+
                 return false;
             }
+
             return true;
         }
-    },
-    {
+    }, {
         identify: 'nativeXhr',
-        fn: function () {
+        fn: function() {
             if (typeof XMLHttpRequest !== 'undefined') {
                 return true;
             }
 
             // Apply a polyfill:
-            XMLHttpRequest = function() { // jshint ignore:line
+
+            XMLHttpRequest = function() { // eslint-disable-line no-global-assign
                 try {
-                    return new ActiveXObject('MSXML2.XMLHTTP.3.0'); // jshint ignore:line
+                    // eslint-disable-next-line no-undef
+                    return new ActiveXObject('MSXML2.XMLHTTP.3.0');
                 }
                 catch (ex) {
                     return null;
                 }
             };
+
             return false;
         }
-    },
-
-    /**
-     * @property {Boolean} SpecialKeyDownRepeat
-     * True if the browser fires the keydown event on specialkey autorepeat
-     *
-     * note 1: IE fires ONLY the keydown event on specialkey autorepeat
-     * note 2: Safari < 3.1, Gecko (Mac/Linux) & Opera fire only the keypress event on
-     * specialkey autorepeat (research done by Jan Wolter at
-     * http://unixpapa.com/js/key.html)
-     * note 3: Opera 12 behaves like other modern browsers so this workaround does not
-     * work anymore
-     *
-     * This property is available at application boot time, before document ready.
-     */
-    {
+    }, {
+        /**
+         * @property {Boolean} SpecialKeyDownRepeat
+         * True if the browser fires the keydown event on specialkey autorepeat
+         *
+         * note 1: IE fires ONLY the keydown event on specialkey autorepeat
+         * note 2: Safari < 3.1, Gecko (Mac/Linux) & Opera fire only the keypress event on
+         * specialkey autorepeat (research done by Jan Wolter at
+         * http://unixpapa.com/js/key.html)
+         * note 3: Opera 12 behaves like other modern browsers so this workaround does not
+         * work anymore
+         *
+         * This property is available at application boot time, before document ready.
+         */
         name: 'SpecialKeyDownRepeat',
         fn: function() {
-            return Ext.isWebKit ?
-                parseInt(navigator.userAgent.match(/AppleWebKit\/(\d+)/)[1], 10) >= 525 :
-                !(!(Ext.isGecko || Ext.isIE || Ext.isEdge) || (Ext.isOpera && Ext.operaVersion < 12));
+            return Ext.isWebKit
+                ? parseInt(navigator.userAgent.match(/AppleWebKit\/(\d+)/)[1], 10) >= 525
+                : !(!(Ext.isGecko || Ext.isIE || Ext.isEdge) || (Ext.isOpera && Ext.operaVersion < 12)); // eslint-disable-line max-len
         }
-    },
-    /**
-     * @property {Boolean} EmulatedMouseOver
-     * True if the browser emulates a mouseover event on tap (mobile safari)
-     *
-     * This property is available at application boot time, before document ready.
-     */
-    {
+    }, {
+        /**
+         * @property {Boolean} EmulatedMouseOver
+         * True if the browser emulates a mouseover event on tap (mobile safari)
+         *
+         * This property is available at application boot time, before document ready.
+         */
         name: 'EmulatedMouseOver',
         fn: function() {
             // TODO: is it possible to feature detect this?
             return Ext.os.is.iOS;
         }
-    },
-
-    /**
-     * @property Hashchange True if the user agent supports the hashchange event
-     *
-     * This property is available at application boot time, before document ready.
-     * @type {Boolean}
-     */
-    {
+    }, {
+        /**
+         * @property Hashchange True if the user agent supports the hashchange event
+         *
+         * This property is available at application boot time, before document ready.
+         * @type {Boolean}
+         */
         // support Vector 12
         name: 'Hashchange',
         fn: function() {
-            // Note that IE8 in IE7 compatibility mode reports true for 'onhashchange' in window, so also test documentMode
+            // Note that IE8 in IE7 compatibility mode reports true for 'onhashchange' in window,
+            // so also test documentMode
             var docMode = document.documentMode;
+
             return 'onhashchange' in window && (docMode === undefined || docMode > 7);
         }
-    },
-
-    /**
-     * @property FixedTableWidthBug
-     * @private
-     * @type {Boolean}
-     * `true` if the browser has this bug: https://bugs.webkit.org/show_bug.cgi?id=130239
-     *
-     * This property is *NOT* available at application boot time. Only after the document ready event.
-     */
-    {
+    }, {
+        /**
+         * @property FixedTableWidthBug
+         * @private
+         * @type {Boolean}
+         * `true` if the browser has this bug: https://bugs.webkit.org/show_bug.cgi?id=130239
+         *
+         * This property is *NOT* available at application boot time. Only after the document
+         * ready event.
+         */
         name: 'FixedTableWidthBug',
         ready: true,
         fn: function() {
@@ -1333,6 +1355,7 @@ Ext.feature = {
                 // IE8 incorrectly detects that we have this bug.
                 return false;
             }
+
             var outer = document.createElement('div'),
                 inner = document.createElement('div'),
                 width;
@@ -1344,7 +1367,8 @@ Ext.feature = {
             document.body.appendChild(outer);
 
             // must poke offsetWidth to trigger a reflow before setting width
-            outer.offsetWidth; // jshint ignore:line
+            // eslint-disable-next-line no-unused-expressions
+            outer.offsetWidth;
 
             outer.style.width = '25px';
 
@@ -1354,20 +1378,18 @@ Ext.feature = {
 
             return width === 50;
         }
-    },
-
-    /**
-     * @property FocusinFocusoutEvents
-     * @private
-     * @type {Boolean}
-     * `true` if the browser supports focusin and focusout events:
-     * https://developer.mozilla.org/en-US/docs/Web/Events/focusin
-     * At this point, only Firefox does not, see this bug:
-     * https://bugzilla.mozilla.org/show_bug.cgi?id=687787
-     *
-     * This property is available at application boot time, before document ready.
-     */
-    {
+    }, {
+        /**
+         * @property FocusinFocusoutEvents
+         * @private
+         * @type {Boolean}
+         * `true` if the browser supports focusin and focusout events:
+         * https://developer.mozilla.org/en-US/docs/Web/Events/focusin
+         * At this point, only Firefox does not, see this bug:
+         * https://bugzilla.mozilla.org/show_bug.cgi?id=687787
+         *
+         * This property is available at application boot time, before document ready.
+         */
         name: 'FocusinFocusoutEvents',
         fn: function() {
             // There is no reliable way to feature detect focusin/focusout event support.
@@ -1376,16 +1398,14 @@ Ext.feature = {
             // focus it will fail when the browser window itself is not focused.
             return !(Ext.isGecko && Ext.firefoxVersion < 52);
         }
-    },
-
-    /**
-     * @property {Boolean} AsyncFocusEvents
-     * `true` if the browser fires focus events (focus, blur, focusin, focusout)
-     * asynchronously, i.e. in a separate event loop invocation. This is only true
-     * for all versions Internet Explorer; Microsoft Edge and other browsers fire
-     * focus events synchronously.
-     */
-    {
+    }, {
+        /**
+         * @property {Boolean} AsyncFocusEvents
+         * `true` if the browser fires focus events (focus, blur, focusin, focusout)
+         * asynchronously, i.e. in a separate event loop invocation. This is only true
+         * for all versions Internet Explorer; Microsoft Edge and other browsers fire
+         * focus events synchronously.
+         */
         name: 'AsyncFocusEvents',
         fn: function() {
             // The sad part is that we can't feature detect this because the focus
@@ -1394,26 +1414,23 @@ Ext.feature = {
             // Private shortcut for brevity
             return Ext.asyncFocus = !!Ext.isIE;
         }
-    },
-
+    }, {
     //</feature>
-
-    /**
-     * @property {Object} accessibility Accessibility features.
-     *
-     * @property {Boolean} accessibility.Images `true` if the browser is configured
-     * to display images.
-     *
-     * @property {Boolean} accessibility.BackgroundImages `true` if the browser
-     * is configured to display background images.
-     *
-     * @property {Boolean} accessibility.BorderColors `true` if the browser
-     * is configured to honor CSS styling for border colors.
-     *
-     * @property {Boolean} accessibility.LightOnDark `true` if the browser
-     * is currently using reverse colors in light-on-dark accessibility mode.
-     */
-    {
+        /**
+         * @property {Object} accessibility Accessibility features.
+         *
+         * @property {Boolean} accessibility.Images `true` if the browser is configured
+         * to display images.
+         *
+         * @property {Boolean} accessibility.BackgroundImages `true` if the browser
+         * is configured to display background images.
+         *
+         * @property {Boolean} accessibility.BorderColors `true` if the browser
+         * is configured to honor CSS styling for border colors.
+         *
+         * @property {Boolean} accessibility.LightOnDark `true` if the browser
+         * is currently using reverse colors in light-on-dark accessibility mode.
+         */
         name: 'accessibility',
         ready: true,
         fn: function(doc) {
@@ -1490,8 +1507,7 @@ Ext.feature = {
 
             return supports;
         }
-    },
-    {
+    }, {
         /**
          * @property ViewportUnits `true` if the device supports ViewportUnits.
          * @type {Boolean}
@@ -1506,40 +1522,40 @@ Ext.feature = {
                 return false;
             }
             //</feature>
+
             var body = doc.body,
                 div = document.createElement('div'),
-                style = div.currentStyle || div.style, width, divWidth;
+                style = div.currentStyle || div.style,
+                width, divWidth;
 
             body.appendChild(div);
 
-            Ext.apply(style, {width: '50vw'});
+            Ext.apply(style, { width: '50vw' });
 
             width = parseInt(window.innerWidth / 2, 10);
-            divWidth = parseInt((window.getComputedStyle ?
-                getComputedStyle(div, null) :
-                div.currentStyle).width, 10);
+
+            // eslint-disable-next-line max-len
+            divWidth = parseInt((window.getComputedStyle ? getComputedStyle(div, null) : div.currentStyle).width, 10);
 
             body.removeChild(div);
             div = null;
+
             return width === divWidth;
         }
-    },
-    {
+    }, {
         name: 'CSSVariables',
         ready: false,
-        fn: function(doc) {
+        fn: function() {
             //<feature legacyBrowser>
             // Legacy browsers do not have this method.
             if (!window.getComputedStyle) {
                 return false;
             }
             //</feature>
-            var style = window.getComputedStyle(doc.documentElement);
 
-            return style.getPropertyValue && !!style.getPropertyValue('--x-supports-variables');
+            return window.CSS && window.CSS.supports && window.CSS.supports('--test-var', 0);
         }
-    },
-    {
+    }, {
         /**
          * @property Selectors2 `true` if the browser supports the CSS selector API level 2.
          * https://dev.w3.org/2006/webapi/selectors-api2/
@@ -1551,12 +1567,12 @@ Ext.feature = {
         fn: function(doc) {
             try {
                 return !!doc.querySelectorAll(':scope');
-            } catch (e) {
+            }
+            catch (e) {
                 return false;
             }
         }
-    },
-    {
+    }, {
         /**
          * @property CSSScrollSnap
          * @private
@@ -1567,9 +1583,10 @@ Ext.feature = {
         fn: function(doc) {
             var style = doc.documentElement.style;
 
-            return 'scrollSnapType' in style || 'webkitScrollSnapType' in style || 'msScrollSnapType' in style;
+            return 'scrollSnapType' in style || 'webkitScrollSnapType' in style ||
+                   'msScrollSnapType' in style;
         }
-    },
+    }, {
         /**
          * @property TranslateYCausesHorizontalScroll
          * @private
@@ -1577,17 +1594,39 @@ Ext.feature = {
          *
          * Bug for Edge logged here: https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/9743268/
          */
-    {
         name: 'TranslateYCausesHorizontalScroll',
         ready: true,
         fn: function(doc, div) {
-            div.innerHTML = '<div style="position: relative; overflow: auto; height: 200px; width: 200px;">' +
+            div.innerHTML = '<div style="position: relative; overflow: auto; height: 200px; width: 200px;">' + // eslint-disable-line max-len
                              '<div>' +
                                '<div style="transform: translateY(260px); width: 50px;">a</div>' +
                              '</div>' +
                            '</div>';
 
             return div.firstChild.scrollWidth > div.firstChild.clientWidth;
+        }
+    }, {
+        /**
+         * @property FlexBoxBasisBug
+         * @private
+         * @type {Boolean}
+         * Allows align: stretch to align items to the height of the tallest item
+         * in an auto-heighted hbox layout.
+         * can't use flex-basis: auto everywhere because it breaks percentage-sized children
+         * https://bugs.chromium.org/p/chromium/issues/detail?id=680484
+         */
+        name: 'FlexBoxBasisBug',
+        ready: true,
+        fn: function() {
+            if (Ext.isIE11 ||
+                (Ext.os.is.iOS && Ext.os.version.major <= 10) ||
+                (Ext.isSafari && Ext.browser.version.isLessThan(11)) ||
+                (Ext.os.is.Android && Ext.os.version.isLessThan(6))
+            ) {
+                return true;
+            }
+
+            return false;
         }
     }, {
         /**
@@ -1599,10 +1638,11 @@ Ext.feature = {
          */
         name: 'PercentageSizeFlexBug',
         ready: true,
-        fn: function (doc, div) {
+        fn: function(doc, div) {
             if (Ext.isIE9m) {
                 return false;
             }
+
             var style = div.style;
 
             style.display = 'flex';
@@ -1613,21 +1653,19 @@ Ext.feature = {
 
             return div.firstChild.firstChild.offsetHeight !== 50;
         }
-    },
-    {
+    }, {
         /**
          * @property CannotScrollExactHeight
          * @type {Boolean}
          *
-         * Feature detect the support of browsers that are unable to scroll elements that are the same
-         * height as the native scrollbar height.
+         * Feature detect the support of browsers that are unable to scroll elements that are
+         * the same height as the native scrollbar height.
          */
         name: 'CannotScrollExactHeight',
-        fn: function () {
+        fn: function() {
             return Ext.isIE10p;
         }
-    },
-    {
+    }, {
         /**
          * @property WebKitTextInputMarginBug
          * @private
@@ -1671,8 +1709,7 @@ Ext.feature = {
 
             return hasBug;
         }
-    },
-    {
+    }, {
         /**
          * @property PassiveEventListener
          * @private
@@ -1681,24 +1718,26 @@ Ext.feature = {
          * Detects support for the "passive" event listener option
          */
         name: 'PassiveEventListener',
-        fn: function (doc, div) {
+        fn: function(doc, div) {
             var supportsPassive = false,
                 options;
-            
+
             try {
                 options = Object.defineProperty({}, 'passive', {
-                    get: function() {
+                    get: function() { // eslint-disable-line getter-return
                         supportsPassive = true;
                     }
                 });
                 window.addEventListener('e', null, options);
                 window.removeEventListener('e', null, options);
-            } catch (e) {}
-            
+            }
+            catch (e) {
+                // ignore
+            }
+
             return supportsPassive;
         }
-    },
-    {
+    }, {
         /**
          * @property MinContent
          * @private
@@ -1708,16 +1747,16 @@ Ext.feature = {
          */
         name: 'CSSMinContent',
         ready: true,
-        fn: function (doc, div) {
+        fn: function(doc, div) {
             // As of 3/24/2017 IE/Edge have no min-content support, and firefox has
             // partial/buggy support: https://bugzilla.mozilla.org/show_bug.cgi?id=135015
             // This feature detector is designed to return false if there is not "full" support.
+            // eslint-disable-next-line max-len
             div.innerHTML = '<div style="height:4px;width:4px;min-height:-webkit-min-content;min-height:-moz-min-content;min-height:min-content"><div style="height:8px;width:8px"></div></div>';
 
             return div.firstChild.offsetHeight === 8;
         }
-    },
-    {
+    }, {
         name: 'ComputedSizeIncludesPadding',
         ready: true,
         fn: function(doc, div) {
@@ -1736,12 +1775,23 @@ Ext.feature = {
 
                 bd.removeChild(el);
             }
+
             return ret;
         }
+    }, {
+        name: 'inputEventData',
+        ready: false,
+        fn: function() {
+            return !!(window.InputEvent && 'data' in new InputEvent('input'));
+        }
     },
-    0] // placeholder so legacy browser detectors can come/go cleanly
-};
 
+/* eslint-disable indent */
+    // placeholder so legacy browser detectors can come/go cleanly
+    0
+] };
+
+/* eslint-enable indent */
 Ext.feature.tests.pop(); // remove the placeholder
 
 Ext.supports = {};

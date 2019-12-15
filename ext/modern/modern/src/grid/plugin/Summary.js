@@ -66,11 +66,11 @@ Ext.define('Ext.grid.plugin.Summary', {
         'Ext.mixin.Bufferable',
         'Ext.mixin.StoreWatcher'
     ],
-	
+
     requires: [
         'Ext.grid.SummaryRow'
     ],
-	
+
     config: {
         /**
          * @cfg {Ext.grid.SummaryRow/Object} row
@@ -101,16 +101,17 @@ Ext.define('Ext.grid.plugin.Summary', {
         syncSummary: 5
     },
 
-    init: function (grid) {
+    init: function(grid) {
         var scrollable = grid.getScrollable(),
             row, rowScroller;
 
         this.setOwner(grid);
         row = this.getRow();
-
         grid.addCls(Ext.baseCSSPrefix + 'grid-has-summaryrow');
+
         if (scrollable) {
             rowScroller = row.getScrollable();
+
             if (!rowScroller) {
                 row.setScrollable({
                     x: false,
@@ -118,23 +119,24 @@ Ext.define('Ext.grid.plugin.Summary', {
                 });
                 rowScroller = row.getScrollable();
             }
+
             rowScroller.addPartner(scrollable, 'x');
         }
     },
 
-    destroy: function () {
+    destroy: function() {
         this.setOwner(null);
 
         this.callParent();
     },
 
-    createRow: function (config) {
+    createRow: function(config) {
         return Ext.apply({
             viewModel: this.getOwner().getItemConfig().viewModel
         }, config);
     },
 
-    applyRow: function (row) {
+    applyRow: function(row) {
         if (row) {
             row = this.createRow(row);
             row = this.cmp.add(row);
@@ -143,7 +145,7 @@ Ext.define('Ext.grid.plugin.Summary', {
         return row;
     },
 
-    updateStore: function (store, oldStore) {
+    updateStore: function(store, oldStore) {
         this.mixins.storewatcher.updateStore.call(this, store, oldStore);
 
         if (store && store.isLoaded()) {
@@ -153,7 +155,7 @@ Ext.define('Ext.grid.plugin.Summary', {
     },
 
     privates: {
-        doSyncSummary: function () {
+        doSyncSummary: function() {
             var row = this.getRow();
 
             if (row) {
@@ -161,7 +163,7 @@ Ext.define('Ext.grid.plugin.Summary', {
             }
         },
 
-        onContainerScroll: function (scr, x) {
+        onContainerScroll: function(scr, x) {
             var item = this.getRow(),
                 scroller;
 

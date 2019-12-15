@@ -32,7 +32,8 @@ Ext.define('Ext.data.validator.Validator', {
         if (typeof config === 'function') {
             this.fnOnly = true;
             this.validate = config;
-        } else {
+        }
+        else {
             this.initConfig(config);
         }
     },
@@ -63,7 +64,6 @@ Ext.define('Ext.data.validator.Validator', {
 
         return new me.self(me.getCurrentConfig());
     }
-},
-function (Validator) {
+}, function(Validator) {
     Ext.Factory.validator = Ext.Factory.dataValidator;
 });

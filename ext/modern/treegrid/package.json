@@ -1,6 +1,10 @@
 {
-  "name": "@extjs/ext-react-treegrid",
-  "version": "6.5.3.57",
+  "name": "@extjs/ext-modern-treegrid",
+  "ext-react-name": "@extjs/ext-react-modern-treegrid",
+  "ext-name": "@extjs/ext-modern-treegrid",
+  "SenchaExtName": "@sencha/ext-modern-treegrid",
+  "SenchaExtReactName": "@sencha/ext-react-modern-treegrid",
+  "version": "7.0.0.156",
   "description": "This module contains all classes related to Ext.grid.Tree",
   "keywords": [
     "sencha",
@@ -18,8 +22,8 @@
   "main": "index.js",
   "sencha": {
     "name": "treegrid",
-    "version": "6.5.3.57",
-    "compatVersion": "6.5.0",
+    "version": "7.0.0.156",
+    "compatVersion": "7.0.0",
     "namespace": "Ext",
     "type": "code",
     "framework": "ext",

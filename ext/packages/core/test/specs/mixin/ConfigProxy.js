@@ -1,11 +1,6 @@
-describe("Ext.mixin.ConfigProxy", function() {
-    var bars;
-    var blerps;
-    var inners;
-    var inner2s;
-    var dohs;
-    var zips;
-    var Outer, Outer2, Derived, Derived2, Inner, GrandDerived, GrandDerived2;
+topSuite("Ext.mixin.ConfigProxy", function() {
+    var bars, blerps, inners, inner2s, dohs, zips,
+        Outer, Outer2, Derived, Derived2, Inner, GrandDerived, GrandDerived2;
 
     beforeAll(function() {
         // console.clear();
@@ -41,18 +36,21 @@ describe("Ext.mixin.ConfigProxy", function() {
                 }
             },
 
-            constructor: function (config) {
+            constructor: function(config) {
                 this.initConfig(config);
             },
 
-            applyInner: function (config) {
+            applyInner: function(config) {
                 var c = this.mergeProxiedConfigs('inner', config);
+
                 inners.push(c);
+
                 return new Inner(c);
             },
 
-            applyInner2: function (config) {
+            applyInner2: function(config) {
                 inner2s.push(Ext.apply({}, config));
+
                 return new Inner(config);
             }
         });
@@ -129,37 +127,41 @@ describe("Ext.mixin.ConfigProxy", function() {
                 zip: null
             },
 
-            constructor: function (config) {
+            constructor: function(config) {
                 this.initConfig(config);
             },
 
-            applyBar: function (v) {
+            applyBar: function(v) {
                 bars.push(v);
+
                 return v && v.toUpperCase();
             },
 
-            applyBlerp: function (v) {
+            applyBlerp: function(v) {
                 blerps.push(v);
+
                 return v && (v + '?');
             },
 
-            applyDoh: function (v) {
+            applyDoh: function(v) {
                 dohs.push(v);
+
                 return '>' + v + '<';
             },
 
-            applyZip: function (v) {
+            applyZip: function(v) {
                 zips.push(v);
+
                 return v && v.toLowerCase();
             },
 
-            zif: function (x) {
+            zif: function(x) {
                 return x + this.getZip();
             }
         });
     });
 
-    beforeEach(function () {
+    beforeEach(function() {
         bars = [];
         blerps = [];
         dohs = [];
@@ -168,8 +170,8 @@ describe("Ext.mixin.ConfigProxy", function() {
         zips = [];
     });
 
-    describe('creation', function () {
-        it('should not obstruct normal class configs', function () {
+    describe('creation', function() {
+        it('should not obstruct normal class configs', function() {
             var c = new Outer();
 
             // make sure the proxyConfig does not force in a "bar" config:
@@ -186,7 +188,7 @@ describe("Ext.mixin.ConfigProxy", function() {
             ]);
         });
 
-        it('should not obstruct derived class configs', function () {
+        it('should not obstruct derived class configs', function() {
             var c = new Derived();
 
             expect(bars).toEqual(['world']);
@@ -200,7 +202,7 @@ describe("Ext.mixin.ConfigProxy", function() {
             expect(c.getBar()).toBe('WORLD');
         });
 
-        it('should not obstruct grand derived class configs', function () {
+        it('should not obstruct grand derived class configs', function() {
             var c = new GrandDerived();
 
             expect(bars.length).toBe(1);
@@ -216,7 +218,7 @@ describe("Ext.mixin.ConfigProxy", function() {
             expect(c.getDoh()).toBe('>xyz<');
         });
 
-        it('should proxy derived class configs', function () {
+        it('should proxy derived class configs', function() {
             var c = new Derived2();
 
             expect(bars.length).toBe(1);
@@ -228,7 +230,7 @@ describe("Ext.mixin.ConfigProxy", function() {
             expect(c.getBar()).toBe('WOOT');
         });
 
-        it('should proxy grand derived class configs', function () {
+        it('should proxy grand derived class configs', function() {
             var c = new GrandDerived2();
 
             expect(bars).toEqual(['woot']);
@@ -242,16 +244,17 @@ describe("Ext.mixin.ConfigProxy", function() {
             expect(c.getZip()).toBe('derp');
         });
 
-        it("should push instanceConfig to child during creation", function () {
+        it("should push instanceConfig to child during creation", function() {
             var outer = new Outer({
                 bar: 'hello'
             });
 
             var s = outer.getBar();
+
             expect(s).toBe('HELLO');
         });
 
-        it("should call child setter once during creation", function () {
+        it("should call child setter once during creation", function() {
             var outer = new Outer({
                 bar: 'hello'
             });
@@ -260,7 +263,7 @@ describe("Ext.mixin.ConfigProxy", function() {
             expect(bars).toEqual(['hello']);
         });
 
-        it('should allow proxyConfig on derived classes', function () {
+        it('should allow proxyConfig on derived classes', function() {
             var o2 = new Outer2({
                 blerp: 'what'
             });
@@ -273,8 +276,8 @@ describe("Ext.mixin.ConfigProxy", function() {
         });
     }); // creation
 
-    describe('methods', function () {
-        it('should proxy methods', function () {
+    describe('methods', function() {
+        it('should proxy methods', function() {
             var o = new Outer({
                 inner2: {
                     zip: 'ABC'
@@ -282,6 +285,7 @@ describe("Ext.mixin.ConfigProxy", function() {
             });
 
             var z = o.zif('x');
+
             expect(z).toBe('xabc');
         });
     });

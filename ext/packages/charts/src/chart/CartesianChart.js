@@ -82,23 +82,26 @@ Ext.define('Ext.chart.CartesianChart', {
         }
     },
 
-    applyInnerPadding: function (padding, oldPadding) {
+    applyInnerPadding: function(padding, oldPadding) {
         if (!Ext.isObject(padding)) {
             return Ext.util.Format.parseBox(padding);
-        } else if (!oldPadding) {
+        }
+        else if (!oldPadding) {
             return padding;
-        } else {
+        }
+        else {
             return Ext.apply(oldPadding, padding);
         }
     },
 
-    getDirectionForAxis: function (position) {
+    getDirectionForAxis: function(position) {
         var flipXY = this.getFlipXY(),
             direction;
 
         if (position === 'left' || position === 'right') {
             direction = flipXY ? 'X' : 'Y';
-        } else {
+        }
+        else {
             direction = flipXY ? 'Y' : 'X';
         }
 
@@ -108,7 +111,7 @@ Ext.define('Ext.chart.CartesianChart', {
     /**
      * Layout the axes and series.
      */
-    performLayout: function () {
+    performLayout: function() {
         var me = this;
 
         if (me.callParent() === false) {
@@ -121,14 +124,17 @@ Ext.define('Ext.chart.CartesianChart', {
         // 'chart' surface rect is the size of the chart's inner element
         // (see chart.getChartBox), i.e. the portion of the chart minus
         // the legend area (whether DOM or sprite based).
+        // eslint-disable-next-line vars-on-top, one-var
         var chartRect = me.getSurface('chart').getRect(),
             left = chartRect[0],
             top = chartRect[1],
             width = chartRect[2],
             height = chartRect[3],
             captionList = me.captionList,
-            axes = me.getAxes(), axis,
-            seriesList = me.getSeries(), series,
+            axes = me.getAxes(),
+            axis,
+            seriesList = me.getSeries(),
+            series,
             axisSurface, thickness,
             insetPadding = me.getInsetPadding(),
             innerPadding = me.getInnerPadding(),
@@ -154,20 +160,27 @@ Ext.define('Ext.chart.CartesianChart', {
             floating = axis.getFloating();
             floatingValue = floating ? floating.value : null;
             thickness = axis.getThickness();
+
             switch (axis.getPosition()) {
                 case 'top':
                     axisSurface.setRect([left, top + shrinkBox.top + 1, width, thickness]);
                     break;
+
                 case 'bottom':
-                    axisSurface.setRect([left, top + height - (shrinkBox.bottom + thickness), width, thickness]);
+                    axisSurface.setRect([left, top + height - (shrinkBox.bottom + thickness),
+                                         width, thickness]);
                     break;
+
                 case 'left':
                     axisSurface.setRect([left + shrinkBox.left, top, thickness, height]);
                     break;
+
                 case 'right':
-                    axisSurface.setRect([left + width - (shrinkBox.right + thickness), top, thickness, height]);
+                    axisSurface.setRect([left + width - (shrinkBox.right + thickness), top,
+                                         thickness, height]);
                     break;
             }
+
             if (floatingValue === null) {
                 shrinkBox[axis.getPosition()] += thickness;
             }
@@ -213,18 +226,21 @@ Ext.define('Ext.chart.CartesianChart', {
             axisSurface = axis.getSurface();
             matrix = axisSurface.matrix;
             elements = matrix.elements;
+
             switch (axis.getPosition()) {
                 case 'top':
                 case 'bottom':
                     elements[4] = shrinkBox.left;
                     axis.setLength(innerWidth);
                     break;
+
                 case 'left':
                 case 'right':
                     elements[5] = shrinkBox.top;
                     axis.setLength(innerHeight);
                     break;
             }
+
             axis.updateTitleSprite();
             matrix.inverse(axisSurface.inverseMatrix);
         }
@@ -233,21 +249,25 @@ Ext.define('Ext.chart.CartesianChart', {
             series = seriesList[i];
             surface = series.getSurface();
             surface.setRect(mainRect);
+
             if (flipXY) {
                 if (isRtl) {
                     surface.matrix.set(0, -1, -1, 0,
-                        innerPadding.left + innerWidth,
-                        innerPadding.top + innerHeight);
-                } else {
-                    surface.matrix.set(0, -1, 1, 0,
-                        innerPadding.left,
-                        innerPadding.top + innerHeight);
+                                       innerPadding.left + innerWidth,
+                                       innerPadding.top + innerHeight);
                 }
-            } else {
-                surface.matrix.set(1, 0, 0, -1,
-                    innerPadding.left,
-                    innerPadding.top + innerHeight);
+                else {
+                    surface.matrix.set(0, -1, 1, 0,
+                                       innerPadding.left,
+                                       innerPadding.top + innerHeight);
+                }
             }
+            else {
+                surface.matrix.set(1, 0, 0, -1,
+                                   innerPadding.left,
+                                   innerPadding.top + innerHeight);
+            }
+
             surface.matrix.inverse(surface.inverseMatrix);
             series.getOverlaySurface().setRect(mainRect);
         }
@@ -255,15 +275,18 @@ Ext.define('Ext.chart.CartesianChart', {
         if (captionList) {
             for (i = 0, ln = captionList.length; i < ln; i++) {
                 caption = captionList[i];
+
                 if (caption.getAlignTo() === 'series') {
                     caption.alignRect(mainRect);
                 }
+
                 caption.performLayout();
             }
         }
 
-        // In certain cases 'performLayout' override is not an option without major code duplication.
-        // 'afterChartLayout' can be a cleaner solution in such cases (because of the timing of its call).
+        // In certain cases 'performLayout' override is not an option without major code duplication
+        // 'afterChartLayout' can be a cleaner solution in such cases (because of the timing
+        // of its call).
         me.afterChartLayout(); // currently in cartesian charts only (used by Navigator)
         me.redraw();
 
@@ -284,7 +307,7 @@ Ext.define('Ext.chart.CartesianChart', {
 
     afterChartLayout: Ext.emptyFn,
 
-    refloatAxes: function () {
+    refloatAxes: function() {
         var me = this,
             axes = me.getAxes(),
             axesCount = (axes && axes.length) || 0,
@@ -301,59 +324,77 @@ Ext.define('Ext.chart.CartesianChart', {
             axis = axes[i];
             floating = axis.getFloating();
             value = floating ? floating.value : null;
+
             if (value === null) {
                 axis.floatingAtCoord = null;
                 continue;
             }
+
             axisSurface = axis.getSurface();
             axisRect = axisSurface.getRect();
+
             if (!axisRect) {
                 continue;
             }
+
             axisRect = axisRect.slice();
             alongAxis = me.getAxis(floating.alongAxis);
+
             if (alongAxis) {
                 isHorizontal = alongAxis.getAlignment() === 'horizontal';
+
                 if (Ext.isString(value)) {
                     value = alongAxis.getCoordFor(value);
                 }
+
                 alongAxis.floatingAxes[axis.getId()] = value;
                 matrix = alongAxis.getSprites()[0].attr.matrix;
+
                 if (isHorizontal) {
                     value = value * matrix.getXX() + matrix.getDX();
                     axis.floatingAtCoord = value + inner.left + inner.right;
-                } else {
+                }
+                else {
                     value = value * matrix.getYY() + matrix.getDY();
                     axis.floatingAtCoord = value + inner.top + inner.bottom;
                 }
-            } else {
+            }
+            else {
                 isHorizontal = axis.getAlignment() === 'horizontal';
+
                 if (isHorizontal) {
                     axis.floatingAtCoord = value + inner.top + inner.bottom;
-                } else {
+                }
+                else {
                     axis.floatingAtCoord = value + inner.left + inner.right;
                 }
+
                 value = axisSurface.roundPixel(0.01 * value * (isHorizontal ? height : width));
             }
+
             switch (axis.getPosition()) {
                 case 'top':
                     axisRect[1] = inset.top + inner.top + value - axisRect[3] + 1;
                     break;
+
                 case 'bottom':
                     axisRect[1] = inset.top + inner.top + (alongAxis ? value : height - value);
                     break;
+
                 case 'left':
                     axisRect[0] = inset.left + inner.left + value - axisRect[2];
                     break;
+
                 case 'right':
                     axisRect[0] = inset.left + inner.left + (alongAxis ? value : width - value) - 1;
                     break;
             }
+
             axisSurface.setRect(axisRect);
         }
     },
 
-    redraw: function () {
+    redraw: function() {
         var me = this,
             seriesList = me.getSeries(),
             axes = me.getAxes(),
@@ -378,6 +419,7 @@ Ext.define('Ext.chart.CartesianChart', {
             series = seriesList[i];
 
             axisX = series.getXAxis();
+
             if (axisX) {
                 visibleRange = axisX.getVisibleRange();
                 xRange = axisX.getRange();
@@ -385,11 +427,13 @@ Ext.define('Ext.chart.CartesianChart', {
                     xRange[0] + (xRange[1] - xRange[0]) * visibleRange[0],
                     xRange[0] + (xRange[1] - xRange[0]) * visibleRange[1]
                 ];
-            } else {
+            }
+            else {
                 xRange = series.getXRange();
             }
 
             axisY = series.getYAxis();
+
             if (axisY) {
                 visibleRange = axisY.getVisibleRange();
                 yRange = axisY.getRange();
@@ -397,7 +441,8 @@ Ext.define('Ext.chart.CartesianChart', {
                     yRange[0] + (yRange[1] - yRange[0]) * visibleRange[0],
                     yRange[0] + (yRange[1] - yRange[0]) * visibleRange[1]
                 ];
-            } else {
+            }
+            else {
                 yRange = series.getYRange();
             }
 
@@ -412,12 +457,14 @@ Ext.define('Ext.chart.CartesianChart', {
             };
 
             sprites = series.getSprites();
+
             for (j = 0, ln = sprites.length; j < ln; j++) {
 
                 // All the series now share the same surface, so we must assign
                 // the sprites a zIndex that depends on the index of their series.
                 sprite = sprites[j];
                 zIndex = sprite.attr.zIndex;
+
                 if (zIndex < zBase) {
                     // Set the sprite's zIndex
                     zIndex += (i + 1) * 100 + zBase;
@@ -427,11 +474,14 @@ Ext.define('Ext.chart.CartesianChart', {
                     // that go into the 'series' surface. 'labels' and 'markers' markers
                     // go into the 'overlay' surface instead.
                     markers = sprite.getMarker('items');
+
                     if (markers) {
                         markersZIndex = markers.attr.zIndex;
+
                         if (markersZIndex === Number.MAX_VALUE) {
                             markers.attr.zIndex = zIndex;
-                        } else if (markersZIndex < zBase) {
+                        }
+                        else if (markersZIndex < zBase) {
                             markers.attr.zIndex = zIndex + markersZIndex;
                         }
                     }
@@ -453,24 +503,28 @@ Ext.define('Ext.chart.CartesianChart', {
                 visibleMin: visibleRange[0],
                 visibleMax: visibleRange[1]
             };
+
             if (isSide) {
                 attr.length = innerHeight;
                 attr.startGap = innerPadding.bottom;
                 attr.endGap = innerPadding.top;
-            } else {
+            }
+            else {
                 attr.length = innerWidth;
                 attr.startGap = innerPadding.left;
                 attr.endGap = innerPadding.right;
             }
+
             for (j = 0, ln = sprites.length; j < ln; j++) {
                 sprites[j].setAttributes(attr, true);
             }
         }
+
         me.renderFrame();
         me.callParent();
     },
 
-    renderFrame: function () {
+    renderFrame: function() {
         this.refloatAxes();
         this.callParent();
     }

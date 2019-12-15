@@ -4,8 +4,8 @@
  *
  * A type of axis that displays items in categories. This axis is generally used to
  * display categorical information like names of items, month names, quarters, etc.
- * but no quantitative values. For that other type of information {@link Ext.chart.axis.Numeric Numeric}
- * axis are more suitable.
+ * but no quantitative values. For that other type of information
+ * {@link Ext.chart.axis.Numeric Numeric} axis are more suitable.
  *
  * As with other axis you can set the position of the axis and its title. For example:
  *

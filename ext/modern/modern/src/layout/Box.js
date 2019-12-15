@@ -159,7 +159,7 @@ Ext.define('Ext.layout.Box', {
         me.positionSortFn = me.positionSortFn.bind(me);
     },
 
-    setConfig: function (name, value, options) {
+    setConfig: function(name, value, options) {
         var config = name,
             type;
 
@@ -181,7 +181,7 @@ Ext.define('Ext.layout.Box', {
 
             //<debug>
             if (type && !this.boxRe.test(type)) {
-                Ext.raise('Cannot change layout from '+this.$className+' to "'+type+'"');
+                Ext.raise('Cannot change layout from ' + this.$className + ' to "' + type + '"');
             }
             //</debug>
 
@@ -229,16 +229,17 @@ Ext.define('Ext.layout.Box', {
     },
 
     //<debug>
-    applyOrient: function (orient) {
+    applyOrient: function(orient) {
         if (orient !== 'horizontal' && orient !== 'vertical') {
-            Ext.log.error("Invalid box orient of: '" + orient
-                + "', must be either 'horizontal' or 'vertical'");
+            Ext.log.error("Invalid box orient of: '" + orient +
+                "', must be either 'horizontal' or 'vertical'");
         }
+
         return orient;
     },
     //</debug>
 
-    updateOrient: function (orient, oldOrient) {
+    updateOrient: function(orient, oldOrient) {
         var me = this,
             container = me.getContainer(),
             overflow = me.getOverflow(),
@@ -255,6 +256,7 @@ Ext.define('Ext.layout.Box', {
 
         if (oldOrient) {
             renderTarget.removeCls(oldMap.containerCls);
+
             for (i = 0; i < len; ++i) {
                 innerItems[i].removeCls(oldMap.itemCls);
             }
@@ -263,6 +265,7 @@ Ext.define('Ext.layout.Box', {
         renderTarget.addCls(newMap.containerCls);
 
         me.itemCls = itemCls = [me.baseItemCls, newMap.itemCls];
+
         for (i = 0; i < len; ++i) {
             item = innerItems[i];
             item.addCls(itemCls);
@@ -279,10 +282,10 @@ Ext.define('Ext.layout.Box', {
 
     updateConstrainAlign: function(constrainAlign) {
         this.getContainer().getRenderTarget().toggleCls(this.constrainAlignCls,
-            constrainAlign);
+                                                        constrainAlign);
     },
 
-    onItemInnerStateChange: function (item, isInner) {
+    onItemInnerStateChange: function(item, isInner) {
         var me = this,
             flex;
 
@@ -294,12 +297,13 @@ Ext.define('Ext.layout.Box', {
             if (flex) {
                 me.setItemFlex(item, flex);
             }
-        } else {
+        }
+        else {
             me.setItemFlex(item, null);
         }
     },
 
-    onItemFlexChange: function (item, flex) {
+    onItemFlexChange: function(item, flex) {
         if (item.isInnerItem()) {
             this.setItemFlex(item, flex);
         }
@@ -311,7 +315,7 @@ Ext.define('Ext.layout.Box', {
      * flex of.
      * @param {Object} flex The flex to set on this method
      */
-    setItemFlex: function (item, flex) {
+    setItemFlex: function(item, flex) {
         var el = item.el,
             type = typeof flex,
             isNumber = (type === 'number'),
@@ -322,7 +326,8 @@ Ext.define('Ext.layout.Box', {
             if (isNumber) {
                 grow = flex;
                 flex = flex + ' ' + flex;
-            } else if (isString) {
+            }
+            else if (isString) {
                 parts = Ext.String.splitWords(flex);
                 grow = parts[0];
 
@@ -332,7 +337,8 @@ Ext.define('Ext.layout.Box', {
             }
 
             el.setStyle('flex', flex);
-        } else {
+        }
+        else {
             grow = flex.grow;
 
             el.setStyle({
@@ -345,7 +351,7 @@ Ext.define('Ext.layout.Box', {
         item.toggleCls(this.flexedCls, !!grow);
     },
 
-    convertPosition: function (position) {
+    convertPosition: function(position) {
         var positionMap = this.positionMap;
 
         if (positionMap.hasOwnProperty(position)) {
@@ -355,27 +361,27 @@ Ext.define('Ext.layout.Box', {
         return position;
     },
 
-    applyAlign: function (align) {
+    applyAlign: function(align) {
         return this.convertPosition(align);
     },
 
-    updateAlign: function (align, oldAlign) {
+    updateAlign: function(align, oldAlign) {
         this.getContainer().getRenderTarget().swapCls(align, oldAlign, true,
-            Ext.baseCSSPrefix + 'align');
+                                                      Ext.baseCSSPrefix + 'align');
     },
 
-    applyPack: function (pack) {
+    applyPack: function(pack) {
         return this.convertPosition(pack);
     },
 
-    updatePack: function (pack, oldPack) {
+    updatePack: function(pack, oldPack) {
         this.getContainer().getRenderTarget().swapCls(pack, oldPack, true,
-            Ext.baseCSSPrefix + 'pack');
+                                                      Ext.baseCSSPrefix + 'pack');
     },
 
     updateReverse: function(reverse) {
         this.getContainer().getRenderTarget().toggleCls(Ext.baseCSSPrefix + 'reverse',
-            reverse);
+                                                        reverse);
     },
 
     /**
@@ -391,32 +397,42 @@ Ext.define('Ext.layout.Box', {
      * items on either side.
      * Positive numbers will scroll to the bottom or right side.
      * Negative numbers will scroll to the top or left side.
-     * @param {'min'/'max'} [options.scroll='min'] A value of 'min' will scroll the item to the nearest
-     * edge that will make it visible.
+     * @param {'min'/'max'} [options.scroll='min'] A value of 'min' will scroll the item
+     * to the nearest edge that will make it visible.
      * A value of 'max' will scroll the item to the furthest edge that will make it visible
      */
     ensureVisible: function(item, options) {
+        var me = this,
+            container, scrollable, scrollerTarget, vertical, targetInfo,
+            itemInfo, oversized, scroll, delta, deltaX, deltaY, translatable;
+
         if (!item.isWidget) {
             options = item;
             item = options.item;
         }
-        
+
         if (options && !isNaN(options.offset)) {
             item = this.getItemByOffset(options.offset);
         }
 
-        var me = this,
-            container = this.getContainer(),
-            scrollable = container.getScrollable(),
-            scrollerTarget = scrollable.getElement(),
-            vertical = me.getVertical(),
-            targetInfo = me.getItemInfo(scrollerTarget),
-            itemInfo = me.getItemInfo(item),
-            oversized = itemInfo.size > targetInfo.size,
-            scroll = (options && options.scroll) || 'min',
-            delta, deltaX, deltaY;
+        // return if item doesn't exist
+        if (!item) {
+            return;
+        }
 
-        if (me._currentEnsureVisibleItem === item && scrollable.translatable.isAnimating) {
+        container = this.getContainer();
+        scrollable = container.getScrollable();
+        scrollerTarget = scrollable.getElement();
+        vertical = me.getVertical();
+        targetInfo = me.getItemInfo(scrollerTarget);
+        itemInfo = me.getItemInfo(item);
+        oversized = itemInfo.size > targetInfo.size;
+        scroll = (options && options.scroll) || 'min';
+
+        translatable = scrollable.translatable;
+
+        // prevent js error if scrollable is empty
+        if (me._currentEnsureVisibleItem === item && (translatable && translatable.isAnimating)) {
             return;
         }
 
@@ -424,18 +440,22 @@ Ext.define('Ext.layout.Box', {
             if ((!oversized && (itemInfo.start < targetInfo.start)) ||
                     (oversized && (itemInfo.start > targetInfo.start))) {
                 delta = itemInfo.start - targetInfo.start;
-            } else if ((!oversized && (itemInfo.end > targetInfo.end)) ||
+            }
+            else if ((!oversized && (itemInfo.end > targetInfo.end)) ||
                     (oversized && itemInfo.end < targetInfo.end)) {
                 delta = itemInfo.end - targetInfo.end;
-            } else if (oversized && itemInfo.start < targetInfo.start &&
+            }
+            else if (oversized && itemInfo.start < targetInfo.start &&
                     itemInfo.end > targetInfo.end) {
                 delta = itemInfo.start - targetInfo.start;
             }
-        } else {
+        }
+        else {
             // Move to Previous page
             if (itemInfo.start < targetInfo.start) {
                 delta = itemInfo.end - targetInfo.end;
-            } else { //Move to Next page
+            }
+            else { // Move to Next page
                 delta = itemInfo.start - targetInfo.start;
             }
         }
@@ -500,12 +520,15 @@ Ext.define('Ext.layout.Box', {
         if (indexOffset > 0) {
             indexOffset--;
             index = endIndex += indexOffset;
+
             if (endIndex >= len) {
                 index = len - 1;
             }
-        } else {
+        }
+        else {
             indexOffset++;
             index = startIndex += indexOffset;
+
             if (startIndex < 0) {
                 index = 0;
             }
@@ -514,14 +537,13 @@ Ext.define('Ext.layout.Box', {
         return items[index];
     },
 
-
-    getItemInfo: function (item) {
+    getItemInfo: function(item) {
         var me = this,
             vertical = me.getVertical(),
             el = item.el;
 
         return {
-            start: el[vertical  ? 'getTop' : 'getLeft'](),
+            start: el[vertical ? 'getTop' : 'getLeft'](),
             end: el[vertical ? 'getBottom' : 'getRight'](),
             size: el[vertical ? 'getHeight' : 'getWidth']()
         };
@@ -536,7 +558,7 @@ Ext.define('Ext.layout.Box', {
 
     applyOverflow: function(config, existing) {
         return Ext.Factory.layoutOverflow.update(existing, config, this, 'createOverflow');
-	},
+    },
 
     updateWrap: function(wrap, oldWrap) {
         var me = this,
@@ -562,15 +584,19 @@ Ext.define('Ext.layout.Box', {
     },
 
     privates: {
-        positionSortFn: function (a, b) {
+        positionSortFn: function(a, b) {
             var fn = this.positionFn;
+
             a = a.el[fn]();
             b = b.el[fn]();
+
             if (a < b) {
                 return -1;
-            } else if (b < a) {
+            }
+            else if (b < a) {
                 return 1;
             }
+
             return 0;
         }
     }

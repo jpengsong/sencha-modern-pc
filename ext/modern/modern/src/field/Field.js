@@ -1,7 +1,8 @@
 /**
  * Field is the base class for all form fields. It provides a lot of shared functionality to all
- * field subclasses (for example labels, simple validation, {@link #clearable clearing} and tab index management), but
- * is rarely used directly. Instead, it is much more common to use one of the field subclasses:
+ * field subclasses (for example labels, simple validation, {@link #clearable clearing} and tab
+ * index management), but is rarely used directly. Instead, it is much more common to use one of
+ * the field subclasses:
  *
  *     xtype            Class
  *     ---------------------------------------
@@ -16,22 +17,28 @@
  *     togglefield      {@link Ext.field.Toggle}
  *     fieldset         {@link Ext.form.FieldSet}
  *
- * Fields are normally used within the context of a form and/or fieldset. See the {@link Ext.form.Panel FormPanel}
- * and {@link Ext.form.FieldSet FieldSet} docs for examples on how to put those together, or the list of links above
- * for usage of individual field types. If you wish to create your own Field subclasses you can extend this class,
- * though it is sometimes more useful to extend {@link Ext.field.Text} as this provides additional text entry
- * functionality.
+ * Fields are normally used within the context of a form and/or fieldset. See the
+ * {@link Ext.form.Panel FormPanel} and {@link Ext.form.FieldSet FieldSet} docs for examples on how
+ * to put those together, or the list of links above for usage of individual field types. If you
+ * wish to create your own Field subclasses you can extend this class, though it is sometimes more
+ * useful to extend {@link Ext.field.Text} as this provides additional text entry functionality.
  */
 Ext.define('Ext.field.Field', {
     extend: 'Ext.Component',
     alternateClassName: 'Ext.form.Field',
     xtype: 'field',
-    
+
+    mixins: [
+        'Ext.field.Dirty'
+    ],
+
     /**
-     * Set to `true` on all Ext.field.Field subclasses. This is used by {@link Ext.form.Panel#getValues} to determine which
+     * @property {Boolean} isField
+     * `true` in this class to identify an object this type, or subclass thereof.
+     *
+     * This is used by {@link Ext.form.Panel#getValues} to determine which
      * components inside a form are fields.
-     * @property isField
-     * @type Boolean
+     * @readonly
      */
     isField: true,
 
@@ -165,11 +172,37 @@ Ext.define('Ext.field.Field', {
         value: null,
 
         /**
-         * @cfg {Mixed}
-         * A validator or array of validators to be applied to the field.  
+         * @cfg {Ext.data.field.Field/Object/String} dataType
+         * A config for a {@link Ext.data.field.Field} or data field sub-class instance
+         * used to serialize this field's value for form submission. This is used by the
+         * {@link #serialize} method unless `modelValidation` is used, in which case, the
+         * data field of the bound {@link Ext.data.Model model} is used.
          *
-         * When the field is validated, each validator is applied and if any one of them 
-         * determines the field  is invalid, the field will be marked as invalid.  If you 
+         * For example:
+         *
+         *      {
+         *          xtype: 'datefield',
+         *          dataType: {
+         *              // type: 'date'  (datefield does this by default)
+         *              dateWriteFormat: 'Y-m-d'
+         *          }
+         *      }
+         *
+         * If this config is a string, it is used to create a {@link Ext.data.field.Field field}
+         * by that alias.
+         * @since 7.0
+         */
+        dataType: {
+            cached: true,
+            $value: null
+        },
+
+        /**
+         * @cfg {Mixed}
+         * A validator or array of validators to be applied to the field.
+         *
+         * When the field is validated, each validator is applied and if any one of them
+         * determines the field  is invalid, the field will be marked as invalid.  If you
          * examine the field's validators, you will get an array of Ext.data.Validators.
          *
          * Validation currently is synchronous.  If you need to validate a field with interaction
@@ -178,8 +211,12 @@ Ext.define('Ext.field.Field', {
          * A validator may be:
          *
          * * A regexp - if the field fails to match the regexp, it is invalid.
-         * * A function - the function will be called to validate the field; it should return false if invalid.`
-         * * An object - an object with a member fn that is a function to be called to validate the field.
+         * * A function - the function will be called to validate the field; it should return
+         * false if invalid.
+         *
+         * * An object - an object with a member fn that is a function to be called to validate
+         * the field.
+         *
          * * An instantiated Validator {@link  Ext.data.validator.Validator}
          */
         validators: null,
@@ -313,11 +350,11 @@ Ext.define('Ext.field.Field', {
      */
     htmlErrorsTpl: [
         '<tpl if="count == 1">',
-            '<tpl for="errors">{.:htmlEncode}</tpl>',
+        '<tpl for="errors">{.:htmlEncode}</tpl>',
         '<tpl elseif="count">',
-            '<ul class="{listCls}">',
-                '<tpl for="errors"><li>{.:htmlEncode}</li></tpl>',
-            '</ul>',
+        '<ul class="{listCls}">',
+        '<tpl for="errors"><li>{.:htmlEncode}</li></tpl>',
+        '</ul>',
         '</tpl>'
     ],
 
@@ -331,7 +368,7 @@ Ext.define('Ext.field.Field', {
      */
     plainErrorsTpl: [
         '<tpl if="count">',
-            '<tpl for="errors" between="\\n">{.}</tpl>',
+        '<tpl for="errors" between="\\n">{.}</tpl>',
         '</tpl>'
     ],
 
@@ -387,12 +424,14 @@ Ext.define('Ext.field.Field', {
     element: {
         reference: 'element',
         classList: [
-            Ext.supports.CSSMinContent ? '' : (Ext.baseCSSPrefix + 'no-min-content'),
-            Ext.supports.PercentageSizeFlexBug ? (Ext.baseCSSPrefix + 'has-percentage-size-flex-bug') : ''
+            Ext.supports.CSSMinContent ? '' : Ext.baseCSSPrefix + 'no-min-content',
+            Ext.supports.PercentageSizeFlexBug
+                ? Ext.baseCSSPrefix + 'has-percentage-size-flex-bug'
+                : ''
         ]
     },
 
-    initialize: function () {
+    initialize: function() {
         var me = this;
 
         me.callParent();
@@ -400,6 +439,8 @@ Ext.define('Ext.field.Field', {
         if (me.getValue() === '' && me.validateOnInit === 'all') {
             me.validate();
         }
+
+        me.handleFieldDefaults();
     },
 
     /**
@@ -407,11 +448,11 @@ Ext.define('Ext.field.Field', {
      * Checks if the value has changed. Allows subclasses to override for
      * any more complex logic.
      */
-    didValueChange: function (newVal, oldVal){
+    didValueChange: function(newVal, oldVal) {
         return !this.isEqual(newVal, oldVal);
     },
 
-    getTemplate: function () {
+    getTemplate: function() {
         return [{
             reference: 'labelElement',
             cls: Ext.baseCSSPrefix + 'label-el',
@@ -445,7 +486,7 @@ Ext.define('Ext.field.Field', {
 
     getBodyTemplate: Ext.emptyFn,
 
-    initElement: function () {
+    initElement: function() {
         this.callParent();
 
         // alias for backward compatibility
@@ -466,7 +507,7 @@ Ext.define('Ext.field.Field', {
      */
     completeEdit: Ext.emptyFn,
 
-    updateBodyAlign: function (bodyAlign, oldBodyAlign) {
+    updateBodyAlign: function(bodyAlign, oldBodyAlign) {
         var element = this.element;
 
         if (oldBodyAlign) {
@@ -478,16 +519,20 @@ Ext.define('Ext.field.Field', {
         }
     },
 
-    updateAutoFitErrors: function (autoFitErrors) {
+    updateAutoFitErrors: function(autoFitErrors) {
         this.toggleCls(this.noAutoFitErrorsCls, autoFitErrors === false);
     },
 
-    applyErrorTpl: function (tpl) {
+    applyErrorTpl: function(tpl) {
         if (tpl && !tpl.isTemplate) {
             tpl = Ext.XTemplate.get(tpl);
         }
 
         return tpl;
+    },
+
+    applyDataType: function(field) {
+        return field && Ext.Factory.dataField(field);
     },
 
     /**
@@ -498,7 +543,7 @@ Ext.define('Ext.field.Field', {
      * @protected
      * @since 6.5.0
      */
-    formatErrors: function (errors) {
+    formatErrors: function(errors) {
         var me = this,
             tpl = me.getErrorTpl();
 
@@ -513,15 +558,15 @@ Ext.define('Ext.field.Field', {
         });
     },
 
-    updateError: function (value) {
+    updateError: function(value) {
         var msg = this.formatErrors(Ext.Array.from(value));
 
         this.setErrorMessage(msg);
     },
 
-    updateErrorMessage: function (msg) {
+    updateErrorMessage: function(msg) {
         var me = this,
-            errorTarget;
+            owner, errorTarget;
 
         me.fireEvent('errorchange', me, msg);
 
@@ -551,21 +596,22 @@ Ext.define('Ext.field.Field', {
                 break;
 
             case 'parent':
-                var owner = me.up('[onFieldErrorChange]');
+                owner = me.up('[onFieldErrorChange]');
 
                 if (owner) {
                     owner.onFieldErrorChange(me, msg);
                 }
+
                 break;
 
-            //default:
-                //TODO
+            // default:
+                // TODO
                 // @method ==> controller
                 // .foo ==> DQ
         }
     },
 
-    updateErrorTarget: function (target, oldTarget) {
+    updateErrorTarget: function(target, oldTarget) {
         var me = this,
             error, owner;
 
@@ -574,13 +620,17 @@ Ext.define('Ext.field.Field', {
 
             if (oldTarget === 'qtip') {
                 me.setTipError(null);
-            } else if (oldTarget === 'title') {
+            }
+            else if (oldTarget === 'title') {
                 me.setTitleError(null);
-            } else if (oldTarget === 'side') {
+            }
+            else if (oldTarget === 'side') {
                 me.setSideError(null);
-            } else if (oldTarget === 'under') {
+            }
+            else if (oldTarget === 'under') {
                 me.setUnderError(null);
-            } else if (oldTarget === 'parent') {
+            }
+            else if (oldTarget === 'parent') {
                 owner = me.up('[onFieldErrorChange]');
 
                 if (owner) {
@@ -598,13 +648,17 @@ Ext.define('Ext.field.Field', {
                 if (error) {
                     if (target === 'qtip') {
                         me.setTipError(error);
-                    } else if (target === 'title') {
+                    }
+                    else if (target === 'title') {
                         me.setTitleError(error);
-                    } else if (target === 'side') {
+                    }
+                    else if (target === 'side') {
                         me.setSideError(error);
-                    } else if (target === 'under') {
+                    }
+                    else if (target === 'under') {
                         me.setUnderError(error);
-                    } else if (target === 'parent') {
+                    }
+                    else if (target === 'parent') {
                         owner = me.up('[onFieldErrorChange]');
 
                         if (owner) {
@@ -616,11 +670,11 @@ Ext.define('Ext.field.Field', {
         }
     },
 
-    updateInline: function (inline) {
+    updateInline: function(inline) {
         this.toggleCls(this.inlineCls, inline);
     },
 
-    updateSideError: function (error) {
+    updateSideError: function(error) {
         if (error) {
             error = Ext.apply({
                 html: error
@@ -630,7 +684,7 @@ Ext.define('Ext.field.Field', {
         this.errorElement.getData().qtip = error;
     },
 
-    updateTipError: function (error) {
+    updateTipError: function(error) {
         if (error) {
             error = Ext.apply({
                 html: error
@@ -643,26 +697,27 @@ Ext.define('Ext.field.Field', {
         this.bodyElement.getData().qtip = error;
     },
 
-    updateTitleError: function (error) {
+    updateTitleError: function(error) {
         var dom = this.el.dom;
 
         if (error) {
             dom.setAttribute('title', error);
-        } else {
+        }
+        else {
             dom.removeAttribute('title');
         }
     },
 
-    updateUnderError: function (error) {
+    updateUnderError: function(error) {
         this.errorMessageElement.dom.innerHTML = error || '';
     },
 
-    updateLabel: function (label) {
+    updateLabel: function(label) {
         this.labelTextElement.setHtml(label);
         this.el.toggleCls(this.labeledCls, !!label);
     },
 
-    updateLabelAlign: function (newLabelAlign, oldLabelAlign) {
+    updateLabelAlign: function(newLabelAlign, oldLabelAlign) {
         var me = this,
             element = me.element;
 
@@ -678,7 +733,7 @@ Ext.define('Ext.field.Field', {
         element.toggleCls(me.labelAlignHorizontalCls, newLabelAlign in me.horizontalLabelMap);
     },
 
-    updateLabelTextAlign: function (labelTextAlign, oldLabelTextAlign) {
+    updateLabelTextAlign: function(labelTextAlign, oldLabelTextAlign) {
         var element = this.element;
 
         if (oldLabelTextAlign) {
@@ -690,7 +745,7 @@ Ext.define('Ext.field.Field', {
         }
     },
 
-    updateLabelCls: function (newLabelCls, oldLabelCls) {
+    updateLabelCls: function(newLabelCls, oldLabelCls) {
         var labelElement = this.labelElement;
 
         if (newLabelCls) {
@@ -702,23 +757,23 @@ Ext.define('Ext.field.Field', {
         }
     },
 
-    updateLabelWidth: function (labelWidth) {
+    updateLabelWidth: function(labelWidth) {
         this.labelElement.setWidth(labelWidth);
     },
 
-    updateLabelMinWidth: function (labelMinWidth) {
+    updateLabelMinWidth: function(labelMinWidth) {
         this.labelElement.setStyle('min-width', Ext.Element.addUnits(labelMinWidth));
     },
 
-    updateLabelWrap: function (labelWrap) {
+    updateLabelWrap: function(labelWrap) {
         this.element.toggleCls(this.noLabelWrapCls, !labelWrap);
     },
 
-    updateName: function (newName) {
+    updateName: function(newName) {
         this.name = newName;
     },
 
-    updateRequired: function (required) {
+    updateRequired: function(required) {
         var me = this;
 
         me.element.toggleCls(me.requiredCls, required);
@@ -728,13 +783,13 @@ Ext.define('Ext.field.Field', {
         }
     },
 
-    updateRequiredMessage: function () {
+    updateRequiredMessage: function() {
         if (!this.isConfiguring) {
             this.validate();
         }
     },
 
-    updateDisabled: function (disabled, oldDisabled) {
+    updateDisabled: function(disabled, oldDisabled) {
         this.callParent([disabled, oldDisabled]);
 
         if (!this.isConfiguring) {
@@ -742,13 +797,13 @@ Ext.define('Ext.field.Field', {
         }
     },
 
-    updateValidateDisabled: function () {
+    updateValidateDisabled: function() {
         if (!this.isConfiguring) {
             this.validate();
         }
     },
 
-    applyValue: function (value) {
+    applyValue: function(value) {
         if (this.isConfiguring) {
             this.originalValue = value;
         }
@@ -756,8 +811,9 @@ Ext.define('Ext.field.Field', {
         return value;
     },
 
-    updateValue: function (value, oldValue) {
-        var me = this;
+    updateValue: function(value, oldValue) {
+        var me = this,
+            rawToValue;
 
         // Don't try to validate the field if the value transitions between empty values (null,
         // undefined, '', etc.). This can happen after initialization when binding value to an
@@ -766,9 +822,19 @@ Ext.define('Ext.field.Field', {
             me.validate();
         }
 
-        if (!me.isConfiguring && value !== oldValue) {
-            me.fireEvent('change', me, value, oldValue);
+        if (value !== oldValue) {
+            rawToValue = me.rawToValue(me.processRawValue(me.getRawValue()));
+
+            if (!Ext.isEmpty(rawToValue, true) && String(value) !== String(rawToValue)) {
+                me._value = value = rawToValue;
+            }
+
+            if (!me.isConfiguring) {
+                me.fireEvent('change', me, value, oldValue);
+            }
         }
+
+        me.setDirty(me.isDirty());
     },
 
     /**
@@ -795,12 +861,14 @@ Ext.define('Ext.field.Field', {
     },
 
     /**
-     * Resets the field's {@link #originalValue} property so it matches the current {@link #getValue value}. This is
-     * called by {@link Ext.form.Panel}.{@link Ext.form.Panel#setValues setValues} if the form's
+     * Resets the field's {@link #originalValue} property so it matches the current
+     * {@link #getValue value}. This is called by
+     * {@link Ext.form.Panel}.{@link Ext.form.Panel#setValues setValues} if the form's
      * {@link Ext.form.Panel#trackResetOnLoad trackResetOnLoad} property is set to true.
      */
-    resetOriginalValue: function () {
+    resetOriginalValue: function() {
         this.originalValue = this.getValue();
+        this.setDirty(false);
     },
 
     /**
@@ -810,16 +878,16 @@ Ext.define('Ext.field.Field', {
      * @return {Boolean} `true` if this field has been changed from its original value (and
      * is not disabled), `false` otherwise.
      */
-    isDirty: function () {
-        return this.getValue() !== this.originalValue;
+    isDirty: function() {
+        return !this.isEqual(this.getValue(), this.originalValue);
     },
 
     /**
      * @private
      * Add/remove invalid class(es)
-     * @param {Boolean} hasError 
+     * @param {Boolean} hasError
      */
-    toggleInvalidCls: function (hasError) {
+    toggleInvalidCls: function(hasError) {
         this.el[hasError ? 'addCls' : 'removeCls'](this.invalidCls);
     },
 
@@ -828,7 +896,7 @@ Ext.define('Ext.field.Field', {
      * @deprecated 6.5.0 Use {@link #setError} instead. (for classic compatibility)
      * @since 6.5.0
      */
-    markInvalid: function (messages) {
+    markInvalid: function(messages) {
         this.setError(messages);
     },
 
@@ -837,32 +905,33 @@ Ext.define('Ext.field.Field', {
      * @deprecated 6.5.0 Use {@link #setError setError(null)} instead. (for classic compatibility)
      * @since 6.5.0
      */
-    clearInvalid: function () {
+    clearInvalid: function() {
         this.setError(null);
     },
 
     /**
      * Returns true if field is valid.
      */
-    isValid: function () {
+    isValid: function() {
         return !this.getError();
     },
 
     /**
-     * Returns whether two field {@link #getValue values} are logically equal. Field implementations may override this
-     * to provide custom comparison logic appropriate for the particular field's data type.
+     * Returns whether two field {@link #getValue values} are logically equal.
+     * Field implementations may override this to provide custom comparison logic appropriate
+     * for the particular field's data type.
      * @param {Object} value1 The first value to compare
      * @param {Object} value2 The second value to compare
      * @return {Boolean} True if the values are equal, false if inequal.
      */
-    isEqual: function (value1, value2) {
+    isEqual: function(value1, value2) {
         return String(value1) === String(value2);
     },
 
     /**
      * @private
      */
-    applyValidators: function (validators) {
+    applyValidators: function(validators) {
         var me = this,
             i, len, ret;
 
@@ -877,11 +946,11 @@ Ext.define('Ext.field.Field', {
         return ret;
     },
 
-    wrapValidatorFn: function (fn, validator) {
+    wrapValidatorFn: function(fn, validator) {
         var me = this,
             scope = validator && validator.scope;
 
-        return new Ext.data.validator['Validator'](function(value) {
+        return new Ext.data.validator.Validator(function(value) {
             return Ext.callback(fn, scope, [value], 0, me);
         });
     },
@@ -900,7 +969,7 @@ Ext.define('Ext.field.Field', {
      * @param {Boolean} [skipLazy] `false` (the default) to run all validators.
      * @private
      */
-    doValidate: function (value, errors, skipLazy) {
+    doValidate: function(value, errors, skipLazy) {
         var validators = this.getValidators(),
             len = validators && validators.length,
             i, result, validator;
@@ -927,14 +996,14 @@ Ext.define('Ext.field.Field', {
     parseValue: Ext.identityFn, // documented on textfield
 
     /**
-     * Validate the field and return it's validity state. 
+     * Validate the field and return it's validity state.
      * To get the existing validity state without re-validating current value,
      * use {@link isValid}.
      *
      * @param {Boolean} [skipLazy] (private) Pass `true` to skip validators marked as `lazy`.
      * @return {Boolean} The new validity state.
      */
-    validate: function (skipLazy) {
+    validate: function(skipLazy) {
         var me = this,
             empty, errors, field, record, validity, value;
 
@@ -994,15 +1063,17 @@ Ext.define('Ext.field.Field', {
 
             if (errors.length) {
                 me.setError(errors);
+
                 return false;
             }
         }
 
         me.setError(null);
+
         return true;
     },
 
-    getFocusClsEl: function () {
+    getFocusClsEl: function() {
         return this.element;
     },
 
@@ -1022,6 +1093,129 @@ Ext.define('Ext.field.Field', {
         this.syncFormLayoutHeight();
     },
 
+    /**
+     * @method rawToValue
+     * Converts a raw input field value into a mixed-type value that is suitable for this particular
+     * field type. This allows controlling the normalization and conversion of user-entered values
+     * into field-type-appropriate values, e.g. a Date object for {@link Ext.field.Date},
+     * and is invoked by {@link #getValue}.
+     *
+     * It is up to individual implementations to decide how to handle raw values that cannot be
+     * successfully converted to the desired object type.
+     *
+     * The base implementation does no conversion, returning the raw value untouched.
+     *
+     * @param {Object} rawValue
+     * @return {Object} The converted value.
+     *
+     * @since 7.0
+     */
+    rawToValue: Ext.identityFn,
+
+    /**
+     * @method processRawValue
+     * Performs any necessary manipulation of a raw field value to prepare it for
+     * {@link #rawToValue conversion} and/or {@link #validate validation}, for instance
+     * stripping out ignored characters. In the base implementation it does nothing;
+     * individual subclasses may override this as needed.
+     *
+     * @param {Object} value The unprocessed string value
+     * @return {Object} The processed string value
+     *
+     * @since 7.0
+     */
+    processRawValue: Ext.identityFn,
+
+    /**
+     * @method transformRawValue
+     * Transform the raw value before it is set
+     * @protected
+     * @param {Object} value The value
+     * @return {Object} The value to set
+     *
+     * @since 7.0
+     */
+    transformRawValue: Ext.identityFn,
+
+    /**
+     * @method getRawValue
+     * Returns the raw value of the field, without performing any normalization, conversion,
+     * or validation. To get a normalized and converted value see {@link #getValue}.
+     * @return {String} value The raw String value of the field
+     *
+     * @since 7.0
+     */
+    getRawValue: function() {
+        var me = this,
+            value = me.inputElement ? me.inputElement.getValue() : Ext.valueFrom(me.rawValue, '');
+
+        me.rawValue = value;
+
+        return value;
+    },
+
+    handleFieldDefaults: function() {
+        var me = this,
+            inheritedState = me.getInherited(),
+            fieldDefaults, key, prop, initialConfig, value;
+
+        // Update set of field defaults values to current field instance.
+        // Checks if component doesn't have passed property,
+        // then set current fields with passed property
+        if (inheritedState) {
+            fieldDefaults = inheritedState.fieldDefaults;
+
+            if (fieldDefaults) {
+                initialConfig = me.initialConfig;
+
+                for (key in fieldDefaults) {
+                    if (!initialConfig[key]) {
+                        // to prepare setter method syntax
+                        prop = Ext.util.Format.capitalize(key);
+                        value = fieldDefaults[key];
+
+                        if (me['set' + prop]) {
+                            me['set' + prop](value);
+                        }
+                        else {
+                            me[key] = value;
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    /**
+     * A function which converts the field’s value for submission. This is the value used
+     * for form submit. The field's value is serialized using the serializer for the
+     * associated {@link Ext.data.Model} when using `modelValidation`, or using the
+     * serializer specified by the {@link #dataType} config.
+     * @return {String}
+     * @since 7.0
+     */
+    serialize: function() {
+        var me = this,
+            value = me.getValue(),
+            dataField;
+
+        // Serialization uses one of the available field serializers,
+        // either through model validation specified on the form (and
+        // exposed via this._validationField) or on the dataField. Both
+        // are optional, and even if the data field is there, the
+        // serialize method is optional.
+
+        if (value != null) {
+            dataField = me._validationField || me.getDataType();
+
+            if (dataField && dataField.serialize) {
+                value = dataField.serialize(value);
+            }
+        }
+
+        return value;
+    },
+
     privates: {
         syncFormLayoutHeight: function() {
             var me = this,
@@ -1035,7 +1229,7 @@ Ext.define('Ext.field.Field', {
             me.bodyElement.setHeight(height);
         },
 
-        validateLayout: function () {
+        validateLayout: function() {
             var errorTarget = this.getErrorTarget(),
                 parent = this.parent;
 
@@ -1050,7 +1244,7 @@ Ext.define('Ext.field.Field', {
             }
         },
 
-        applyBind: function (bind, currentBindings) {
+        applyBind: function(bind, currentBindings) {
             var me = this,
                 valueBinding = currentBindings && currentBindings.value,
                 bindings, newValueBind;
@@ -1069,7 +1263,7 @@ Ext.define('Ext.field.Field', {
             return bindings;
         },
 
-        updateValueBinding: function (bindings) {
+        updateValueBinding: function(bindings) {
             var me = this,
                 newBinding = bindings.value,
                 fieldBinding = bindings.$fieldBinding;
@@ -1084,7 +1278,7 @@ Ext.define('Ext.field.Field', {
             }
         },
 
-        setValidationField: function (field, record) {
+        setValidationField: function(field, record) {
             this._validationField = field;
             this._validationRecord = record;
         },

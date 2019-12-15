@@ -25,18 +25,20 @@ Ext.define('Ext.draw.modifier.Highlight', {
 
     preFx: true,
 
-    applyStyle: function (style, oldStyle) {
+    applyStyle: function(style, oldStyle) {
         oldStyle = oldStyle || {};
 
         if (this.getSprite()) {
             Ext.apply(oldStyle, this.getSprite().self.def.normalize(style));
-        } else {
+        }
+        else {
             Ext.apply(oldStyle, style);
         }
+
         return oldStyle;
     },
 
-    prepareAttributes: function (attr) {
+    prepareAttributes: function(attr) {
         if (!attr.hasOwnProperty('highlightOriginal')) {
             attr.highlighted = false;
             attr.highlightOriginal = Ext.Object.chain(attr);
@@ -45,21 +47,24 @@ Ext.define('Ext.draw.modifier.Highlight', {
             // when it is unhighlighted.
             attr.highlightOriginal.removeFromInstance = {};
         }
+
         if (this._lower) {
             this._lower.prepareAttributes(attr.highlightOriginal);
         }
     },
 
-    updateSprite: function (sprite, oldSprite) {
+    updateSprite: function(sprite, oldSprite) {
         var me = this,
             style = me.getStyle(),
             attributeDefinitions;
 
         if (sprite) {
             attributeDefinitions = sprite.self.def;
+
             if (style) {
                 me._style = attributeDefinitions.normalize(style);
             }
+
             me.setStyle(sprite.config.highlight);
             // Add highlight related attributes to sprite's attribute definition.
             // This will affect all sprites of the same type, even those without
@@ -84,7 +89,7 @@ Ext.define('Ext.draw.modifier.Highlight', {
      * @param {Object} changes The modifier changes.
      * @return {*} The filtered changes.
      */
-    filterChanges: function (attr, changes) {
+    filterChanges: function(attr, changes) {
         var me = this,
             highlightOriginal = attr.highlightOriginal,
             style = me.getStyle(),
@@ -105,7 +110,7 @@ Ext.define('Ext.draw.modifier.Highlight', {
         return changes;
     },
 
-    pushDown: function (attr, changes) {
+    pushDown: function(attr, changes) {
         var style = this.getStyle(),
             highlightOriginal = attr.highlightOriginal,
             removeFromInstance = highlightOriginal.removeFromInstance,
@@ -119,6 +124,7 @@ Ext.define('Ext.draw.modifier.Highlight', {
             if (this._lower) {
                 changes = this._lower.pushDown(highlightOriginal, changes);
             }
+
             changes = this.filterChanges(attr, changes);
 
             if (highlighted !== attr.highlighted) {
@@ -130,7 +136,8 @@ Ext.define('Ext.draw.modifier.Highlight', {
                         if (name in changes) {
                             // Remember value set by lower level modifiers.
                             highlightOriginal[name] = changes[name];
-                        } else {
+                        }
+                        else {
                             // Remember the original value.
 
                             // If this is a sprite instance and it doesn't have its own
@@ -143,10 +150,12 @@ Ext.define('Ext.draw.modifier.Highlight', {
                             // modifier for more details on the 'targets' object.
 
                             tplAttr = attr.template && attr.template.ownAttr;
+
                             if (tplAttr && !attr.prototype.hasOwnProperty(name)) {
                                 removeFromInstance[name] = true;
                                 highlightOriginal[name] = tplAttr.targets[name];
-                            } else {
+                            }
+                            else {
 
                                 // Even if a sprite instance has its own property, it may
                                 // still have to be removed from the instance after
@@ -166,43 +175,52 @@ Ext.define('Ext.draw.modifier.Highlight', {
                                 // for the attribute and see if the 'remove' flag is set.
 
                                 timer = highlightOriginal.timers[name];
+
                                 if (timer && timer.remove) {
                                     removeFromInstance[name] = true;
                                 }
+
                                 highlightOriginal[name] = attr[name];
                             }
                         }
+
                         if (highlightOriginal[name] !== style[name]) {
                             changes[name] = style[name];
                         }
                     }
-                } else {
+                }
+                else {
                     // Switching OFF.
                     for (name in style) {
                         if (!(name in changes)) {
                             changes[name] = highlightOriginal[name];
                         }
+
                         delete highlightOriginal[name];
                     }
+
                     changes.removeFromInstance = changes.removeFromInstance || {};
                     // Let the higher lever animation modifier know which attributes
                     // should be removed from instance when the animation is done.
                     Ext.apply(changes.removeFromInstance, removeFromInstance);
                     highlightOriginal.removeFromInstance = {};
                 }
+
                 changes.highlighted = highlighted;
             }
-        } else {
+        }
+        else {
             if (this._lower) {
                 changes = this._lower.pushDown(highlightOriginal, changes);
             }
+
             changes = this.filterChanges(attr, changes);
         }
 
         return changes;
     },
 
-    popUp: function (attr, changes) {
+    popUp: function(attr, changes) {
         changes = this.filterChanges(attr, changes);
         this.callParent([attr, changes]);
     }

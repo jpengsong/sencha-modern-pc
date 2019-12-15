@@ -573,7 +573,7 @@ $tool-boxscroller-tabbar-ui: dynamic((
  * @var {string/list}
  * The "close" tool icon
  */
-$tool-close-icon: dynamic($fa-var-close $font-icon-font-family);
+$tool-close-icon: dynamic($fa-var-times $font-icon-font-family);
 
 /**
  * @var {string/list}
@@ -642,7 +642,7 @@ $tool-next-icon: dynamic($fa-var-chevron-right $font-icon-font-family);
  * @var {string/list}
  * The "pin" tool icon
  */
-$tool-pin-icon: dynamic($fa-var-thumb-tack $font-icon-font-family);
+$tool-pin-icon: dynamic($fa-var-thumbtack $font-icon-font-family);
 
 //# fashion replaces $panel-tool-unpin-icon
 /**
@@ -685,7 +685,7 @@ $tool-up-icon: dynamic($fa-var-caret-up $font-icon-font-family);
  * @var {string/list}
  * The "refresh" tool icon
  */
-$tool-refresh-icon: dynamic($fa-var-refresh $font-icon-font-family);
+$tool-refresh-icon: dynamic($fa-var-sync $font-icon-font-family);
 
 //# fashion replaces $panel-tool-plus-icon
 /**
@@ -720,7 +720,7 @@ $tool-search-icon: dynamic($fa-var-search $font-icon-font-family);
  * @var {string/list}
  * The "save" tool icon
  */
-$tool-save-icon: dynamic($fa-var-check $font-icon-font-family);
+$tool-save-icon: dynamic($fa-var-save $font-icon-font-family);
 
 //# fashion replaces $panel-tool-help-icon
 /**
@@ -819,6 +819,18 @@ $tool-expand-right-icon: dynamic($fa-var-caret-right $font-icon-font-family);
  * The right "collapse" tool icon
  */
 $tool-collapse-right-icon: dynamic($fa-var-caret-right $font-icon-font-family);
+
+/**
+ * @var {string/list}
+ * The "edit" tool icon
+ */
+$tool-edit-icon: dynamic($fa-var-edit $font-icon-font-family);
+
+/**
+ * @var {string/list}
+ * The "trash" tool icon
+ */
+$tool-trash-icon: dynamic($fa-var-trash $font-icon-font-family);
 
 /**
  * @var {string/list}

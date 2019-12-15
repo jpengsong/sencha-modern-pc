@@ -25,7 +25,8 @@ Ext.define('Ext.panel.Resizer', {
         /**
          * @cfg {String/String[]} edges
          * The draggable edges. These can be specified as a string separated by ' ' or ','. The
-         * values for the edges should be direction coordinates (or the shortcut). Possible values are:
+         * values for the edges should be direction coordinates (or the shortcut). 
+         * Possible values are:
          *
          * - `'north'`, or `'n'`
          * - `'northeast'`, or `'ne'`
@@ -53,8 +54,8 @@ Ext.define('Ext.panel.Resizer', {
          * - `[null, 100]`, constrain only the height
          * - `[200, 300]`, constrain both.
          *
-         * **Note** If a {@link Ext.Component#cfg-maxWidth maxWidth} or {@link Ext.Component#cfg-maxHeight maxHeight}
-         * is specified, it will take precedence.
+         * **Note** If a {@link Ext.Component#cfg-maxWidth maxWidth} or 
+         * {@link Ext.Component#cfg-maxHeight maxHeight} is specified, it will take precedence.
          */
         maxSize: null,
 
@@ -66,8 +67,8 @@ Ext.define('Ext.panel.Resizer', {
          * - `[null, 100]`, constrain only the height
          * - `[200, 300]`, constrain both.
          *
-         * **Note** If a {@link Ext.Component#cfg-minWidth minWidth} or {@link Ext.Component#cfg-minHeight minHeight}
-         * is specified, it will take precedence.
+         * **Note** If a {@link Ext.Component#cfg-minWidth minWidth} or 
+         * {@link Ext.Component#cfg-minHeight minHeight} is specified, it will take precedence.
          */
         minSize: null,
 
@@ -89,9 +90,10 @@ Ext.define('Ext.panel.Resizer', {
 
         /**
          * @cfg {Boolean} split
-         * `true` to operate in splitter mode, which is typically used for {@link Ext.Component#cfg-docked docked} items or
-         * items in a {@link Ext.layout.Box box layout}. `false` to operate in handle mode, which is often used for floating
-         * items.
+         * `true` to operate in splitter mode, which is typically used for 
+         * {@link Ext.Component#cfg-docked docked} items or items in a 
+         * {@link Ext.layout.Box box layout}. `false` to operate in handle mode, which is 
+         * often used for floating items.
          */
         split: false,
 
@@ -124,10 +126,12 @@ Ext.define('Ext.panel.Resizer', {
         if (edges) {
             if (edges === 'all') {
                 edges = Ext.Array.clone(this.allEdges);
-            } else if (typeof edges === 'string') {
+            }
+            else if (typeof edges === 'string') {
                 edges = edges.trim();
                 edges = edges.split(this.edgeDelimiterRe);
-            } else {
+            }
+            else {
                 edges = Ext.Array.clone(edges);
             }
 
@@ -136,6 +140,7 @@ Ext.define('Ext.panel.Resizer', {
                 if (!positionMap[edges[i]]) {
                     Ext.raise('Invalid edge specified: ' + edges[i]);
                 }
+
                 //</debug>
                 edges[i] = positionMap[edges[i]];
             }
@@ -176,10 +181,13 @@ Ext.define('Ext.panel.Resizer', {
             for (key in map) {
                 if (!newMap[key]) {
                     edgeEl = map[key];
+
                     if (infoMap[key].corner && edgeEl === firstCorner) {
                         firstCorner = null;
                     }
+
                     edgeEl.destroy();
+
                     if (split && key in splitEdges) {
                         el.removeCls(splitPrefix + key);
                     }
@@ -195,13 +203,15 @@ Ext.define('Ext.panel.Resizer', {
         if (edges) {
             for (key in newMap) {
                 newMap[key] = edge = map[key] || me.createEdge(el, key);
+
                 if (split) {
                     edge.addCls(me.splitterCls);
 
                     if (key in splitEdges) {
                         el.addCls(splitPrefix + key);
                     }
-                } else {
+                }
+                else {
                     edge.addCls(me.handleCls);
                 }
 
@@ -235,7 +245,7 @@ Ext.define('Ext.panel.Resizer', {
             map = me.edgeMap,
             splitEdges = me.splitEdges,
             splitPrefix = me.splitPrefix,
-            key, el, i, len, target;
+            key, el, target;
 
         if (me.isConfiguring) {
             // Drop out if we're configuring, this the class manipulation
@@ -247,6 +257,7 @@ Ext.define('Ext.panel.Resizer', {
 
         for (key in map) {
             el = map[key];
+
             if (el.isElement) {
                 el.toggleCls(me.splitterCls, split);
                 el.toggleCls(me.handleCls, !split);
@@ -306,7 +317,7 @@ Ext.define('Ext.panel.Resizer', {
             target = me.getTarget();
 
         if (me.dragStarted) {
-            me.cleanup();   
+            me.cleanup();
         }
 
         // If the target is destroying it will destroy the edge elements
@@ -339,9 +350,9 @@ Ext.define('Ext.panel.Resizer', {
          * @private
          */
         allEdges: [
-            'north', 
-            'northeast', 
-            'east', 
+            'north',
+            'northeast',
+            'east',
             'southeast',
             'south',
             'southwest',
@@ -532,6 +543,7 @@ Ext.define('Ext.panel.Resizer', {
             if (!Ext.isArray(v)) {
                 v = [v, v];
             }
+
             return v;
         },
 
@@ -554,13 +566,15 @@ Ext.define('Ext.panel.Resizer', {
                 info = me.edgeInfoMap[pos],
                 corner = info.corner,
                 firstCorner = me.firstCorner,
-                // Ensure corners are inserted later in the DOM so they appear "above" sides when hovering
+                // Ensure corners are inserted later in the DOM so they appear 
+                // "above" sides when hovering
                 el = targetEl.createChild({
                     cls: me.baseCls + ' ' + Ext.baseCSSPrefix + pos,
                     'data-edge': pos
                 }, corner ? null : firstCorner);
 
             el.setTouchAction(info.touchAction);
+
             if (corner) {
                 el.dom.setAttribute('data-corner', 'true');
             }
@@ -607,45 +621,50 @@ Ext.define('Ext.panel.Resizer', {
 
         getEdge: function(position) {
             position = this.positionMap[position];
+
             return this.edgeMap[position] || null;
         },
 
         getProxy: function() {
             var info = this.info;
+
             return info && info.proxy;
         },
 
         handleDrag: function(e) {
+            var info, target, edge, asFloat, box, horz, vert, offsetWidth, offsetHeight,
+                adjustWidthOffset, adjustHeightOffset, modifiesX, modifiesY, minHeight,
+                minWidth, maxHeight, maxWidth, snappedWidth, snappedHeight, w, h, ratio,
+                dragRatio, oppX, oppY, newBox;
+
             if (!this.dragStarted) {
                 return;
             }
 
-            var info = this.info,
-                target = info.target,
-                edge = info.edge,
-                asFloat = info.asFloat,
-                box = info.startBox,
-                horz = edge.horz,
-                vert = edge.vert,
-                offsetWidth = 0, 
-                offsetHeight = 0,
-                adjustWidthOffset = edge.adjustWidthOffset,
-                adjustHeightOffset = edge.adjustHeightOffset,
-                modifiesX = asFloat && edge.adjustWidthOffset < 0,
-                modifiesY = asFloat && edge.adjustHeightOffset < 0,
-                minHeight = info.minHeight,
-                minWidth = info.minWidth,
-                maxHeight = info.maxHeight,
-                maxWidth = info.maxWidth,
-                snappedWidth, snappedHeight, w, h, ratio,
-                dragRatio, oppX, oppY, newBox;
+            info = this.info;
+            target = info.target;
+            edge = info.edge;
+            asFloat = info.asFloat;
+            box = info.startBox;
+            horz = edge.horz;
+            vert = edge.vert;
+            offsetWidth = 0;
+            offsetHeight = 0;
+            adjustWidthOffset = edge.adjustWidthOffset;
+            adjustHeightOffset = edge.adjustHeightOffset;
+            modifiesX = asFloat && edge.adjustWidthOffset < 0;
+            modifiesY = asFloat && edge.adjustHeightOffset < 0;
+            minHeight = info.minHeight;
+            minWidth = info.minWidth;
+            maxHeight = info.maxHeight;
+            maxWidth = info.maxWidth;
 
             if (adjustWidthOffset) {
-                offsetWidth = adjustWidthOffset * e.deltaX;
+                offsetWidth = Math.round(adjustWidthOffset * e.deltaX);
             }
 
             if (adjustHeightOffset) {
-                offsetHeight = adjustHeightOffset * e.deltaY;
+                offsetHeight = Math.round(adjustHeightOffset * e.deltaY);
             }
 
             newBox = {
@@ -669,6 +688,7 @@ Ext.define('Ext.panel.Resizer', {
                 if (modifiesY) {
                     newBox.y -= snappedHeight - h;
                 }
+
                 newBox.width = w = snappedWidth;
                 newBox.height = h = snappedHeight;
             }
@@ -702,9 +722,11 @@ Ext.define('Ext.panel.Resizer', {
                     oppY = box.y + (modifiesY ? box.height : 0);
 
                     dragRatio = Math.abs(oppX - e.pageX) / Math.abs(oppY - e.pageY);
+
                     if (dragRatio > ratio) {
                         newBox.height = h;
-                    } else {
+                    }
+                    else {
                         newBox.width = w;
                     }
 
@@ -715,10 +737,12 @@ Ext.define('Ext.panel.Resizer', {
                     if (modifiesY) {
                         newBox.y = box.y - (newBox.height - box.height);
                     }
-                } else if (horz) {
+                }
+                else if (horz) {
                     // width only, adjust height to match
                     newBox.height = h;
-                } else {
+                }
+                else {
                     // height only, adjust width to match
                     newBox.width = w;
                 }
@@ -788,6 +812,7 @@ Ext.define('Ext.panel.Resizer', {
 
             if (target.getFlex()) {
                 layout = me.getBoxLayout();
+
                 if (layout) {
                     layoutVert = layout.getVertical();
                     clearFlex = (horz && !layoutVert) || (vert && layoutVert);
@@ -816,14 +841,19 @@ Ext.define('Ext.panel.Resizer', {
 
             if (!dynamic) {
                 info.proxy = proxy = me.createProxy(edge, asFloat);
+
                 if (asFloat) {
                     proxy.setBox(region);
-                } else {
+                }
+                else {
                     proxy[edge.splitPosSetter](info.start);
                     proxy[edge.oppSplitPosSetter](horz ? region.top : region.left);
-                    proxy.setSize(horz ? undefined : region.width, vert ? undefined : region.height);
+                    proxy.setSize(
+                        horz ? undefined : region.width, vert ? undefined : region.height
+                    );
                 }
             }
+
             me.setupDragConstraints(info);
 
             me.dragStarted = true;
@@ -834,7 +864,9 @@ Ext.define('Ext.panel.Resizer', {
                     event: e
                 });
             }
+
             e.stopPropagation();
+
             // Prevent any further drag events from completing
             return false;
         },
@@ -889,7 +921,8 @@ Ext.define('Ext.panel.Resizer', {
 
             if (onTarget) {
                 resizeTarget = me.getTarget();
-            } else {
+            }
+            else {
                 resizeTarget = info.proxy;
                 isProxy = true;
             }
@@ -899,14 +932,19 @@ Ext.define('Ext.panel.Resizer', {
                 offset = horz ? edge.adjustWidthOffset : edge.adjustHeightOffset;
                 diff = (newBox[prop] - box[prop]) * offset;
                 resizeTarget[edge.splitPosSetter](info.start + diff);
-            } else {
-                resizeTarget.setSize(horz ? newBox.width : undefined, vert ? newBox.height : undefined);
+            }
+            else {
+                resizeTarget.setSize(
+                    horz ? newBox.width : undefined, vert ? newBox.height : undefined
+                );
+
                 if (!isProxy && info.clearFlex) {
                     resizeTarget.setFlex(null);
                 }
 
                 if (posChanged) {
                     positionEnd = !floated && onTarget;
+
                     if (positionEnd) {
                         targetParent = target.element.dom.parentNode;
                         parentXY = Ext.fly(targetParent).getXY();
@@ -915,14 +953,17 @@ Ext.define('Ext.panel.Resizer', {
                     if (horz) {
                         if (positionEnd) {
                             resizeTarget.setLeft(x - parentXY[0]);
-                        } else {
+                        }
+                        else {
                             resizeTarget.setX(x);
                         }
                     }
+
                     if (vert) {
                         if (positionEnd) {
                             resizeTarget.setTop(y - parentXY[1]);
-                        } else {
+                        }
+                        else {
                             resizeTarget.setY(y);
                         }
                     }
@@ -980,12 +1021,16 @@ Ext.define('Ext.panel.Resizer', {
 
                 if (edge.horz) {
                     prop = edge.constrainProp.horz;
-                    info.maxWidth = Math.min(info.maxWidth, Math.abs(box[prop] - parentBox[invertMap[prop]]));
+                    info.maxWidth = Math.min(
+                        info.maxWidth, Math.abs(box[prop] - parentBox[invertMap[prop]])
+                    );
                 }
 
                 if (edge.vert) {
                     prop = edge.constrainProp.vert;
-                    info.maxHeight = Math.min(info.maxHeight, Math.abs(box[prop] - parentBox[invertMap[prop]]));
+                    info.maxHeight = Math.min(
+                        info.maxHeight, Math.abs(box[prop] - parentBox[invertMap[prop]])
+                    );
                 }
             }
 
@@ -1018,19 +1063,24 @@ Ext.define('Ext.panel.Resizer', {
 
             if (increment) {
                 m = value % increment;
+
                 if (m !== 0) {
                     m2 = m * 2;
 
                     value -= m;
+
                     if (roundUp && m2 >= increment) {
                         value += increment;
-                    } else if (!roundUp && m2 > increment) {
+                    }
+                    else if (!roundUp && m2 > increment) {
                         value += increment;
-                    } else if (m2 < -increment) {
+                    }
+                    else if (m2 < -increment) {
                         value -= increment;
                     }
                 }
             }
+
             return value;
         }
     }

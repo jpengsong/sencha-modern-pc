@@ -31,20 +31,23 @@ Ext.define('Ext.data.validator.Email', {
     // See the back-reference.  Capturing.
     //
     // (?:[^\."])
-    // Here we've defined that the local part cannot begin with a period or a double-quote.  Non-capturing.
+    // Here we've defined that the local part cannot begin with a period or a double-quote.
+    // Non-capturing.
     //
     // (?:(?:[\.])?(?:[\w\-!#$%&'*+/=?^_`{|}~]))*
-    // After the first character is matched, the regex ensures that there is not more than one period
-    // in a row.  Then, this nested grouping allows for zero or more of the accepted characters.
-    // NOTE that this also ensures that any character not defined in the character class
+    // After the first character is matched, the regex ensures that there is not more than one
+    // period in a row.  Then, this nested grouping allows for zero or more of the accepted
+    // characters. NOTE that this also ensures that any character not defined in the character class
     // is invalid as an ending character for the local part (such as the period).
     //
     // \1@
-    // The local part of the address is a backreference to the first (and only) capturing group that allows
+    // The local part of the address is a backreference to the first (and only) capturing group
+    // that allows
     // for a double-quote to wrap the local part of an email address.
     /**
      * @cfg {RegExp} matcher
      * A matcher to check for simple emails. This may be overridden.
      */
+    /* eslint-disable-next-line no-useless-escape */
     matcher: /^(")?(?:[^\."])(?:(?:[\.])?(?:[\w\-!#$%&'*+\/=?\^_`{|}~]))*\1@(\w[\-\w]*\.){1,5}([A-Za-z]){2,6}$/
 });

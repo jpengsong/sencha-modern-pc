@@ -5,7 +5,7 @@ xtopSuite("Ext.dataview.listswiper.Stepper", [
     var helper = Ext.testHelper,
         views = {};
 
-    function acquireView (config) {
+    function acquireView(config) {
         var view = Ext.create(Ext.merge({
             xtype: 'list',
             renderTo: Ext.getBody(),
@@ -20,31 +20,34 @@ xtopSuite("Ext.dataview.listswiper.Stepper", [
             },
             store: {
                 data: Array.apply(null, Array(128)).map(function(value, index) {
-                    return {value: index}
+                    return { value: index };
                 })
             }
         }, config || {}));
 
         views[view.getId()] = view;
         view.refresh();
+
         return view;
     }
 
-    function swipe (item, direction, distance, maintain) {
+    function swipe(item, direction, distance, maintain) {
         var el = item.el || item.element,
             dx = (distance || 0) * (direction === 'left' ? -1 : 1),
             x = direction === 'left' ? el.getWidth() : 0,
             y = item.el.getHeight() / 2;
 
-        helper.touchStart(el, {x: x, y: y});
-        helper.touchMove(el, {x: x + dx, y: y});
+        helper.touchStart(el, { x: x, y: y });
+        helper.touchMove(el, { x: x + dx, y: y });
+
         if (!maintain) {
-            helper.touchEnd(el, {x: x + dx, y: y});
+            helper.touchEnd(el, { x: x + dx, y: y });
         }
     }
 
-    function swipeEnd (item) {
+    function swipeEnd(item) {
         var swiperItem = item.$swiperWidget;
+
         helper.touchEnd(item.el || item.element);
 
         // Force the swiper item to end without animation
@@ -54,6 +57,7 @@ xtopSuite("Ext.dataview.listswiper.Stepper", [
     afterEach(function() {
         Ext.Object.getValues(views).forEach(function(view) {
             var id = view.getId();
+
             delete views[id];
             view.destroy();
         });
@@ -73,16 +77,18 @@ xtopSuite("Ext.dataview.listswiper.Stepper", [
                         }]
                     }
                 }),
-                item = list.getItemAt(0), swiperItem;
+                item = list.getItemAt(0),
+swiperItem;
 
-            [{dir: 'left', dist: 32, state: 'peek'},
-                {dir: 'left', dist: 128, state:'active'},
-                {dir: 'right', dist: 32, state: 'peek'},
-                {dir: 'right', dist: 128, state: 'active'}
+            [{ dir: 'left', dist: 32, state: 'peek' },
+                { dir: 'left', dist: 128, state: 'active' },
+                { dir: 'right', dist: 32, state: 'peek' },
+                { dir: 'right', dist: 128, state: 'active' }
             ].forEach(function(expected) {
                 var dir = expected.dir,
                     side = dir === 'left' ? 'right' : 'left',
-                    key = dir === 'left' ? 'bar' : 'foo', state, step;
+                    key = dir === 'left' ? 'bar' : 'foo',
+state, step;
 
                 swipe(item, dir, expected.dist, true);
                 swiperItem = item.$swiperWidget;
@@ -122,11 +128,10 @@ xtopSuite("Ext.dataview.listswiper.Stepper", [
                 }),
                 item = list.getItemAt(0);
 
-
-            [{dist: 16, key: 'foo', state: 'peek'},
-                {dist: 96, key: 'foo', state: 'active'},
-                {dist: 160, key: 'bar', state: 'active'},
-                {dist: 224, key: 'bla', state: 'active'}
+            [{ dist: 16, key: 'foo', state: 'peek' },
+                { dist: 96, key: 'foo', state: 'active' },
+                { dist: 160, key: 'bar', state: 'active' },
+                { dist: 224, key: 'bla', state: 'active' }
             ].forEach(function(expected) {
                 var dir = 'left',
                     side = dir === 'left' ? 'right' : 'left',
@@ -149,7 +154,8 @@ xtopSuite("Ext.dataview.listswiper.Stepper", [
                 ['foo', 'bar', 'bla'].forEach(function(k) {
                     if (expected.key === k) {
                         expect(item.el).toHaveCls('x-swipe-action-' + k);
-                    } else {
+                    }
+ else {
                         expect(item.el).not.toHaveCls('x-swipe-action-' + k);
                     }
                 });
@@ -224,10 +230,10 @@ xtopSuite("Ext.dataview.listswiper.Stepper", [
 
             expect(spy.callCount).toBe(4);
 
-            [{index: 0, key: 'foo'},
-                {index: 3, key: 'foo'},
-                {index: 5, key: 'bar'},
-                {index: 6, key: 'bar'}
+            [{ index: 0, key: 'foo' },
+                { index: 3, key: 'foo' },
+                { index: 5, key: 'bar' },
+                { index: 6, key: 'bar' }
             ].forEach(function(expected, i) {
                 expect(spy.calls[i].args[0]).toBe(list);
                 expect(spy.calls[i].args[1]).toBe(expected.index);
@@ -270,9 +276,9 @@ xtopSuite("Ext.dataview.listswiper.Stepper", [
 
             expect(spy.callCount).toBe(3);
 
-            [{key: 'foo'},
-                {key: 'bar'},
-                {key: 'bla'}
+            [{ key: 'foo' },
+                { key: 'bar' },
+                { key: 'bla' }
             ].forEach(function(expected, i) {
                 expect(spy.calls[i].args[0]).toBe(list);
                 expect(spy.calls[i].args[1]).toBe(3);
@@ -358,9 +364,9 @@ xtopSuite("Ext.dataview.listswiper.Stepper", [
 
             expect(spy.callCount).toBe(3);
 
-            [{index: 1, key: 'foo'},
-                {index: 3, key: 'bar'},
-                {index: 4, key: 'foo'}
+            [{ index: 1, key: 'foo' },
+                { index: 3, key: 'bar' },
+                { index: 4, key: 'foo' }
             ].forEach(function(expected, i) {
                 expect(spy.calls[i].args[0]).toBe(list);
                 expect(spy.calls[i].args[1]).toBe(expected.index);
@@ -473,15 +479,15 @@ xtopSuite("Ext.dataview.listswiper.Stepper", [
             swipe(list.getItemAt(4), 'left', 192);
 
             expect(spy.callCount).toBe(0);
-            
+
             waits(200);
-            
+
             runs(function() {
                 expect(spy.callCount).toBe(0);
             });
-            
+
             waits(100);
-            
+
             runs(function() {
                 expect(spy.callCount).toBe(3);
             });
@@ -513,9 +519,9 @@ xtopSuite("Ext.dataview.listswiper.Stepper", [
             swipe(list.getItemAt(1), 'left', 192);
             swipe(list.getItemAt(3), 'right', 192);
             swipe(list.getItemAt(4), 'left', 192);
-            
-            waits(500)
-            
+
+            waits(500);
+
             runs(function() {
                 expect(spy.callCount).toBe(0);
             });

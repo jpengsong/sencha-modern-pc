@@ -1,12 +1,18 @@
 /* global Ext, spyOn, jasmine, expect */
 
-topSuite("Ext.Widget.floated", [false, 'Ext.Panel'], function() {
+topSuite('Ext.Widget.floated', [
+    false,
+    'Ext.Dialog',
+    'Ext.form.*',
+    'Ext.field.*'
+], function() {
     var w;
 
     function makeWidget(cfg) {
         w = Ext.create(Ext.apply({
             hidden: false
         }, cfg));
+
         return w;
     }
 
@@ -15,6 +21,7 @@ topSuite("Ext.Widget.floated", [false, 'Ext.Panel'], function() {
             el = el.element;
         }
         var box = Ext.fly(el).getBox();
+
         expect(box.x).toBe(x);
         expect(box.y).toBe(y);
     }
@@ -222,6 +229,7 @@ topSuite("Ext.Widget.floated", [false, 'Ext.Panel'], function() {
             if (wasRendered) {
                 wasRendered = Ext.Msg.setRendered(false);
             }
+
             wasRendered = false;
         });
 
@@ -500,7 +508,7 @@ topSuite("Ext.Widget.floated", [false, 'Ext.Panel'], function() {
             // So the mask ust be stashed safely in the detached body
             expect(mask.dom.parentNode).toBe(Ext.getDetachedBody().dom);
         });
-        
+
         describe("alwaysOnTop", function() {
             it('should give alwaysOnTop floated components a higher z-index', function() {
                 // Initial conditions
@@ -548,14 +556,14 @@ topSuite("Ext.Widget.floated", [false, 'Ext.Panel'], function() {
 
     // Phones do not use floated pickers
     if (!Ext.platformTags.phone) {
-        describe('non-parent hierarchy', function () {
+        describe('non-parent hierarchy', function() {
             var dialog, dateField, picker;
 
-            afterEach(function () {
+            afterEach(function() {
                 Ext.destroy(dialog);
             });
 
-            it('should render the float roots of non-child descendant floateds into the closest ancestor floatWrap', function () {
+            it('should render the float roots of non-child descendant floateds into the closest ancestor floatWrap', function() {
                 dialog = new Ext.Dialog({
                     modal: false,
                     title: 'Floated Panel',

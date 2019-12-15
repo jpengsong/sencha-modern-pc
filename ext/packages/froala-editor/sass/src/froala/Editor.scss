@@ -1,0 +1,32 @@
+.#{$prefix}froala {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    
+    .fr-wrapper {
+        flex: 1
+    }
+}
+
+.fr-popup .fr-dropdown-list a.fr-command i.fas {
+    line-height: 200%;
+    width: 100%;
+    text-align: center;
+}
+
+@include froala-toolbar-ui(
+    $fr-glyph-color: $fr-btn-glyph-color,
+    $fr-font-size: $fr-btn-font-size,
+    $fr-background-hover: $fr-btn-background-hover,
+    $fr-border-radius: $fr-toolbar-border-radius,
+    $fr-wrapper-background-color: $fr-editor-background-color,
+    $fr-toolbar-background-color: $fr-editor-toolbar-background-color,
+    $fr-toolbar-border-color: $fr-toolbar-border-bottom-color,
+    $fr-element-color: $fr-editor-font-color,
+    $fr-border-color: $fr-editor-border-color,
+    $fr-border-style: $fr-editor-border-style,
+    $fr-menu-expanded-background: $fr-menu-expanded-background-color,
+    $fr-toolbar-border-bottom: $fr-toolbar-border-bottom-height,
+    $fr-toolbar-active-background: $fr-toolbar-active-background-color
+);

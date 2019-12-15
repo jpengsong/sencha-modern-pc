@@ -4,9 +4,11 @@ topSuite("Ext.data.BufferedStore", function() {
         bufferedStoreLoad = Ext.data.BufferedStore.prototype.load,
         loadStore = function() {
             bufferedStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         };
 
@@ -22,6 +24,7 @@ topSuite("Ext.data.BufferedStore", function() {
                 title: 'Title' + (i + 1)
             });
         }
+
         return recs;
     }
 
@@ -89,8 +92,8 @@ topSuite("Ext.data.BufferedStore", function() {
         MockAjaxManager.addMethods();
         captured = [];
     });
-    
-    afterEach(function(){
+
+    afterEach(function() {
         // Undo the overrides.
         Ext.data.BufferedStore.prototype.load = bufferedStoreLoad;
 
@@ -128,6 +131,7 @@ topSuite("Ext.data.BufferedStore", function() {
 
         expect(bufferedStore.currentPage).toBe(10);
         var page10 = bufferedStore.getRange(900, 999);
+
         expect(page10.length).toBe(100);
 
         // Page 10 contains records 900 to 999.
@@ -217,11 +221,12 @@ topSuite("Ext.data.BufferedStore", function() {
 
             bufferedStore.sort('title', 'DESC');
             var sorter = bufferedStore.getSorters().getAt(0);
+
             expect(sorter.getProperty()).toBe('title');
             expect(sorter.getDirection()).toBe('DESC');
         });
 
-        it('should only make one network request', function () {
+        it('should only make one network request', function() {
             var spy = jasmine.createSpy();
 
             createStore({
@@ -242,6 +247,7 @@ topSuite("Ext.data.BufferedStore", function() {
     // by small pages because they would keep being pruned.
     it("should load the requested range when the pageSize is small", function() {
         var spy = jasmine.createSpy();
+
         createStore({
             pageSize: 5,
             listeners: {
@@ -255,11 +261,11 @@ topSuite("Ext.data.BufferedStore", function() {
         expect(spy).toHaveBeenCalled();
     });
 
-    describe('load', function () {
+    describe('load', function() {
         function doTest(records, status, str) {
             var success = status >= 500;
 
-            it("should pass the records loaded, the operation & success=" + success + " to the callback, " + str, function () {
+            it("should pass the records loaded, the operation & success=" + success + " to the callback, " + str, function() {
                 var spy = jasmine.createSpy(),
                     args;
 
@@ -284,11 +290,12 @@ topSuite("Ext.data.BufferedStore", function() {
 
                 if (args[0].length) {
                     expect(args[0][0].isModel).toBe(true);
-                } else {
+                }
+                else {
                     expect(Ext.isArray(args)).toBe(true);
                 }
 
-                expect(args[1].getAction()).toBe('read');
+                expect(args[1].action).toBe('read');
                 expect(args[1].$className).toBe('Ext.data.operation.Read');
 
                 expect(args[2]).toBe(true);
@@ -301,11 +308,12 @@ topSuite("Ext.data.BufferedStore", function() {
         doTest([], 200, 'no records');
         doTest([], 500, 'no records');
 
-        describe("should assign dataset index numbers to the records in the Store dependent upon configured pageSize", function () {
-            it("should not exceed 100 records", function () {
+        describe("should assign dataset index numbers to the records in the Store dependent upon configured pageSize", function() {
+            it("should not exceed 100 records", function() {
                 createStore();
 
                 var spy = jasmine.createSpy();
+
                 bufferedStore.load({
                     // Called after first prefetch and first page has been added.
                     callback: spy
@@ -319,12 +327,13 @@ topSuite("Ext.data.BufferedStore", function() {
                 expect(spy.mostRecentCall.args[0].length).toBe(100);
             });
 
-            it("should not exceed 50 records", function () {
+            it("should not exceed 50 records", function() {
                 createStore({
                     pageSize: 50
                 });
 
                 var spy = jasmine.createSpy();
+
                 bufferedStore.load({
                     // Called after first prefetch and first page has been added.
                     callback: spy
@@ -340,7 +349,7 @@ topSuite("Ext.data.BufferedStore", function() {
         });
     });
 
-    describe("reload", function () {
+    describe("reload", function() {
 
         describe("beforeload event", function() {
             it("should not clear the total count or data if beforeload returns false", function() {
@@ -349,6 +358,7 @@ topSuite("Ext.data.BufferedStore", function() {
                 satisfyRequests();
 
                 var spy = jasmine.createSpy().andReturn(false);
+
                 bufferedStore.on('beforeload', spy);
                 bufferedStore.reload();
                 expect(bufferedStore.getTotalCount()).toBe(5000);
@@ -368,7 +378,7 @@ topSuite("Ext.data.BufferedStore", function() {
             }).not.toThrow();
         });
 
-        it("should not increase the number of pages when reloading", function () {
+        it("should not increase the number of pages when reloading", function() {
             var refreshed = 0,
                 count;
 
@@ -383,13 +393,13 @@ topSuite("Ext.data.BufferedStore", function() {
 
             bufferedStore.reload();
             satisfyRequests();
-            
+
             expect(refreshed).toBe(1);
             count = bufferedStore.getData().getCount();
 
             bufferedStore.reload();
             satisfyRequests();
-            
+
             expect(bufferedStore.getData().getCount()).toBe(count);
         });
 
@@ -495,10 +505,9 @@ topSuite("Ext.data.BufferedStore", function() {
             bufferedStore.load();
             satisfyRequests();
 
-
             // The PageMap should contain page 1
             keys = [];
-            bufferedStore.getData().forEach(function(rec){
+            bufferedStore.getData().forEach(function(rec) {
                 keys.push(String(rec.internalId));
             });
             expect(keys.length).toBe(10);
@@ -513,7 +522,7 @@ topSuite("Ext.data.BufferedStore", function() {
 
             // The PageMap should contain pages 1 and 2
             keys = [];
-            bufferedStore.getData().forEach(function(rec){
+            bufferedStore.getData().forEach(function(rec) {
                 keys.push(String(rec.internalId));
             });
             expect(keys.length).toBe(20);
@@ -528,7 +537,7 @@ topSuite("Ext.data.BufferedStore", function() {
 
             // The PageMap should contain pages 2 and 3
             keys = [];
-            bufferedStore.getData().forEach(function(rec){
+            bufferedStore.getData().forEach(function(rec) {
                 keys.push(String(rec.internalId));
             });
             expect(keys.length).toBe(20);
@@ -538,26 +547,26 @@ topSuite("Ext.data.BufferedStore", function() {
             expect(Ext.Object.getKeys(bufferedStore.getData().indexMap)).toEqual(keys);
         });
     });
-    
+
     // only applies to stateful toolkits
-    (Ext.state ? describe : xdescribe)('statefulness', function () {
+    (Ext.state ? describe : xdescribe)('statefulness', function() {
         var state;
-        
-        beforeEach(function () {
+
+        beforeEach(function() {
             // disabling so that flushLoad() isn't immediately called
             synchronousLoad = false;
         });
-        
-        afterEach(function () {
+
+        afterEach(function() {
             bufferedStore.destroy();
             synchronousLoad = true;
         });
-        
-        describe('loading', function () {
-            it('should only fire the event once per creation when loading from a stateful component', function () {
+
+        describe('loading', function() {
+            it('should only fire the event once per creation when loading from a stateful component', function() {
                 var spy = jasmine.createSpy();
-                
-                function createStatefulStore (state) {
+
+                function createStatefulStore(state) {
                     createStore({
                         autoLoad: true,
                         sorters: [{
@@ -568,38 +577,38 @@ topSuite("Ext.data.BufferedStore", function() {
                             beforeload: spy
                         }
                     });
-                    
+
                     if (state) {
                         bufferedStore.applyState(state);
                     }
-                    
+
                     // wait for the request to be built since this is being handled async
                     waits(10);
-                    runs(function () {
+                    runs(function() {
                         satisfyRequests();
                     });
                 }
-                
+
                 // create the new grid (no existing state)
                 createStatefulStore();
-                
-                waitsFor(function () {
+
+                waitsFor(function() {
                     return bufferedStore.isLoaded();
                 });
-                
-                runs(function () {
+
+                runs(function() {
                     // save the current state and re-apply it to the new store instance
                     // as if it were applied from a stateful component
                     state = bufferedStore.getState();
                     bufferedStore.destroy();
                     createStatefulStore(state);
                 });
-                
-                waitsFor(function () {
+
+                waitsFor(function() {
                     return bufferedStore.isLoaded();
                 });
-                
-                runs(function () {
+
+                runs(function() {
                     expect(spy.callCount).toBe(2);
                 });
             });

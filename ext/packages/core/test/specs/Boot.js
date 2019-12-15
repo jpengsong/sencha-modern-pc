@@ -21668,25 +21668,25 @@ topSuite("Ext.Boot", false, function() {
       "http://localhost/ext/classic/classic/src/view/MultiSelector.js",
       "http://localhost/ext/classic/classic/src/window/Toast.js"
     ];
-    
+
     describe("URL resolution", function() {
         var oldScripts, request;
-        
+
         beforeEach(function() {
             oldScripts = Ext.Boot.scripts;
             Ext.Boot.scripts = [];
-            
+
             request = new Ext.Boot.Request(requestCfg);
         });
-        
+
         afterEach(function() {
             request = null;
             Ext.Boot.scripts = oldScripts;
         });
-        
+
         it("should work as expected", function() {
             var urls = request.getUrls();
-            
+
             expect(urls).toEqual(resolvedUrls);
         });
     });

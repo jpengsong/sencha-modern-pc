@@ -1,6 +1,6 @@
 /**
- * A class which encapsulates a collections of records defining a selection in a {@link Ext.dataview.DataView}
- *
+ * A class which encapsulates a collections of records defining a selection in a
+ * {@link Ext.dataview.DataView}.
  */
 Ext.define('Ext.dataview.selection.Records', {
     extend: 'Ext.dataview.selection.Rows',
@@ -26,9 +26,12 @@ Ext.define('Ext.dataview.selection.Records', {
     //<debug>
     constructor: function(config) {
         this.callParent([config]);
+
+        // eslint-disable-next-line vars-on-top
         var selected = this.getSelected();
+
         if (!(selected && selected.isCollection)) {
-            Ext.raise('An Ext.dataview.selection.Records object MUST be configured with a "selected" Collection');
+            Ext.raise('Ext.dataview.selection.Records must be given a selected Collection');
         }
     },
     //</debug>
@@ -55,13 +58,16 @@ Ext.define('Ext.dataview.selection.Records', {
 
         // swap values
         if (start > end) {
+            // eslint-disable-next-line vars-on-top
             var tmp = end;
+
             end = start;
             start = tmp;
         }
 
         // Maintainer: The Store getRange API is historically inclusive
-        this.add(this.getSelectionModel().getStore().getRange(start, end - 1), keepExisting, suppressEvent);
+        this.add(this.getSelectionModel().getStore().getRange(start, end - 1),
+                 keepExisting, suppressEvent);
     },
 
     removeRowRange: function(start, end, suppressEvent) {
@@ -73,7 +79,9 @@ Ext.define('Ext.dataview.selection.Records', {
 
         // swap values
         if (start > end) {
+            // eslint-disable-next-line vars-on-top
             var tmp = end;
+
             end = start;
             start = tmp;
         }
@@ -84,7 +92,10 @@ Ext.define('Ext.dataview.selection.Records', {
 
     add: function(records, keepExisting, suppressEvent) {
         records = Ext.Array.from(records);
-        //<debug> Ensure they are all records
+
+        //<debug>
+        // Ensure they are all records
+        // eslint-disable-next-line vars-on-top
         for (var i = 0, ln = records.length; i < ln; i++) {
             if (!records[i].isEntity) {
                 Ext.raise('add must be called with records or an array of records');
@@ -92,6 +103,7 @@ Ext.define('Ext.dataview.selection.Records', {
         }
         //</debug>
 
+        // eslint-disable-next-line vars-on-top
         var me = this,
             selected = me.getSelected(),
             selectionCount = selected.getCount(),
@@ -107,7 +119,10 @@ Ext.define('Ext.dataview.selection.Records', {
 
     remove: function(records, suppressEvent) {
         records = Ext.Array.from(records);
-        //<debug> Ensure they are all records
+
+        //<debug>
+        // Ensure they are all records
+        // eslint-disable-next-line vars-on-top
         for (var i = 0, ln = records.length; i < ln; i++) {
             if (!records[i].isEntity) {
                 Ext.raise('add must be called with records or an array of records');
@@ -115,6 +130,7 @@ Ext.define('Ext.dataview.selection.Records', {
         }
         //</debug>
 
+        // eslint-disable-next-line vars-on-top
         var selected = this.getSelected();
 
         // If the selection model is deselectable: false, which means there must
@@ -135,7 +151,7 @@ Ext.define('Ext.dataview.selection.Records', {
      * @param {Ext.data.Model} record The record to test.
      * @return {Boolean} `true` if the passed {@link Ext.data.Model record} is selected.
      */
-    isSelected: function (record) {
+    isSelected: function(record) {
         if (!record || !record.isModel) {
             return false;
         }
@@ -153,6 +169,7 @@ Ext.define('Ext.dataview.selection.Records', {
 
     selectAll: function(suppressEvent) {
         var selected = this.getSelected();
+
         selected.suppressEvent = suppressEvent;
         selected.add(this.getSelectionModel().getStore().getRange());
         selected.suppressEvent = false;
@@ -200,26 +217,25 @@ Ext.define('Ext.dataview.selection.Records', {
             selection = me.getSelected(),
             view = me.view,
             columns = view.getHeaderContainer().getVisibleColumns(),
-            colCount,
-            i,
-            j,
-            baseLocation, location,
-            abort = false;
+            colCount, i, baseLocation, location;
 
         if (columns) {
             colCount = columns.length;
             baseLocation = new Ext.grid.Location(view);
 
-            // Use Collection#each instead of copying the entire dataset into an array and iterating that.
+            // Use Collection#each instead of copying the entire dataset into an array and
+            // iterating that.
             if (selection) {
                 selection.each(function(record) {
                     location = baseLocation.clone({
                         record: record
                     });
+
                     for (i = 0; i < colCount; i++) {
                         location = location.cloneForColumn(columns[i]);
-                        if (fn.call(scope || me, location, location.columnIndex, location.recordIndex) === false) {
-                            abort = true;
+
+                        if (fn.call(scope || me, location, location.columnIndex,
+                                    location.recordIndex) === false) {
                             return false;
                         }
                     }
@@ -261,7 +277,8 @@ Ext.define('Ext.dataview.selection.Records', {
             if (selected) {
                 spliceArgs = [0, selected.getCount()];
 
-                // Enforce the selection model's deselectable: false by re-adding the last selected record
+                // Enforce the selection model's deselectable: false by re-adding the last
+                // selected record
                 if (!this.getSelectionModel().getDeselectable()) {
                     spliceArgs[2] = selected.last();
                 }
@@ -274,23 +291,54 @@ Ext.define('Ext.dataview.selection.Records', {
         },
 
         addRecordRange: function(start, end) {
-            var tmp = end;
+            var me = this,
+                view = me.view,
+                store = view.getStore(),
+                tmp = end,
+                range;
+
+            if (start && start.isGridLocation) {
+                start = start.recordIndex;
+            }
+
+            if (end && end.isGridLocation) {
+                end = tmp = end.recordIndex;
+            }
 
             if (start > end) {
                 end = start;
                 start = tmp;
             }
-            this.getSelected().add(this.view.getStore().getRange(start, end || start));
+
+            range = store.getRange(start, end || start);
+
+            me.getSelected().add(range);
         },
 
         removeRecordRange: function(start, end) {
-            var tmp = end;
+            var me = this,
+                view = me.view,
+                store = view.getStore(),
+                tmp = end,
+                range;
+
+            if (start && start.isGridLocation) {
+                start = start.recordIndex;
+            }
+
+            if (end && end.isGridLocation) {
+                end = tmp = end.recordIndex;
+                tmp = end;
+            }
 
             if (start > end) {
                 end = start;
                 start = tmp;
             }
-            this.getSelected().remove(this.view.getStore().getRange(start, end || start));
+
+            range = store.getRange(start, end || start);
+
+            this.getSelected().remove(range);
         },
 
         onSelectionFinish: function() {
@@ -298,16 +346,22 @@ Ext.define('Ext.dataview.selection.Records', {
                 range = me.getContiguousSelection();
 
             if (range) {
-                me.getSelectionModel().onSelectionFinish(me,
-                    new Ext.grid.Location(me.view, {record: range[0], column: 0}),
-                    new Ext.grid.Location(me.view, {record: range[1], column: me.view.getHeaderContainer().getVisibleColumns().length - 1}));
-            } else {
+                me.getSelectionModel().onSelectionFinish(
+                    me,
+                    new Ext.grid.Location(me.view, { record: range[0], column: 0 }),
+                    new Ext.grid.Location(me.view, {
+                        record: range[1],
+                        column: me.view.getHeaderContainer().getVisibleColumns().length - 1
+                    }));
+            }
+            else {
                 me.getSelectionModel().onSelectionFinish(me);
             }
         },
 
         /**
-         * @return {Array} `[startRowIndex, endRowIndex]` if the selection represents a visually contiguous set of rows.
+         * @return {Array} `[startRowIndex, endRowIndex]` if the selection represents a
+         * visually contiguous set of rows.
          * The SelectionReplicator is only enabled if there is a contiguous block.
          * @private
          */
@@ -318,16 +372,20 @@ Ext.define('Ext.dataview.selection.Records', {
             selection = Ext.Array.sort(this.getSelected().getRange(), function(r1, r2) {
                 return store.indexOf(r1) - store.indexOf(r2);
             });
+
             len = selection.length;
+
             if (len) {
                 if (len === 1 && store.indexOf(selection[0]) === -1) {
                     return false;
                 }
+
                 for (i = 1; i < len; i++) {
                     if (store.indexOf(selection[i]) !== store.indexOf(selection[i - 1]) + 1) {
                         return false;
                     }
                 }
+
                 return [store.indexOf(selection[0]), store.indexOf(selection[len - 1])];
             }
         },
@@ -338,7 +396,7 @@ Ext.define('Ext.dataview.selection.Records', {
         applySelected: function(selected) {
             //<debug>
             if (!selected) {
-                Ext.raise("The selection model's own selected Collection must always be passed into a Records Selection");
+                Ext.raise('Must pass the selected Collection to the Records Selection');
             }
             //</debug>
 
@@ -353,92 +411,33 @@ Ext.define('Ext.dataview.selection.Records', {
             var me = this,
                 view = me.view,
                 selModel = me.getSelectionModel(),
-                storeCollection = view.getStore().getData(),
-                filterFn = storeCollection.getFilters().getFilterFn(),
-                ignoredFilter = selModel.ignoredFilter,
                 selected = me.getSelected(),
                 lastSelected = selModel.getLastSelected(),
-                newLastSelected,
-                selections,
-                toDeselect = [],
-                toReselect = [],
-                selectionLength, i, rec,
-                matchingSelection;
+                lastSelectedIdx;
 
-            // Uncover the unfiltered selection if it's there.
-            // We only want to prune from the selection records which are
-            // *really* no longer in the store.
-            if (ignoredFilter) {
-                if (ignoredFilter.getDisabled()) {
-                    ignoredFilter = null;
-                } else {
-                    ignoredFilter.setDisabled(true);
-                    storeCollection = storeCollection.getSource() || storeCollection;
-                }
+            Ext.dataview.selection.Model.refreshCollection(
+                selected,
+                selModel.getStore().getData(),
+                selModel.ignoredFilters,
+
+                // The beforeSelectionRefresh gives an observer the chance to
+                // "repreive" records from eviction. BoundList implements this
+                // to allow "isEntered" records that were added as a result of
+                // forceSelection:false to remain in the selection.
+                view.beforeSelectionRefresh && view.beforeSelectionRefresh.bind(view)
+            );
+
+            // Find the lastSelected record in the refreshed collection.
+            lastSelectedIdx = selected.indexOf(lastSelected);
+
+            // The key has gone, so we pick the previous lastSelected
+            if (lastSelectedIdx === -1) {
+                selModel.setLastSelected(selected.last());
             }
-
-            // Update the lastSelected instance with the new version from the store if any.
-            if (lastSelected) {
-                newLastSelected = storeCollection.get(storeCollection.getKey(lastSelected));
-
-                // We are using the unfiltered source collection, so we must
-                // filter using all filters except the ignored filter.
-                // This is to accommodate a ComboBox's primaryFilter which must not
-                // evict selected records from the selection.
-                if (newLastSelected && ignoredFilter && !filterFn(newLastSelected)) {
-                    newLastSelected = null;
-                }
+            // Key is still there, ensure the record instance is up to date
+            else {
+                selModel.setLastSelected(selected.getAt(lastSelectedIdx));
             }
-
-            // If there is a current selection, build the toDeselect and toReselect lists
-            if (me.getCount()) {
-                selections = selected.getRange();
-                selectionLength = selections.length;
-
-                for (i = 0; i < selectionLength; i++) {
-                    rec = selections[i];
-                    matchingSelection = storeCollection.get(storeCollection.getKey(rec));
-
-                    // If we are using the unfiltered source because of having to ignore only one
-                    // filter, then test the filter condition here with that one filter disabled.
-                    // Evict the record if it still does not pass the filter.
-                    if (matchingSelection && ignoredFilter && !filterFn(matchingSelection)) {
-                        matchingSelection = null;
-                    }
-
-                    if (matchingSelection) {
-                        if (matchingSelection !== rec) {
-                            toDeselect.push(rec);
-                            toReselect.push(matchingSelection);
-                        }
-                    } else {
-                        toDeselect.push(rec);
-                    }
-                }
-
-                // Give the view an opportunity to intervene in the selection model refresh.
-                // BoundLists remove any interactively added "isEntered" records from the
-                // toDeselect array because they are outside the scope of the field's supplied Store.
-                if (view.beforeSelectionRefresh) {
-                    view.beforeSelectionRefresh(toDeselect, toReselect);
-                }
-
-                // Update the selected Collection.
-                // Records which are no longer present will be in the toDeselect list
-                // Records which have the same id which have returned will be in the toSelect list.
-                // The SelectionModel will react to successful removal as an observer.
-                // It will need to know at that time whether the event is suppressed.
-                selected.suppressEvent = true;
-                selected.splice(selected.getCount(), toDeselect, toReselect);
-                selected.suppressEvent = false;
-            }
-
-            if (ignoredFilter) {
-                ignoredFilter.setDisabled(false);
-            }
-
-            // Keep any lastSelected up to date with what's now in the store
-            selModel.setLastSelected(newLastSelected || toReselect[toReselect.length - 1] || null);
         }
     }
 });

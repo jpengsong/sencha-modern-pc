@@ -73,6 +73,7 @@ function() {
         function getHeightOffset() {
             return htmlEditor.getToolbar().getHeight() + htmlEditor.inputCmp.getEl().getBorderWidth('tb');
         }
+
         it("should stretch the iframe height when shrink wrapping height", function() {
             htmlEditor = new Ext.form.field.HtmlEditor({
                 renderTo: Ext.getBody()

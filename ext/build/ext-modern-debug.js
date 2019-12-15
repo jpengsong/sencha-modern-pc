@@ -1,17 +1,17 @@
 /*
-This file is part of Ext JS 6.5.3.57
+This file is part of Ext JS 7.0.0.156
 
-Copyright (c) 2011-2018 Sencha Inc
+Copyright (c) 2011-2019 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-This version of Sencha Ext JS 6.5.3.57 is licensed commercially for a limited period for evaluation 
+This version of Sencha Ext JS 7.0.0.156 is licensed commercially for a limited period for evaluation 
 purposes only. Production use or use beyond the applicable evaluation period is prohibited 
 under this license.
 
 If your trial has expired, please contact the sales department at http://www.sencha.com/contact.
 
-Version: 6.5.3.57 Build date: 2018-01-23 06:16:04 (79adf230ffe196c51f938f82140c44b1174dc392)
+Version: 7.0.0.156 Build date: 2019-08-28 05:11:36 (23a4f5eb33e19b67a3a5d753d762ff78e836bdf1)
 
 */
 // @tag core
@@ -415,7 +415,7 @@ Ext.Boot = Ext.Boot || (function(emptyFn) {
                     Boot.isIE10 = false;
                     Boot.isIE10m = true;
                 } else {
-                    Boot.isIE10 = (new Function('/*@cc_on return @_jscript_version @*/')()) === 10;
+                    Boot.isIE10 = navigator.appVersion.indexOf('MSIE 10') !== -1;
                     Boot.isIE10m = Boot.isIE10 || Boot.isIE9 || Boot.isIE8;
                 }
                 
@@ -1475,16 +1475,17 @@ var Ext = Ext || {};
         },
         
         
+        
         callOverrideParent = function() {
             var method = callOverrideParent.caller.caller;
             
             return method.$owner.prototype[method.$name].apply(this, arguments);
         },
         manifest = Ext.manifest || {},
-        i,
         iterableRe = /\[object\s*(?:Array|Arguments|\w*Collection|\w*List|HTML\s+document\.all\s+class)\]/,
         MSDateRe = /^\\?\/Date\(([-+])?(\d+)(?:[+-]\d{4})?\)\\?\/$/,
-        elevateArgs, elevateFn, elevateRet, elevateScope;
+        
+        elevateArgs, elevateFn, elevateRet, elevateScope, i;
     Ext.global = global;
     Ext.$nextIid = 0;
     
@@ -1494,8 +1495,7 @@ var Ext = Ext || {};
     
     Ext.ticks = (global.performance && global.performance.now) ? function() {
         return performance.now();
-    } : 
-    Ext.now;
+    } : Ext.now;
     Ext._startTime = Ext.ticks();
     
     emptyFn.$nullFn = identityFn.$nullFn = emptyFn.$emptyFn = identityFn.$identityFn = privateFn.$nullFn = true;
@@ -1505,8 +1505,8 @@ var Ext = Ext || {};
     privateFn.$noClearOnDestroy = true;
     
     
-    Ext['suspendLayouts'] = Ext['resumeLayouts'] = emptyFn;
     
+    Ext['suspendLayouts'] = Ext['resumeLayouts'] = emptyFn;
     for (i in {
         toString: 1
     }) {
@@ -1516,12 +1516,12 @@ var Ext = Ext || {};
     Ext.enumerables = enumerables;
     
     Ext.apply = function(object, config, defaults) {
+        var i, j, k;
         if (object) {
             if (defaults) {
                 Ext.apply(object, defaults);
             }
             if (config && typeof config === 'object') {
-                var i, j, k;
                 for (i in config) {
                     object[i] = config[i];
                 }
@@ -1601,6 +1601,7 @@ var Ext = Ext || {};
         
         validIdRe: /^[a-z_][a-z0-9\-_]*$/i,
         
+        
         BLANK_IMAGE_URL: 'data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
         
         makeIdSelector: function(id) {
@@ -1616,6 +1617,7 @@ var Ext = Ext || {};
             if (o && o.id) {
                 return o.id;
             }
+            
             var id = (prefix || Ext.idPrefix) + (++Ext.idSeed);
             if (o) {
                 o.id = id;
@@ -1633,7 +1635,6 @@ var Ext = Ext || {};
         
         emptyString: new String(),
         
-        
         emptyArray: Object.freeze ? Object.freeze([]) : [],
         
         baseCSSPrefix: Ext.buildSettings.baseCSSPrefix,
@@ -1649,8 +1650,9 @@ var Ext = Ext || {};
         },
         
         applyIf: function(object, config) {
+            var property;
             if (object && config && typeof config === 'object') {
-                for (var property in config) {
+                for (property in config) {
                     if (object[property] === undefined) {
                         object[property] = config[property];
                     }
@@ -1676,6 +1678,7 @@ var Ext = Ext || {};
         },
         
         destroyMembers: function(object) {
+            
             for (var ref, name,
                 i = 1,
                 a = arguments,
@@ -1694,6 +1697,7 @@ var Ext = Ext || {};
             } else if (typeof target === 'function') {
                 Ext.apply(target.prototype, overrides);
             } else {
+                
                 var owner = target.self,
                     privates;
                 if (owner && owner.$isClass) {
@@ -1789,9 +1793,11 @@ var Ext = Ext || {};
         
         isIterable: function(value) {
             
+            
             if (!value || typeof value.length !== 'number' || typeof value === 'string' || Ext.isFunction(value)) {
                 return false;
             }
+            
             
             
             
@@ -1813,6 +1819,7 @@ var Ext = Ext || {};
             if (debugConfig.hasOwnProperty(className)) {
                 return debugConfig[className];
             }
+            
             var enabled = debugConfig['*'],
                 prefixLength = 0;
             if (defaultEnabled !== undefined) {
@@ -1821,8 +1828,10 @@ var Ext = Ext || {};
             if (!className) {
                 return enabled;
             }
+            
             for (var prefix in debugConfig) {
                 var value = debugConfig[prefix];
+                
                 
                 if (className.charAt(prefix.length) === '.') {
                     if (className.substring(0, prefix.length) === prefix) {
@@ -1847,6 +1856,7 @@ var Ext = Ext || {};
             if (cloneDom !== false && item.nodeType && item.cloneNode) {
                 return item.cloneNode(true);
             }
+            
             var type = toString.call(item),
                 i, j, k, clone, key;
             
@@ -1995,6 +2005,7 @@ var Ext = Ext || {};
                         origin
                     ];
                 }
+                
                 var replaceRe = cache[delimiter] || (cache[delimiter] = new RegExp('\\\\' + delimiter, 'g')),
                     result = [],
                     parts, part;
@@ -2028,6 +2039,7 @@ var Ext = Ext || {};
         
         elevate: function(fn, scope, args, 
         timer) 
+        
         {
             var ret;
             if (args && !args.length) {
@@ -2062,19 +2074,22 @@ var Ext = Ext || {};
         Timer: {
             all: {},
             track: false,
+            captureStack: true,
             created: function(kind, id, info) {
                 if (!Ext.Timer.track) {
                     return null;
                 }
+                
                 var timer = Ext.apply({
                         kind: kind,
                         id: id,
                         done: false,
                         firing: false,
-                        creator: new Error().stack,
+                        creator: Ext.Timer.captureStack ? new Error().stack : null,
                         tick: Ext.Timer.tick,
                         tock: Ext.Timer.tock
                     }, info);
+                
                 var timers = Ext.Timer.all[kind] || (Ext.Timer.all[kind] = {});
                 timers[timer.id] = timer;
                 if (Ext.Timer.hook) {
@@ -2084,14 +2099,16 @@ var Ext = Ext || {};
             },
             get: function(id, kind) {
                 kind = kind || 'timeout';
+                
                 var timers = Ext.Timer.all[kind];
                 return timers && timers[id] || null;
             },
             cancel: function(kind, id) {
-                var timers = Ext.Timer.all[kind];
-                var timer = timers && timers[id];
+                var timers = Ext.Timer.all[kind],
+                    timer = timers && timers[id];
                 if (timer) {
                     timer.cancelled = true;
+                    timers[id] = null;
                     delete timers[id];
                 }
             },
@@ -2104,6 +2121,7 @@ var Ext = Ext || {};
                 }
                 if (this.kind !== 'interval') {
                     this.done = true;
+                    Ext.Timer.all[this.kind][this.id] = null;
                     delete Ext.Timer.all[this.kind][this.id];
                 }
                 this.firing = true;
@@ -2130,11 +2148,14 @@ var Ext = Ext || {};
             } else if (expandos) {
                 delete expandos[id];
             }
+            return value;
         }
     });
-    
     Ext.returnTrue.$nullFn = Ext.returnId.$nullFn = true;
 }());
+
+
+
 
 
 (function() {
@@ -2160,12 +2181,12 @@ var Ext = Ext || {};
         return method || msg || '';
     }
     Ext.Error = function(config) {
+        var error = new Error();
         if (Ext.isString(config)) {
             config = {
                 msg: config
             };
         }
-        var error = new Error();
         Ext.apply(error, config);
         error.message = error.message || error.msg;
         
@@ -2178,15 +2199,15 @@ var Ext = Ext || {};
         ignore: false,
         
         raise: function(err) {
+            var me = this,
+                method = me.raise.caller,
+                msg, name;
             err = err || {};
             if (Ext.isString(err)) {
                 err = {
                     msg: err
                 };
             }
-            var me = this,
-                method = me.raise.caller,
-                msg, name;
             if (method === Ext.raise) {
                 method = method.caller;
             }
@@ -2231,6 +2252,7 @@ Ext.deprecated = function(suggestion) {
     return Ext.emptyFn;
 };
 
+
 Ext.raise = function() {
     Ext.Error.raise.apply(Ext.Error, arguments);
 };
@@ -2240,6 +2262,7 @@ Ext.raise = function() {
     if (skipNotify || typeof window === 'undefined') {
         return;
     }
+    
     
     var last = 0,
         
@@ -2281,6 +2304,7 @@ Ext.Array = (function() {
     
     
     
+    
     var arrayPrototype = Array.prototype,
         slice = arrayPrototype.slice,
         supportsSplice = (function() {
@@ -2290,6 +2314,7 @@ Ext.Array = (function() {
             if (!array.splice) {
                 return false;
             }
+            
             
             
             while (j--) {
@@ -2319,6 +2344,7 @@ Ext.Array = (function() {
             indices[i] = i;
         }
         
+        
         indices.sort(function(index1, index2) {
             return userComparator(array[index1], array[index2]) || (index1 - index2);
         });
@@ -2340,6 +2366,7 @@ Ext.Array = (function() {
     } catch (e) {
         supportsSliceOnNodeList = false;
     }
+    
     var fixArrayIndex = function(array, index) {
             return (index < 0) ? Math.max(0, array.length + index) : Math.min(array.length, index);
         },
@@ -2354,6 +2381,7 @@ Ext.Array = (function() {
                     array.push.apply(array, insert);
                 }
             } else {
+                
                 var remove = Math.min(removeCount, length - pos),
                     tailOldPos = pos + remove,
                     tailNewPos = tailOldPos + add - remove,
@@ -2481,9 +2509,9 @@ Ext.Array = (function() {
             },
             
             each: function(array, fn, scope, reverse) {
+                var i, ln;
                 array = ExtArray.from(array);
-                var i,
-                    ln = array.length;
+                ln = array.length;
                 if (reverse !== true) {
                     for (i = 0; i < ln; i++) {
                         if (fn.call(scope || array[i], array[i], i, array) === false) {
@@ -2504,10 +2532,10 @@ Ext.Array = (function() {
                 var len = items.length,
                     beforeCheck, afterCheck;
                 comparatorFn = comparatorFn || ExtArray.lexicalCompare;
-                if (index < len) {
-                    beforeCheck = index > 0 ? comparatorFn(items[index - 1], item) : 0;
-                    afterCheck = index < len - 1 ? comparatorFn(item, items[index]) : 0;
-                    if (beforeCheck < 1 && afterCheck < 1) {
+                if (0 <= index && index < len) {
+                    beforeCheck = index > 0 ? comparatorFn(item, items[index - 1]) : 0;
+                    afterCheck = (index < len) ? comparatorFn(item, items[index]) : 0;
+                    if (0 <= beforeCheck && afterCheck < 1) {
                         return index;
                     }
                 }
@@ -2517,8 +2545,8 @@ Ext.Array = (function() {
             forEach: ('forEach' in arrayPrototype) ? function(array, fn, scope) {
                 array.forEach(fn, scope);
             } : function(array, fn, scope) {
-                for (var i = 0,
-                    ln = array.length; i < ln; i++) {
+                var i, ln;
+                for (i = 0 , ln = array.length; i < ln; i++) {
                     fn.call(scope, array[i], i, array);
                 }
             },
@@ -2550,8 +2578,10 @@ Ext.Array = (function() {
             },
             
             toArray: function(iterable, start, end) {
+                var array = [],
+                    i;
                 if (!iterable || !iterable.length) {
-                    return [];
+                    return array;
                 }
                 if (typeof iterable === 'string') {
                     iterable = iterable.split('');
@@ -2559,8 +2589,6 @@ Ext.Array = (function() {
                 if (supportsSliceOnNodeList) {
                     return slice.call(iterable, start || 0, end || iterable.length);
                 }
-                var array = [],
-                    i;
                 start = start || 0;
                 end = end ? ((end < 0) ? iterable.length + end : end) : iterable.length;
                 for (i = start; i < end; i++) {
@@ -2588,6 +2616,7 @@ Ext.Array = (function() {
                 
                 Ext.Assert.isFunction(fn, 'Ext.Array.map must have a callback function passed as second argument.');
                 
+                
                 var len = array.length,
                     results = new Array(len),
                     i;
@@ -2603,12 +2632,11 @@ Ext.Array = (function() {
                 
                 return array.every(fn, scope);
             } : function(array, fn, scope) {
+                var i, ln;
                 
                 Ext.Assert.isFunction(fn, 'Ext.Array.every must have a callback function passed as second argument.');
                 
-                var i = 0,
-                    ln = array.length;
-                for (; i < ln; ++i) {
+                for (i = 0 , ln = array.length; i < ln; ++i) {
                     if (!fn.call(scope, array[i], i, array)) {
                         return false;
                     }
@@ -2622,12 +2650,11 @@ Ext.Array = (function() {
                 
                 return array.some(fn, scope);
             } : function(array, fn, scope) {
+                var i, ln;
                 
                 Ext.Assert.isFunction(fn, 'Ext.Array.some must have a callback function passed as second argument.');
                 
-                var i = 0,
-                    ln = array.length;
-                for (; i < ln; ++i) {
+                for (i = 0 , ln = array.length; i < ln; ++i) {
                     if (fn.call(scope, array[i], i, array)) {
                         return true;
                     }
@@ -2656,10 +2683,8 @@ Ext.Array = (function() {
             
             clean: function(array) {
                 var results = [],
-                    i = 0,
-                    ln = array.length,
-                    item;
-                for (; i < ln; i++) {
+                    i, ln, item;
+                for (i = 0 , ln = array.length; i < ln; i++) {
                     item = array[i];
                     if (!Ext.isEmpty(item)) {
                         results.push(item);
@@ -2670,10 +2695,8 @@ Ext.Array = (function() {
             
             unique: function(array) {
                 var clone = [],
-                    i = 0,
-                    ln = array.length,
-                    item;
-                for (; i < ln; i++) {
+                    i, ln, item;
+                for (i = 0 , ln = array.length; i < ln; i++) {
                     item = array[i];
                     if (ExtArray.indexOf(clone, item) === -1) {
                         clone.push(item);
@@ -2688,13 +2711,12 @@ Ext.Array = (function() {
                 
                 return array.filter(fn, scope);
             } : function(array, fn, scope) {
+                var results = [],
+                    i, ln;
                 
                 Ext.Assert.isFunction(fn, 'Ext.Array.filter must have a filter function passed as second argument.');
                 
-                var results = [],
-                    i = 0,
-                    ln = array.length;
-                for (; i < ln; i++) {
+                for (i = 0 , ln = array.length; i < ln; i++) {
                     if (fn.call(scope, array[i], i, array)) {
                         results.push(array[i]);
                     }
@@ -2703,9 +2725,8 @@ Ext.Array = (function() {
             },
             
             findBy: function(array, fn, scope) {
-                var i = 0,
-                    len = array.length;
-                for (; i < len; i++) {
+                var i, len;
+                for (i = 0 , len = array.length; i < len; i++) {
                     if (fn.call(scope || array, array[i], i)) {
                         return array[i];
                     }
@@ -2714,13 +2735,14 @@ Ext.Array = (function() {
             },
             
             from: function(value, newReference) {
+                var type;
                 if (value === undefined || value === null) {
                     return [];
                 }
                 if (Ext.isArray(value)) {
                     return (newReference) ? slice.call(value) : value;
                 }
-                var type = typeof value;
+                type = typeof value;
                 
                 
                 if (value && value.length !== undefined && type !== 'string' && (type !== 'function' || !value.apply)) {
@@ -2841,11 +2863,13 @@ Ext.Array = (function() {
                     Ext.raise('Invalid parameter: expected a function.');
                 }
                 
+                
                 var index = 0,
                     length = array.length >>> 0,
                     reduced = initialValue;
                 if (arguments.length < 3) {
                     while (true) {
+                        
                         if (index in array) {
                             reduced = array[index++];
                             break;
@@ -2952,11 +2976,12 @@ Ext.Array = (function() {
             },
             
             toMap: function(strings, getKey, scope) {
+                var map, i;
                 if (!strings) {
                     return null;
                 }
-                var map = {},
-                    i = strings.length;
+                map = {};
+                i = strings.length;
                 if (typeof strings === 'string') {
                     map[strings] = 1;
                 } else if (!getKey) {
@@ -3032,10 +3057,11 @@ Ext.Array = (function() {
                 if (toIdx === fromIdx) {
                     return;
                 }
+                
                 var item = array[fromIdx],
                     incr = toIdx > fromIdx ? 1 : -1,
                     i;
-                for (i = fromIdx; i != toIdx; i += incr) {
+                for (i = fromIdx; i !== toIdx; i += incr) {
                     array[i] = array[i + incr];
                 }
                 array[toIdx] = item;
@@ -3108,8 +3134,9 @@ Ext.Assert = {
     },
     
     falseyProp: function(object, property) {
+        var b;
         Ext.Assert.truthy(object);
-        var b = object[property];
+        b = object[property];
         if (b) {
             if (object.$className) {
                 property = object.$className + '#' + property;
@@ -3125,8 +3152,9 @@ Ext.Assert = {
     },
     
     truthyProp: function(object, property) {
+        var b;
         Ext.Assert.truthy(object);
-        var b = object[property];
+        b = object[property];
         if (!b) {
             if (object.$className) {
                 property = object.$className + '#' + property;
@@ -3135,7 +3163,9 @@ Ext.Assert = {
         }
     }
 };
+
 (function() {
+    var name, kind;
     function makeAssert(name, kind) {
         var testFn = Ext[name],
             def;
@@ -3174,9 +3204,9 @@ Ext.Assert = {
             }
         };
     }
-    for (var name in Ext) {
-        if (name.substring(0, 2) == "is" && Ext.isFunction(Ext[name])) {
-            var kind = name.substring(2);
+    for (name in Ext) {
+        if (name.substring(0, 2) === "is" && Ext.isFunction(Ext[name])) {
+            kind = name.substring(2);
             Ext.Assert[name] = makeAssert(name, kind);
             Ext.Assert[name + 'Prop'] = makeAssertProp(name, kind);
             Ext.Assert['isNot' + kind] = makeNotAssert(name, kind);
@@ -3187,13 +3217,16 @@ Ext.Assert = {
 
 
 
+
 Ext.String = (function() {
+    
     
     
     
     
     var trimRegex = /^[\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000]+|[\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000]+$/g,
         escapeRe = /('|\\)/g,
+        
         escapeRegexRe = /([-.*+?\^${}()|\[\]\/\\])/g,
         basicTrimRe = /^\s+|\s+$/g,
         whitespaceRe = /\s+/,
@@ -3248,13 +3281,14 @@ Ext.String = (function() {
         },
         
         insert: function(s, value, index) {
+            var len;
             if (!s) {
                 return value;
             }
             if (!value) {
                 return s;
             }
-            var len = s.length;
+            len = s.length;
             if (!index && index !== 0) {
                 index = len;
             }
@@ -3374,10 +3408,11 @@ Ext.String = (function() {
         },
         
         ellipsis: function(value, length, word) {
+            var vs, index;
             if (value && value.length > length) {
                 if (word) {
-                    var vs = value.substr(0, length - 2),
-                        index = Math.max(vs.lastIndexOf(' '), vs.lastIndexOf('.'), vs.lastIndexOf('!'), vs.lastIndexOf('?'));
+                    vs = value.substr(0, length - 2);
+                    index = Math.max(vs.lastIndexOf(' '), vs.lastIndexOf('.'), vs.lastIndexOf('!'), vs.lastIndexOf('?'));
                     if (index !== -1 && index >= (length - 15)) {
                         return vs.substr(0, index) + "...";
                     }
@@ -3425,18 +3460,19 @@ Ext.String = (function() {
         },
         
         repeat: function(pattern, count, sep) {
+            var buf = [],
+                i;
             if (count < 1) {
                 count = 0;
             }
-            for (var buf = [],
-                i = count; i--; ) {
+            for (i = count; i--; ) {
                 buf.push(pattern);
             }
             return buf.join(sep || '');
         },
         
         splitWords: function(words) {
-            if (words && typeof words == 'string') {
+            if (words && typeof words === 'string') {
                 return words.replace(basicTrimRe, '').split(whitespaceRe);
             }
             return words || [];
@@ -3453,7 +3489,9 @@ Ext.htmlDecode = Ext.String.htmlDecode;
 Ext.urlAppend = Ext.String.urlAppend;
 
 
+
 Ext.Date = (function() {
+    
     
     
     
@@ -3466,7 +3504,12 @@ Ext.Date = (function() {
         slashRe = /\\/gi,
         numberTokenRe = /\{(\d+)\}/g,
         MSFormatRe = new RegExp('\\/Date\\(([-+])?(\\d+)(?:[+-]\\d{4})?\\)\\/'),
+        datePartsRe = /^(?:(\d{1,4})|(\w{3,}))[/\-.\\\s](?:(\d{1,2})|(\w{3,}))[/\-.\\\s](\d{1,4})$/,
         pad = Ext.String.leftPad,
+        dayInfo = {
+            d: true,
+            j: true
+        },
         monthInfo = {
             F: true,
             m: true,
@@ -3633,6 +3676,7 @@ Ext.Date = (function() {
             return args[i];
         });
     }
+    
     utilDate = {
         
         now: nativeDate.now,
@@ -3653,12 +3697,13 @@ Ext.Date = (function() {
         
         formatCodeToRegex: function(character, currentGroup) {
             
+            
             var p = utilDate.parseCodes[character];
             if (p) {
                 p = typeof p === 'function' ? p() : p;
+                
                 utilDate.parseCodes[character] = p;
             }
-            
             return p ? Ext.applyIf({
                 c: p.c ? xf(p.c, currentGroup || "{0}") : p.c
             }, p) : {
@@ -3808,6 +3853,7 @@ Ext.Date = (function() {
         
         getMonthNumber: function(name) {
             
+            
             return utilDate.monthNumbers[name.substring(0, 1).toUpperCase() + name.substring(1, 3).toLowerCase()];
         },
         
@@ -3835,6 +3881,7 @@ Ext.Date = (function() {
         },
         
         formatCodes: {
+            
             d: "Ext.String.leftPad(m.getDate(), 2, '0')",
             D: "Ext.Date.getShortDayName(m.getDay())",
             
@@ -3868,18 +3915,18 @@ Ext.Date = (function() {
             P: "Ext.Date.getGMTOffset(m, true)",
             T: "Ext.Date.getTimezone(m)",
             Z: "(m.getTimezoneOffset() * -60)",
+            
             c: function() {
                 
                 var c = "Y-m-dTH:i:sP",
                     code = [],
-                    i,
                     l = c.length,
-                    e;
+                    i, e;
                 for (i = 0; i < l; ++i) {
                     e = c.charAt(i);
+                    
                     code.push(e === "T" ? "'T'" : utilDate.getFormatCode(e));
                 }
-                
                 return code.join(" + ");
             },
             C: function() {
@@ -3890,18 +3937,24 @@ Ext.Date = (function() {
         },
         
         isValid: function(year, month, day, hour, minute, second, millisecond) {
+            var dt;
             
             hour = hour || 0;
             minute = minute || 0;
             second = second || 0;
             millisecond = millisecond || 0;
             
-            var dt = utilDate.add(new nativeDate(year < 100 ? 100 : year, month - 1, day, hour, minute, second, millisecond), utilDate.YEAR, year < 100 ? year - 100 : 0);
+            
+            dt = utilDate.add(new nativeDate(year < 100 ? 100 : year, month - 1, day, hour, minute, second, millisecond), utilDate.YEAR, year < 100 ? year - 100 : 0);
             return year === dt.getFullYear() && month === dt.getMonth() + 1 && day === dt.getDate() && hour === dt.getHours() && minute === dt.getMinutes() && second === dt.getSeconds() && millisecond === dt.getMilliseconds();
         },
         
         parse: function(input, format, strict) {
-            var p = utilDate.parseFunctions;
+            var p;
+            if (!format) {
+                return utilDate.flexParse(input);
+            }
+            p = utilDate.parseFunctions;
             if (p[format] == null) {
                 utilDate.createParser(format);
             }
@@ -3916,9 +3969,9 @@ Ext.Date = (function() {
             var f = utilDate.formatCodes[character];
             if (f) {
                 f = typeof f === 'function' ? f() : f;
+                
                 utilDate.formatCodes[character] = f;
             }
-            
             
             return f || ("'" + Ext.String.escape(character) + "'");
         },
@@ -3943,7 +3996,7 @@ Ext.Date = (function() {
                     }
                 }
             }
-            utilDate.formatFunctions[format] = Ext.functionFactory("var m=this;return " + code.join('+'));
+            utilDate.formatFunctions[format] = Ext.functionFactory("var m = this; return " + code.join('+'));
         },
         
         createParser: function(format) {
@@ -4003,9 +4056,12 @@ Ext.Date = (function() {
             },
             
             D: function() {
-                for (var a = [],
-                    i = 0; i < 7; a.push(utilDate.getShortDayName(i)) , ++i){}
+                var a = [],
+                    i;
                 
+                for (i = 0; i < 7; i++) {
+                    a.push(utilDate.getShortDayName(i));
+                }
                 return {
                     g: 0,
                     c: null,
@@ -4054,14 +4110,16 @@ Ext.Date = (function() {
                 return {
                     g: 1,
                     c: "m = parseInt(me.getMonthNumber(results[{0}]), 10);\n",
-                    
                     s: "(" + utilDate.monthNames.join("|") + ")"
                 };
             },
             M: function() {
-                for (var a = [],
-                    i = 0; i < 12; a.push(utilDate.getShortMonthName(i)) , ++i){}
+                var a = [],
+                    i;
                 
+                for (i = 0; i < 12; i++) {
+                    a.push(utilDate.getShortMonthName(i));
+                }
                 return Ext.applyIf({
                     s: "(" + a.join("|") + ")"
                 }, utilDate.formatCodeToRegex("F"));
@@ -4111,6 +4169,7 @@ Ext.Date = (function() {
             
             
             
+            
             a: {
                 g: 1,
                 c: "if (/(am)/i.test(results[{0}])) {\n" + "if (!h || h == 12) { h = 0; }\n" + "} else { if (!h || h < 12) { h = (h || 0) + 12; }}",
@@ -4129,7 +4188,7 @@ Ext.Date = (function() {
             g: {
                 g: 1,
                 c: "h = parseInt(results[{0}], 10);\n",
-                s: "(1[0-2]|[0-9])"
+                s: "(1[0-2]|[1-9])"
             },
             
             G: {
@@ -4167,6 +4226,7 @@ Ext.Date = (function() {
                 c: "ms = results[{0}]; ms = parseInt(ms, 10)/Math.pow(10, ms.length - 3);\n",
                 s: "(\\d+)"
             },
+            
             
             O: {
                 g: 1,
@@ -4235,15 +4295,17 @@ Ext.Date = (function() {
                         {
                             c: [
                                 
-                                "if(results[8]) {",
+                                "if (results[8]) {",
                                 
-                                "if(results[8] == 'Z'){",
+                                "if (results[8] == 'Z') {",
                                 "zz = 0;",
                                 
-                                "}else if (results[8].indexOf(':') > -1){",
+                                "}",
+                                "else if (results[8].indexOf(':') > -1) {",
                                 utilDate.formatCodeToRegex("P", 8).c,
                                 
-                                "}else{",
+                                "}",
+                                "else {",
                                 utilDate.formatCodeToRegex("O", 8).c,
                                 
                                 "}",
@@ -4298,6 +4360,24 @@ Ext.Date = (function() {
         },
         
         
+        compare: function(d1, d2, includeTime) {
+            var s1, s2;
+            if (typeof d1 === 'string') {
+                d1 = Ext.Date.parse(d1);
+            }
+            if (typeof d2 === 'string') {
+                d2 = Ext.Date.parse(d2);
+            }
+            s1 = Ext.Date.format(d1, 'C');
+            s2 = Ext.Date.format(d2, 'C');
+            if (!includeTime) {
+                s1 = s1.substr(0, 10);
+                
+                s2 = s2.substr(0, 10);
+            }
+            return (s1 < s2) ? -1 : ((s2 < s1) ? 1 : 0);
+        },
+        
         
         dateFormat: function(date, format) {
             return utilDate.format(date, format);
@@ -4306,7 +4386,7 @@ Ext.Date = (function() {
         isEqual: function(date1, date2) {
             
             if (date1 && date2) {
-                return (date1.getTime() === date2.getTime());
+                return +date1 === +date2;
             }
             
             return !(date1 || date2);
@@ -4336,8 +4416,10 @@ Ext.Date = (function() {
             
             
             
+            
             return date.toString().replace(/^.* (?:\((.*)\)|([A-Z]{1,5})(?:[\-+][0-9]{4})?(?: -?\d+)?)$/, "$1$2").replace(/[^A-Z]/g, "");
         },
+        
         
         getGMTOffset: function(date, colon) {
             var offset = date.getTimezoneOffset();
@@ -4362,6 +4444,7 @@ Ext.Date = (function() {
                 ms7d = 7 * ms1d;
             
             return function(date) {
+                
                 
                 var DC3 = nativeDate.UTC(date.getFullYear(), date.getMonth(), date.getDate() + 3) / ms1d,
                     
@@ -4440,10 +4523,12 @@ Ext.Date = (function() {
         isDST: function(date) {
             
             
+            
             return new nativeDate(date.getFullYear(), 0, 1).getTimezoneOffset() !== date.getTimezoneOffset();
         },
         
         clearTime: function(date, clone) {
+            var d, hr, c;
             
             if (isNaN(date.getTime())) {
                 return date;
@@ -4452,14 +4537,16 @@ Ext.Date = (function() {
                 return utilDate.clearTime(utilDate.clone(date));
             }
             
-            var d = date.getDate(),
-                hr, c;
+            d = date.getDate();
             
             date.setHours(0);
             date.setMinutes(0);
             date.setSeconds(0);
             date.setMilliseconds(0);
+            
             if (date.getDate() !== d) {
+                
+                
                 
                 
                 
@@ -4529,11 +4616,16 @@ Ext.Date = (function() {
                         };
                         break;
                     case utilDate.DAY:
-                        d.setDate(d.getDate() + value);
+                        if (preventDstAdjust === false) {
+                            d.setTime(d.getTime() + value * 24 * 60 * 60 * 1000);
+                        } else {
+                            d.setDate(d.getDate() + value);
+                        };
                         break;
                     case utilDate.MONTH:
                         day = date.getDate();
                         if (day > 28) {
+                            
                             day = Math.min(day, utilDate.getLastDateOfMonth(utilDate.add(utilDate.getFirstDateOfMonth(date), utilDate.MONTH, value)).getDate());
                         };
                         d.setDate(day);
@@ -4542,6 +4634,7 @@ Ext.Date = (function() {
                     case utilDate.YEAR:
                         day = date.getDate();
                         if (day > 28) {
+                            
                             day = Math.min(day, utilDate.getLastDateOfMonth(utilDate.add(utilDate.getFirstDateOfMonth(date), utilDate.YEAR, value)).getDate());
                         };
                         d.setDate(day);
@@ -4551,6 +4644,7 @@ Ext.Date = (function() {
             }
             if (decimalValue) {
                 switch (interval.toLowerCase()) {
+                    
                     case utilDate.MILLI:
                         base = 1;
                         break;
@@ -4566,6 +4660,7 @@ Ext.Date = (function() {
                     case utilDate.DAY:
                         base = 1000 * 60 * 60 * 24;
                         break;
+                    
                     case utilDate.MONTH:
                         day = utilDate.getDaysInMonth(d);
                         base = 1000 * 60 * 60 * 24 * day;
@@ -4609,6 +4704,7 @@ Ext.Date = (function() {
         
         compat: function() {
             var p,
+                
                 statics = [
                     'useStrict',
                     'formatCodeToRegex',
@@ -4656,6 +4752,7 @@ Ext.Date = (function() {
                     'add',
                     'between'
                 ],
+                
                 sLen = statics.length,
                 pLen = proto.length,
                 stat, prot, s;
@@ -4676,8 +4773,8 @@ Ext.Date = (function() {
         },
         
         diff: function(min, max, unit) {
-            var est,
-                diff = +max - min;
+            var diff = +max - min,
+                est;
             switch (unit) {
                 case utilDate.MILLI:
                     return diff;
@@ -4751,11 +4848,92 @@ Ext.Date = (function() {
                     num.setUTCMilliseconds(0);
                     return date;
             }
+        },
+        flexParse: function(inDate, defaultFormat) {
+            var parts = datePartsRe.exec(inDate),
+                firstFormatToken, day, month, year, result;
+            
+            if (!parts) {
+                return Ext.Date.parse(inDate, 'C');
+            }
+            
+            
+            if (!defaultFormat) {
+                defaultFormat = Ext.Date.defaultFormat;
+            }
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            if (!(parts[2] || parts[4])) {
+                firstFormatToken = defaultFormat[0];
+                
+                
+                
+                if (!yearInfo[firstFormatToken] && (dayInfo[firstFormatToken] || (parts[1] > 12 && parts[3] < 13))) {
+                    day = parseInt(parts[1]);
+                    month = parseInt(parts[3]) - 1;
+                    year = parseInt(parts[5]);
+                } else if (!yearInfo[firstFormatToken] && (monthInfo[firstFormatToken] || (parts[3] > 12 && parts[1] < 13))) {
+                    
+                    
+                    month = parseInt(parts[1]) - 1;
+                    day = parseInt(parts[3]);
+                    year = parseInt(parts[5]);
+                } else {
+                    
+                    year = parseInt(parts[1]);
+                    month = parseInt(parts[3]) - 1;
+                    day = parseInt(parts[5]);
+                }
+            } else {
+                
+                
+                if (parts[2] && parts[4]) {
+                    return null;
+                }
+                
+                if (parts[2]) {
+                    month = utilDate.monthNumbers[Ext.String.capitalize(parts[2].substr(0, 3))];
+                    day = parseInt(parts[3]);
+                    year = parseInt(parts[5]);
+                } else {
+                    
+                    day = parseInt(parts[1]);
+                    month = utilDate.monthNumbers[Ext.String.capitalize(parts[4].substr(0, 3))];
+                    year = parseInt(parts[5]);
+                }
+            }
+            
+            if (isNaN(month) || (month < 0 || month > 11)) {
+                return null;
+            }
+            
+            if (year < utilDate.y2kYear) {
+                year += 2000;
+            }
+            
+            result = new Date(year, month, 1, 0, 0, 0);
+            
+            if (day < 1 || day > Ext.Date.getDaysInMonth(result)) {
+                return null;
+            }
+            result.setDate(day);
+            return result;
         }
     };
     utilDate.parseCodes.C = utilDate.parseCodes.c;
     return utilDate;
 }());
+
 
 
 Ext.Function = (function() {
@@ -4795,6 +4973,7 @@ Ext.Function = (function() {
             animFrameId = null;
             
             var timer;
+            
             
             
             for (i = 0; i < len; i++) {
@@ -4858,6 +5037,7 @@ Ext.Function = (function() {
                     return fn.bind(scope);
                 }
                 var method = fn;
+                
                 return function() {
                     var callArgs = args || arguments;
                     if (appendArgs === true) {
@@ -4940,10 +5120,12 @@ Ext.Function = (function() {
                     
                     var timer;
                     
+                    
                     timerFn = function() {
                         Ext.elevate(boundFn, me, args, 
                         timer);
                     };
+                    
                     
                     timerId = setTimeout(timerFn, delay);
                     
@@ -4964,6 +5146,7 @@ Ext.Function = (function() {
                 
                 var timer;
                 
+                
                 if (!scope && !args && !appendArgs) {
                     boundFn = fn;
                 } else {
@@ -4974,6 +5157,7 @@ Ext.Function = (function() {
                         Ext.elevate(boundFn, 
                         null, null, timer);
                     };
+                    
                     
                     timerId = setTimeout(timerFn, millis);
                     
@@ -4996,11 +5180,13 @@ Ext.Function = (function() {
                 
                 var timer;
                 
+                
                 boundFn = Ext.Function.bind(fn, scope, args, appendArgs);
                 timerFn = function() {
                     Ext.elevate(boundFn, 
                     null, null, timer);
                 };
+                
                 
                 timerId = setInterval(timerFn, millis);
                 
@@ -5036,6 +5222,7 @@ Ext.Function = (function() {
                         
                         var timer;
                         
+                        
                         if (timerId) {
                             Ext.undefer(timerId);
                         }
@@ -5043,6 +5230,7 @@ Ext.Function = (function() {
                             Ext.elevate(fn, me, callArgs, 
                             timer);
                         };
+                        
                         
                         result.timer = timerId = setTimeout(timerFn, buffer);
                         
@@ -5140,6 +5328,7 @@ Ext.Function = (function() {
                         execute();
                     }
                     
+                    
                     else if (!timerId) {
                         timerId = Ext.defer(execute, interval - elapsed);
                     }
@@ -5230,6 +5419,7 @@ Ext.Function = (function() {
             
             
             fireElevatedHandlers: function() {
+                
                 fireElevatedHandlers();
             }
         };
@@ -5242,6 +5432,7 @@ Ext.Function = (function() {
         
         var timer;
         
+        
         if (scope != null || parameters != null) {
             boundFn = ExtFunction.bind(fn, scope, parameters);
         }
@@ -5249,6 +5440,7 @@ Ext.Function = (function() {
             Ext.elevate(boundFn, 
             null, null, timer);
         };
+        
         
         timerId = setImmediate(timerFn);
         
@@ -5267,6 +5459,7 @@ Ext.Function = (function() {
         
         var timer;
         
+        
         if (scope != null || parameters != null) {
             boundFn = ExtFunction.bind(fn, scope, parameters);
         }
@@ -5274,6 +5467,7 @@ Ext.Function = (function() {
             Ext.elevate(boundFn, 
             null, null, timer);
         };
+        
         
         timerId = setTimeout(timerFn, 0, true);
         
@@ -5403,6 +5597,7 @@ Ext.Number = (new function() {
             return value;
         },
         binarySearch: function(array, value, begin, end) {
+            var middle, midVal;
             if (begin === undefined) {
                 begin = 0;
             }
@@ -5410,7 +5605,6 @@ Ext.Number = (new function() {
                 end = array.length;
             }
             --end;
-            var middle, midVal;
             while (begin <= end) {
                 middle = (begin + end) >>> 1;
                 
@@ -5427,6 +5621,7 @@ Ext.Number = (new function() {
             return begin;
         },
         bisectTuples: function(array, value, index, begin, end) {
+            var middle, midVal;
             if (begin === undefined) {
                 begin = 0;
             }
@@ -5434,7 +5629,6 @@ Ext.Number = (new function() {
                 end = array.length;
             }
             --end;
-            var middle, midVal;
             while (begin <= end) {
                 middle = (begin + end) >>> 1;
                 
@@ -5452,11 +5646,11 @@ Ext.Number = (new function() {
         },
         
         clipIndices: function(length, indices, options) {
-            options = options || ClipDefault;
             var defaultValue = 0,
                 
-                wrap = options.wrap,
-                begin, end, i;
+                wrap, begin, end, i;
+            options = options || ClipDefault;
+            wrap = options.wrap;
             indices = indices || [];
             for (i = 0; i < 2; ++i) {
                 
@@ -5509,6 +5703,7 @@ Ext.Number = (new function() {
         
         snap: function(value, increment, minValue, maxValue) {
             var m;
+            
             
             
             if (value === undefined || value < minValue) {
@@ -5583,6 +5778,7 @@ Ext.Number = (new function() {
         
         isEqual: function(n1, n2, epsilon) {
             
+            
             if (!(typeof n1 === 'number' && typeof n2 === 'number' && typeof epsilon === 'number')) {
                 Ext.raise("All parameters should be valid numbers.");
             }
@@ -5600,8 +5796,9 @@ Ext.Number = (new function() {
         },
         
         toFixed: isToFixedBroken ? function(value, precision) {
+            var pow;
             precision = precision || 0;
-            var pow = math.pow(10, precision);
+            pow = math.pow(10, precision);
             return (math.round(value * pow) / pow).toFixed(precision);
         } : function(value, precision) {
             return value.toFixed(precision);
@@ -5638,46 +5835,63 @@ Ext.Number = (new function() {
         queryRe = /^\?/,
         keyRe = /(\[):?([^\]]*)\]/g,
         nameRe = /^([^\[]+)/,
+        
         plusRe = /\+/g,
-        ExtObject = Ext.Object = {
+        ExtObject;
+    
+    
+    
+    
+    ExtObject = Ext.Object = {
+        
+        chain: Object.create || function(object) {
+            var result;
+            TemplateClass.prototype = object;
+            result = new TemplateClass();
+            TemplateClass.prototype = null;
+            return result;
+        },
+        
+        clear: function(object) {
+            var key;
             
-            
-            
-            
-            
-            chain: Object.create || function(object) {
-                TemplateClass.prototype = object;
-                var result = new TemplateClass();
-                TemplateClass.prototype = null;
-                return result;
-            },
-            
-            clear: function(object) {
-                
-                for (var key in object) {
-                    delete object[key];
-                }
-                return object;
-            },
-            
-            freeze: Object.freeze ? function(obj, deep) {
-                if (obj && typeof obj === 'object' && !Object.isFrozen(obj)) {
-                    Object.freeze(obj);
-                    if (deep) {
-                        for (var name in obj) {
-                            ExtObject.freeze(obj[name], deep);
-                        }
+            for (key in object) {
+                delete object[key];
+            }
+            return object;
+        },
+        
+        freeze: Object.freeze ? function(obj, deep) {
+            var name;
+            if (obj && typeof obj === 'object' && !Object.isFrozen(obj)) {
+                Object.freeze(obj);
+                if (deep) {
+                    for (name in obj) {
+                        ExtObject.freeze(obj[name], deep);
                     }
                 }
-                return obj;
-            } : Ext.identityFn,
-            
-            toQueryObjects: function(name, value, recursive) {
-                var self = ExtObject.toQueryObjects,
-                    objects = [],
-                    i, ln;
-                if (Ext.isArray(value)) {
-                    for (i = 0 , ln = value.length; i < ln; i++) {
+            }
+            return obj;
+        } : Ext.identityFn,
+        
+        toQueryObjects: function(name, value, recursive) {
+            var self = ExtObject.toQueryObjects,
+                objects = [],
+                i, ln;
+            if (Ext.isArray(value)) {
+                for (i = 0 , ln = value.length; i < ln; i++) {
+                    if (recursive) {
+                        objects = objects.concat(self(name + '[' + i + ']', value[i], true));
+                    } else {
+                        objects.push({
+                            name: name,
+                            value: value[i]
+                        });
+                    }
+                }
+            } else if (Ext.isObject(value)) {
+                for (i in value) {
+                    if (value.hasOwnProperty(i)) {
                         if (recursive) {
                             objects = objects.concat(self(name + '[' + i + ']', value[i], true));
                         } else {
@@ -5687,154 +5901,121 @@ Ext.Number = (new function() {
                             });
                         }
                     }
-                } else if (Ext.isObject(value)) {
-                    for (i in value) {
-                        if (value.hasOwnProperty(i)) {
-                            if (recursive) {
-                                objects = objects.concat(self(name + '[' + i + ']', value[i], true));
-                            } else {
-                                objects.push({
-                                    name: name,
-                                    value: value[i]
-                                });
-                            }
-                        }
-                    }
-                } else {
-                    objects.push({
-                        name: name,
-                        value: value
-                    });
                 }
-                return objects;
-            },
-            
-            toQueryString: function(object, recursive) {
-                var paramObjects = [],
-                    params = [],
-                    i, j, ln, paramObject, value;
-                for (i in object) {
-                    if (object.hasOwnProperty(i)) {
-                        paramObjects = paramObjects.concat(ExtObject.toQueryObjects(i, object[i], recursive));
-                    }
+            } else {
+                objects.push({
+                    name: name,
+                    value: value
+                });
+            }
+            return objects;
+        },
+        
+        
+        toQueryString: function(object, recursive) {
+            var paramObjects = [],
+                params = [],
+                i, j, ln, paramObject, value;
+            for (i in object) {
+                if (object.hasOwnProperty(i)) {
+                    paramObjects = paramObjects.concat(ExtObject.toQueryObjects(i, object[i], recursive));
                 }
-                for (j = 0 , ln = paramObjects.length; j < ln; j++) {
-                    paramObject = paramObjects[j];
-                    value = paramObject.value;
-                    if (Ext.isEmpty(value)) {
+            }
+            for (j = 0 , ln = paramObjects.length; j < ln; j++) {
+                paramObject = paramObjects[j];
+                value = paramObject.value;
+                if (Ext.isEmpty(value)) {
+                    value = '';
+                } else if (Ext.isDate(value)) {
+                    value = Ext.Date.toString(value);
+                }
+                params.push(encodeURIComponent(paramObject.name) + '=' + encodeURIComponent(String(value)));
+            }
+            return params.join('&');
+        },
+        
+        fromQueryString: function(queryString, recursive) {
+            var parts = queryString.replace(queryRe, '').split('&'),
+                object = {},
+                temp, components, name, value, i, ln, part, j, subLn, matchedKeys, matchedName, keys, key, nextKey;
+            for (i = 0 , ln = parts.length; i < ln; i++) {
+                part = parts[i];
+                if (part.length > 0) {
+                    components = part.split('=');
+                    name = components[0];
+                    name = name.replace(plusRe, '%20');
+                    name = decodeURIComponent(name);
+                    value = components[1];
+                    if (value !== undefined) {
+                        value = value.replace(plusRe, '%20');
+                        value = decodeURIComponent(value);
+                    } else {
                         value = '';
-                    } else if (Ext.isDate(value)) {
-                        value = Ext.Date.toString(value);
                     }
-                    params.push(encodeURIComponent(paramObject.name) + '=' + encodeURIComponent(String(value)));
-                }
-                return params.join('&');
-            },
-            
-            fromQueryString: function(queryString, recursive) {
-                var parts = queryString.replace(queryRe, '').split('&'),
-                    object = {},
-                    temp, components, name, value, i, ln, part, j, subLn, matchedKeys, matchedName, keys, key, nextKey;
-                for (i = 0 , ln = parts.length; i < ln; i++) {
-                    part = parts[i];
-                    if (part.length > 0) {
-                        components = part.split('=');
-                        name = components[0];
-                        name = name.replace(plusRe, '%20');
-                        name = decodeURIComponent(name);
-                        value = components[1];
-                        if (value !== undefined) {
-                            value = value.replace(plusRe, '%20');
-                            value = decodeURIComponent(value);
+                    if (!recursive) {
+                        if (object.hasOwnProperty(name)) {
+                            if (!Ext.isArray(object[name])) {
+                                object[name] = [
+                                    object[name]
+                                ];
+                            }
+                            object[name].push(value);
                         } else {
-                            value = '';
+                            object[name] = value;
                         }
-                        if (!recursive) {
-                            if (object.hasOwnProperty(name)) {
-                                if (!Ext.isArray(object[name])) {
-                                    object[name] = [
-                                        object[name]
-                                    ];
-                                }
-                                object[name].push(value);
-                            } else {
-                                object[name] = value;
-                            }
-                        } else {
-                            matchedKeys = name.match(keyRe);
-                            matchedName = name.match(nameRe);
+                    } else {
+                        matchedKeys = name.match(keyRe);
+                        matchedName = name.match(nameRe);
+                        
+                        if (!matchedName) {
+                            throw new Error('[Ext.Object.fromQueryString] Malformed query string given, failed parsing name from "' + part + '"');
+                        }
+                        
+                        name = matchedName[0];
+                        keys = [];
+                        if (matchedKeys === null) {
+                            object[name] = value;
                             
-                            if (!matchedName) {
-                                throw new Error('[Ext.Object.fromQueryString] Malformed query string given, failed parsing name from "' + part + '"');
-                            }
-                            
-                            name = matchedName[0];
-                            keys = [];
-                            if (matchedKeys === null) {
-                                object[name] = value;
-                                
-                                continue;
-                            }
-                            for (j = 0 , subLn = matchedKeys.length; j < subLn; j++) {
-                                key = matchedKeys[j];
-                                key = (key.length === 2) ? '' : key.substring(1, key.length - 1);
-                                keys.push(key);
-                            }
-                            keys.unshift(name);
-                            temp = object;
-                            for (j = 0 , subLn = keys.length; j < subLn; j++) {
-                                key = keys[j];
-                                if (j === subLn - 1) {
-                                    if (Ext.isArray(temp) && key === '') {
-                                        temp.push(value);
-                                    } else {
-                                        temp[key] = value;
-                                    }
+                            continue;
+                        }
+                        for (j = 0 , subLn = matchedKeys.length; j < subLn; j++) {
+                            key = matchedKeys[j];
+                            key = (key.length === 2) ? '' : key.substring(1, key.length - 1);
+                            keys.push(key);
+                        }
+                        keys.unshift(name);
+                        temp = object;
+                        for (j = 0 , subLn = keys.length; j < subLn; j++) {
+                            key = keys[j];
+                            if (j === subLn - 1) {
+                                if (Ext.isArray(temp) && key === '') {
+                                    temp.push(value);
                                 } else {
-                                    if (temp[key] === undefined || typeof temp[key] === 'string') {
-                                        nextKey = keys[j + 1];
-                                        temp[key] = (Ext.isNumeric(nextKey) || nextKey === '') ? [] : {};
-                                    }
-                                    temp = temp[key];
+                                    temp[key] = value;
                                 }
+                            } else {
+                                if (temp[key] === undefined || typeof temp[key] === 'string') {
+                                    nextKey = keys[j + 1];
+                                    temp[key] = (Ext.isNumeric(nextKey) || nextKey === '') ? [] : {};
+                                }
+                                temp = temp[key];
                             }
                         }
                     }
                 }
-                return object;
-            },
-            
-            each: function(object, fn, scope) {
-                var enumerables = Ext.enumerables,
-                    i, property;
-                if (object) {
-                    scope = scope || object;
-                    for (property in object) {
-                        if (object.hasOwnProperty(property)) {
-                            if (fn.call(scope, property, object[property], object) === false) {
-                                return;
-                            }
-                        }
-                    }
-                    if (enumerables) {
-                        for (i = enumerables.length; i--; ) {
-                            if (object.hasOwnProperty(property = enumerables[i])) {
-                                if (fn.call(scope, property, object[property], object) === false) {
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            
-            eachValue: function(object, fn, scope) {
-                var enumerables = Ext.enumerables,
-                    i, property;
+            }
+            return object;
+        },
+        
+        
+        each: function(object, fn, scope) {
+            var enumerables = Ext.enumerables,
+                i, property;
+            if (object) {
                 scope = scope || object;
                 for (property in object) {
                     if (object.hasOwnProperty(property)) {
-                        if (fn.call(scope, object[property]) === false) {
+                        if (fn.call(scope, property, object[property], object) === false) {
                             return;
                         }
                     }
@@ -5842,213 +6023,236 @@ Ext.Number = (new function() {
                 if (enumerables) {
                     for (i = enumerables.length; i--; ) {
                         if (object.hasOwnProperty(property = enumerables[i])) {
-                            if (fn.call(scope, object[property]) === false) {
+                            if (fn.call(scope, property, object[property], object) === false) {
                                 return;
                             }
                         }
                     }
                 }
-            },
-            
-            merge: function(destination) {
-                var i = 1,
-                    args = arguments,
-                    ln = args.length,
-                    mergeFn = ExtObject.merge,
-                    cloneFn = Ext.clone,
-                    object, key, value, sourceKey;
-                for (; i < ln; i++) {
-                    object = args[i];
-                    for (key in object) {
+            }
+        },
+        
+        eachValue: function(object, fn, scope) {
+            var enumerables = Ext.enumerables,
+                i, property;
+            scope = scope || object;
+            for (property in object) {
+                if (object.hasOwnProperty(property)) {
+                    if (fn.call(scope, object[property]) === false) {
+                        return;
+                    }
+                }
+            }
+            if (enumerables) {
+                for (i = enumerables.length; i--; ) {
+                    if (object.hasOwnProperty(property = enumerables[i])) {
+                        if (fn.call(scope, object[property]) === false) {
+                            return;
+                        }
+                    }
+                }
+            }
+        },
+        
+        merge: function(destination) {
+            var i = 1,
+                args = arguments,
+                ln = args.length,
+                mergeFn = ExtObject.merge,
+                cloneFn = Ext.clone,
+                object, key, value, sourceKey;
+            for (; i < ln; i++) {
+                object = args[i];
+                for (key in object) {
+                    value = object[key];
+                    if (value && value.constructor === Object) {
+                        sourceKey = destination[key];
+                        if (sourceKey && sourceKey.constructor === Object) {
+                            mergeFn(sourceKey, value);
+                        } else {
+                            destination[key] = cloneFn(value);
+                        }
+                    } else {
+                        destination[key] = value;
+                    }
+                }
+            }
+            return destination;
+        },
+        
+        mergeIf: function(destination) {
+            var i = 1,
+                ln = arguments.length,
+                cloneFn = Ext.clone,
+                object, key, value;
+            for (; i < ln; i++) {
+                object = arguments[i];
+                for (key in object) {
+                    if (!(key in destination)) {
                         value = object[key];
                         if (value && value.constructor === Object) {
-                            sourceKey = destination[key];
-                            if (sourceKey && sourceKey.constructor === Object) {
-                                mergeFn(sourceKey, value);
-                            } else {
-                                destination[key] = cloneFn(value);
-                            }
+                            destination[key] = cloneFn(value);
                         } else {
                             destination[key] = value;
                         }
                     }
                 }
-                return destination;
-            },
-            
-            mergeIf: function(destination) {
-                var i = 1,
-                    ln = arguments.length,
-                    cloneFn = Ext.clone,
-                    object, key, value;
-                for (; i < ln; i++) {
-                    object = arguments[i];
-                    for (key in object) {
-                        if (!(key in destination)) {
-                            value = object[key];
-                            if (value && value.constructor === Object) {
-                                destination[key] = cloneFn(value);
-                            } else {
-                                destination[key] = value;
-                            }
-                        }
-                    }
+            }
+            return destination;
+        },
+        
+        getAllKeys: function(object) {
+            var keys = [],
+                property;
+            for (property in object) {
+                keys.push(property);
+            }
+            return keys;
+        },
+        
+        getKey: function(object, value) {
+            var property;
+            for (property in object) {
+                if (object.hasOwnProperty(property) && object[property] === value) {
+                    return property;
                 }
-                return destination;
-            },
-            
-            getAllKeys: function(object) {
-                var keys = [],
-                    property;
-                for (property in object) {
+            }
+            return null;
+        },
+        
+        getValues: function(object) {
+            var values = [],
+                property;
+            for (property in object) {
+                if (object.hasOwnProperty(property)) {
+                    values.push(object[property]);
+                }
+            }
+            return values;
+        },
+        
+        getKeys: (typeof Object.keys === 'function') ? function(object) {
+            if (!object) {
+                return [];
+            }
+            return Object.keys(object);
+        } : function(object) {
+            var keys = [],
+                property;
+            for (property in object) {
+                if (object.hasOwnProperty(property)) {
                     keys.push(property);
                 }
-                return keys;
-            },
-            
-            getKey: function(object, value) {
-                for (var property in object) {
-                    if (object.hasOwnProperty(property) && object[property] === value) {
-                        return property;
-                    }
-                }
-                return null;
-            },
-            
-            getValues: function(object) {
-                var values = [],
-                    property;
-                for (property in object) {
-                    if (object.hasOwnProperty(property)) {
-                        values.push(object[property]);
-                    }
-                }
-                return values;
-            },
-            
-            getKeys: (typeof Object.keys == 'function') ? function(object) {
-                if (!object) {
-                    return [];
-                }
-                return Object.keys(object);
-            } : function(object) {
-                var keys = [],
-                    property;
-                for (property in object) {
-                    if (object.hasOwnProperty(property)) {
-                        keys.push(property);
-                    }
-                }
-                return keys;
-            },
-            
-            getSize: function(object) {
-                var size = 0,
-                    property;
-                for (property in object) {
-                    if (object.hasOwnProperty(property)) {
-                        size++;
-                    }
-                }
-                return size;
-            },
-            
-            isEmpty: function(object) {
-                for (var key in object) {
-                    if (object.hasOwnProperty(key)) {
-                        return false;
-                    }
-                }
-                return true;
-            },
-            
-            equals: (function() {
-                var check = function(o1, o2) {
-                        var key;
-                        for (key in o1) {
-                            if (o1.hasOwnProperty(key)) {
-                                if (o1[key] !== o2[key]) {
-                                    return false;
-                                }
-                            }
-                        }
-                        return true;
-                    };
-                return function(object1, object2) {
-                    
-                    if (object1 === object2) {
-                        return true;
-                    }
-                    if (object1 && object2) {
-                        
-                        
-                        return check(object1, object2) && check(object2, object1);
-                    } else if (!object1 && !object2) {
-                        return object1 === object2;
-                    } else {
-                        return false;
-                    }
-                };
-            })(),
-            
-            fork: function(obj) {
-                var ret, key, value;
-                if (obj && obj.constructor === Object) {
-                    ret = ExtObject.chain(obj);
-                    for (key in obj) {
-                        value = obj[key];
-                        if (value) {
-                            if (value.constructor === Object) {
-                                ret[key] = ExtObject.fork(value);
-                            } else if (value instanceof Array) {
-                                ret[key] = Ext.Array.clone(value);
-                            }
-                        }
-                    }
-                } else {
-                    ret = obj;
-                }
-                return ret;
-            },
-            defineProperty: ('defineProperty' in Object) ? Object.defineProperty : function(object, name, descriptor) {
-                if (!Object.prototype.__defineGetter__) {
-                    return;
-                }
-                if (descriptor.get) {
-                    object.__defineGetter__(name, descriptor.get);
-                }
-                if (descriptor.set) {
-                    object.__defineSetter__(name, descriptor.set);
-                }
-            },
-            
-            classify: function(object) {
-                var prototype = object,
-                    objectProperties = [],
-                    propertyClassesMap = {},
-                    objectClass = function() {
-                        var i = 0,
-                            ln = objectProperties.length,
-                            property;
-                        for (; i < ln; i++) {
-                            property = objectProperties[i];
-                            this[property] = new propertyClassesMap[property]();
-                        }
-                    },
-                    key, value;
-                for (key in object) {
-                    if (object.hasOwnProperty(key)) {
-                        value = object[key];
-                        if (value && value.constructor === Object) {
-                            objectProperties.push(key);
-                            propertyClassesMap[key] = ExtObject.classify(value);
-                        }
-                    }
-                }
-                objectClass.prototype = prototype;
-                return objectClass;
             }
-        };
+            return keys;
+        },
+        
+        getSize: function(object) {
+            var size = 0,
+                property;
+            for (property in object) {
+                if (object.hasOwnProperty(property)) {
+                    size++;
+                }
+            }
+            return size;
+        },
+        
+        isEmpty: function(object) {
+            var key;
+            for (key in object) {
+                if (object.hasOwnProperty(key)) {
+                    return false;
+                }
+            }
+            return true;
+        },
+        
+        equals: (function() {
+            var check = function(o1, o2) {
+                    var key;
+                    for (key in o1) {
+                        if (o1.hasOwnProperty(key)) {
+                            if (o1[key] !== o2[key]) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                };
+            return function(object1, object2) {
+                
+                if (object1 === object2) {
+                    return true;
+                }
+                if (object1 && object2) {
+                    
+                    
+                    return check(object1, object2) && check(object2, object1);
+                } else if (!object1 && !object2) {
+                    return object1 === object2;
+                } else {
+                    return false;
+                }
+            };
+        })(),
+        
+        fork: function(obj) {
+            var ret, key, value;
+            if (obj && obj.constructor === Object) {
+                ret = ExtObject.chain(obj);
+                for (key in obj) {
+                    value = obj[key];
+                    if (value) {
+                        if (value.constructor === Object) {
+                            ret[key] = ExtObject.fork(value);
+                        } else if (value instanceof Array) {
+                            ret[key] = Ext.Array.clone(value);
+                        }
+                    }
+                }
+            } else {
+                ret = obj;
+            }
+            return ret;
+        },
+        defineProperty: ('defineProperty' in Object) ? Object.defineProperty : function(object, name, descriptor) {
+            if (!Object.prototype.__defineGetter__) {
+                return;
+            }
+            if (descriptor.get) {
+                object.__defineGetter__(name, descriptor.get);
+            }
+            if (descriptor.set) {
+                object.__defineSetter__(name, descriptor.set);
+            }
+        },
+        
+        classify: function(object) {
+            var prototype = object,
+                objectProperties = [],
+                propertyClassesMap = {},
+                objectClass, key, value;
+            objectClass = function() {
+                var property, i, ln;
+                for (i = 0 , ln = objectProperties.length; i < ln; i++) {
+                    property = objectProperties[i];
+                    this[property] = new propertyClassesMap[property]();
+                }
+            };
+            for (key in object) {
+                if (object.hasOwnProperty(key)) {
+                    value = object[key];
+                    if (value && value.constructor === Object) {
+                        objectProperties.push(key);
+                        propertyClassesMap[key] = ExtObject.classify(value);
+                    }
+                }
+            }
+            objectClass.prototype = prototype;
+            return objectClass;
+        }
+    };
     
     Ext.merge = Ext.Object.merge;
     
@@ -6073,6 +6277,11 @@ Ext.apply(Ext, {
         },
         
         
+        up: {
+            isUp: 1
+        },
+        
+        
         self: {
             isSelf: 1
         },
@@ -6081,7 +6290,47 @@ Ext.apply(Ext, {
             isController: 1
         }
     },
+    scrollbar: {
+        _size: null,
+        
+        size: function(force) {
+            var scrollbar = Ext.scrollbar,
+                size = scrollbar._size;
+            
+            if (!Ext.isDomReady) {
+                Ext.raise("Ext.scrollbar.size() called before DomReady");
+            }
+            
+            if (force || !size) {
+                
+                var db = document.body,
+                    div = document.createElement('div'),
+                    h, w;
+                div.style.width = div.style.height = '100px';
+                div.style.overflow = 'scroll';
+                div.style.position = 'absolute';
+                db.appendChild(div);
+                
+                
+                scrollbar._size = size = {
+                    width: w = div.offsetWidth - div.clientWidth,
+                    height: h = div.offsetHeight - div.clientHeight
+                };
+                size.reservedWidth = w ? 'calc(100% - ' + w + 'px)' : '';
+                size.reservedHeight = h ? 'calc(100% - ' + h + 'px)' : '';
+                db.removeChild(div);
+            }
+            return size;
+        },
+        height: function(force) {
+            return Ext.scrollbar.size(force).height;
+        },
+        width: function(force) {
+            return Ext.scrollbar.size(force).width;
+        }
+    },
     escapeId: (function() {
+        
         var validIdRe = /^[a-zA-Z_][a-zA-Z0-9_\-]*$/i,
             escapeRx = /([\W]{1})/g,
             leadingNumRx = /^(\d)/g,
@@ -6097,12 +6346,36 @@ Ext.apply(Ext, {
             id.replace(escapeRx, escapeFn).replace(leadingNumRx, numEscapeFn);
         };
     }()),
+    lookUpFn: function(from, fn) {
+        
+        if (!from || !Ext.isFunction(from.up)) {
+            Ext.raise('Callback "up" syntax requires a caller with "up" method');
+        }
+        
+        
+        var controller, scope;
+        for (scope = from.up(); scope && !scope[fn]; scope = scope.up()) {
+            controller = scope.controller;
+            if (controller && controller[fn]) {
+                scope = controller;
+                break;
+            }
+        }
+        
+        if (!scope || !Ext.isFunction(scope[fn])) {
+            Ext.raise('No such method "' + fn + '" found up() from ' + (from.getId ? from.getId() : from.id));
+        }
+        
+        return scope;
+    },
     
     callback: function(callback, scope, args, delay, caller, defaultScope) {
         if (!callback) {
             return;
         }
-        var namedScope = (scope in Ext._namedScopes);
+        
+        var namedScope = (scope in Ext._namedScopes),
+            ret;
         if (callback.charAt) {
             
             
@@ -6126,22 +6399,14 @@ Ext.apply(Ext, {
                 if (scope) {
                     Ext.raise('Callback "up" syntax is incompatible with scopes');
                 }
-                if (!caller || !Ext.isFunction(caller.up)) {
-                    Ext.raise('Callback "up" syntax requires a caller with "up" method');
+                
+                scope = Ext.lookUpFn(caller, callback = callback.substr(3));
+            } else if (caller) {
+                if (namedScope && namedScope.isUp) {
+                    scope = Ext.lookUpFn(caller, callback);
+                } else if (!scope || namedScope) {
+                    scope = caller.resolveListenerScope(namedScope ? scope : defaultScope);
                 }
-                
-                callback = callback.substr(3);
-                
-                for (scope = caller.up(); scope && !scope[callback]; scope = scope.up()) {}
-                
-                
-                if (!scope || !Ext.isFunction(scope[callback])) {
-                    Ext.raise('No such method "' + callback + '" found up() from ' + scope.getId ? scope.getId() : scope.id);
-                }
-            }
-            
-            else if ((!scope || namedScope) && caller) {
-                scope = caller.resolveListenerScope(namedScope ? scope : defaultScope);
             }
             
             if (!scope || !Ext.isObject(scope)) {
@@ -6157,7 +6422,6 @@ Ext.apply(Ext, {
         } else if (!scope) {
             scope = caller;
         }
-        var ret;
         if (callback && Ext.isFunction(callback)) {
             scope = scope || Ext.global;
             if (delay) {
@@ -6195,12 +6459,11 @@ Ext.apply(Ext, {
     },
     
     copyTo: function(dest, source, names, usePrototypeKeys) {
+        var name, i, n;
         if (typeof names === 'string') {
             names = names.split(Ext.propertyNameSplitRe);
         }
-        for (var name,
-            i = 0,
-            n = names ? names.length : 0; i < n; i++) {
+        for (i = 0 , n = names ? names.length : 0; i < n; i++) {
             name = names[i];
             if (usePrototypeKeys || source.hasOwnProperty(name)) {
                 dest[name] = source[name];
@@ -6210,13 +6473,13 @@ Ext.apply(Ext, {
     },
     
     copy: function(dest, source, names, usePrototypeKeys) {
+        var name, i, n;
         if (typeof names === 'string') {
             names = names.split(Ext.propertyNameSplitRe);
         }
-        for (var name,
-            i = 0,
-            n = names ? names.length : 0; i < n; i++) {
+        for (i = 0 , n = names ? names.length : 0; i < n; i++) {
             name = names[i];
+            
             
             
             
@@ -6229,12 +6492,11 @@ Ext.apply(Ext, {
     propertyNameSplitRe: /[,;\s]+/,
     
     copyToIf: function(destination, source, names) {
+        var name, i, n;
         if (typeof names === 'string') {
             names = names.split(Ext.propertyNameSplitRe);
         }
-        for (var name,
-            i = 0,
-            n = names ? names.length : 0; i < n; i++) {
+        for (i = 0 , n = names ? names.length : 0; i < n; i++) {
             name = names[i];
             if (destination[name] === undefined) {
                 destination[name] = source[name];
@@ -6244,12 +6506,11 @@ Ext.apply(Ext, {
     },
     
     copyIf: function(destination, source, names) {
+        var name, i, n;
         if (typeof names === 'string') {
             names = names.split(Ext.propertyNameSplitRe);
         }
-        for (var name,
-            i = 0,
-            n = names ? names.length : 0; i < n; i++) {
+        for (i = 0 , n = names ? names.length : 0; i < n; i++) {
             name = names[i];
             
             if (!(name in destination) && (name in source)) {
@@ -6291,9 +6552,10 @@ Ext.apply(Ext, {
             }
             
             
+            
             var F = function() {},
-                subclassProto,
-                superclassProto = superclass.prototype;
+                superclassProto = superclass.prototype,
+                subclassProto;
             F.prototype = superclassProto;
             subclassProto = subclass.prototype = new F();
             subclassProto.constructor = subclass;
@@ -6361,31 +6623,7 @@ Ext.apply(Ext, {
     },
     
     getScrollbarSize: function(force) {
-        
-        if (!Ext.isDomReady) {
-            Ext.raise("getScrollbarSize called before DomReady");
-        }
-        
-        var scrollbarSize = Ext._scrollbarSize;
-        if (force || !scrollbarSize) {
-            var db = document.body,
-                div = document.createElement('div'),
-                h, w;
-            div.style.width = div.style.height = '100px';
-            div.style.overflow = 'scroll';
-            div.style.position = 'absolute';
-            db.appendChild(div);
-            
-            
-            Ext._scrollbarSize = scrollbarSize = {
-                width: w = div.offsetWidth - div.clientWidth,
-                height: h = div.offsetHeight - div.clientHeight
-            };
-            scrollbarSize.reservedWidth = w ? 'calc(100% - ' + w + 'px)' : '';
-            scrollbarSize.reservedHeight = h ? 'calc(100% - ' + h + 'px)' : '';
-            db.removeChild(div);
-        }
-        return scrollbarSize;
+        return Ext.scrollbar.size(force);
     },
     
     typeOf: (function() {
@@ -6408,6 +6646,7 @@ Ext.apply(Ext, {
             if (value === null) {
                 return 'null';
             }
+            
             var type = typeof value,
                 ret, typeToString;
             if (typeofTypes[type]) {
@@ -6494,6 +6733,7 @@ Ext.apply(Ext, {
     
     convertKeyedItems: function(items, defaultProperty, functionProperty) {
         if (items && !items.isInstance && Ext.isObject(items)) {
+            
             var obj = items,
                 item, itemId, value;
             items = [];
@@ -6530,6 +6770,11 @@ Ext.apply(Ext, {
         }
         return items;
     },
+    sortByWeight: function(items) {
+        if (items) {
+            Ext.Array.sort(items, Ext.weightSortFn);
+        }
+    },
     
     weightSortFn: function(lhs, rhs) {
         return (lhs.weight || 0) - (rhs.weight || 0);
@@ -6562,6 +6807,7 @@ Ext.apply(Ext, {
                 return prefix + '...' + suffix;
             }
             level = level || 1;
+            
             var spacer = (new Array(level)).join('    ');
             
             for (name in object) {
@@ -6653,17 +6899,17 @@ Ext.apply(Ext, {
                     }
                 }
             } else if (Ext.isOpera) {
+                
                 opera.postError(message);
-            } else 
-            {
+            } else {
                 out = log.out;
                 max = log.max;
                 if (out.length >= max) {
                     
                     
+                    
                     Ext.Array.erase(out, 0, out.length - 3 * Math.floor(max / 4));
                 }
-                
                 out.push(message);
             }
             
@@ -6706,6 +6952,7 @@ Ext.apply(Ext, {
 });
 
 
+
 (function() {
     
     
@@ -6713,9 +6960,9 @@ Ext.apply(Ext, {
         checkVerTemp = [
             ''
         ],
-        endOfVersionRe = /([^\d\.])/,
+        endOfVersionRe = /([^\d.])/,
         notDigitsRe = /[^\d]/g,
-        plusMinusRe = /[\-+]/g,
+        plusMinusRe = /[-+]/g,
         stripRe = /\s/g,
         underscoreRe = /_/g,
         toolkitNames = {
@@ -6935,6 +7182,7 @@ Ext.apply(Ext, {
         },
         
         getComponentValue: function(value) {
+            
             return !value ? 0 : (isNaN(value) ? this.releaseValueMap[value] || value : parseInt(value, 10));
         },
         
@@ -7116,8 +7364,8 @@ Ext.apply(Ext, {
         }
     }
     if (!packages.ext && !packages.touch) {
-        Ext.setVersion('ext', '6.5.3.57');
-        Ext.setVersion('core', '6.5.3.57');
+        Ext.setVersion('ext', '7.0.0.156');
+        Ext.setVersion('core', '7.0.0.156');
     }
 })(Ext.manifest);
 
@@ -7157,6 +7405,20 @@ Ext.Config.prototype = {
     
     
     
+    combine: function(value, baseValue, instance, clone) {
+        var cfg = this;
+        if (cfg.merge) {
+            value = cfg.merge(clone ? Ext.clone(value) : value, baseValue, instance);
+        } else if (value && value.constructor === Object && baseValue && baseValue.constructor === Object) {
+            value = Ext.merge({}, baseValue, value);
+        } else if (clone && value) {
+            value = Ext.clone(value);
+        }
+        return value;
+    },
+    equals: function(value1, value2) {
+        return value1 === value2;
+    },
     getGetter: function() {
         return this.getter || (this.root.getter = this.makeGetter());
     },
@@ -7253,7 +7515,8 @@ Ext.Config.prototype = {
         setter = function(value) {
             var me = this,
                 internalName = me.$configPrefixed ? prefixedName : name,
-                oldValue = me[internalName];
+                oldValue = me[internalName],
+                watch;
             
             delete me[getName];
             if (!me[applyName] || (value = me[applyName](value, oldValue)) !== undefined) {
@@ -7263,6 +7526,17 @@ Ext.Config.prototype = {
                     me[internalName] = value;
                     if (me[updateName]) {
                         me[updateName](value, oldValue);
+                    }
+                    watch = me.$configWatch;
+                    if (watch && !me.isConfiguring) {
+                        
+                        
+                        watch.fire(name, [
+                            me,
+                            name,
+                            me[internalName],
+                            oldValue
+                        ]);
                     }
                 }
             }
@@ -7283,6 +7557,17 @@ Ext.Config.prototype = {
                 me[internalName] = value;
                 if (me[updateName]) {
                     me[updateName](value, oldValue);
+                }
+                
+                var watch = me.$configWatch;
+                if (watch) {
+                    
+                    watch.fire(name, [
+                        me,
+                        name,
+                        value,
+                        oldValue
+                    ]);
                 }
             },
             setter;
@@ -7430,7 +7715,7 @@ Ext.Config.prototype = {
                             
                             
                             
-                            value = ExtObject.merge({}, currentValue, value);
+                            value = Ext.merge({}, currentValue, value);
                         }
                     }
                 } else 
@@ -7508,6 +7793,7 @@ Ext.Config.prototype = {
                     }
                     if (name in initMap) {
                         
+                        
                         initMap[name] = false;
                     }
                 }
@@ -7554,7 +7840,7 @@ Ext.Config.prototype = {
                 values = me.values,
                 remaining = 0,
                 firstInstance = !initList,
-                cachedInitList, cfg, getter, i, internalName, ln, names, name, value, isCached, valuesKey, field;
+                cachedInitList, cfg, getter, i, internalName, ln, names, name, value, isCached, valuesKey, field, transforms;
             values = me.needsFork ? ExtObject.fork(values) : ExtObject.chain(values);
             
             instance.isConfiguring = true;
@@ -7668,9 +7954,36 @@ Ext.Config.prototype = {
                 instance[cfg.names.get] = cfg.initGetter || cfg.getInitGetter();
             }
             
-            if (instance.transformInstanceConfig) {
-                instanceConfig = instance.transformInstanceConfig(instanceConfig);
+            
+            
+            
+            
+            if (!(transforms = instance.self.$configTransforms)) {
+                instance.self.$configTransforms = transforms = [];
+                ln = instance.$configTransforms;
+                for (name in ln) {
+                    transforms.push([
+                        name,
+                        ln[name]
+                    ]);
+                }
+                ln = transforms.length;
+                if (ln > 1) {
+                    transforms.sort(me.transformSorter);
+                    for (i = 0; i < ln; ++i) {
+                        transforms[i] = transforms[i][0];
+                    }
+                } else if (ln) {
+                    transforms[0] = transforms[0][0];
+                }
             }
+            for (i = 0; i < transforms.length; ++i) {
+                name = transforms[i];
+                if (instance[name]) {
+                    instanceConfig = instance[name](instanceConfig, me);
+                }
+            }
+            
             
             
             
@@ -7720,12 +8033,12 @@ Ext.Config.prototype = {
                         if (!initListMap[name]) {
                             instance[cfg.names.get] = cfg.initGetter || cfg.getInitGetter();
                         }
+                        valuesKey = values[name];
                         if (cfg.merge) {
-                            value = cfg.merge(value, values[name], instance);
+                            value = cfg.merge(value, valuesKey, instance);
                         } else if (value && value.constructor === Object) {
-                            valuesKey = values[name];
                             if (valuesKey && valuesKey.constructor === Object) {
-                                value = ExtObject.merge(values[name], value);
+                                value = Ext.merge(values[name], value);
                             } else {
                                 value = Ext.clone(value, false);
                             }
@@ -7797,21 +8110,50 @@ Ext.Config.prototype = {
             return config;
         },
         
-        merge: function(instance, baseConfig, config) {
+        hoistConfigs: function(instance, instanceConfig, names) {
+            var config = instance.config,
+                configs = this.configs,
+                initListMap = this.initListMap,
+                ret = false,
+                cfg, i, name;
+            for (i = 0; i < names.length; ++i) {
+                name = names[i];
+                if (instanceConfig && name in instanceConfig) {
+                    cfg = configs[name];
+                    
+                    config[name] = cfg.combine(instanceConfig[name], config[name], instance);
+                    if (!initListMap[name]) {
+                        instance[cfg.names.get] = cfg.initGetter || cfg.getInitGetter();
+                    }
+                }
+                
+                
+                if (config[name] != null) {
+                    ret = true;
+                }
+            }
+            return ret;
+        },
+        
+        merge: function(instance, baseConfig, config, clone) {
             
             
             var configs = this.configs,
                 name, value, baseValue, cfg;
+            if (clone) {
+                baseConfig = Ext.clone(baseConfig, 
+                false);
+            }
             for (name in config) {
                 value = config[name];
                 cfg = configs[name];
                 if (cfg) {
+                    baseValue = baseConfig[name];
                     if (cfg.merge) {
-                        value = cfg.merge(value, baseConfig[name], instance);
+                        value = cfg.merge(value, baseValue, instance);
                     } else if (value && value.constructor === Object) {
-                        baseValue = baseConfig[name];
                         if (baseValue && baseValue.constructor === Object) {
-                            value = Ext.Object.merge(baseValue, value);
+                            value = Ext.merge(baseValue, value);
                         } else {
                             value = Ext.clone(value, false);
                         }
@@ -7831,6 +8173,7 @@ Ext.Config.prototype = {
                 cfg, getter, i, len, name, names, prop;
             for (name in instanceConfig) {
                 cfg = configs[name];
+                
                 if (defaults && instance.hasOwnProperty(cfg && instance.$configPrefixed ? cfg.names.internal : name)) {
                     
                     continue;
@@ -7888,6 +8231,7 @@ Ext.Config.prototype = {
                         
                         
                         
+                        
                         instance[names.set](instanceConfig[name]);
                         delete instance[getter];
                     }
@@ -7920,6 +8264,9 @@ Ext.Config.prototype = {
                 }
             }
             return ret;
+        },
+        transformSorter: function(a, b) {
+            return a[1] - b[1];
         }
     };
 }());
@@ -7929,6 +8276,8 @@ Ext.Config.prototype = {
 
 
 Ext.Base = (function(flexSetter) {
+    
+    
     
     
     
@@ -7959,6 +8308,7 @@ Ext.Base = (function(flexSetter) {
             if (message) {
                 Ext.Object.defineProperty(object, oldName, {
                     get: function() {
+                        
                         Ext.raise(message);
                     },
                     set: function(value) {
@@ -7969,6 +8319,12 @@ Ext.Base = (function(flexSetter) {
             }
         },
         
+        getOwnObject = function(proto, name) {
+            if (!proto.hasOwnProperty(name)) {
+                proto[name] = Ext.Object.chain(getOwnObject(proto.superclass, name));
+            }
+            return proto[name];
+        },
         makeAliasFn = function(name) {
             return function() {
                 return this[name].apply(this, arguments);
@@ -7996,6 +8352,7 @@ Ext.Base = (function(flexSetter) {
                 Ext.undefer(Reaper.timer);
                 Reaper.timer = null;
             }
+            
             var queue = Reaper.queue,
                 n = queue.length,
                 i, obj;
@@ -8021,6 +8378,15 @@ Ext.Base = (function(flexSetter) {
             return Ext.create.apply(Ext, [
                 this
             ].concat(Array.prototype.slice.call(arguments, 0)));
+        },
+        addConfigTransform: function(methodName, priority) {
+            var transforms = getOwnObject(this.prototype, '$configTransforms');
+            
+            if (this.$configTransforms) {
+                Ext.raise('Config transforms cannot be added after instances are created');
+            }
+            
+            transforms[methodName] = priority;
         },
         
         addDeprecations: function(deprecations) {
@@ -8053,6 +8419,7 @@ Ext.Base = (function(flexSetter) {
                 enabled = compatVersion && compatVersion.lt(version);
                 
                 if (!enabled) {}
+                
                 
                 else if (!enabled) {
                     
@@ -8204,7 +8571,10 @@ Ext.Base = (function(flexSetter) {
         
         triggerExtended: function() {
             
-            Ext.classSystemMonitor && Ext.classSystemMonitor(this, 'Ext.Base#triggerExtended', arguments);
+            if (Ext.classSystemMonitor) {
+                Ext.classSystemMonitor(this, 'Ext.Base#triggerExtended', arguments);
+            }
+            
             
             var callbacks = this.$onExtended,
                 ln = callbacks.length,
@@ -8240,6 +8610,7 @@ Ext.Base = (function(flexSetter) {
                 me.$inheritableStatics = proto.$inheritableStatics = inheritableStatics;
             }
             
+            
             var className = Ext.getClassName(me) + '.';
             
             for (name in members) {
@@ -8247,7 +8618,7 @@ Ext.Base = (function(flexSetter) {
                     member = members[name];
                     current = me[name];
                     
-                    if (typeof member == 'function') {
+                    if (typeof member === 'function') {
                         member.name = className + name;
                     }
                     
@@ -8270,6 +8641,7 @@ Ext.Base = (function(flexSetter) {
                 enumerables = Ext.enumerables,
                 privates = members.privates,
                 configs, i, ln, member, name, subPrivacy, privateStatics;
+            
             
             var displayName = (me.$className || '') + '#';
             
@@ -8313,6 +8685,7 @@ Ext.Base = (function(flexSetter) {
                         member.$name = name;
                         
                         member.name = displayName + name;
+                        
                         var existing = target[name];
                         if (privacy) {
                             member.$privacy = privacy;
@@ -8329,6 +8702,7 @@ Ext.Base = (function(flexSetter) {
                             Ext.privacyViolation(me, existing, member, isStatic);
                         }
                     }
+                    
                     
                     
                     
@@ -8371,16 +8745,23 @@ Ext.Base = (function(flexSetter) {
             return this;
         },
         
-        addMember: function(name, member) {
+        addMember: function(name, member, privacy) {
             oneMember[name] = member;
-            this.addMembers(oneMember);
+            this.addMembers(oneMember, false, privacy);
             delete oneMember[name];
             return this;
+        },
+        hookMember: function(name, member) {
+            var existing = this.prototype[name];
+            return this.addMember(name, member, existing && existing.$privacy);
         },
         
         borrow: function(fromClass, members) {
             
-            Ext.classSystemMonitor && Ext.classSystemMonitor(this, 'Ext.Base#borrow', arguments);
+            if (Ext.classSystemMonitor) {
+                Ext.classSystemMonitor(this, 'Ext.Base#borrow', arguments);
+            }
+            
             
             var prototype = fromClass.prototype,
                 membersObj = {},
@@ -8534,7 +8915,9 @@ Ext.Base = (function(flexSetter) {
                     
                     
                     Ext.applyIf(prototype.mixins, mixinValue);
-                } else if (!(key === 'mixinId' || key === 'config' || key === '$inheritableStatics') && (prototype[key] === undefined)) {
+                }
+                
+                else if (!(key === 'mixinId' || key === 'config' || key === '$inheritableStatics') && (prototype[key] === undefined)) {
                     prototype[key] = mixinValue;
                 }
             }
@@ -8615,6 +8998,8 @@ Ext.Base = (function(flexSetter) {
         
         $className: 'Ext.Base',
         
+        $configTransforms: {},
+        
         isInstance: true,
         
         $configPrefixed: true,
@@ -8650,10 +9035,11 @@ Ext.Base = (function(flexSetter) {
             
             if (!superMethod) {
                 method = this.callParent.caller;
+                
                 var parentClass, methodName;
                 if (!method.$owner) {
                     if (!method.caller) {
-                        throw new Error("Attempting to call a protected method from the public scope, which is not allowed");
+                        throw new Error("Attempting to call a protected method from the " + "public scope, which is not allowed");
                     }
                     method = method.caller;
                 }
@@ -8677,10 +9063,11 @@ Ext.Base = (function(flexSetter) {
             
             if (!superMethod) {
                 method = this.callSuper.caller;
+                
                 var parentClass, methodName;
                 if (!method.$owner) {
                     if (!method.caller) {
-                        throw new Error("Attempting to call a protected method from the public scope, which is not allowed");
+                        throw new Error("Attempting to call a protected method from the " + "public scope, which is not allowed");
                     }
                     method = method.caller;
                 }
@@ -8832,6 +9219,15 @@ Ext.Base = (function(flexSetter) {
             }
             return me;
         },
+        getConfigWatcher: function() {
+            return this.$configWatch || (this.$configWatch = new Ext.mixin.Watchable());
+        },
+        
+        watchConfig: function(name, fn, scope) {
+            var watcher = this.getConfigWatcher();
+            return watcher.on.apply(watcher, arguments);
+        },
+        $configWatch: null,
         
         getCurrentConfig: function() {
             var cfg = this.self.getConfigurator();
@@ -8884,21 +9280,22 @@ Ext.Base = (function(flexSetter) {
         },
         $reap: function() {
             var me = this,
-                protectedProps = me.$noClearOnDestroy,
-                props, prop, value, type, i, len;
+                keepers = me.$noClearOnDestroy,
+                props, prop, val, t, i, len;
             
             
             props = Ext.Object.getKeys(me);
             for (i = 0 , len = props.length; i < len; i++) {
                 prop = props[i];
-                if (!protectedProps || !protectedProps[prop]) {
-                    value = me[prop];
-                    type = typeof value;
+                val = me[prop];
+                
+                if (val && !(keepers && keepers[prop])) {
+                    t = typeof val;
                     
                     
                     
                     
-                    if (type === 'object' || (type === 'function' && !value.$noClearOnDestroy)) {
+                    if (t === 'object' || (t === 'function' && !val.$noClearOnDestroy)) {
                         me[prop] = null;
                     }
                 }
@@ -8909,6 +9306,16 @@ Ext.Base = (function(flexSetter) {
             
             if (Object.setPrototypeOf) {
                 if (me.clearPrototypeOnDestroy && !me.$vetoClearingPrototypeOnDestroy) {
+                    props = me.$preservePrototypeProperties;
+                    if (props) {
+                        for (i = 0 , len = props.length; i < len; i++) {
+                            prop = props[i];
+                            if (!me.hasOwnProperty(prop)) {
+                                
+                                me[prop] = me[prop];
+                            }
+                        }
+                    }
                     Object.setPrototypeOf(me, null);
                 }
             }
@@ -8959,8 +9366,9 @@ Ext.Base = (function(flexSetter) {
         } else {
             msg += conflictCls ? ' conflicts with private ' + existing.$privacy + ' method declared by ' + conflictCls : ' conflicts with inherited private ' + existing.$privacy + ' method.';
         }
-        var compat = Ext.getCompatVersion();
-        var ver = Ext.getVersion();
+        
+        var compat = Ext.getCompatVersion(),
+            ver = Ext.getVersion();
         
         if (ver && compat && compat.lt(ver)) {
             Ext.log.error(msg);
@@ -8972,6 +9380,7 @@ Ext.Base = (function(flexSetter) {
     
     return Base;
 }(Ext.Function.flexSetter));
+
 
 
 (function(LRU, prototype) {
@@ -9034,9 +9443,9 @@ Ext.Base = (function(flexSetter) {
         },
         
         each: function(fn, scope) {
+            var head, ent;
             scope = scope || this;
-            for (var head = this.head,
-                ent = head.next; ent !== head; ent = ent.next) {
+            for (head = this.head , ent = head.next; ent !== head; ent = ent.next) {
                 if (fn.call(scope, ent.key, ent.value)) {
                     break;
                 }
@@ -9114,6 +9523,7 @@ Ext.Base = (function(flexSetter) {
 }());
 
 
+
 (function(LRU, fn, Cache) {
     
     
@@ -9154,6 +9564,7 @@ Ext.Base = (function(flexSetter) {
 }(Ext.util.LRU, function() {}));
 
 
+
 (function() {
     
     
@@ -9172,6 +9583,7 @@ Ext.Base = (function(flexSetter) {
         function constructor() {
             
             
+            
             return this.constructor.apply(this, arguments) || null;
         }
         
@@ -9183,7 +9595,7 @@ Ext.Base = (function(flexSetter) {
     }
     
     Ext.Class = ExtClass = function(Class, data, onCreated) {
-        if (typeof Class != 'function') {
+        if (typeof Class !== 'function') {
             onCreated = data;
             data = Class;
             Class = null;
@@ -9200,12 +9612,16 @@ Ext.Base = (function(flexSetter) {
         
         onBeforeCreated: function(Class, data, hooks) {
             
-            Ext.classSystemMonitor && Ext.classSystemMonitor(Class, '>> Ext.Class#onBeforeCreated', arguments);
+            if (Ext.classSystemMonitor) {
+                Ext.classSystemMonitor(Class, '>> Ext.Class#onBeforeCreated', arguments);
+            }
             
             Class.addMembers(data);
             hooks.onCreated.call(Class, Class);
             
-            Ext.classSystemMonitor && Ext.classSystemMonitor(Class, '<< Ext.Class#onBeforeCreated', arguments);
+            if (Ext.classSystemMonitor) {
+                Ext.classSystemMonitor(Class, '<< Ext.Class#onBeforeCreated', arguments);
+            }
         },
         
         
@@ -9236,7 +9652,7 @@ Ext.Base = (function(flexSetter) {
             Class._classHooks = hooks;
             for (i = 0 , ln = preprocessorStack.length; i < ln; i++) {
                 preprocessor = preprocessorStack[i];
-                if (typeof preprocessor == 'string') {
+                if (typeof preprocessor === 'string') {
                     preprocessor = registeredPreprocessors[preprocessor];
                     preprocessorsProperties = preprocessor.properties;
                     if (preprocessorsProperties === true) {
@@ -9264,6 +9680,7 @@ Ext.Base = (function(flexSetter) {
                 preprocessor = preprocessors.shift(),
                 doProcess = me.doProcess;
             for (; preprocessor; preprocessor = preprocessors.shift()) {
+                
                 
                 if (preprocessor.call(me, Class, data, hooks, doProcess) === false) {
                     return;
@@ -9314,7 +9731,7 @@ Ext.Base = (function(flexSetter) {
         setDefaultPreprocessorPosition: function(name, offset, relativeName) {
             var defaultPreprocessors = this.defaultPreprocessors,
                 index;
-            if (typeof offset == 'string') {
+            if (typeof offset === 'string') {
                 if (offset === 'first') {
                     defaultPreprocessors.unshift(name);
                     return this;
@@ -9333,13 +9750,15 @@ Ext.Base = (function(flexSetter) {
     });
     
     ExtClass.registerPreprocessor('extend', function(Class, data, hooks) {
-        
-        Ext.classSystemMonitor && Ext.classSystemMonitor(Class, 'Ext.Class#extendPreProcessor', arguments);
-        
         var Base = Ext.Base,
             basePrototype = Base.prototype,
             extend = data.extend,
             Parent, parentPrototype, i;
+        
+        if (Ext.classSystemMonitor) {
+            Ext.classSystemMonitor(Class, 'Ext.Class#extendPreProcessor', arguments);
+        }
+        
         delete data.extend;
         if (extend && extend !== Object) {
             Parent = extend;
@@ -9365,12 +9784,14 @@ Ext.Base = (function(flexSetter) {
     
     
     ExtClass.registerPreprocessor('privates', function(Class, data) {
-        
-        Ext.classSystemMonitor && Ext.classSystemMonitor(Class, 'Ext.Class#privatePreprocessor', arguments);
-        
         var privates = data.privates,
             statics = privates.statics,
             privacy = privates.privacy || true;
+        
+        if (Ext.classSystemMonitor) {
+            Ext.classSystemMonitor(Class, 'Ext.Class#privatePreprocessor', arguments);
+        }
+        
         delete data.privates;
         delete privates.statics;
         
@@ -9385,7 +9806,9 @@ Ext.Base = (function(flexSetter) {
     
     ExtClass.registerPreprocessor('statics', function(Class, data) {
         
-        Ext.classSystemMonitor && Ext.classSystemMonitor(Class, 'Ext.Class#staticsPreprocessor', arguments);
+        if (Ext.classSystemMonitor) {
+            Ext.classSystemMonitor(Class, 'Ext.Class#staticsPreprocessor', arguments);
+        }
         
         Class.addStatics(data.statics);
         delete data.statics;
@@ -9395,7 +9818,9 @@ Ext.Base = (function(flexSetter) {
     
     ExtClass.registerPreprocessor('inheritableStatics', function(Class, data) {
         
-        Ext.classSystemMonitor && Ext.classSystemMonitor(Class, 'Ext.Class#inheritableStaticsPreprocessor', arguments);
+        if (Ext.classSystemMonitor) {
+            Ext.classSystemMonitor(Class, 'Ext.Class#inheritableStaticsPreprocessor', arguments);
+        }
         
         Class.addInheritableStatics(data.inheritableStatics);
         delete data.inheritableStatics;
@@ -9449,15 +9874,20 @@ Ext.Base = (function(flexSetter) {
     
     
     ExtClass.registerPreprocessor('mixins', function(Class, data, hooks) {
-        
-        Ext.classSystemMonitor && Ext.classSystemMonitor(Class, 'Ext.Class#mixinsPreprocessor', arguments);
-        
         var mixins = data.mixins,
             onCreated = hooks.onCreated;
+        
+        if (Ext.classSystemMonitor) {
+            Ext.classSystemMonitor(Class, 'Ext.Class#mixinsPreprocessor', arguments);
+        }
+        
         delete data.mixins;
         hooks.onCreated = function() {
             
-            Ext.classSystemMonitor && Ext.classSystemMonitor(Class, 'Ext.Class#mixinsPreprocessor#beforeCreated', arguments);
+            
+            if (Ext.classSystemMonitor) {
+                Ext.classSystemMonitor(Class, 'Ext.Class#mixinsPreprocessor#beforeCreated', arguments);
+            }
             
             
             
@@ -9472,19 +9902,22 @@ Ext.Base = (function(flexSetter) {
     
     
     Ext.extend = function(Class, Parent, members) {
+        var cls, m;
         
-        Ext.classSystemMonitor && Ext.classSystemMonitor(Class, 'Ext.Class#extend-backwards-compatible', arguments);
+        if (Ext.classSystemMonitor) {
+            Ext.classSystemMonitor(Class, 'Ext.Class#extend-backwards-compatible', arguments);
+        }
         
         if (arguments.length === 2 && Ext.isObject(Parent)) {
             members = Parent;
             Parent = Class;
             Class = null;
         }
-        var cls;
         if (!Parent) {
-            throw new Error("[Ext.extend] Attempting to extend from a class which has not been loaded on the page.");
+            throw new Error("[Ext.extend] Attempting to extend from a class which has not " + "been loaded on the page.");
         }
         members.extend = Parent;
+        
         members.preprocessors = [
             'extend',
             
@@ -9500,6 +9933,7 @@ Ext.Base = (function(flexSetter) {
             'config'
         ];
         
+        
         if (Class) {
             cls = new ExtClass(Class, members);
             
@@ -9508,7 +9942,7 @@ Ext.Base = (function(flexSetter) {
             cls = new ExtClass(members);
         }
         cls.prototype.override = function(o) {
-            for (var m in o) {
+            for (m in o) {
                 if (o.hasOwnProperty(m)) {
                     this[m] = o[m];
                 }
@@ -9677,9 +10111,10 @@ Ext.Inventory.prototype = {
         } else if (className in this.nameToPrefix) {
             return this.nameToPrefix[className];
         }
+        
         var prefixes = this.getPrefixes(),
             length = className.length,
-            items, currChar, currSubstr, prefix, j, jlen;
+            items, currChar, prefix, j, jlen;
         
         
         
@@ -9691,7 +10126,6 @@ Ext.Inventory.prototype = {
                     
                     continue;
                 }
-                currSubstr = className.substring(0, length);
                 for (j = 0 , jlen = items.length; j < jlen; j++) {
                     prefix = items[j];
                     if (prefix === className.substring(0, length)) {
@@ -9834,7 +10268,7 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
             isCreated: function(className) {
                 
                 if (typeof className !== 'string' || className.length < 1) {
-                    throw new Error("[Ext.ClassManager] Invalid classname, must be a string and must not be empty");
+                    throw new Error("[Ext.ClassManager] Invalid classname, must be a string and " + "must not be empty");
                 }
                 
                 if (Manager.classes[className] || Manager.existCache[className]) {
@@ -9897,6 +10331,7 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
             
             
             addListener: function(fn, scope, className, listeners, nameListeners) {
+                var i;
                 if (Ext.isArray(className)) {
                     fn = Ext.Function.createBarrier(className.length, fn, scope);
                     for (i = 0; i < className.length; i++) {
@@ -9904,8 +10339,8 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
                     }
                     return;
                 }
-                var i,
-                    listener = {
+                
+                var listener = {
                         fn: fn,
                         scope: scope
                     };
@@ -9926,7 +10361,8 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
             $namespaceCache: namespaceCache,
             
             addRootNamespaces: function(namespaces) {
-                for (var name in namespaces) {
+                var name;
+                for (name in namespaces) {
                     namespaceCache[name] = {
                         name: name,
                         value: namespaces[name]
@@ -9935,8 +10371,9 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
             },
             
             clearNamespaceCache: function() {
+                var name;
                 nameLookupStack.length = 0;
-                for (var name in namespaceCache) {
+                for (name in namespaceCache) {
                     if (!namespaceCache[name].value) {
                         delete namespaceCache[name];
                     }
@@ -9944,12 +10381,12 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
             },
             
             getNamespaceEntry: function(namespace) {
+                var entry, i;
                 if (typeof namespace !== 'string') {
                     return namespace;
                 }
                 
-                var entry = namespaceCache[namespace],
-                    i;
+                entry = namespaceCache[namespace];
                 if (!entry) {
                     i = namespace.lastIndexOf('.');
                     if (i < 0) {
@@ -10074,12 +10511,13 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
             },
             
             create: function(className, data, createdFn) {
+                var ctor;
                 
                 if (className != null && typeof className !== 'string') {
                     throw new Error("[Ext.define] Invalid class name '" + className + "' specified, must be a non-empty string");
                 }
                 
-                var ctor = makeCtor(className);
+                ctor = makeCtor(className);
                 if (typeof data === 'function') {
                     data = data(ctor);
                 }
@@ -10129,7 +10567,9 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
                     createdFn = clsData.createdFn;
                 if (!postprocessor) {
                     
-                    Ext.classSystemMonitor && Ext.classSystemMonitor(className, 'Ext.ClassManager#classCreated', arguments);
+                    if (Ext.classSystemMonitor) {
+                        Ext.classSystemMonitor(className, 'Ext.ClassManager#classCreated', arguments);
+                    }
                     
                     if (className) {
                         me.set(className, cls);
@@ -10156,75 +10596,76 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
                     mixinsIsArray,
                     compat = 1,
                     
-                    dependenciesLoaded,
-                    classReady = function() {
-                        var cls, dependencies, i, key, temp;
-                        if (!dependenciesLoaded) {
-                            dependencies = requires ? requires.slice(0) : [];
-                            if (mixins) {
-                                if (!(mixinsIsArray = mixins instanceof Array)) {
-                                    for (key in mixins) {
-                                        if (Ext.isString(cls = mixins[key])) {
-                                            dependencies.push(cls);
-                                        }
-                                    }
-                                } else {
-                                    for (i = 0 , temp = mixins.length; i < temp; ++i) {
-                                        if (Ext.isString(cls = mixins[i])) {
-                                            dependencies.push(cls);
-                                        }
+                    dependenciesLoaded, classReady;
+                classReady = function() {
+                    var cls, dependencies, i, key, temp;
+                    if (!dependenciesLoaded) {
+                        dependencies = requires ? requires.slice(0) : [];
+                        if (mixins) {
+                            if (!(mixinsIsArray = mixins instanceof Array)) {
+                                for (key in mixins) {
+                                    if (Ext.isString(cls = mixins[key])) {
+                                        dependencies.push(cls);
                                     }
                                 }
-                            }
-                            dependenciesLoaded = true;
-                            if (dependencies.length) {
-                                
-                                
-                                
-                                Ext.require(dependencies, classReady);
-                                return;
-                            }
-                        }
-                        
-                        
-                        
-                        
-                        if (mixinsIsArray) {
-                            for (i = 0 , temp = mixins.length; i < temp; ++i) {
-                                if (Ext.isString(cls = mixins[i])) {
-                                    mixins[i] = Ext.ClassManager.get(cls);
-                                }
-                            }
-                        } else if (mixins) {
-                            for (key in mixins) {
-                                if (Ext.isString(cls = mixins[key])) {
-                                    mixins[key] = Ext.ClassManager.get(cls);
+                            } else {
+                                for (i = 0 , temp = mixins.length; i < temp; ++i) {
+                                    if (Ext.isString(cls = mixins[i])) {
+                                        dependencies.push(cls);
+                                    }
                                 }
                             }
                         }
-                        
-                        
-                        cls = overriddenClassName.$isClass ? overriddenClassName : me.get(overriddenClassName);
-                        
-                        delete data.override;
-                        delete data.compatibility;
-                        delete data.requires;
-                        delete data.uses;
-                        Ext.override(cls, data);
-                        
-                        
-                        
-                        Ext.Loader.history.push(className);
-                        if (uses) {
+                        dependenciesLoaded = true;
+                        if (dependencies.length) {
                             
                             
-                            Ext['Loader'].addUsedClasses(uses);
+                            
+                            Ext.require(dependencies, classReady);
+                            return;
                         }
+                    }
+                    
+                    
+                    
+                    
+                    if (mixinsIsArray) {
+                        for (i = 0 , temp = mixins.length; i < temp; ++i) {
+                            if (Ext.isString(cls = mixins[i])) {
+                                mixins[i] = Ext.ClassManager.get(cls);
+                            }
+                        }
+                    } else if (mixins) {
+                        for (key in mixins) {
+                            if (Ext.isString(cls = mixins[key])) {
+                                mixins[key] = Ext.ClassManager.get(cls);
+                            }
+                        }
+                    }
+                    
+                    
+                    cls = overriddenClassName.$isClass ? overriddenClassName : me.get(overriddenClassName);
+                    
+                    delete data.override;
+                    delete data.compatibility;
+                    delete data.requires;
+                    delete data.uses;
+                    Ext.override(cls, data);
+                    
+                    
+                    
+                    Ext.Loader.history.push(className);
+                    if (uses) {
                         
-                        if (createdFn) {
-                            createdFn.call(cls, cls);
-                        }
-                    };
+                        
+                        
+                        Ext['Loader'].addUsedClasses(uses);
+                    }
+                    
+                    if (createdFn) {
+                        createdFn.call(cls, cls);
+                    }
+                };
                 
                 if (className) {
                     Manager.overrideMap[className] = true;
@@ -10277,7 +10718,7 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
             
             getInstantiator: function(length) {
                 var instantiators = this.instantiators,
-                    instantiator, i, args;
+                    instantiator, args, i;
                 instantiator = instantiators[length];
                 if (!instantiator) {
                     i = length;
@@ -10344,6 +10785,7 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
     
     
     
+    
     Manager.registerPostprocessor('platformConfig', function(name, Class, data) {
         Class.addPlatformConfig(data);
     });
@@ -10352,7 +10794,10 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
     
     Manager.registerPostprocessor('alias', function(name, cls, data) {
         
-        Ext.classSystemMonitor && Ext.classSystemMonitor(name, 'Ext.ClassManager#aliasPostProcessor', arguments);
+        if (Ext.classSystemMonitor) {
+            Ext.classSystemMonitor(name, 'Ext.ClassManager#aliasPostProcessor', arguments);
+        }
+        
         
         var aliases = Ext.Array.from(data.alias),
             i, ln;
@@ -10369,7 +10814,9 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
     
     Manager.registerPostprocessor('singleton', function(name, cls, data, fn) {
         
-        Ext.classSystemMonitor && Ext.classSystemMonitor(name, 'Ext.ClassManager#singletonPostProcessor', arguments);
+        if (Ext.classSystemMonitor) {
+            Ext.classSystemMonitor(name, 'Ext.ClassManager#singletonPostProcessor', arguments);
+        }
         
         if (data.singleton) {
             fn.call(this, name, new cls(), data);
@@ -10382,11 +10829,13 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
     
     
     Manager.registerPostprocessor('alternateClassName', function(name, cls, data) {
-        
-        Ext.classSystemMonitor && Ext.classSystemMonitor(name, 'Ext.ClassManager#alternateClassNamePostprocessor', arguments);
-        
         var alternates = data.alternateClassName,
             i, ln, alternate;
+        
+        if (Ext.classSystemMonitor) {
+            Ext.classSystemMonitor(name, 'Ext.ClassManager#alternateClassNamePostprocessor', arguments);
+        }
+        
         if (!(alternates instanceof Array)) {
             alternates = [
                 alternates
@@ -10405,24 +10854,30 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
     
     
     Manager.registerPostprocessor('debugHooks', function(name, Class, data) {
+        var target;
         
-        Ext.classSystemMonitor && Ext.classSystemMonitor(Class, 'Ext.Class#debugHooks', arguments);
+        if (Ext.classSystemMonitor) {
+            Ext.classSystemMonitor(Class, 'Ext.Class#debugHooks', arguments);
+        }
         if (Ext.isDebugEnabled(Class.$className, data.debugHooks.$enabled)) {
             delete data.debugHooks.$enabled;
             Ext.override(Class, data.debugHooks);
         }
         
         
-        var target = Class.isInstance ? Class.self : Class;
+        target = Class.isInstance ? Class.self : Class;
         delete target.prototype.debugHooks;
     });
     
     Manager.registerPostprocessor('deprecated', function(name, Class, data) {
+        var target;
         
-        Ext.classSystemMonitor && Ext.classSystemMonitor(Class, 'Ext.Class#deprecated', arguments);
+        if (Ext.classSystemMonitor) {
+            Ext.classSystemMonitor(Class, 'Ext.Class#deprecated', arguments);
+        }
         
         
-        var target = Class.isInstance ? Class.self : Class;
+        target = Class.isInstance ? Class.self : Class;
         target.addDeprecations(data.deprecated);
         delete target.prototype.deprecated;
     });
@@ -10456,9 +10911,9 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
                 cls = Manager.get(name);
             }
             
+            
             if (!cls) {
                 
-                Ext.log.warn("[Ext.Loader] Synchronously loading '" + name + "'; consider adding " + "Ext.require('" + name + "') above Ext.onReady");
                 
                 Ext.syncRequire(name);
                 cls = Manager.get(name);
@@ -10515,7 +10970,9 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
         
         define: function(className, data, createdFn) {
             
-            Ext.classSystemMonitor && Ext.classSystemMonitor(className, 'ClassManager#define', arguments);
+            if (Ext.classSystemMonitor) {
+                Ext.classSystemMonitor(className, 'ClassManager#define', arguments);
+            }
             
             if (data.override) {
                 Manager.classState[className] = 20;
@@ -10526,10 +10983,12 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
         },
         
         undefine: function(className) {
-            
-            Ext.classSystemMonitor && Ext.classSystemMonitor(className, 'Ext.ClassManager#undefine', arguments);
-            
             var classes = Manager.classes;
+            
+            if (Ext.classSystemMonitor) {
+                Ext.classSystemMonitor(className, 'Ext.ClassManager#undefine', arguments);
+            }
+            
             
             if (classes[className]) {
                 Manager.classCount--;
@@ -10542,6 +11001,7 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
             
             
             Ext.Factory.clearCaches();
+            
             var entry = Manager.getNamespaceEntry(className),
                 scope = entry.parent ? Manager.lookupName(entry.parent, false) : Ext.global,
                 entryName;
@@ -10602,12 +11062,17 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
         }
         
         
-        Ext.classSystemMonitor && Ext.classSystemMonitor(cls, 'Ext.ClassManager#classNamePreprocessor', arguments);
+        if (Ext.classSystemMonitor) {
+            Ext.classSystemMonitor(cls, 'Ext.ClassManager#classNamePreprocessor', arguments);
+        }
     }, 
     true, 'first');
     Class.registerPreprocessor('alias', function(cls, data) {
         
-        Ext.classSystemMonitor && Ext.classSystemMonitor(cls, 'Ext.ClassManager#aliasPreprocessor', arguments);
+        if (Ext.classSystemMonitor) {
+            Ext.classSystemMonitor(cls, 'Ext.ClassManager#aliasPreprocessor', arguments);
+        }
+        
         
         var prototype = cls.prototype,
             xtypes = arrayFrom(data.xtype),
@@ -10647,7 +11112,9 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
                 mixins = prototype.mixins,
                 key, mixin;
             
-            Ext.classSystemMonitor && Ext.classSystemMonitor(cls, 'Ext.ClassManager#aliasPreprocessor#afterClassCreated', arguments);
+            if (Ext.classSystemMonitor) {
+                Ext.classSystemMonitor(cls, 'Ext.ClassManager#aliasPreprocessor#afterClassCreated', arguments);
+            }
             
             for (key in mixins) {
                 if (mixins.hasOwnProperty(key)) {
@@ -10681,6 +11148,7 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
     ]);
     
     if (Ext.manifest) {
+        
         var manifest = Ext.manifest,
             classes = manifest.classes,
             paths = manifest.paths,
@@ -10721,6 +11189,143 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
 }(Ext.Class, Ext.Function.alias, Array.prototype.slice, Ext.Array.from, Ext.global));
 
 
+
+Ext.define('Ext.mixin.Watchable', {
+    on: function(name, fn, scope) {
+        return this._watchUpdate(false, '_watchAdd', name, fn, scope);
+    },
+    fire: function(event, args) {
+        var me = this,
+            watching = me.watching,
+            watchers = watching && watching[event],
+            fn, i, r, scope;
+        if (watchers) {
+            ++watchers.$firing;
+            for (i = 0; i < watchers.length; ++i) {
+                scope = watchers[i][0];
+                fn = watchers[i][1];
+                if (fn.charAt) {
+                    r = args ? scope[fn].apply(scope, args) : scope[fn]();
+                } else {
+                    r = args ? fn.apply(scope, args) : fn.call(scope);
+                }
+                if (r === false) {
+                    return r;
+                }
+            }
+            --watchers.$firing;
+        }
+    },
+    fireEvent: function() {
+        var args = Ext.Array.slice(arguments),
+            event = args.shift();
+        return this.fire(event, args);
+    },
+    un: function(name, fn, scope) {
+        return this._watchUpdate(true, '_watchRemove', name, fn, scope);
+    },
+    privates: {
+        watching: null,
+        $watchOptions: {
+            destroyable: 1,
+            scope: 1
+        },
+        _watchAdd: function(watching, name, fn, scope, destroyable) {
+            
+            if (typeof fn === 'string' && !scope[fn]) {
+                Ext.raise('No such method "' + fn + '" on ' + scope.$className);
+            }
+            
+            
+            var watchers = watching[name],
+                entry = [
+                    scope,
+                    fn
+                ],
+                i, ent;
+            if (!watchers) {
+                watching[name] = watchers = [];
+                watchers.$firing = 0;
+            } else {
+                
+                for (i = watchers.length; i-- > 0; ) 
+                {
+                    ent = watchers[i];
+                    if (fn === ent[1]) {
+                        if (scope ? ent[0] === scope : !ent[0]) {
+                            return;
+                        }
+                    }
+                }
+                if (watchers.$firing) {
+                    watching[name] = watchers = watchers.slice();
+                    watchers.$firing = 0;
+                }
+            }
+            watchers.push(entry);
+            if (destroyable) {
+                entry.push(name);
+                destroyable.items.push(entry);
+            }
+        },
+        _watchRemove: function(watching, name, fn, scope) {
+            var watchers = watching[name],
+                i;
+            if (watchers) {
+                if (watchers.$firing) {
+                    watching[name] = watchers = watchers.slice();
+                    watchers.$firing = 0;
+                }
+                for (i = watchers.length; i-- > 0; ) 
+                {
+                    if (watchers[i][0] === scope && watchers[i][1] === fn) {
+                        watchers.splice(i, 1);
+                    }
+                }
+            }
+        },
+        _watchUpdate: function(remove, process, name, fn, scope) {
+            var me = this,
+                watch = name,
+                watching = me.watching,
+                destroyable;
+            if (!watching) {
+                if (remove) {
+                    return;
+                }
+                me.watching = watching = {};
+            }
+            if (typeof name === 'string') {
+                me[process](watching, name, fn, scope);
+            } else {
+                destroyable = watch.destroyable ? {
+                    owner: me,
+                    items: [],
+                    destroy: me._watcherDestroyer
+                } : null;
+                scope = watch.scope;
+                for (name in watch) {
+                    if (!me.$watchOptions[name]) {
+                        me[process](watching, name, watch[name], scope, destroyable);
+                    }
+                }
+            }
+            return destroyable;
+        },
+        _watcherDestroyer: function() {
+            var me = this.owner,
+                watching = me.watching,
+                items = this.items,
+                entry, i;
+            for (i = 0; i < items.length; ++i) {
+                entry = items[i];
+                me._watchRemove(watching, entry[2], entry[1], entry[0]);
+            }
+        }
+    }
+});
+
+
 (Ext.env || (Ext.env = {})).Browser = function(userAgent, publish) {
     
     
@@ -10752,6 +11357,7 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
     };
     
     
+    
     if (/Edge\//.test(userAgent)) {
         browserMatch = userAgent.match(edgeRE);
         engineMatch = userAgent.match(edgeRE);
@@ -10773,6 +11379,7 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
     if (engineName === 'Trident' && browserName !== 'IE') {
         browserName = 'IE';
         var version = userAgent.match(/.*rv:(\d+.\d+)/);
+        
         if (version && version.length) {
             version = version[1];
             browserVersion = new Ext.Version(version);
@@ -10781,6 +11388,7 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
     if (browserName && browserVersion) {
         Ext.setVersion(browserName, browserVersion);
     }
+    
     
     
     
@@ -10882,6 +11490,7 @@ Ext.ClassManager = (function(Class, alias, arraySlice, arrayFrom, global) {
         ripple = window.top.ripple;
     } catch (e) {}
     
+    
     this.setFlag('Ripple', !!document.getElementById("tinyhippos-injected") && !Ext.isEmpty(ripple));
     this.setFlag('WebWorks', !!window.blackberry);
     if (window.PhoneGap !== undefined || window.Cordova !== undefined || window.cordova !== undefined) {
@@ -10980,8 +11589,7 @@ Ext.env.Browser.prototype = {
     Ext.userAgent = userAgent.toLowerCase();
     
     Ext.SSL_SECURE_URL = Ext.isSecure && Ext.isIE ? 'javascript:\'\'' : 'about:blank';
-}(
-Ext.global.navigator.userAgent));
+}(Ext.global.navigator.userAgent));
 
 
 Ext.env.OS = function(userAgent, platform, browserScope) {
@@ -11004,6 +11612,8 @@ Ext.env.OS = function(userAgent, platform, browserScope) {
             if (match) {
                 name = names[i];
                 match1 = match[1];
+                
+                
                 
                 
                 if (match1 && match1 === "HTC_") {
@@ -11099,6 +11709,7 @@ Ext.env.OS.prototype = {
     
     Ext.isMac = is.Mac = is.MacOS;
     Ext.isApple = Ext.isMac || Ext.isiOS;
+    
     var search = window.location.search.match(/deviceType=(Tablet|Phone)/),
         nativeDeviceType = window.deviceType;
     
@@ -11125,6 +11736,7 @@ Ext.env.OS.prototype = {
     osEnv.deviceType = deviceType;
     delete OS.prototype.flags;
 }());
+
 
 
 Ext.feature = {
@@ -11218,7 +11830,8 @@ Ext.feature = {
         
         
         
-        div.innerHTML = '<div style="height:30px;width:50px;">' + '<div style="height:20px;width:20px;"></div>' + '</div>' + '<div style="width: 200px; height: 200px; position: relative; padding: 5px;">' + '<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>' + '</div>' + '<div style="position: absolute; left: 10%; top: 10%;"></div>' + '<div style="float:left; background-color:transparent;"></div>';
+        div.innerHTML = '<div style="height:30px;width:50px;">' + '<div style="height:20px;width:20px;"></div>' + '</div>' + '<div style="width: 200px; height: 200px; position: relative; padding: 5px;">' + '<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>' + 
+        '</div>' + '<div style="position: absolute; left: 10%; top: 10%;"></div>' + '<div style="float:left; background-color:transparent;"></div>';
         if (isReady) {
             doc.body.appendChild(div);
         }
@@ -11321,6 +11934,7 @@ Ext.feature = {
             
             name: 'Svg',
             fn: function(doc) {
+                
                 return !!(doc.createElementNS && !!doc.createElementNS("http:/" + "/www.w3.org/2000/svg", "svg").createSVGRect);
             }
         },
@@ -11362,7 +11976,10 @@ Ext.feature = {
             
             name: 'PointerEvents',
             fn: function() {
-                return !!(window.PointerEvent && !Ext.supports.TouchEvents);
+                var pointerEvent = window.PointerEvent,
+                    nav = window.navigator,
+                    pointerEnabled = !!(pointerEvent && (nav.pointerEnabled || !Ext.isIE));
+                return pointerEnabled && !Ext.supports.TouchEvents;
             }
         },
         {
@@ -11488,6 +12105,7 @@ Ext.feature = {
         },
         
         
+        
         {
             
             name: 'CssTransforms',
@@ -11542,8 +12160,8 @@ Ext.feature = {
                 try {
                     
                     
+                    
                     if ('localStorage' in window && window['localStorage'] !== null) {
-                        
                         
                         localStorage.setItem('sencha-localstorage-test', 'test success');
                         
@@ -11564,7 +12182,9 @@ Ext.feature = {
                 
                 if (window.ActiveXObject) {
                     xmlDoc = new ActiveXObject("Microsoft.xmlDOM");
+                    
                     xmlDoc.async = false;
+                    
                     xmlDoc.loadXML(xmlString);
                 } else if (window.DOMParser) {
                     var parser = new DOMParser();
@@ -11584,8 +12204,9 @@ Ext.feature = {
             
             name: 'XHRUploadProgress',
             fn: function() {
+                var xhr;
                 if (window.XMLHttpRequest && !Ext.browser.is.AndroidStock) {
-                    var xhr = new XMLHttpRequest();
+                    xhr = new XMLHttpRequest();
                     return xhr && ('upload' in xhr) && ('onprogress' in xhr.upload);
                 }
                 return false;
@@ -11598,8 +12219,8 @@ Ext.feature = {
                 return !(Ext.browser.is.AndroidStock4 && Ext.os.version.getMinor() < 2);
             }
         },
-        
         {
+            
             name: 'matchesSelector',
             fn: function() {
                 var el = document.documentElement,
@@ -11610,18 +12231,19 @@ Ext.feature = {
                 return el[w3] ? w3 : el[wk] ? wk : el[ms] ? ms : el[mz] ? mz : null;
             }
         },
-        
-        
         {
+            
+            
             name: 'RightMargin',
             ready: true,
             fn: function(doc, div) {
                 var view = doc.defaultView;
+                
                 return !(view && view.getComputedStyle(div.firstChild.firstChild, null).marginRight !== '0px');
             }
         },
-        
         {
+            
             name: 'DisplayChangeInputSelectionBug',
             fn: function() {
                 var webKitVersion = Ext.webKitVersion;
@@ -11629,8 +12251,8 @@ Ext.feature = {
                 return 0 < webKitVersion && webKitVersion < 533;
             }
         },
-        
         {
+            
             name: 'DisplayChangeTextAreaSelectionBug',
             fn: function() {
                 var webKitVersion = Ext.webKitVersion;
@@ -11638,17 +12260,18 @@ Ext.feature = {
                 return 0 < webKitVersion && webKitVersion < 534.24;
             }
         },
-        
         {
+            
             name: 'TransparentColor',
             ready: true,
             fn: function(doc, div, view) {
                 view = doc.defaultView;
+                
                 return !(view && view.getComputedStyle(div.lastChild, null).backgroundColor !== 'transparent');
             }
         },
-        
         {
+            
             name: 'ComputedStyle',
             ready: true,
             fn: function(doc, div, view) {
@@ -11656,15 +12279,15 @@ Ext.feature = {
                 return !!(view && view.getComputedStyle);
             }
         },
-        
         {
+            
             name: 'Float',
             fn: function(doc) {
                 return 'cssFloat' in doc.documentElement.style;
             }
         },
-        
         {
+            
             name: 'CSS3BorderRadius',
             ready: true,
             fn: function(doc) {
@@ -11686,8 +12309,8 @@ Ext.feature = {
                 return pass && !Ext.isIE9;
             }
         },
-        
         {
+            
             name: 'CSS3LinearGradient',
             fn: function(doc, div) {
                 var property = 'background-image:',
@@ -11707,22 +12330,22 @@ Ext.feature = {
                 return (("" + div.style.backgroundImage).indexOf('gradient') !== -1) && !Ext.isIE9;
             }
         },
-        
         {
+            
             name: 'MouseEnterLeave',
             fn: function(doc) {
                 return ('onmouseenter' in doc.documentElement && 'onmouseleave' in doc.documentElement);
             }
         },
-        
         {
+            
             name: 'MouseWheel',
             fn: function(doc) {
                 return ('onmousewheel' in doc.documentElement);
             }
         },
-        
         {
+            
             name: 'Opacity',
             fn: function(doc, div) {
                 
@@ -11734,29 +12357,29 @@ Ext.feature = {
             }
         },
         
-        
         {
+            
             name: 'Placeholder',
             fn: function(doc) {
                 return 'placeholder' in doc.createElement('input');
             }
         },
-        
         {
+            
             name: 'Direct2DBug',
             fn: function(doc) {
                 return Ext.isString(doc.documentElement.style.msTransformOrigin) && Ext.isIE9m;
             }
         },
-        
         {
+            
             name: 'BoundingClientRect',
             fn: function(doc) {
                 return 'getBoundingClientRect' in doc.documentElement;
             }
         },
-        
         {
+            
             name: 'RotatedBoundingClientRect',
             ready: true,
             fn: function(doc) {
@@ -11780,8 +12403,8 @@ Ext.feature = {
                 return supports;
             }
         },
-        
         {
+            
             name: 'ChildContentClearedWhenSettingInnerHTML',
             ready: true,
             fn: function() {
@@ -11807,24 +12430,24 @@ Ext.feature = {
                 return div.childNodes[1].firstChild.offsetHeight === 210;
             }
         },
-        
         {
+            
             name: 'TextAreaMaxLength',
             fn: function(doc) {
                 return ('maxlength' in doc.createElement('textarea'));
             }
         },
-        
-        
         {
+            
+            
             name: 'GetPositionPercentage',
             ready: true,
             fn: function(doc, div) {
                 return Ext.feature.getStyle(div.childNodes[2], 'left') === '10%';
             }
         },
-        
         {
+            
             name: 'PercentageHeightOverflowBug',
             ready: true,
             fn: function(doc) {
@@ -11838,6 +12461,7 @@ Ext.feature = {
                     style.width = '50px';
                     style.overflow = 'auto';
                     style.position = 'absolute';
+                    
                     el.innerHTML = [
                         '<div style="display:table;height:100%;">',
                         
@@ -11846,6 +12470,7 @@ Ext.feature = {
                         '<div style="width:51px;"></div>',
                         '</div>'
                     ].join('');
+                    
                     doc.body.appendChild(el);
                     if (el.firstChild.offsetHeight === 50) {
                         hasBug = true;
@@ -11855,20 +12480,22 @@ Ext.feature = {
                 return hasBug;
             }
         },
-        
         {
+            
             name: 'xOriginBug',
             ready: true,
             fn: function(doc, div) {
+                
                 div.innerHTML = '<div id="b1" style="height:100px;width:100px;direction:rtl;position:relative;overflow:scroll">' + '<div id="b2" style="position:relative;width:100%;height:20px;"></div>' + '<div id="b3" style="position:absolute;width:20px;height:20px;top:0px;right:0px"></div>' + '</div>';
+                
                 var outerBox = document.getElementById('b1').getBoundingClientRect(),
                     b2 = document.getElementById('b2').getBoundingClientRect(),
                     b3 = document.getElementById('b3').getBoundingClientRect();
                 return (b2.left !== outerBox.left && b3.right !== outerBox.right);
             }
         },
-        
         {
+            
             name: 'ScrollWidthInlinePaddingBug',
             ready: true,
             fn: function(doc) {
@@ -11890,19 +12517,20 @@ Ext.feature = {
                 return hasBug;
             }
         },
-        
         {
+            
             name: 'rtlVertScrollbarOnRight',
             ready: true,
             fn: function(doc, div) {
                 div.innerHTML = '<div style="height:100px;width:100px;direction:rtl;overflow:scroll">' + '<div style="width:20px;height:200px;"></div>' + '</div>';
                 var outerBox = div.firstChild,
                     innerBox = outerBox.firstChild;
+                
                 return (innerBox.offsetLeft + innerBox.offsetWidth !== outerBox.offsetLeft + outerBox.offsetWidth);
             }
         },
-        
         {
+            
             name: 'rtlVertScrollbarOverflowBug',
             ready: true,
             fn: function(doc, div) {
@@ -11915,6 +12543,7 @@ Ext.feature = {
                     pos = style.position;
                 
                 style.position = 'absolute';
+                
                 outerBox.offsetHeight;
                 style.position = pos;
                 return outerBox.clientHeight === outerBox.offsetHeight;
@@ -11940,17 +12569,17 @@ Ext.feature = {
                 XMLHttpRequest = function() {
                     
                     try {
+                        
                         return new ActiveXObject('MSXML2.XMLHTTP.3.0');
-                    } 
-                    catch (ex) {
+                    } catch (ex) {
                         return null;
                     }
                 };
                 return false;
             }
         },
-        
         {
+            
             name: 'SpecialKeyDownRepeat',
             fn: function() {
                 return Ext.isWebKit ? parseInt(navigator.userAgent.match(/AppleWebKit\/(\d+)/)[1], 10) >= 525 : !(!(Ext.isGecko || Ext.isIE || Ext.isEdge) || (Ext.isOpera && Ext.operaVersion < 12));
@@ -11958,24 +12587,26 @@ Ext.feature = {
         },
         
         {
+            
             name: 'EmulatedMouseOver',
             fn: function() {
                 
                 return Ext.os.is.iOS;
             }
         },
-        
         {
+            
             
             name: 'Hashchange',
             fn: function() {
+                
                 
                 var docMode = document.documentMode;
                 return 'onhashchange' in window && (docMode === undefined || docMode > 7);
             }
         },
-        
         {
+            
             name: 'FixedTableWidthBug',
             ready: true,
             fn: function() {
@@ -11991,16 +12622,16 @@ Ext.feature = {
                 outer.appendChild(inner);
                 document.body.appendChild(outer);
                 
-                outer.offsetWidth;
                 
+                outer.offsetWidth;
                 outer.style.width = '25px';
                 width = outer.offsetWidth;
                 document.body.removeChild(outer);
                 return width === 50;
             }
         },
-        
         {
+            
             name: 'FocusinFocusoutEvents',
             fn: function() {
                 
@@ -12010,8 +12641,8 @@ Ext.feature = {
                 return !(Ext.isGecko && Ext.firefoxVersion < 52);
             }
         },
-        
         {
+            
             name: 'AsyncFocusEvents',
             fn: function() {
                 
@@ -12020,9 +12651,9 @@ Ext.feature = {
                 return Ext.asyncFocus = !!Ext.isIE;
             }
         },
-        
-        
         {
+            
+            
             name: 'accessibility',
             ready: true,
             fn: function(doc) {
@@ -12107,6 +12738,7 @@ Ext.feature = {
                     width: '50vw'
                 });
                 width = parseInt(window.innerWidth / 2, 10);
+                
                 divWidth = parseInt((window.getComputedStyle ? getComputedStyle(div, null) : div.currentStyle).width, 10);
                 body.removeChild(div);
                 div = null;
@@ -12116,15 +12748,14 @@ Ext.feature = {
         {
             name: 'CSSVariables',
             ready: false,
-            fn: function(doc) {
+            fn: function() {
                 
                 
                 if (!window.getComputedStyle) {
                     return false;
                 }
                 
-                var style = window.getComputedStyle(doc.documentElement);
-                return style.getPropertyValue && !!style.getPropertyValue('--x-supports-variables');
+                return window.CSS && window.CSS.supports && window.CSS.supports('--test-var', 0);
             }
         },
         {
@@ -12148,13 +12779,25 @@ Ext.feature = {
                 return 'scrollSnapType' in style || 'webkitScrollSnapType' in style || 'msScrollSnapType' in style;
             }
         },
-        
         {
+            
             name: 'TranslateYCausesHorizontalScroll',
             ready: true,
             fn: function(doc, div) {
-                div.innerHTML = '<div style="position: relative; overflow: auto; height: 200px; width: 200px;">' + '<div>' + '<div style="transform: translateY(260px); width: 50px;">a</div>' + '</div>' + '</div>';
+                div.innerHTML = '<div style="position: relative; overflow: auto; height: 200px; width: 200px;">' + 
+                '<div>' + '<div style="transform: translateY(260px); width: 50px;">a</div>' + '</div>' + '</div>';
                 return div.firstChild.scrollWidth > div.firstChild.clientWidth;
+            }
+        },
+        {
+            
+            name: 'FlexBoxBasisBug',
+            ready: true,
+            fn: function() {
+                if (Ext.isIE11 || (Ext.os.is.iOS && Ext.os.version.major <= 10) || (Ext.isSafari && Ext.browser.version.isLessThan(11)) || (Ext.os.is.Android && Ext.os.version.isLessThan(6))) {
+                    return true;
+                }
+                return false;
             }
         },
         {
@@ -12218,12 +12861,14 @@ Ext.feature = {
                 try {
                     options = Object.defineProperty({}, 'passive', {
                         get: function() {
+                            
                             supportsPassive = true;
                         }
                     });
                     window.addEventListener('e', null, options);
                     window.removeEventListener('e', null, options);
                 } catch (e) {}
+                
                 return supportsPassive;
             }
         },
@@ -12232,6 +12877,7 @@ Ext.feature = {
             name: 'CSSMinContent',
             ready: true,
             fn: function(doc, div) {
+                
                 
                 
                 
@@ -12257,6 +12903,15 @@ Ext.feature = {
                 return ret;
             }
         },
+        {
+            name: 'inputEventData',
+            ready: false,
+            fn: function() {
+                return !!(window.InputEvent && 'data' in new InputEvent('input'));
+            }
+        },
+        
+        
         0
     ]
 };
@@ -12552,11 +13207,11 @@ Ext.env.Ready = {
                 return scrollable;
             },
             bind: function() {
+                var doc = document,
+                    topContext;
                 if (Ready.bound) {
                     return;
                 }
-                var doc = document,
-                    topContext;
                 
                 try {
                     topContext = window.frameElement === undefined;
@@ -12711,7 +13366,7 @@ Ext.Loader = (new function() {
                 meta = Ext._classPathMetadata,
                 microloader = Ext.Microloader,
                 manifest = Ext.manifest,
-                loadOrder, classes, className, idx, baseUrl, loadlen, l, loadItem;
+                loadOrder, baseUrl, loadlen, l, loadItem;
             
             if (src.indexOf("packages/core/src/") !== -1) {
                 path = path + "../../";
@@ -12750,11 +13405,11 @@ Ext.Loader = (new function() {
         },
         
         setConfig: Ext.Function.flexSetter(function(name, value) {
+            var delegated = delegatedConfigs[name];
             if (name === 'paths') {
                 Loader.setPath(value);
             } else {
                 _config[name] = value;
-                var delegated = delegatedConfigs[name];
                 if (delegated) {
                     Boot.setConfig((delegated === true) ? name : delegated, value);
                 }
@@ -12779,7 +13434,8 @@ Ext.Loader = (new function() {
         },
         
         addBaseUrlClassPathMappings: function(pathConfig) {
-            for (var name in pathConfig) {
+            var name;
+            for (name in pathConfig) {
                 pathConfig[name] = Boot.baseUrl + pathConfig[name];
             }
             Ext.Loader.addClassPathMappings(pathConfig);
@@ -12790,16 +13446,18 @@ Ext.Loader = (new function() {
             return Manager.getPath(className);
         },
         require: function(expressions, fn, scope, excludes) {
+            var classNames;
             if (excludes) {
                 return Loader.exclude(excludes).require(expressions, fn, scope);
             }
-            var classNames = Manager.getNamesByExpression(expressions);
+            classNames = Manager.getNamesByExpression(expressions);
             return Loader.load(classNames, fn, scope);
         },
         syncRequire: function() {
-            var wasEnabled = Loader.syncModeEnabled;
+            var wasEnabled = Loader.syncModeEnabled,
+                ret;
             Loader.syncModeEnabled = true;
-            var ret = Loader.require.apply(Loader, arguments);
+            ret = Loader.require.apply(Loader, arguments);
             Loader.syncModeEnabled = wasEnabled;
             return ret;
         },
@@ -12809,9 +13467,10 @@ Ext.Loader = (new function() {
                         return Loader.load(classNames, fn, scope);
                     },
                     syncRequire: function(classNames, fn, scope) {
-                        var wasEnabled = Loader.syncModeEnabled;
+                        var wasEnabled = Loader.syncModeEnabled,
+                            ret;
                         Loader.syncModeEnabled = true;
-                        var ret = Loader.load(classNames, fn, scope);
+                        ret = Loader.load(classNames, fn, scope);
                         Loader.syncModeEnabled = wasEnabled;
                         return ret;
                     }
@@ -12828,12 +13487,13 @@ Ext.Loader = (new function() {
                 }
                 callback = callback.bind(scope || Ext.global);
             }
+            
             var state = Manager.classState,
                 missingClassNames = [],
                 urls = [],
                 urlByClass = {},
                 numClasses = classNames.length,
-                url, className, i, numMissing;
+                className, i, numMissing;
             for (i = 0; i < numClasses; ++i) {
                 className = Manager.resolveName(classNames[i]);
                 if (!Manager.isCreated(className)) {
@@ -12856,7 +13516,7 @@ Ext.Loader = (new function() {
                     Loader.checkReady();
                 }, Loader, missingClassNames);
                 if (!_config.enabled) {
-                    Ext.raise("Ext.Loader is not enabled, so dependencies cannot be resolved dynamically. " + "Missing required class" + ((missingClassNames.length > 1) ? "es" : "") + ": " + missingClassNames.join(', '));
+                    Ext.raise("Ext.Loader is not enabled, so dependencies cannot be resolved " + "dynamically. Missing required class" + ((missingClassNames.length > 1) ? "es" : "") + ": " + missingClassNames.join(', '));
                 }
                 if (urls.length) {
                     Loader.loadScripts({
@@ -12959,26 +13619,28 @@ Ext.Loader = (new function() {
         
         
         reportMissingClasses: function() {
+            var missingQueue = Loader.missingQueue,
+                missingClasses = [],
+                missingPaths = [],
+                missingClassName;
             if (!Loader.syncModeEnabled && !Loader.scriptsLoading && Loader.isLoading && !Loader.hasFileLoadError) {
-                var missingQueue = Loader.missingQueue,
-                    missingClasses = [],
-                    missingPaths = [];
-                for (var missingClassName in missingQueue) {
+                for (missingClassName in missingQueue) {
                     missingClasses.push(missingClassName);
                     missingPaths.push(missingQueue[missingClassName]);
                 }
                 if (missingClasses.length) {
-                    throw new Error("The following classes are not declared even if their files have been " + "loaded: '" + missingClasses.join("', '") + "'. Please check the source code of their " + "corresponding files for possible typos: '" + missingPaths.join("', '"));
+                    throw new Error("The following classes are not declared even if their files " + "have been loaded: '" + missingClasses.join("', '") + "'. Please check the source code of their " + "corresponding files for possible typos: '" + missingPaths.join("', '"));
                 }
             }
         },
         
         
         onReady: function(fn, scope, withDomReady, options) {
+            var listener;
             if (withDomReady) {
                 Ready.on(fn, scope, options);
             } else {
-                var listener = Ready.makeListener(fn, scope, options);
+                listener = Ready.makeListener(fn, scope, options);
                 if (Loader.isLoading) {
                     readyListeners.push(listener);
                 } else {
@@ -13116,8 +13778,8 @@ Ext.Loader = (new function() {
         checkMissingQueue: function() {
             var missingQueue = Loader.missingQueue,
                 newQueue = {},
-                name,
-                missing = 0;
+                missing = 0,
+                name;
             for (name in missingQueue) {
                 
                 
@@ -13147,9 +13809,10 @@ Ext.Loader = (new function() {
                 
                 
                 Ext.defer(function() {
+                    var name;
                     if (!Loader.scriptsLoading && Loader.missingCount) {
                         Ext.log.error('[Loader] The following classes failed to load:');
-                        for (var name in Loader.missingQueue) {
+                        for (name in Loader.missingQueue) {
                             Ext.log.error('[Loader] ' + name + ' from ' + Loader.missingQueue[name]);
                         }
                     }
@@ -13168,7 +13831,9 @@ Ext.Loader = (new function() {
     
     Class.registerPreprocessor('loader', function(cls, data, hooks, continueFn) {
         
-        Ext.classSystemMonitor && Ext.classSystemMonitor(cls, 'Ext.Loader#loaderPreprocessor', arguments);
+        if (Ext.classSystemMonitor) {
+            Ext.classSystemMonitor(cls, 'Ext.Loader#loaderPreprocessor', arguments);
+        }
         
         
         var me = this,
@@ -13209,6 +13874,7 @@ Ext.Loader = (new function() {
             _requiresMap[className] = dependencies;
         }
         
+        
         var manifestClasses = Ext.manifest && Ext.manifest.classes,
             deadlockPath = [],
             detectDeadlock;
@@ -13220,12 +13886,12 @@ Ext.Loader = (new function() {
                 (requiredMap[dependency] || (requiredMap[dependency] = [])).push(className);
             }
             detectDeadlock = function(cls) {
-                deadlockPath.push(cls);
                 var requires = _requiresMap[cls],
                     dep, i, ln;
+                deadlockPath.push(cls);
                 if (requires) {
                     if (Ext.Array.contains(requires, className)) {
-                        Ext.Error.raise("Circular requirement detected! '" + className + "' and '" + deadlockPath[1] + "' mutually require each other. Path: " + deadlockPath.join(' -> ') + " -> " + deadlockPath[0]);
+                        Ext.Error.raise("Circular requirement detected! '" + className + "' and '" + deadlockPath[1] + "' mutually require each other. " + "Path: " + deadlockPath.join(' -> ') + " -> " + deadlockPath[0]);
                     }
                     for (i = 0 , ln = requires.length; i < ln; i++) {
                         dep = requires[i];
@@ -13239,6 +13905,7 @@ Ext.Loader = (new function() {
         }
         
         (className ? Loader.exclude(className) : Loader).require(dependencies, function() {
+            var i, ln, j, subLn, k;
             for (i = 0 , ln = dependencyProperties.length; i < ln; i++) {
                 propertyName = dependencyProperties[i];
                 if (data.hasOwnProperty(propertyName)) {
@@ -13253,7 +13920,7 @@ Ext.Loader = (new function() {
                             }
                         }
                     } else if (typeof propertyValue !== 'function') {
-                        for (var k in propertyValue) {
+                        for (k in propertyValue) {
                             if (propertyValue.hasOwnProperty(k)) {
                                 value = propertyValue[k];
                                 if (typeof value === 'string') {
@@ -13270,12 +13937,13 @@ Ext.Loader = (new function() {
     }, true, 'after', 'className');
     
     Manager.registerPostprocessor('uses', function(name, cls, data) {
-        
-        Ext.classSystemMonitor && Ext.classSystemMonitor(cls, 'Ext.Loader#usesPostprocessor', arguments);
-        
-        
         var uses = data.uses,
             classNames;
+        
+        if (Ext.classSystemMonitor) {
+            Ext.classSystemMonitor(cls, 'Ext.Loader#usesPostprocessor', arguments);
+        }
+        
         if (uses) {
             classNames = Manager.getNamesByExpression(data.uses);
             Loader.addUsedClasses(classNames);
@@ -13298,6 +13966,7 @@ if (Ext._beforereadyhandler) {
 
 Ext.define('Ext.Mixin', function(Mixin) {
     return {
+        
         statics: {
             addHook: function(hookFn, targetClass, methodName, mixinClassPrototype) {
                 var isFunc = Ext.isFunction(hookFn),
@@ -13328,7 +13997,8 @@ Ext.define('Ext.Mixin', function(Mixin) {
                 hooks = data.xhooks,
                 superclass = cls.superclass,
                 onClassMixedIn = data.onClassMixedIn,
-                parentMixinConfig, befores, afters, extended;
+                afterClassMixedIn = data.afterClassMixedIn,
+                afters, befores, configs, extended, mixed, parentMixinConfig;
             if (hooks) {
                 
                 delete data.xhooks;
@@ -13351,12 +14021,14 @@ Ext.define('Ext.Mixin', function(Mixin) {
                     Ext.raise('Use of "afterHooks" is deprecated - use "after" instead');
                 }
                 
-                befores = mixinConfig.before;
                 afters = mixinConfig.after;
-                hooks = mixinConfig.on;
+                befores = mixinConfig.before;
+                configs = mixinConfig.configs;
                 extended = mixinConfig.extended;
+                hooks = mixinConfig.on;
+                mixed = mixinConfig.mixed;
             }
-            if (befores || afters || hooks || extended) {
+            if (afters || befores || hooks || extended) {
                 
                 data.onClassMixedIn = function(targetClass) {
                     var mixin = this.prototype,
@@ -13364,7 +14036,7 @@ Ext.define('Ext.Mixin', function(Mixin) {
                         key;
                     if (befores) {
                         Ext.Object.each(befores, function(key, value) {
-                            targetClass.addMember(key, function() {
+                            targetClass.hookMember(key, function() {
                                 if (mixin[value].apply(this, arguments) !== false) {
                                     return this.callParent(arguments);
                                 }
@@ -13373,7 +14045,7 @@ Ext.define('Ext.Mixin', function(Mixin) {
                     }
                     if (afters) {
                         Ext.Object.each(afters, function(key, value) {
-                            targetClass.addMember(key, function() {
+                            targetClass.hookMember(key, function() {
                                 var ret = this.callParent(arguments);
                                 mixin[value].apply(this, arguments);
                                 return ret;
@@ -13397,9 +14069,36 @@ Ext.define('Ext.Mixin', function(Mixin) {
                     }
                 };
             }
+            if (configs || mixed) {
+                data.afterClassMixedIn = function(targetClass) {
+                    if (configs) {
+                        
+                        var proto = targetClass.prototype,
+                            hoistable = this.$config.configs,
+                            cfg, name, hoist;
+                        for (name in proto) {
+                            cfg = hoistable[name];
+                            if (cfg && cfg.isConfig && proto.hasOwnProperty(name)) {
+                                (hoist || (hoist = {}))[name] = proto[name];
+                                delete proto[name];
+                            }
+                        }
+                        if (hoist) {
+                            targetClass.$config.add(hoist);
+                        }
+                    }
+                    if (afterClassMixedIn) {
+                        afterClassMixedIn.apply(this, arguments);
+                    }
+                    if (mixed) {
+                        mixed.apply(this, arguments);
+                    }
+                };
+            }
         }
     };
 });
+
 
 
 
@@ -13412,7 +14111,11 @@ Ext.util.DelayedTask = function(fn, scope, args, cancelOnDelay, fireIdleEvent) {
         call = function() {
             me.id = null;
             if (!(scope && scope.destroyed)) {
-                args ? fn.apply(scope, args) : fn.call(scope);
+                if (args) {
+                    fn.apply(scope, args);
+                } else {
+                    fn.call(scope);
+                }
             }
             if (fireIdleEvent === false) {
                 Ext._suppressIdle = true;
@@ -13468,11 +14171,12 @@ Ext.util.DelayedTask = function(fn, scope, args, cancelOnDelay, fireIdleEvent) {
         }
     };
     me.flush = function() {
+        var was;
         if (me.id) {
             me.cancel();
             
             
-            var was = fireIdleEvent;
+            was = fireIdleEvent;
             fireIdleEvent = true;
             call();
             fireIdleEvent = was;
@@ -13540,6 +14244,7 @@ Ext.define('Ext.util.Event', function() {
                         
                         
                         
+                        
                         for (i = (isNegativePriority ? highestNegativePriorityIndex : 0); i < length; i++) {
                             
                             listenerPriority = listeners[i].o ? listeners[i].o.priority || 0 : 0;
@@ -13599,7 +14304,8 @@ Ext.define('Ext.util.Event', function() {
         },
         createListener: function(fn, scope, o, caller, manager) {
             var me = this,
-                namedScope = Ext._namedScopes[scope],
+                namedScopes = Ext._namedScopes,
+                namedScope = namedScopes[scope],
                 listener = {
                     fn: fn,
                     scope: scope,
@@ -13613,6 +14319,17 @@ Ext.define('Ext.util.Event', function() {
                 handler = fn,
                 wrapped = false,
                 type;
+            if (listener.lateBound && fn[2] === '.') {
+                
+                if (fn.substr(0, 2) !== 'up') {
+                    Ext.raise('Invalid listener method: ' + fn);
+                }
+                
+                listener.defaultScope = null;
+                listener.namedScope = namedScopes[listener.scope = scope = 'up'];
+                listener.fn = handler = fn.substr(3);
+            }
+            
             
             
             if (o) {
@@ -13658,6 +14375,7 @@ Ext.define('Ext.util.Event', function() {
             while (i--) {
                 listener = listeners[i];
                 if (listener) {
+                    
                     
                     if (listener.fn === fn && listener.scope == scope) {
                         return i;
@@ -13731,6 +14449,7 @@ Ext.define('Ext.util.Event', function() {
                         }
                     }
                     if (observable.isElement) {
+                        
                         observable._getPublisher(eventName, options.translate === false).unsubscribe(observable, eventName, options.delegated !== false, options.capture);
                     }
                 }
@@ -13816,6 +14535,7 @@ Ext.define('Ext.util.Event', function() {
                         }
                         
                         
+                        
                         Ext.EventObject = e;
                     }
                     firingArgs = args;
@@ -13823,6 +14543,7 @@ Ext.define('Ext.util.Event', function() {
                         delegate = options.delegate;
                         if (delegate) {
                             if (isElement) {
+                                
                                 
                                 
                                 delegateEl = e.getTarget(typeof delegate === 'function' ? delegate : '#' + e.currentTarget.id + ' ' + delegate);
@@ -13836,7 +14557,9 @@ Ext.define('Ext.util.Event', function() {
                                     
                                     continue;
                                 }
-                            } else if (isComponent && !CQ.is(firingObservable, delegate, observable)) {
+                            }
+                            
+                            else if (isComponent && !CQ.is(firingObservable, delegate, observable)) {
                                 
                                 continue;
                             }
@@ -13909,7 +14632,7 @@ Ext.define('Ext.util.Event', function() {
                 fireFn = listener.fireFn,
                 scope = listener.scope,
                 namedScope = listener.namedScope,
-                fn;
+                fn, origin;
             
             
             if (!fromWrapped && listener.wrapped) {
@@ -13920,14 +14643,18 @@ Ext.define('Ext.util.Event', function() {
             
             var name = fn;
             
+            
             if (listener.lateBound) {
                 
-                if (!scope || namedScope) {
+                origin = listener.caller || observable;
+                if (namedScope && namedScope.isUp) {
+                    scope = Ext.lookUpFn(origin, fn);
+                } else if (!scope || namedScope) {
                     
                     
                     
                     
-                    scope = (listener.caller || observable).resolveListenerScope(listener.defaultScope);
+                    scope = origin.resolveListenerScope(listener.defaultScope);
                 }
                 
                 if (!scope) {
@@ -13978,12 +14705,13 @@ Ext.define('Ext.util.Event', function() {
         },
         createTargeted: function(handler, listener, o, scope, wrapped) {
             return function() {
+                var fireInfo;
                 if (o.target === arguments[0]) {
-                    var fireInfo;
                     if (!wrapped) {
                         fireInfo = listener.ev.getFireInfo(listener, true);
                         handler = fireInfo.fn;
                         scope = fireInfo.scope;
+                        
                         
                         fireInfo.fn = fireInfo.scope = null;
                     }
@@ -13994,13 +14722,13 @@ Ext.define('Ext.util.Event', function() {
         createBuffered: function(handler, listener, o, scope, wrapped) {
             listener.task = new Ext.util.DelayedTask();
             return function() {
+                var fireInfo;
                 
                 
                 
                 if (listener.task) {
-                    var fireInfo;
                     
-                    if (Ext.Timer.track) {
+                    if (Ext._unitTesting) {
                         o.$delayedTask = listener.task;
                     }
                     
@@ -14009,6 +14737,7 @@ Ext.define('Ext.util.Event', function() {
                         fireInfo = listener.ev.getFireInfo(listener, true);
                         handler = fireInfo.fn;
                         scope = fireInfo.scope;
+                        
                         
                         fireInfo.fn = fireInfo.scope = null;
                     }
@@ -14032,7 +14761,7 @@ Ext.define('Ext.util.Event', function() {
                 }
                 listener.tasks.push(task);
                 
-                if (Ext.Timer.track) {
+                if (Ext._unitTesting) {
                     o.$delayedTask = task;
                 }
                 
@@ -14072,63 +14801,82 @@ Ext.define('Ext.util.Event', function() {
 
 
 
-Ext.define('Ext.mixin.Identifiable', {
-    statics: {
-        uniqueIds: {}
-    },
-    isIdentifiable: true,
-    mixinId: 'identifiable',
-    idCleanRegex: /\.|[^\w\-]/g,
-    defaultIdPrefix: 'ext-',
-    defaultIdSeparator: '-',
-    getOptimizedId: function() {
-        return this.id;
-    },
-    getUniqueId: function() {
-        var id = this.id,
-            prototype, separator, xtype, uniqueIds, prefix;
+
+Ext.define('Ext.mixin.Identifiable', function(Identifiable) {
+    return {
         
-        if (!(id || id === 0)) {
-            prototype = this.self.prototype;
-            separator = this.defaultIdSeparator;
-            uniqueIds = Ext.mixin.Identifiable.uniqueIds;
-            if (!prototype.hasOwnProperty('identifiablePrefix')) {
-                xtype = this.xtype;
-                if (xtype) {
-                    prefix = this.defaultIdPrefix + xtype.replace(this.idCleanRegex, separator) + separator;
-                } else if (!(prefix = prototype.$className)) {
-                    prefix = this.defaultIdPrefix + 'anonymous' + separator;
+        
+        isIdentifiable: true,
+        mixinId: 'identifiable',
+        
+        getId: function() {
+            var me = this,
+                id = me.id,
+                cfg;
+            if (!(id || id === 0)) {
+                cfg = me.initialConfig;
+                
+                
+                if (cfg && cfg.id) {
+                    id = cfg.id;
                 } else {
-                    prefix = prefix.replace(this.idCleanRegex, separator).toLowerCase() + separator;
+                    id = me.generateAutoId();
+                    me.autoGenId = true;
                 }
-                prototype.identifiablePrefix = prefix;
+                me.setId(id);
             }
-            prefix = this.identifiablePrefix;
-            if (!uniqueIds.hasOwnProperty(prefix)) {
-                uniqueIds[prefix] = 0;
+            me.getId = Identifiable._getId;
+            return id;
+        },
+        setId: function(id) {
+            
+            
+            
+            
+            this.id = this.id = id;
+        },
+        privates: {
+            statics: {
+                _idCleanRe: /\.|[^\w-]/g,
+                uniqueIds: {},
+                _getId: function() {
+                    return this.id;
+                }
+            },
+            defaultIdPrefix: 'ext-',
+            defaultIdSeparator: '-',
+            id: null,
+            
+            autoGenId: false,
+            generateAutoId: function() {
+                var me = this,
+                    prototype = me.self.prototype,
+                    sep = me.defaultIdSeparator,
+                    uniqueIds = Identifiable.uniqueIds,
+                    cleanRe, defaultIdPrefix, prefix, xtype;
+                if (!prototype.hasOwnProperty('identifiablePrefix')) {
+                    cleanRe = Identifiable._idCleanRe;
+                    defaultIdPrefix = me.defaultIdPrefix;
+                    xtype = me.xtype;
+                    if (xtype) {
+                        prefix = defaultIdPrefix + xtype.replace(cleanRe, sep) + sep;
+                    } else if (!(prefix = prototype.$className)) {
+                        prefix = defaultIdPrefix + 'anonymous' + sep;
+                    } else {
+                        prefix = prefix.replace(cleanRe, sep).toLowerCase() + sep;
+                    }
+                    prototype.identifiablePrefix = prefix;
+                }
+                prefix = me.identifiablePrefix;
+                if (!uniqueIds.hasOwnProperty(prefix)) {
+                    uniqueIds[prefix] = 0;
+                }
+                return prefix + (++uniqueIds[prefix]);
             }
-            
-            
-            
-            id = this.id = this.id = prefix + (++uniqueIds[prefix]);
         }
-        this.getUniqueId = this.getOptimizedId;
-        return id;
-    },
-    setId: function(id) {
-        
-        this.id = this.id = id;
-    },
-    
-    getId: function() {
-        var id = this.id;
-        if (!id) {
-            id = this.getUniqueId();
-        }
-        this.getId = this.getOptimizedId;
-        return id;
-    }
+    };
 });
+
 
 
 
@@ -14170,7 +14918,7 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
         if (elementName) {
             
             if (Ext.Array.indexOf(observable.referenceList, elementName) === -1) {
-                Ext.Logger.error("Destroying event listener with an invalid element reference of '" + elementName + "' for this component. Available values are: '" + observable.referenceList.join("', '") + "'", observable);
+                Ext.Logger.error("Destroying event listener with an invalid element reference " + "of '" + elementName + "' for this component. Available values are: '" + observable.referenceList.join("', '") + "'", observable);
             }
             
             observable = observable[elementName];
@@ -14241,7 +14989,7 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
                     target = data || T.prototype,
                     targetListeners = target.listeners,
                     superListeners = mixin ? mixin.listeners : T.superclass.self.listeners,
-                    name, scope, namedScope, i, len;
+                    scope, namedScope, i, len;
                 
                 
                 
@@ -14277,6 +15025,7 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
                     target.listeners = null;
                 }
                 if (!T.HasListeners) {
+                    
                     
                     
                     
@@ -14409,8 +15158,8 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
         
         addManagedListener: function(item, ename, fn, scope, options, noDestroy) {
             var me = this,
-                managedListeners = me.managedListeners = me.managedListeners || [],
                 config, passedOptions;
+            me.managedListeners = me.managedListeners || [];
             if (typeof ename !== 'string') {
                 
                 
@@ -14424,6 +15173,7 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
                         if (!item.$eventOptions[ename]) {
                             
                             
+                            
                             me.addManagedListener(item, ename, config.fn || config, config.scope || options.scope || scope, config.fn ? config : passedOptions, true);
                         }
                     }
@@ -14434,6 +15184,7 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
             } else {
                 if (fn !== emptyFn) {
                     item.doAddListener(ename, fn, scope, options, null, me, me);
+                    
                     
                     if (!noDestroy && options && options.destroyable) {
                         return new ListenerRemover(me, item, ename, fn, scope);
@@ -14476,7 +15227,7 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
             if (namedScope) {
                 
                 if (namedScope.isController) {
-                    Ext.raise('scope: "controller" can only be specified on classes that derive from Ext.Component or Ext.Widget');
+                    Ext.raise('scope: "controller" can only be specified on classes ' + 'that derive from Ext.Component or Ext.Widget');
                 }
                 
                 if (namedScope.isSelf || namedScope.isThis) {
@@ -14487,12 +15238,13 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
         },
         
         fireEventArgs: function(eventName, args) {
-            eventName = Ext.canonicalEventName(eventName);
             var me = this,
                 
                 events = me.events,
-                event = events && events[eventName],
-                ret = true;
+                ret = true,
+                event;
+            eventName = Ext.canonicalEventName(eventName);
+            event = events && events[eventName];
             
             
             if (me.hasListeners[eventName]) {
@@ -14523,7 +15275,6 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
                     fn = me.fn,
                     scope = me.scope,
                     fnArgs = me.fnArgs,
-                    owner = me.owner,
                     args, ret;
                 if (!--me._paused) {
                     if (fn) {
@@ -14730,7 +15481,7 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
         
         purgeListeners: function() {
             if (Ext.global.console) {
-                Ext.global.console.warn('Observable: purgeListeners has been deprecated. Please use clearListeners.');
+                Ext.global.console.warn('Observable: purgeListeners has been deprecated. ' + 'Please use clearListeners.');
             }
             return this.clearListeners.apply(this, arguments);
         },
@@ -14741,6 +15492,7 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
                 managedListeners = me.managedListeners,
                 i, len;
             if (managedListeners) {
+                
                 
                 
                 me.managedListeners = null;
@@ -14767,7 +15519,7 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
         
         purgeManagedListeners: function() {
             if (Ext.global.console) {
-                Ext.global.console.warn('Observable: purgeManagedListeners has been deprecated. Please use clearManagedListeners.');
+                Ext.global.console.warn('Observable: purgeManagedListeners has been deprecated. ' + 'Please use clearManagedListeners.');
             }
             return this.clearManagedListeners.apply(this, arguments);
         },
@@ -14865,6 +15617,7 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
             
             
             
+            
             me.mon(origin, relayers, null, null, undefined);
             
             return new ListenerRemover(me, origin, relayers);
@@ -14873,14 +15626,16 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
         createRelayer: function(newName, beginEnd) {
             var me = this;
             return function() {
+                
                 return me.fireEventArgs.call(me, newName, beginEnd ? arraySlice.apply(arguments, beginEnd) : arguments);
             };
         },
         
         enableBubble: function(eventNames) {
             if (eventNames) {
+                
                 var me = this,
-                    names = (typeof eventNames == 'string') ? arguments : eventNames,
+                    names = (typeof eventNames === 'string') ? arguments : eventNames,
                     
                     events = me.events,
                     length = events && names.length,
@@ -14984,6 +15739,7 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
                     if (event.addListener(fn, scope, options, caller, manager)) {
                         
                         
+                        
                         me.hasListeners._incr_(ename);
                         ret = true;
                     }
@@ -15027,8 +15783,8 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
         proto = Observable.prototype,
         HasListeners = function() {},
         prepareMixin = function(T) {
+            var proto = T.prototype;
             if (!T.HasListeners) {
-                var proto = T.prototype;
                 
                 
                 proto.$observableMixedIn = 1;
@@ -15038,7 +15794,9 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
                 
                 T.onExtended(function(U, data) {
                     
-                    Ext.classSystemMonitor && Ext.classSystemMonitor('extend mixin', arguments);
+                    if (Ext.classSystemMonitor) {
+                        Ext.classSystemMonitor('extend mixin', arguments);
+                    }
                     
                     Observable.prepareClass(U, null, data);
                 });
@@ -15124,7 +15882,7 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
                     fn = scope[fn];
                 }
                 if ((v = fn.apply(scope, args)) !== undefined) {
-                    if (typeof v == 'object') {
+                    if (typeof v === 'object') {
                         if (v.returnValue !== undefined) {
                             returnValue = v.returnValue;
                         } else {
@@ -15198,12 +15956,14 @@ Ext.define('Ext.mixin.Observable', function(Observable) {
             var e = getMethodEvent.call(this, method),
                 i, len;
             for (i = 0 , len = e.before.length; i < len; i++) {
+                
                 if (e.before[i].fn == fn && e.before[i].scope == scope) {
                     Ext.Array.erase(e.before, i, 1);
                     return;
                 }
             }
             for (i = 0 , len = e.after.length; i < len; i++) {
+                
                 if (e.after[i].fn == fn && e.after[i].scope == scope) {
                     Ext.Array.erase(e.after, i, 1);
                     return;
@@ -15341,6 +16101,7 @@ Ext.define('Ext.util.HashMap', {
     
     clear: function(initial) {
         
+        
         var me = this;
         
         if (initial || me.generation) {
@@ -15431,7 +16192,6 @@ Ext.define('Ext.util.HashMap', {
 
 
 Ext.define('Ext.AbstractManager', {
-    
     typeName: 'type',
     constructor: function(config) {
         Ext.apply(this, config || {});
@@ -15448,7 +16208,7 @@ Ext.define('Ext.AbstractManager', {
         
         var key = this.all.getKey(item);
         if (key === undefined) {
-            Ext.raise('Key is undefined. Please ensure the item has a key before registering the item.');
+            Ext.raise('Key is undefined. Please ensure the item has a key ' + 'before registering the item.');
         }
         if (this.all.containsKey(key)) {
             Ext.raise('Registering duplicate id "' + key + '" with ' + this.$className);
@@ -15489,7 +16249,7 @@ Ext.define('Ext.AbstractManager', {
             fn.call(scope || item, item);
         } else {
             callback = function(map, key, item) {
-                if (key == id) {
+                if (key === id) {
                     fn.call(scope || item, item);
                     all.un('add', callback);
                 }
@@ -15509,8 +16269,14 @@ Ext.define('Ext.AbstractManager', {
 
 
 
+
+
+
+
+
 Ext.define('Ext.promise.Consequence', function(Consequence) {
     return {
+        
         
         promise: null,
         
@@ -15595,6 +16361,7 @@ Ext.define('Ext.promise.Consequence', function(Consequence) {
     };
 }, 
 function(Consequence) {
+    
     Consequence.dispatch.$skipTimerCheck = true;
 });
 
@@ -15707,6 +16474,7 @@ Ext.define('Ext.promise.Deferred', {
 
 Ext.define('Ext.promise.Promise', function(ExtPromise) {
     var Deferred;
+    
     return {
         statics: {
             
@@ -15759,14 +16527,14 @@ Ext.define('Ext.promise.Promise', function(ExtPromise) {
             },
             
             race: function(promises) {
+                var deferred = new Deferred(),
+                    len = promises.length,
+                    i;
                 
                 if (!Ext.isArray(promises)) {
                     Ext.raise('Invalid parameter: expected an Array.');
                 }
                 
-                var deferred = new Deferred(),
-                    len = promises.length,
-                    i;
                 for (i = 0; i < len; ++i) {
                     deferred.resolve(promises[i]);
                 }
@@ -15832,6 +16600,7 @@ Ext.define('Ext.promise.Promise', function(ExtPromise) {
             return this['catch'].apply(this, arguments);
         },
         
+        
         always: function(onCompleted, scope) {
             var ref;
             if (arguments.length === 1 && Ext.isObject(arguments[0])) {
@@ -15889,6 +16658,7 @@ Ext.define('Ext.promise.Promise', function(ExtPromise) {
 
 
 Ext.define('Ext.Promise', function() {
+    
     var Polyfiller;
     return {
         statics: {
@@ -15934,8 +16704,21 @@ Ext.define('Ext.Promise', function() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 Ext.define('Ext.Deferred', function(Deferred) {
+    
     var ExtPromise, rejected, resolved, when;
+    
     return {
         extend: Ext.promise.Deferred,
         statics: {
@@ -16050,10 +16833,11 @@ Ext.define('Ext.Deferred', function(Deferred) {
             },
             
             parallel: function(fns, scope) {
+                var args;
                 if (scope == null) {
                     scope = null;
                 }
-                var args = Ext.Array.slice(arguments, 2);
+                args = Ext.Array.slice(arguments, 2);
                 return Deferred.map(fns, function(fn) {
                     if (!Ext.isFunction(fn)) {
                         throw new Error('Invalid parameter: expected a function.');
@@ -16079,6 +16863,7 @@ Ext.define('Ext.Deferred', function(Deferred) {
             },
             
             reduce: function(values, reduceFn, initialValue) {
+                var initialValueSpecified;
                 
                 if (!(Ext.isArray(values) || ExtPromise.is(values))) {
                     Ext.raise('Invalid parameter: expected an Array or Promise of an Array.');
@@ -16087,7 +16872,7 @@ Ext.define('Ext.Deferred', function(Deferred) {
                     Ext.raise('Invalid parameter: expected a function.');
                 }
                 
-                var initialValueSpecified = arguments.length === 3;
+                initialValueSpecified = arguments.length === 3;
                 return Deferred.resolved(values).then(function(promisesOrValues) {
                     var reduceArguments = [
                             promisesOrValues,
@@ -16119,10 +16904,11 @@ Ext.define('Ext.Deferred', function(Deferred) {
             },
             
             sequence: function(fns, scope) {
+                var args;
                 if (scope == null) {
                     scope = null;
                 }
-                var args = Ext.Array.slice(arguments, 2);
+                args = Ext.Array.slice(arguments, 2);
                 return Deferred.reduce(fns, function(results, fn) {
                     if (!Ext.isFunction(fn)) {
                         throw new Error('Invalid parameter: expected a function.');
@@ -16630,7 +17416,6 @@ Ext.define('Ext.data.flash.BinaryXhr', {
             var connection;
             
             connection = this.liveConnections[Number(javascriptId)];
-            
             if (connection) {
                 connection.onFlashStateChange(state, data);
             } else 
@@ -16650,6 +17435,7 @@ Ext.define('Ext.data.flash.BinaryXhr', {
         injectFlashPlugin: function() {
             var me = this,
                 flashLoaderPath, flashObjectPath;
+            
             
             
             
@@ -16687,31 +17473,35 @@ Ext.define('Ext.data.flash.BinaryXhr', {
                 '../../plugins/flash/FlashPlugin.swf'
             ].join('/');
             
+            
             if (Ext.flashPluginPath) {
                 flashObjectPath = Ext.flashPluginPath;
             }
-            
             Ext.Loader.loadScript({
                 url: flashLoaderPath,
                 onLoad: function() {
                     
-                    var swfVersionStr = "11.4.0";
                     
-                    var xiSwfUrlStr = "playerProductInstall.swf";
-                    var flashvars = {};
-                    var params = {};
+                    
+                    
+                    var swfVersionStr = "11.4.0",
+                        xiSwfUrlStr = "playerProductInstall.swf",
+                        flashvars = {},
+                        params = {},
+                        attributes = {};
                     params.quality = "high";
                     params.bgcolor = "#ffffff";
                     params.allowscriptaccess = "sameDomain";
                     params.allowfullscreen = "true";
-                    var attributes = {};
                     attributes.id = "ext-flash-polyfill";
                     attributes.name = "polyfill";
                     attributes.align = "middle";
+                    
                     swfobject.embedSWF(flashObjectPath, "ext-flash-polyfill", "0", "0", 
                     swfVersionStr, xiSwfUrlStr, flashvars, params, attributes);
                 },
                 onError: function() {
+                    
                     
                     Ext.raise("Could not load flash-loader file swfobject.js from " + flashLoader);
                 },
@@ -16733,11 +17523,11 @@ Ext.define('Ext.data.flash.BinaryXhr', {
     javascriptId: null,
     
     constructor: function(config) {
+        var me = this;
         
         if (!Ext.data.flash.BinaryXhr.flashPluginInjected) {
             Ext.data.flash.BinaryXhr.injectFlashPlugin();
         }
-        var me = this;
         Ext.apply(me, config);
         me.requestHeaders = {};
     },
@@ -16745,7 +17535,7 @@ Ext.define('Ext.data.flash.BinaryXhr', {
     abort: function() {
         var me = this;
         
-        if (me.readyState == 4) {
+        if (me.readyState === 4) {
             
             Ext.warn.log("Aborting a connection that's completed its transfer: " + this.url);
             
@@ -16758,6 +17548,7 @@ Ext.define('Ext.data.flash.BinaryXhr', {
             Ext.GlobalEvents.removeListener("flashready", me.onFlashReady, me);
             return;
         }
+        
         
         Ext.data.flash.BinaryXhr.flashPlugin.abortRequest(me.javascriptId);
         
@@ -16777,18 +17568,19 @@ Ext.define('Ext.data.flash.BinaryXhr', {
         return (headers && headers[header]) || null;
     },
     
-    open: function(method, url, async, user, password) {
+    open: function(method, url, isAsync, user, password) {
         var me = this;
         me.method = method;
         me.url = url;
-        me.async = async !== false;
+        me.async = isAsync !== false;
+        
         me.user = user;
         me.password = password;
         
         if (!me.async) {
             Ext.raise("Binary posts are only supported in async mode: " + url);
         }
-        if (me.method != "POST") {
+        if (me.method !== "POST") {
             Ext.log.warn("Binary data can only be sent as a POST request: " + url);
         }
     },
@@ -16810,7 +17602,7 @@ Ext.define('Ext.data.flash.BinaryXhr', {
     
     onFlashReady: function() {
         var me = this,
-            req, status;
+            req;
         me.javascriptId = Ext.data.flash.BinaryXhr.registerConnection(me);
         
         req = {
@@ -16824,12 +17616,12 @@ Ext.define('Ext.data.flash.BinaryXhr', {
             body: me.body,
             javascriptId: me.javascriptId
         };
-        status = Ext.data.flash.BinaryXhr.flashPlugin.postBinary(req);
+        Ext.data.flash.BinaryXhr.flashPlugin.postBinary(req);
     },
     
     setReadyState: function(state) {
         var me = this;
-        if (me.readyState != state) {
+        if (me.readyState !== state) {
             me.readyState = state;
             me.onreadystatechange();
         }
@@ -16850,11 +17642,11 @@ Ext.define('Ext.data.flash.BinaryXhr', {
         if (me.mimeType) {
             me.responseHeaders["content-type"] = me.mimeType;
         }
-        if (data.reason == "complete") {
+        if (data.reason === "complete") {
             
             this.responseBytes = data.data;
             me.responseHeaders["content-length"] = data.data.length;
-        } else if (data.reason == "error" || data.reason == "securityError") {
+        } else if (data.reason === "error" || data.reason === "securityError") {
             this.statusText = data.text;
             me.responseHeaders["content-length"] = 0;
         } else 
@@ -16867,7 +17659,7 @@ Ext.define('Ext.data.flash.BinaryXhr', {
     
     onFlashStateChange: function(state, data) {
         var me = this;
-        if (state == 4) {
+        if (state === 4) {
             
             me.parseData(data);
             
@@ -16885,19 +17677,25 @@ Ext.define('Ext.data.request.Ajax', {
     statics: {
         
         parseStatus: function(status, response) {
-            var len;
+            var type, len, success, isException;
             if (response) {
                 
-                if (response.responseType === 'arraybuffer') {
+                type = response.responseType;
+                if (type === 'arraybuffer') {
                     len = response.byteLength;
-                } else if (response.responseText) {
+                } else if (type === 'blob') {
+                    len = response.response.size;
+                } else if ((type === 'json' || type === 'document') && response.response) {
+                    len = 0;
+                } else if ((type === 'text' || type === '' || !type) && response.responseText) {
                     len = response.responseText.length;
                 }
             }
             
-            status = status == 1223 ? 204 : status;
-            var success = (status >= 200 && status < 300) || status == 304 || (status == 0 && Ext.isNumber(len)),
-                isException = false;
+            status = status === 1223 ? 204 : status;
+            isException = false;
+            
+            success = (status >= 200 && status < 300) || status === 304 || (status === 0 && Ext.isNumber(len));
             if (!success) {
                 switch (status) {
                     case 12002:
@@ -16921,11 +17719,11 @@ Ext.define('Ext.data.request.Ajax', {
             options = me.options,
             requestOptions = me.requestOptions,
             isXdr = me.isXdr,
-            xhr, headers;
+            xhr;
         xhr = me.xhr = me.openRequest(options, requestOptions, me.async, me.username, me.password);
         
         if (!isXdr) {
-            headers = me.setupHeaders(xhr, options, requestOptions.data, requestOptions.params);
+            me.setupHeaders(xhr, options, requestOptions.data, requestOptions.params);
         }
         if (me.async) {
             if (!isXdr) {
@@ -16988,16 +17786,16 @@ Ext.define('Ext.data.request.Ajax', {
         return state !== 0 && state !== 4;
     },
     
-    openRequest: function(options, requestOptions, async, username, password) {
+    openRequest: function(options, requestOptions, isAsync, username, password) {
         var me = this,
             xhr = me.newRequest(options);
         if (username) {
-            xhr.open(requestOptions.method, requestOptions.url, async, username, password);
+            xhr.open(requestOptions.method, requestOptions.url, isAsync, username, password);
         } else {
             if (me.isXdr) {
                 xhr.open(requestOptions.method, requestOptions.url);
             } else {
-                xhr.open(requestOptions.method, requestOptions.url, async);
+                xhr.open(requestOptions.method, requestOptions.url, isAsync);
             }
         }
         if (options.binary || me.binary) {
@@ -17016,6 +17814,9 @@ Ext.define('Ext.data.request.Ajax', {
             }
         }
         
+        if (options.responseType) {
+            xhr.responseType = options.responseType;
+        }
         if (options.withCredentials || me.withCredentials) {
             xhr.withCredentials = true;
         }
@@ -17028,7 +17829,6 @@ Ext.define('Ext.data.request.Ajax', {
         if (options.binaryData) {
             
             if (window.Uint8Array) {
-                
                 xhr = me.getXhrInstance();
             } else {
                 
@@ -17094,7 +17894,8 @@ Ext.define('Ext.data.request.Ajax', {
         var xdr;
         if (Ext.ieVersion >= 8) {
             xdr = new XDomainRequest();
-        } else {
+        } else 
+        {
             Ext.raise({
                 msg: 'Your browser does not support CORS'
             });
@@ -17102,36 +17903,9 @@ Ext.define('Ext.data.request.Ajax', {
         return xdr;
     },
     
-    getXhrInstance: (function() {
-        var options = [
-                function() {
-                    return new XMLHttpRequest();
-                },
-                function() {
-                    return new ActiveXObject('MSXML2.XMLHTTP.3.0');
-                },
-                
-                function() {
-                    return new ActiveXObject('MSXML2.XMLHTTP');
-                },
-                
-                function() {
-                    return new ActiveXObject('Microsoft.XMLHTTP');
-                }
-            ],
-            
-            i = 0,
-            len = options.length,
-            xhr;
-        for (; i < len; ++i) {
-            try {
-                xhr = options[i];
-                xhr();
-                break;
-            } catch (e) {}
-        }
-        return xhr;
-    }()),
+    getXhrInstance: function() {
+        return new XMLHttpRequest();
+    },
     processXdrRequest: function(request, xhr) {
         var me = this;
         
@@ -17162,7 +17936,7 @@ Ext.define('Ext.data.request.Ajax', {
         var me = this,
             xhr = me.xhr;
         
-        if ((xhr && xhr.readyState == 4) || me.isXdr) {
+        if ((xhr && xhr.readyState === 4) || me.isXdr) {
             me.clearTimer();
             me.onComplete(xdrResult);
             me.cleanup();
@@ -17244,13 +18018,13 @@ Ext.define('Ext.data.request.Ajax', {
             headers = {},
             lines = isXdr ? [] : xhr.getAllResponseHeaders().replace(/\r\n/g, '\n').split('\n'),
             count = lines.length,
-            line, index, key, response, byteArray;
+            line, index, key, response;
         while (count--) {
             line = lines[count];
             index = line.indexOf(':');
             if (index >= 0) {
                 key = line.substr(0, index).toLowerCase();
-                if (line.charAt(index + 1) == ' ') {
+                if (line.charAt(index + 1) === ' ') {
                     ++index;
                 }
                 headers[key] = line.substr(index + 1);
@@ -17274,12 +18048,23 @@ Ext.define('Ext.data.request.Ajax', {
         if (me.binary) {
             response.responseBytes = me.getByteArray(xhr);
         } else {
-            
-            
-            
-            
-            response.responseText = xhr.responseText;
-            response.responseXML = xhr.responseXML;
+            if (xhr.responseType) {
+                response.responseType = xhr.responseType;
+            }
+            if (xhr.responseType === 'blob') {
+                response.responseBlob = xhr.response;
+            } else if (xhr.responseType === 'json') {
+                response.responseJson = xhr.response;
+            } else if (xhr.responseType === 'document') {
+                response.responseXML = xhr.response;
+            } else {
+                
+                
+                
+                
+                response.responseText = xhr.responseText;
+                response.responseXML = xhr.responseXML;
+            }
         }
         return response;
     },
@@ -17301,6 +18086,7 @@ Ext.define('Ext.data.request.Ajax', {
                 
                 
                 
+                
                 byteArray = response ? new Uint8Array(response) : [];
             } else if (Ext.isIE9p) {
                 
@@ -17308,9 +18094,9 @@ Ext.define('Ext.data.request.Ajax', {
                 
                 
                 try {
+                    
                     byteArray = new VBArray(responseBody).toArray();
-                } 
-                catch (e) {
+                } catch (e) {
                     
                     
                     
@@ -17326,9 +18112,9 @@ Ext.define('Ext.data.request.Ajax', {
                 if (!this.self.vbScriptInjected) {
                     this.injectVBScript();
                 }
+                
                 getIEByteArray(xhr.responseBody, byteArray = []);
-            } else 
-            {
+            } else {
                 
                 
                 byteArray = [];
@@ -17347,6 +18133,7 @@ Ext.define('Ext.data.request.Ajax', {
         injectVBScript: function() {
             var scriptTag = document.createElement('script');
             scriptTag.type = 'text/vbscript';
+            
             scriptTag.text = [
                 'Function getIEByteArray(byteArray, out)',
                 'Dim len, i',
@@ -17356,6 +18143,7 @@ Ext.define('Ext.data.request.Ajax', {
                 'Next',
                 'End Function'
             ].join('\n');
+            
             Ext.getHead().dom.appendChild(scriptTag);
             this.self.vbScriptInjected = true;
         }
@@ -17415,6 +18203,7 @@ Ext.define('Ext.data.request.Form', {
     upload: function(form, url, params, options) {
         form = Ext.getDom(form);
         options = options || {};
+        
         var frameDom = document.createElement('iframe'),
             frame = Ext.get(frameDom),
             id = frame.id,
@@ -17535,7 +18324,7 @@ Ext.define('Ext.data.request.Form', {
                 
                 if (doc) {
                     
-                    if (Ext.isOpera && doc.location == Ext.SSL_SECURE_URL) {
+                    if (Ext.isOpera && doc.location === Ext.SSL_SECURE_URL) {
                         return;
                     }
                     if (doc.body) {
@@ -17563,7 +18352,7 @@ Ext.define('Ext.data.request.Form', {
                     success = true;
                     response.status = 200;
                 } else {
-                    Ext.raise("Could not acquire a suitable connection for the file upload service.");
+                    Ext.raise("Could not acquire a suitable connection for the " + "file upload service.");
                 }
             } catch (e) {
                 me.result = response = me.createException();
@@ -17617,6 +18406,7 @@ Ext.define('Ext.data.Connection', {
         
         async: true,
         
+        
         username: '',
         
         password: '',
@@ -17659,9 +18449,9 @@ Ext.define('Ext.data.Connection', {
     },
     
     request: function(options) {
-        options = options || {};
         var me = this,
             requestOptions, request;
+        options = options || {};
         if (me.fireEvent('beforerequest', me, options) !== false) {
             requestOptions = me.setOptions(options, options.scope || Ext.global);
             request = me.createRequest(options, requestOptions);
@@ -17764,17 +18554,19 @@ Ext.define('Ext.data.Connection', {
         if (options.binaryData) {
             
             if (!Ext.isArray(options.binaryData)) {
-                Ext.log.warn("Binary submission data must be an array of byte values! Instead got " + typeof (options.binaryData));
+                Ext.log.warn("Binary submission data must be an array of byte values! " + "Instead got " + typeof (options.binaryData));
             }
             
             if (me.nativeBinaryPostSupport()) {
                 data = (new Uint8Array(options.binaryData));
+                
                 if ((Ext.isChrome && Ext.chromeVersion < 22) || Ext.isSafari || Ext.isGecko) {
+                    
+                    
                     data = data.buffer;
                 }
             }
         }
-        
         
         if (Ext.isObject(params)) {
             params = Ext.Object.toQueryString(params);
@@ -17794,7 +18586,7 @@ Ext.define('Ext.data.Connection', {
             url = Ext.urlAppend(url, (options.disableCachingParam || me.getDisableCachingParam()) + '=' + (new Date().getTime()));
         }
         
-        if ((method == 'GET' || data) && params) {
+        if ((method === 'GET' || data) && params) {
             url = Ext.urlAppend(url, params);
             params = null;
         }
@@ -17922,6 +18714,7 @@ Ext.define('Ext.AnimationQueue', {
         
         
         
+        
         if (Ext.os.is.iOS) {
             
             me.watch.$skipTimerCheck = true;
@@ -17972,15 +18765,14 @@ Ext.define('Ext.AnimationQueue', {
     },
     run: function() {
         var me = this,
-            item, element;
+            queue = me.runningQueue,
+            now, item, element, i, ln;
         
         me.animationFrameId = null;
         if (!me.isRunning) {
             return;
         }
-        var queue = me.runningQueue,
-            now = Ext.now(),
-            i, ln;
+        now = Ext.now();
         me.lastRunTime = now;
         me.frameStartTime = now;
         
@@ -18002,6 +18794,7 @@ Ext.define('Ext.AnimationQueue', {
             me.invoke(queue[i]);
         }
         queue.length = 0;
+        
         
         var elapse = me.frameStartTime - me.startCountTime,
             count = ++me.count;
@@ -18042,13 +18835,13 @@ Ext.define('Ext.AnimationQueue', {
     },
     
     stop: function(fn, scope, args) {
-        var me = this;
+        var me = this,
+            queue = me.queue,
+            ln = queue.length,
+            i, item;
         if (!me.isRunning) {
             return;
         }
-        var queue = me.queue,
-            ln = queue.length,
-            i, item;
         for (i = 0; i < ln; i++) {
             item = queue[i];
             if (item[0] === fn && item[1] === scope && item[2] === args) {
@@ -18126,7 +18919,7 @@ Ext.define('Ext.AnimationQueue', {
         var fn = listener[0],
             scope = listener[1],
             args = listener[2];
-        fn = (typeof fn == 'string' ? scope[fn] : fn);
+        fn = (typeof fn === 'string' ? scope[fn] : fn);
         if (Ext.isArray(args)) {
             fn.apply(scope, args);
         } else {
@@ -18144,12 +18937,12 @@ Ext.define('Ext.AnimationQueue', {
         }
     },
     processIdleQueueItem: function() {
+        var listeners = this.idleQueue,
+            listener;
         delete this.idleQueueTimer;
         if (!this.isIdle) {
             return;
         }
-        var listeners = this.idleQueue,
-            listener;
         if (listeners.length > 0) {
             listener = listeners.shift();
             this.invoke(listener);
@@ -18162,15 +18955,16 @@ Ext.define('Ext.AnimationQueue', {
         }
     },
     processTaskQueueItem: function() {
-        delete this.taskQueueTimer;
         var listeners = this.taskQueue,
             listener;
+        delete this.taskQueueTimer;
         if (listeners.length > 0) {
             listener = listeners.shift();
             this.invoke(listener);
             this.processTaskQueue();
         }
     },
+    
     
     
     showFps: function() {
@@ -18324,11 +19118,16 @@ Ext.define('Ext.AnimationQueue', {
 
 Ext.define('Ext.mixin.Bufferable', function(Bufferable) {
     return {
+        
         extend: Ext.Mixin,
         mixinConfig: {
             id: 'bufferable',
-            before: {
+            after: {
                 destroy: 'cancelAllCalls'
+            },
+            before: {
+                
+                $reap: 'cancelAllCalls'
             },
             extended: function(baseClass, derivedClass, classBody) {
                 var bufferableMethods = classBody.bufferableMethods;
@@ -18451,6 +19250,10 @@ Ext.define('Ext.mixin.Bufferable', function(Bufferable) {
                     target[timer.fn].apply(target, args);
                 },
                 delayCall: function(target, def, args) {
+                    if (target.destroying) {
+                        return;
+                    }
+                    
                     var bufferables = target.bufferables || target.initBufferables(),
                         name = def.name,
                         timer = bufferables[name] || (bufferables[name] = Ext.apply({
@@ -18553,7 +19356,7 @@ Ext.define('Ext.ComponentManager', {
         Ext.mixin.Bufferable
     ],
     count: 0,
-    referencesDirty: true,
+    fixReferencesTimer: null,
     referenceRepairs: 0,
     typeName: 'xtype',
     bufferableMethods: {
@@ -18566,8 +19369,6 @@ Ext.define('Ext.ComponentManager', {
         me.all = {};
         me.byInstanceId = {};
         me.holders = {};
-        me.names = {};
-        me.references = {};
         me.onAvailableCallbacks = {};
     },
     
@@ -18604,12 +19405,6 @@ Ext.define('Ext.ComponentManager', {
         
         me.all[id] = component;
         me.byInstanceId[component.$iid] = component;
-        if (component.reference) {
-            me.references[id] = component;
-        }
-        if (component.name && component.nameable) {
-            me.names[id] = component;
-        }
         if (component.nameHolder || component.referenceHolder) {
             me.holders[id] = component;
         }
@@ -18627,8 +19422,6 @@ Ext.define('Ext.ComponentManager', {
             all = me.all,
             byInstanceId = me.byInstanceId,
             holders = me.holders,
-            references = me.references,
-            names = me.names,
             id = component.getId();
         if (id in holders) {
             
@@ -18636,14 +19429,6 @@ Ext.define('Ext.ComponentManager', {
             
             holders[id] = null;
             delete holders[id];
-        }
-        if (id in names) {
-            names[id] = null;
-            delete names[id];
-        }
-        if (id in references) {
-            references[id] = null;
-            delete references[id];
         }
         all[id] = null;
         delete all[id];
@@ -18655,29 +19440,49 @@ Ext.define('Ext.ComponentManager', {
     markReferencesDirty: function() {
         var me = this,
             holders = me.holders,
-            key;
-        if (!me.referencesDirty) {
+            holder, id;
+        if (!Ext.referencesDirty) {
             
-            for (key in holders) {
-                holders[key].refs = holders[key].nameRefs = null;
+            for (id in holders) {
+                holder = holders[id];
+                holder.refs = holder.nameRefs = null;
+                if (holder.invalidateChildDirty) {
+                    holder.invalidateChildDirty();
+                }
             }
-            me.referencesDirty = true;
+            Ext.referencesDirty = true;
+            me.fixReferencesTimer = Ext.asap(function() {
+                me.fixReferencesTimer = null;
+                me.fixReferences();
+            });
         }
     },
     fixReferences: function() {
         var me = this,
-            references = me.references,
-            names = me.names,
-            key;
-        if (me.referencesDirty) {
+            all = me.all,
+            holders = me.holders,
+            holder, id;
+        if (Ext.referencesDirty) {
+            me.fixReferencesTimer = Ext.unasap(me.fixReferencesTimer);
+            
+            Ext.referencesDirty = 0;
             ++me.referenceRepairs;
-            for (key in references) {
-                references[key]._fixReference();
+            for (id in holders) {
+                holder = holders[id];
+                if (holder.beginSyncChildDirty) {
+                    holder.beginSyncChildDirty();
+                }
             }
-            for (key in names) {
-                names[key]._fixName();
+            for (id in all) {
+                all[id]._fixReference();
             }
-            me.referencesDirty = false;
+            for (id in holders) {
+                holder = holders[id];
+                if (holder.finishSyncChildDirty) {
+                    holder.finishSyncChildDirty();
+                }
+            }
+            Ext.referencesDirty = false;
         }
     },
     
@@ -18724,41 +19529,44 @@ Ext.define('Ext.ComponentManager', {
         return Ext.Component.from(Ext.dom.Element.getActiveElement());
     },
     
-    onGlobalFocus: function(e) {
+    onGlobalFocus: function(info) {
         var me = this,
-            event = e.event,
-            toComponent = event.toComponent = e.toComponent = Ext.Component.from(e.toElement),
-            fromComponent = event.fromComponent = e.fromComponent = Ext.Component.from(e.fromElement),
-            commonAncestor = me.getCommonAncestor(fromComponent, toComponent),
-            targetComponent;
+            event = info.event.chain(),
+            infoCopy = Ext.applyIf({
+                event: event
+            }, info),
+            to, from, ancestor, target;
+        to = event.toComponent = infoCopy.toComponent = Ext.Component.from(info.toElement);
+        from = event.fromComponent = infoCopy.fromComponent = Ext.Component.from(info.fromElement);
+        ancestor = me.getCommonAncestor(from, to);
         
-        if (toComponent !== fromComponent) {
-            if (fromComponent && !fromComponent.destroyed && !fromComponent.isDestructing()) {
-                if (fromComponent.handleBlurEvent) {
-                    fromComponent.handleBlurEvent(e);
+        if (to !== from) {
+            if (from && !from.destroyed && !from.isDestructing()) {
+                if (from.handleBlurEvent) {
+                    from.handleBlurEvent(infoCopy);
                 }
                 
-                for (targetComponent = fromComponent; targetComponent && targetComponent !== commonAncestor; targetComponent = targetComponent.getRefOwner()) {
-                    if (!(targetComponent.destroyed || targetComponent.destroying)) {
-                        e.type = 'focusleave';
-                        targetComponent.onFocusLeave(event);
+                for (target = from; target && target !== ancestor; target = target.getRefOwner()) {
+                    if (!(target.destroyed || target.destroying)) {
+                        event.type = 'focusleave';
+                        target.onFocusLeave(event);
                     }
                 }
             }
-            if (toComponent && !toComponent.destroyed && !toComponent.isDestructing()) {
-                if (toComponent.handleFocusEvent) {
-                    toComponent.handleFocusEvent(e);
+            if (to && !to.destroyed && !to.isDestructing()) {
+                if (to.handleFocusEvent) {
+                    to.handleFocusEvent(infoCopy);
                 }
                 
-                for (targetComponent = toComponent; targetComponent && targetComponent !== commonAncestor; targetComponent = targetComponent.getRefOwner()) {
-                    e.type = 'focusenter';
-                    targetComponent.onFocusEnter(event);
+                for (target = to; target && target !== ancestor; target = target.getRefOwner()) {
+                    event.type = 'focusenter';
+                    target.onFocusEnter(event);
                 }
             }
         }
-        for (targetComponent = commonAncestor; targetComponent; targetComponent = targetComponent.getRefOwner()) {
-            if (!(targetComponent.destroying || targetComponent.destroyed)) {
-                targetComponent.onFocusMove(e);
+        for (target = ancestor; target; target = target.getRefOwner()) {
+            if (!(target.destroying || target.destroyed)) {
+                target.onFocusMove(infoCopy);
             }
         }
     },
@@ -18792,20 +19600,21 @@ Ext.define('Ext.ComponentManager', {
             me.hasFocusListener = true;
         },
         clearAll: function() {
-            this.all = {};
-            this.names = {};
-            this.references = {};
-            this.onAvailableCallbacks = {};
+            var me = this;
+            me.all = {};
+            me.byInstanceId = {};
+            me.holders = {};
+            me.onAvailableCallbacks = {};
         },
         
         from: function(el, limit, selector) {
+            var cache = this.all,
+                depth = 0,
+                target, topmost, cmpId, cmp;
             if (el && el.isEvent) {
                 el = el.target;
             }
-            var target = Ext.getDom(el),
-                cache = this.all,
-                depth = 0,
-                topmost, cmpId, cmp;
+            target = Ext.getDom(el);
             if (typeof limit !== 'number') {
                 topmost = Ext.getDom(limit);
                 limit = Number.MAX_VALUE;
@@ -18825,10 +19634,18 @@ Ext.define('Ext.ComponentManager', {
             return null;
         }
     }
-}, function() {
-    var ComponentManager = Ext.ComponentManager;
+}, function(ComponentManager) {
     
     ComponentManager.fromElement = ComponentManager.from;
+    
+    
+    Ext.referencesDirty = false;
+    Ext.fixReferences = function() {
+        ComponentManager.fixReferences();
+    };
+    Ext.markReferencesDirty = function() {
+        ComponentManager.markReferencesDirty();
+    };
     
     Ext.getCmp = function(id) {
         return ComponentManager.get(id);
@@ -18836,6 +19653,7 @@ Ext.define('Ext.ComponentManager', {
     Ext.iidToCmp = function(iid) {
         return ComponentManager.byInstanceId[iid] || null;
     };
+    
     Ext.doEv = function(node, e) {
         var cmp, method, event;
         
@@ -18851,6 +19669,7 @@ Ext.define('Ext.ComponentManager', {
         return true;
     };
 });
+
 
 
 Ext.ns('Ext.util').Operators = {
@@ -18919,6 +19738,7 @@ Ext.define('Ext.util.LruCache', {
     insertBefore: function(key, newValue, sibling) {
         var me = this,
             existingKey, entry;
+        
         
         
         if (sibling = this.map[this.findKey(sibling)]) {
@@ -18992,6 +19812,7 @@ Ext.define('Ext.util.LruCache', {
     
     moveToEnd: function(entry) {
         this.unlinkEntry(entry);
+        
         
         
         if (entry.prev = this.last) {
@@ -19085,6 +19906,7 @@ Ext.define('Ext.ComponentQuery', {
         }),
         
         
+        
         filterFnPattern = [
             'var r = [],',
             'i = 0,',
@@ -19099,6 +19921,7 @@ Ext.define('Ext.ComponentQuery', {
             '}',
             'return r;'
         ].join(''),
+        
         filterItems = function(items, operation) {
             
             
@@ -19139,6 +19962,7 @@ Ext.define('Ext.ComponentQuery', {
             if (xtype === '*') {
                 return items.slice();
             } else {
+                
                 var result = [],
                     i = 0,
                     length = items.length,
@@ -19153,11 +19977,12 @@ Ext.define('Ext.ComponentQuery', {
             }
         },
         
+        
         filterByAttribute = function(items, property, operator, compareTo) {
             var result = [],
-                i = 0,
                 length = items.length,
-                mustBeOwnProperty, presenceOnly, candidate, propValue, j, propLen, config;
+                mustBeOwnProperty, presenceOnly, candidate, propValue, config, i, j, propLen;
+            
             
             if (property.charAt(0) === '@') {
                 mustBeOwnProperty = true;
@@ -19168,7 +19993,7 @@ Ext.define('Ext.ComponentQuery', {
                 presenceOnly = true;
                 property = property.substr(1);
             }
-            for (; i < length; i++) {
+            for (i = 0; i < length; i++) {
                 candidate = items[i];
                 
                 
@@ -19193,6 +20018,7 @@ Ext.define('Ext.ComponentQuery', {
                             propValue = propValue.split(' ');
                         }
                         for (j = 0 , propLen = propValue.length; j < propLen; j++) {
+                            
                             if (queryOperators[operator](Ext.coerce(propValue[j], compareTo), compareTo)) {
                                 result.push(candidate);
                                 break;
@@ -19203,12 +20029,15 @@ Ext.define('Ext.ComponentQuery', {
                     if (propValue != null && compareTo.test(propValue)) {
                         result.push(candidate);
                     }
-                } else if (!compareTo ? !!propValue : queryOperators[operator](Ext.coerce(propValue, compareTo), compareTo)) {
+                }
+                
+                else if (!compareTo ? !!propValue : queryOperators[operator](Ext.coerce(propValue, compareTo), compareTo)) {
                     result.push(candidate);
                 }
             }
             return result;
         },
+        
         
         filterById = function(items, id, idOnly) {
             var result = [],
@@ -19225,16 +20054,20 @@ Ext.define('Ext.ComponentQuery', {
             return result;
         },
         
+        
         filterByPseudo = function(items, name, value) {
             return cq.pseudos[name](items, value);
         },
         
         
+        
         modeRe = /^(\s?([>\^])\s?|\s|$)/,
+        
         
         tokenRe = /^(#)?((?:\\\.|[\w\-])+|\*)(?:\((true|false)\))?/,
         matchers = [
             {
+                
                 
                 re: /^\.((?:\\\.|[\w\-])+)(?:\((true|false)\))?/,
                 method: filterByXType,
@@ -19258,27 +20091,29 @@ Ext.define('Ext.ComponentQuery', {
                 
                 
                 
+                
                 re: /^(?:\[((?:[@?$])?[\w\-]*)\s*(?:([\^$*~%!\/]?=)\s*(['"])?((?:\\\]|.)*?)\3)?(?!\\)\])/,
                 method: filterByAttribute,
                 argTransform: function(args) {
                     var selector = args[0],
                         property = args[1],
                         operator = args[2],
-                        
                         compareTo = args[4],
                         compareRe;
                     
                     if (compareTo !== undefined) {
                         compareTo = compareTo.replace(unescapeRe, '$1');
                         
+                        
                         var format = Ext.String.format,
-                            msg = "ComponentQuery selector '{0}' has an unescaped ({1}) character at the {2} " + "of the attribute value pattern. Usually that indicates an error " + "where the opening quote is not followed by the closing quote. " + "If you need to match a ({1}) character at the {2} of the attribute " + "value, escape the quote character in your pattern: (\\{1})",
+                            msg = "ComponentQuery selector '{0}' has an unescaped ({1}) character " + "at the {2} of the attribute value pattern. Usually that indicates " + "an error where the opening quote is not followed by the closing " + "quote. If you need to match a ({1}) character at the {2} of the " + "attribute value, escape the quote character in your pattern: " + "(\\{1})",
                             match;
+                        
                         if (match = /^(['"]).*?[^'"]$/.exec(compareTo)) {
-                            
                             Ext.log.warn(format(msg, selector, match[1], 'beginning'));
-                        } else if (match = /^[^'"].*?(['"])$/.exec(compareTo)) {
-                            
+                        }
+                        
+                        else if (match = /^[^'"].*?(['"])$/.exec(compareTo)) {
                             Ext.log.warn(format(msg, selector, match[1], 'end'));
                         }
                     }
@@ -19300,10 +20135,12 @@ Ext.define('Ext.ComponentQuery', {
             },
             {
                 
+                
                 re: /^#((?:\\\.|[\w\-])+)/,
                 method: filterById
             },
             {
+                
                 
                 re: /^\:([\w\-]+)(?:\(((?:\{[^\}]+\})|(?:(?!\{)[^\s>\/]*?(?!\})))\))?/,
                 method: filterByPseudo,
@@ -19315,6 +20152,7 @@ Ext.define('Ext.ComponentQuery', {
                 }
             },
             {
+                
                 
                 re: /^(?:\{([^\}]+)\})/,
                 method: filterFnPattern
@@ -19551,12 +20389,12 @@ Ext.define('Ext.ComponentQuery', {
             },
             "nth-child": function(c, a) {
                 var result = [],
-                    m = nthRe.exec(a === "even" && "2n" || a === "odd" && "2n+1" || !nthRe2.test(a) && "n+" + a || a),
-                    f = (m[1] || 1) - 0,
-                    len = m[2] - 0,
-                    i, n, nodeIndex;
+                    m, f, i, len, n, nodeIndex;
+                m = nthRe.exec(a === "even" && "2n" || a === "odd" && "2n+1" || !nthRe2.test(a) && "n+" + a || a);
+                f = (m[1] || 1) - 0;
+                len = m[2] - 0;
+                
                 for (i = 0; n = c[i]; i++) {
-                    
                     nodeIndex = i + 1;
                     if (f === 1) {
                         if (len === 0 || nodeIndex === len) {
@@ -19583,11 +20421,11 @@ Ext.define('Ext.ComponentQuery', {
                 return results;
             },
             visible: function(cmps, deep) {
-                deep = deep === 'true';
                 var len = cmps.length,
                     results = [],
                     i = 0,
                     c;
+                deep = deep === 'true';
                 for (; i < len; i++) {
                     c = cmps[i];
                     
@@ -19604,6 +20442,7 @@ Ext.define('Ext.ComponentQuery', {
             if (!selector) {
                 return Ext.ComponentManager.getAll();
             }
+            
             var results = [],
                 noDupResults = [],
                 dupMatcher = {},
@@ -19665,6 +20504,7 @@ Ext.define('Ext.ComponentQuery', {
                 }
             }
             for (i = 0; i < len; i++) {
+                
                 if (cq._visit.call(cq, preOrder, selector, children[i], fn, scope, extraArgs) === false) {
                     return false;
                 }
@@ -19679,13 +20519,14 @@ Ext.define('Ext.ComponentQuery', {
         },
         
         is: function(component, selector, root) {
+            var query;
             if (!selector) {
                 return true;
             }
             if (typeof selector === 'function') {
                 return selector(component);
             } else {
-                var query = cq.cache.get(selector);
+                query = cq.cache.get(selector);
                 if (!query) {
                     query = cq.cache.add(selector, cq.parse(selector));
                 }
@@ -19777,6 +20618,9 @@ Ext.define('Ext.ComponentQuery', {
                                 method: Ext.isString(matcher.method) ? 
                                 
                                 
+                                
+                                
+                                
                                 Ext.functionFactory('items', Ext.String.format.apply(Ext.String, [
                                     method
                                 ].concat(selectorMatch.slice(1)))) : matcher.method,
@@ -19838,6 +20682,7 @@ Ext.define('Ext.Evented', {
         if (!data.hasOwnProperty('eventedConfig')) {
             return;
         }
+        
         var config = data.config,
             eventedConfig = data.eventedConfig,
             name, cfg;
@@ -20097,6 +20942,7 @@ Ext.define('Ext.util.Positionable', {
         } else {
             proposedConstrainPosition = proposedPosition;
         }
+        
         
         
         
@@ -20399,7 +21245,9 @@ Ext.define('Ext.util.Positionable', {
             offsetParent = dom.offsetParent,
             relative, offsetParentXY, x, y;
         if (offsetParent) {
-            relative = el.isStyle('position', 'relative') , offsetParentXY = Ext.fly(offsetParent).getXY() , x = xy[0] + offsetParentXY[0] + offsetParent.clientLeft;
+            relative = el.isStyle('position', 'relative');
+            offsetParentXY = Ext.fly(offsetParent).getXY();
+            x = xy[0] + offsetParentXY[0] + offsetParent.clientLeft;
             y = xy[1] + offsetParentXY[1] + offsetParent.clientTop;
             if (relative) {
                 
@@ -20428,6 +21276,7 @@ Ext.define('Ext.util.Positionable', {
             if (clippingEl.isRegion) {
                 clippingRegion = clippingEl;
             } else {
+                
                 clippingRegion = (clippingEl.isComponent ? clippingEl.el : Ext.fly(clippingEl)).getConstrainRegion();
             }
             
@@ -20474,6 +21323,7 @@ Ext.define('Ext.util.Positionable', {
             
             
             
+            
             if ((shadow = el.shadow) && (el = shadow.el) && el.dom) {
                 clipValues[2] -= shadow.offsets.y;
                 clipValues[3] -= shadow.offsets.x;
@@ -20485,6 +21335,7 @@ Ext.define('Ext.util.Positionable', {
                     clipStyle += (i === 3) ? ')' : ',';
                 }
                 el.dom.style.clip = clipStyle;
+                
                 
                 
                 if (clipped && !Ext.supports.CSS3BoxShadow) {
@@ -20508,6 +21359,7 @@ Ext.define('Ext.util.Positionable', {
             
             if (el.shadow && el.shadow.el && el.shadow.el.dom) {
                 el.shadow.el.dom.style.clip = Ext.isIE8 ? 'auto' : '';
+                
                 
                 
                 if (!Ext.supports.CSS3BoxShadow) {
@@ -20802,7 +21654,7 @@ Ext.define('Ext.dom.Shadow', {
         
         if (me.el && mode !== 'frame') {
             result[0] = 0;
-            if (mode == 'drop') {
+            if (mode === 'drop') {
                 result[3] = 0;
             }
         }
@@ -21108,8 +21960,9 @@ Ext.define('Ext.util.Offset', {
         this.y += offset.y;
     },
     round: function(to) {
+        var factor;
         if (!isNaN(to)) {
-            var factor = Math.pow(10, to);
+            factor = Math.pow(10, to);
             this.x = Math.round(this.x * factor) / factor;
             this.y = Math.round(this.y * factor) / factor;
         } else {
@@ -21125,8 +21978,10 @@ Ext.define('Ext.util.Offset', {
 
 Ext.define('Ext.util.Region', function() {
     var ExtUtil = Ext.util,
+        
         constrainRe = /([^\?!]*)(!|\?)?$/,
         alignRe = /^(?:(?:([trbl])(\d+))|(tl|t|tc|tr|l|c|r|bl|b|bc|br))(?:-(?:(?:([trbl])(\d+))|(tl|t|tc|tr|l|c|r|bl|b|bc|br)))?$/i,
+        
         
         
         
@@ -21286,6 +22141,7 @@ Ext.define('Ext.util.Region', function() {
                     max = result.bottom - (anchorWidth + 2);
                     isBefore = relativePosition === 3;
                     x = isBefore ? result.right : result.left;
+                    
                     overlapLine = new ExtUtil.Region(Math.max(result.top, target.top), x, Math.min(result.bottom, target.bottom), x);
                     
                     anchorPos = new ExtUtil.Region(0, 0, 0, 0).setWidth(anchorSize.y).setHeight(anchorWidth).alignTo({
@@ -21314,6 +22170,7 @@ Ext.define('Ext.util.Region', function() {
                     
                     isBefore = relativePosition === 0;
                     y = isBefore ? result.bottom : result.top;
+                    
                     overlapLine = new ExtUtil.Region(y, Math.min(result.right, target.right), y, Math.max(result.left, target.left));
                     
                     anchorPos = new ExtUtil.Region(0, 0, 0, 0).setWidth(anchorWidth).setHeight(anchorSize.y).alignTo({
@@ -21377,6 +22234,7 @@ Ext.define('Ext.util.Region', function() {
                 }
             }
         };
+    
     return {
         isRegion: true,
         statics: {
@@ -21398,7 +22256,9 @@ Ext.define('Ext.util.Region', function() {
                 constrain = constrainRe.exec(align);
                 align = constrain[1];
                 
+                
                 align = (rtl ? rtlAlignMap : alignMap)[align] || align;
+                
                 var offsetFactors = rtl ? RTLOffsetFactors : LTROffsetFactors,
                     constrain,
                     parts = alignRe.exec(align),
@@ -21513,6 +22373,7 @@ Ext.define('Ext.util.Region', function() {
         },
         
         getOutOfBoundOffset: function(axis, p) {
+            var d;
             if (!Ext.isObject(axis)) {
                 if (axis === 'x') {
                     return this.getOutOfBoundOffsetX(p);
@@ -21521,7 +22382,7 @@ Ext.define('Ext.util.Region', function() {
                 }
             } else {
                 p = axis;
-                var d = new ExtUtil.Offset();
+                d = new ExtUtil.Offset();
                 d.x = this.getOutOfBoundOffsetX(p.x);
                 d.y = this.getOutOfBoundOffsetY(p.y);
                 return d;
@@ -21568,8 +22429,8 @@ Ext.define('Ext.util.Region', function() {
         },
         
         restrict: function(axis, p, factor) {
+            var newP;
             if (Ext.isObject(axis)) {
-                var newP;
                 factor = p;
                 p = axis;
                 if (p.copy) {
@@ -21699,10 +22560,12 @@ Ext.define('Ext.util.Region', function() {
                 
                 result = Region.from(me).translateBy(me.getAlignToVector(targetPlusAnchorOffset, align));
                 
+                
                 overlap = !!result.intersect(targetPlusAnchorOffset);
                 if (offset && (overlap || !anchorSize)) {
                     result.translateBy(offset);
                 }
+                
                 
                 
                 if (anchorSize) {
@@ -21790,6 +22653,7 @@ Ext.define('Ext.util.Region', function() {
                         if (inside.contains(result)) {
                             
                             
+                            
                             if (anchorSize) {
                                 calculateAnchorPosition(target, result, align.position, anchorSize, inside);
                             }
@@ -21808,6 +22672,7 @@ Ext.define('Ext.util.Region', function() {
         
         exclude: function(other, options) {
             options = options || {};
+            
             var me = this,
                 initialPosition = options.initialPosition || other,
                 inside = options.inside,
@@ -21825,6 +22690,7 @@ Ext.define('Ext.util.Region', function() {
             if (!offset) {
                 offset = zeroOffset;
             }
+            
             
             
             
@@ -21865,6 +22731,7 @@ Ext.define('Ext.util.Region', function() {
                 centerOnSideChange = false;
             }
             
+            
             Ext.Array.sort(translations, function(l, r) {
                 var result = l[4] - r[4];
                 
@@ -21901,6 +22768,7 @@ Ext.define('Ext.util.Region', function() {
                     if (minHeight) {
                         checkMinHeight(minHeight, testRegion, me, inside);
                         if (inside.contains(testRegion)) {
+                            
                             if (!sizeConstrainedSolution || testRegion.getArea() > sizeConstrainedSolution.region.getArea()) {
                                 sizeConstrainedSolution = {
                                     region: testRegion,
@@ -21914,6 +22782,7 @@ Ext.define('Ext.util.Region', function() {
                     if (minWidth) {
                         checkMinWidth(minWidth, testRegion, me, inside);
                         if (inside.contains(testRegion)) {
+                            
                             if (!sizeConstrainedSolution || testRegion.getArea() > sizeConstrainedSolution.region.getArea()) {
                                 sizeConstrainedSolution = {
                                     region: testRegion,
@@ -21930,6 +22799,7 @@ Ext.define('Ext.util.Region', function() {
                     intersection = inside.intersect(testRegion);
                     if (intersection) {
                         intersection = intersection.getArea();
+                        
                         if (!leastBadSolution || (intersection && leastBadSolution.area < intersection)) {
                             leastBadSolution = {
                                 region: testRegion,
@@ -21998,6 +22868,7 @@ Ext.define('Ext.util.Region', function() {
         },
         getAlignToVector: function(target, align, rtl) {
             align = (typeof align === 'string') ? this.getAlignInfo(align, rtl) : align;
+            
             var myAnchorPoint = this['getAnchorPoint_' + align.myEdge](align.myOffset),
                 targetAnchorPoint = target['getAnchorPoint_' + align.otherEdge](align.otherOffset);
             return [
@@ -22093,6 +22964,7 @@ Ext.define('Ext.util.Region', function() {
         },
         
         translateBy: function(x, y) {
+            var me = this;
             if (x.length) {
                 y = x[1];
                 x = x[0];
@@ -22100,7 +22972,6 @@ Ext.define('Ext.util.Region', function() {
                 y = x.y;
                 x = x.x;
             }
-            var me = this;
             me.top = me.y += y;
             me.right += x;
             me.bottom += y;
@@ -22129,6 +23000,7 @@ Ext.define('Ext.util.Region', function() {
         },
         
         highlight: function() {
+            
             var highlightEl = Ext.getBody().createChild({
                     style: 'background-color:#52a0db;opacity:0.4;position:absolute;z-index:9999999'
                 });
@@ -22220,9 +23092,10 @@ Ext.define('Ext.util.Point', {
     },
     
     isCloseTo: function(point, threshold) {
-        if (typeof threshold == 'number') {
+        if (typeof threshold === 'number') {
             return this.getDistanceTo(point) <= threshold;
         }
+        
         var x = point.x,
             y = point.y,
             thresholdX = threshold.x,
@@ -22251,6 +23124,7 @@ Ext.define('Ext.util.Point', {
         if (!point || typeof point !== 'object') {
             point = this.origin;
         }
+        
         var deltaX = this.x - point.x,
             deltaY = this.y - point.y;
         return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
@@ -22259,6 +23133,7 @@ Ext.define('Ext.util.Point', {
         if (!point || typeof point !== 'object') {
             point = this.origin;
         }
+        
         var deltaX = this.x - point.x,
             deltaY = this.y - point.y;
         return Math.atan2(deltaY, deltaX) * this.radianToDegreeConstant;
@@ -22357,6 +23232,11 @@ Ext.define('Ext.event.Event', {
             focusleave: 1
         },
         
+        wheelEvents: {
+            wheel: 1,
+            mousewheel: 1
+        },
+        
         
         
         
@@ -22405,6 +23285,7 @@ Ext.define('Ext.event.Event', {
             DELETE: '⌦',
             CONTEXT_MENU: '☰'
         },
+        
         _hyphenRe: /^[a-z]+\-/i,
         
         
@@ -22415,6 +23296,7 @@ Ext.define('Ext.event.Event', {
             } else {
                 keyName = keyName.toUpperCase();
             }
+            
             var me = this,
                 delim = me._hyphenRe.test(keyName) ? '-' : '+',
                 parts = (keyName === delim) ? [
@@ -22478,8 +23360,7 @@ Ext.define('Ext.event.Event', {
             type = event.type,
             pointerType, relatedTarget;
         
-        
-        me.timeStamp = me.time = Ext.now();
+        me.timeStamp = me.time = Ext.ticks();
         me.pageX = coordinateOwner.pageX;
         me.pageY = coordinateOwner.pageY;
         me.clientX = coordinateOwner.clientX;
@@ -22543,7 +23424,9 @@ Ext.define('Ext.event.Event', {
             
             
             pointerType = self.pointerTypeMap[event.pointerType] || (((Ext.now() - Ext.event.publisher.Dom.lastTouchEndTime) < 1000) ? 'touch' : 'mouse');
-        } else if (self.pointerEvents[type]) {
+        }
+        
+        else if (self.pointerEvents[type]) {
             
             
             pointerType = self.pointerTypeMap[event.pointerType] || 'mouse';
@@ -22556,7 +23439,11 @@ Ext.define('Ext.event.Event', {
         
         
         me.isMultitouch = event.isPrimary === false || (event.touches && event.touches.length > 1);
+        if (self.wheelEvents[type]) {
+            me.getWheelDeltas();
+        }
     },
+    
     
     chain: function(props) {
         var e = Ext.Object.chain(this);
@@ -22566,13 +23453,20 @@ Ext.define('Ext.event.Event', {
     },
     
     correctWheelDelta: function(delta) {
-        var scale = this.WHEEL_SCALE,
-            ret = Math.round(delta / scale);
-        if (!ret && delta) {
-            ret = (delta < 0) ? -1 : 1;
+        var me = this,
+            
+            
+            
+            deltaMode = me.browserEvent.deltaMode,
+            correctedDelta = delta;
+        if (deltaMode === 0) {
+            correctedDelta = delta * me.WHEEL_PIXEL_SIZE;
+        } else if (deltaMode === 1) {
+            correctedDelta = delta * me.WHEEL_LINE_SIZE;
+        } else if (deltaMode === 2) {
+            correctedDelta = delta * me.WHEEL_PAGE_SIZE;
         }
-        
-        return ret;
+        return Math.round(correctedDelta);
     },
     getChar: function() {
         var r = this.which();
@@ -22669,45 +23563,23 @@ Ext.define('Ext.event.Event', {
     
     getWheelDeltas: function() {
         var me = this,
-            event = me.browserEvent,
-            dx = 0,
-            dy = 0;
-        
-        if (Ext.isDefined(event.wheelDeltaX)) {
+            wheelDeltas = me.wheelDeltas,
+            browserEvent, deltaX, deltaY;
+        if (!wheelDeltas) {
+            browserEvent = me.browserEvent;
+            deltaX = me.correctWheelDelta(browserEvent.deltaX || 0);
+            deltaY = browserEvent.deltaY;
+            deltaY = me.correctWheelDelta(deltaY == null ? -browserEvent.wheelDelta : deltaY);
             
-            dx = event.wheelDeltaX;
-            dy = event.wheelDeltaY;
-        } else if (event.wheelDelta) {
+            me.deltaX = deltaX;
             
-            dy = event.wheelDelta;
-        } else if ('deltaX' in event) {
-            
-            dx = event.deltaX;
-            dy = -event.deltaY;
+            me.deltaY = deltaY;
+            me.wheelDeltas = wheelDeltas = {
+                x: deltaX,
+                y: deltaY
+            };
         }
-        
-        else if (event.detail) {
-            
-            dy = -event.detail;
-            
-            
-            
-            if (dy > 100) {
-                dy = 3;
-            } else if (dy < -100) {
-                dy = -3;
-            }
-            
-            
-            if (Ext.isDefined(event.axis) && event.axis === event.HORIZONTAL_AXIS) {
-                dx = dy;
-                dy = 0;
-            }
-        }
-        return {
-            x: me.correctWheelDelta(dx),
-            y: me.correctWheelDelta(dy)
-        };
+        return wheelDeltas;
     },
     
     getX: function() {
@@ -22722,6 +23594,7 @@ Ext.define('Ext.event.Event', {
                 me.pageX,
                 me.pageY
             ];
+            
             
             var x = xy[0],
                 browserEvent, doc, docEl, body;
@@ -22739,6 +23612,24 @@ Ext.define('Ext.event.Event', {
         return xy;
     },
     
+    getLocalXY: function(clip) {
+        
+        var pageXY = this.getXY(),
+            targetXY = Ext.fly(this.currentTarget).getXY(),
+            localX = pageXY[0] - targetXY[0],
+            localY = pageXY[1] - targetXY[1],
+            size;
+        if (clip) {
+            size = Ext.fly(this.currentTarget).getSize();
+            localX = Math.max(0, Math.min(localX, size.width));
+            localY = Math.max(0, Math.min(localY, size.height));
+        }
+        return [
+            localX,
+            localY
+        ];
+    },
+    
     getY: function() {
         return this.getXY()[1];
     },
@@ -22753,8 +23644,8 @@ Ext.define('Ext.event.Event', {
             k = me.keyCode,
             isKeyPress = me.type === 'keypress';
         
-        return ((!isKeyPress || Ext.isGecko) && k >= 33 && k <= 40) || (
-        !scrollableOnly && (k === me.RETURN || k === me.TAB || k === me.ESC));
+        
+        return ((!isKeyPress || Ext.isGecko) && k >= 33 && k <= 40) || (!scrollableOnly && (k === me.RETURN || k === me.TAB || k === me.ESC));
     },
     
     isSpecialKey: function() {
@@ -23067,46 +23958,21 @@ Ext.define('Ext.event.Event', {
             
             F12: 123,
             
-            WHEEL_SCALE: 120
+            WHEEL_PIXEL_SIZE: 1,
+            
+            WHEEL_LINE_SIZE: 20,
+            
+            WHEEL_PAGE_SIZE: 600
         },
-        
         keyCodes = {},
         gestureEvents = Event.gestureEvents,
         prototype = Event.prototype,
-        i, keyName, keyCode, keys, s, scale;
-    if (Ext.isGecko) {
-        
-        constants.WHEEL_SCALE = 3;
-    } else if (Ext.isMac) {
-        
-        
-        
-        if (Ext.isSafari && Ext.webKitVersion >= 532) {
-            
-            
-            
-            
-            
-            
-            scale = 120;
-        } else {
-            
-            
-            scale = 12;
-        }
-        
-        
-        
-        
-        constants.WHEEL_SCALE = 3 * scale;
-    }
+        i, keyName, keyCode, keys;
     Ext.apply(gestureEvents, Event.mouseEvents);
     Ext.apply(gestureEvents, Event.pointerEvents);
     Ext.apply(gestureEvents, Event.touchEvents);
     Ext.apply(Event, constants);
     Ext.apply(prototype, constants);
-    
-    delete constants.WHEEL_SCALE;
     
     
     
@@ -23507,7 +24373,7 @@ Ext.define('Ext.event.publisher.Dom', {
         if (!targets) {
             
             if (e instanceof Array) {
-                Ext.raise("Propagation targets must be supplied when publishing an array of events.");
+                Ext.raise("Propagation targets must be supplied when publishing " + "an array of events.");
             }
             
             
@@ -23804,6 +24670,7 @@ Ext.define('Ext.event.publisher.Dom', {
     },
     destroy: function() {
         var GC = Ext.dom['GarbageCollector'],
+            
             eventName;
         for (eventName in this.delegatedListeners) {
             this.removeDelegatedListener(eventName);
@@ -23831,7 +24698,8 @@ Ext.define('Ext.event.publisher.Dom', {
     var doc = document,
         defaultView = doc.defaultView,
         prototype = Dom.prototype;
-    if ((Ext.os.is.iOS && Ext.os.version.getMajor() < 5) || Ext.browser.is.AndroidStock || !(defaultView && defaultView.addEventListener)) {
+    
+    if ((Ext.os.is.iOS && window.self !== window.top) || Ext.browser.is.AndroidStock || !(defaultView && defaultView.addEventListener)) {
         
         
         
@@ -24018,14 +24886,15 @@ Ext.define('Ext.event.publisher.Gesture', {
     },
     getCommonTargets: function(targetGroups) {
         var firstTargetGroup = targetGroups[0],
-            ln = targetGroups.length;
+            ln = targetGroups.length,
+            commonTargets = [],
+            i = 1,
+            target, targets, j;
         if (ln === 1) {
             return firstTargetGroup;
         }
-        var commonTargets = [],
-            i = 1,
-            target, targets, j;
         while (true) {
+            
             target = firstTargetGroup[firstTargetGroup.length - i];
             if (!target) {
                 return commonTargets;
@@ -24041,6 +24910,7 @@ Ext.define('Ext.event.publisher.Gesture', {
         }
         return commonTargets;
     },
+    
     invokeRecognizers: function(methodName, e) {
         var recognizers = this.recognizers,
             ln = recognizers.length,
@@ -24174,8 +25044,8 @@ Ext.define('Ext.event.publisher.Gesture', {
                 delete activeTouchesMap[identifier];
                 Ext.Array.remove(activeTouches, touch);
             }
-            x = touchSource.pageX;
-            y = touchSource.pageY;
+            x = Math.round(touchSource.pageX);
+            y = Math.round(touchSource.pageY);
             touch.pageX = x;
             touch.pageY = y;
             
@@ -24258,6 +25128,7 @@ Ext.define('Ext.event.publisher.Gesture', {
             me.updateTouches(e);
         }
         if (isStarted) {
+            
             
             
             
@@ -24527,6 +25398,7 @@ Ext.define('Ext.TaskQueue', {
         
         
         
+        
         if (Ext.os.is.iOS) {
             
             me.watch.$skipTimerCheck = true;
@@ -24585,6 +25457,7 @@ Ext.define('Ext.TaskQueue', {
         var me = this;
         
         
+        
         var oldMode = me.mode;
         
         if (!me.pending) {
@@ -24614,7 +25487,8 @@ Ext.define('Ext.TaskQueue', {
     },
     
     cancelRequest: function(queue, id, mode) {
-        for (var i = 0; i < queue.length; i++) {
+        var i;
+        for (i = 0; i < queue.length; i++) {
             if (queue[i].id === id) {
                 queue.splice(i, 1);
                 break;
@@ -24687,6 +25561,7 @@ Ext.define('Ext.TaskQueue', {
         me.pending = me.timer = false;
         me.mode = true;
     },
+    
     
     privates: {
         flush: function() {
@@ -24768,6 +25643,7 @@ Ext.define('Ext.util.sizemonitor.Abstract', {
         if (!element || element.destroyed) {
             return false;
         }
+        
         var me = this,
             size = element.measure(),
             width = size.width,
@@ -24964,13 +25840,13 @@ Ext.define('Ext.event.publisher.ElementSize', {
     
     
     
+    
     privates: {
+        
         syncRefresh: function(elements) {
+            var el, monitor, i, len;
             elements = Ext.Array.from(elements);
-            var len = elements.length,
-                i = 0,
-                el, monitor;
-            for (i = 0; i < len; ++i) {
+            for (i = 0 , len = elements.length; i < len; ++i) {
                 el = elements[i];
                 if (typeof el !== 'string') {
                     el = el.id;
@@ -25006,6 +25882,7 @@ Ext.define('Ext.util.paintmonitor.Abstract', {
         this.initConfig(config);
     },
     bindListeners: function(bind) {
+        
         this.monitorElement[bind ? 'addEventListener' : 'removeEventListener'](this.eventName, this.onElementPainted, true);
     },
     applyElement: function(element) {
@@ -25120,6 +25997,7 @@ Ext.define('Ext.event.publisher.ElementPaint', {
         }
     }
 }, 
+
 function(ElementPaint) {
     ElementPaint.instance = new ElementPaint();
 });
@@ -25197,6 +26075,7 @@ Ext.define('Ext.dom.Element', function(Element) {
         defaultUnit = 'px',
         msRe = /^-ms-/,
         camelRe = /(-[a-z])/gi,
+        
         cssRe = /([a-z0-9\-]+)\s*:\s*([^;\s]+(?:\s*[^;\s]+)*);?/gi,
         pxRe = /^\d+(?:\.\d*)?px$/i,
         relativeUnitRe = /(%|r?em|auto|vh|vw|vmin|vmax|ch|ex)$/i,
@@ -25234,12 +26113,17 @@ Ext.define('Ext.dom.Element', function(Element) {
         inputTypeSelectionSupported = /text|password|search|tel|url/i,
         visFly, scrollFly, caFly, wrapFly, grannyFly, activeElFly;
     
+    
+    
+    
+    
     try {
         elementIdCounter = WIN_TOP.__elementIdCounter__;
+        WIN_TOP.__elementIdCounter__ = elementIdCounter;
     } catch (e) {
         WIN_TOP = WIN;
     }
-    WIN_TOP.__elementIdCounter = elementIdCounter = (WIN_TOP.__elementIdCounter__ || 0) + 1;
+    WIN_TOP.__elementIdCounter__ = elementIdCounter = (WIN_TOP.__elementIdCounter__ || 0) + 1;
     windowId = 'ext-window-' + elementIdCounter;
     documentId = 'ext-document-' + elementIdCounter;
     
@@ -25264,8 +26148,8 @@ Ext.define('Ext.dom.Element', function(Element) {
         styleHooks: {
             transform: {
                 set: function(dom, value, el) {
-                    var prop,
-                        result = '';
+                    var result = '',
+                        prop;
                     if (typeof value !== 'string') {
                         for (prop in value) {
                             if (result) {
@@ -25360,12 +26244,10 @@ Ext.define('Ext.dom.Element', function(Element) {
             
             
             me.dom = dom;
-            id = dom.id;
-            if (id) {
-                me.id = id;
-            } else {
-                id = dom.id = me.getUniqueId();
+            if (!(id = dom.id)) {
+                dom.id = id = me.generateAutoId();
             }
+            me.id = id;
             
             
             
@@ -25408,6 +26290,10 @@ Ext.define('Ext.dom.Element', function(Element) {
                 9: 1
             },
             
+            namespaceURIs: {
+                html: 'http://www.w3.org/1999/xhtml',
+                svg: 'http://www.w3.org/2000/svg'
+            },
             selectableCls: Ext.baseCSSPrefix + 'selectable',
             unselectableCls: Ext.baseCSSPrefix + 'unselectable',
             
@@ -25444,9 +26330,9 @@ Ext.define('Ext.dom.Element', function(Element) {
                 return size;
             },
             
-            create: function(attributes, domNode) {
+            create: function(attributes, domNode, namespace) {
                 var me = this,
-                    classes, element, elementStyle, tag, value, name, i, ln, tmp;
+                    classes, element, elementStyle, tag, value, name, i, ln, tmp, ns;
                 attributes = attributes || {};
                 if (attributes.isElement) {
                     return domNode ? attributes.dom : attributes;
@@ -25460,14 +26346,15 @@ Ext.define('Ext.dom.Element', function(Element) {
                 if (!tag) {
                     tag = 'div';
                 }
-                if (attributes.namespace) {
-                    element = DOC.createElementNS(attributes.namespace, tag);
+                ns = attributes.namespace || namespace;
+                if (ns) {
+                    element = DOC.createElementNS(me.namespaceURIs[ns] || ns, tag);
                 } else {
                     element = DOC.createElement(tag);
                 }
                 elementStyle = element.style;
                 for (name in attributes) {
-                    if (name !== 'tag') {
+                    if (name !== 'tag' && name !== 'namespace') {
                         value = attributes[name];
                         switch (name) {
                             case 'style':
@@ -25475,9 +26362,7 @@ Ext.define('Ext.dom.Element', function(Element) {
                                     element.setAttribute(name, value);
                                 } else {
                                     for (i in value) {
-                                        if (value.hasOwnProperty(i)) {
-                                            elementStyle[i] = value[i];
-                                        }
+                                        elementStyle[i] = value[i];
                                     }
                                 };
                                 break;
@@ -25507,7 +26392,7 @@ Ext.define('Ext.dom.Element', function(Element) {
                             case 'children':
                                 if (value != null) {
                                     for (i = 0 , ln = value.length; i < ln; i++) {
-                                        element.appendChild(me.create(value[i], true));
+                                        element.appendChild(me.create(value[i], true, ns));
                                     }
                                 };
                                 break;
@@ -25582,6 +26467,7 @@ Ext.define('Ext.dom.Element', function(Element) {
                         entry = cache[id];
                         if (entry.skipGarbageCollection || !Ext.isGarbage(entry.dom)) {
                             
+                            
                             dom = Ext.getElementById ? Ext.getElementById(id) : DOC.getElementById(id);
                             if (dom && (dom !== entry.dom)) {
                                 warnDuplicate(id);
@@ -25617,10 +26503,20 @@ Ext.define('Ext.dom.Element', function(Element) {
                 
                 
                 
+                
                 if (isValidNodeType || isWin) {
                     id = el.id;
+                    if (el === DOC) {
+                        el.id = id = documentId;
+                    }
+                    
+                    else if (el == WIN) {
+                        
+                        el.id = id = windowId;
+                    }
                     if (cache.hasOwnProperty(id)) {
                         entry = cache[id];
+                        
                         if (entry.skipGarbageCollection || el === entry.dom || !Ext.isGarbage(entry.dom)) {
                             
                             if (el !== entry.dom) {
@@ -25631,13 +26527,6 @@ Ext.define('Ext.dom.Element', function(Element) {
                         } else {
                             entry.destroy();
                         }
-                    }
-                    if (el === DOC) {
-                        el.id = documentId;
-                    }
-                    
-                    if (el == WIN) {
-                        el.id = windowId;
                     }
                     el = new Element(el);
                     if (isWin || isDoc) {
@@ -25673,15 +26562,18 @@ Ext.define('Ext.dom.Element', function(Element) {
             },
             
             getDocumentHeight: function() {
+                
                 return Math.max(!Ext.isStrict ? DOC.body.scrollHeight : docEl.scrollHeight, this.getViewportHeight());
             },
             
             getDocumentWidth: function() {
+                
                 return Math.max(!Ext.isStrict ? DOC.body.scrollWidth : docEl.scrollWidth, this.getViewportWidth());
             },
             
             getOrientation: function() {
                 if (Ext.supports.OrientationChange) {
+                    
                     return (WIN.orientation == 0) ? 'portrait' : 'landscape';
                 }
                 return (WIN.innerHeight > WIN.innerWidth) ? 'portrait' : 'landscape';
@@ -25766,6 +26658,7 @@ Ext.define('Ext.dom.Element', function(Element) {
             
             normalize: function(prop) {
                 
+                
                 return propertyCache[prop] || (propertyCache[prop] = prop.replace(msRe, 'ms-').replace(camelRe, camelReplaceFn));
             },
             
@@ -25798,12 +26691,15 @@ Ext.define('Ext.dom.Element', function(Element) {
                     
                     
                     
+                    
                     if (deltaX === 0 && (editableHasFocus && (deltaY <= -Element.minKeyboardHeight))) {
+                        
                         isVirtualKeyboardOpen = true;
                         return;
                     }
                 }
                 if (isVirtualKeyboardOpen && (deltaX === 0) && (deltaY >= Element.minKeyboardHeight)) {
+                    
                     isVirtualKeyboardOpen = false;
                     
                     
@@ -25822,9 +26718,9 @@ Ext.define('Ext.dom.Element', function(Element) {
             },
             
             parseBox: function(box) {
+                var type, parts, ln;
                 box = box || 0;
-                var type = typeof box,
-                    parts, ln;
+                type = typeof box;
                 if (type === 'number') {
                     return {
                         top: box,
@@ -25914,8 +26810,11 @@ Ext.define('Ext.dom.Element', function(Element) {
                                     data += Ext.String.format('{0}={1}&', encoder(name), encoder(hasValue ? opt.value : opt.text));
                                 }
                             }
-                        } else if (!(/file|undefined|reset|button/i.test(type))) {
-                            if (!(/radio|checkbox/i.test(type) && !element.checked) && !(type == 'submit' && hasSubmit)) {
+                        }
+                        
+                        else if (!(/file|undefined|reset|button/i.test(type))) {
+                            if (!(/radio|checkbox/i.test(type) && !element.checked) && !(type === 'submit' && hasSubmit)) {
+                                
                                 data += encoder(name) + '=' + encoder(element.value) + '&';
                                 hasSubmit = /submit/i.test(type);
                             }
@@ -25959,7 +26858,9 @@ Ext.define('Ext.dom.Element', function(Element) {
             
             
             
+            
             var me = this;
+            
             
             
             
@@ -25977,6 +26878,8 @@ Ext.define('Ext.dom.Element', function(Element) {
             
             
             
+            
+            
             me.removeCls(Element.selectableCls);
             me.addCls(Element.unselectableCls);
             return me;
@@ -25985,7 +26888,8 @@ Ext.define('Ext.dom.Element', function(Element) {
         statics: {
             
             
-            tabbableSelector: Ext.supports.CSS3NegationSelector ? 'a[href],button,iframe,input,select,textarea,[tabindex]:not([tabindex="-1"]),[contenteditable="true"]' : 'a[href],button,iframe,input,select,textarea,[tabindex],[contenteditable="true"]',
+            tabbableSelector: Ext.supports.CSS3NegationSelector ? 'a[href],button,iframe,input,select,textarea,[tabindex]:not([tabindex="-1"]),[contenteditable="true"]' : 
+            'a[href],button,iframe,input,select,textarea,[tabindex],[contenteditable="true"]',
             
             
             
@@ -26088,10 +26992,9 @@ Ext.define('Ext.dom.Element', function(Element) {
         addStyles: function(sides, styles) {
             var totalSize = 0,
                 sidesArr = (sides || '').match(wordsRe),
-                i,
+                styleSides = [],
                 len = sidesArr.length,
-                side,
-                styleSides = [];
+                side, i;
             if (len === 1) {
                 totalSize = parseFloat(this.getStyle(styles[sidesArr[0]])) || 0;
             } else if (len) {
@@ -26188,6 +27091,7 @@ Ext.define('Ext.dom.Element', function(Element) {
                 try {
                     dom.blur();
                 } catch (e) {}
+                
                 return me;
             } else {
                 return me.focus(undefined, dom);
@@ -26270,6 +27174,7 @@ Ext.define('Ext.dom.Element', function(Element) {
             if (!element) {
                 return false;
             }
+            
             var me = this,
                 dom = Ext.getDom(element);
             
@@ -26349,6 +27254,7 @@ Ext.define('Ext.dom.Element', function(Element) {
         
         doScrollIntoView: function(container, hscroll, animate, highlight, getScrollX, scrollTo) {
             scrollFly = scrollFly || new Ext.dom.Fly();
+            
             var me = this,
                 dom = me.dom,
                 scrollX = scrollFly.attach(container)[getScrollX](),
@@ -26472,7 +27378,7 @@ Ext.define('Ext.dom.Element', function(Element) {
                     dom
                 ]);
             } else {
-                Ext.GlobalEvents.fireEvent('beforefocus', dom);
+                Ext.fireEvent('beforefocus', dom);
                 dom.focus();
             }
             return me;
@@ -26537,6 +27443,7 @@ Ext.define('Ext.dom.Element', function(Element) {
         getBorderPadding: function() {
             var paddingWidth = this.getStyle(paddingsTLRB),
                 bordersWidth = this.getStyle(bordersTLRB);
+            
             return {
                 beforeX: (parseFloat(bordersWidth[borders.l]) || 0) + (parseFloat(paddingWidth[paddings.l]) || 0),
                 afterX: (parseFloat(bordersWidth[borders.r]) || 0) + (parseFloat(paddingWidth[paddings.r]) || 0),
@@ -26544,6 +27451,7 @@ Ext.define('Ext.dom.Element', function(Element) {
                 afterY: (parseFloat(bordersWidth[borders.b]) || 0) + (parseFloat(paddingWidth[paddings.b]) || 0)
             };
         },
+        
         
         getBorders: function() {
             var bordersWidth = this.getStyle(bordersTLRB);
@@ -26782,10 +27690,10 @@ Ext.define('Ext.dom.Element', function(Element) {
         },
         
         getScrollIntoViewXY: function(container, scrollX, scrollY, align) {
-            align = align || empty;
             var me = this,
                 dom = me.dom,
                 offsets, clientWidth, clientHeight;
+            align = align || empty;
             if (container.isRegion) {
                 clientHeight = container.height;
                 clientWidth = container.width;
@@ -27038,6 +27946,7 @@ Ext.define('Ext.dom.Element', function(Element) {
             
             
             
+            
             if (Ext.supports.BoundingClientRect) {
                 rect = dom.getBoundingClientRect();
                 width = (me.vertical && !Ext.supports.RotatedBoundingClientRect) ? (rect.bottom - rect.top) : (rect.right - rect.left);
@@ -27050,10 +27959,13 @@ Ext.define('Ext.dom.Element', function(Element) {
             
             if (Ext.supports.Direct2DBug && !me.vertical) {
                 
+                
                 floating = me.adjustDirect2DDimension(WIDTH);
                 if (preciseWidth) {
                     width += floating;
                 }
+                
+                
                 
                 
                 
@@ -27088,6 +28000,7 @@ Ext.define('Ext.dom.Element', function(Element) {
                     y = rect.top - bodyRect.top;
                 } catch (ex) {}
             }
+            
             return [
                 round(x),
                 round(y)
@@ -27184,6 +28097,7 @@ Ext.define('Ext.dom.Element', function(Element) {
             el = el || {};
             if (el.nodeType || el.dom) {
                 rt = me.dom.parentNode.insertBefore(Ext.getDom(el), isAfter ? me.dom.nextSibling : me.dom);
+                
                 if (!returnDom) {
                     rt = Ext.get(rt);
                 }
@@ -27471,12 +28385,11 @@ Ext.define('Ext.dom.Element', function(Element) {
         
         radioCls: function(className) {
             var cn = this.dom.parentNode.childNodes,
-                v;
+                v, i, len;
             className = Ext.isArray(className) ? className : [
                 className
             ];
-            for (var i = 0,
-                len = cn.length; i < len; i++) {
+            for (i = 0 , len = cn.length; i < len; i++) {
                 v = cn[i];
                 if (v && v.nodeType === 1) {
                     Ext.fly(v).removeCls(className);
@@ -27488,6 +28401,7 @@ Ext.define('Ext.dom.Element', function(Element) {
             var dom = this.dom,
                 domStyle = dom.style;
             domStyle.display = 'none';
+            
             dom.offsetHeight;
             domStyle.display = '';
         },
@@ -27504,15 +28418,24 @@ Ext.define('Ext.dom.Element', function(Element) {
             return this.replaceCls(names, null, prefix, suffix);
         },
         
-        repaint: function() {
-            var me = this;
-            me.addCls(Ext.baseCSSPrefix + 'repaint');
+        repaint: function(cls, state) {
+            var me = this,
+                off, on;
+            if (!cls) {
+                cls = Ext.baseCSSPrefix + 'repaint';
+                on = !(off = false);
+            } else if (state != null) {
+                
+                on = state;
+                off = !state;
+            }
+            me.toggleCls(cls, on);
             if (!me.repaintTimer) {
                 me.repaintTimer = Ext.defer(function() {
                     me.repaintTimer = null;
                     if (me.dom) {
                         
-                        me.removeCls(Ext.baseCSSPrefix + 'repaint');
+                        me.toggleCls(cls, off);
                     }
                 }, 1);
             }
@@ -27521,6 +28444,7 @@ Ext.define('Ext.dom.Element', function(Element) {
         
         replace: function(el, destroy) {
             el = Ext.getDom(el);
+            
             var parentNode = el.parentNode,
                 id = el.id,
                 dom = this.dom;
@@ -27540,6 +28464,7 @@ Ext.define('Ext.dom.Element', function(Element) {
         
         replaceCls: function(remove, add, prefix, suffix) {
             var me = this,
+                dom = me.dom,
                 added = 0,
                 removed = 0,
                 rem = remove,
@@ -27600,7 +28525,15 @@ Ext.define('Ext.dom.Element', function(Element) {
                     me.setClassMap(map, 
                     true);
                 } else if (added) {
-                    me.dom.className = list.join(' ');
+                    list = list.join(' ');
+                    if (!Ext.isIE8 && dom instanceof SVGElement) {
+                        
+                        
+                        
+                        dom.setAttribute('class', list);
+                    } else {
+                        dom.className = list;
+                    }
                 }
             }
             return me;
@@ -27641,6 +28574,7 @@ Ext.define('Ext.dom.Element', function(Element) {
             
             
             direction = direction.charAt(0);
+            
             var me = this,
                 dom = me.dom,
                 side = direction === 'r' || direction === 'l' ? 'left' : 'top',
@@ -27671,7 +28605,7 @@ Ext.define('Ext.dom.Element', function(Element) {
                 animate = deltaY;
                 deltaY = deltaX[1];
                 deltaX = deltaX[0];
-            } else if (typeof deltaX != 'number') {
+            } else if (typeof deltaX !== 'number') {
                 
                 animate = deltaY;
                 deltaY = deltaX.y;
@@ -28018,24 +28952,22 @@ Ext.define('Ext.dom.Element', function(Element) {
                 }
             } else {
                 for (name in prop) {
-                    if (prop.hasOwnProperty(name)) {
-                        hook = hooks[name];
-                        if (!hook) {
-                            hooks[name] = hook = {
-                                name: Element.normalize(name)
-                            };
-                        }
-                        value = prop[name];
-                        value = (value == null) ? '' : value;
-                        
-                        if (hook.set) {
-                            hook.set(dom, value, me);
-                        } else {
-                            style[hook.name] = value;
-                        }
-                        if (hook.afterSet) {
-                            hook.afterSet(dom, value, me);
-                        }
+                    hook = hooks[name];
+                    if (!hook) {
+                        hooks[name] = hook = {
+                            name: Element.normalize(name)
+                        };
+                    }
+                    value = prop[name];
+                    value = (value == null) ? '' : value;
+                    
+                    if (hook.set) {
+                        hook.set(dom, value, me);
+                    } else {
+                        style[hook.name] = value;
+                    }
+                    if (hook.afterSet) {
+                        hook.afterSet(dom, value, me);
                     }
                 }
             }
@@ -28043,6 +28975,9 @@ Ext.define('Ext.dom.Element', function(Element) {
         },
         setText: function(text) {
             this.dom.textContent = text;
+        },
+        getText: function() {
+            return this.dom.textContent;
         },
         
         setTop: function(top) {
@@ -28085,7 +29020,9 @@ Ext.define('Ext.dom.Element', function(Element) {
             }
         },
         
+        
         setVisibilityMode: function(mode) {
+            
             
             if (mode !== 1 && mode !== 2 && mode !== 3 && mode !== 4 && mode !== 5) {
                 Ext.raise("visibilityMode must be one of the following: " + "Ext.Element.DISPLAY, Ext.Element.VISIBILITY, Ext.Element.OFFSETS, " + "Ext.Element.CLIP, or Element.OPACITY");
@@ -28240,6 +29177,7 @@ Ext.define('Ext.dom.Element', function(Element) {
             if (flag === undefined) {
                 flag = true;
             }
+            
             var me = this,
                 addedClass = flag ? firstClass : secondClass,
                 removedClass = flag ? secondClass : firstClass;
@@ -28321,6 +29259,7 @@ Ext.define('Ext.dom.Element', function(Element) {
             var dom = this.dom,
                 parentNode = dom.parentNode,
                 activeElement = (activeElFly || (activeElFly = new Ext.dom.Fly())).attach(Ext.Element.getActiveElement()),
+                
                 grandparentNode, cached, resumeFocus, tabIndex;
             grannyFly = grannyFly || new Ext.dom.Fly();
             cached = Ext.cache[activeElement.dom.id];
@@ -28382,13 +29321,14 @@ Ext.define('Ext.dom.Element', function(Element) {
         wrap: function(config, returnDom, selector) {
             var me = this,
                 dom = me.dom,
+                
                 result = Ext.DomHelper.insertBefore(dom, config || {
                     tag: "div"
                 }, !returnDom),
                 newEl = (wrapFly || (wrapFly = new Ext.dom.Fly())).attach(Ext.getDom(result)),
-                
                 target = newEl,
                 activeElement = (activeElFly || (activeElFly = new Ext.dom.Fly())).attach(Ext.Element.getActiveElement()),
+                
                 cached, resumeFocus, tabIndex;
             cached = Ext.cache[activeElement.dom.id];
             
@@ -28558,9 +29498,11 @@ Ext.define('Ext.dom.Element', function(Element) {
                     color: options
                 };
             }
+            
             var me = this,
                 rippleParent = Ext.isString(options.delegate) ? me.down(options.delegate) : me,
                 rippleMeasureEl = Ext.isString(options.measureSelector) ? me.down(options.measureSelector) : null,
+                
                 color = window.getComputedStyle(rippleParent.dom).color,
                 unbound = options.bound === false,
                 position = options.position,
@@ -28819,7 +29761,8 @@ Ext.define('Ext.dom.Element', function(Element) {
                     
                     
                     
-                    if (((includeSaved && node.hasAttribute(cAttr)) || (!(tabIndex < 0) && fly.attach(node).isTabbable(includeHidden))) && !(excludeRoot && (excludeRoot === node || excludeRoot.contains(node)))) {
+                    if (((includeSaved && node.hasAttribute(cAttr)) || (!(tabIndex < 0) && fly.attach(node).isTabbable(includeHidden))) && 
+                    !(excludeRoot && (excludeRoot === node || excludeRoot.contains(node)))) {
                         selection[idx++] = node;
                     }
                 }
@@ -28830,6 +29773,8 @@ Ext.define('Ext.dom.Element', function(Element) {
                 var counterAttr = Ext.Element.tabbableSavedCounterAttribute,
                     savedAttr = Ext.Element.tabbableSavedValueAttribute,
                     counter, nodes, node, i, len;
+                
+                
                 
                 
                 
@@ -28966,6 +29911,7 @@ Ext.define('Ext.dom.Element', function(Element) {
                         }
                     }
                     if (observableDoAddListener.call(me, eventName, fn, scope, options, order, caller, manager)) {
+                        
                         if (me.longpressEvents[eventName] && (++me.longpressListenerCount === 1)) {
                             me.on('MSHoldVisual', 'preventMsHoldVisual', me);
                         }
@@ -29032,6 +29978,7 @@ Ext.define('Ext.dom.Element', function(Element) {
                 var Publisher = Ext.event.publisher.Publisher,
                     publisher = Publisher.publishersByEvent[eventName],
                     isNative = noTranslate && !Ext.event.Event.gestureEvents[eventName];
+                
                 
                 
                 
@@ -29316,6 +30263,7 @@ Ext.define('Ext.dom.Element', function(Element) {
                 return null;
             }
             
+            
             return typeof el === 'string' ? Ext.getElementById(el) : 'dom' in el ? el.dom : el;
         },
         
@@ -29356,6 +30304,7 @@ Ext.define('Ext.dom.Element', function(Element) {
         
         removeNode: function(node) {
             node = node.dom || node;
+            
             var id = node && node.id,
                 el = Ext.cache[id],
                 parent;
@@ -29399,6 +30348,7 @@ Ext.define('Ext.dom.Element', function(Element) {
         
         
         
+        
         Ext.getDoc().on('selectstart', function(ev, dom) {
             var selectableCls = Element.selectableCls,
                 unselectableCls = Element.unselectableCls,
@@ -29408,12 +30358,15 @@ Ext.define('Ext.dom.Element', function(Element) {
             
             
             
+            
             if (tagName === 'input' || tagName === 'textarea') {
                 return;
             }
             
+            
             while (dom && dom.nodeType === 1 && dom !== DOC.documentElement) {
                 el.attach(dom);
+                
                 
                 if (el.hasCls(selectableCls)) {
                     return;
@@ -29434,6 +30387,7 @@ Ext.define('Ext.dom.Element', function(Element) {
             
             
             var win = Ext.getWin();
+            
             Element._documentWidth = Element._viewportWidth = docEl.clientWidth;
             Element._documentHeight = Element._viewportHeight = docEl.clientHeight;
             win.on({
@@ -29516,14 +30470,19 @@ Ext.define('Ext.dom.Element', function(Element) {
         if (Ext.isSafari) {
             bodyCls.push(Ext.baseCSSPrefix + 'safari');
         }
-        if (Ext.isSafari && Ext.browser.version.isLessThan(11)) {
-            bodyCls.push(Ext.baseCSSPrefix + 'safari10m');
-        }
         if (Ext.isSafari9) {
             bodyCls.push(Ext.baseCSSPrefix + 'safari9');
         }
-        if (Ext.isSafari && Ext.browser.version.isLessThan(9)) {
-            bodyCls.push(Ext.baseCSSPrefix + 'safari8m');
+        if (Ext.isSafari10) {
+            bodyCls.push(Ext.baseCSSPrefix + 'safari10');
+        }
+        if (Ext.isSafari) {
+            if (Ext.browser.version.isLessThan(11)) {
+                bodyCls.push(Ext.baseCSSPrefix + 'safari10m');
+            }
+            if (Ext.browser.version.isLessThan(9)) {
+                bodyCls.push(Ext.baseCSSPrefix + 'safari8m');
+            }
         }
         if (Ext.isChrome) {
             bodyCls.push(Ext.baseCSSPrefix + 'chrome');
@@ -29562,6 +30521,9 @@ Ext.define('Ext.dom.Element', function(Element) {
         if (Ext.os.is.iOS && Ext.browser.is.WebView && !Ext.browser.is.Standalone) {
             
             bodyCls.push(Ext.baseCSSPrefix + 'ios-native');
+        }
+        if (Ext.supports.FlexBoxBasisBug) {
+            bodyCls.push(Ext.baseCSSPrefix + 'has-flexbasis-bug');
         }
         Ext.getBody().addCls(bodyCls);
         theme = Ext.theme;
@@ -29711,6 +30673,7 @@ Ext.define('Ext.GlobalEvents', {
         }
     }
 }, function(GlobalEvents) {
+    Ext.hasListeners = GlobalEvents.hasListeners;
     
     Ext.on = function() {
         return GlobalEvents.addListener.apply(GlobalEvents, arguments);
@@ -29742,7 +30705,9 @@ Ext.define('Ext.Glyph', {
     
     
     constructor: function(glyph) {
-        glyph && this.setGlyph(glyph);
+        if (glyph) {
+            this.setGlyph(glyph);
+        }
     },
     
     setGlyph: function(glyph) {
@@ -29750,11 +30715,12 @@ Ext.define('Ext.Glyph', {
         this.glyphConfig = glyph;
         if (typeof glyph === 'string') {
             glyphParts = glyph.split('@');
+            glyph = isNaN(glyphParts[0]) ? parseInt('0' + glyphParts[0], 16) : parseInt(glyphParts[0], 10);
             
             
             
             
-            if (isNaN(glyph = isNaN(glyphParts[0]) ? parseInt('0' + glyphParts[0], 16) : parseInt(glyphParts[0], 10)) || !glyph) {
+            if (isNaN(glyph) || !glyph) {
                 glyph = glyphParts[0].charCodeAt(0);
             }
             this.fontFamily = glyphParts[1] || Ext._glyphFontFamily;
@@ -29785,9 +30751,10 @@ Ext.define('Ext.Glyph', {
 });
 
 
-Ext.USE_NATIVE_JSON = false;
+Ext.USE_NATIVE_JSON = true;
 
 Ext.JSON = (new (function() {
+    
     
     
     
@@ -29800,7 +30767,6 @@ Ext.JSON = (new (function() {
         doDecode = function(json) {
             return eval("(" + json + ')');
         },
-        
         doEncode = function(o, newline) {
             
             if (o === null || o === undefined) {
@@ -29821,8 +30787,8 @@ Ext.JSON = (new (function() {
             }
             
             
-            else if (o.toJSON) {
-                return o.toJSON();
+            else if (typeof o.toJSON === 'function') {
+                return doEncode(o.toJSON());
             } else if (Ext.isArray(o)) {
                 return encodeArray(o, newline);
             } else if (Ext.isObject(o)) {
@@ -29842,6 +30808,7 @@ Ext.JSON = (new (function() {
             "\\": '\\\\',
             '\v': '\\u000b'
         },
+        
         
         charToReplace = /[\\\"\x00-\x1f\x7f-\uffff]/g,
         encodeString = function(s) {
@@ -29898,6 +30865,7 @@ Ext.JSON = (new (function() {
             if (newline) {
                 return encodeArrayPretty(o, newline);
             }
+            
             var a = [
                     "[",
                     ""
@@ -29916,6 +30884,7 @@ Ext.JSON = (new (function() {
             if (newline) {
                 return encodeObjectPretty(o, newline);
             }
+            
             var a = [
                     "{",
                     ""
@@ -30124,7 +31093,8 @@ Ext.define('Ext.mixin.Inheritable', {
     },
     
     bubble: function(fn, scope, args) {
-        for (var target = this; target; target = target.getRefOwner()) {
+        var target;
+        for (target = this; target; target = target.getRefOwner()) {
             if (fn.apply(scope || target, args || [
                 target
             ]) === false) {
@@ -30164,24 +31134,20 @@ Ext.define('Ext.mixin.Inheritable', {
         }
     },
     privates: {
-        _fixName: function() {
-            var me = this,
-                owner;
-            if (me.name) {
-                owner = me.lookupNameHolder();
-                if (owner && !owner.destroyed) {
-                    owner.attachNameRef(me);
-                }
-            }
-        },
         
         _fixReference: function() {
             var me = this,
-                refHolder;
+                holder;
+            if (me.name && me.nameable) {
+                holder = me.lookupNameHolder();
+                if (holder && !holder.destroyed) {
+                    holder.attachNameRef(me);
+                }
+            }
             if (me.reference) {
-                refHolder = me.lookupReferenceHolder();
-                if (refHolder) {
-                    refHolder.attachReference(me);
+                holder = me.lookupReferenceHolder();
+                if (holder && !holder.destroyed) {
+                    holder.attachReference(me);
                 }
             }
         },
@@ -30194,22 +31160,19 @@ Ext.define('Ext.mixin.Inheritable', {
             if (me.inheritedState && instanced) {
                 me.invalidateInheritedState();
             }
-            if (me.name || me.reference) {
-                Ext.ComponentManager.markReferencesDirty();
-            }
+            Ext.ComponentManager.markReferencesDirty();
         },
         
         onInheritedRemove: function(destroying) {
             var me = this;
-            if (me.name || me.reference) {
-                Ext.ComponentManager.markReferencesDirty();
-            }
+            Ext.ComponentManager.markReferencesDirty();
             if (me.inheritedState && !destroying) {
                 me.invalidateInheritedState();
             }
         }
     }
-}, function() {
+}, 
+function() {
     
     Ext.rootInheritedState = {};
 });
@@ -30359,7 +31322,7 @@ Ext.define('Ext.mixin.Bindable', {
             name, publishes, vm, path;
         
         if (!(arguments.length === 0 || arguments.length === 2)) {
-            Ext.raise('publishState must either be called with no args, or with both name AND value passed');
+            Ext.raise('publishState must either be called with no args, or with both name ' + 'AND value passed');
         }
         
         if (binding && !binding.syncing && !binding.isReadOnly()) {
@@ -30414,37 +31377,22 @@ Ext.define('Ext.mixin.Bindable', {
     
     privates: {
         
-        addBindableUpdater: function(property) {
-            var me = this,
-                configs = me.self.$config.configs,
-                cfg = configs[property],
-                updateName;
-            
-            
-            if (cfg && !me.hasOwnProperty(updateName = cfg.names.update)) {
-                me[updateName] = cfg.bindableUpdater || (cfg.root.bindableUpdater = me.makeBindableUpdater(cfg));
-            }
-        },
-        
         applyBind: function(binds, currentBindings) {
             if (!binds) {
-                return binds;
+                return currentBindings;
             }
+            
             var me = this,
                 viewModel = me.lookupViewModel(),
                 twoWayable = me.getTwoWayBindable(),
                 getBindTemplateScope = me._getBindTemplateScope,
-                b, property, descriptor, destroy;
-            me.$hasBinds = true;
-            if (!currentBindings || typeof currentBindings === 'string') {
-                currentBindings = {};
-            }
+                b, watch, property, descriptor;
             
             if (!viewModel) {
                 Ext.raise('Cannot use bind config without a viewModel');
             }
             
-            if (Ext.isString(binds)) {
+            if (typeof binds === 'string') {
                 
                 if (!me.defaultBindProperty) {
                     Ext.raise(me.$className + ' has no defaultBindProperty - ' + 'Please specify a bind object');
@@ -30456,13 +31404,15 @@ Ext.define('Ext.mixin.Bindable', {
             }
             for (property in binds) {
                 descriptor = binds[property];
-                b = currentBindings[property];
-                if (b && b.isBinding) {
+                b = currentBindings && currentBindings[property];
+                if (b) {
                     b.destroy();
-                    b = null;
-                    destroy = true;
+                    delete currentBindings[property];
                 }
                 if (descriptor) {
+                    if (!b && twoWayable && twoWayable[property]) {
+                        (watch || (watch = {}))[property] = '_onConfigPropChange';
+                    }
                     b = viewModel.bind(descriptor, me.onBindNotify, me);
                     b._config = Ext.Config.get(property);
                     b.getTemplateScope = getBindTemplateScope;
@@ -30470,21 +31420,15 @@ Ext.define('Ext.mixin.Bindable', {
                     if (!me[b._config.names.set]) {
                         Ext.raise('Cannot bind ' + property + ' on ' + me.$className + ' - missing a ' + b._config.names.set + ' method.');
                     }
-                }
-                
-                if (destroy) {
-                    delete currentBindings[property];
-                } else {
-                    currentBindings[property] = b;
-                }
-                if (twoWayable && twoWayable[property]) {
-                    if (destroy) {
-                        me.clearBindableUpdater(property);
-                    } else if (!b.isReadOnly()) {
-                        me.addBindableUpdater(property);
-                    }
+                    
+                    (currentBindings || (currentBindings = {}))[property] = b;
                 }
             }
+            if (watch) {
+                watch.scope = me;
+                me.watchConfig(watch);
+            }
+            me.$bindings = currentBindings;
             return currentBindings;
         },
         applyController: function(controller) {
@@ -30498,23 +31442,31 @@ Ext.define('Ext.mixin.Bindable', {
             return controller;
         },
         updatePublishes: function(all) {
-            var me = this;
-            if (me.lookupViewModel()) {
-                for (var property in all) {
-                    me.addBindableUpdater(property);
+            var me = this,
+                property, watch;
+            if (all && me.lookupViewModel()) {
+                for (property in all) {
+                    if (all[property]) {
+                        (watch || (watch = {}))[property] = '_onConfigPropChange';
+                    }
+                }
+                if (watch) {
+                    watch.scope = me;
+                    me.watchConfig(watch);
                 }
             }
             return all;
         },
         
         applySession: function(session) {
+            var parentSession, config;
             if (!session) {
                 return null;
             }
             if (!session.isSession) {
-                var parentSession = this.lookupSession(true),
-                    
-                    config = (session === true) ? {} : session;
+                parentSession = this.lookupSession(true);
+                
+                config = (session === true) ? {} : session;
                 if (parentSession) {
                     session = parentSession.spawn(config);
                 } else {
@@ -30523,6 +31475,7 @@ Ext.define('Ext.mixin.Bindable', {
                     session = new Ext.data['Session'](config);
                 }
             }
+            
             return session;
         },
         
@@ -30560,17 +31513,6 @@ Ext.define('Ext.mixin.Bindable', {
             
             return this.scope.resolveListenerScope();
         },
-        clearBindableUpdater: function(property) {
-            var me = this,
-                configs = me.self.$config.configs,
-                cfg = configs[property],
-                updateName;
-            if (cfg && me.hasOwnProperty(updateName = cfg.names.update)) {
-                if (me[updateName].$bindableUpdater) {
-                    delete me[updateName];
-                }
-            }
-        },
         destroyBindable: function() {
             var me = this,
                 viewModel = me.getConfig('viewModel', true),
@@ -30602,7 +31544,6 @@ Ext.define('Ext.mixin.Bindable', {
             
             
             
-            
             if (!me.viewModel) {
                 
                 me.getViewModel();
@@ -30629,21 +31570,6 @@ Ext.define('Ext.mixin.Bindable', {
             }
             return ret;
         },
-        
-        makeBindableUpdater: function(cfg) {
-            var updateName = cfg.names.update,
-                fn = function(newValue, oldValue) {
-                    var me = this,
-                        updater = me.self.prototype[updateName];
-                    if (updater) {
-                        updater.call(me, newValue, oldValue);
-                    }
-                    
-                    me.publishState(cfg.name, me[cfg.getInternalName(me)]);
-                };
-            fn.$bindableUpdater = true;
-            return fn;
-        },
         notifyIf: function(skipThis) {
             var vm = this.lookupViewModel(skipThis);
             if (vm) {
@@ -30655,20 +31581,23 @@ Ext.define('Ext.mixin.Bindable', {
             this[binding._config.names.set](value);
             --binding.syncing;
         },
+        _onConfigPropChange: function(me, name, value) {
+            me.publishState(name, value);
+        },
         removeBindings: function() {
             var me = this,
-                bindings, key, binding;
-            if (me.$hasBinds) {
-                bindings = me.getBind();
-                if (bindings && typeof bindings !== 'string') {
-                    for (key in bindings) {
-                        binding = bindings[key];
-                        binding.destroy();
-                        binding._config = binding.getTemplateScope = null;
+                bindings = me.$bindings,
+                b, key;
+            if (bindings) {
+                for (key in bindings) {
+                    b = bindings[key];
+                    if (b) {
+                        b.destroy();
+                        b._config = b.getTemplateScope = null;
+                        bindings[key] = null;
                     }
                 }
             }
-            me.setBind(null);
         },
         
         updateSession: function(session) {
@@ -30847,15 +31776,35 @@ Ext.define('Ext.mixin.ComponentDelegation', {
 
 Ext.define('Ext.plugin.Abstract', {
     alternateClassName: 'Ext.AbstractPlugin',
+    mixins: [
+        Ext.mixin.Identifiable
+    ],
     
     isPlugin: true,
     
+    
+    
     constructor: function(config) {
         if (config) {
+            this.cmp = config.cmp;
             this.pluginConfig = config;
             this.initConfig(config);
         }
     },
+    
+    init: Ext.emptyFn,
+    
+    destroy: function() {
+        var me = this;
+        me.destroy = Ext.emptyFn;
+        me.destroying = true;
+        me.cmp = me.pluginConfig = null;
+        me.doDestroy();
+        me.callParent();
+    },
+    
+    
+    doDestroy: Ext.emptyFn,
     
     clonePlugin: function(overrideCfg) {
         return new this.self(Ext.apply({}, overrideCfg, this.pluginConfig));
@@ -30869,14 +31818,11 @@ Ext.define('Ext.plugin.Abstract', {
     setCmp: function(host) {
         this.cmp = host;
     },
-    
-    
-    
-    init: Ext.emptyFn,
-    
-    destroy: function() {
-        this.cmp = this.pluginConfig = null;
-        this.callParent();
+    getStatefulOwner: function() {
+        return [
+            this.cmp,
+            'plugins'
+        ];
     },
     onClassExtended: function(cls, data, hooks) {
         var alias = data.alias,
@@ -30905,6 +31851,7 @@ Ext.define('Ext.plugin.Abstract', {
     statics: {
         decode: function(plugins, typeProp, include) {
             if (plugins) {
+                
                 var type = Ext.typeOf(plugins),
                     
                     entry, key, obj, value;
@@ -30937,13 +31884,10 @@ Ext.define('Ext.plugin.Abstract', {
                                 id: key
                             };
                             entry[typeProp] = key;
-                            if (key === 'responsive') {
-                                entry.weight = -1000;
-                            }
                             Ext.apply(entry, value);
                             plugins.push(entry);
                         }
-                        plugins.sort(Ext.weightSortFn);
+                        Ext.sortByWeight(plugins);
                     }
                 }
                 
@@ -30963,6 +31907,7 @@ Ext.define('Ext.plugin.Abstract', {
 
 Ext.define('Ext.mixin.Pluggable', function(Pluggable) {
     return {
+        mixinId: 'pluggable',
         config: {
             
             plugins: null
@@ -31121,12 +32066,13 @@ Ext.define('Ext.mixin.Pluggable', function(Pluggable) {
             },
             
             createPlugin: function(config) {
+                var ret;
                 if (typeof config === 'string') {
                     config = {
                         type: config
                     };
                 }
-                var ret = config;
+                ret = config;
                 if (!config.isInstance) {
                     
                     config.cmp = this;
@@ -31149,16 +32095,19 @@ Ext.define('Ext.mixin.Pluggable', function(Pluggable) {
 
 Ext.define('Ext.mixin.Keyboard', function(Keyboard) {
     return {
+        
         extend: Ext.Mixin,
         mixinConfig: {
             id: 'keyboard'
         },
+        
         config: {
             
             keyMap: {
                 $value: null,
                 cached: true,
                 merge: function(value, baseValue, cls, mixin) {
+                    var ret, key, ucKey, v, vs;
                     
                     if (value === null) {
                         return value;
@@ -31168,8 +32117,7 @@ Ext.define('Ext.mixin.Keyboard', function(Keyboard) {
                     
                     
                     
-                    var ret = (baseValue && !cls.isInstance) ? Ext.Object.chain(baseValue) : {},
-                        key, ucKey, v, vs;
+                    ret = (baseValue && !cls.isInstance) ? Ext.Object.chain(baseValue) : {};
                     for (key in value) {
                         if (key !== 'scope') {
                             ucKey = key.toUpperCase();
@@ -31257,8 +32205,8 @@ Ext.define('Ext.mixin.Keyboard', function(Keyboard) {
                     disabledGroups = me.disabledKeyMapGroups,
                     keyMap = me.getKeyMap(),
                     entries = keyMap && Keyboard.getKeyName(e),
-                    entry, len, i,
-                    result = [];
+                    result = [],
+                    entry, len, i;
                 entries = entries && keyMap[entries];
                 if (entries) {
                     
@@ -31285,6 +32233,7 @@ Ext.define('Ext.mixin.Keyboard', function(Keyboard) {
                     entries = me.getKeyMapEnabled() ? me.findKeyMapEntries(e) : null,
                     len = entries && entries.length,
                     i, entry, result;
+                me.lastKeyMapEvent = e;
                 for (i = 0; i < len && result !== false; i++) {
                     entry = entries[i];
                     result = Ext.callback(entry.handler, entry.scope, [
@@ -31326,8 +32275,9 @@ Ext.define('Ext.mixin.Keyboard', function(Keyboard) {
             },
             statics: {
                 _charCodeRe: /^#([\d]+)$/,
+                
                 _keySpecRe: /^(?:(?:(\*)[\+\-])|(?:([a-z\+\-]*)[\+\-]))?(?:([a-z0-9_]+|[\+\-]|(?:#?\d+))(?:\:([a-z]+))?)$/i,
-                _delimiterRe: /\-|\+/,
+                _delimiterRe: /-|\+/,
                 _keyMapEvents: {
                     charCode: 'keypress',
                     keyCode: 'keydown'
@@ -31435,6 +32385,7 @@ Ext.define('Ext.mixin.Keyboard', function(Keyboard) {
                         keyCode = event;
                     }
                     
+                    
                     return Ext.event.Event.keyCodes[keyCode] || String.fromCharCode(keyCode);
                 },
                 matchEntry: function(entry, e) {
@@ -31458,6 +32409,7 @@ Ext.define('Ext.mixin.Keyboard', function(Keyboard) {
                 },
                 parseEntry: function(key, entry) {
                     key = key.toUpperCase();
+                    
                     var me = this,
                         Event = Ext.event.Event,
                         keyFlags = Event.keyFlags,
@@ -31604,7 +32556,8 @@ Ext.define('Ext.mixin.Focusable', {
     },
     
     isDestructing: function() {
-        for (var c = this; c; c = c.getRefOwner()) {
+        var c;
+        for (c = this; c; c = c.getRefOwner()) {
             if (c.destroying || c.destroyed) {
                 return true;
             }
@@ -31667,7 +32620,7 @@ Ext.define('Ext.mixin.Focusable', {
             
             
             focusTarget = me.findFocusTarget();
-            if (focusTarget && focusTarget != me) {
+            if (focusTarget && focusTarget !== me) {
                 return focusTarget.focus.apply(focusTarget, arguments);
             } else {
                 return false;
@@ -31763,9 +32716,12 @@ Ext.define('Ext.mixin.Focusable', {
         var me = this,
             ownerFC = me.ownerFocusableContainer,
             focusableIfDisabled = ownerFC && ownerFC.allowFocusingDisabledChildren,
+            wasFocusable = me.focusable,
             el;
         
-        if (!me.focusable && !me.forceTabIndex) {
+        
+        
+        if (!wasFocusable && !(me.forceTabIndex || newTabIndex == null)) {
             return;
         }
         me.tabIndex = newTabIndex;
@@ -31774,7 +32730,12 @@ Ext.define('Ext.mixin.Focusable', {
         if (me.destroying || me.destroyed || (me.isDisabled() && !focusableIfDisabled)) {
             return;
         }
+        
+        
+        
+        me.focusable = true;
         el = focusEl || me.getFocusEl();
+        me.focusable = wasFocusable;
         if (el) {
             
             if (el.$isFocusableEntity) {
@@ -31846,6 +32807,7 @@ Ext.define('Ext.mixin.Focusable', {
             if (focusEvent && !me.preventRefocus && me.el.contains(activeElement)) {
                 fromComponent = focusEvent.fromComponent;
                 
+                
                 if (fromComponent && (fromComponent.destroyed || fromComponent.isDestructing())) {
                     focusTarget = document.body;
                 } else 
@@ -31869,6 +32831,7 @@ Ext.define('Ext.mixin.Focusable', {
                     }
                 }
                 
+                
                 else if (Ext.getDoc().contains(focusTarget) && Ext.fly(focusTarget).isFocusable()) {
                     fromComponent = Ext.Component.from(focusTarget);
                     
@@ -31878,6 +32841,7 @@ Ext.define('Ext.mixin.Focusable', {
                         focusTarget.focus();
                     }
                 }
+                
                 
                 
                 else if (focusEvent.fromComponent && focusEvent.fromComponent.focus) {
@@ -31907,6 +32871,7 @@ Ext.define('Ext.mixin.Focusable', {
             
             
             
+            
             for (parentAxis = [] , candidate = me.getRefOwner(); candidate; candidate = candidate.getRefOwner()) {
                 if (!candidate.isDisabled()) {
                     parentAxis.unshift(candidate);
@@ -31931,12 +32896,15 @@ Ext.define('Ext.mixin.Focusable', {
                 
                 
                 
+                
                 focusTargets = Ext.ComponentQuery.query(':canfocus()', candidate);
                 if (focusTargets.length) {
+                    
                     focusIndex = Ext.Array.indexOf(focusTargets, Ext.ComponentManager.getActiveComponent());
                     
                     return focusTargets[focusIndex + 1] || focusTargets[focusIndex - 1] || focusTargets[0];
                 }
+                
                 
                 
                 if (candidate.isFocusable && candidate.isFocusable()) {
@@ -31989,7 +32957,7 @@ Ext.define('Ext.mixin.Focusable', {
             }
         },
         
-        handleFocusEvent: function(e) {
+        handleFocusEvent: function(info) {
             var me = this,
                 event;
             if (!me.focusable || me.destroying || me.destroyed) {
@@ -32001,16 +32969,16 @@ Ext.define('Ext.mixin.Focusable', {
             
             
             
-            if (me.isFocusing(e)) {
-                event = new Ext.event.Event(e.event);
+            if (me.isFocusing(info)) {
+                event = new Ext.event.Event(info.event);
                 event.type = 'focus';
-                event.relatedTarget = e.fromElement;
-                event.target = e.toElement;
+                event.relatedTarget = info.fromElement;
+                event.target = info.toElement;
                 me.onFocus(event);
             }
         },
         
-        handleBlurEvent: function(e) {
+        handleBlurEvent: function(info) {
             var me = this,
                 event;
             if (!me.focusable || me.destroying || me.destroyed) {
@@ -32020,11 +32988,11 @@ Ext.define('Ext.mixin.Focusable', {
             
             
             
-            if (e.toElement === document.body || me.isBlurring(e)) {
-                event = new Ext.event.Event(e.event);
+            if (info.toElement === document.body || me.isBlurring(info)) {
+                event = new Ext.event.Event(info.event);
                 event.type = 'blur';
-                event.target = e.fromElement;
-                event.relatedTarget = e.toElement;
+                event.target = info.fromElement;
+                event.relatedTarget = info.toElement;
                 me.onBlur(event);
             }
         },
@@ -32139,6 +33107,8 @@ Ext.define('Ext.mixin.Focusable', {
     var keyboardModeCls = Ext.baseCSSPrefix + 'keyboard-mode',
         keyboardMode = false;
     
+    Ext.enableKeyboardMode = Ext.isModern || !Ext.os.is.Desktop;
+    
     
     Ext.setKeyboardMode = Ext.setKeyboardMode || function(keyboardMode) {
         Ext.keyboardMode = keyboardMode;
@@ -32147,8 +33117,13 @@ Ext.define('Ext.mixin.Focusable', {
     Ext.isTouchMode = function() {
         return (Ext.now() - Ext.lastTouchTime) < 500;
     };
-    function syncKeyboardMode(e) {
-        var type = e.type;
+    
+    Ext.syncKeyboardMode = function(e) {
+        var type;
+        if (!Ext.enableKeyboardMode) {
+            return;
+        }
+        type = e.type;
         if (type === 'pointermove') {
             
             
@@ -32160,20 +33135,39 @@ Ext.define('Ext.mixin.Focusable', {
             Ext.lastTouchTime = e.pointerType === 'touch' && Ext.now();
             Ext.setKeyboardMode(keyboardMode);
         }
+    };
+    function keyboardModeFocusHandler() {
+        
+        if (keyboardMode !== Ext.getBody().hasCls(keyboardModeCls)) {
+            Ext.setKeyboardMode(keyboardMode);
+        }
     }
+    Ext.getEnableKeyboardMode = function() {
+        return Ext.enableKeyboardMode;
+    };
+    Ext.setEnableKeyboardMode = function(enable) {
+        var listeners = {
+                pointerdown: Ext.syncKeyboardMode,
+                pointermove: Ext.syncKeyboardMode,
+                keydown: Ext.syncKeyboardMode,
+                capture: true,
+                delegated: false
+            };
+        Ext.enableKeyboardMode = !!enable;
+        if (Ext.enableKeyboardMode) {
+            Ext.getWin().on(listeners);
+            Ext.on('focus', keyboardModeFocusHandler);
+        } else {
+            Ext.getWin().un(listeners);
+            Ext.un('focus', keyboardModeFocusHandler);
+        }
+    };
     Ext.onReady(function() {
-        Ext.getWin().on({
-            pointerdown: syncKeyboardMode,
-            pointermove: syncKeyboardMode,
-            keydown: syncKeyboardMode,
-            capture: true,
-            delegated: false
-        });
-        Ext.on('focus', function() {
-            if (keyboardMode !== Ext.getBody().hasCls(keyboardModeCls)) {
-                Ext.setKeyboardMode(keyboardMode);
-            }
-        });
+        
+        if (!Ext.enableKeyboardMode) {
+            Ext.getBody().addCls(keyboardModeCls);
+        }
+        Ext.setEnableKeyboardMode(Ext.enableKeyboardMode);
     });
 });
 
@@ -32201,7 +33195,7 @@ Ext.define('Ext.mixin.Accessible', {
         
         getAriaLabelEl: function(reference) {
             var ids = [],
-                refHolder, i, len, cmp, result;
+                refHolder, i, len, cmp;
             if (reference) {
                 if (Ext.isFunction(reference)) {
                     return reference.call(this);
@@ -32250,13 +33244,17 @@ Ext.define('Ext.Widget', {
         typeProperty: 'xtype'
     },
     
+    
     element: {
         reference: 'element'
     },
+    
     observableType: 'component',
     cachedConfig: {
         
         cls: null,
+        
+        margin: null,
         
         style: null,
         
@@ -32326,7 +33324,7 @@ Ext.define('Ext.Widget', {
         }
         
         if (config && ('baseCls' in config)) {
-            Ext.raise('baseCls cannot be used as an instance config. It must be specified at class definition time.');
+            Ext.raise('baseCls cannot be used as an instance config. It must be specified ' + 'at class definition time.');
         }
         
         
@@ -32346,14 +33344,14 @@ Ext.define('Ext.Widget', {
         if (me.focusable) {
             me.initFocusableEvents(true);
         }
-        if (renderTo) {
-            me.setRenderTo(renderTo);
-        }
         me.syncUiCls();
         Ext.ComponentManager.register(me);
         controller = me.getController();
         if (controller) {
             controller.init(me);
+        }
+        if (renderTo) {
+            me.setRenderTo(renderTo);
         }
     },
     afterCachedConfig: function() {
@@ -32472,11 +33470,13 @@ Ext.define('Ext.Widget', {
         var me = this;
         
         me.isDestroying = me.destroying = true;
+        me.destroy = Ext.emptyFn;
         me.doDestroy();
         
         
         me.clearListeners();
-        me.isDestroying = me.destroying = false;
+        
+        
         
         
         me.mixins.componentDelegation.destroyComponentDelegation.call(me);
@@ -32506,11 +33506,15 @@ Ext.define('Ext.Widget', {
     },
     doFireEvent: function(eventName, args, bubbles) {
         var me = this,
-            ret;
+            ev, ret;
         ret = me.mixins.observable.doFireEvent.call(me, eventName, args, bubbles);
         
         if (ret !== false && !me.destroyed) {
-            ret = me.mixins.componentDelegation.doFireDelegatedEvent.call(me, eventName, args);
+            ev = me.events[eventName];
+            
+            if (!ev || !ev.suspended) {
+                ret = me.mixins.componentDelegation.doFireDelegatedEvent.call(me, eventName, args);
+            }
         }
         return ret;
     },
@@ -32578,7 +33582,8 @@ Ext.define('Ext.Widget', {
             uiReferences = prototype.hasOwnProperty('uiReferences') ? prototype.uiReferences : (prototype.uiReferences = {
                 element: ''
             }),
-            renderTemplate, renderElement, renderConfig, element, referenceNodes, i, ln, referenceNode, reference, classCls, uiCls, baseCls, referenceElement;
+            renderTemplate, renderElement, renderConfig, element, referenceNodes, i, ln, referenceNode, reference, classCls, uiCls, baseCls, 
+            referenceElement;
         if (isFirstInstance) {
             
             
@@ -32735,6 +33740,7 @@ Ext.define('Ext.Widget', {
         if (container && container.isWidget) {
             container = container.el;
         }
+        
         var dom = this.renderElement.dom,
             containerDom = Ext.getDom(container),
             insertBeforeChildDom;
@@ -32856,6 +33862,9 @@ Ext.define('Ext.Widget', {
             }
         }
     },
+    updateMargin: function(margin) {
+        this.element.setMargin(margin);
+    },
     updateRipple: function(ripple) {
         var me = this,
             el = me.el;
@@ -32908,7 +33917,7 @@ Ext.define('Ext.Widget', {
     },
     
     getStyle: function() {
-        Ext.Error.raise("'style' is a write-only config.  To query element styles use the Ext.dom.Element API.");
+        Ext.Error.raise("'style' is a write-only config. To query element styles use " + "the Ext.dom.Element API.");
     },
     
     updateRenderTo: function(newContainer) {
@@ -33042,7 +34051,7 @@ Ext.define('Ext.Widget', {
     },
     onClassExtended: function(Class, members) {
         if (members.config && members.config.baseCls) {
-            Ext.raise('baseCls must be declared directly on the class body. Please move it outside of the config block.');
+            Ext.raise('baseCls must be declared directly on the class body. Please move it ' + 'outside of the config block.');
         }
     },
     
@@ -33069,7 +34078,7 @@ Ext.define('Ext.Widget', {
                 Ext.Object.defineProperty(this, name, {
                     get: function() {
                         if (this.destroyed) {
-                            return;
+                            return null;
                         }
                         
                         
@@ -33265,6 +34274,7 @@ Ext.define('Ext.Widget', {
                 
                 elementConfig = prototype._elementConfig = prototype.getElementConfig();
                 if (superPrototype.isWidget) {
+                    
                     
                     
                     prototype.processElementConfig.call(superPrototype);
@@ -33532,6 +34542,7 @@ Ext.define('Ext.mixin.Traversable', {
             return node;
         }
         if (parent) {
+            
             for (it = parent.items.items , i = Ext.Array.indexOf(it, node) + 1 , len = it.length; i < len; i++) {
                 sibling = it[i];
                 if (!selector || sibling.is(selector)) {
@@ -33643,7 +34654,9 @@ Ext.define('Ext.util.translatable.Abstract', {
         },
         easingY: {
             duration: 300
-        }
+        },
+        offsetX: 0,
+        offsetY: 0
     },
     
     
@@ -33685,25 +34698,46 @@ Ext.define('Ext.util.translatable.Abstract', {
     applyEasingY: function(easing) {
         return this.factoryEasing(easing);
     },
-    doTranslate: function(x, y) {
-        if (this.hasListeners.translate) {
-            this.fireEvent('translate', this, x, y);
+    updateOffsetX: function() {
+        var me = this;
+        if (!me.isConfiguring && !me.isAnimating) {
+            me.translateXY(me.x, me.y);
+        }
+    },
+    updateOffsetY: function() {
+        var me = this;
+        if (!me.isConfiguring && !me.isAnimating) {
+            me.translateXY(me.x, me.y);
         }
     },
     translate: function(x, y, animation) {
+        var me = this;
         if (animation) {
-            return this.translateAnimated(x, y, animation);
+            return me.translateAnimated(x, y, animation);
         }
-        if (this.isAnimating) {
-            this.stopAnimation();
+        if (me.isAnimating) {
+            me.stopAnimation();
         }
         if (!isNaN(x) && typeof x === 'number') {
-            this.x = x;
+            me.x = x;
+        } else {
+            x = me.x;
         }
         if (!isNaN(y) && typeof y === 'number') {
-            this.y = y;
+            me.y = y;
+        } else {
+            y = me.y;
         }
-        this.doTranslate(x, y);
+        me.translateXY(x, y);
+    },
+    translateXY: function(x, y) {
+        var me = this;
+        if (!me.destroyed) {
+            me.doTranslate(x + me.getOffsetX(), y + me.getOffsetY());
+            if (me.hasListeners.translate) {
+                me.fireEvent('translate', me, x, y);
+            }
+        }
     },
     translateAxis: function(axis, value, animation) {
         var x, y;
@@ -33805,7 +34839,7 @@ Ext.define('Ext.util.translatable.Abstract', {
             y = me.y;
         }
         if (me.lastX !== x || me.lastY !== y) {
-            me.doTranslate(x, y);
+            me.translateXY(x, y);
             me.lastX = x;
             me.lastY = y;
         }
@@ -33847,8 +34881,257 @@ Ext.define('Ext.util.translatable.Abstract', {
             me.stopAnimation();
         }
         me.callParent();
-        me.destroying = false;
+        
+        
         me.destroyed = true;
+    }
+});
+
+
+Ext.define('Ext.util.Bag', {
+    isBag: true,
+    constructor: function() {
+        
+        this.items = [];
+        
+        this.map = {};
+    },
+    
+    generation: 0,
+    
+    length: 0,
+    beginUpdate: Ext.emptyFn,
+    endUpdate: Ext.emptyFn,
+    add: function(item) {
+        var me = this,
+            items = me.items,
+            map = me.map,
+            n = 1,
+            old, i, idx, id, it, ret, was;
+        if (Ext.isArray(item)) {
+            old = ret = [];
+            n = item.length;
+        }
+        for (i = 0; i < n; i++) {
+            id = me.getKey(it = old ? item[i] : item);
+            idx = map[id];
+            if (idx === undefined) {
+                items.push(it);
+                map[id] = me.length++;
+                if (old) {
+                    old.push(it);
+                } else {
+                    ret = it;
+                }
+            } else {
+                was = items[idx];
+                if (old) {
+                    old.push(was);
+                } else {
+                    ret = was;
+                }
+                items[idx] = it;
+            }
+        }
+        ++me.generation;
+        return ret;
+    },
+    clear: function() {
+        var me = this,
+            needsClear = me.generation || me.length,
+            ret = needsClear ? me.items : [];
+        if (needsClear) {
+            me.items = [];
+            me.length = 0;
+            me.map = {};
+            ++me.generation;
+        }
+        return ret;
+    },
+    clone: function() {
+        var me = this,
+            ret = new me.self(),
+            len = me.length;
+        if (len) {
+            Ext.apply(ret.map, me.map);
+            ret.items = me.items.slice();
+            ret.length = me.length;
+        }
+        return ret;
+    },
+    contains: function(item) {
+        var ret = false,
+            map = this.map,
+            key;
+        if (item != null) {
+            key = this.getKey(item);
+            if (key in map) {
+                ret = this.items[map[key]] === item;
+            }
+        }
+        return ret;
+    },
+    containsKey: function(key) {
+        return key in this.map;
+    },
+    destroy: function() {
+        this.items = this.map = null;
+        this.callParent();
+    },
+    each: function(fn, scope) {
+        var items = this.items,
+            len = items.length,
+            i, ret;
+        if (len) {
+            scope = scope || this;
+            items = items.slice(0);
+            
+            for (i = 0; i < len; i++) {
+                ret = fn.call(scope, items[i], i, len);
+                if (ret === false) {
+                    break;
+                }
+            }
+        }
+        return ret;
+    },
+    getAt: function(index) {
+        var out = null;
+        if (index < this.length) {
+            out = this.items[index];
+        }
+        return out;
+    },
+    get: function(key) {
+        return this.getByKey(key);
+    },
+    getByKey: function(key) {
+        var map = this.map,
+            ret = (key in map) ? this.items[map[key]] : null;
+        return ret;
+    },
+    indexOfKey: function(key) {
+        var map = this.map,
+            ret = (key in map) ? map[key] : -1;
+        return ret;
+    },
+    last: function() {
+        return this.items[this.length - 1];
+    },
+    updateKey: function(item, oldKey) {
+        var me = this,
+            map = me.map,
+            newKey;
+        if (!item || !oldKey) {
+            return;
+        }
+        if ((newKey = me.getKey(item)) !== oldKey) {
+            if (me.getAt(map[oldKey]) === item && !(newKey in map)) {
+                me.generation++;
+                map[newKey] = map[oldKey];
+                delete map[oldKey];
+            }
+        } else 
+        {
+            
+            
+            
+            if (newKey in map && me.getAt(map[newKey]) !== item) {
+                
+                
+                Ext.raise('Duplicate newKey "' + newKey + '" for item with oldKey "' + oldKey + '"');
+            }
+            if (oldKey in map && me.getAt(map[oldKey]) !== item) {
+                
+                
+                
+                Ext.raise('Incorrect oldKey "' + oldKey + '" for item with newKey "' + newKey + '"');
+            }
+        }
+    },
+    
+    getCount: function() {
+        return this.length;
+    },
+    getKey: function(item) {
+        return item.id || item.getId();
+    },
+    getRange: function(begin, end) {
+        var items = this.items,
+            length = items.length,
+            range;
+        if (!length) {
+            range = [];
+        } else {
+            range = Ext.Number.clipIndices(length, [
+                begin,
+                end
+            ]);
+            range = items.slice(range[0], range[1]);
+        }
+        return range;
+    },
+    remove: function(item) {
+        var me = this,
+            map = me.map,
+            items = me.items,
+            ret = null,
+            n = 1,
+            changed, old, i, idx, id, last, was;
+        if (Ext.isArray(item)) {
+            n = item.length;
+            old = ret = [];
+        }
+        if (me.length) {
+            for (i = 0; i < n; i++) {
+                idx = map[id = me.getKey(old ? item[i] : item)];
+                if (idx !== undefined) {
+                    delete map[id];
+                    was = items[idx];
+                    if (old) {
+                        old.push(was);
+                    } else {
+                        ret = was;
+                    }
+                    last = items.pop();
+                    if (idx < --me.length) {
+                        items[idx] = last;
+                        map[me.getKey(last)] = idx;
+                    }
+                    changed = true;
+                }
+            }
+            if (changed) {
+                ++me.generation;
+            }
+        }
+        return ret;
+    },
+    removeByKey: function(key) {
+        var item = this.getByKey(key);
+        if (item) {
+            this.remove(item);
+        }
+        return item || null;
+    },
+    replace: function(item) {
+        this.add(item);
+        return item;
+    },
+    sort: function(fn) {
+        var me = this,
+            items = me.items,
+            n = items.length,
+            item;
+        if (n) {
+            Ext.Array.sort(items, fn);
+            me.map = {};
+            while (n-- > 0) {
+                item = items[n];
+                me.map[me.getKey(item)] = n;
+            }
+            ++me.generation;
+        }
     }
 });
 
@@ -33880,9 +35163,10 @@ Ext.define('Ext.util.Format', function() {
         hashRe: /#+$/,
         allHashes: /^#+$/,
         
-        formatPattern: /[\d,\.#]+/,
+        formatPattern: /[\d,.#]+/,
         
-        formatCleanRe: /[^\d\.#]/g,
+        formatCleanRe: /[^\d.#]/g,
+        
         
         
         I18NFormatCleanRe: null,
@@ -33909,7 +35193,7 @@ Ext.define('Ext.util.Format', function() {
             return value !== undefined && value !== '' ? value : defaultValue;
         },
         
-        substr: 'ab'.substr(-1) != 'b' ? function(value, start, length) {
+        substr: 'ab'.substr(-1) !== 'b' ? function(value, start, length) {
             var str = String(value);
             return (start < 0) ? str.substr(Math.max(str.length + start, 0), length) : str.substr(start, length);
         } : function(value, start, length) {
@@ -33990,8 +35274,9 @@ Ext.define('Ext.util.Format', function() {
         },
         
         pick: function(value, firstValue, secondValue) {
+            var ret;
             if (Ext.isNumber(value)) {
-                var ret = arguments[value + 1];
+                ret = arguments[value + 1];
                 if (ret) {
                     return ret;
                 }
@@ -34066,16 +35351,19 @@ Ext.define('Ext.util.Format', function() {
         },
         
         number: function(v, formatString) {
+            var formatFn;
             if (!formatString) {
                 return v;
             }
             if (isNaN(v)) {
                 return '';
             }
-            var formatFn = me.formatFns[formatString];
+            formatFn = me.formatFns[formatString];
+            
             
             
             if (!formatFn) {
+                
                 var originalFormatString = formatString,
                     comma = me.thousandSeparator,
                     decimalSeparator = me.decimalSeparator,
@@ -34086,7 +35374,9 @@ Ext.define('Ext.util.Format', function() {
                 
                 
                 
+                
                 if (formatString.substr(formatString.length - 2) === '/i') {
+                    
                     
                     
                     if (!me.I18NFormatCleanRe || me.lastDecimalSeparator !== decimalSeparator) {
@@ -34119,12 +35409,15 @@ Ext.define('Ext.util.Format', function() {
                     if (trimTrailingZeroes) {
                         len = trimTrailingZeroes[0].length;
                         
+                        
                         trimPart = 'trailingZeroes=new RegExp(Ext.String.escapeRegex(utilFormat.decimalSeparator) + "*0{0,' + len + '}$")';
                     }
                 }
                 
+                
                 code = [
-                    'var utilFormat=Ext.util.Format,extNumber=Ext.Number,neg,absVal,fnum,parts' + (hasComma ? ',thousandSeparator,thousands=[],j,n,i' : '') + (extraChars ? ',formatString="' + formatString + '",formatPattern=/[\\d,\\.#]+/' : '') + ',trailingZeroes;' + 'return function(v){' + 'if(typeof v!=="number"&&isNaN(v=extNumber.from(v,NaN)))return"";' + 'neg=v<0;',
+                    'var utilFormat=Ext.util.Format,extNumber=Ext.Number,neg,absVal,fnum,parts' + (hasComma ? ',thousandSeparator,thousands=[],j,n,i' : '') + (extraChars ? ',formatString="' + formatString + '",formatPattern=/[\\d,\\.#]+/' : '') + 
+                    ',trailingZeroes;' + 'return function(v){' + 'if(typeof v!=="number"&&isNaN(v=extNumber.from(v,NaN)))return"";' + 'neg=v<0;',
                     'absVal=Math.abs(v);',
                     'fnum=Ext.Number.toFixed(absVal, ' + precision + ');',
                     trimPart,
@@ -34153,6 +35446,7 @@ Ext.define('Ext.util.Format', function() {
                 }
                 code[code.length] = 'return ';
                 
+                
                 if (extraChars) {
                     code[code.length] = 'formatString.replace(formatPattern, fnum);';
                 } else {
@@ -34178,9 +35472,9 @@ Ext.define('Ext.util.Format', function() {
         },
         
         attributes: function(attributes) {
+            var result, name;
             if (typeof attributes === 'object') {
-                var result = [],
-                    name;
+                result = [];
                 for (name in attributes) {
                     if (attributes.hasOwnProperty(name)) {
                         result.push(name, '="', name === 'style' ? Ext.DomHelper.generateStyles(attributes[name], null, true) : Ext.htmlEncode(attributes[name]), '" ');
@@ -34229,6 +35523,7 @@ Ext.define('Ext.util.Format', function() {
                     left: box
                 };
             }
+            
             var parts = box.split(' '),
                 ln = parts.length;
             if (ln === 1) {
@@ -34319,7 +35614,7 @@ Ext.define('Ext.Template', {
     
     disableFormats: false,
     
-    tokenRe: /\{(?:(?:(\d+)|([a-z_][\w\-]*))(?::([a-z_\.]+)(?:\(([^\)]*?)?\))?)?)\}/gi,
+    tokenRe: /\{(?:(?:(\d+)|([a-z_$][\w\-$]*))(?::([a-z_.]+)(?:\(([^)]*?)?\))?)?)\}/gi,
     
     apply: function(values) {
         var me = this;
@@ -34405,7 +35700,6 @@ Ext.define('Ext.Template', {
         code = me.html.replace(me.compileARe, '\\\\').replace(me.compileBRe, '\\n').replace(me.compileCRe, "\\'").replace(me.tokenRe, me.regexReplaceFn.bind(me));
         code = (this.disableFormats !== true ? 'var fm=Ext.util.Format;' : '') + (me.useEval ? '$=' : 'return') + " function(v){return ['" + code + "'];};";
         me.fn = me.useEval ? me.evalCompiled(code) : (new Function('Ext', code))(Ext);
-        
         me.compiled = true;
         return me;
     },
@@ -34416,7 +35710,6 @@ Ext.define('Ext.Template', {
         
         
         eval($);
-        
         return $;
     },
     regexReplaceFn: function(match, index, name, formatFn, args) {
@@ -34426,6 +35719,7 @@ Ext.define('Ext.Template', {
         if (index == null || index === '') {
             index = '"' + name + '"';
         }
+        
         
         
         else if (this.stringFormat) {
@@ -34599,7 +35893,7 @@ Ext.define('Ext.util.XTemplateParser', {
                         t = aliases[t] || t;
                         actions = actions || {};
                         prev = actions[t];
-                        if (typeof prev == 'string') {
+                        if (typeof prev === 'string') {
                             actions[t] = [
                                 prev,
                                 s
@@ -34640,6 +35934,7 @@ Ext.define('Ext.util.XTemplateParser', {
                 } else if (actions['for']) {
                     ++me.level;
                     
+                    
                     if (prop = me.propRe.exec(m[4])) {
                         actions.propName = prop[1] || prop[2];
                     }
@@ -34650,6 +35945,7 @@ Ext.define('Ext.util.XTemplateParser', {
                     });
                 } else if (actions['foreach']) {
                     ++me.level;
+                    
                     
                     if (prop = me.propRe.exec(m[4])) {
                         actions.propName = prop[1] || prop[2];
@@ -34671,18 +35967,20 @@ Ext.define('Ext.util.XTemplateParser', {
             else if (m[0].length === 5) {
                 
                 
+                
                 stack.push({
                     type: 'tpl'
                 });
             } else {
                 frame = stack.pop();
                 me.doEnd(frame.type, frame.actions);
-                if (frame.type == 'for' || frame.type == 'foreach') {
+                if (frame.type === 'for' || frame.type === 'foreach') {
                     --me.level;
                 }
             }
         }
     },
+    
     
     topRe: /(?:(\{\%)|(\{\[)|\{([^{}]+)\})|(?:<tpl([^>]*)\>)|(?:<\/tpl>)/g,
     actionsRe: /\s*(elif|elseif|if|for|foreach|exec|switch|case|eval|between)\s*\=\s*(?:(?:"([^"]*)")|(?:'([^']*)'))\s*/g,
@@ -34701,9 +35999,11 @@ Ext.define('Ext.util.XTemplateCompiler', {
     
     
     
+    
+    
     useIndex: Ext.isIE8m,
     useFormat: true,
-    propNameRe: /^[\w\d\$]*$/,
+    propNameRe: /^[\w\d$]*$/,
     compile: function(tpl) {
         var me = this,
             code = me.generate(tpl);
@@ -34792,6 +36092,7 @@ Ext.define('Ext.util.XTemplateCompiler', {
         } else if (me.propNameRe.test(action)) {
             me.body.push('if (', me.parseTag(action), ') {\n');
         } else 
+        
         {
             me.body.push('if (', me.addFn(action), me.callFn, ') {\n');
         }
@@ -34807,6 +36108,7 @@ Ext.define('Ext.util.XTemplateCompiler', {
         } else if (me.propNameRe.test(action)) {
             me.body.push('} else if (', me.parseTag(action), ') {\n');
         } else 
+        
         {
             me.body.push('} else if (', me.addFn(action), me.callFn, ') {\n');
         }
@@ -34824,6 +36126,7 @@ Ext.define('Ext.util.XTemplateCompiler', {
         } else if (me.propNameRe.test(action)) {
             me.body.push('switch (', me.parseTag(action), ') {\n');
         } else 
+        
         {
             me.body.push('switch (', me.addFn(action), me.callFn, ') {\n');
         }
@@ -34860,14 +36163,14 @@ Ext.define('Ext.util.XTemplateCompiler', {
     doEnd: function(type, actions) {
         var me = this,
             L = me.level - 1;
-        if (type == 'for' || type == 'foreach') {
+        if (type === 'for' || type === 'foreach') {
             
             if (actions.exec) {
                 me.doExec(actions.exec);
             }
             me.body.push('}\n');
             me.body.push('parent=p', L, ';values=r', L + 1, ';xcount=n' + L + ';xindex=i', L, '+1;xkey=k', L, ';\n');
-        } else if (type == 'if' || type == 'switch') {
+        } else if (type === 'if' || type === 'switch') {
             me.body.push('}\n');
         }
     },
@@ -34883,6 +36186,7 @@ Ext.define('Ext.util.XTemplateCompiler', {
         } else if (me.propNameRe.test(action)) {
             s = me.parseTag(action);
         } else 
+        
         {
             s = me.addFn(action) + me.callFn;
         }
@@ -34892,7 +36196,7 @@ Ext.define('Ext.util.XTemplateCompiler', {
             me.maxLevel = L;
             me.body.push('var ');
         }
-        if (action == '.') {
+        if (action === '.') {
             parentAssignment = 'c' + L;
         } else {
             parentAssignment = 'a' + up + '?c' + up + '[i' + up + ']:c' + up;
@@ -34908,16 +36212,16 @@ Ext.define('Ext.util.XTemplateCompiler', {
     },
     doForEach: function(action, actions) {
         var me = this,
-            s,
             L = me.level,
             up = L - 1,
-            parentAssignment;
+            s, parentAssignment;
         
         if (action === '.') {
             s = 'values';
         } else if (me.propNameRe.test(action)) {
             s = me.parseTag(action);
         } else 
+        
         {
             s = me.addFn(action) + me.callFn;
         }
@@ -34927,7 +36231,7 @@ Ext.define('Ext.util.XTemplateCompiler', {
             me.maxLevel = L;
             me.body.push('var ');
         }
-        if (action == '.') {
+        if (action === '.') {
             parentAssignment = 'c' + L;
         } else {
             parentAssignment = 'a' + up + '?c' + up + '[i' + up + ']:c' + up;
@@ -34991,7 +36295,7 @@ Ext.define('Ext.util.XTemplateCompiler', {
         args = m[3];
         math = m[4];
         
-        if (name == '.') {
+        if (name === '.') {
             
             if (!me.validTypes) {
                 me.definitions.push('var validTypes={string:1,number:1,boolean:1};');
@@ -35000,17 +36304,17 @@ Ext.define('Ext.util.XTemplateCompiler', {
             v = 'validTypes[typeof values] || ts.call(values) === "[object Date]" ? values : ""';
         }
         
-        else if (name == '#') {
+        else if (name === '#') {
             v = 'xindex';
         }
         
-        else if (name == '$') {
+        else if (name === '$') {
             v = 'xkey';
-        } else if (name.substr(0, 7) == "parent.") {
+        } else if (name.substr(0, 7) === "parent.") {
             v = name;
         }
         
-        else if (isNaN(name) && name.indexOf('-') == -1 && name.indexOf('.') != -1) {
+        else if (isNaN(name) && name.indexOf('-') === -1 && name.indexOf('.') !== -1) {
             v = "values." + name;
         } else 
         
@@ -35022,7 +36326,7 @@ Ext.define('Ext.util.XTemplateCompiler', {
         }
         if (format && me.useFormat) {
             args = args ? ',' + args : "";
-            if (format.substr(0, 5) != "this.") {
+            if (format.substr(0, 5) !== "this.") {
                 format = "fm." + format + '(';
             } else {
                 format += '(';
@@ -35044,6 +36348,7 @@ Ext.define('Ext.util.XTemplateCompiler', {
     newLineRe: /\r\n|\r|\n/g,
     aposRe: /[']/g,
     intRe: /^\s*(\d+)\s*$/,
+    
     tagRe: /^([\w-\.\#\$]+)(?:\:([\w\.]*)(?:\((.*?)?\))?)?(\s?[\+\-\*\/]\s?[\d\.\+\-\*\/\(\)]+)?$/
 }, function() {
     var proto = this.prototype;
@@ -35132,6 +36437,7 @@ Ext.define('Ext.XTemplate', {
                         owner = instance;
                     } else {
                         
+                        
                         for (owner = instance.self.prototype; owner && !owner.hasOwnProperty(name); owner = owner.superclass) {}
                     }
                     owner[name] = tpl;
@@ -35161,6 +36467,15 @@ Ext.define('Ext.util.translatable.Dom', {
     },
     updateElement: function() {
         this.refresh();
+    },
+    translateXY: function(x, y) {
+        var element = this.getElement();
+        if (element && !element.destroyed) {
+            this.callParent([
+                x,
+                y
+            ]);
+        }
     }
 });
 
@@ -35177,10 +36492,6 @@ Ext.define('Ext.util.translatable.CssPosition', {
         if (typeof y === 'number') {
             domStyle.top = y + 'px';
         }
-        this.callParent([
-            x,
-            y
-        ]);
     },
     syncPosition: function() {
         var domStyle = this.getElement().dom.style;
@@ -35205,15 +36516,7 @@ Ext.define('Ext.util.translatable.CssTransform', {
     isCssTransform: true,
     posRegex: /(\d+)px[^\d]*(\d+)px/,
     doTranslate: function(x, y) {
-        var me = this,
-            element = me.getElement();
-        if (!me.destroyed && !element.destroyed) {
-            element.translate(x, y);
-        }
-        me.callParent([
-            x,
-            y
-        ]);
+        this.getElement().translate(x, y);
     },
     syncPosition: function() {
         var pos = this.posRegex.exec(this.getElement().dom.style.tranform);
@@ -35236,1402 +36539,265 @@ Ext.define('Ext.util.translatable.CssTransform', {
 });
 
 
-Ext.define('Ext.util.CSS', function() {
-    var CSS,
-        rules = null,
-        doc = document,
-        camelRe = /(-[a-z])/gi,
-        camelFn = function(m, a) {
-            return a.charAt(1).toUpperCase();
-        };
+
+Ext.define('Ext.mixin.Responsive', function(Responsive) {
     return {
-        singleton: true,
-        rules: rules,
-        initialized: false,
         
-        constructor: function() {
+        extend: Ext.Mixin,
+        mixinConfig: {
+            id: 'responsive',
+            after: {
+                destroy: 'destroy'
+            }
+        },
+        config: {
             
-            CSS = this;
-        },
-        
-        createStyleSheet: function(cssText, id) {
-            var ss,
-                head = doc.getElementsByTagName('head')[0],
-                styleEl = doc.createElement('style');
-            styleEl.setAttribute('type', 'text/css');
-            if (id) {
-                styleEl.setAttribute('id', id);
-            }
-            
-            ss = styleEl.styleSheet;
-            if (ss) {
-                head.appendChild(styleEl);
-                ss.cssText = cssText;
-            } else {
-                styleEl.appendChild(doc.createTextNode(cssText));
-                head.appendChild(styleEl);
-                ss = styleEl.sheet;
-            }
-            CSS.cacheStyleSheet(ss);
-            return ss;
-        },
-        
-        removeStyleSheet: function(stylesheet) {
-            var styleEl = (typeof stylesheet === 'string') ? doc.getElementById(stylesheet) : stylesheet.ownerNode;
-            if (styleEl) {
-                styleEl.parentNode.removeChild(styleEl);
-            }
-        },
-        
-        swapStyleSheet: function(id, url) {
-            var ss;
-            CSS.removeStyleSheet(id);
-            ss = doc.createElement("link");
-            ss.setAttribute("rel", "stylesheet");
-            ss.setAttribute("type", "text/css");
-            ss.setAttribute("id", id);
-            ss.setAttribute("href", url);
-            doc.getElementsByTagName("head")[0].appendChild(ss);
-        },
-        
-        cacheStyleSheet: function(ss) {
-            if (!rules) {
-                rules = CSS.rules = {};
-            }
-            try {
-                
-                var ssRules = ss.cssRules || ss.rules,
-                    i = ssRules.length - 1,
-                    imports = ss.imports,
-                    len = imports ? imports.length : 0,
-                    rule, j;
-                
-                for (j = 0; j < len; ++j) {
-                    CSS.cacheStyleSheet(imports[j]);
-                }
-                for (; i >= 0; --i) {
-                    rule = ssRules[i];
-                    
-                    if (rule.styleSheet) {
-                        CSS.cacheStyleSheet(rule.styleSheet);
+            responsiveConfig: {
+                $value: undefined,
+                merge: function(newValue, oldValue, target, mixinClass) {
+                    var marker, entry, ret, rule;
+                    if (!newValue) {
+                        return oldValue;
                     }
-                    CSS.cacheRule(rule, ss);
-                }
-            } catch (e) {}
-        },
-        cacheRule: function(cssRule, styleSheet) {
-            
-            if (cssRule.styleSheet) {
-                return CSS.cacheStyleSheet(cssRule.styleSheet);
-            }
-            var selectorText = cssRule.selectorText,
-                selectorCount, j;
-            if (selectorText) {
-                
-                selectorText = selectorText.split(',');
-                selectorCount = selectorText.length;
-                for (j = 0; j < selectorCount; j++) {
-                    
-                    
-                    rules[Ext.String.trim(selectorText[j]).toLowerCase()] = {
-                        parentStyleSheet: styleSheet,
-                        cssRule: cssRule
-                    };
-                }
-            }
-        },
-        
-        getRules: function(refreshCache) {
-            var result = {},
-                selector;
-            if (rules === null || refreshCache) {
-                CSS.refreshCache();
-            }
-            for (selector in rules) {
-                result[selector] = rules[selector].cssRule;
-            }
-            return result;
-        },
-        
-        refreshCache: function() {
-            var ds = doc.styleSheets,
-                i = 0,
-                len = ds.length;
-            rules = CSS.rules = {};
-            for (; i < len; i++) {
-                try {
-                    if (!ds[i].disabled) {
-                        CSS.cacheStyleSheet(ds[i]);
-                    }
-                } catch (e) {}
-            }
-        },
-        
-        getRule: function(selector, refreshCache, rawCache) {
-            var i, result;
-            if (!rules || refreshCache) {
-                CSS.refreshCache();
-            }
-            if (!Ext.isArray(selector)) {
-                result = rules[selector.toLowerCase()];
-                if (result && !rawCache) {
-                    result = result.cssRule;
-                }
-                return result || null;
-            }
-            for (i = 0; i < selector.length; i++) {
-                if (rules[selector[i]]) {
-                    return rawCache ? rules[selector[i].toLowerCase()] : rules[selector[i].toLowerCase()].cssRule;
-                }
-            }
-            return null;
-        },
-        
-        createRule: function(styleSheet, selector, cssText) {
-            var result,
-                ruleSet = styleSheet.cssRules || styleSheet.rules,
-                index = ruleSet.length;
-            if (styleSheet.insertRule) {
-                styleSheet.insertRule(selector + ' {' + cssText + '}', index);
-            } else {
-                styleSheet.addRule(selector, cssText || ' ');
-            }
-            CSS.cacheRule(result = ruleSet[index], styleSheet);
-            return result;
-        },
-        
-        updateRule: function(selector, property, value) {
-            var rule, i, styles;
-            if (!Ext.isArray(selector)) {
-                rule = CSS.getRule(selector);
-                if (rule) {
-                    
-                    if (arguments.length === 2) {
-                        styles = Ext.Element.parseStyles(property);
-                        for (property in styles) {
-                            rule.style[property.replace(camelRe, camelFn)] = styles[property];
+                    ret = oldValue ? Ext.Object.chain(oldValue) : {};
+                    marker = Responsive.context;
+                    for (rule in newValue) {
+                        if (!mixinClass || !(rule in ret)) {
+                            entry = newValue[rule];
+                            
+                            
+                            if (entry.fn !== marker) {
+                                entry = {
+                                    fn: marker,
+                                    
+                                    config: entry
+                                };
+                            }
+                            ret[rule] = entry;
                         }
-                    } else {
-                        rule.style[property.replace(camelRe, camelFn)] = value;
                     }
-                    return true;
+                    return ret;
                 }
-            } else {
-                for (i = 0; i < selector.length; i++) {
-                    if (CSS.updateRule(selector[i], property, value)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        },
-        deleteRule: function(selector) {
-            var rule = CSS.getRule(selector, false, true),
-                styleSheet, index;
-            if (rule) {
-                styleSheet = rule.parentStyleSheet;
-                index = Ext.Array.indexOf(styleSheet.cssRules || styleSheet.rules, rule.cssRule);
-                if (styleSheet.deleteRule) {
-                    styleSheet.deleteRule(index);
-                } else {
-                    styleSheet.removeRule(index);
-                }
-                delete rules[selector];
-            }
-        }
-    };
-});
-
-
-Ext.define('Ext.util.translatable.ScrollPosition', {
-    extend: Ext.util.translatable.Dom,
-    alias: 'translatable.scrollposition',
-    
-    constructor: function(config) {
-        if (config && config.element) {
-            this.x = config.element.getScrollLeft();
-            this.y = config.element.getScrollTop();
-        }
-        this.callParent([
-            config
-        ]);
-    },
-    translateAnimated: function() {
-        var element = this.getElement();
-        this.x = element.getScrollLeft();
-        this.y = element.getScrollTop();
-        this.callParent(arguments);
-    },
-    doTranslate: function(x, y) {
-        var element = this.getElement();
-        element.setScrollLeft(Math.round(x));
-        element.setScrollTop(Math.round(y));
-    },
-    getPosition: function() {
-        var me = this,
-            position = me.position,
-            element = me.getElement();
-        position.x = element.getScrollLeft();
-        position.y = element.getScrollTop();
-        return position;
-    }
-});
-
-
-Ext.define('Ext.scroll.Scroller', {
-    extend: Ext.Evented,
-    alias: 'scroller.scroller',
-    mixins: [
-        Ext.mixin.Factoryable,
-        Ext.mixin.Bufferable
-    ],
-    factoryConfig: {
-        defaultType: 'scroller'
-    },
-    bufferableMethods: {
-        onDomScrollEnd: 100
-    },
-    isScroller: true,
-    
-    
-    
-    
-    config: {
-        
-        direction: undefined,
-        
-        
-        element: undefined,
-        
-        scrollbars: null,
-        
-        snapSelector: null,
-        
-        snapOffset: null,
-        
-        msSnapInterval: null,
-        
-        x: true,
-        
-        y: true,
-        
-        scrollElement: null,
-        
-        size: null,
-        spacerXY: null,
-        
-        touchAction: null
-    },
-    snappableCls: Ext.baseCSSPrefix + 'scroller-snappable',
-    elementCls: Ext.baseCSSPrefix + 'scroller',
-    spacerCls: Ext.baseCSSPrefix + 'scroller-spacer',
-    noScrollbarsCls: Ext.baseCSSPrefix + 'no-scrollbars',
-    statics: {
-        
-        create: function(config, type) {
-            return Ext.Factory.scroller(config, type);
-        },
-        
-        getScrollingElement: function() {
-            var doc = document,
-                standard = this.$standardScrollElement,
-                el = doc.scrollingElement,
-                iframe, frameDoc;
+            },
             
-            
-            
-            if (el) {
-                return el;
-            }
-            
-            
-            if (standard === undefined) {
-                iframe = document.createElement('iframe');
-                iframe.style.height = '1px';
-                document.body.appendChild(iframe);
-                frameDoc = iframe.contentWindow.document;
-                frameDoc.write('<!DOCTYPE html><div style="height:9999em">x</div>');
-                frameDoc.close();
-                standard = frameDoc.documentElement.scrollHeight > frameDoc.body.scrollHeight;
-                iframe.parentNode.removeChild(iframe);
-                this.$standardScrollElement = standard;
-            }
-            return standard ? doc.documentElement : doc.body;
-        },
-        
-        initViewportScroller: function() {
-            var scroller = Ext.getViewportScroller();
-            if (!scroller.getElement()) {
-                
-                
-                
-                scroller.setElement(Ext.getBody());
-            }
-        }
-    },
-    constructor: function(config) {
-        var me = this;
-        me.position = {
-            x: 0,
-            y: 0
-        };
-        me.callParent([
-            config
-        ]);
-    },
-    destroy: function() {
-        var me = this,
-            partners = me._partners,
-            key;
-        Ext.undefer(me.restoreTimer);
-        
-        me.setX(Ext.emptyString);
-        me.setY(Ext.emptyString);
-        if (me._spacer) {
-            me._spacer.destroy();
-        }
-        if (me.scrollListener) {
-            me.scrollListener.destroy();
-        }
-        if (partners) {
-            for (key in partners) {
-                me.removePartner(partners[key].scroller);
-            }
-        }
-        
-        
-        me.setElement(null);
-        me._partners = me.component = null;
-        if (me.translatable) {
-            me.translatable.destroy();
-            me.translatable = null;
-        }
-        me.removeSnapStylesheet();
-        me.callParent();
-    },
-    
-    addPartner: function(partner, axis) {
-        var me = this,
-            partners = me._partners || (me._partners = {}),
-            otherPartners = partner._partners || (partner._partners = {});
-        
-        axis = me.axisConfigs[axis || 'both'];
-        partners[partner.getId()] = {
-            scroller: partner,
-            axes: axis
-        };
-        otherPartners[me.getId()] = {
-            scroller: me,
-            axes: axis
-        };
-    },
-    applyElement: function(element, oldElement) {
-        var me = this;
-        if (oldElement && me.scrollListener) {
-            me.scrollListener.destroy();
-        }
-        if (element) {
-            
-            if (typeof element === 'string' && !Ext.get(element)) {
-                Ext.raise("Cannot create Ext.scroll.Scroller instance. " + "Element with id '" + element + "' not found.");
-            }
-            
-            element = Ext.get(element);
-        }
-        return element;
-    },
-    applySize: function(size, oldSize) {
-        var x, y;
-        if (size === null || typeof size === 'number') {
-            x = y = size;
-        } else if (size) {
-            x = size.x;
-            y = size.y;
-        }
-        if (x === null) {
-            x = 0;
-        } else if (x === undefined) {
-            x = (oldSize ? oldSize.x : 0);
-        }
-        if (y === null) {
-            y = 0;
-        } else if (y === undefined) {
-            y = (oldSize ? oldSize.y : 0);
-        }
-        if (!oldSize || x !== oldSize.x || y !== oldSize.y) {
-            return {
-                x: x,
-                y: y
-            };
-        }
-    },
-    
-    getClientSize: function() {
-        var dom = this.getElement().dom;
-        return {
-            x: dom.clientWidth,
-            y: dom.clientHeight
-        };
-    },
-    
-    getScrollbarSize: function() {
-        var me = this,
-            width = 0,
-            height = 0,
-            element = me.getElement(),
-            dom, x, y, hasXScroll, hasYScroll, scrollbarSize;
-        if (element && !element.destroyed) {
-            x = me.getX();
-            y = me.getY();
-            dom = element.dom;
-            if (x || y) {
-                scrollbarSize = Ext.getScrollbarSize();
-            }
-            if (x === 'scroll') {
-                hasXScroll = true;
-            } else if (x) {
-                hasXScroll = dom.scrollWidth > dom.clientWidth;
-            }
-            if (y === 'scroll') {
-                hasYScroll = true;
-            } else if (y) {
-                hasYScroll = dom.scrollHeight > dom.clientHeight;
-            }
-            if (hasXScroll) {
-                height = scrollbarSize.height;
-            }
-            if (hasYScroll) {
-                width = scrollbarSize.width;
-            }
-        }
-        return {
-            width: width,
-            height: height
-        };
-    },
-    
-    getPosition: function() {
-        var me = this;
-        if (me.positionDirty) {
-            me.updateDomScrollPosition();
-        }
-        return me.position;
-    },
-    
-    getSize: function() {
-        var element = this.getElement(),
-            size, dom;
-        if (element && !element.destroyed) {
-            dom = element.dom;
-            size = {
-                x: dom.scrollWidth,
-                y: dom.scrollHeight
-            };
-        } else {
-            size = {
-                x: 0,
-                y: 0
-            };
-        }
-        return size;
-    },
-    
-    getMaxPosition: function() {
-        var element = this.getElement(),
-            x = 0,
-            y = 0,
-            dom;
-        if (element && !element.destroyed) {
-            dom = element.dom;
-            x = dom.scrollWidth - dom.clientWidth;
-            y = dom.scrollHeight - dom.clientHeight;
-        }
-        return {
-            x: x,
-            y: y
-        };
-    },
-    
-    getMaxUserPosition: function() {
-        var me = this,
-            element = me.getElement(),
-            x = 0,
-            y = 0,
-            dom;
-        if (element && !element.destroyed) {
-            dom = element.dom;
-            if (me.getX()) {
-                x = dom.scrollWidth - dom.clientWidth;
-            }
-            if (me.getY()) {
-                y = dom.scrollHeight - dom.clientHeight;
-            }
-        }
-        return {
-            x: x,
-            y: y
-        };
-    },
-    
-    refresh: function() {
-        
-        
-        this.positionDirty = true;
-        this.fireEvent('refresh', this);
-        return this;
-    },
-    
-    removePartner: function(partner) {
-        var partners = this._partners,
-            otherPartners = partner._partners;
-        if (partners) {
-            delete partners[partner.getId()];
-        }
-        if (otherPartners) {
-            delete (otherPartners[this.getId()]);
-        }
-    },
-    
-    scrollBy: function(deltaX, deltaY, animate) {
-        var position = this.getPosition();
-        if (deltaX) {
-            if (deltaX.length) {
-                
-                animate = deltaY;
-                deltaY = deltaX[1];
-                deltaX = deltaX[0];
-            } else if (typeof deltaX !== 'number') {
-                
-                animate = deltaY;
-                deltaY = deltaX.y;
-                deltaX = deltaX.x;
-            }
-        }
-        deltaX = (typeof deltaX === 'number') ? deltaX + position.x : null;
-        deltaY = (typeof deltaY === 'number') ? deltaY + position.y : null;
-        return this.doScrollTo(deltaX, deltaY, animate);
-    },
-    
-    ensureVisible: function(el, options) {
-        var me = this,
-            position = me.getPosition(),
-            highlight, newPosition, ret;
-        
-        if (el) {
-            if (el && el.element && !el.isElement) {
-                options = el;
-                el = options.element;
-            }
-            options = options || {};
-            highlight = options.highlight;
-            newPosition = me.getEnsureVisibleXY(el, options);
-            
-            if (newPosition.y !== position.y || newPosition.x !== position.x) {
-                if (highlight) {
-                    me.on({
-                        scrollend: 'doHighlight',
-                        scope: me,
-                        single: true,
-                        args: [
-                            el,
-                            highlight
-                        ]
-                    });
-                }
-                ret = me.doScrollTo(newPosition.x, newPosition.y, options.animation);
-            } else {
-                
-                if (highlight) {
-                    me.doHighlight(el, highlight);
-                }
-                
-                ret = Ext.Deferred.getCachedResolved();
-            }
-        } else {
-            
-            ret = Ext.Deferred.getCachedRejected();
-        }
-        return ret;
-    },
-    
-    scrollIntoView: function(el, hscroll, animate, highlight) {
-        return this.ensureVisible(el, {
-            animation: animate,
-            highlight: highlight,
-            x: hscroll
-        });
-    },
-    
-    isInView: function(el) {
-        return this.doIsInView(el);
-    },
-    
-    scrollTo: function(x, y, animation) {
-        var maxPosition;
-        if (x) {
-            if (x.length) {
-                
-                animation = y;
-                y = x[1];
-                x = x[0];
-            } else if (typeof x !== 'number') {
-                
-                animation = y;
-                y = x.y;
-                x = x.x;
-            }
-        }
-        if (x < 0 || y < 0) {
-            maxPosition = this.getMaxPosition();
-            if (x < 0) {
-                x += maxPosition.x;
-            }
-            if (y < 0) {
-                y += maxPosition.y;
-            }
-        }
-        return this.doScrollTo(x, y, animation);
-    },
-    updateDirection: function(direction) {
-        var me = this,
-            x, y;
-        if (!direction) {
-            
-            
-            
-            x = me.getX();
-            y = me.getY();
-            if (x && y) {
-                direction = (y === 'scroll' && x === 'scroll') ? 'both' : 'auto';
-            } else if (y) {
-                direction = 'vertical';
-            } else if (x) {
-                direction = 'horizontal';
-            }
-            
-            
-            me._direction = direction;
-        } else {
-            if (direction === 'auto') {
-                x = true;
-                y = true;
-            } else if (direction === 'vertical') {
-                x = false;
-                y = true;
-            } else if (direction === 'horizontal') {
-                x = true;
-                y = false;
-            } else if (direction === 'both') {
-                x = 'scroll';
-                y = 'scroll';
-            }
-            me.setX(x);
-            me.setY(y);
-        }
-    },
-    updateScrollbars: function(scrollbars, oldScrollbars) {
-        this.syncScrollbarCls();
-    },
-    updateSize: function(size) {
-        var me = this,
-            element = me.getElement(),
-            x = size.x,
-            y = size.y,
-            spacer;
-        if (element) {
-            me.positionDirty = true;
-            spacer = me.getSpacer();
-            
-            
-            
-            
-            if (!x && !y) {
-                spacer.hide();
-            } else {
-                
-                if (x > 0) {
-                    x -= 1;
-                }
-                if (y > 0) {
-                    y -= 1;
-                }
-                me.setSpacerXY({
-                    x: x,
-                    y: y
-                });
-                spacer.show();
-            }
-        }
-    },
-    updateMsSnapInterval: function() {
-        this.initMsSnapInterval();
-    },
-    updateSnapSelector: function() {
-        this.initSnap();
-    },
-    updateSnapOffset: function() {
-        this.initSnap();
-    },
-    updateTouchAction: function(touchAction) {
-        var element = this.getElement();
-        if (element) {
-            element.setTouchAction(touchAction);
-        }
-    },
-    updateElement: function(element, oldElement) {
-        var me = this,
-            touchAction = me.getTouchAction(),
-            scrollListener = me.scrollListener,
-            elementCls = me.elementCls,
-            eventSource, scrollEl;
-        
-        if (scrollListener) {
-            scrollListener.destroy();
-            me.scrollListener = null;
-            me.setScrollElement(null);
-        }
-        if (oldElement && !oldElement.destroyed) {
-            
-            oldElement.setStyle('overflow', 'hidden');
-            oldElement.removeCls(elementCls);
-        }
-        if (element) {
-            if (element.dom === document.documentElement || element.dom === document.body) {
-                
-                
-                eventSource = Ext.getWin();
-                scrollEl = Ext.scroll.Scroller.getScrollingElement();
-            } else {
-                scrollEl = eventSource = element;
-            }
-            me.setScrollElement(Ext.get(scrollEl));
-            me.scrollListener = eventSource.on({
-                scroll: me.onDomScroll,
-                scope: me,
-                destroyable: true
-            });
-            if (touchAction) {
-                element.setTouchAction(touchAction);
-            }
-            me.initXStyle();
-            me.initYStyle();
-            element.addCls(elementCls);
-            me.initSnap();
-            me.initMsSnapInterval();
-            me.syncScrollbarCls();
-        }
-    },
-    updateX: function(x) {
-        this.initXStyle();
-    },
-    updateY: function(y) {
-        this.initYStyle();
-    },
-    deprecated: {
-        '5': {
-            methods: {
-                
-                getScroller: function() {
-                    return this;
+            responsiveFormulas: {
+                $value: null,
+                merge: function(newValue, oldValue, target, mixinClass) {
+                    return this.mergeNew(newValue, oldValue, target, mixinClass);
                 }
             }
         },
-        '5.1.0': {
-            methods: {
+        
+        destroy: function() {
+            Responsive.unregister(this);
+        },
+        
+        privates: {
+            statics: {
                 
-                scrollToTop: function(animate) {
-                    return this.scrollTo(0, 0, animate);
+                active: false,
+                
+                all: {},
+                _configNames: [
+                    'responsiveConfig',
+                    'responsiveFormulas'
+                ],
+                
+                context: Ext.Object.chain(Ext.platformTags),
+                
+                count: 0,
+                
+                nextId: 0,
+                
+                activate: function() {
+                    Responsive.active = true;
+                    Responsive.updateContext();
+                    Ext.on('resize', Responsive.onResize, Responsive);
                 },
                 
-                scrollToEnd: function(animate) {
-                    return this.scrollTo(Infinity, Infinity, animate);
-                }
-            }
-        }
-    },
-    privates: {
-        axisConfigs: {
-            x: {
-                x: true
-            },
-            y: {
-                y: true
-            },
-            both: {
-                x: true,
-                y: true
-            }
-        },
-        
-        getEnsureVisibleXY: function(el, options) {
-            var position = this.getPosition(),
-                viewport = this.component ? this.component.getScrollableClientRegion() : this.getElement(),
-                newPosition, align;
-            if (el && el.element && !el.isElement) {
-                options = el;
-                el = options.element;
-            }
-            options = options || {};
-            align = options.align;
-            if (align) {
-                if (Ext.isString(align)) {
-                    align = {
-                        x: options.x === false ? null : align,
-                        y: options.y === false ? null : align
-                    };
-                } else if (Ext.isObject(align)) {
-                    if (align.x && options.x === false) {
-                        align.x = null;
-                    }
-                    if (align.y && options.y === false) {
-                        align.y = null;
-                    }
-                }
-            }
-            newPosition = Ext.fly(el).getScrollIntoViewXY(viewport, position.x, position.y, align);
-            newPosition.x = options.x === false ? position.x : newPosition.x;
-            newPosition.y = options.y === false ? position.y : newPosition.y;
-            return newPosition;
-        },
-        getSpacer: function() {
-            var me = this,
-                spacer = me._spacer,
-                element;
-            
-            
-            
-            
-            
-            if (!spacer) {
-                element = me.getElement();
-                spacer = me._spacer = element.createChild({
-                    cls: me.spacerCls,
-                    role: 'presentation'
-                }, element.dom.firstChild);
-                spacer.setVisibilityMode(2);
-                
-                spacer.hide();
-                
-                
-                element.position();
-            }
-            return spacer;
-        },
-        applySpacerXY: function(pos, oldPos) {
-            
-            if (oldPos && pos.x === oldPos.x && pos.y === oldPos.y) {
-                pos = undefined;
-            }
-            return pos;
-        },
-        updateSpacerXY: function(pos) {
-            var me = this,
-                spacer = me.getSpacer(),
-                sStyle = spacer.dom.style,
-                scrollHeight = pos.y,
-                shortfall;
-            sStyle.marginTop = '';
-            me.translateSpacer(pos.x, me.constrainScrollRange(scrollHeight));
-            
-            
-            sStyle.lineHeight = Number(!parseInt(sStyle.lineHeight, 10)) + 'px';
-            
-            if (scrollHeight > 1000000) {
-                shortfall = scrollHeight - me.getElement().dom.scrollHeight;
-                if (shortfall > 0) {
-                    sStyle.marginTop = Math.min(shortfall, me.maxSpacerMargin || 0) + 'px';
-                }
-            }
-        },
-        
-        translateSpacer: function(x, y) {
-            this.getSpacer().translate(x, y);
-        },
-        doIsInView: function(el, skipCheck) {
-            var me = this,
-                c = me.component,
-                result = {
-                    x: false,
-                    y: false
+                deactivate: function() {
+                    Responsive.active = false;
+                    Ext.un('resize', Responsive.onResize, Responsive);
                 },
-                elRegion,
-                myEl = me.getElement(),
-                myElRegion;
-            if (el && (skipCheck || (myEl.contains(el) || (c && c.owns(el))))) {
-                myElRegion = myEl.getRegion();
-                elRegion = Ext.fly(el).getRegion();
-                result.x = elRegion.right > myElRegion.left && elRegion.left < myElRegion.right;
-                result.y = elRegion.bottom > myElRegion.top && elRegion.top < myElRegion.bottom;
-            }
-            return result;
-        },
-        
-        
-        
-        contains: function(component) {
-            var el = this.getElement(),
-                owner = component;
-            while (owner && owner !== Ext.Viewport) {
-                if (el.contains(owner.el)) {
-                    return true;
-                }
-                owner = owner.getRefOwner();
-            }
-            return false;
-        },
-        constrainScrollRange: function(scrollRange) {
-            
-            
-            if (scrollRange < 1000000) {
-                return scrollRange;
-            }
-            if (!this.maxSpacerTranslate) {
                 
+                notify: function() {
+                    var all = Responsive.all,
+                        context = Responsive.context,
+                        timer = Responsive.timer,
+                        id;
+                    if (timer) {
+                        Responsive.timer = Ext.unasap(timer);
+                    }
+                    Responsive.updateContext();
+                    Ext.suspendLayouts();
+                    Ext.fireEvent('beforeresponsiveupdate', context);
+                    for (id in all) {
+                        all[id].setupResponsiveContext();
+                    }
+                    Ext.fireEvent('beginresponsiveupdate', context);
+                    for (id in all) {
+                        all[id].updateResponsiveState();
+                    }
+                    Ext.fireEvent('responsiveupdate', context);
+                    Ext.resumeLayouts(true);
+                },
                 
+                onResize: function() {
+                    if (!Responsive.timer) {
+                        Responsive.timer = Ext.asap(Responsive.onTimer);
+                    }
+                },
                 
-                
-                
-                
-                
-                var maxScrollHeight = Math.pow(2, 32),
-                    tooHigh = maxScrollHeight,
-                    tooLow = 500,
-                    scrollTest = Ext.getBody().createChild({
-                        style: {
-                            position: 'absolute',
-                            left: '-10000px',
-                            top: '0',
-                            width: '500px',
-                            height: '500px'
-                        },
-                        cn: {
-                            cls: this.spacerCls
+                onTimer: function() {
+                    Responsive.timer = null;
+                    Responsive.notify();
+                },
+                register: function(responder) {
+                    var id = responder.$responsiveId;
+                    if (!id) {
+                        responder.$responsiveId = id = ++Responsive.nextId;
+                        Responsive.all[id] = responder;
+                        if (++Responsive.count === 1) {
+                            Responsive.activate();
                         }
-                    }, null, true),
-                    stretcher = Ext.get(scrollTest.firstChild),
-                    sStyle = stretcher.dom.style;
-                stretcher.translate(0, maxScrollHeight - 1);
-                sStyle.lineHeight = Number(!parseInt(sStyle.lineHeight, 10)) + 'px';
+                    }
+                },
+                unregister: function(responder) {
+                    var id = responder.$responsiveId;
+                    if (id in Responsive.all) {
+                        responder.$responsiveId = null;
+                        delete Responsive.all[id];
+                        if (--Responsive.count === 0) {
+                            Responsive.deactivate();
+                        }
+                    }
+                },
                 
-                while (tooHigh !== tooLow + 1) {
-                    stretcher.translate(0, (maxScrollHeight = tooLow + Math.floor((tooHigh - tooLow) / 2)));
-                    
-                    
-                    sStyle.lineHeight = Number(!parseInt(sStyle.lineHeight, 10)) + 'px';
-                    if (scrollTest.scrollHeight < maxScrollHeight) {
-                        tooHigh = maxScrollHeight;
-                    } else {
-                        tooLow = maxScrollHeight;
+                updateContext: function() {
+                    var El = Ext.Element,
+                        width = El.getViewportWidth(),
+                        height = El.getViewportHeight(),
+                        context = Responsive.context;
+                    context.width = width;
+                    context.height = height;
+                    context.tall = width < height;
+                    context.wide = !context.tall;
+                    context.landscape = context.portrait = false;
+                    if (!context.platform) {
+                        context.platform = Ext.platformTags;
+                    }
+                    context[Ext.dom.Element.getOrientation()] = true;
+                }
+            },
+            
+            
+            
+            afterClassMixedIn: function(targetClass) {
+                var proto = targetClass.prototype,
+                    responsiveConfig = proto.responsiveConfig,
+                    responsiveFormulas = proto.responsiveFormulas,
+                    config;
+                if (responsiveConfig || responsiveFormulas) {
+                    config = {};
+                    if (responsiveConfig) {
+                        delete proto.responsiveConfig;
+                        config.responsiveConfig = responsiveConfig;
+                    }
+                    if (responsiveFormulas) {
+                        delete proto.responsiveFormulas;
+                        config.responsiveFormulas = responsiveFormulas;
+                    }
+                    targetClass.getConfigurator().add(config);
+                }
+                targetClass.addConfigTransform('transformResponsiveConfig', 10);
+            },
+            
+            
+            
+            
+            applyResponsiveConfig: function(rules) {
+                var rule;
+                for (rule in rules) {
+                    rules[rule].fn = Ext.createRuleFn(rule);
+                }
+                return rules;
+            },
+            applyResponsiveFormulas: function(formulas) {
+                var fn, name, ret;
+                if (formulas) {
+                    ret = {};
+                    for (name in formulas) {
+                        if (Ext.isString(fn = formulas[name])) {
+                            fn = Ext.createRuleFn(fn);
+                        }
+                        ret[name] = fn;
                     }
                 }
-                stretcher.translate(0, Ext.scroll.Scroller.prototype.maxSpacerTranslate = tooLow);
+                return ret;
+            },
+            
+            getResponsiveState: function() {
+                var context = Responsive.context,
+                    rules = this.getResponsiveConfig(),
+                    entry, ret, rule;
+                if (rules) {
+                    ret = {};
+                    for (rule in rules) {
+                        entry = rules[rule];
+                        if (entry.fn.call(this, context)) {
+                            Ext.merge(ret, entry.config);
+                        }
+                    }
+                }
+                return ret;
+            },
+            setupResponsiveContext: function() {
+                var formulas = this.getResponsiveFormulas(),
+                    context = Responsive.context,
+                    name;
+                if (formulas) {
+                    for (name in formulas) {
+                        context[name] = formulas[name].call(this, context);
+                    }
+                }
+            },
+            
+            transformResponsiveConfig: function(instanceConfig, configurator) {
+                var me = this,
+                    ret = instanceConfig,
+                    state;
                 
-                tooHigh = tooLow * 2;
-                while (tooHigh !== tooLow + 1) {
-                    stretcher.dom.style.marginTop = ((maxScrollHeight = tooLow + Math.floor((tooHigh - tooLow) / 2))) + 'px';
-                    
-                    
-                    sStyle.lineHeight = Number(!parseInt(sStyle.lineHeight, 10)) + 'px';
-                    if (scrollTest.scrollHeight < maxScrollHeight) {
-                        tooHigh = maxScrollHeight;
-                    } else {
-                        tooLow = maxScrollHeight;
-                    }
-                }
-                Ext.fly(scrollTest).destroy();
-                Ext.scroll.Scroller.prototype.maxSpacerMargin = tooLow - Ext.scroll.Scroller.prototype.maxSpacerTranslate;
-            }
-            
-            
-            return Math.min(scrollRange, this.maxSpacerTranslate);
-        },
-        
-        convertX: function(x) {
-            return x;
-        },
-        
-        doHighlight: function(el, highlight) {
-            if (highlight !== true) {
                 
-                Ext.fly(el).highlight(highlight);
-            } else {
-                Ext.fly(el).highlight();
-            }
-        },
-        doScrollTo: function(x, y, animate) {
-            
-            
-            var me = this,
-                element = me.getScrollElement(),
-                maxPosition, dom, xInf, yInf, ret, translatable, deferred;
-            if (element && !element.destroyed) {
-                dom = element.dom;
-                xInf = (x === Infinity);
-                yInf = (y === Infinity);
-                if (xInf || yInf) {
-                    maxPosition = me.getMaxPosition();
-                    if (xInf) {
-                        x = maxPosition.x;
-                    }
-                    if (yInf) {
-                        y = maxPosition.y;
-                    }
-                }
-                if (x !== null) {
-                    x = me.convertX(x);
-                }
-                if (animate) {
-                    translatable = me.translatable;
-                    if (!translatable) {
-                        me.translatable = translatable = new Ext.util.translatable.ScrollPosition({
-                            element: element
-                        });
-                    }
-                    deferred = new Ext.Deferred();
+                
+                
+                
+                
+                if (configurator.hoistConfigs(me, instanceConfig, Responsive._configNames)) {
+                    Responsive.register(me);
                     
-                    translatable.on('animationend', function() {
+                    
+                    me.setupResponsiveContext();
+                    
+                    
+                    state = me.getResponsiveState();
+                    if (state) {
+                        ret = Ext.merge({}, instanceConfig, state);
                         
-                        if (me.destroyed) {
-                            deferred.reject();
-                        } else {
-                            deferred.resolve();
-                        }
-                    }, Ext.global, {
-                        single: true,
-                        onFrame: true
-                    });
-                    translatable.translate(x, y, animate);
-                    ret = deferred.promise;
-                } else {
-                    if (y != null) {
-                        dom.scrollTop = y;
-                    }
-                    if (x != null) {
-                        dom.scrollLeft = x;
-                    }
-                    ret = Ext.Deferred.getCachedResolved();
-                }
-                
-                me.positionDirty = true;
-            } else {
-                ret = Ext.Deferred.getCachedRejected();
-            }
-            return ret;
-        },
-        fireScrollStart: function(x, y, xDelta, yDelta) {
-            var me = this,
-                component = me.component;
-            me.invokePartners('onPartnerScrollStart', x, y, xDelta, yDelta);
-            me.startX = x - xDelta;
-            me.startY = y - yDelta;
-            if (me.hasListeners.scrollstart) {
-                me.fireEvent('scrollstart', me, x, y);
-            }
-            if (component && component.onScrollStart) {
-                component.onScrollStart(x, y);
-            }
-            Ext.GlobalEvents.fireEvent('scrollstart', me, x, y);
-        },
-        fireScroll: function(x, y, xDelta, yDelta) {
-            var me = this,
-                component = me.component;
-            me.invokePartners('onPartnerScroll', x, y, xDelta, yDelta);
-            if (me.hasListeners.scroll) {
-                me.fireEvent('scroll', me, x, y, xDelta, yDelta);
-            }
-            if (component && component.onScrollMove) {
-                component.onScrollMove(x, y);
-            }
-            Ext.GlobalEvents.fireEvent('scroll', me, x, y, xDelta, yDelta);
-        },
-        fireScrollEnd: function(x, y, xDelta, yDelta) {
-            var me = this,
-                component = me.component,
-                dx = x - me.startX,
-                dy = y - me.startY;
-            me.startX = me.startY = null;
-            me.invokePartners('onPartnerScrollEnd', x, y, xDelta, yDelta);
-            if (me.hasListeners.scrollend) {
-                me.fireEvent('scrollend', me, x, y, dx, dy);
-            }
-            if (component && component.onScrollEnd) {
-                component.onScrollEnd(x, y);
-            }
-            Ext.GlobalEvents.fireEvent('scrollend', me, x, y, dx, dy);
-        },
-        
-        getElementScroll: function(element) {
-            return element.getScroll();
-        },
-        initSnap: function() {
-            var me = this,
-                snapOffset = me.getSnapOffset(),
-                snapSelector = me.getSnapSelector(),
-                element = me.getElement(),
-                offsetX, offsetY, snapCoordinate;
-            if (element && snapSelector) {
-                element.addCls(me.snappableCls);
-                me.removeSnapStylesheet();
-                if (snapOffset) {
-                    offsetX = snapOffset.x || 0;
-                    offsetY = snapOffset.y || 0;
-                    if (offsetX) {
-                        offsetX = -offsetX + 'px';
-                    }
-                    if (offsetY) {
-                        offsetY = -offsetY + 'px';
+                        delete ret.responsiveConfig;
+                        delete ret.responsiveFormulas;
                     }
                 }
-                snapCoordinate = offsetX + ' ' + offsetY + ';';
-                me.snapStylesheet = Ext.util.CSS.createStyleSheet('#' + element.id + ' ' + snapSelector + '{-webkit-scroll-snap-coordinate:' + snapCoordinate + 'scroll-snap-coordinate:' + snapCoordinate + '}');
-            }
-        },
-        initMsSnapInterval: function() {
-            var element = this.getElement(),
-                interval, x, y, style;
-            if (element) {
-                interval = this.getMsSnapInterval();
-                if (interval) {
-                    x = interval.x;
-                    y = interval.y;
-                    style = element.dom.style;
-                    if (x) {
-                        style['-ms-scroll-snap-points-x'] = 'snapInterval(0px, ' + x + 'px)';
-                    }
-                    if (y) {
-                        style['-ms-scroll-snap-points-y'] = 'snapInterval(0px, ' + y + 'px)';
-                    }
-                }
-            }
-        },
-        initXStyle: function() {
-            var element = this.getElement(),
-                x = this.getX();
+                return ret;
+            },
             
-            if (element && element.dom) {
-                if (!x) {
-                    x = 'hidden';
-                } else if (x === true) {
-                    x = 'auto';
-                }
-                element.setStyle('overflow-x', x);
+            updateResponsiveState: function() {
+                var config = this.getResponsiveState();
+                this.setConfig(config);
             }
-        },
-        initYStyle: function() {
-            var element = this.getElement(),
-                y = this.getY();
-            
-            if (element && element.dom) {
-                if (!y) {
-                    y = 'hidden';
-                } else if (y === true) {
-                    y = 'auto';
-                }
-                element.setStyle('overflow-y', y);
-            }
-        },
-        invokePartners: function(method, x, y, xDelta, yDelta) {
-            var me = this,
-                partners = me._partners,
-                partner, id, axes;
-            if (!me.suspendSync) {
-                me.invokingPartners = true;
-                for (id in partners) {
-                    axes = partners[id].axes;
-                    partner = partners[id].scroller;
-                    
-                    if (!partner.invokingPartners && (xDelta && axes.x || yDelta && axes.y)) {
-                        partner[method](me, axes.x ? x : null, axes.y ? y : null, xDelta, yDelta);
-                    }
-                }
-                me.invokingPartners = false;
-            }
-        },
-        suspendPartnerSync: function() {
-            this.suspendSync = (this.suspendSync || 0) + 1;
-        },
-        resumePartnerSync: function(syncNow) {
-            var me = this,
-                position;
-            if (me.suspendSync) {
-                me.suspendSync--;
-            }
-            if (!me.suspendSync && syncNow) {
-                position = me.getPosition();
-                me.invokePartners('onPartnerScroll', position.x, position.y);
-                me.invokePartners('onPartnerScrollEnd', position.x, position.y);
-            }
-        },
-        readPosition: function(position) {
-            var me = this,
-                element = me.getScrollElement(),
-                elScroll;
-            position = position || {};
-            if (element && !element.destroyed) {
-                elScroll = me.getElementScroll(element);
-                position.x = elScroll.left;
-                position.y = elScroll.top;
-            }
-            return position;
-        },
-        updateDomScrollPosition: function(silent) {
-            var me = this,
-                position = me.position,
-                oldX = position.x,
-                oldY = position.y,
-                x, y, xDelta, yDelta;
-            me.readPosition(position);
-            x = position.x;
-            y = position.y;
-            me.positionDirty = false;
-            if (!silent) {
-                xDelta = x - oldX;
-                yDelta = y - oldY;
-                
-                
-                
-                if (xDelta || yDelta) {
-                    if (!me.isScrolling) {
-                        me.isScrolling = Ext.isScrolling = true;
-                        me.fireScrollStart(x, y, xDelta, yDelta);
-                    }
-                    me.fireScroll(x, y, xDelta, yDelta);
-                    me.onDomScrollEnd(x, y, xDelta, yDelta);
-                }
-            }
-            return position;
-        },
-        
-        syncWithPartners: function() {
-            var me = this,
-                partners = me._partners,
-                id, partner, position;
-            me.suspendPartnerSync();
-            for (id in partners) {
-                partner = partners[id].scroller;
-                position = partner.getPosition();
-                me.onPartnerScroll(partner, position.x, position.y);
-            }
-            me.resumePartnerSync();
-        },
-        syncScrollbarCls: function() {
-            var element = this.getElement();
-            if (element) {
-                element.toggleCls(this.noScrollbarsCls, this.getScrollbars() === false);
-            }
-        },
-        onDomScroll: function() {
-            var hasTimer = !!this.restoreTimer;
-            this.updateDomScrollPosition(hasTimer);
-            if (hasTimer) {
-                Ext.undefer(this.onDomScrollEnd.timer);
-                return;
-            }
-        },
-        doOnDomScrollEnd: function(x, y, xDelta, yDelta) {
-            var me = this;
-            
-            if (me.destroying || me.destroyed) {
-                return;
-            }
-            me.isScrolling = Ext.isScrolling = false;
-            
-            if (x === undefined) {
-                return;
-            }
-            me.trackingScrollLeft = x;
-            me.trackingScrollTop = y;
-            me.fireScrollEnd(x, y, xDelta, yDelta);
-        },
-        onPartnerScrollStart: function(partner, x, y, xDelta, yDelta) {
-            
-            this.isScrolling = true;
-            this.fireScrollStart(x, y, xDelta, yDelta);
-        },
-        onPartnerScroll: function(partner, x, y, xDelta, yDelta) {
-            this.doScrollTo(x, y, false);
-            
-            
-            
-            
-            this.updateDomScrollPosition(true);
-            
-            this.fireScroll(x, y, xDelta, yDelta);
-        },
-        onPartnerScrollEnd: function(partner, x, y, xDelta, yDelta) {
-            
-            this.cancelOnDomScrollEnd();
-            
-            
-            
-            this.doOnDomScrollEnd(x, y, xDelta, yDelta);
-        },
-        removeSnapStylesheet: function() {
-            var stylesheet = this.snapStylesheet;
-            if (stylesheet) {
-                Ext.util.CSS.removeStyleSheet(stylesheet);
-                this.snapStylesheet = null;
-            }
-        },
-        restoreState: function() {
-            var me = this,
-                el = me.getScrollElement();
-            if (el) {
-                
-                
-                if (me.trackingScrollTop !== undefined) {
-                    
-                    
-                    
-                    
-                    
-                    
-                    if (!me.restoreTimer) {
-                        me.restoreTimer = Ext.defer(function() {
-                            me.restoreTimer = null;
-                        }, 50);
-                    }
-                    me.doScrollTo(me.trackingScrollLeft, me.trackingScrollTop, false);
-                }
-            }
-        }
-    }
-}, 
-
-function(Scroller) {
-    
-    Ext.getViewportScroller = function() {
-        
-        
-        
-        
-        var scroller = Scroller.viewport;
-        if (!scroller) {
-            Scroller.viewport = scroller = new Scroller();
-            Scroller.initViewportScroller();
-        }
-        return scroller;
-    };
-    
-    Ext.setViewportScroller = function(scroller) {
-        if (Scroller.viewport !== scroller) {
-            Ext.destroy(Scroller.viewport);
-            if (scroller && !scroller.isScroller) {
-                scroller = new Scroller(scroller);
-            }
-            Scroller.viewport = scroller;
         }
     };
-    Ext.onReady(function() {
-        
-        
-        
-        
-        
-        
-        Scroller.initViewportScrollerTimer = Ext.defer(Scroller.initViewportScroller, 100);
-    });
 });
+
 
 
 Ext.define('Ext.ProgressBase', {
@@ -36845,20 +37011,20 @@ Ext.define('Ext.fx.State', {
                 skewY: 0
             };
         }
-        if (typeof name == 'string') {
+        if (typeof name === 'string') {
             switch (name) {
                 case 'translate':
                     if (isArray) {
                         ln = value.length;
-                        if (ln == 0) {
+                        if (ln === 0) {
                             break;
                         }
                         transform.translateX = value[0];
-                        if (ln == 1) {
+                        if (ln === 1) {
                             break;
                         }
                         transform.translateY = value[1];
-                        if (ln == 2) {
+                        if (ln === 2) {
                             break;
                         }
                         transform.translateZ = value[2];
@@ -36869,15 +37035,15 @@ Ext.define('Ext.fx.State', {
                 case 'rotate':
                     if (isArray) {
                         ln = value.length;
-                        if (ln == 0) {
+                        if (ln === 0) {
                             break;
                         }
                         transform.rotateX = value[0];
-                        if (ln == 1) {
+                        if (ln === 1) {
                             break;
                         }
                         transform.rotateY = value[1];
-                        if (ln == 2) {
+                        if (ln === 2) {
                             break;
                         }
                         transform.rotateZ = value[2];
@@ -36888,15 +37054,15 @@ Ext.define('Ext.fx.State', {
                 case 'scale':
                     if (isArray) {
                         ln = value.length;
-                        if (ln == 0) {
+                        if (ln === 0) {
                             break;
                         }
                         transform.scaleX = value[0];
-                        if (ln == 1) {
+                        if (ln === 1) {
                             break;
                         }
                         transform.scaleY = value[1];
-                        if (ln == 2) {
+                        if (ln === 2) {
                             break;
                         }
                         transform.scaleZ = value[2];
@@ -36908,11 +37074,11 @@ Ext.define('Ext.fx.State', {
                 case 'skew':
                     if (isArray) {
                         ln = value.length;
-                        if (ln == 0) {
+                        if (ln === 0) {
                             break;
                         }
                         transform.skewX = value[0];
-                        if (ln == 1) {
+                        if (ln === 1) {
                             break;
                         }
                         transform.skewY = value[1];
@@ -36935,7 +37101,7 @@ Ext.define('Ext.fx.State', {
     set: function(name, value) {
         var data = this.data,
             key;
-        if (typeof name != 'string') {
+        if (typeof name !== 'string') {
             for (key in name) {
                 value = name[key];
                 if (key === 'transform') {
@@ -37007,7 +37173,7 @@ Ext.define('Ext.fx.animation.Abstract', {
     DIRECTION_BOTTOM: 'bottom',
     DIRECTION_LEFT: 'left',
     DIRECTION_RIGHT: 'right',
-    stateNameRegex: /^(?:[\d\.]+)%$/,
+    stateNameRegex: /^(?:[\d.]+)%$/,
     constructor: function() {
         this.states = {};
         this.callParent(arguments);
@@ -37468,7 +37634,7 @@ Ext.define('Ext.fx.Animation', {
     constructor: function(config) {
         var defaultClass = Ext.fx.animation.Abstract,
             type;
-        if (typeof config == 'string') {
+        if (typeof config === 'string') {
             type = config;
             config = {};
         } else if (config && config.type) {
@@ -37506,6 +37672,7 @@ Ext.define('Ext.app.EventDomain', {
     
     dispatch: function(target, ev, args) {
         ev = Ext.canonicalEventName(ev);
+        
         var me = this,
             bus = me.bus,
             selectors = bus[ev],
@@ -37789,6 +37956,36 @@ Ext.define('Ext.app.domain.Global', {
 });
 
 
+Ext.define('Ext.route.Handler', {
+    
+    
+    
+    lazy: false,
+    
+    
+    
+    
+    
+    statics: {
+        
+        fromRouteConfig: function(config, scope) {
+            var handler = {
+                    action: config.action,
+                    before: config.before,
+                    lazy: config.lazy,
+                    exit: config.exit,
+                    scope: scope,
+                    single: config.single
+                };
+            return new this(handler);
+        }
+    },
+    constructor: function(config) {
+        Ext.apply(this, config);
+    }
+});
+
+
 Ext.define('Ext.route.Action', {
     config: {
         
@@ -37844,15 +38041,22 @@ Ext.define('Ext.route.Action', {
         var me = this,
             actions = me.getActions(),
             befores = me.getBefores(),
-            urlParams = me.getUrlParams().slice(),
-            config, ret;
+            urlParams = me.getUrlParams(),
+            config, ret, args;
+        if (Ext.isArray(urlParams)) {
+            args = urlParams.slice();
+        } else {
+            args = [
+                urlParams
+            ];
+        }
         if (me.stopped || (befores ? !befores.length : true) && (actions ? !actions.length : true)) {
             me.done();
         } else {
             if (befores && befores.length) {
                 config = befores.shift();
-                urlParams.push(me);
-                ret = Ext.callback(config.fn, config.scope, urlParams);
+                args.push(me);
+                ret = Ext.callback(config.fn, config.scope, args);
                 if (ret && ret.then) {
                     ret.then(function(arg) {
                         me.resume(arg);
@@ -37862,7 +38066,7 @@ Ext.define('Ext.route.Action', {
                 }
             } else if (actions && actions.length) {
                 config = actions.shift();
-                Ext.callback(config.fn, config.scope, urlParams);
+                Ext.callback(config.fn, config.scope, args);
                 me.next();
             } else {
                 
@@ -37898,6 +38102,7 @@ Ext.define('Ext.route.Action', {
             fn = first;
             first = false;
         }
+        
         var befores = this.getBefores(),
             config = {
                 fn: fn,
@@ -37905,7 +38110,7 @@ Ext.define('Ext.route.Action', {
             };
         
         if (this.destroyed) {
-            Ext.raise('This action has has already resolved and therefore will never execute this function.');
+            Ext.raise('This action has has already resolved and therefore will never ' + 'execute this function.');
             return;
         }
         
@@ -37927,6 +38132,7 @@ Ext.define('Ext.route.Action', {
             fn = first;
             first = false;
         }
+        
         var actions = this.getActions(),
             config = {
                 fn: fn,
@@ -37934,7 +38140,7 @@ Ext.define('Ext.route.Action', {
             };
         
         if (this.destroyed) {
-            Ext.raise('This action has has already resolved and therefore will never execute this function.');
+            Ext.raise('This action has has already resolved and therefore will never ' + 'execute this function.');
             return;
         }
         
@@ -37953,7 +38159,7 @@ Ext.define('Ext.route.Action', {
     then: function(resolve, reject) {
         
         if (this.destroyed) {
-            Ext.raise('This action has has already resolved and therefore will never execute either function.');
+            Ext.raise('This action has has already resolved and therefore will never ' + 'execute either function.');
             return;
         }
         
@@ -37964,6 +38170,7 @@ Ext.define('Ext.route.Action', {
 
 Ext.define('Ext.route.Route', {
     
+    
     config: {
         
         name: null,
@@ -37972,16 +38179,75 @@ Ext.define('Ext.route.Route', {
         
         allowInactive: false,
         
+        conditions: {},
+        
         caseInsensitive: false,
         
-        handlers: []
+        handlers: [],
+        
+        
+        
+        types: {
+            cached: true,
+            $value: {
+                alpha: {
+                    re: '([a-zA-Z]+)'
+                },
+                alphanum: {
+                    re: '([a-zA-Z0-9]+|[0-9]+(?:\\.[0-9]+)?|[0-9]*(?:\\.[0-9]+){1})',
+                    parse: function(value) {
+                        var test;
+                        if (value && this.numRe.test(value)) {
+                            test = parseFloat(value);
+                            if (!isNaN(test)) {
+                                value = test;
+                            }
+                        }
+                        return value;
+                    }
+                },
+                num: {
+                    
+                    re: '([0-9]+(?:\\.[0-9]+)?|[0-9]*(?:\\.[0-9]+){1})',
+                    parse: function(value) {
+                        if (value) {
+                            value = parseFloat(value);
+                        }
+                        return value;
+                    }
+                },
+                '...': {
+                    re: '(.+)?',
+                    split: '/',
+                    parse: function(values) {
+                        var length, i, value;
+                        if (values) {
+                            length = values.length;
+                            for (i = 0; i < length; i++) {
+                                value = parseFloat(values[i]);
+                                if (!isNaN(value)) {
+                                    values[i] = value;
+                                }
+                            }
+                        }
+                        return values;
+                    }
+                }
+            }
+        }
     },
-    
     
     defaultMatcher: '([%a-zA-Z0-9\\-\\_\\s,]+)',
     
     
-    paramMatchingRegex: /:([0-9A-Za-z\_]*)/g,
+    numRe: /^[0-9]*(?:\.[0-9]*)?$/,
+    
+    typeParamRegex: /:{([0-9A-Za-z_]+)(?::?([0-9A-Za-z_]+|.{3})?)}/g,
+    
+    optionalGroupRegex: /\((.+?)\)/g,
+    
+    paramMatchingRegex: /:([0-9A-Za-z_]+)/g,
+    
     
     
     isRoute: true,
@@ -37989,32 +38255,181 @@ Ext.define('Ext.route.Route', {
         var me = this,
             url;
         this.initConfig(config);
-        Ext.apply(me, config, {
-            conditions: {}
+        url = me.getUrl().replace(me.optionalGroupRegex, function(match, middle) {
+            return '(?:' + middle + ')?';
         });
-        url = me.getUrl();
+        if (url.match(me.typeParamRegex)) {
+            me.handleNamedPattern(url);
+        } else {
+            me.handlePositionalPattern(url);
+        }
+    },
+    
+    handlePositionalPattern: function(url) {
+        var me = this;
         me.paramsInMatchString = url.match(me.paramMatchingRegex) || [];
         me.matcherRegex = me.createMatcherRegex(url);
+        me.mode = 'positional';
+    },
+    
+    handleNamedPattern: function(url) {
+        var me = this,
+            typeParamRegex = me.typeParamRegex,
+            conditions = me.getConditions(),
+            types = me.getTypes(),
+            defaultMatcher = me.defaultMatcher,
+            params = {},
+            re = url.replace(typeParamRegex, function(match, param, typeMatch) {
+                var type = typeMatch && types[typeMatch],
+                    matcher = conditions[param] || type || defaultMatcher;
+                
+                if (params[param]) {
+                    Ext.raise('"' + param + '" already defined in route "' + url + '"');
+                }
+                if (typeMatch && !type) {
+                    Ext.raise('Unknown parameter type "' + typeMatch + '" in route "' + url + '"');
+                }
+                
+                if (Ext.isObject(matcher)) {
+                    matcher = matcher.re;
+                }
+                params[param] = {
+                    matcher: matcher,
+                    type: typeMatch
+                };
+                return matcher;
+            });
+        
+        if (re.search(me.paramMatchingRegex) !== -1) {
+            Ext.raise('URL parameter mismatch. Positional url parameter found ' + 'while in named mode.');
+        }
+        
+        me.paramsInMatchString = params;
+        me.matcherRegex = new RegExp('^' + re + '$', me.getCaseInsensitive() ? 'i' : '');
+        me.mode = 'named';
     },
     
     recognize: function(url) {
         var me = this,
             recognized = me.recognizes(url),
-            matches, urlParams;
-        if (url === me.lastToken) {
-            
-            return true;
-        }
+            handlers, length, hasHandler, handler, matches, urlParams, i;
         if (recognized) {
+            handlers = me.getHandlers();
+            length = handlers.length;
+            for (i = 0; i < length; i++) {
+                handler = handlers[i];
+                if (handler.lastToken !== url) {
+                    
+                    hasHandler = true;
+                    break;
+                }
+            }
+            if (!hasHandler && url === me.lastToken) {
+                
+                return true;
+            }
+            
             matches = me.matchesFor(url);
-            urlParams = url.match(me.matcherRegex);
-            urlParams.shift();
+            urlParams = me.getUrlParams(url);
             return Ext.applyIf(matches, {
                 historyUrl: url,
                 urlParams: urlParams
             });
         }
         return false;
+    },
+    
+    getUrlParams: function(url) {
+        if (this.mode === 'named') {
+            return this.getNamedUrlParams(url);
+        } else {
+            return this.getPositionalUrlParams(url);
+        }
+    },
+    
+    getPositionalUrlParams: function(url) {
+        var params = [],
+            conditions = this.getConditions(),
+            keys = this.paramsInMatchString,
+            values = url.match(this.matcherRegex),
+            length = keys.length,
+            i, key, type, value;
+        
+        values.shift();
+        for (i = 0; i < length; i++) {
+            key = keys[i];
+            value = values[i];
+            if (conditions[key]) {
+                type = conditions[key];
+            } else if (key[0] === ':') {
+                key = key.substr(1);
+                if (conditions[key]) {
+                    type = conditions[key];
+                }
+            }
+            value = this.parseValue(value, type);
+            if (Ext.isDefined(value) && value !== '') {
+                if (Ext.isArray(value)) {
+                    params.push.apply(params, value);
+                } else {
+                    params.push(value);
+                }
+            }
+        }
+        return params;
+    },
+    
+    getNamedUrlParams: function(url) {
+        var conditions = this.getConditions(),
+            types = this.getTypes(),
+            params = {},
+            keys = this.paramsInMatchString,
+            values = url.match(this.matcherRegex),
+            name, obj, value, type, condition;
+        
+        values.shift();
+        for (name in keys) {
+            obj = keys[name];
+            value = values.shift();
+            condition = conditions[name];
+            type = types[obj.type];
+            if (condition || type) {
+                type = Ext.merge({}, condition, types[obj.type]);
+            }
+            params[name] = this.parseValue(value, type);
+        }
+        return params;
+    },
+    
+    parseValue: function(value, type) {
+        if (type) {
+            if (value && type.split) {
+                value = value.split(type.split);
+                
+                
+                
+                
+                if (!value[0]) {
+                    value.shift();
+                }
+                
+                
+                
+                
+                if (!value[value.length - 1]) {
+                    value.pop();
+                }
+            }
+            if (type.parse) {
+                value = type.parse.call(this, value);
+            }
+        }
+        if (!value && Ext.isString(value)) {
+            
+            
+            value = undefined;
+        }
+        return value;
     },
     
     recognizes: function(url) {
@@ -38027,80 +38442,95 @@ Ext.define('Ext.route.Route', {
             handlers = me.getHandlers(),
             queue = Ext.route.Router.getQueueRoutes(),
             length = handlers.length,
-            befores = [],
-            actions = [],
             urlParams = (argConfig && argConfig.urlParams) || [],
-            i, handler, scope, action, promises;
+            i, handler, scope, action, promises, single, remover;
         me.lastToken = token;
         if (!queue) {
             promises = [];
         }
         return new Ext.Promise(function(resolve, reject) {
-            for (i = 0; i < length; i++) {
-                handler = handlers[i];
-                scope = handler.scope;
-                if (!allowInactive && scope.isActive && !scope.isActive()) {
-                    
-                    continue;
+            if (argConfig === false) {
+                reject();
+            } else {
+                if (queue) {
+                    action = new Ext.route.Action({
+                        urlParams: urlParams
+                    });
+                }
+                for (i = 0; i < length; i++) {
+                    handler = handlers[i];
+                    if (token != null && handler.lastToken === token) {
+                        
+                        
+                        continue;
+                    }
+                    scope = handler.scope;
+                    handler.lastToken = token;
+                    if (!allowInactive && scope.isActive && !scope.isActive()) {
+                        
+                        continue;
+                    }
+                    if (!queue) {
+                        action = new Ext.route.Action({
+                            urlParams: urlParams
+                        });
+                    }
+                    single = handler.single;
+                    if (handler.before) {
+                        action.before(handler.before, scope);
+                    }
+                    if (handler.action) {
+                        action.action(handler.action, scope);
+                    }
+                    if (single) {
+                        remover = Ext.bind(me.removeHandler, me, [
+                            null,
+                            handler
+                        ]);
+                        if (single === true) {
+                            if (handler.action) {
+                                action.action(remover, me);
+                            } else {
+                                action.before(function() {
+                                    remover();
+                                    return Ext.Promise.resolve();
+                                }, me);
+                            }
+                        } else {
+                            
+                            
+                            
+                            action.before(single === 'before', function() {
+                                remover();
+                                return Ext.Promise.resolve();
+                            }, me);
+                        }
+                    }
+                    if (!queue) {
+                        if (Ext.fireEvent('beforeroute', action, me) === false) {
+                            action.destroy();
+                        } else {
+                            promises.push(action.run());
+                        }
+                    }
                 }
                 if (queue) {
-                    if (handler.before) {
-                        befores.push({
-                            fn: handler.before,
-                            scope: scope
-                        });
-                    }
-                    if (handler.action) {
-                        actions.push({
-                            fn: handler.action,
-                            scope: scope
-                        });
-                    }
-                } else {
-                    action = {
-                        urlParams: urlParams
-                    };
-                    if (handler.before) {
-                        action.befores = {
-                            fn: handler.before,
-                            scope: scope
-                        };
-                    }
-                    if (handler.action) {
-                        action.actions = {
-                            fn: handler.action,
-                            scope: scope
-                        };
-                    }
-                    action = new Ext.route.Action(action);
                     if (Ext.fireEvent('beforeroute', action, me) === false) {
                         action.destroy();
+                        reject();
                     } else {
-                        promises.push(action.run());
+                        action.run().then(resolve, reject);
                     }
-                }
-            }
-            if (queue) {
-                action = new Ext.route.Action({
-                    actions: actions,
-                    befores: befores,
-                    urlParams: urlParams
-                });
-                if (Ext.fireEvent('beforeroute', action, me) === false) {
-                    action.destroy();
-                    reject();
                 } else {
-                    action.run().then(resolve, reject);
+                    Ext.Promise.all(promises).then(resolve, reject);
                 }
-            } else {
-                Ext.Promise.all(promises).then(resolve, reject);
             }
         });
     },
     
     matchesFor: function(url) {
         var params = {},
-            keys = this.paramsInMatchString,
+            keys = this.mode === 'named' ? Ext.Object.getKeys(this.paramsInMatchString) : this.paramsInMatchString,
             values = url.match(this.matcherRegex),
             length = keys.length,
             i;
@@ -38115,20 +38545,34 @@ Ext.define('Ext.route.Route', {
     createMatcherRegex: function(url) {
         
         
-        var paramsInMatchString = this.paramsInMatchString,
-            conditions = this.conditions,
-            defaultMatcher = this.defaultMatcher,
+        var me = this,
+            paramsInMatchString = me.paramsInMatchString,
+            conditions = me.getConditions(),
+            defaultMatcher = me.defaultMatcher,
             length = paramsInMatchString.length,
-            modifiers = this.getCaseInsensitive() ? 'i' : '',
-            i, params, matcher;
+            modifiers = me.getCaseInsensitive() ? 'i' : '',
+            i, param, matcher;
         if (url === '*') {
             
             url = url.replace('*', '\\*');
         } else {
             for (i = 0; i < length; i++) {
-                params = paramsInMatchString[i];
-                matcher = conditions[params] || defaultMatcher;
-                url = url.replace(new RegExp(params), matcher);
+                param = paramsInMatchString[i];
+                
+                
+                if (conditions[param]) {
+                    matcher = conditions[param];
+                }
+                
+                else if (param[0] === ':' && conditions[param.substr(1)]) {
+                    matcher = conditions[param.substr(1)];
+                } else {
+                    matcher = defaultMatcher;
+                }
+                if (Ext.isObject(matcher)) {
+                    matcher = matcher.re;
+                }
+                url = url.replace(new RegExp(param), matcher || defaultMatcher);
             }
         }
         
@@ -38137,27 +38581,73 @@ Ext.define('Ext.route.Route', {
     
     addHandler: function(handler) {
         var handlers = this.getHandlers();
+        if (!handler.isInstance) {
+            handler = new Ext.route.Handler(handler);
+        }
         handlers.push(handler);
-        return this;
+        return handler.route = this;
     },
     
-    removeHandler: function(scope, config) {
+    removeHandler: function(scope, handler) {
         var handlers = this.getHandlers(),
             length = handlers.length,
             newHandlers = [],
-            i, handler;
+            i, item;
         for (i = 0; i < length; i++) {
-            handler = handlers[i];
-            if (handler.scope === scope) {
-                if (!config || (Ext.isDefined(config.action) ? handler.action === config.action : true && Ext.isDefined(config.before) ? handler.before === config.before : true)) {
-                    
-                    continue;
+            item = handlers[i];
+            if (handler) {
+                if (item !== handler) {
+                    newHandlers.push(item);
                 }
+            } else if (item.scope !== scope) {
+                newHandlers.push(item);
             }
-            newHandlers.push(handler);
         }
         this.setHandlers(newHandlers);
         return this;
+    },
+    
+    clearLastTokens: function() {
+        var handlers = this.getHandlers(),
+            length = handlers.length,
+            i;
+        for (i = 0; i < length; i++) {
+            handlers[i].lastToken = null;
+        }
+        this.lastToken = null;
+    },
+    
+    onExit: function() {
+        var me = this,
+            handlers = me.getHandlers(),
+            allowInactive = me.getAllowInactive(),
+            length = handlers.length,
+            action = new Ext.route.Action({
+                urlParams: [
+                    me.lastToken
+                ]
+            }),
+            i, handler, scope;
+        
+        
+        
+        me.clearLastTokens();
+        for (i = 0; i < length; i++) {
+            handler = handlers[i];
+            if (handler.exit) {
+                scope = handler.scope;
+                if (!allowInactive && scope.isActive && !scope.isActive()) {
+                    
+                    continue;
+                }
+                action.action(handler.exit, scope);
+            }
+        }
+        if (Ext.fireEvent('beforerouteexit', action, me) === false) {
+            action.destroy();
+        } else {
+            action.run();
+        }
     }
 });
 
@@ -38201,7 +38691,7 @@ Ext.define('Ext.util.History', {
     },
     
     getHash: function() {
-        return this.win.location.hash.replace(this.hashRe, '');
+        return (this.win.location.hash || '').replace(this.hashRe, '');
     },
     
     setHash: function(hash, replace) {
@@ -38395,7 +38885,7 @@ Ext.define('Ext.route.Router', {
                         
                         route.execute(token, recognize).then(null, Ext.bind(me.onRouteRejection, me, [
                             route
-                        ]));
+                        ], 0));
                     }
                     Ext.Array.remove(unmatched, route);
                     if (!matched[name]) {
@@ -38416,22 +38906,22 @@ Ext.define('Ext.route.Router', {
         i = 0;
         length = unmatched.length;
         for (; i < length; i++) {
-            route = unmatched[i];
-            
-            
-            
-            route.lastToken = null;
+            unmatched[i].onExit();
         }
     },
     
-    onRouteRejection: function(route) {
-        Ext.fireEvent('routereject', route);
+    onRouteRejection: function(route, error) {
+        Ext.fireEvent('routereject', route, error);
+        if (error) {
+            Ext.raise(error);
+        }
     },
     
     connect: function(url, config, instance) {
         var routes = this.routes,
+            delimiter = this.getMultipleToken(),
             name = config.name || url,
-            route, name;
+            handler, route;
         if (url[0] === '!') {
             
             if (!Ext.util.History.hashbang) {
@@ -38446,28 +38936,40 @@ Ext.define('Ext.route.Router', {
         }
         if (Ext.isString(config)) {
             config = {
-                action: config,
-                scope: instance
+                action: config
             };
-        } else {
-            config.scope = instance;
         }
+        handler = Ext.route.Handler.fromRouteConfig(config, instance);
         route = routes[name];
         if (!route) {
-            route = routes[name] = new Ext.route.Route({
-                conditions: config.conditions || {},
-                name: name,
-                url: url
-            });
+            config.name = name;
+            config.url = url;
+            route = routes[name] = new Ext.route.Route(config);
         }
-        route.addHandler(config);
+        route.addHandler(handler);
+        if (handler.lazy) {
+            
+            var currentHash = Ext.util.History.getToken(),
+                tokens = currentHash.split(delimiter),
+                length = tokens.length,
+                matched = [],
+                i, token;
+            for (i = 0; i < length; i++) {
+                token = tokens[i];
+                if (Ext.Array.indexOf(matched, token) === -1 && route.recognize(token)) {
+                    matched.push(token);
+                }
+            }
+            this.onStateChange(matched.join(delimiter));
+        }
+        return handler;
     },
     
     disconnect: function(instance, config) {
         var routes = this.routes,
             route, name;
         if (config) {
-            route = this.getByName(config.name || config.url);
+            route = config.route || this.getByName(config.name || config.url);
             if (route) {
                 route.removeHandler(instance, config);
             }
@@ -38517,7 +39019,7 @@ Ext.define('Ext.route.Router', {
         for (name in routes) {
             route = routes[name];
             if (!token || route.recognize(token)) {
-                route.lastToken = null;
+                route.clearLastTokens();
             }
         }
     },
@@ -38567,40 +39069,24 @@ Ext.define('Ext.route.Mixin', {
     destroyRouterable: function() {
         Ext.route.Router.disconnect(this);
     },
-    updateRoutes: function(routes, oldRoutes) {
-        var me = this,
-            Router = Ext.route.Router,
-            url, config, method;
-        if (oldRoutes) {
-            for (url in oldRoutes) {
-                config = oldRoutes[url];
-                if (Ext.isString(config)) {
-                    config = {
-                        action: config,
-                        name: url
-                    };
-                }
-                Router.disconnect(me, config);
-            }
-        }
+    applyRoutes: function(routes, oldRoutes) {
+        var Router = Ext.route.Router,
+            url;
         if (routes) {
             for (url in routes) {
-                config = routes[url];
-                if (Ext.isString(config)) {
-                    config = {
-                        action: config
-                    };
-                }
-                method = config.action;
-                
-                Router.connect(url, config, me);
+                routes[url] = Router.connect(url, routes[url], this);
             }
         }
+        if (oldRoutes) {
+            for (url in oldRoutes) {
+                Router.disconnect(this, oldRoutes[url]);
+            }
+        }
+        return routes;
     },
     
     redirectTo: function(hash, opt) {
-        var me = this,
-            currentHash = Ext.util.History.getToken(),
+        var currentHash = Ext.util.History.getToken(),
             Router = Ext.route.Router,
             delimiter = Router.getMultipleToken(),
             tokens = currentHash ? currentHash.split(delimiter) : [],
@@ -38864,17 +39350,46 @@ Ext.define('Ext.app.Util', {}, function() {
 });
 
 
-Ext.define('Ext.util.Filter', {
+Ext.define('Ext.util.BasicFilter', {
     isFilter: true,
+    config: {
+        
+        id: null,
+        
+        disabled: false,
+        
+        serializer: null
+    },
+    
+    generation: 0,
+    
+    constructor: function(config) {
+        this.initConfig(config);
+    },
+    updateDisabled: function() {
+        
+        
+        if (!this.isConfiguring) {
+            ++this.generation;
+        }
+    }
+});
+
+
+
+
+
+Ext.define('Ext.util.Filter', {
+    extend: Ext.util.BasicFilter,
     config: {
         
         property: null,
         
+        root: null,
+        
         value: null,
         
         filterFn: null,
-        
-        id: null,
         
         anyMatch: false,
         
@@ -38882,15 +39397,9 @@ Ext.define('Ext.util.Filter', {
         
         caseSensitive: false,
         
-        disabled: false,
-        
         disableOnEmpty: false,
         
         operator: null,
-        
-        root: null,
-        
-        serializer: null,
         
         convert: null
     },
@@ -38899,8 +39408,6 @@ Ext.define('Ext.util.Filter', {
     
     
     $configStrict: false,
-    
-    generation: 0,
     statics: {
         
         createFilterFn: function(filters) {
@@ -38932,8 +39439,9 @@ Ext.define('Ext.util.Filter', {
             }
             if (filter1.getValue() === filter2.getValue()) {
                 return true;
-            } else if (Ext.isArray(filter1) && Ext.isArray(filter2) && Ext.Array.equals(filter1, filter2)) {
-                return true;
+            }
+            if (Ext.isArray(filter1) && Ext.isArray(filter2)) {
+                return Ext.Array.equals(filter1, filter2);
             }
             return false;
         },
@@ -38953,14 +39461,15 @@ Ext.define('Ext.util.Filter', {
     },
     
     constructor: function(config) {
-        
         var warn = Ext.util.Filter.isInvalid(config);
         if (warn) {
             Ext.log.warn(warn);
         }
-        
-        this.initConfig(config);
+        this.callParent([
+            config
+        ]);
     },
+    
     preventConvert: {
         'in': 1,
         notin: 1
@@ -38981,13 +39490,14 @@ Ext.define('Ext.util.Filter', {
         return filterFn.call(me.scope || me, item);
     },
     getId: function() {
-        var id = this._id;
+        var me = this,
+            id = me._id;
         if (!id) {
-            id = this.getProperty();
+            id = me.getProperty();
             if (!id) {
                 id = Ext.id(null, 'ext-filter-');
             }
-            this._id = id;
+            me._id = id;
         }
         return id;
     },
@@ -39066,9 +39576,19 @@ Ext.define('Ext.util.Filter', {
         }
         return result;
     },
-    updateDisabled: function() {
+    serializeTo: function(out) {
+        var me = this,
+            primitive, serialized;
         
-        this.generation++;
+        
+        
+        
+        me.getFilterFn();
+        if (me.generatedFilterFn) {
+            out.push(serialized = me.serialize());
+            primitive = me.primitiveRe.test(typeof serialized);
+        }
+        return !primitive;
     },
     updateOperator: function() {
         
@@ -39106,6 +39626,7 @@ Ext.define('Ext.util.Filter', {
     },
     onConfigMutation: function() {
         
+        
         this.generation++;
         if (this.generatedFilterFn) {
             this._filterFn = null;
@@ -39119,6 +39640,7 @@ Ext.define('Ext.util.Filter', {
         }
     },
     privates: {
+        primitiveRe: /string|number|boolean/,
         getCandidateValue: function(candidate, v, preventCoerce) {
             var me = this,
                 convert = me._convert,
@@ -39131,8 +39653,8 @@ Ext.define('Ext.util.Filter', {
             return result;
         }
     }
-}, function() {
-    var prototype = this.prototype,
+}, function(Filter) {
+    var prototype = Filter.prototype,
         operatorFns = (prototype.operatorFns = {
             "<": function(candidate) {
                 var v = this._filterValue;
@@ -39152,6 +39674,7 @@ Ext.define('Ext.util.Filter', {
                 }
                 return candidate == v;
             },
+            
             "===": function(candidate) {
                 var me = this,
                     v = me._filterValue;
@@ -39180,6 +39703,7 @@ Ext.define('Ext.util.Filter', {
                 }
                 return candidate != v;
             },
+            
             "!==": function(candidate) {
                 var me = this,
                     v = me._filterValue;
@@ -39200,6 +39724,7 @@ Ext.define('Ext.util.Filter', {
             },
             like: function(candidate) {
                 var v = this._filterValue;
+                
                 return v && this.getCandidateValue(candidate, v).toLowerCase().indexOf(v.toLowerCase()) > -1;
             },
             "/=": function(candidate) {
@@ -39293,12 +39818,12 @@ Ext.define('Ext.util.AbstractMixedCollection', {
     replace: function(key, o) {
         var me = this,
             old, index;
-        if (arguments.length == 1) {
+        if (arguments.length === 1) {
             o = arguments[0];
             key = me.getKey(o);
         }
         old = me.map[key];
-        if (typeof key == 'undefined' || key === null || typeof old == 'undefined') {
+        if (typeof key === 'undefined' || key === null || typeof old === 'undefined') {
             return me.add(key, o);
         }
         me.generation++;
@@ -39326,11 +39851,13 @@ Ext.define('Ext.util.AbstractMixedCollection', {
         }
         for (index = 0; index < length; index++) {
             if (mapping[index] == undefined) {
+                
                 remaining.push(items[index]);
             }
         }
         for (index = 0; index < length; index++) {
             if (order[index] == undefined) {
+                
                 order[index] = remaining.shift();
             }
         }
@@ -39355,6 +39882,7 @@ Ext.define('Ext.util.AbstractMixedCollection', {
             me.keys[index] = newKey;
             
             
+            
             me.indexGeneration = ++me.generation;
         }
     },
@@ -39367,7 +39895,7 @@ Ext.define('Ext.util.AbstractMixedCollection', {
         } else {
             for (key in objs) {
                 if (objs.hasOwnProperty(key)) {
-                    if (me.allowFunctions || typeof objs[key] != 'function') {
+                    if (me.allowFunctions || typeof objs[key] !== 'function') {
                         me.add(key, objs[key]);
                     }
                 }
@@ -39455,6 +39983,7 @@ Ext.define('Ext.util.AbstractMixedCollection', {
             }
         }
         
+        
         me.suspendEvents();
         for (i = 0; i < len; i++) {
             itemKey = keys[i];
@@ -39468,6 +39997,7 @@ Ext.define('Ext.util.AbstractMixedCollection', {
             }
             if (itemKey != null) {
                 
+                
                 if (newKeys[itemKey] != null) {
                     passedDuplicates = true;
                     deDupedLen--;
@@ -39476,6 +40006,7 @@ Ext.define('Ext.util.AbstractMixedCollection', {
             }
         }
         me.resumeEvents();
+        
         
         if (passedDuplicates) {
             oldKeys = keys;
@@ -39566,7 +40097,7 @@ Ext.define('Ext.util.AbstractMixedCollection', {
             o = me.items[index];
             Ext.Array.erase(me.items, index, 1);
             key = me.keys[index];
-            if (typeof key != 'undefined') {
+            if (typeof key !== 'undefined') {
                 delete me.map[key];
             }
             Ext.Array.erase(me.keys, index, 1);
@@ -39589,6 +40120,7 @@ Ext.define('Ext.util.AbstractMixedCollection', {
             limit = Math.min(index + removeCount, me.length);
             removeCount = limit - index;
             
+            
             trimming = limit === me.length;
             syncIndices = trimming && me.indexGeneration === me.generation;
             
@@ -39608,6 +40140,7 @@ Ext.define('Ext.util.AbstractMixedCollection', {
             if (syncIndices) {
                 me.indexGeneration = me.generation;
             }
+            
             
             
             
@@ -39654,6 +40187,7 @@ Ext.define('Ext.util.AbstractMixedCollection', {
             
             
             
+            
             if (!me.useLinearSearch && (key = me.getKey(o))) {
                 return this.indexOfKey(key);
             }
@@ -39688,8 +40222,8 @@ Ext.define('Ext.util.AbstractMixedCollection', {
     get: function(key) {
         var me = this,
             mk = me.map[key],
-            item = mk !== undefined ? mk : (typeof key == 'number') ? me.items[key] : undefined;
-        return typeof item != 'function' || me.allowFunctions ? item : null;
+            item = mk !== undefined ? mk : (typeof key === 'number') ? me.items[key] : undefined;
+        return typeof item !== 'function' || me.allowFunctions ? item : null;
     },
     
     
@@ -39705,6 +40239,7 @@ Ext.define('Ext.util.AbstractMixedCollection', {
         var me = this,
             key;
         if (o != null) {
+            
             
             
             
@@ -39882,9 +40417,10 @@ Ext.define('Ext.util.AbstractMixedCollection', {
     },
     
     createValueMatcher: function(value, anyMatch, caseSensitive, exactMatch) {
+        var er;
         if (!value.exec) {
             
-            var er = Ext.String.escapeRegex;
+            er = Ext.String.escapeRegex;
             value = String(value);
             if (anyMatch === true) {
                 value = er(value);
@@ -40072,7 +40608,8 @@ Ext.define("Ext.util.Sortable", {
     
     applySorters: function(sorters) {
         var me = this,
-            sortersCollection = me.getSorters() || new Ext.util.MixedCollection(false, Ext.returnId);
+            sortersCollection;
+        sortersCollection = me.getSorters() || new Ext.util.MixedCollection(false, Ext.returnId);
         
         if (sorters) {
             sortersCollection.addAll(me.decodeSorters(sorters));
@@ -40143,7 +40680,7 @@ Ext.define("Ext.util.Sortable", {
                     break;
                 default:
                     
-                    Ext.raise('Sorter insertion point must be "multi", "prepend", "append" or "replace"');
+                    Ext.raise('Sorter insertion point must be "multi", "prepend", ' + '"append" or "replace"');
             }
         }
         
@@ -40181,6 +40718,7 @@ Ext.define("Ext.util.Sortable", {
                 ];
             }
         }
+        
         var length = sorters.length,
             Sorter = Ext.util.Sorter,
             model = this.getModel ? this.getModel() : this.model,
@@ -40202,7 +40740,7 @@ Ext.define("Ext.util.Sortable", {
                     config.sorterFn = config.fn;
                 }
                 
-                if (typeof config == 'function') {
+                if (typeof config === 'function') {
                     config = {
                         sorterFn: config
                     };
@@ -40255,7 +40793,7 @@ Ext.define('Ext.util.MixedCollection', {
     _sort: function(property, dir, fn) {
         var me = this,
             i, len,
-            dsc = String(dir).toUpperCase() == 'DESC' ? -1 : 1,
+            dsc = String(dir).toUpperCase() === 'DESC' ? -1 : 1,
             
             c = [],
             keys = me.keys,
@@ -40486,11 +41024,11 @@ Ext.define('Ext.util.CollectionKey', {
             map = me.map,
             items = remove.items,
             length = items.length,
-            i, item, key;
+            i, key;
         if (map) {
             if (me.getUnique() && length < collection.length / 2) {
                 for (i = 0; i < length; ++i) {
-                    key = me.getKey(item = items[i]);
+                    key = me.getKey(items[i]);
                     delete map[key];
                 }
             } else {
@@ -40587,13 +41125,13 @@ Ext.define('Ext.util.Grouper', {
     },
     
     getGroupString: function(item) {
-        var group = this._groupFn(item);
+        var group = item.$collapsedGroupPlaceholder ? item.$groupKey : this._groupFn(item);
         return (group != null) ? String(group) : '';
     },
     sortFn: function(item1, item2) {
         var me = this,
-            lhs = me._groupFn(item1),
-            rhs = me._groupFn(item2),
+            lhs = me.getGroupString(item1),
+            rhs = me.getGroupString(item2),
             property = me._sortProperty,
             
             root = me._root,
@@ -40913,7 +41451,9 @@ Ext.define('Ext.util.Collection', {
     
     createFiltered: function(property, value, anyMatch, caseSensitive, exactMatch) {
         var me = this,
-            ret = new me.self(me.initialConfig),
+            ret = new me.self(Ext.applyIf({
+                source: null
+            }, me.initialConfig)),
             root = me.getRootProperty(),
             items = me.items,
             length, i, filters, fn, scope;
@@ -41007,11 +41547,12 @@ Ext.define('Ext.util.Collection', {
     },
     
     find: function(property, value, start, startsWith, endsWith, ignoreCase) {
+        var regex, root;
         if (Ext.isEmpty(value, false)) {
             return null;
         }
-        var regex = Ext.String.createRegex(value, startsWith, endsWith, ignoreCase),
-            root = this.getRootProperty();
+        regex = Ext.String.createRegex(value, startsWith, endsWith, ignoreCase);
+        root = this.getRootProperty();
         return this.findBy(function(item) {
             return item && regex.test((root ? item[root] : item)[property]);
         }, null, start);
@@ -41112,10 +41653,11 @@ Ext.define('Ext.util.Collection', {
     },
     
     indexOf: function(item) {
+        var key;
         if (!item) {
             return -1;
         }
-        var key = this.getKey(item);
+        key = this.getKey(item);
         return this.indexOfKey(key);
     },
     
@@ -41150,11 +41692,11 @@ Ext.define('Ext.util.Collection', {
             itemMovement = 0,
             items = me.items,
             last = me.length - 1,
+            
+            
+            
+            
             sorted = me.sorted && last > 0 && me.getAutoSort(),
-            
-            
-            
-            
             source = me.getSource(),
             toRemove = 0,
             itemFiltered = false,
@@ -41188,6 +41730,7 @@ Ext.define('Ext.util.Collection', {
                     newIndex = me.length;
                 }
             }
+            
             
             
             
@@ -41225,6 +41768,8 @@ Ext.define('Ext.util.Collection', {
                     }
                 }
             }
+            
+            
             
             
             
@@ -41294,6 +41839,8 @@ Ext.define('Ext.util.Collection', {
             } else if (itemMovement < 0) {
                 details.oldIndex++;
             }
+            
+            
             
             
             
@@ -41403,6 +41950,7 @@ Ext.define('Ext.util.Collection', {
                 
                 i = source.length;
             }
+            
             
             me.requestedIndex = index;
             source.splice(i, removeItems, newItems);
@@ -41534,7 +42082,11 @@ Ext.define('Ext.util.Collection', {
                 }
                 chunkItems.push(removeMap[key] = item);
                 keys.push(key);
-                if (itemIndex < insertAt - 1) {
+                
+                
+                
+                
+                if (itemIndex < insertAt) {
                     
                     
                     
@@ -41730,7 +42282,7 @@ Ext.define('Ext.util.Collection', {
         }
     },
     
-    findInsertIndex: function(item) {
+    findInsertIndex: function(item, defaultIndex) {
         var source = this.getSource(),
             sourceItems = source.items,
             i = source.indexOf(item) - 1,
@@ -41744,8 +42296,7 @@ Ext.define('Ext.util.Collection', {
             --i;
         }
         
-        
-        return 0;
+        return defaultIndex;
     },
     
     
@@ -41753,31 +42304,31 @@ Ext.define('Ext.util.Collection', {
     onCollectionAdd: function(source, details) {
         var me = this,
             atItem = details.atItem,
-            items = details.items,
+            items = me.transformItems(details.items),
             requestedIndex = me.requestedIndex,
             filtered, index, copy, i, item, n;
         
-        if (!me.sorted) {
+        
+        if (requestedIndex !== undefined) {
+            index = requestedIndex;
+        } else {
             
-            
-            if (requestedIndex !== undefined) {
-                index = requestedIndex;
-            } else if (atItem) {
-                index = me.indexOf(atItem);
-                if (index === -1) {
-                    
-                    
-                    
-                    index = me.findInsertIndex(items[0]);
-                } else {
-                    
+            item = atItem || source.items[1];
+            index = item ? me.indexOf(item) : -1;
+            if (index > -1) {
+                
+                
+                
+                if (atItem) {
                     ++index;
                 }
-            } else {
-                
-                
-                
-                index = 0;
+            }
+            
+            
+            
+            
+            else if (!me.sorted) {
+                index = me.findInsertIndex(items[0], details.at ? me.length : 0);
             }
         }
         if (me.getAutoFilter() && me.filtered) {
@@ -41811,12 +42362,13 @@ Ext.define('Ext.util.Collection', {
     },
     
     onCollectionBeforeItemChange: function(source, details) {
+        var me = this;
         
-        this.onCollectionUpdateKey = null;
+        me.onCollectionUpdateKey = null;
         
         
-        if (!this.sourceUpdating) {
-            this.notify('beforeitemchange', [
+        if (!me.sourceUpdating) {
+            me.notify('beforeitemchange', [
                 details
             ]);
         }
@@ -41836,6 +42388,7 @@ Ext.define('Ext.util.Collection', {
         this.itemChanged(details.item, details.modified, details.oldKey, details.meta);
     },
     onCollectionFilteredItemChange: function() {
+        
         delete this.onCollectionUpdateKey;
     },
     
@@ -41844,7 +42397,7 @@ Ext.define('Ext.util.Collection', {
             map = {},
             indices = {},
             items = me.items,
-            sourceItems = source.items,
+            sourceItems = me.transformItems(source.items),
             filterFn = me.getFilterFn(),
             i, item, key, length, newLength;
         
@@ -41913,8 +42466,8 @@ Ext.define('Ext.util.Collection', {
             return n && this._aggregators.sum.call(this, items, begin, end, property, root) / n;
         },
         bounds: function(items, begin, end, property, root) {
-            for (var value, max, min,
-                i = begin; i < end; ++i) {
+            var value, max, min, i;
+            for (i = begin; i < end; ++i) {
                 value = items[i];
                 value = (root ? value[root] : value)[property];
                 
@@ -41978,9 +42531,8 @@ Ext.define('Ext.util.Collection', {
             return b[0];
         },
         sum: function(items, begin, end, property, root) {
-            for (var value,
-                sum = 0,
-                i = begin; i < end; ++i) {
+            var value, sum, i;
+            for (sum = 0 , i = begin; i < end; ++i) {
                 value = items[i];
                 value = (root ? value[root] : value)[property];
                 sum += value;
@@ -42152,7 +42704,11 @@ Ext.define('Ext.util.Collection', {
     getFilters: function(autoCreate) {
         var ret = this._filters;
         if (!ret && autoCreate !== false) {
-            ret = new Ext.util.FilterCollection();
+            ret = new Ext.util.FilterCollection(
+            {
+                id: this.getId() + '-filters' + (this.generation || '')
+            });
+            
             this.setFilters(ret);
         }
         return ret;
@@ -42219,6 +42775,7 @@ Ext.define('Ext.util.Collection', {
             
             
             
+            
             oldFilters.un('endupdate', 'onEndUpdateFilters', me);
         }
         if (newFilters) {
@@ -42249,7 +42806,11 @@ Ext.define('Ext.util.Collection', {
     getSorters: function(autoCreate) {
         var ret = this._sorters;
         if (!ret && autoCreate !== false) {
-            ret = new Ext.util.SorterCollection();
+            ret = new Ext.util.SorterCollection(
+            {
+                id: this.getId() + '-sorters' + (this.generation || '')
+            });
+            
             this.setSorters(ret);
         }
         return ret;
@@ -42340,6 +42901,9 @@ Ext.define('Ext.util.Collection', {
             if (me.getTrackGroups()) {
                 if (!groups) {
                     groups = new Ext.util.GroupCollection({
+                        
+                        id: me.getId() + '-groups' + (me.generation || ''),
+                        
                         itemRoot: me.getRootProperty(),
                         groupConfig: me.getGroupConfig()
                     });
@@ -42366,6 +42930,7 @@ Ext.define('Ext.util.Collection', {
     updateSorters: function(newSorters, oldSorters) {
         var me = this;
         if (oldSorters && !oldSorters.destroyed) {
+            
             
             
             
@@ -42512,6 +43077,7 @@ Ext.define('Ext.util.Collection', {
             ]);
         }
     },
+    transformItems: Ext.identityFn,
     getGroups: function() {
         return this.callParent() || null;
     },
@@ -42533,20 +43099,21 @@ Ext.define('Ext.util.Collection', {
         }
     },
     updateSource: function(newSource, oldSource) {
-        var auto = this.autoSource;
+        var me = this,
+            auto = me.autoSource;
         if (oldSource) {
             if (!oldSource.destroyed) {
-                oldSource.removeObserver(this);
+                oldSource.removeObserver(me);
             }
             if (oldSource === auto) {
                 auto.destroy();
-                this.autoSource = null;
+                me.autoSource = null;
             }
         }
         if (newSource) {
-            newSource.addObserver(this);
-            if (newSource.length || this.length) {
-                this.onCollectionRefresh(newSource);
+            newSource.addObserver(me);
+            if (newSource.length || me.length) {
+                me.onCollectionRefresh(newSource);
             }
         }
     }
@@ -42593,6 +43160,7 @@ Ext.define('Ext.data.Range', {
         if ('begin' in config) {
             me.begin = me.end = 0;
             
+            
             me.goto(config.begin, config.end);
         }
     },
@@ -42636,7 +43204,7 @@ Ext.define('Ext.data.Range', {
 Ext.define('Ext.util.ObjectTemplate', {
     isObjectTemplate: true,
     excludeProperties: {},
-    valueRe: /^[{][a-z\.]+[}]$/i,
+    valueRe: /^[{][a-z.]+[}]$/i,
     statics: {
         
         create: function(template, options) {
@@ -42675,8 +43243,8 @@ Ext.define('Ext.util.ObjectTemplate', {
                 } else if (me.valueRe.test(template)) {
                     template = template.substring(1, template.length - 1).split('.');
                     fn = function(context) {
-                        for (var v = context,
-                            i = 0; v && i < template.length; ++i) {
+                        var v, i;
+                        for (v = context , i = 0; v && i < template.length; ++i) {
                             v = v[template[i]];
                         }
                         return v;
@@ -43004,6 +43572,7 @@ Ext.define('Ext.data.schema.Role', {
         if (!reader) {
             proxy = Model.getProxy();
             
+            
             if (proxy) {
                 proxyReader = proxy.getReader();
                 reader = new proxyReader.self();
@@ -43133,7 +43702,6 @@ Ext.define('Ext.data.schema.Role', {
             inverse = me.inverse,
             inverseSetter = inverse.setterName,
             
-            session = leftRecord.session,
             modified, oldInstanceName;
         if (rightRecord && rightRecord.isEntity) {
             if (current !== rightRecord) {
@@ -43368,6 +43936,7 @@ Ext.define('Ext.data.schema.OneToOne', {
             
             var me = this,
                 rightRecord = leftRecord[me.getOldInstanceName()] || me.getAssociatedItem(leftRecord),
+                
                 hasNewValue = newValue || newValue === 0,
                 instanceName = me.getInstanceName(),
                 cls = me.cls;
@@ -43453,7 +44022,7 @@ Ext.define('Ext.data.schema.ManyToOne', {
         onDrop: function(rightRecord, session) {
             var me = this,
                 store = me.getAssociatedItem(rightRecord),
-                leftRecords, len, i, refs, id;
+                leftRecords, len, i, id;
             if (store) {
                 
                 leftRecords = store.removeAll();
@@ -43912,6 +44481,7 @@ Ext.define('Ext.data.schema.ManyToMany', {
                         member = members[id];
                         if (member[2] !== -1) {
                             
+                            
                             leftRecord = session.peekRecord(entityType, id);
                             if (leftRecord) {
                                 store = inverse.getAssociatedItem(leftRecord);
@@ -44046,6 +44616,7 @@ Ext.define('Ext.data.schema.ManyToMany', {
 Ext.define('Ext.util.Inflector', {
     
     singleton: true,
+    
     
     
     plurals: [
@@ -44238,6 +44809,7 @@ Ext.define('Ext.util.Inflector', {
         ]
     ],
     
+    
     uncountable: [
         "sheep",
         "fish",
@@ -44277,19 +44849,21 @@ Ext.define('Ext.util.Inflector', {
     },
     
     isTransnumeral: function(word) {
-        return Ext.Array.indexOf(this.uncountable, word) != -1;
+        return Ext.Array.indexOf(this.uncountable, word) !== -1;
     },
     
     pluralize: function(word) {
         if (this.isTransnumeral(word)) {
             return word;
         }
+        
         var plurals = this.plurals,
             length = plurals.length,
             tuple, regex, i;
         for (i = 0; i < length; i++) {
             tuple = plurals[i];
             regex = tuple[0];
+            
             if (regex == word || (regex.test && regex.test(word))) {
                 return word.replace(regex, tuple[1]);
             }
@@ -44301,12 +44875,14 @@ Ext.define('Ext.util.Inflector', {
         if (this.isTransnumeral(word)) {
             return word;
         }
+        
         var singulars = this.singulars,
             length = singulars.length,
             tuple, regex, i;
         for (i = 0; i < length; i++) {
             tuple = singulars[i];
             regex = tuple[0];
+            
             if (regex == word || (regex.test && regex.test(word))) {
                 return word.replace(regex, tuple[1]);
             }
@@ -44340,7 +44916,9 @@ Ext.define('Ext.util.Inflector', {
     }
 }, function() {
     
-    var irregulars = {
+    
+    var singular,
+        irregulars = {
             alumnus: 'alumni',
             cactus: 'cacti',
             focus: 'foci',
@@ -44372,8 +44950,7 @@ Ext.define('Ext.util.Inflector', {
             nebula: 'nebulae',
             vertebra: 'vertebrae',
             vita: 'vitae'
-        },
-        singular;
+        };
     for (singular in irregulars) {
         if (irregulars.hasOwnProperty(singular)) {
             this.plural(singular, irregulars[singular]);
@@ -44435,11 +45012,12 @@ Ext.define('Ext.data.schema.Namer', {
         return this.apply('undotted,uncapitalize,singularize', name);
     },
     undotted: function(name) {
+        var parts, index;
         if (name.indexOf('.') < 0) {
             return name;
         }
-        var parts = name.split('.'),
-            index = parts.length;
+        parts = name.split('.');
+        index = parts.length;
         while (index-- > 1) {
             parts[index] = this.apply('capitalize', parts[index]);
         }
@@ -44673,8 +45251,9 @@ Ext.define('Ext.data.schema.Schema', {
         return ret;
     },
     applyNamespace: function(namespace) {
+        var end;
         if (namespace) {
-            var end = namespace.length - 1;
+            end = namespace.length - 1;
             if (namespace.charAt(end) !== '.') {
                 namespace += '.';
             }
@@ -45031,6 +45610,7 @@ Ext.define('Ext.data.schema.Schema', {
                 Ext.Assert.isString(matrixDef.type, 'No "type" for manyToMany in ' + entityName);
                 
                 relation = matrixDef.relation;
+                
                 if (left || (!right && namer.apply('multiRole', entityName) < namer.apply('multiRole', matrixDef.type))) {
                     if (!left || left === true) {
                         
@@ -45077,6 +45657,7 @@ Ext.define('Ext.data.schema.Schema', {
             
             
             {
+                
                 var entry = associations[matrixName],
                     before = [
                         entry.kind,
@@ -45086,11 +45667,12 @@ Ext.define('Ext.data.schema.Schema', {
                         entry.right.type,
                         entry.right.role,
                         entry.right.field
-                    ].join('|');
+                    ].join('|'),
+                    after;
                 
                 delete associations[matrixName];
                 me.addMatrix(entityType, matrixName, relation, left, right);
-                var after = associations[matrixName];
+                after = associations[matrixName];
                 
                 associations[matrixName] = entry;
                 entry.left.cls.associations[entry.right.role] = entry.right;
@@ -45107,6 +45689,7 @@ Ext.define('Ext.data.schema.Schema', {
                     after.right.field
                 ].join('|');
                 if (before != after) {
+                    
                     Ext.log.warn(matrixName + '(' + entry.definedBy.entityName + '): ' + before);
                     Ext.log.warn(matrixName + '(' + entityName + '): ' + after);
                     Ext.raise('Conflicting association: "' + matrixName + '" declared by ' + entityName + ' was previously declared by ' + entry.definedBy.entityName);
@@ -45145,7 +45728,7 @@ Ext.define('Ext.data.schema.Schema', {
                 referenceField.unique = true;
                 assoc.legacy = true;
                 
-                Ext.log.warn('Using foreignKey is deprecated, use a keyed association. See Ext.data.field.Field.reference');
+                Ext.log.warn('Using foreignKey is deprecated, use a keyed association. ' + 'See Ext.data.field.Field.reference');
             }
             
             this.addReference(entityType, referenceField, assoc, unique);
@@ -45184,11 +45767,12 @@ Ext.define('Ext.data.schema.Schema', {
                     referenceField.$reference = assoc;
                     assoc.legacy = true;
                     
-                    Ext.log.warn('Using foreignKey is deprecated, use a keyed association. See Ext.data.field.Field.reference');
+                    Ext.log.warn('Using foreignKey is deprecated, use a keyed association. ' + 'See Ext.data.field.Field.reference');
                 }
                 
                 
                 me.addReference(cls, referenceField, assoc, false, 
+                
                 function(association, name, leftRole, rightRole) {
                     
                     var result = !!association.meta.fromSingle && cls === association.left.cls,
@@ -45196,7 +45780,7 @@ Ext.define('Ext.data.schema.Schema', {
                     if (result) {
                         l = cls.entityName;
                         r = entityType.entityName;
-                        Ext.raise('hasMany ("' + r + '") and belongsTo ("' + l + '") should not be used in conjunction to declare a relationship. Use only one.');
+                        Ext.raise('hasMany ("' + r + '") and belongsTo ("' + l + '") should not be used in conjunction to declare ' + 'a relationship. Use only one.');
                     }
                     return result;
                 });
@@ -45213,6 +45797,7 @@ Ext.define('Ext.data.schema.Schema', {
             }
         },
         checkLegacyAssociation: function(entityType, assoc) {
+            var name;
             if (Ext.isString(assoc)) {
                 assoc = {
                     type: assoc
@@ -45225,7 +45810,7 @@ Ext.define('Ext.data.schema.Schema', {
                 
                 delete assoc.model;
             }
-            var name = assoc.associatedName || assoc.name;
+            name = assoc.associatedName || assoc.name;
             if (name) {
                 
                 delete assoc.associatedName;
@@ -45368,6 +45953,7 @@ Ext.define('Ext.data.schema.Schema', {
             var associations = entityType.associations,
                 associatedType, role, roleName;
             
+            
             var topoStack = this.topoStack || (this.topoStack = []),
                 entityName = entityType.entityName;
             topoStack.push(entityName);
@@ -45456,7 +46042,6 @@ Ext.define('Ext.data.AbstractStore', {
     isStore: true,
     
     updating: 0,
-    
     constructor: function(config) {
         var me = this,
             storeId;
@@ -45548,7 +46133,9 @@ Ext.define('Ext.data.AbstractStore', {
     
     getRange: function(start, end, options) {
         
+        
         var result = this.getData().getRange(start, Ext.isNumber(end) ? end + 1 : end);
+        
         
         
         if (options && options.callback) {
@@ -45558,44 +46145,48 @@ Ext.define('Ext.data.AbstractStore', {
     },
     
     getFilters: function(autoCreate) {
-        var result = this.callParent();
+        var me = this,
+            result = me.callParent();
         if (!result && autoCreate !== false) {
-            this.setFilters([]);
-            result = this.callParent();
+            me.setFilters([]);
+            result = me.callParent();
         }
         return result;
     },
     applyFilters: function(filters, filtersCollection) {
-        var created;
+        var me = this,
+            created;
         if (!filtersCollection) {
-            filtersCollection = this.createFiltersCollection();
+            filtersCollection = me.createFiltersCollection();
             created = true;
         }
         filtersCollection.add(filters);
         if (created) {
-            this.onRemoteFilterSet(filtersCollection, this.getRemoteFilter());
+            me.onRemoteFilterSet(filtersCollection, me.getRemoteFilter());
         }
         return filtersCollection;
     },
     
     getSorters: function(autoCreate) {
-        var result = this.callParent();
+        var me = this,
+            result = me.callParent();
         if (!result && autoCreate !== false) {
             
-            this.setSorters([]);
-            result = this.callParent();
+            me.setSorters([]);
+            result = me.callParent();
         }
         return result;
     },
     applySorters: function(sorters, sortersCollection) {
-        var created;
+        var me = this,
+            created;
         if (!sortersCollection) {
-            sortersCollection = this.createSortersCollection();
+            sortersCollection = me.createSortersCollection();
             created = true;
         }
         sortersCollection.add(sorters);
         if (created) {
-            this.onRemoteSortSet(sortersCollection, this.getRemoteSort());
+            me.onRemoteSortSet(sortersCollection, me.getRemoteSort());
         }
         return sortersCollection;
     },
@@ -45673,6 +46264,7 @@ Ext.define('Ext.data.AbstractStore', {
         if (sorter.getTransform()) {
             return;
         }
+        
         var fieldName = sorter.getProperty(),
             Model = this.getModel(),
             field, sortType;
@@ -45687,7 +46279,6 @@ Ext.define('Ext.data.AbstractStore', {
     
     beginUpdate: function() {
         if (!this.updating++ && this.hasListeners.beginupdate) {
-            
             this.fireEvent('beginupdate');
         }
     },
@@ -45780,7 +46371,8 @@ Ext.define('Ext.data.AbstractStore', {
         if (me.hasListeners.destroy) {
             me.fireEvent('destroy', me);
         }
-        me.destroying = false;
+        
+        
         
         me.callParent();
     },
@@ -45853,7 +46445,7 @@ Ext.define('Ext.data.AbstractStore', {
             
             me.getFilters().each(function(filter) {
                 if (filter.getInitialConfig().filterFn) {
-                    Ext.raise('Unable to use a filtering function in conjunction with remote filtering.');
+                    Ext.raise('Unable to use a filtering function in conjunction with ' + 'remote filtering.');
                 }
             });
             
@@ -45866,6 +46458,7 @@ Ext.define('Ext.data.AbstractStore', {
             me.fireEvent('refresh', me);
         }
         if (me.trackStateChanges) {
+            
             
             me.saveStatefulFilters = true;
         }
@@ -45914,10 +46507,13 @@ Ext.define('Ext.data.AbstractStore', {
                 if (!me.isInitializing) {
                     me.load({
                         scope: me,
-                        callback: me.fireGroupChange
+                        callback: function() {
+                            me.fireGroupChange();
+                        }
                     });
                 }
-            } else {
+            } else 
+            {
                 me.fireEvent('datachanged', me);
                 me.fireEvent('refresh', me);
                 me.fireGroupChange();
@@ -45928,10 +46524,14 @@ Ext.define('Ext.data.AbstractStore', {
             me.fireGroupChange();
         }
     },
-    fireGroupChange: function() {
-        if (!this.destroyed) {
-            this.fireEvent('groupchange', this, this.getGrouper());
+    fireGroupChange: function(grouper) {
+        var me = this;
+        if (!me.isConfiguring && !me.destroying && !me.destroyed) {
+            me.fireGroupChangeEvent(grouper || me.getGrouper());
         }
+    },
+    fireGroupChangeEvent: function(grouper) {
+        this.fireEvent('groupchange', this, grouper);
     },
     
     clearGrouping: function() {
@@ -45978,6 +46578,8 @@ Ext.define('Ext.data.AbstractStore', {
                 filters[remoteFilter ? 'on' : 'un']('endupdate', 'onFilterEndUpdate', this);
             }
         },
+        
+        
         
         
         
@@ -46034,7 +46636,7 @@ Ext.define('Ext.data.ErrorCollection', {
         var me = this,
             fields = record.fields,
             data = record.data,
-            before, field, item, i, len, msg, val, name;
+            before, field, i, len, msg, val, name;
         for (i = 0 , len = fields.length; i < len; ++i) {
             field = fields[i];
             name = field.name;
@@ -46207,11 +46809,17 @@ Ext.define('Ext.data.operation.Operation', {
     
     abort: function() {
         var me = this,
-            request = me.request;
+            request = me.request,
+            proxy;
+        me.aborted = true;
         if (me.running && request) {
-            me.getProxy().abort(request);
+            proxy = me.getProxy();
+            if (proxy && !proxy.destroyed) {
+                proxy.abort(request);
+            }
             me.request = null;
         }
+        me.running = false;
     },
     process: function(resultSet, request, response, autoComplete) {
         var me = this;
@@ -46288,10 +46896,17 @@ Ext.define('Ext.data.operation.Operation', {
     
     setCompleted: function() {
         var me = this,
-            proxy = me.getProxy();
+            proxy;
         me.complete = true;
         me.running = false;
-        me.triggerCallbacks();
+        if (!me.destroying) {
+            me.triggerCallbacks();
+        }
+        
+        if (me.destroyed) {
+            return;
+        }
+        proxy = me.getProxy();
         
         if (proxy && !proxy.destroyed) {
             proxy.completeOperation(me);
@@ -46318,13 +46933,21 @@ Ext.define('Ext.data.operation.Operation', {
         
         if (callback) {
             callback.call(me.getInternalScope() || me, me);
+            
+            if (me.destroyed) {
+                return;
+            }
             me.setInternalCallback(null);
             me.setInternalScope(null);
         }
         
-        if (callback = me.getCallback()) {
+        callback = me.getCallback();
+        if (callback) {
             
             callback.call(me.getScope() || me, me.getRecords(), me, me.wasSuccessful());
+            if (me.destroyed) {
+                return;
+            }
             me.setCallback(null);
             me.setScope(null);
         }
@@ -46340,6 +46963,7 @@ Ext.define('Ext.data.operation.Operation', {
     
     getRecords: function() {
         var resultSet;
+        
         return this._records || ((resultSet = this.getResultSet()) ? resultSet.getRecords() : null);
     },
     
@@ -46362,6 +46986,18 @@ Ext.define('Ext.data.operation.Operation', {
     
     allowWrite: function() {
         return true;
+    },
+    destroy: function() {
+        var me = this;
+        me.destroying = true;
+        if (me.running) {
+            me.abort();
+        }
+        
+        me._params = me._callback = me._scope = me._resultSet = me._response = null;
+        me.request = me._request = me._records = me._proxy = me._batch = null;
+        me._recordCreator = me._internalCallback = me._internalScope = null;
+        me.callParent();
     }
 });
 
@@ -46476,6 +47112,7 @@ Ext.define('Ext.data.SortTypes', function() {
         },
         
         asUCText: function(s) {
+            
             
             return (s != null) ? String(s).toUpperCase().replace(me.stripTagsRE, '') : '\x00';
         },
@@ -46607,7 +47244,7 @@ Ext.define('Ext.data.field.Field', {
     
     rank: null,
     
-    stripRe: /[\$,%]/g,
+    stripRe: /[$,%]/g,
     
     calculated: false,
     
@@ -46618,7 +47255,16 @@ Ext.define('Ext.data.field.Field', {
         var sortType = data.sortType,
             proto = cls.prototype,
             superValidators = proto.validators,
-            validators = data.validators;
+            validators = data.validators,
+            alias = data.alias;
+        if (alias) {
+            if (typeof alias !== 'string') {
+                alias = alias[0];
+            }
+            if (alias) {
+                proto.type = alias.substr(alias.lastIndexOf('.') + 1);
+            }
+        }
         if (sortType && Ext.isString(sortType)) {
             proto.sortType = Ext.data.SortTypes[sortType];
         }
@@ -46638,7 +47284,8 @@ Ext.define('Ext.data.field.Field', {
         }
     },
     argumentNamesRe: /^function\s*\(\s*([^,\)\s]+)/,
-    calculateRe: /[^\.a-z0-9_]([a-z_][a-z_0-9]*)\.([a-z_][a-z_0-9]*)/gi,
+    
+    calculateRe: /[^.a-z0-9_]([a-z_][a-z_0-9]*)\.([a-z_][a-z_0-9]*)/gi,
     constructor: function(config) {
         var me = this,
             calculateRe = me.calculateRe,
@@ -46708,17 +47355,16 @@ Ext.define('Ext.data.field.Field', {
         this.modelValidators = modelValidators;
     },
     constructValidators: function(validators) {
+        var all, length, i, item, validator, presence;
         if (validators) {
             if (!(validators instanceof Array)) {
                 validators = [
                     validators
                 ];
             }
-            var length = validators.length,
-                all = this._validators,
-                
-                i, item, validator, presence;
-            for (i = 0; i < length; ++i) {
+            all = this._validators;
+            
+            for (i = 0 , length = validators.length; i < length; ++i) {
                 item = validators[i];
                 if (item.fn) {
                     item = item.fn;
@@ -46954,6 +47600,7 @@ Ext.define('Ext.data.field.Date', {
         if (v instanceof Date) {
             return v;
         }
+        
         var dateFormat = this.dateReadFormat || this.dateFormat,
             parsed;
         if (dateFormat) {
@@ -47012,6 +47659,7 @@ Ext.define('Ext.data.field.Integer', {
         if (typeof v === 'number') {
             return this.getNumber(v);
         }
+        
         var empty = v == null || v === '',
             allowNull = this.allowNull,
             out;
@@ -47168,7 +47816,7 @@ Ext.define('Ext.data.Model', {
     crudState: 'R',
     
     crudStateWas: null,
-    constructor: function(data, session) {
+    constructor: function(data, session, skipStoreAddition) {
         var me = this,
             cls = me.self,
             identifier = cls.identifier,
@@ -47187,6 +47835,7 @@ Ext.define('Ext.data.Model', {
         me.internalId = internalId = modelIdentifier.generate();
         
         var dataId = data[idProperty];
+        
         if (session && !session.isSession) {
             Ext.raise('Bad Model constructor argument 2 - "session" is not a Session');
         }
@@ -47225,7 +47874,7 @@ Ext.define('Ext.data.Model', {
                 me.phantom = true;
                 me.crudState = 'C';
             }
-            if (session) {
+            if (session && !skipStoreAddition) {
                 session.add(me);
             }
             
@@ -47566,6 +48215,7 @@ Ext.define('Ext.data.Model', {
         
         
         1);
+        
         if (me.dirty < 0) {
             
             
@@ -47696,6 +48346,7 @@ Ext.define('Ext.data.Model', {
     unjoin: function(owner) {
         var me = this,
             joined = me.joined,
+            
             
             
             len = joined && joined.length,
@@ -48005,6 +48656,7 @@ Ext.define('Ext.data.Model', {
     
     load: function(options) {
         options = Ext.apply({}, options);
+        
         var me = this,
             scope = options.scope || me,
             proxy = me.getProxy(),
@@ -48023,6 +48675,7 @@ Ext.define('Ext.data.Model', {
         }
         
         var doIdCheck = true;
+        
         if (me.phantom) {
             doIdCheck = false;
         }
@@ -48099,6 +48752,7 @@ Ext.define('Ext.data.Model', {
     
     save: function(options) {
         options = Ext.apply({}, options);
+        
         var me = this,
             phantom = me.phantom,
             dropped = me.dropped,
@@ -48154,6 +48808,7 @@ Ext.define('Ext.data.Model', {
         loadData: function(data, session) {
             var rec;
             if (data) {
+                
                 rec = this.getProxy().getReader().readRecords([
                     data
                 ], session ? {
@@ -48241,8 +48896,10 @@ Ext.define('Ext.data.Model', {
             }
             
             me.idField = proto.idField = idField = fieldsMap[proto.idProperty];
-            idField.allowNull = idField.critical = idField.identifier = true;
-            idField.defaultValue = null;
+            if (idField) {
+                idField.allowNull = idField.critical = idField.identifier = true;
+                idField.defaultValue = null;
+            }
             
             
             me.initializeFn = me.rankedFields = me.transientFields = me.criticalFields = null;
@@ -48430,11 +49087,9 @@ Ext.define('Ext.data.Model', {
                 fields = me.fields,
                 fieldCount = fields.length,
                 modifiedFieldNames = [],
-                field,
-                i = 0,
-                myData, sourceData,
                 idProperty = me.idProperty,
-                name, value;
+                i = 0,
+                field, myData, sourceData, name, value;
             if (sourceRecord) {
                 myData = me.data;
                 sourceData = sourceRecord.data;
@@ -48651,6 +49306,7 @@ Ext.define('Ext.data.Model', {
                     rankedFields = cls.rankedFields,
                     i, targetField;
                 
+                
                 var topoStack = cls.topoStack || (cls.topoStack = []);
                 topoStack.push(field.name);
                 if (field.rank === 0) {
@@ -48696,7 +49352,7 @@ Ext.define('Ext.data.Model', {
                     superFields = proto.fields,
                     versionProperty = data.versionProperty || proto.versionProperty,
                     idProperty = cls.idProperty,
-                    idField, field, i, length, name, ordinal, reference, superIdField, superIdFieldName, idDeclared;
+                    idField, field, i, length, name, ordinal, reference, superIdField, superIdFieldName, superIdDeclared, idDeclared;
                 
                 
                 cls.fields = proto.fields = fields;
@@ -48749,6 +49405,9 @@ Ext.define('Ext.data.Model', {
                         if (name === idProperty) {
                             idDeclared = field;
                         }
+                        if (name === superIdFieldName) {
+                            superIdDeclared = true;
+                        }
                     }
                 }
                 
@@ -48769,7 +49428,8 @@ Ext.define('Ext.data.Model', {
                     idField.definedBy = cls;
                     idField.ordinal = ordinal;
                     idField.generated = true;
-                } else if (idDeclared && superIdField && superIdField.generated) {
+                } else if (idDeclared && !superIdDeclared && superIdField && superIdField.generated) {
+                    
                     
                     
                     
@@ -48854,7 +49514,7 @@ Ext.define('Ext.data.Model', {
                     
                     for (i = 0 , len = summaries.length; i < len; ++i) {
                         if (summaries[i].name in proto.fieldsMap) {
-                            Ext.raise('Cannot redefine field, use the summary property on the field.');
+                            Ext.raise('Cannot redefine field, use the summary property ' + 'on the field.');
                         }
                     }
                     
@@ -48875,7 +49535,7 @@ Ext.define('Ext.data.Model', {
                 
                 if (data.validations) {
                     delete data.validations;
-                    Ext.log.warn((cls.$className || 'Ext.data.Model') + ': validations has been deprecated. Please use validators instead.');
+                    Ext.log.warn((cls.$className || 'Ext.data.Model') + ': validations has been deprecated. Please use validators ' + 'instead.');
                 }
                 
                 if (validatorDefs) {
@@ -48996,7 +49656,7 @@ Ext.define('Ext.data.Model', {
                     generatorPrefix;
                 
                 if (data.idgen) {
-                    Ext.log.warn('Ext.data.Model: idgen has been deprecated. Please use identifier instead.');
+                    Ext.log.warn('Ext.data.Model: idgen has been deprecated. Please use ' + 'identifier instead.');
                 }
                 
                 if (identifier) {
@@ -49143,6 +49803,7 @@ Ext.define('Ext.data.Model', {
         }
     }
 }, 
+
 
 function() {
     var Model = this,
@@ -49318,15 +49979,15 @@ Ext.define('Ext.data.reader.Reader', {
     
     
     constructor: function(config) {
+        var me = this;
         if (config && config.hasOwnProperty('root')) {
             config = Ext.apply({}, config);
             config.rootProperty = config.root;
             delete config.root;
             
-            Ext.log.error('Ext.data.reader.Reader: Using the deprecated "root" configuration. Use "rootProperty" instead.');
+            Ext.log.error('Ext.data.reader.Reader: Using the deprecated "root" configuration. ' + 'Use "rootProperty" instead.');
         }
         
-        var me = this;
         me.duringInit = 1;
         
         me.mixins.observable.constructor.call(me, config);
@@ -49374,7 +50035,7 @@ Ext.define('Ext.data.reader.Reader', {
         var data, result, responseText;
         if (response) {
             responseText = response.responseText;
-            if (responseText) {
+            if (response.responseType || responseText) {
                 result = this.getResponseData(response);
                 if (result && result.__$isError) {
                     return new Ext.data.ResultSet({
@@ -49488,6 +50149,7 @@ Ext.define('Ext.data.reader.Reader', {
                 }
             }
         }
+        
         return recordsOnly ? records : new Ext.data.ResultSet({
             total: total || recordCount,
             remoteTotal: remoteTotal,
@@ -49504,8 +50166,10 @@ Ext.define('Ext.data.reader.Reader', {
     extractData: function(root, readOptions) {
         var me = this,
             entityType = readOptions && readOptions.model ? Ext.data.schema.Schema.lookupEntity(readOptions.model) : me.getModel(),
+            
             schema = entityType.schema,
             includes = readOptions && 'includes' in readOptions ? readOptions.includes : schema.hasAssociations(entityType) && me.getImplicitIncludes(),
+            
             fieldExtractorInfo = me.getFieldExtractorInfo(entityType),
             length = root.length,
             records = new Array(length),
@@ -49523,6 +50187,7 @@ Ext.define('Ext.data.reader.Reader', {
                 
                 
                 node = record;
+                
                 
                 
                 
@@ -49552,6 +50217,7 @@ Ext.define('Ext.data.reader.Reader', {
         return records;
     },
     
+    
     getChildType: function(schema, rawNode, typeProperty) {
         var namespace;
         switch (typeof typeProperty) {
@@ -49565,6 +50231,7 @@ Ext.define('Ext.data.reader.Reader', {
         }
     },
     extractRecordData: function(node, readOptions) {
+        
         var entityType = readOptions && readOptions.model ? Ext.data.schema.Schema.lookupEntity(readOptions.model) : this.getModel(),
             fieldExtractorInfo = this.getFieldExtractorInfo(entityType);
         return this.extractRecord(node, readOptions, entityType, false, fieldExtractorInfo);
@@ -49632,6 +50299,7 @@ Ext.define('Ext.data.reader.Reader', {
     },
     defaultRecordCreatorFromServer: function(data, Model) {
         var record = new Model(data);
+        
         
         
         record.phantom = false;
@@ -49802,17 +50470,19 @@ Ext.define('Ext.data.reader.Reader', {
 
 
 Ext.define('Ext.data.writer.Writer', {
-    mixins: [
-        Ext.mixin.Factoryable
-    ],
     alias: 'writer.base',
-    factoryConfig: {
-        defaultType: null
-    },
     alternateClassName: [
         'Ext.data.DataWriter',
         'Ext.data.Writer'
     ],
+    mixins: [
+        Ext.mixin.Factoryable
+    ],
+    factoryConfig: {
+        defaultType: null
+    },
+    
+    isWriter: true,
     config: {
         
         clientIdProperty: null,
@@ -49836,8 +50506,6 @@ Ext.define('Ext.data.writer.Writer', {
         
         transform: null
     },
-    
-    isWriter: true,
     
     constructor: function(config) {
         this.initConfig(config);
@@ -49873,12 +50541,11 @@ Ext.define('Ext.data.writer.Writer', {
             nameProperty = me.getNameProperty(),
             mapping = nameProperty !== 'name',
             idField = record.self.idField,
-            key = idField[nameProperty] || idField.name,
-            
+            key = idField ? (idField[nameProperty] || idField.name) : 'id',
             value = record.id,
             writeAll = me.getWriteAllFields(),
             ret, dateFormat, phantom, options, clientIdProperty, fieldsMap, data, field;
-        if (idField.serialize) {
+        if (idField && idField.serialize) {
             value = idField.serialize(value);
         }
         if (!writeAll && operation && operation.isDestroyOperation) {
@@ -49982,8 +50649,9 @@ Ext.define('Ext.data.proxy.Proxy', {
         return Ext.data.schema.Schema.lookupEntity(model);
     },
     updateModel: function(model) {
+        var reader;
         if (model) {
-            var reader = this.getReader();
+            reader = this.getReader();
             if (reader && !reader.getModel()) {
                 reader.setModel(model);
             }
@@ -50001,9 +50669,10 @@ Ext.define('Ext.data.proxy.Proxy', {
         return Ext.Factory.reader(reader);
     },
     updateReader: function(reader) {
+        var me = this,
+            model;
         if (reader) {
-            var me = this,
-                model = me.getModel();
+            model = me.getModel();
             if (!model) {
                 model = reader.getModel();
                 if (model) {
@@ -50011,6 +50680,9 @@ Ext.define('Ext.data.proxy.Proxy', {
                 }
             } else {
                 reader.setModel(model);
+            }
+            if (reader.responseType != null) {
+                me.responseType = reader.responseType;
             }
         }
     },
@@ -50076,6 +50748,7 @@ Ext.define('Ext.data.proxy.Proxy', {
             single: true,
             priority: 1000
         });
+        batch.$destroyOwner = options.$destroyOwner;
         actions = me.getBatchOrder().split(',');
         aLen = actions.length;
         for (a = 0; a < aLen; a++) {
@@ -50128,6 +50801,12 @@ Ext.define('Ext.data.proxy.Proxy', {
                 batchOptions
             ]);
         }
+        
+        
+        
+        if (!batch.$destroyOwner) {
+            batch.destroy();
+        }
     },
     createOperation: function(action, config) {
         var operation = Ext.createByAlias('data.operation.' + action, config);
@@ -50149,6 +50828,7 @@ Ext.define('Ext.data.proxy.Proxy', {
             if (op && op.isRunning()) {
                 op.abort();
             }
+            op.destroy();
         }
         this.pendingOperations = null;
         this.callParent();
@@ -50164,7 +50844,7 @@ Ext.define('Ext.data.proxy.Client', {
     
     clear: function() {
         
-        Ext.raise("The Ext.data.proxy.Client subclass that you are using has not defined a 'clear' function. See src/data/ClientProxy.js for details.");
+        Ext.raise("The Ext.data.proxy.Client subclass that you are using has not defined " + "a 'clear' function. See src/data/ClientProxy.js for details.");
     }
 });
 
@@ -50237,16 +50917,19 @@ Ext.define('Ext.data.proxy.Memory', {
             
             if (filters && filters.length) {
                 
+                
                 resultSet.setRecords(records = Ext.Array.filter(records, Ext.util.Filter.createFilterFn(filters)));
                 resultSet.setTotal(records.length);
             }
             
             if (grouper) {
                 
+                
                 sorters = sorters ? sorters.concat(grouper) : sorters;
             }
             
             if (sorters && sorters.length) {
+                
                 resultSet.setRecords(records = Ext.Array.sort(records, Ext.util.Sortable.createComparator(sorters)));
             }
             
@@ -50267,7 +50950,9 @@ Ext.define('Ext.data.proxy.Memory', {
             operation.setCompleted();
             
             
-            if (meta = resultSet.getMetadata()) {
+            
+            meta = resultSet.getMetadata();
+            if (meta) {
                 me.onMetaChange(meta);
             }
         }
@@ -50332,6 +51017,7 @@ Ext.define('Ext.data.ProxyStore', {
         
         var configModel = me.model;
         
+        
         me.callParent(arguments);
         if (me.getAsynchronousLoad() === false) {
             me.flushLoad();
@@ -50339,7 +51025,9 @@ Ext.define('Ext.data.ProxyStore', {
         
         if (!me.getModel() && me.useModelWarning !== false && me.getStoreId() !== 'ext-empty-store') {
             
+            
             var logMsg = [
+                    
                     Ext.getClassName(me) || 'Store',
                     ' created with no model.'
                 ];
@@ -50376,6 +51064,7 @@ Ext.define('Ext.data.ProxyStore', {
         
         this.getData();
         if (autoLoad) {
+            
             
             this.load(Ext.isObject(autoLoad) ? autoLoad : undefined);
         }
@@ -50435,6 +51124,7 @@ Ext.define('Ext.data.ProxyStore', {
         me.callParent([
             state
         ]);
+        
         
         
         
@@ -50549,7 +51239,9 @@ Ext.define('Ext.data.ProxyStore', {
             me.resumeEvents();
         }
         me.isSyncing = false;
-        batch.destroy();
+        if (batch.$destroyOwner === me) {
+            batch.destroy();
+        }
         me.fireEvent('datachanged', me);
     },
     
@@ -50596,7 +51288,7 @@ Ext.define('Ext.data.ProxyStore', {
             needsSync = false;
         
         if (me.isSyncing) {
-            Ext.log.warn('Sync called while a sync operation is in progress. Consider configuring autoSync as false.');
+            Ext.log.warn('Sync called while a sync operation is in progress. ' + 'Consider configuring autoSync as false.');
         }
         
         me.needsSync = false;
@@ -50617,7 +51309,8 @@ Ext.define('Ext.data.ProxyStore', {
             options = options || {};
             me.proxy.batch(Ext.apply(options, {
                 operations: operations,
-                listeners: me.getBatchListeners()
+                listeners: me.getBatchListeners(),
+                $destroyOwner: me
             }));
         }
         return me;
@@ -50674,6 +51367,7 @@ Ext.define('Ext.data.ProxyStore', {
             return;
         }
         
+        
         me.clearLoadTask();
         if (!options) {
             return;
@@ -50698,6 +51392,11 @@ Ext.define('Ext.data.ProxyStore', {
                 me.fireEvent('beginload', me, operation);
             }
             operation.execute();
+        } else {
+            if (me.getAsynchronousLoad()) {
+                operation.abort();
+            }
+            operation.setCompleted();
         }
     },
     
@@ -50762,7 +51461,7 @@ Ext.define('Ext.data.ProxyStore', {
         var me = this;
         
         if (!me.autoSyncSuspended) {
-            Ext.log.warn('Mismatched call to resumeAutoSync - auto synchronization is currently not suspended.');
+            Ext.log.warn('Mismatched call to resumeAutoSync - auto synchronization ' + 'is currently not suspended.');
         }
         
         if (me.autoSyncSuspended && !--me.autoSyncSuspended) {
@@ -50876,6 +51575,7 @@ Ext.define('Ext.data.ProxyStore', {
 
 Ext.define('Ext.util.Group', {
     extend: Ext.util.Collection,
+    isGroup: true,
     config: {
         groupKey: null
     },
@@ -50890,6 +51590,7 @@ Ext.define('Ext.util.Group', {
 
 Ext.define('Ext.data.Group', {
     extend: Ext.util.Group,
+    isDataGroup: true,
     store: null,
     
     getSummaryRecord: function() {
@@ -50915,7 +51616,10 @@ Ext.define('Ext.data.Group', {
 Ext.define('Ext.data.LocalStore', {
     extend: Ext.Mixin,
     mixinConfig: {
-        id: 'localstore'
+        id: 'localstore',
+        after: {
+            fireGroupChangeEvent: 'onGrouperChange'
+        }
     },
     config: {
         extraKeys: null
@@ -50937,6 +51641,9 @@ Ext.define('Ext.data.LocalStore', {
     },
     constructDataCollection: function() {
         var result = new Ext.util.Collection({
+                
+                id: this.getId() + '-data',
+                
                 rootProperty: 'data',
                 groupConfig: {
                     xclass: 'Ext.data.Group',
@@ -50991,13 +51698,20 @@ Ext.define('Ext.data.LocalStore', {
     },
     
     
+    
     onCollectionSort: function() {
         this.onSorterEndUpdate();
     },
     
     
+    
     onCollectionFilter: function() {
         this.onFilterEndUpdate();
+    },
+    onGrouperChange: function(grouper) {
+        this.callObservers('GrouperChange', [
+            grouper
+        ]);
     },
     notifySorterChange: function() {
         this.getData().onSorterChange();
@@ -51306,7 +52020,7 @@ Ext.define('Ext.data.proxy.Server', {
         
         extraParams: {}
     },
-    primitiveRe: /string|number|boolean/,
+    
     
     
     create: function() {
@@ -51334,6 +52048,7 @@ Ext.define('Ext.data.proxy.Server', {
     buildRequest: function(operation) {
         var me = this,
             initialParams = Ext.apply({}, operation.getParams()),
+            
             
             params = Ext.applyIf(initialParams, me.getExtraParams() || {}),
             request, operationId, idParam;
@@ -51365,7 +52080,7 @@ Ext.define('Ext.data.proxy.Server', {
     
     processResponse: function(success, operation, request, response) {
         var me = this,
-            exception, reader, resultSet, meta;
+            exception, reader, resultSet, meta, destroyOp;
         
         
         if (me.destroying || me.destroyed) {
@@ -51389,6 +52104,10 @@ Ext.define('Ext.data.proxy.Server', {
                     recordCreator: operation.getRecordCreator() || reader.defaultRecordCreatorFromServer
                 });
             }
+            if (!operation.$destroyOwner) {
+                operation.$destroyOwner = me;
+                destroyOp = true;
+            }
             operation.process(resultSet, request, response);
             exception = !operation.wasSuccessful();
         } else {
@@ -51398,11 +52117,15 @@ Ext.define('Ext.data.proxy.Server', {
         
         
         if (me.destroyed) {
+            if (!operation.destroyed && destroyOp && operation.$destroyOwner === me) {
+                operation.destroy();
+            }
             return;
         }
         if (exception) {
             me.fireEvent('exception', me, response, operation);
         } else 
+        
         
         {
             meta = resultSet.getMetadata();
@@ -51412,6 +52135,9 @@ Ext.define('Ext.data.proxy.Server', {
         }
         
         if (me.destroyed) {
+            if (!operation.destroyed && destroyOp && operation.$destroyOwner === me) {
+                operation.destroy();
+            }
             return;
         }
         me.afterRequest(request, success);
@@ -51419,6 +52145,9 @@ Ext.define('Ext.data.proxy.Server', {
         
         
         me.fireEvent('endprocessresponse', me, response, operation);
+        if (!operation.destroyed && destroyOp && operation.$destroyOwner === me) {
+            operation.destroy();
+        }
     },
     
     setException: function(operation, response) {
@@ -51448,29 +52177,20 @@ Ext.define('Ext.data.proxy.Server', {
     encodeFilters: function(filters) {
         var out = [],
             length = filters.length,
-            needsEncoding, i, filter, encodedFilter;
+            encode, i;
         for (i = 0; i < length; i++) {
-            filter = filters[i];
-            
-            
-            
-            
-            filter.getFilterFn();
-            if (filter.generatedFilterFn) {
-                encodedFilter = filter.serialize();
-                needsEncoding |= !this.primitiveRe.test(typeof encodedFilter);
-                out.push(encodedFilter);
-            }
+            encode |= filters[i].serializeTo(out);
         }
         
         
-        return needsEncoding ? this.applyEncoding(out) : out;
+        return encode ? this.applyEncoding(out) : out;
     },
     
     getParams: function(operation) {
         if (!operation.isReadOperation) {
             return {};
         }
+        
         var me = this,
             params = {},
             grouper = operation.getGrouper(),
@@ -51516,6 +52236,7 @@ Ext.define('Ext.data.proxy.Server', {
                 ], true);
             }
         }
+        
         if (sortParam && sorters && sorters.length > 0) {
             if (simpleSortMode) {
                 
@@ -51532,6 +52253,7 @@ Ext.define('Ext.data.proxy.Server', {
                 params[sortParam] = me.encodeSorters(sorters);
             }
         }
+        
         if (filterParam && filters && filters.length > 0) {
             params[filterParam] = me.encodeFilters(filters);
         }
@@ -51562,7 +52284,7 @@ Ext.define('Ext.data.proxy.Server', {
     
     doRequest: function(operation, callback, scope) {
         
-        Ext.raise("The doRequest function has not been implemented on your Ext.data.proxy.Server subclass. See src/data/ServerProxy.js for details");
+        Ext.raise("The doRequest function has not been implemented on your " + "Ext.data.proxy.Server subclass. See src/data/ServerProxy.js for details");
     },
     
     
@@ -51573,7 +52295,8 @@ Ext.define('Ext.data.proxy.Server', {
         
         me.reader = me.writer = Ext.destroy(me.reader, me.writer);
         me.callParent();
-        me.destroying = false;
+        
+        
         me.destroyed = true;
     }
 });
@@ -51640,6 +52363,9 @@ Ext.define('Ext.data.proxy.Ajax', {
             disableCaching: false
         });
         
+        if (me.responseType != null && Ext.supports.XHR2) {
+            request.setResponseType(me.responseType);
+        }
         if (method.toUpperCase() !== 'GET' && me.getParamsAsJson()) {
             params = request.getParams();
             if (params) {
@@ -51716,6 +52442,8 @@ Ext.define('Ext.data.reader.Json', {
         
         preserveRawData: false
     },
+    
+    responseType: 'json',
     updateRootProperty: function() {
         this.forceBuildExtractors();
     },
@@ -51725,6 +52453,9 @@ Ext.define('Ext.data.reader.Json', {
     
     getResponseData: function(response) {
         var error;
+        if (typeof response.responseJson === 'object') {
+            return response.responseJson;
+        }
         try {
             return Ext.decode(response.responseText);
         } catch (ex) {
@@ -51736,8 +52467,7 @@ Ext.define('Ext.data.reader.Json', {
     },
     buildExtractors: function(force) {
         var me = this,
-            emptyFn = Ext.emptyFn,
-            prop;
+            emptyFn = Ext.emptyFn;
         
         if (me.callParent([
             force
@@ -51778,6 +52508,7 @@ Ext.define('Ext.data.reader.Json', {
     
     createAccessor: (function() {
         var re = /[\[\.]/;
+        
         return function(expr) {
             var simple = this.getUseSimpleAccessors(),
                 operatorIndex, result, current, parts, part, inExpr, isDot, isLeft, isRight, special, c, i, bracketed, len;
@@ -51792,7 +52523,7 @@ Ext.define('Ext.data.reader.Json', {
             }
             if (simple === true || operatorIndex < 0) {
                 result = function(raw) {
-                    return raw[expr];
+                    return raw == null ? null : raw[expr];
                 };
             } else {
                 
@@ -51834,6 +52565,8 @@ Ext.define('Ext.data.reader.Json', {
                                 part = '.' + part;
                             }
                             current += part;
+                            
+                            
                             
                             
                             
@@ -51906,7 +52639,7 @@ Ext.define('Ext.data.writer.Json', {
             config = Ext.apply({}, config);
             config.rootProperty = config.root;
             delete config.root;
-            Ext.log.warn('Ext.data.writer.Json: Using the deprecated "root" configuration. Use "rootProperty" instead.');
+            Ext.log.warn('Ext.data.writer.Json: Using the deprecated "root" configuration. ' + 'Use "rootProperty" instead.');
         }
         this.callParent([
             config
@@ -51917,12 +52650,12 @@ Ext.define('Ext.data.writer.Json', {
     getExpandedData: function(data) {
         var dataLength = data.length,
             i = 0,
-            item, prop, nameParts, j, tempObj,
-            toObject = function(name, value) {
-                var o = {};
-                o[name] = value;
-                return o;
-            };
+            item, prop, nameParts, j, tempObj, toObject;
+        toObject = function(name, value) {
+            var o = {};
+            o[name] = value;
+            return o;
+        };
         for (; i < dataLength; i++) {
             item = data[i];
             for (prop in item) {
@@ -52196,6 +52929,7 @@ Ext.define('Ext.util.SorterCollection', {
             if (args.length > index + 1 || !Ext.isIterable(ret)) {
                 ret = Ext.Array.slice(args, index);
             }
+            
             var currentSorters = me.items,
                 ln = ret.length,
                 remove = [],
@@ -52287,7 +53021,7 @@ Ext.define('Ext.util.FilterCollection', {
             filterRoot = options.getRootProperty(),
             filterConfig;
         if (filter.isFilter) {
-            if (!filter.getRoot()) {
+            if (filter.setRoot && !filter.getRoot()) {
                 filter.setRoot(filterRoot);
             }
         } else {
@@ -52325,6 +53059,7 @@ Ext.define('Ext.util.FilterCollection', {
             if (args.length > index + 1 || !Ext.isIterable(ret)) {
                 ret = Ext.Array.slice(args, index);
             }
+            
             var currentFilters = me.items,
                 ln = ret.length,
                 remove = [],
@@ -52424,11 +53159,13 @@ Ext.define('Ext.util.GroupCollection', {
     },
     onCollectionRefresh: function(source) {
         if (source.generation) {
+            
             var me = this,
                 itemGroupKeys = me.itemGroupKeys = {},
                 groupData = me.createEntries(source, source.items),
                 entries = groupData.entries,
                 groupKey, i, len, entry, j;
+            
             
             for (i = 0 , len = entries.length; i < len; ++i) {
                 entry = entries[i];
@@ -52466,10 +53203,10 @@ Ext.define('Ext.util.GroupCollection', {
                 item = changeDetails.item || changeDetails.items[0];
                 entries = me.createEntries(source, [
                     item
-                ]).entries;
+                ], false).entries;
                 entries[0].group = itemGroupKeys['oldKey' in details ? details.oldKey : source.getKey(item)];
             } else {
-                entries = me.createEntries(source, details.items).entries;
+                entries = me.createEntries(source, details.items, false).entries;
             }
             for (i = 0 , n = entries.length; i < n; ++i) {
                 group = (entry = entries[i]).group;
@@ -52509,7 +53246,9 @@ Ext.define('Ext.util.GroupCollection', {
             length = me.length;
             for (i = 0; i < length; ++i) {
                 group = items[i];
-                if (group.getSorters() !== sorters) {
+                if (group.getSorters() === sorters) {
+                    group.sortItems();
+                } else {
                     group.setSorters(sorters);
                 }
             }
@@ -52566,7 +53305,7 @@ Ext.define('Ext.util.GroupCollection', {
         
         me.sortItems();
     },
-    createEntries: function(source, items) {
+    createEntries: function(source, items, createGroups) {
         
         var me = this,
             groups = {},
@@ -52576,7 +53315,7 @@ Ext.define('Ext.util.GroupCollection', {
         for (i = 0 , len = items.length; i < len; ++i) {
             groupKey = grouper.getGroupString(item = items[i]);
             if (!(entry = groups[groupKey])) {
-                group = me.getGroup(source, groupKey);
+                group = me.getGroup(source, groupKey, createGroups);
                 entries.push(groups[groupKey] = entry = {
                     group: group,
                     items: []
@@ -52628,15 +53367,18 @@ Ext.define('Ext.util.GroupCollection', {
         delete itemGroupKeys[oldKey];
         itemGroupKeys[itemKey] = group;
     },
-    getGroup: function(source, key) {
+    getGroup: function(source, key, createGroups) {
         var me = this,
             group = me.get(key),
             autoSort = me.getAutoSort();
         if (group) {
             group.setSorters(source.getSorters());
-        } else {
+        } else if (createGroups !== false) {
             group = me.emptyGroups[key] || Ext.create(Ext.apply({
                 xclass: 'Ext.util.Group',
+                
+                id: me.getId() + '-group-' + key,
+                
                 groupKey: key,
                 rootProperty: me.getItemRoot(),
                 sorters: source.getSorters()
@@ -52700,6 +53442,7 @@ Ext.define('Ext.util.GroupCollection', {
                 emptyGroups[group.getGroupKey()] = group;
                 group.ejectTime = Ext.now();
             }
+            
             
             me.checkRemoveQueue();
         },
@@ -52770,11 +53513,12 @@ Ext.define('Ext.data.Store', {
                 }
                 
                 
+                
                 return new Ext.data['BufferedStore'](config);
             }
             
             if (config.remoteGroup) {
-                Ext.log.warn('Ext.data.Store: remoteGroup has been removed. Use remoteSort instead.');
+                Ext.log.warn('Ext.data.Store: remoteGroup has been removed. ' + 'Use remoteSort instead.');
             }
         }
         
@@ -52804,7 +53548,19 @@ Ext.define('Ext.data.Store', {
         me.getModel();
         
         if (data && data.isCollection) {
+            data.setRootProperty('data');
             dataCollection = data;
+            dataCollection.addObserver(this);
+            
+            if (data.getCount()) {
+                me.afterLoadRecords(data.items);
+                
+                
+                
+                if (me.hasListeners.load) {
+                    me.fireEvent('load', me, data.items, true);
+                }
+            }
         } else {
             if (!dataCollection) {
                 dataCollection = me.constructDataCollection();
@@ -52821,6 +53577,7 @@ Ext.define('Ext.data.Store', {
                     
                     me.inlineData = data;
                 } else {
+                    
                     
                     
                     me.loadData(data);
@@ -52936,6 +53693,7 @@ Ext.define('Ext.data.Store', {
         this.fireEvent('beforeupdate', this, record, type, modifiedFieldNames, info);
     },
     
+    
     onCollectionFilteredItemChange: function() {
         this.onCollectionItemChange.apply(this, arguments);
     },
@@ -53042,6 +53800,7 @@ Ext.define('Ext.data.Store', {
             len = records.length,
             index = info.at,
             replacement = info.replacement,
+            
             isMove = me.removeIsMove || (replacement && Ext.Array.equals(records, replacement.items)),
             silent = me.removeIsSilent,
             lastChunk = !info.next,
@@ -53061,6 +53820,8 @@ Ext.define('Ext.data.Store', {
                 
                 
                 if (removed && !isMove && !record.phantom && !record.erasing) {
+                    
+                    
                     
                     
                     record.removedFrom = index + i;
@@ -53241,11 +54002,13 @@ Ext.define('Ext.data.Store', {
     loadRawData: function(data, append) {
         var me = this,
             session = me.getSession(),
-            result = me.getProxy().getReader().read(data, session ? {
-                recordCreator: session.recordCreator
-            } : undefined),
-            records = result.getRecords(),
-            success = result.getSuccess();
+            result, records, success;
+        
+        result = me.getProxy().getReader().read(data, session ? {
+            recordCreator: session.recordCreator
+        } : undefined);
+        records = result.getRecords();
+        success = result.getSuccess();
         if (success) {
             me.totalCount = result.getTotal();
             me.loadRecords(records, append ? me.addRecordsOptions : undefined);
@@ -53255,9 +54018,8 @@ Ext.define('Ext.data.Store', {
     
     loadRecords: function(records, options) {
         var me = this,
-            length = records.length,
             data = me.getData(),
-            addRecords, i, skipSort;
+            addRecords, skipSort;
         if (options) {
             addRecords = options.addRecords;
         }
@@ -53278,6 +54040,12 @@ Ext.define('Ext.data.Store', {
         if (skipSort) {
             data.setAutoSort(true);
         }
+        me.afterLoadRecords(records);
+    },
+    afterLoadRecords: function(records) {
+        var me = this,
+            length = records.length,
+            i;
         for (i = 0; i < length; i++) {
             records[i].join(me);
         }
@@ -53324,6 +54092,7 @@ Ext.define('Ext.data.Store', {
             clearRemovedOnLoad = me.getClearRemovedOnLoad(),
             needsUnjoinCheck = removed && isLoad && !clearRemovedOnLoad,
             records, record, i, len;
+        
         
         
         
@@ -53459,6 +54228,7 @@ Ext.define('Ext.data.Store', {
             if (!resultSet) {
                 return;
             }
+            
             var me = this,
                 summary = resultSet.getSummaryData(),
                 grouper = me.getGrouper(),
@@ -53495,9 +54265,10 @@ Ext.define('Ext.data.Store', {
         },
         
         fetch: function(options) {
+            var operation;
             options = Ext.apply({}, options);
             this.setLoadOptions(options);
-            var operation = this.createOperation('read', options);
+            operation = this.createOperation('read', options);
             operation.execute();
         },
         fireChangeEvent: function(record) {
@@ -53676,6 +54447,7 @@ Ext.define('Ext.data.ArrayStore', {
     },
     loadData: function(data, append) {
         if (this.expandData) {
+            
             var r = [],
                 i = 0,
                 ln = data.length;
@@ -53705,25 +54477,25 @@ Ext.define('Ext.data.StoreManager', {
     
     
     register: function() {
-        for (var i = 0,
-            s; (s = arguments[i]); i++) {
+        var i, s;
+        for (i = 0; (s = arguments[i]); i++) {
             this.add(s);
         }
     },
     
     unregister: function() {
-        for (var i = 0,
-            s; (s = arguments[i]); i++) {
+        var i, s;
+        for (i = 0; (s = arguments[i]); i++) {
             this.remove(this.lookup(s));
         }
     },
     
     lookup: function(store, defaultType) {
+        var first, data, arrays, fields, i, len;
         
         if (Ext.isArray(store)) {
-            var first = store[0],
-                data = store,
-                arrays, fields, i, len;
+            first = store[0];
+            data = store;
             if (Ext.isObject(first)) {
                 
                 store = {
@@ -53782,6 +54554,9 @@ Ext.define('Ext.data.StoreManager', {
                 proxy: 'memory',
                 useModelWarning: false
             });
+            
+            emptyStore.ignoreLeaked = true;
+            
             emptyStore.isEmptyStore = true;
             emptyStore.on = emptyStore.addListener = function() {
                 return destoryable;
@@ -53832,7 +54607,7 @@ Ext.define('Ext.app.domain.Store', {
     singleton: true,
     type: 'store',
     prefix: 'store.',
-    idMatchRe: /^\#/,
+    idMatchRe: /^#/,
     constructor: function() {
         var me = this;
         me.callParent();
@@ -53899,8 +54674,8 @@ Ext.define('Ext.app.Controller', {
         },
         resolveNamespace: function(cls, data) {
             var Controller = Ext.app.Controller,
-                namespaceRe = cls.prototype.isProfile ? Controller.profileRegex : Controller.controllerRegex,
-                className, namespace, match;
+                namespaceRe, className, namespace, match;
+            namespaceRe = cls.prototype.isProfile ? Controller.profileRegex : Controller.controllerRegex;
             
             className = Ext.getClassName(cls);
             namespace = data.$namespace || data.namespace || Ext.app.getNamespace(className) || ((match = namespaceRe.exec(className)) && match[1]);
@@ -53916,6 +54691,7 @@ Ext.define('Ext.app.Controller', {
             if (!names || !names.length) {
                 return;
             }
+            
             var me = this,
                 strings = me.strings[kind],
                 o, absoluteName, shortName, name, j, subLn, getterName, getter;
@@ -53937,7 +54713,7 @@ Ext.define('Ext.app.Controller', {
                 }
                 
                 else if (getterName === 'getMainView') {
-                    Ext.log.warn('Cannot have a view named \'Main\' - getter conflicts with mainView config.');
+                    Ext.log.warn('Cannot have a view named \'Main\' - getter conflicts ' + 'with mainView config.');
                 }
                 
                 
@@ -54318,7 +55094,7 @@ Ext.define('Ext.app.Application', {
         var Controller = Ext.app.Controller,
             proto = cls.prototype,
             requires = [],
-            onBeforeClassCreated, paths, namespace, ns;
+            onBeforeClassCreated, namespace;
         
         
         namespace = data.name || cls.superclass.name;
@@ -54643,6 +55419,7 @@ Ext.application = function(config) {
             
             Ext.onReady(function() {
                 var Viewport = Ext.viewport;
+                
                 Viewport = Viewport && Viewport['Viewport'];
                 if (Viewport && Viewport.setup) {
                     Viewport.setup(App.prototype.config.viewport);
@@ -54777,17 +55554,15 @@ Ext.define('Ext.mixin.Container', {
     referenceHolder: false,
     
     getNamedItems: function() {
-        var CM = Ext.ComponentManager;
-        if (CM.referencesDirty) {
-            CM.fixReferences();
+        if (Ext.referencesDirty) {
+            Ext.fixReferences();
         }
         return this.nameRefs || null;
     },
     
     getReferences: function() {
-        var CM = Ext.ComponentManager;
-        if (CM.referencesDirty) {
-            CM.fixReferences();
+        if (Ext.referencesDirty) {
+            Ext.fixReferences();
         }
         return this.refs || null;
     },
@@ -54852,9 +55627,7 @@ Ext.define('Ext.mixin.Container', {
             
             
             
-            if (instanced) {
-                Ext.ComponentManager.markReferencesDirty();
-            }
+            Ext.ComponentManager.markReferencesDirty();
         },
         containerOnRemoved: function(destroying) {
             
@@ -54931,7 +55704,7 @@ Ext.define('Ext.util.KeyMap', {
         
         
         if ((arguments.length !== 1) || (typeof config === 'string') || config.dom || config.tagName || config === document || config.isComponent) {
-            Ext.raise("Legacy multi-argument KeyMap constructor is removed. Use a config object instead.");
+            Ext.raise("Legacy multi-argument KeyMap constructor is removed. " + "Use a config object instead.");
         }
         
         Ext.apply(me, config);
@@ -55056,6 +55829,7 @@ Ext.define('Ext.util.KeyMap', {
     
     processBinding: function(binding, event) {
         if (this.checkModifiers(binding, event)) {
+            
             var key = event.getKey(),
                 handler = binding.fn || binding.handler,
                 scope = binding.scope || this,
@@ -55683,6 +56457,7 @@ Ext.define('Ext.mixin.FocusableContainer', {
             }
             return null;
         },
+        
         onFocusEnter: function(e) {
             var me = this,
                 target = e.toComponent,
@@ -55911,6 +56686,7 @@ Ext.define('Ext.app.Profile', {
         
         
         models: [],
+        
         
         
         views: [],
@@ -56183,6 +56959,7 @@ Ext.define('Ext.app.ViewController', {
         if (!bindings) {
             return null;
         }
+        
         var me = this,
             viewModel = me.getViewModel(),
             getBindTemplateScope = me.getBindTemplateScope(),
@@ -56229,254 +57006,6 @@ Ext.define('Ext.app.ViewController', {
             if (!this.beforeInit.$nullFn) {
                 this.beforeInit(view);
             }
-        }
-    }
-});
-
-
-Ext.define('Ext.util.Bag', {
-    isBag: true,
-    constructor: function() {
-        
-        this.items = [];
-        
-        this.map = {};
-    },
-    
-    generation: 0,
-    
-    length: 0,
-    beginUpdate: Ext.emptyFn,
-    endUpdate: Ext.emptyFn,
-    add: function(item) {
-        var me = this,
-            items = me.items,
-            map = me.map,
-            n = 1,
-            old, i, idx, id, it, ret, was;
-        if (Ext.isArray(item)) {
-            old = ret = [];
-            n = item.length;
-        }
-        for (i = 0; i < n; i++) {
-            id = me.getKey(it = old ? item[i] : item);
-            idx = map[id];
-            if (idx === undefined) {
-                items.push(it);
-                map[id] = me.length++;
-                if (old) {
-                    old.push(it);
-                } else {
-                    ret = it;
-                }
-            } else {
-                was = items[idx];
-                if (old) {
-                    old.push(was);
-                } else {
-                    ret = was;
-                }
-                items[idx] = it;
-            }
-        }
-        ++me.generation;
-        return ret;
-    },
-    clear: function() {
-        var me = this,
-            needsClear = me.generation || me.length,
-            ret = needsClear ? me.items : [];
-        if (needsClear) {
-            me.items = [];
-            me.length = 0;
-            me.map = {};
-            ++me.generation;
-        }
-        return ret;
-    },
-    clone: function() {
-        var me = this,
-            ret = new me.self(),
-            len = me.length;
-        if (len) {
-            Ext.apply(ret.map, me.map);
-            ret.items = me.items.slice();
-            ret.length = me.length;
-        }
-        return ret;
-    },
-    contains: function(item) {
-        var ret = false,
-            map = this.map,
-            key;
-        if (item != null) {
-            key = this.getKey(item);
-            if (key in map) {
-                ret = this.items[map[key]] === item;
-            }
-        }
-        return ret;
-    },
-    containsKey: function(key) {
-        return key in this.map;
-    },
-    destroy: function() {
-        this.items = this.map = null;
-        this.callParent();
-    },
-    each: function(fn, scope) {
-        var items = this.items,
-            len = items.length,
-            i, ret;
-        if (len) {
-            scope = scope || this;
-            items = items.slice(0);
-            
-            for (i = 0; i < len; i++) {
-                ret = fn.call(scope, items[i], i, len);
-                if (ret === false) {
-                    break;
-                }
-            }
-        }
-        return ret;
-    },
-    getAt: function(index) {
-        var out = null;
-        if (index < this.length) {
-            out = this.items[index];
-        }
-        return out;
-    },
-    get: function(key) {
-        return this.getByKey(key);
-    },
-    getByKey: function(key) {
-        var map = this.map,
-            ret = (key in map) ? this.items[map[key]] : null;
-        return ret;
-    },
-    indexOfKey: function(key) {
-        var map = this.map,
-            ret = (key in map) ? map[key] : -1;
-        return ret;
-    },
-    last: function() {
-        return this.items[this.length - 1];
-    },
-    updateKey: function(item, oldKey) {
-        var me = this,
-            map = me.map,
-            newKey;
-        if (!item || !oldKey) {
-            return;
-        }
-        if ((newKey = me.getKey(item)) !== oldKey) {
-            if (me.getAt(map[oldKey]) === item && !(newKey in map)) {
-                me.generation++;
-                map[newKey] = map[oldKey];
-                delete map[oldKey];
-            }
-        } else 
-        {
-            
-            
-            
-            if (newKey in map && me.getAt(map[newKey]) !== item) {
-                
-                
-                Ext.raise('Duplicate newKey "' + newKey + '" for item with oldKey "' + oldKey + '"');
-            }
-            if (oldKey in map && me.getAt(map[oldKey]) !== item) {
-                
-                
-                
-                Ext.raise('Incorrect oldKey "' + oldKey + '" for item with newKey "' + newKey + '"');
-            }
-        }
-    },
-    
-    getCount: function() {
-        return this.length;
-    },
-    getKey: function(item) {
-        return item.id || item.getId();
-    },
-    getRange: function(begin, end) {
-        var items = this.items,
-            length = items.length,
-            range;
-        if (!length) {
-            range = [];
-        } else {
-            range = Ext.Number.clipIndices(length, [
-                begin,
-                end
-            ]);
-            range = items.slice(range[0], range[1]);
-        }
-        return range;
-    },
-    remove: function(item) {
-        var me = this,
-            map = me.map,
-            items = me.items,
-            ret = null,
-            n = 1,
-            changed, old, i, idx, id, last, was;
-        if (Ext.isArray(item)) {
-            n = item.length;
-            old = ret = [];
-        }
-        if (me.length) {
-            for (i = 0; i < n; i++) {
-                idx = map[id = me.getKey(old ? item[i] : item)];
-                if (idx !== undefined) {
-                    delete map[id];
-                    was = items[idx];
-                    if (old) {
-                        old.push(was);
-                    } else {
-                        ret = was;
-                    }
-                    last = items.pop();
-                    if (idx < --me.length) {
-                        items[idx] = last;
-                        map[me.getKey(last)] = idx;
-                    }
-                    changed = true;
-                }
-            }
-            if (changed) {
-                ++me.generation;
-            }
-        }
-        return ret;
-    },
-    removeByKey: function(key) {
-        var item = this.getByKey(key);
-        if (item) {
-            this.remove(item);
-        }
-        return item || null;
-    },
-    replace: function(item) {
-        this.add(item);
-        return item;
-    },
-    sort: function(fn) {
-        var me = this,
-            items = me.items,
-            n = items.length,
-            item;
-        if (n) {
-            Ext.Array.sort(items, fn);
-            me.map = {};
-            while (n-- > 0) {
-                item = items[n];
-                me.map[me.getKey(item)] = n;
-            }
-            ++me.generation;
         }
     }
 });
@@ -56617,6 +57146,7 @@ Ext.define('Ext.util.Scheduler', {
         }
         me.sortStack.push(item);
         if (sortMap[itemId] === 0) {
+            
             for (var cycle = [],
                 i = 0; i < me.sortStack.length; ++i) {
                 cycle[i] = me.sortStack[i].getFullName();
@@ -56660,6 +57190,7 @@ Ext.define('Ext.util.Scheduler', {
         if (typeof preSort === 'function') {
             return preSort;
         }
+        
         var parts = preSort.split(','),
             direction = [],
             length = parts.length,
@@ -56914,6 +57445,7 @@ Ext.define('Ext.data.Batch', {
         if (ret) {
             return ret;
         }
+        
         var entityType1 = operation1.entityType,
             entityType2 = operation2.entityType,
             rank;
@@ -56935,13 +57467,26 @@ Ext.define('Ext.data.Batch', {
     
     start: function(index) {
         var me = this;
-        if (!me.operations.length || me.running) {
+        if (me.destroyed || !me.operations.length || me.running) {
             return me;
         }
         me.exceptions.length = 0;
         me.exception = false;
         me.running = true;
         return me.runOperation(Ext.isDefined(index) ? index : me.current + 1);
+    },
+    abort: function() {
+        var me = this,
+            op;
+        if (me.running) {
+            op = me.getCurrent();
+            if (!op.destroyed) {
+                op.abort();
+            }
+        }
+        me.running = false;
+        me.aborted = true;
+        me.current = undefined;
     },
     
     retry: function() {
@@ -57024,6 +57569,26 @@ Ext.define('Ext.data.Batch', {
             me.fireEvent('operationcomplete', me, operation);
             me.runNextOperation();
         }
+    },
+    destroy: function() {
+        var me = this,
+            operations = me.operations,
+            op, i, len;
+        if (me.running) {
+            me.abort();
+        }
+        for (i = 0 , len = me.operations.length; i < len; i++) {
+            op = operations[i];
+            if (op) {
+                if (!op.destroyed && !op.$destroyOwner) {
+                    op.destroy();
+                }
+                op[i] = null;
+            }
+        }
+        
+        me.operations = me.exceptions = null;
+        me.callParent();
     }
 });
 
@@ -57064,6 +57629,7 @@ Ext.define('Ext.data.matrix.Slice', {
             Ext.raise('Only array of records or record ids are supported');
         }
         
+        
         var me = this,
             MatrixSlice = Ext.data.matrix.Slice,
             side = me.side,
@@ -57074,6 +57640,7 @@ Ext.define('Ext.data.matrix.Slice', {
             otherSide = side.inverse,
             otherSlices = otherSide.slices,
             assoc, call, i, item, otherId, otherSlice, record;
+        
         for (i = 0; i < length; ++i) {
             call = record = null;
             item = recordsOrIds[i];
@@ -57107,6 +57674,7 @@ Ext.define('Ext.data.matrix.Slice', {
                     otherSlice.members[id] = assoc;
                     call = 1;
                 } else if (state !== assoc[2] && state !== 0 && !(state === 1 && assoc[2] === 0)) {
+                    
                     
                     
                     assoc[2] = state;
@@ -57268,7 +57836,9 @@ Ext.define('Ext.data.session.ChangesVisitor', {
         me.session = session;
         crud = session.getCrudProperties();
         me.result = null;
+        
         me.writerOptions = {};
+        
         
         me.createKey = crud.create;
         me.readKey = crud.read;
@@ -57280,7 +57850,6 @@ Ext.define('Ext.data.session.ChangesVisitor', {
             crud = me.crud,
             created = record.phantom,
             dropped = record.dropped,
-            updated = !created && !dropped,
             type = record.$className,
             prop = (created || dropped) ? 'allDataOptions' : 'partialDataOptions',
             writerOptions = me.writerOptions,
@@ -57579,6 +58148,7 @@ Ext.define('Ext.mixin.Dirty', {
     },
     
     checkCounters: function() {
+        
         var counters = this._crudCounters,
             key;
         for (key in counters) {
@@ -57729,6 +58299,7 @@ Ext.define('Ext.data.Session', {
         
         this.checkModelType(type);
         
+        
         var Model = type.$isClass ? type : this.getSchema().getEntity(type),
             parent = this.getParent(),
             id;
@@ -57832,6 +58403,7 @@ Ext.define('Ext.data.Session', {
         
         
         this.checkModelType(type);
+        
         
         var entityType = type.$isClass ? type : this.getSchema().getEntity(type),
             entityName = entityType.entityName,
@@ -58074,6 +58646,7 @@ Ext.define('Ext.data.Session', {
                 id = type.getId();
                 type = type.self;
             }
+            
             var entityType = type.$isClass ? type : this.getSchema().getEntity(type),
                 entityName = entityType.entityName,
                 data = this.data,
@@ -58156,7 +58729,7 @@ Ext.define('Ext.data.Session', {
                 associations = record.associations,
                 refs = entry.refs,
                 setNoRefs = me._setNoRefs,
-                association, fieldName, matrix, refId, role, roleName, roleRefs, key;
+                association, fieldName, refId, role, roleName, roleRefs, key;
             
             if (bucket[newId]) {
                 Ext.raise('Cannot change ' + entityName + ' id from ' + oldId + ' to ' + newId + ' id already exists');
@@ -58258,6 +58831,7 @@ Ext.define('Ext.data.Session', {
         },
         registerReferences: function(record, oldId) {
             var entityName = record.entityName,
+                
                 id = record.id,
                 recordData = record.data,
                 remove = oldId || oldId === 0,
@@ -58289,6 +58863,7 @@ Ext.define('Ext.data.Session', {
         updateEntities: function(entityType, items) {
             var len = items.length,
                 i, data, rec, id, modified;
+            
             
             if (Ext.isArray(items)) {
                 for (i = 0; i < len; ++i) {
@@ -58494,6 +59069,7 @@ Ext.define('Ext.app.bind.BaseBinding', {
             var me = this,
                 options = me.options || me.defaultOptions,
                 previous = me.lastValue;
+            
             
             
             
@@ -58745,7 +59321,9 @@ Ext.define('Ext.app.bind.AbstractStub', {
         return replacement;
     },
     isDescendantOf: function(item) {
-        for (var parent = this; parent = parent.parent; ) {
+        var parent;
+        for (parent = this; parent = parent.parent; ) {
+            
             if (parent === item) {
                 return true;
             }
@@ -58759,12 +59337,12 @@ Ext.define('Ext.app.bind.AbstractStub', {
         return false;
     },
     onSchedule: function() {
+        var i, len, binding, bindings, p;
         
         
         
         
-        for (var i, len, binding, bindings,
-            p = this.parent; p; p = p.parent) {
+        for (p = this.parent; p; p = p.parent) {
             bindings = p.bindings;
             if (bindings) {
                 for (i = 0 , len = bindings.length; i < len; ++i) {
@@ -59254,7 +59832,7 @@ Ext.define('Ext.app.bind.Stub', {
                 bindMappings = me.bindMappings,
                 name = me.name,
                 available = !!(parent && parent.checkAvailability(isLoading)),
-                associations, parentValue, value, availableSet, loading;
+                associations, parentValue, value, availableSet;
             if (available) {
                 parentValue = me.getParentValue();
                 value = me.inspectValue(parentValue);
@@ -59280,6 +59858,8 @@ Ext.define('Ext.app.bind.Stub', {
                                 availableSet = true;
                             } else {
                                 associations = parentValue.associations;
+                                
+                                
                                 
                                 
                                 
@@ -59378,6 +59958,7 @@ Ext.define('Ext.app.bind.Stub', {
                         
                         boundValue.on({
                             scope: me,
+                            
                             
                             
                             
@@ -59593,6 +60174,7 @@ Ext.define('Ext.app.bind.RootStub', {
             Ext.raise('Only an object can be set at the root');
         }
         
+        
         var me = this,
             children = me.children || (me.children = {}),
             owner = me.owner,
@@ -59720,6 +60302,7 @@ Ext.define('Ext.app.bind.Multi', {
             method = me.literal ? (descriptor.reference ? 'bindEntity' : 'bindExpression') : 'bind',
             binding, depth;
         ++me.missing;
+        
         binding = owner[method](descriptor, function(value) {
             data[property] = value;
             if (binding.calls === 1) {
@@ -59730,6 +60313,7 @@ Ext.define('Ext.app.bind.Multi', {
             }
         }, 
         me, null);
+        
         depth = binding.depth;
         if (!bindings.length || depth < me.depth) {
             me.depth = depth;
@@ -59807,8 +60391,9 @@ Ext.define('Ext.app.bind.Multi', {
         return false;
     },
     isLoading: function() {
-        for (var bindings = this.bindings,
-            n = bindings.length; n-- > 0; ) {
+        var bindings = this.bindings,
+            n = bindings.length;
+        for (; n-- > 0; ) {
             if (bindings[n].isLoading()) {
                 return true;
             }
@@ -59816,8 +60401,9 @@ Ext.define('Ext.app.bind.Multi', {
         return false;
     },
     isAvailable: function() {
-        for (var bindings = this.bindings,
-            n = bindings.length; n-- > 0; ) {
+        var bindings = this.bindings,
+            n = bindings.length;
+        for (; n-- > 0; ) {
             if (bindings[n].isAvailable()) {
                 return true;
             }
@@ -59894,8 +60480,10 @@ Ext.define('Ext.app.bind.Formula', {
     set: null,
     
     single: false,
+    
     fnKeywordArgumentNamesRe: /^function\s*[^\(]*\(\s*([^,\)\s]+)/,
     fnKeywordRe: /^\s*function/,
+    
     replaceParenRe: /[\(\)]/g,
     constructor: function(stub, formula) {
         var me = this,
@@ -59995,7 +60583,6 @@ Ext.define('Ext.app.bind.Formula', {
         var me = this,
             owner = me.owner,
             data = me.binding.lastValue,
-            getterFn = me.getterFn,
             arg;
         if (me.explicit) {
             arg = data;
@@ -60062,7 +60649,8 @@ Ext.define('Ext.parse.Tokenizer', function(Tokenizer) {
     var flyweights = (Tokenizer.flyweights = []),
         BOOLEAN = {
             literal: true,
-            "boolean": true
+            "boolean": true,
+            type: 'boolean'
         },
         ERROR = {
             error: true
@@ -60079,12 +60667,15 @@ Ext.define('Ext.parse.Tokenizer', function(Tokenizer) {
         },
         NUMBER = {
             literal: true,
-            number: true
+            number: true,
+            type: 'number'
         },
         STRING = {
             literal: true,
-            string: true
+            string: true,
+            type: 'string'
         };
+    
     return {
         extend: Ext.util.Fly,
         isTokenizer: true,
@@ -60122,7 +60713,7 @@ Ext.define('Ext.parse.Tokenizer', function(Tokenizer) {
                 '-': 'minus',
                 '*': 'multiply',
                 '/': 'divide',
-                '!': 'bang',
+                '!': 'not',
                 ',': 'comma',
                 ':': 'colon',
                 '[': 'arrayOpen',
@@ -60131,7 +60722,8 @@ Ext.define('Ext.parse.Tokenizer', function(Tokenizer) {
                 '}': 'curlyClose',
                 '(': 'parenOpen',
                 ')': 'parenClose'
-            }
+            },
+            patterns: null
         },
         
         error: null,
@@ -60139,6 +60731,7 @@ Ext.define('Ext.parse.Tokenizer', function(Tokenizer) {
         index: -1,
         constructor: function(config) {
             this.operators = {};
+            this.patterns = [];
             this.initConfig(config);
         },
         
@@ -60207,6 +60800,7 @@ Ext.define('Ext.parse.Tokenizer', function(Tokenizer) {
                     if (name) {
                         block.token = def = {
                             type: 'operator',
+                            name: name,
                             value: op,
                             is: {
                                 operator: true
@@ -60216,6 +60810,23 @@ Ext.define('Ext.parse.Tokenizer', function(Tokenizer) {
                     } else {
                         block.token = null;
                     }
+                }
+            },
+            applyPatterns: function(pat) {
+                var patterns = this.patterns,
+                    def, extract, name, re;
+                for (name in pat) {
+                    def = pat[name];
+                    extract = def.extract;
+                    re = def.re;
+                    delete def.extract;
+                    delete def.re;
+                    patterns.push({
+                        name: name,
+                        re: re,
+                        extract: extract,
+                        token: def
+                    });
                 }
             },
             
@@ -60244,11 +60855,26 @@ Ext.define('Ext.parse.Tokenizer', function(Tokenizer) {
                     digitRe = me.digitRe,
                     text = me.text,
                     length = me.end,
-                    ret;
+                    patterns = me.patterns,
+                    i, match, pat, ret;
                 
                 if (c === '.' && me.pos + 1 < length) {
                     if (digitRe.test(text.charAt(me.pos + 1))) {
                         ret = me.parseNumber();
+                    }
+                }
+                if (!ret) {
+                    for (i = 0; i < patterns.length; ++i) {
+                        pat = patterns[i];
+                        pat.re.lastIndex = me.pos;
+                        match = pat.re.exec(text);
+                        if (match && match.index === me.pos) {
+                            ret = Ext.apply({
+                                value: pat.extract ? pat.extract(match) : match[0]
+                            }, pat.token);
+                            me.pos += match[0].length;
+                            break;
+                        }
                     }
                 }
                 if (!ret && me.operators[c]) {
@@ -60315,7 +60941,7 @@ Ext.define('Ext.parse.Tokenizer', function(Tokenizer) {
                     c = text.charAt(me.pos);
                     if (c === '-' || c === '+') {
                         if (me.pos !== start) {
-                            return me.syntaxError(start, 'Invalid number');
+                            break;
                         }
                         ++me.pos;
                     } else if (c === '.') {
@@ -60420,6 +61046,7 @@ Ext.define('Ext.parse.Tokenizer', function(Tokenizer) {
                     message = at;
                     at = this.pos;
                 }
+                
                 var suffix = (at == null) ? '' : (' (at index ' + at + ')'),
                     error = new Error(message + suffix);
                 error.type = 'error';
@@ -60485,6 +61112,7 @@ Ext.define('Ext.parse.Symbol', {
     
     update: function(config) {
         if (config && typeof config === 'object') {
+            
             var me = this,
                 priority = config.priority,
                 led = config.led,
@@ -60622,6 +61250,7 @@ Ext.define('Ext.parse.Parser', function() {
     var ITSELF = function() {
             return this;
         };
+    
     return {
         extend: Ext.util.Fly,
         isParser: true,
@@ -60634,12 +61263,14 @@ Ext.define('Ext.parse.Parser', function() {
             },
             
             infix: {
-                
-                
-                
-                
-                
-                
+                '===': 40,
+                '!==': 40,
+                '==': 40,
+                '!=': 40,
+                '<': 40,
+                '<=': 40,
+                '>': 40,
+                '>=': 40,
                 '+': 50,
                 '-': 50,
                 '*': 60,
@@ -60699,7 +61330,7 @@ Ext.define('Ext.parse.Parser', function() {
                 token = tokenizer.peek(),
                 symbols = me.symbols,
                 index = tokenizer.index,
-                is, symbol, value;
+                is, name, symbol, value;
             if (me.error) {
                 throw me.error;
             }
@@ -60718,6 +61349,7 @@ Ext.define('Ext.parse.Parser', function() {
                 if (!(symbol = symbols[value])) {
                     me.syntaxError(token.at, 'Unknown operator "' + value + '"');
                 }
+                name = token.name;
             } else if (is.literal) {
                 symbol = symbols['(literal)'];
             } else {
@@ -60725,9 +61357,13 @@ Ext.define('Ext.parse.Parser', function() {
             }
             me.token = symbol = Ext.Object.chain(symbol);
             symbol.at = index;
+            symbol.is = is;
             symbol.value = value;
             if (!symbol.arity) {
                 symbol.arity = token.type;
+            }
+            if (name) {
+                symbol.name = name;
             }
             return symbol;
         },
@@ -60767,6 +61403,7 @@ Ext.define('Ext.parse.Parser', function() {
                 message = at;
                 at = this.pos;
             }
+            
             var suffix = (at == null) ? '' : (' (at index ' + at + ')'),
                 error = new Error(message + suffix);
             error.type = 'error';
@@ -60812,7 +61449,8 @@ Ext.define('Ext.parse.Parser', function() {
                 return symbol;
             },
             addSymbols: function(symbols, type, update) {
-                for (var id in symbols) {
+                var id;
+                for (id in symbols) {
                     this.addSymbol(id, symbols[id], type, update);
                 }
             },
@@ -60896,15 +61534,7 @@ Ext.define('Ext.app.bind.Parser', {
                 me.arity = 'ternary';
                 return me;
             }
-        },
-        '===': 40,
-        '!==': 40,
-        '==': 40,
-        '!=': 40,
-        '<': 40,
-        '<=': 40,
-        '>': 40,
-        '>=': 40
+        }
     },
     symbols: {
         '(': {
@@ -60913,6 +61543,7 @@ Ext.define('Ext.app.bind.Parser', {
                 var parser = this.parser,
                     symbol = parser.symbols[':'],
                     ret, temp;
+                
                 
                 temp = symbol.priority;
                 symbol.priority = 70;
@@ -60965,22 +61596,23 @@ Ext.define('Ext.app.bind.Parser', {
     },
     
     compileFormat: function() {
-        var fn;
+        var me = this,
+            fn;
         
         try {
             
-            fn = this.parseSlot({
+            fn = me.parseSlot({
                 arity: 'formatter',
-                fmt: this.parseFmt(),
+                fmt: me.parseFmt(),
                 operand: {
                     arity: 'ident',
                     value: 'dummy'
                 }
             });
-            this.expect('(end)');
+            me.expect('(end)');
         } 
         catch (e) {
-            Ext.raise('Invalid format expression: "' + this.tokenizer.text + '"');
+            Ext.raise('Invalid format expression: "' + me.tokenizer.text + '"');
         }
         
         return fn;
@@ -60990,7 +61622,7 @@ Ext.define('Ext.app.bind.Parser', {
         
         
         useEval: Ext.isGecko,
-        escapeRe: /("|'|\\)/g,
+        escapeRe: /(["'\\])/g,
         
         parseFmt: function() {
             
@@ -61028,7 +61660,7 @@ Ext.define('Ext.app.bind.Parser', {
             temp = 'var a = Ext.Array.from(values);\nme = scope;\n';
             if (tokens.length) {
                 for (i = 0; i < length; i++) {
-                    code += 'v' + i + ((i == length - 1) ? ';' : ',');
+                    code += 'v' + i + ((i === length - 1) ? ';' : ',');
                     temp += 'v' + i + ' = a[' + i + ']; ';
                 }
             } else {
@@ -61257,13 +61889,13 @@ Ext.define('Ext.app.bind.Template', {
                 i = 0,
                 esc = me.escapeChar,
                 lit = me.literalChar,
-                escaped, tokens, tokensMap, lastEscaped, c, prev, key;
+                escaped, lastEscaped, c, prev, key;
             
             for (key in me._initters) {
                 delete me[key];
             }
-            me.tokens = tokens = [];
-            me.tokensMap = tokensMap = {};
+            me.tokens = [];
+            me.tokensMap = {};
             
             while (i < length) {
                 c = text[i];
@@ -61401,6 +62033,9 @@ Ext.define('Ext.app.bind.TemplateBinding', {
 Ext.define('Ext.data.ChainedStore', {
     extend: Ext.data.AbstractStore,
     alias: 'store.chained',
+    mixins: [
+        Ext.data.LocalStore
+    ],
     
     isChainedStore: true,
     config: {
@@ -61409,9 +62044,7 @@ Ext.define('Ext.data.ChainedStore', {
         remoteFilter: false,
         remoteSort: false
     },
-    mixins: [
-        Ext.data.LocalStore
-    ],
+    syncSourceGrouping: false,
     
     updateRemoteFilter: function(remoteFilter, oldRemoteFilter) {
         if (remoteFilter) {
@@ -61467,6 +62100,7 @@ Ext.define('Ext.data.ChainedStore', {
     applySource: function(source) {
         if (source) {
             
+            
             var original = source,
                 s;
             
@@ -61490,6 +62124,9 @@ Ext.define('Ext.data.ChainedStore', {
         if (source) {
             data = me.getData();
             data.setSource(source.getData());
+            if (me.syncSourceGrouping) {
+                me.setGrouper(source.getGrouper());
+            }
             if (!me.isInitializing) {
                 me.fireEvent('refresh', me);
                 me.fireEvent('datachanged', me);
@@ -61531,6 +62168,9 @@ Ext.define('Ext.data.ChainedStore', {
             record = info.item,
             modifiedFieldNames = info.modified || null,
             type = info.meta;
+        if (me.activeRanges && info.newIndex !== info.oldIndex) {
+            me.syncActiveRanges();
+        }
         
         
         
@@ -61543,6 +62183,16 @@ Ext.define('Ext.data.ChainedStore', {
         this.fireEvent('idchanged', this, details.item, details.oldKey, details.newKey);
     },
     onUpdate: Ext.emptyFn,
+    lastCollectionRefesh: null,
+    onCollectionRefresh: function(collection) {
+        var me = this,
+            gen = collection.generation;
+        if (!me.isConfiguring && me.lastCollectionRefesh !== gen) {
+            me.lastCollectionRefesh = gen;
+            me.fireEvent('datachanged', me);
+            me.fireEvent('refresh', me);
+        }
+    },
     onCollectionRemove: function(collection, info) {
         var me = this,
             records = info.items,
@@ -61573,8 +62223,12 @@ Ext.define('Ext.data.ChainedStore', {
         ]);
     },
     onFilterEndUpdate: function() {
-        this.callParent(arguments);
-        this.callObservers('Filter');
+        var me = this;
+        if (me.getData().generation === me.lastCollectionRefesh && !me.getRemoteFilter()) {
+            me.suppressNextFilter = true;
+        }
+        me.callParent(arguments);
+        me.callObservers('Filter');
     },
     onSourceBeforePopulate: function() {
         this.ignoreCollectionAdd = true;
@@ -61611,9 +62265,18 @@ Ext.define('Ext.data.ChainedStore', {
         ]);
     },
     onSourceFilter: function() {
-        var me = this;
-        me.fireEvent('refresh', me);
-        me.fireEvent('datachanged', me);
+        var me = this,
+            gen = me.getData().generation;
+        if (me.lastCollectionRefesh !== gen) {
+            me.lastCollectionRefesh = gen;
+            me.fireEvent('refresh', me);
+            me.fireEvent('datachanged', me);
+        }
+    },
+    onSourceGrouperChange: function(source, grouper) {
+        if (this.syncSourceGrouping) {
+            this.setGrouper(grouper);
+        }
     },
     hasPendingLoad: function() {
         return this.getSourceValue('hasPendingLoad', false);
@@ -61683,7 +62346,7 @@ Ext.define('Ext.app.ViewModel', {
         name: 'viewModel'
     },
     collectTimeout: 100,
-    expressionRe: /^(?:\{(?:(\d+)|([a-z_][\w\.]*))\})$/i,
+    expressionRe: /^(?:\{(?:(\d+)|([a-z_][\w.]*))\})$/i,
     statics: {
         
         escape: function(value) {
@@ -61784,7 +62447,8 @@ Ext.define('Ext.app.ViewModel', {
             scheduler.destroy();
         }
         me.children = me.storeInfo = me._session = me._view = me._scheduler = me.bindings = me._root = me._parent = me.formulaFn = me.$formulaData = null;
-        me.destroying = false;
+        
+        
         me.callParent();
     },
     
@@ -61855,7 +62519,7 @@ Ext.define('Ext.app.ViewModel', {
             id = reference.id;
             
             if (!reference.create && Ext.isEmpty(id)) {
-                Ext.raise('No id specified. To create a phantom model, specify "create: true" as part of the reference.');
+                Ext.raise('No id specified. To create a phantom model, specify "create: true" ' + 'as part of the reference.');
             }
             
             if (create) {
@@ -62167,10 +62831,15 @@ Ext.define('Ext.app.ViewModel', {
             this.setupStore(store, key);
         },
         setupStore: function(store, key) {
+            var me = this,
+                obj = {};
             
-            store.resolveListenerScope = this.listenerScopeFn;
-            this.storeInfo[key] = store;
-            this.set(key, store);
+            me.getData();
+            
+            store.resolveListenerScope = me.listenerScopeFn;
+            me.storeInfo[key] = store;
+            obj[key] = store;
+            me.setData(obj);
         },
         applyFormulas: function(formulas) {
             var me = this,
@@ -62192,7 +62861,8 @@ Ext.define('Ext.app.ViewModel', {
             return formulas;
         },
         applyLinks: function(links) {
-            for (var link in links) {
+            var link;
+            for (link in links) {
                 this.linkTo(link, links[link]);
             }
         },
@@ -62232,7 +62902,7 @@ Ext.define('Ext.app.domain.Controller', {
     singleton: true,
     type: 'controller',
     prefix: 'controller.',
-    idMatchRe: /^\#/,
+    idMatchRe: /^#/,
     constructor: function() {
         var me = this;
         me.callParent();
@@ -62556,6 +63226,8 @@ Ext.define('Ext.direct.Provider', {
     $configStrict: false,
     
     
+    
+    
     config: {
         
         headers: undefined
@@ -62569,9 +63241,9 @@ Ext.define('Ext.direct.Provider', {
         var me = this;
         me.mixins.observable.constructor.call(me, config);
         me.requests = {};
-        Ext.applyIf(me, {
-            id: Ext.id(null, 'provider-')
-        });
+        if (me.id == null) {
+            me.id = Ext.id(null, 'provider-');
+        }
     },
     destroy: function() {
         var me = this;
@@ -62672,6 +63344,7 @@ Ext.define('Ext.data.PageMap', {
         rootProperty: ''
     },
     
+    
     clear: function(initial) {
         var me = this;
         me.pageMapGeneration = (me.pageMapGeneration || 0) + 1;
@@ -62693,7 +63366,7 @@ Ext.define('Ext.data.PageMap', {
             pageNumbers = Ext.Object.getKeys(me.map),
             pageCount = pageNumbers.length,
             pageSize = me.getPageSize(),
-            i, j, pageNumber, page, len;
+            pageNumber, page, i, j, len;
         for (i = 0; i < pageCount; i++) {
             pageNumbers[i] = +pageNumbers[i];
         }
@@ -62740,6 +63413,7 @@ Ext.define('Ext.data.PageMap', {
         if (Ext.isEmpty(value, false)) {
             return null;
         }
+        
         var regex = Ext.String.createRegex(value, startsWith, endsWith, ignoreCase),
             root = this.getRootProperty();
         return this.findBy(function(item) {
@@ -62750,6 +63424,7 @@ Ext.define('Ext.data.PageMap', {
         if (Ext.isEmpty(value, false)) {
             return null;
         }
+        
         var regex = Ext.String.createRegex(value, startsWith, endsWith, ignoreCase),
             root = this.getRootProperty();
         return this.findIndexBy(function(item) {
@@ -62828,7 +63503,7 @@ Ext.define('Ext.data.PageMap', {
         
         var me = this,
             thePage = me.getPage(page),
-            len, i, result;
+            result, i, len;
         if (thePage) {
             if (me.fireEvent('beforepageremove', me, page, thePage) !== false) {
                 len = thePage.length;
@@ -62860,6 +63535,7 @@ Ext.define('Ext.data.PageMap', {
     },
     hasPage: function(pageNumber) {
         
+        
         return !!this.get(pageNumber);
     },
     peekPage: function(pageNumber) {
@@ -62877,6 +63553,7 @@ Ext.define('Ext.data.PageMap', {
         if (!this.hasRange(start, end)) {
             Ext.raise('PageMap asked for range which it does not have');
         }
+        
         var me = this,
             Array = Ext.Array,
             pageSize = me.getPageSize(),
@@ -62946,7 +63623,7 @@ Ext.define('Ext.data.BufferedStore', {
         var dataCollection = this.data || (this.data = this.createDataCollection());
         
         if (data && data !== true) {
-            Ext.raise('Cannot load a buffered store with local data - the store is a map of remote data');
+            Ext.raise('Cannot load a buffered store with local data - the store is a map ' + 'of remote data');
         }
         
         return dataCollection;
@@ -63031,10 +63708,10 @@ Ext.define('Ext.data.BufferedStore', {
     },
     
     add: function() {
-        Ext.raise('add method may not be called on a buffered store - the store is a map of remote data');
+        Ext.raise('add method may not be called on a buffered store - the store is a map ' + 'of remote data');
     },
     insert: function() {
-        Ext.raise('insert method may not be called on a buffered store - the store is a map of remote data');
+        Ext.raise('insert method may not be called on a buffered store - the store is a map ' + 'of remote data');
     },
     
     removeAll: function(silent) {
@@ -63083,6 +63760,7 @@ Ext.define('Ext.data.BufferedStore', {
             options = {};
         }
         
+        
         if (me.loading || me.fireEvent('beforeload', me, options) === false) {
             return;
         }
@@ -63121,6 +63799,7 @@ Ext.define('Ext.data.BufferedStore', {
         
         data.clear(true);
         
+        
         delete me.totalCount;
         
         startIdx = Math.max(startIdx - bufferZone, 0);
@@ -63146,7 +63825,7 @@ Ext.define('Ext.data.BufferedStore', {
     filter: function() {
         
         if (!this.getRemoteFilter()) {
-            Ext.raise('Local filtering may not be used on a buffered store - the store is a map of remote data');
+            Ext.raise('Local filtering may not be used on a buffered store - the store is a map ' + 'of remote data');
         }
         
         
@@ -63154,12 +63833,12 @@ Ext.define('Ext.data.BufferedStore', {
     },
     filterBy: function(fn, scope) {
         
-        Ext.raise('Local filtering may not be used on a buffered store - the store is a map of remote data');
+        Ext.raise('Local filtering may not be used on a buffered store - the store is a map ' + 'of remote data');
     },
     
     loadData: function(data, append) {
         
-        Ext.raise('LoadData may not be used on a buffered store - the store is a map of remote data');
+        Ext.raise('LoadData may not be used on a buffered store - the store is a map ' + 'of remote data');
     },
     
     loadPage: function(page, options) {
@@ -63213,6 +63892,7 @@ Ext.define('Ext.data.BufferedStore', {
             requiredEnd = end;
         }
         
+        
         me.lastRequestStart = start;
         me.lastRequestEnd = end;
         
@@ -63222,12 +63902,15 @@ Ext.define('Ext.data.BufferedStore', {
         } else 
         {
             
+            
             me.fireEvent('cachemiss', me, start, end);
             requiredStartPage = me.getPageFromRecordIndex(requiredStart);
             requiredEndPage = me.getPageFromRecordIndex(requiredEnd);
             
+            
             pageAddHandler = function(pageMap, page, records) {
                 if (page >= requiredStartPage && page <= requiredEndPage && me.rangeCached(start, end)) {
+                    
                     
                     me.fireEvent('cachefilled', me, start, end);
                     data.un('pageadd', pageAddHandler);
@@ -63238,8 +63921,10 @@ Ext.define('Ext.data.BufferedStore', {
             
             
             
+            
             me.prefetchRange(start, end);
         }
+        
         
         me.primeCache(start, end, start < lastRequestStart ? -1 : 1);
         return result;
@@ -63308,8 +63993,12 @@ Ext.define('Ext.data.BufferedStore', {
         
         
         
+        
+        
+        
         return purgePageCount ? Math.max(me.getData().getMaxSize() || 0, Math.ceil((rangeSizeRequested + me.getTrailingBufferZone() + me.getLeadingBufferZone()) / me.getPageSize()) * 2 + purgePageCount) : 0;
     },
+    
     loadToPrefetch: function(options) {
         var me = this,
             prefetchOptions = options,
@@ -63320,6 +64009,7 @@ Ext.define('Ext.data.BufferedStore', {
             rangeSizeRequested = (me.getViewSize() || options.limit),
             
             loadEndIdx = Math.min(endIdx, options.start + rangeSizeRequested - 1),
+            
             
             
             startPage = me.getPageFromRecordIndex(Math.max(startIdx - me.getTrailingBufferZone(), 0)),
@@ -63366,6 +64056,7 @@ Ext.define('Ext.data.BufferedStore', {
         data.setMaxSize(me.calculatePageCacheSize(rangeSizeRequested));
         if (me.fireEvent('beforeload', me, options) !== false) {
             
+            
             delete me.totalCount;
             me.loading = true;
             
@@ -63384,9 +64075,11 @@ Ext.define('Ext.data.BufferedStore', {
                 if (successful) {
                     
                     
+                    
                     if ((dataSetSize = me.getTotalCount())) {
                         
                         data.on('pageadd', waitForRequestedRange);
+                        
                         
                         loadEndIdx = Math.min(loadEndIdx, dataSetSize - 1);
                         
@@ -63412,6 +64105,7 @@ Ext.define('Ext.data.BufferedStore', {
     },
     
     
+    
     prefetch: function(options) {
         var me = this,
             pageSize = me.getPageSize(),
@@ -63419,7 +64113,7 @@ Ext.define('Ext.data.BufferedStore', {
             operation, existingPageRequest;
         
         if (pageSize) {
-            if (me.lastPageSize && pageSize != me.lastPageSize) {
+            if (me.lastPageSize && pageSize !== me.lastPageSize) {
                 Ext.raise("pageSize cannot be dynamically altered");
             }
             if (!data.getPageSize()) {
@@ -63452,6 +64146,7 @@ Ext.define('Ext.data.BufferedStore', {
                 internalScope: me
             }, options);
             operation = me.createOperation('read', options);
+            
             
             
             operation.pageMapGeneration = data.pageMapGeneration;
@@ -63522,6 +64217,7 @@ Ext.define('Ext.data.BufferedStore', {
         if (this.destroying || this.destroyed) {
             return;
         }
+        
         var me = this,
             resultSet = operation.getResultSet(),
             records = operation.getRecords(),
@@ -63531,6 +64227,7 @@ Ext.define('Ext.data.BufferedStore', {
             oldTotal = me.totalCount,
             requests = me.pageRequests,
             key, op;
+        
         
         
         if (operation.pageMapGeneration === me.getData().pageMapGeneration) {
@@ -63600,7 +64297,8 @@ Ext.define('Ext.data.BufferedStore', {
         
         
         if (forRender !== false) {
-            requiredStart = start === 0 ? 0 : start - 1 , requiredEnd = end === this.totalCount - 1 ? end : end + 1;
+            requiredStart = start === 0 ? 0 : start - 1;
+            requiredEnd = end === this.totalCount - 1 ? end : end + 1;
         }
         return this.getData().hasRange(requiredStart, requiredEnd);
     },
@@ -63685,9 +64383,11 @@ Ext.define('Ext.data.BufferedStore', {
             end = Math.min(end + leadingBufferZone, totalCount - 1);
         } else 
         {
+            
             start = Math.min(Math.max(Math.floor(start - ((leadingBufferZone + trailingBufferZone) / 2)), 0), totalCount - me.pageSize);
             end = Math.min(Math.max(Math.ceil(end + ((leadingBufferZone + trailingBufferZone) / 2)), 0), totalCount - 1);
         }
+        
         me.prefetchRange(start, end);
     },
     sort: function(field, direction, mode) {
@@ -63726,6 +64426,115 @@ Ext.define('Ext.data.BufferedStore', {
         },
         isMoving: function() {
             return false;
+        }
+    }
+});
+
+
+Ext.define('Ext.data.ClientStore', {
+    extend: Ext.data.Store,
+    alias: 'store.clientstorage',
+    config: {
+        
+        storage: 'local',
+        
+        storageKey: null
+    },
+    trackRemoved: false,
+    proxy: {
+        type: 'memory',
+        clearOnRead: true
+    },
+    sync: function(options) {
+        var me = this,
+            key = me._getKey(),
+            storage = me.getStorage(),
+            source = me.getDataSource(),
+            proxy = me.getProxy(),
+            writer = proxy.getWriter(),
+            writeAll = writer.getWriteAllFields(),
+            data = [];
+        try {
+            me.suspendAutoSync();
+            writer.setWriteAllFields(true);
+            source.each(function(rec) {
+                if (rec.phantom) {
+                    rec.setId(me.nextId());
+                }
+                data.push(writer.getRecordData(rec));
+                rec.commit();
+            });
+            if (data.length) {
+                data = JSON.stringify(data);
+                data = storage.setItem(key, data);
+            } else {
+                storage.removeItem(key);
+            }
+            if (options && options.success) {
+                Ext.callback(options.success, options.scope || proxy, [
+                    null,
+                    options
+                ]);
+            }
+        } catch (e) {
+            if (options && options.failure) {
+                Ext.callback(options.failure, options.scope || proxy, [
+                    null,
+                    options
+                ]);
+            }
+        } finally {
+            me.resumeAutoSync();
+            writer.setWriteAllFields(writeAll);
+        }
+        if (options && options.callback) {
+            Ext.callback(options.callback, options.scope || proxy, [
+                null,
+                options
+            ]);
+        }
+        return me;
+    },
+    applyStorage: function(storage) {
+        var ret = Ext.global[storage + 'Storage'];
+        
+        if (!ret || !ret.getItem || !ret.setItem) {
+            Ext.raise('Invalid storage config "' + storage + '"; ' + 'expected "local" or "session"');
+        }
+        
+        return ret;
+    },
+    updateProxy: function(proxy, oldProxy) {
+        var me = this,
+            key = me._getKey(),
+            storage = me.getStorage(),
+            data;
+        me.callParent([
+            proxy,
+            oldProxy
+        ]);
+        data = storage.getItem(key);
+        if (data) {
+            proxy.setData(JSON.parse(data));
+        }
+    },
+    privates: {
+        _getKey: function() {
+            var key = this.getStorageKey();
+            
+            if (!key) {
+                Ext.raise('ClientStore requires a storageKey');
+            }
+            
+            return key;
+        },
+        nextId: function() {
+            var source = this.getDataSource(),
+                id = 1;
+            while (source.containsKey(id)) {
+                ++id;
+            }
+            return id;
         }
     }
 });
@@ -63789,7 +64598,7 @@ Ext.define('Ext.data.proxy.Direct', {
     },
     doRequest: function(operation) {
         var me = this,
-            writer, request, action, params, args, api, fn, callback;
+            writer, request, action, params, args, api, fn;
         if (!me.methodsResolved) {
             me.resolveMethods();
         }
@@ -63900,14 +64709,16 @@ Ext.define('Ext.data.DirectStore', {
     alias: 'store.direct',
     
     constructor: function(config) {
+        var proxy;
         config = Ext.apply({}, config);
         if (!config.proxy) {
-            var proxy = {
-                    type: 'direct',
-                    reader: {
-                        type: 'json'
-                    }
-                };
+            proxy = {
+                type: 'direct',
+                reader: {
+                    type: 'json'
+                }
+            };
+            
             Ext.copyTo(proxy, config, 'paramOrder,paramsAsHash,directFn,api,simpleSortMode,extraParams');
             Ext.copyTo(proxy.reader, config, 'totalProperty,root,rootProperty,idProperty');
             config.proxy = proxy;
@@ -63941,7 +64752,9 @@ Ext.define('Ext.data.JsonP', {
             Ext.raise('A url must be specified for a JSONP request.');
         }
         
+        
         var me = this,
+            
             disableCaching = Ext.isDefined(options.disableCaching) ? options.disableCaching : me.disableCaching,
             cacheParam = options.disableCachingParam || me.disableCachingParam,
             id = ++me.requestCount,
@@ -64151,9 +64964,11 @@ Ext.define('Ext.data.proxy.JsonP', {
             }
         }
         
+        
         if (Ext.isArray(records) && records.length > 0 && (!writer || !writer.getEncode())) {
             params[me.getRecordParam()] = me.encodeRecords(records);
         }
+        
         
         
         if (me.getAutoAppendParams()) {
@@ -64303,6 +65118,7 @@ Ext.define('Ext.data.NodeInterface', {
             idField = model.getField(idName);
             idType = idField.type;
             model.override(this.getPrototypeBody());
+            
             model.addFields([
                 {
                     name: 'parentId',
@@ -64482,6 +65298,7 @@ Ext.define('Ext.data.NodeInterface', {
                 }
             ]);
         },
+        
         getPrototypeBody: function() {
             var bubbledEvents = {
                     idchanged: true,
@@ -64502,6 +65319,9 @@ Ext.define('Ext.data.NodeInterface', {
                 silently = {
                     silent: true
                 };
+            
+            
+            
             
             
             
@@ -64560,7 +65380,11 @@ Ext.define('Ext.data.NodeInterface', {
                             nodeProxy = me.getProxy();
                             nodeReader = nodeProxy ? nodeProxy.getReader() : null;
                             
+                            
+                            
+                            
                             reader = !storeReader || (nodeReader && nodeReader.initialConfig.typeProperty) ? nodeReader : storeReader;
+                            
                             if (reader) {
                                 typeProperty = reader.getTypeProperty();
                                 if (typeProperty) {
@@ -64595,19 +65419,19 @@ Ext.define('Ext.data.NodeInterface', {
                 updateInfo: function(commit, info) {
                     var me = this,
                         phantom = me.phantom,
-                        result;
+                        result, childInfo, children, childCount, i;
                     commit = {
                         silent: true,
                         commit: commit
                     };
                     
+                    
                     if (info.depth != null && info.depth !== me.data.depth) {
-                        var childInfo = {
-                                depth: info.depth + 1
-                            },
-                            children = me.childNodes,
-                            childCount = children.length,
-                            i;
+                        childInfo = {
+                            depth: info.depth + 1
+                        };
+                        children = me.childNodes;
+                        childCount = children.length;
                         for (i = 0; i < childCount; i++) {
                             children[i].updateInfo(commit, childInfo);
                         }
@@ -64641,22 +65465,20 @@ Ext.define('Ext.data.NodeInterface', {
                     
                     
                     
+                    
                     this.callJoined('afterEdit', []);
                 },
                 
                 appendChild: function(node, suppressEvents, commit) {
                     var me = this,
-                        i, ln, index, oldParent, previousSibling,
+                        treeStore = me.getTreeStore(),
+                        bulkUpdate = treeStore && treeStore.bulkUpdate,
                         childInfo = {
                             isLast: true,
                             parentId: me.getId(),
                             depth: (me.data.depth || 0) + 1
                         },
-                        result,
-                        treeStore = me.getTreeStore(),
-                        halfCheckedValue = treeStore && treeStore.triStateCheckbox ? 1 : false,
-                        bulkUpdate = treeStore && treeStore.bulkUpdate,
-                        meChecked, nodeChecked, modifiedFields;
+                        oldParent, previousSibling, modifiedFields, index, result, i, ln;
                     
                     Ext.suspendLayouts();
                     
@@ -64676,6 +65498,7 @@ Ext.define('Ext.data.NodeInterface', {
                     } else {
                         
                         node = me.createNode(node);
+                        
                         if (suppressEvents !== true && me.fireBubbledEvent('beforeappend', [
                             me,
                             node
@@ -64687,6 +65510,7 @@ Ext.define('Ext.data.NodeInterface', {
                         oldParent = node.parentNode;
                         
                         if (oldParent) {
+                            
                             if (suppressEvents !== true && node.fireBubbledEvent('beforemove', [
                                 node,
                                 oldParent,
@@ -64697,6 +65521,7 @@ Ext.define('Ext.data.NodeInterface', {
                                 return false;
                             }
                             
+                            
                             if (oldParent.removeChild(node, false, suppressEvents, oldParent.getTreeStore() === treeStore) === false) {
                                 Ext.resumeLayouts(true);
                                 return false;
@@ -64704,7 +65529,10 @@ Ext.define('Ext.data.NodeInterface', {
                         }
                         
                         
-                        treeStore && treeStore.beginUpdate();
+                        
+                        if (treeStore) {
+                            treeStore.beginUpdate();
+                        }
                         index = me.childNodes.length;
                         if (index === 0) {
                             me.setFirstChild(node);
@@ -64749,6 +65577,7 @@ Ext.define('Ext.data.NodeInterface', {
                             me.triggerUIUpdate();
                         }
                         
+                        
                         if (index && me.childNodes[index - 1].isExpanded() && !bulkUpdate) {
                             me.childNodes[index - 1].cascade(me.triggerUIUpdate);
                         }
@@ -64764,6 +65593,7 @@ Ext.define('Ext.data.NodeInterface', {
                                 treeStore.registerNode(node);
                             }
                         }
+                        
                         
                         
                         
@@ -64789,12 +65619,14 @@ Ext.define('Ext.data.NodeInterface', {
                             index
                         ]);
                         
+                        
                         if (modifiedFields) {
                             node.callJoined('afterEdit', [
                                 modifiedFields
                             ]);
                         }
                         result = node;
+                        
                         
                         
                         if (treeStore) {
@@ -64837,7 +65669,9 @@ Ext.define('Ext.data.NodeInterface', {
                     
                     Ext.suspendLayouts();
                     
-                    treeStore && treeStore.beginUpdate();
+                    if (treeStore) {
+                        treeStore.beginUpdate();
+                    }
                     
                     Ext.Array.erase(me.childNodes, index, 1);
                     
@@ -64874,6 +65708,7 @@ Ext.define('Ext.data.NodeInterface', {
                         previousSibling.updateInfo(false, {
                             isLast: true
                         });
+                        
                         
                         
                         if (!bulkUpdate) {
@@ -64976,8 +65811,7 @@ Ext.define('Ext.data.NodeInterface', {
                 },
                 
                 clear: function(erase, resetChildren) {
-                    var me = this,
-                        data;
+                    var me = this;
                     
                     me.parentNode = me.previousSibling = me.nextSibling = null;
                     if (erase) {
@@ -64996,8 +65830,8 @@ Ext.define('Ext.data.NodeInterface', {
                     var me = this,
                         childNodes = me.childNodes,
                         parentNode = me.parentNode,
-                        len, i, node,
-                        treeStore = me.getTreeStore();
+                        treeStore = me.getTreeStore(),
+                        node, i, len;
                     
                     
                     
@@ -65005,8 +65839,10 @@ Ext.define('Ext.data.NodeInterface', {
                     
                     if (parentNode) {
                         
+                        
                         parentNode.removeChild(me);
                     }
+                    
                     
                     else if (me.get('root')) {
                         treeStore.setRoot(null);
@@ -65016,18 +65852,23 @@ Ext.define('Ext.data.NodeInterface', {
                     
                     
                     
-                    treeStore && treeStore.beginUpdate();
+                    if (treeStore) {
+                        treeStore.beginUpdate();
+                    }
                     
                     
                     for (i = 0 , len = childNodes ? childNodes.length : 0; i < len; i++) {
                         node = childNodes[i];
+                        
                         
                         node.clear();
                         
                         node.drop();
                     }
                     
-                    treeStore && treeStore.endUpdate();
+                    if (treeStore) {
+                        treeStore.endUpdate();
+                    }
                 },
                 
                 erase: function(options) {
@@ -65073,6 +65914,7 @@ Ext.define('Ext.data.NodeInterface', {
                     }
                     
                     node = me.createNode(node);
+                    
                     if (suppressEvents !== true && me.fireBubbledEvent('beforeinsert', [
                         me,
                         node,
@@ -65086,6 +65928,7 @@ Ext.define('Ext.data.NodeInterface', {
                     }
                     
                     if (oldParent) {
+                        
                         if (suppressEvents !== true && node.fireBubbledEvent('beforemove', [
                             node,
                             oldParent,
@@ -65096,6 +65939,7 @@ Ext.define('Ext.data.NodeInterface', {
                             return false;
                         }
                         
+                        
                         if (oldParent.removeChild(node, false, suppressEvents, oldParent.getTreeStore() === treeStore) === false) {
                             return false;
                         }
@@ -65104,7 +65948,10 @@ Ext.define('Ext.data.NodeInterface', {
                     
                     
                     
-                    treeStore && treeStore.beginUpdate();
+                    
+                    if (treeStore) {
+                        treeStore.beginUpdate();
+                    }
                     if (refIndex === 0) {
                         me.setFirstChild(node);
                     }
@@ -65183,11 +66030,13 @@ Ext.define('Ext.data.NodeInterface', {
                         refIndex
                     ]);
                     
+                    
                     if (modifiedFields) {
                         node.callJoined('afterEdit', [
                             modifiedFields
                         ]);
                     }
+                    
                     
                     
                     if (treeStore) {
@@ -65330,6 +66179,7 @@ Ext.define('Ext.data.NodeInterface', {
                 getPath: function(field, separator) {
                     field = field || this.idProperty;
                     separator = separator || '/';
+                    
                     var path = [
                             this.get(field)
                         ],
@@ -65359,7 +66209,8 @@ Ext.define('Ext.data.NodeInterface', {
                 
                 cascade: function(spec, scope, args, after) {
                     var me = this,
-                        before = spec;
+                        before = spec,
+                        childNodes, length, i;
                     if (arguments.length === 1 && !Ext.isFunction(spec)) {
                         after = spec.after;
                         scope = spec.scope;
@@ -65369,10 +66220,8 @@ Ext.define('Ext.data.NodeInterface', {
                     if (!before || before.apply(scope || me, args || [
                         me
                     ]) !== false) {
-                        var childNodes = me.childNodes,
-                            length = childNodes.length,
-                            i;
-                        for (i = 0; i < length; i++) {
+                        childNodes = me.childNodes;
+                        for (i = 0 , length = childNodes.length; i < length; i++) {
                             childNodes[i].cascade.call(childNodes[i], before, scope, args, after);
                         }
                         if (after) {
@@ -65402,15 +66251,14 @@ Ext.define('Ext.data.NodeInterface', {
                 findChild: function(attribute, value, deep) {
                     return this.findChildBy(function() {
                         return this.get(attribute) == value;
-                    }, null, deep);
+                    }, 
+                    null, deep);
                 },
                 
                 findChildBy: function(fn, scope, deep) {
                     var cs = this.childNodes,
-                        len = cs.length,
-                        i = 0,
-                        n, res;
-                    for (; i < len; i++) {
+                        i, len, n, res;
+                    for (i = 0 , len = cs.length; i < len; i++) {
                         n = cs[i];
                         if (fn.call(scope || n, n) === true) {
                             return n;
@@ -65443,10 +66291,10 @@ Ext.define('Ext.data.NodeInterface', {
                     var me = this,
                         childNodes = me.childNodes,
                         ln = childNodes.length,
-                        i, n,
                         info = {
                             isFirst: true
-                        };
+                        },
+                        i, n;
                     if (ln > 0) {
                         if (!sortFn) {
                             sortFn = me.getTreeStore().getSortFn();
@@ -65551,7 +66399,11 @@ Ext.define('Ext.data.NodeInterface', {
                                     
                                     
                                     
+                                    
+                                    
+                                    
                                     if (recursive) {
+                                        
                                         
                                         
                                         
@@ -65568,6 +66420,8 @@ Ext.define('Ext.data.NodeInterface', {
                                     }
                                     
                                     
+                                    
+                                    
                                     me.callTreeStore('onBeforeNodeExpand', [
                                         me.onChildNodesAvailable,
                                         me,
@@ -65579,8 +66433,10 @@ Ext.define('Ext.data.NodeInterface', {
                                     ]);
                                     
                                     
+                                    
                                     if (resumeAddEvent) {
                                         treeStore.resumeEvent('add', 'datachanged');
+                                        
                                         
                                         treeStore.fireEvent('datachanged', treeStore);
                                         treeStore.fireEvent('refresh', treeStore);
@@ -65588,6 +66444,7 @@ Ext.define('Ext.data.NodeInterface', {
                                     me.isSynchronousRecursiveExpand = false;
                                 }
                             } else if (recursive) {
+                                
                                 
                                 me.expandChildren(true, callback, scope);
                             } else {
@@ -65607,7 +66464,8 @@ Ext.define('Ext.data.NodeInterface', {
                     var me = this,
                         treeStore = me.getTreeStore(),
                         bulkUpdate = treeStore && treeStore.bulkUpdate,
-                        ancestor, i, collapsedAncestors;
+                        ancestor, collapsedAncestors, i;
+                    
                     
                     
                     Ext.suspendLayouts();
@@ -65620,6 +66478,7 @@ Ext.define('Ext.data.NodeInterface', {
                         }
                     }
                     
+                    
                     if (bulkUpdate || !treeStore.isVisible(me)) {
                         me.data.expanded = true;
                     } else {
@@ -65627,7 +66486,10 @@ Ext.define('Ext.data.NodeInterface', {
                     }
                     
                     
+                    
+                    
                     if (collapsedAncestors) {
+                        
                         
                         
                         for (i = 1; i < collapsedAncestors.length; i++) {
@@ -65733,6 +66595,8 @@ Ext.define('Ext.data.NodeInterface', {
                             
                             
                             
+                            
+                            
                             if (recursive) {
                                 collapseChildren = function() {
                                     for (i = 0; i < len; i++) {
@@ -65740,6 +66604,7 @@ Ext.define('Ext.data.NodeInterface', {
                                     }
                                 };
                                 if (callback) {
+                                    
                                     callback = Ext.Function.createSequence(collapseChildren, Ext.Function.bind(callback, scope, [
                                         me.childNodes
                                     ]));
@@ -65752,11 +66617,13 @@ Ext.define('Ext.data.NodeInterface', {
                                 ]);
                             }
                             
+                            
                             if (bulkUpdate || !treeStore.contains(me)) {
                                 me.data.expanded = false;
                             } else {
                                 me.set('expanded', false);
                             }
+                            
                             
                             
                             
@@ -65772,6 +66639,7 @@ Ext.define('Ext.data.NodeInterface', {
                             
                             callback = null;
                         }
+                        
                         
                         
                         
@@ -65816,11 +66684,10 @@ Ext.define('Ext.data.NodeInterface', {
                 
                 collapseChildren: function(recursive, callback, scope) {
                     var me = this,
-                        i,
                         allNodes = me.childNodes,
                         ln = allNodes.length,
                         collapseNodes = [],
-                        node;
+                        node, i;
                     
                     for (i = 0; i < ln; ++i) {
                         node = allNodes[i];
@@ -65852,13 +66719,16 @@ Ext.define('Ext.data.NodeInterface', {
                 
                 
                 
+                
                 fireBubbledEvent: function(eventName, args) {
                     var result, eventSource, topNode;
                     
                     if (bubbledEvents[eventName]) {
+                        
                         for (eventSource = this; result !== false && eventSource; eventSource = (topNode = eventSource).parentNode) {
                             result = eventSource.fireEventArgs.call(eventSource, eventName, args);
                         }
+                        
                         
                         
                         if (result !== false) {
@@ -65891,6 +66761,7 @@ Ext.define('Ext.data.NodeInterface', {
                     return result;
                 },
                 
+                
                 callTreeStore: function(funcName, args) {
                     var me = this,
                         target = me.getTreeStore(),
@@ -65922,12 +66793,11 @@ Ext.define('Ext.data.NodeInterface', {
                     this.set('cls', pieces.join(' '));
                 },
                 toggleCls: function(cls, state) {
+                    var pieces, parts, len, i, p;
                     if (state === undefined) {
-                        var pieces = this._parseCls(this.data.cls),
-                            parts = this._parseCls(cls),
-                            len = parts.length,
-                            i, p;
-                        for (i = 0; i < len; ++i) {
+                        pieces = this._parseCls(this.data.cls);
+                        parts = this._parseCls(cls);
+                        for (i = 0 , len = parts.length; i < len; ++i) {
                             p = parts[i];
                             if (Ext.Array.contains(pieces, p)) {
                                 Ext.Array.remove(pieces, p);
@@ -65960,6 +66830,7 @@ Ext.define('Ext.data.NodeInterface', {
                             ]);
                         }
                     },
+                    
                     
                     callJoined: function(funcName, args) {
                         this.callParent([
@@ -66070,10 +66941,8 @@ Ext.define('Ext.data.NodeStore', {
         }
     },
     onNodeInsert: function(parent, node, refNode) {
-        var me = this,
-            idx;
+        var me = this;
         if (parent === me.getNode()) {
-            idx = me.indexOf(refNode) || 0;
             me.insert(0, [
                 node
             ].concat(me.retrieveChildNodes(node)));
@@ -66205,6 +67074,1311 @@ Ext.define('Ext.data.NodeStore', {
 });
 
 
+Ext.define('Ext.data.query.Compiler', {
+    compile: function() {
+        
+        var me = this,
+            ast = me.ast,
+            body, factory, vars;
+        me.error = null;
+        if (!ast) {
+            me.fn = Ext.returnTrue;
+        } else {
+            body = [
+                'return function (item) {',
+                '\tvar rec = item.isEntity && item;',
+                '\treturn '
+            ];
+            vars = [];
+            me.query = me;
+            me.assemble(body, vars, '\t', ast);
+            body.push('}');
+            body = vars.concat(body).join('\n');
+            try {
+                factory = new Function('Ext', 'O', 'F', body);
+                me.fn = factory(Ext, me.operators, me.getFunctions());
+                me.fn.generation = me.generation;
+            } catch (e) {
+                me.error = e;
+                e.message = 'Failed to compile: ' + e.message;
+                throw e;
+            } finally {
+                me.query = null;
+            }
+        }
+    },
+    privates: {
+        asmOps: {
+            '>': 'gt',
+            '<': 'lt',
+            '==': 'eq',
+            '>=': 'ge',
+            '<=': 'le',
+            '!=': 'ne'
+        },
+        assemblers: {
+            binary: function(me, body, vars, indent, node, last, childIndent) {
+                var op = me.operatorTypeMap[node.type][1],
+                    asmOp = me.asmOps[op],
+                    operands = node.on,
+                    close = '',
+                    i;
+                if (asmOp) {
+                    body[last] += 'O.' + asmOp + '(';
+                    op = ', ';
+                    close = ')';
+                } else {
+                    op = ' ' + op + ' ';
+                }
+                body[last] += '(';
+                for (i = 0; i < operands.length; ++i) {
+                    if (i) {
+                        body.push(indent + ')' + op + '(');
+                    }
+                    body.push(childIndent);
+                    me.assemble(body, vars, childIndent, operands[i]);
+                }
+                body.push(indent + ')' + close);
+            },
+            between: function(me, body, vars, indent, node, last, childIndent) {
+                var operands = node.on,
+                    i;
+                body[last] += 'O.between(';
+                for (i = 0; i < 3; ++i) {
+                    if (i) {
+                        last = body.length - 1;
+                        body[last] += ', ';
+                    }
+                    me.assemble(body, vars, childIndent, operands[i]);
+                }
+                body.push(indent + ')');
+            },
+            fn: function(me, body, vars, indent, node, last, childIndent) {
+                var fn = node.fn.toLowerCase(),
+                    func = me.query.getFunctions(),
+                    exprs, i;
+                
+                if (!func[fn]) {
+                    Ext.raise('Unsupported function "' + node.fn + '"');
+                }
+                
+                func = func[fn];
+                if (func.vargs) {
+                    body[last] += 'F.' + fn + '.fn([';
+                } else {
+                    body[last] += 'F.' + fn + '.fn(';
+                }
+                exprs = node.args;
+                for (i = 0; i < exprs.length; ++i) {
+                    if (i) {
+                        last = body.length - 1;
+                        body[last] += ', ';
+                    }
+                    body.push(childIndent);
+                    me.assemble(body, vars, childIndent, exprs[i]);
+                }
+                if (func.vargs) {
+                    body.push(indent + '])');
+                } else {
+                    body.push(indent + ')');
+                }
+            },
+            id: function(me, body, vars, indent, node, last, childIndent) {
+                var v = node.value,
+                    exprs = v.split('.');
+                if (exprs.length === 1) {
+                    body[last] += 'rec ? rec.interpret(' + Ext.JSON.encode(v) + ') : item.' + v;
+                } else {
+                    v = 'p' + vars.length;
+                    vars.push('var ' + v + ' = ' + Ext.JSON.encode(exprs) + ';');
+                    body[last] += 'O.dots(item, ' + v + ')';
+                }
+            },
+            'in': function(me, body, vars, indent, node, last, childIndent) {
+                var operands = node.on;
+                body[last] += 'O.in(';
+                me.assemble(body, vars, childIndent, operands[0]);
+                last = body.length - 1;
+                body[last] += ', ';
+                me.assemble(body, vars, childIndent, operands[1]);
+                body.push(indent + ')');
+            },
+            like: function(me, body, vars, indent, node, last, childIndent) {
+                var operands = node.on,
+                    rhs;
+                body[last] += 'O.like(';
+                me.assemble(body, vars, childIndent, operands[0]);
+                last = body.length - 1;
+                body[last] += ', ';
+                rhs = operands[1];
+                if (rhs.re) {
+                    rhs = {
+                        type: 'regexp',
+                        value: rhs.re,
+                        flags: rhs.flags
+                    };
+                }
+                me.assemble(body, vars, childIndent, rhs);
+                last = body.length - 1;
+                body[last] += ') ';
+            },
+            list: function(me, body, vars, indent, node, last, childIndent) {
+                body[last] += '[';
+                
+                for (var i = 0,
+                    exprs = node.value; i < exprs.length; ++i) {
+                    if (i) {
+                        last = body.length - 1;
+                        body[last] += ', ';
+                    }
+                    body.push(childIndent);
+                    me.assemble(body, vars, childIndent, exprs[i]);
+                }
+                body.push(indent + ']');
+            },
+            string: 'regexp',
+            regexp: function(me, body, vars, indent, node, last) {
+                var re = 're' + vars.length;
+                vars.push('var ' + re + ' = /' + (node.re || node.value) + '/' + (node.flags || '') + ';');
+                body[last] += re;
+            },
+            unary: function(me, body, vars, indent, node, last, childIndent) {
+                var op = me.operatorTypeMap[node.type][1],
+                    operands = node.on;
+                body[last] += op + '(';
+                body.push(childIndent);
+                me.assemble(body, vars, childIndent, operands);
+                body.push(indent + ')');
+            }
+        },
+        
+        operators: {
+            between: function(val, lo, hi) {
+                return lo <= val && val <= hi;
+            },
+            dots: function(item, names) {
+                var i, ret;
+                if (item.isEntity) {
+                    for (ret = item , i = 0; i < names.length; ++i) {
+                        if (!ret || !ret.interpret) {
+                            ret = undefined;
+                            
+                            break;
+                        }
+                        ret = ret.interpret(names[i]);
+                    }
+                } else {
+                    for (ret = item , i = 0; i < names.length; ++i) {
+                        if (!ret) {
+                            ret = undefined;
+                            break;
+                        }
+                        ret = ret[names[i]];
+                    }
+                }
+                return ret;
+            },
+            'in': function(val, values) {
+                return Ext.Array.contains(values, val);
+            },
+            like: function(val, pat) {
+                val = String(val);
+                if (typeof pat === 'string') {
+                    return !!val && val.toLowerCase().indexOf(pat.toLowerCase()) > -1;
+                }
+                return pat.test(val);
+            },
+            
+            eq: function(lhs, rhs) {
+                if (lhs && rhs && (lhs instanceof Date || rhs instanceof Date)) {
+                    return !Ext.Date.compare(lhs, rhs);
+                }
+                return lhs == rhs;
+            },
+            
+            ge: function(lhs, rhs) {
+                if (lhs && rhs && (lhs instanceof Date || rhs instanceof Date)) {
+                    return Ext.Date.compare(lhs, rhs) >= 0;
+                }
+                return lhs >= rhs;
+            },
+            gt: function(lhs, rhs) {
+                if (lhs && rhs && (lhs instanceof Date || rhs instanceof Date)) {
+                    return Ext.Date.compare(lhs, rhs) > 0;
+                }
+                return lhs > rhs;
+            },
+            le: function(lhs, rhs) {
+                if (lhs && rhs && (lhs instanceof Date || rhs instanceof Date)) {
+                    return Ext.Date.compare(lhs, rhs) <= 0;
+                }
+                return lhs <= rhs;
+            },
+            lt: function(lhs, rhs) {
+                if (lhs && rhs && (lhs instanceof Date || rhs instanceof Date)) {
+                    return Ext.Date.compare(lhs, rhs) < 0;
+                }
+                return lhs < rhs;
+            },
+            ne: function(lhs, rhs) {
+                if (lhs && rhs && (lhs instanceof Date || rhs instanceof Date)) {
+                    return !!Ext.Date.compare(lhs, rhs);
+                }
+                return lhs != rhs;
+            }
+        },
+        
+        assemble: function(body, vars, indent, node) {
+            var me = this,
+                assemblers = me.assemblers,
+                t = typeof node,
+                last = body.length - 1,
+                childIndent = indent + '\t',
+                type = node.type,
+                arity, asm;
+            if (t === 'boolean' || t === 'number') {
+                body[last] += node;
+            } else if (t === 'string') {
+                body[last] += Ext.JSON.encode(node);
+            } else {
+                arity = me.operatorTypeMap[type];
+                asm = assemblers[type] || (arity && assemblers[arity[0]]);
+                if (typeof asm === 'string') {
+                    asm = assemblers[asm];
+                }
+                asm(me, body, vars, indent, node, body.length - 1, childIndent);
+            }
+        }
+    }
+});
+
+
+Ext.define('Ext.data.query.Converter', {
+    
+    getFilters: function() {
+        var me = this,
+            ast = me.ast,
+            exprToFilter = me.exprToFilter,
+            operatorTypeMap = me.operatorTypeMap,
+            fn = me.fn,
+            on = ast && ast.on,
+            expr, filter, filters, i, ident, n, op, ret, value, xlat;
+        if (ast) {
+            
+            
+            if (fn.hasOwnProperty('$filters')) {
+                ret = fn.$filters;
+            } else {
+                if (ast.type === 'and' && on) {
+                    filters = [];
+                    for (i = 0 , n = on.length; i < n; ++i) {
+                        expr = on[i];
+                        ident = expr.on;
+                        if (!ident || ident.length !== 2) {
+                            break;
+                        }
+                        value = ident[1];
+                        ident = ident[0];
+                        if (ident.type !== 'id') {
+                            break;
+                        }
+                        if (!(xlat = exprToFilter[expr.type])) {
+                            op = operatorTypeMap[expr.type];
+                            if (!op || !(xlat = exprToFilter[op[0]])) {
+                                break;
+                            }
+                        }
+                        if (!(filter = xlat(expr, ident.value, value, op))) {
+                            break;
+                        }
+                        filters.push(filter);
+                    }
+                    if (i === n) {
+                        ret = filters;
+                    }
+                }
+                fn.$filters = ret;
+            }
+        } else {
+            ret = null;
+        }
+        return ret;
+    },
+    setFilters: function(filters) {
+        var me = this,
+            ast = null,
+            n = filters && filters.length,
+            expr, filter, i, op, xlat;
+        if (n) {
+            ast = {
+                type: 'and',
+                on: []
+            };
+            for (i = 0; i < n; ++i) {
+                filter = filters[i];
+                if (!(xlat = me.filterToExpr[op = filter.operator])) {
+                    expr = {
+                        type: me.getOperatorType(op),
+                        on: [
+                            {
+                                type: 'id',
+                                value: filter.property
+                            },
+                            filter.value
+                        ]
+                    };
+                } else {
+                    expr = xlat(filter);
+                }
+                ast.on.push(expr);
+            }
+        }
+        me.ast = ast;
+        me.refresh();
+    },
+    privates: {
+        exprToFilter: {
+            binary: function(expr, ident, value, info) {
+                return Ext.isPrimitive(value) && {
+                    property: ident,
+                    operator: info[1],
+                    value: value
+                };
+            },
+            'in': function(expr, ident, value) {
+                var i = 0,
+                    list = value.value;
+                if (value.type === 'list' && Ext.isArray(list)) {
+                    for (i = list.length; i-- > 0; ) 
+                    {
+                        if (!Ext.isPrimitive(list[i])) {
+                            break;
+                        }
+                    }
+                }
+                return (i < 0) && {
+                    property: ident,
+                    operator: 'in',
+                    value: list
+                };
+            },
+            like: function(expr, ident, value) {
+                if (value.type === 'regexp') {
+                    return {
+                        property: ident,
+                        operator: '/=',
+                        value: value.value
+                    };
+                }
+                return (value.type === 'string') && {
+                    property: ident,
+                    operator: 'like',
+                    value: value.value
+                };
+            }
+        },
+        filterToExpr: {
+            '/=': function(filter) {
+                return {
+                    type: 'like',
+                    on: [
+                        {
+                            type: 'id',
+                            value: filter.property
+                        },
+                        {
+                            type: 'regexp',
+                            value: filter.value
+                        }
+                    ]
+                };
+            },
+            'in': function(filter) {
+                return {
+                    type: 'in',
+                    on: [
+                        {
+                            type: 'id',
+                            value: filter.property
+                        },
+                        {
+                            type: 'list',
+                            value: filter.value
+                        }
+                    ]
+                };
+            },
+            like: function(filter) {
+                return {
+                    type: 'like',
+                    on: [
+                        {
+                            type: 'id',
+                            value: filter.property
+                        },
+                        {
+                            type: 'string',
+                            value: filter.value,
+                            re: filter.value,
+                            flags: 'i'
+                        }
+                    ]
+                };
+            }
+        }
+    }
+});
+
+
+Ext.define('Ext.data.query.Stringifier', {
+    stringify: function(node) {
+        var me = this,
+            t = typeof node,
+            type = node.type,
+            operatorTypeMap = me.operatorTypeMap,
+            priority = me.getPriority(node),
+            stringifiers = me.stringifiers,
+            op, stringifier;
+        if (t === 'boolean' || t === 'number') {
+            return String(node);
+        }
+        if (t === 'string') {
+            return Ext.JSON.encode(node);
+        }
+        stringifier = stringifiers[type];
+        if (!stringifier && type in operatorTypeMap) {
+            op = operatorTypeMap[type];
+            stringifier = stringifiers[op[0]];
+            op = op[2] || op[1];
+        }
+        if (typeof stringifier === 'string') {
+            stringifier = stringifiers[stringifier];
+        }
+        return stringifier(me, node, priority, op);
+    },
+    privates: {
+        getPriority: function(node) {
+            var symbols = this.symbols,
+                operatorTypeMap = this.operatorTypeMap,
+                type = node.type,
+                ret = 1000000000,
+                op;
+            if (type === 'between') {
+                ret = 0;
+                ret = symbols[type].priority;
+            } else if (type === 'and' || type === 'or' || type === 'in' || type === 'like') {
+                ret = symbols[type].priority;
+            } else if (type in operatorTypeMap) {
+                op = operatorTypeMap[type];
+                ret = symbols[op[1]].priority;
+            }
+            return ret;
+        },
+        stringifiers: {
+            and: 'or',
+            or: function(me, node, priority) {
+                var op = (node.type === 'or') ? ' or ' : ' and ',
+                    s = '',
+                    on = node.on,
+                    i, lhs, parenL;
+                for (i = 0; i < on.length; ++i) {
+                    if (s) {
+                        s += op;
+                    }
+                    lhs = on[i];
+                    parenL = me.getPriority(lhs) < priority;
+                    lhs = me.stringify(lhs);
+                    if (parenL) {
+                        lhs = '(' + lhs + ')';
+                    }
+                    s += lhs;
+                }
+                return s;
+            },
+            between: function(me, node, priority) {
+                var on = node.on,
+                    lhs = on[0],
+                    parenL = me.getPriority(lhs) < priority,
+                    i, parenR, rhs, s;
+                lhs = me.stringify(lhs);
+                if (parenL) {
+                    lhs = '(' + lhs + ')';
+                }
+                s = lhs + ' between ';
+                priority = me.symbols.and.priority;
+                for (i = 0; i < 2; ++i) {
+                    if (i) {
+                        s += ' and ';
+                    }
+                    rhs = on[i + 1];
+                    parenR = i ? (rhs.type !== 'id' && !Ext.isPrimitive(rhs)) : (me.getPriority(rhs) < priority);
+                    rhs = me.stringify(rhs);
+                    if (parenR) {
+                        rhs = '(' + rhs + ')';
+                    }
+                    s += rhs;
+                }
+                return s;
+            },
+            binary: function(me, node, priority, op) {
+                var on = node.on,
+                    lhs = on[0],
+                    rhs = on[1],
+                    parenL = me.getPriority(lhs) < priority,
+                    parenR = me.getPriority(rhs) < priority;
+                lhs = me.stringify(lhs);
+                rhs = me.stringify(rhs);
+                if (parenL) {
+                    lhs = '(' + lhs + ')';
+                }
+                if (parenR) {
+                    rhs = '(' + rhs + ')';
+                }
+                return lhs + ' ' + op + ' ' + rhs;
+            },
+            fn: function(me, node) {
+                return node.fn + '(' + me.stringifyArray(node.args) + ')';
+            },
+            id: function(me, node) {
+                return node.value;
+            },
+            list: function(me, node) {
+                return '(' + me.stringifyArray(node.value) + ')';
+            },
+            regexp: function(me, node) {
+                return '/' + node.value + '/' + (node.flags || '');
+            },
+            string: function(me, node) {
+                return Ext.JSON.encode(node.value);
+            },
+            unary: function(me, node, priority, op) {
+                var on = node.on,
+                    rhs = me.stringify(on),
+                    t = on.type;
+                if (t !== 'fn' && t !== 'id' && t !== 'unary') {
+                    rhs = '(' + rhs + ')';
+                }
+                return op + rhs;
+            }
+        },
+        stringifyArray: function(array) {
+            var s = '',
+                i, expr;
+            for (i = 0; i < array.length; ++i) {
+                if (s) {
+                    s += ', ';
+                }
+                expr = array[i];
+                expr = this.stringify(expr);
+                s += expr;
+            }
+            return s;
+        }
+    }
+});
+
+
+Ext.define('Ext.data.query.Parser', function(QueryParser) {
+    
+    var LIST = {
+            list: true,
+            literal: true,
+            type: 'list'
+        };
+    return {
+        extend: Ext.parse.Parser,
+        tokenizer: {
+            keywords: {
+                and: {
+                    type: 'operator',
+                    name: 'and',
+                    value: '&&',
+                    is: {
+                        operator: true
+                    }
+                },
+                or: {
+                    type: 'operator',
+                    name: 'or',
+                    value: '||',
+                    is: {
+                        operator: true
+                    }
+                },
+                not: {
+                    type: 'operator',
+                    name: 'not',
+                    value: '!',
+                    is: {
+                        operator: true
+                    }
+                },
+                between: {
+                    type: 'operator',
+                    name: 'between',
+                    value: 'between',
+                    is: {
+                        operator: true
+                    }
+                },
+                like: {
+                    type: 'operator',
+                    name: 'like',
+                    value: 'like',
+                    is: {
+                        operator: true
+                    }
+                },
+                'in': {
+                    type: 'operator',
+                    name: 'in',
+                    value: 'in',
+                    is: {
+                        operator: true
+                    }
+                }
+            },
+            
+            operators: {
+                '=': 'eq',
+                '==': 'seq',
+                '===': 'seq',
+                '!==': 'sne',
+                '!=': 'neq',
+                '<>': 'neq',
+                '<': 'lt',
+                '<=': 'lte',
+                '>': 'gt',
+                '>=': 'gte',
+                '&&': 'and',
+                '||': 'or',
+                ',': 'comma'
+            },
+            
+            patterns: {
+                regex: {
+                    type: 'literal',
+                    is: {
+                        literal: true,
+                        regexp: true,
+                        type: 'regexp'
+                    },
+                    re: /\/(?!\/)((?:\[.+?]|\\.|[^/\\\r\n])+)\/([gimyu]{0,5})/g,
+                    extract: function(match) {
+                        var body = match[1],
+                            flags = match[2];
+                        return flags ? [
+                            body,
+                            flags
+                        ] : body;
+                    }
+                }
+            }
+        },
+        infix: {
+            '=': 40,
+            '<>': 40,
+            like: 40,
+            
+            between: {
+                priority: 70,
+                led: function(left) {
+                    var me = this,
+                        parser = me.parser;
+                    me.arity = 'between';
+                    me.operand = left;
+                    me.low = parser.parseExpression(parser.symbols.and.priority);
+                    parser.advance('&&');
+                    me.high = parser.parseExpression(80);
+                    return me;
+                }
+            },
+            'in': {
+                priority: 40,
+                led: function(left) {
+                    var me = this,
+                        parser = me.parser;
+                    parser.advance('(');
+                    me.arity = 'binary';
+                    me.lhs = left;
+                    me.rhs = {
+                        arity: 'literal',
+                        value: parser.parseList(),
+                        is: LIST
+                    };
+                    parser.advance(')');
+                    return me;
+                }
+            }
+        },
+        infixRight: {
+            'and': 30,
+            'or': 30
+        },
+        prefix: {
+            not: 0
+        },
+        parse: function() {
+            var expr = this.parseExpression();
+            return this.convert(expr);
+        },
+        privates: {
+            opCodes: {
+                binary: {
+                    '=': 'eq',
+                    '>': 'gt',
+                    '<': 'lt',
+                    '>=': 'ge',
+                    '<=': 'le',
+                    '!=': 'ne',
+                    '<>': 'ne',
+                    '+': 'add',
+                    '/': 'div',
+                    '*': 'mul',
+                    '-': 'sub'
+                },
+                unary: {
+                    '-': 'neg',
+                    '!': 'not'
+                }
+            },
+            convert: function(node) {
+                var me = this,
+                    arity = node.arity,
+                    is = node.is,
+                    name = node.name,
+                    opCodes = me.opCodes,
+                    value = node.value,
+                    exprs, lhs, rhs, ret;
+                switch (arity) {
+                    case 'between':
+                        ret = {
+                            type: 'between',
+                            on: [
+                                me.convert(node.operand),
+                                me.convert(node.low),
+                                me.convert(node.high)
+                            ]
+                        };
+                        break;
+                    case 'ident':
+                        ret = {
+                            type: 'id',
+                            value: value
+                        };
+                        break;
+                    case 'invoke':
+                        ret = {
+                            type: 'fn',
+                            fn: node.operand.value,
+                            args: me.convertArray(node.args)
+                        };
+                        break;
+                    case 'unary':
+                        ret = {
+                            type: opCodes.unary[value],
+                            on: me.convert(node.operand)
+                        };
+                        break;
+                    case 'binary':
+                        if (name === 'and' || name === 'or') {
+                            lhs = me.convert(node.lhs);
+                            rhs = me.convert(node.rhs);
+                            if (rhs.type === name) {
+                                exprs = rhs.on;
+                                exprs.unshift(lhs);
+                            } else {
+                                exprs = [
+                                    lhs,
+                                    rhs
+                                ];
+                            }
+                            ret = {
+                                type: name,
+                                on: exprs
+                            };
+                        } else {
+                            if (value === 'or') {
+                                value = '||';
+                            }
+                            ret = {
+                                type: opCodes.binary[value] || name,
+                                on: [
+                                    me.convert(node.lhs),
+                                    me.convert(node.rhs)
+                                ]
+                            };
+                            if (name === 'like') {
+                                ret.on[1] = me.likeToRe(ret.on[1], node.rhs.at);
+                            }
+                        };
+                        break;
+                    case 'literal':
+                        if (is.string || is.number || is.boolean) {
+                            ret = value;
+                        } else {
+                            ret = {
+                                type: is.type,
+                                value: value
+                            };
+                            if (is.list) {
+                                ret.value = me.convertArray(value);
+                            } else if (is.regexp && typeof value !== 'string') {
+                                ret.value = value[0];
+                                ret.flags = value[1];
+                            }
+                        };
+                        break;
+                }
+                if (ret && typeof ret === 'object' && !ret.type) {
+                    ret.type = arity;
+                }
+                return ret;
+            },
+            convertArray: function(array) {
+                var ret = [],
+                    i = array.length;
+                for (; i-- > 0; ) 
+                {
+                    ret[i] = this.convert(array[i]);
+                }
+                return ret;
+            },
+            likeToRe: function(node, at) {
+                if (typeof node === 'string') {
+                    node = {
+                        type: 'string',
+                        value: node
+                    };
+                } else if (node.type === 'regexp') {
+                    return node;
+                }
+                
+                var specialChars = this.specialChars || (QueryParser.prototype.specialChars = Ext.Array.toMap('.+*?^$=!|:-<>[](){}\\'.split(''))),
+                    like = node.value,
+                    n = like.length,
+                    re = '',
+                    simple = true,
+                    escape, c, i, start;
+                outer: for (i = 0; i < n; ++i) {
+                    c = like[i];
+                    if (!escape) {
+                        if (c === '\\') {
+                            escape = c;
+                            
+                            continue;
+                        }
+                        if (c === '*' || c === '%') {
+                            re += '.*';
+                            simple = false;
+                            
+                            continue;
+                        }
+                        if (c === '?' || c === '_') {
+                            re += '.';
+                            simple = false;
+                            
+                            continue;
+                        }
+                        
+                        if (c === '[') {
+                            re += c;
+                            simple = false;
+                            start = i;
+                            while (++i < n) {
+                                c = like[i];
+                                if (escape) {
+                                    re += escape + c;
+                                    escape = 0;
+                                } else if (c === '\\') {
+                                    escape = c;
+                                } else {
+                                    re += c;
+                                    if (c === ']') {
+                                        
+                                        continue outer;
+                                    }
+                                }
+                            }
+                            
+                            
+                            this.syntaxError(start + (node.at || at || 0), 'Incomplete character set');
+                        }
+                    }
+                    escape = 0;
+                    if (specialChars[c]) {
+                        re += '\\';
+                    }
+                    re += c;
+                }
+                node.re = re || '.*';
+                
+                
+                
+                
+                if (simple) {
+                    node.flags = 'i';
+                } else {
+                    node.re = '^' + re + '$';
+                }
+                return node;
+            },
+            parseList: function() {
+                var me = this,
+                    list = [];
+                do {
+                    if (list.length) {
+                        me.advance();
+                    }
+                    list.push(me.parseExpression());
+                } while (
+                me.token.id === ',');
+                return list;
+            }
+        }
+    };
+});
+
+
+Ext.define('Ext.data.Query', {
+    extend: Ext.util.BasicFilter,
+    mixins: [
+        Ext.mixin.Factoryable,
+        Ext.data.query.Compiler,
+        Ext.data.query.Converter,
+        Ext.data.query.Stringifier
+    ],
+    alias: 'query.default',
+    config: {
+        
+        format: 'ast',
+        
+        functions: {
+            cached: true,
+            $value: {
+                abs: function(arg) {
+                    return Math.abs(arg);
+                },
+                'avg...': function(args) {
+                    var count = 0,
+                        sum = 0,
+                        i = args.length,
+                        v;
+                    for (; i-- > 0; ) 
+                    {
+                        v = args[i];
+                        if (v != null) {
+                            sum += v;
+                            ++count;
+                        }
+                    }
+                    return count ? sum / count : 0;
+                },
+                date: function(arg) {
+                    return (arg instanceof Date) ? arg : Ext.Date.parse(arg);
+                },
+                lower: function(arg) {
+                    return (arg == null) ? '' : String(arg).toLowerCase();
+                },
+                'max...': function(args) {
+                    var ret = null,
+                        i = args.length,
+                        v;
+                    for (; i-- > 0; ) 
+                    {
+                        v = args[i];
+                        if (v != null) {
+                            ret = (ret === null) ? v : (ret < v ? v : ret);
+                        }
+                    }
+                    return ret;
+                },
+                'min...': function(args) {
+                    var ret = null,
+                        i = args.length,
+                        v;
+                    for (; i-- > 0; ) 
+                    {
+                        v = args[i];
+                        if (v != null) {
+                            ret = (ret === null) ? v : (ret < v ? ret : v);
+                        }
+                    }
+                    return ret;
+                },
+                'sum...': function(args) {
+                    var ret = null,
+                        i = args.length,
+                        v;
+                    for (; i-- > 0; ) 
+                    {
+                        v = args[i];
+                        if (v != null) {
+                            ret = (ret === null) ? v : (ret + v);
+                        }
+                    }
+                    return ret === null ? 0 : ret;
+                },
+                upper: function(arg) {
+                    return (arg == null) ? '' : String(arg).toUpperCase();
+                }
+            }
+        },
+        
+        source: ''
+    },
+    ast: null,
+    error: null,
+    generation: 0,
+    constructor: function(config) {
+        if (typeof config === 'string') {
+            config = {
+                source: config
+            };
+        }
+        
+        var parser = Ext.data.query.Parser.fly();
+        this.symbols = parser.symbols;
+        parser.release();
+        this.callParent([
+            config
+        ]);
+    },
+    filter: function(item) {
+        var me = this,
+            error = me.error;
+        if (error) {
+            throw error;
+        }
+        return !!me.fn(item);
+    },
+    
+    refresh: function() {
+        ++this.generation;
+        this.compile();
+    },
+    
+    serialize: function() {
+        var me = this,
+            format = me.getFormat(),
+            serializer = me.getSerializer(),
+            ret, serialized;
+        switch (format) {
+            case 'ast':
+                ret = me.ast;
+                if (serializer) {
+                    ret = Ext.clone(ret);
+                };
+                break;
+            case 'filters':
+                ret = me.getFilters() || null;
+                break;
+            case 'query':
+                ret = me.toString();
+                break;
+        }
+        if (ret && serializer) {
+            serialized = serializer.call(this, ret);
+            if (serialized) {
+                ret = serialized;
+            }
+        }
+        return ret;
+    },
+    serializeTo: function(out) {
+        var filters = this.serialize(),
+            ret;
+        if (filters && filters.length) {
+            out.push.apply(out, filters);
+            ret = true;
+        }
+        return ret;
+    },
+    sync: function() {
+        var me = this,
+            fn = me.fn;
+        if (!fn || fn.generation !== me.generation) {
+            me.compile();
+        }
+    },
+    toString: function() {
+        var ast = this.ast;
+        return ast ? this.stringify(ast) : '';
+    },
+    
+    
+    
+    
+    validFormatsRe: /^(ast|filters|query)$/,
+    applyFormat: function(format) {
+        if (!this.validFormatsRe.test(format)) {
+            Ext.raise('Invalid query format');
+        }
+        return format;
+    },
+    
+    
+    applyFunctions: function(funcs) {
+        var ret = {},
+            vargsRe = this.vargsRe,
+            def, key, name;
+        for (key in funcs) {
+            def = {
+                fn: funcs[name = key],
+                vargs: vargsRe.test(key)
+            };
+            if (def.vargs) {
+                name = key.substr(0, key.length - 3);
+            }
+            
+            ret[name.toLowerCase()] = def;
+        }
+        return ret;
+    },
+    
+    applySource: function(source) {
+        if (source) {
+            return source;
+        }
+        ++this.generation;
+        this.ast = null;
+        this.compile();
+    },
+    
+    updateSource: function(source) {
+        var me = this,
+            parser = Ext.data.query.Parser.fly(source);
+        ++me.generation;
+        try {
+            me.error = me.fn = null;
+            me.ast = parser.parse();
+        } catch (e) {
+            me.error = e;
+            e.message = 'Failed to parse: ' + e.message;
+            throw e;
+        } finally {
+            parser.release();
+        }
+        me.compile();
+    },
+    
+    
+    privates: {
+        operatorTypeMap: {
+            
+            
+            
+            and: [
+                'binary',
+                '&&',
+                'and'
+            ],
+            or: [
+                'binary',
+                '||',
+                'or'
+            ],
+            eq: [
+                'binary',
+                '==',
+                '='
+            ],
+            ge: [
+                'binary',
+                '>=',
+                null
+            ],
+            gt: [
+                'binary',
+                '>',
+                null
+            ],
+            le: [
+                'binary',
+                '<=',
+                null
+            ],
+            lt: [
+                'binary',
+                '<',
+                null
+            ],
+            ne: [
+                'binary',
+                '!=',
+                null
+            ],
+            add: [
+                'binary',
+                '+',
+                null
+            ],
+            div: [
+                'binary',
+                '/',
+                null
+            ],
+            mul: [
+                'binary',
+                '*',
+                null
+            ],
+            sub: [
+                'binary',
+                '-',
+                null
+            ],
+            'in': [
+                'binary',
+                null,
+                'in'
+            ],
+            like: [
+                'binary',
+                null,
+                'like'
+            ],
+            seq: [
+                'binary',
+                '===',
+                '=='
+            ],
+            sne: [
+                'binary',
+                '!==',
+                null
+            ],
+            neg: [
+                'unary',
+                '-',
+                null
+            ],
+            not: [
+                'unary',
+                '!',
+                null
+            ]
+        },
+        
+        
+        vargsRe: /\.\.\.$/,
+        getOperatorType: function(op) {
+            var map = this.operatorTypeMap,
+                key;
+            for (key in map) {
+                if (map[key][1] === op || map[key][2] === op) {
+                    return key;
+                }
+            }
+            
+            Ext.raise('Unrecognized filter operator: "' + op + '"');
+            
+            return null;
+        }
+    }
+});
+
+
 Ext.define('Ext.data.Request', {
     isDataRequest: true,
     config: {
@@ -66248,7 +68422,8 @@ Ext.define('Ext.data.Request', {
         
         directFn: null,
         args: null,
-        useDefaultXhrHeader: null
+        useDefaultXhrHeader: null,
+        responseType: null
     },
     
     constructor: function(config) {
@@ -66342,9 +68517,10 @@ Ext.define('Ext.data.TreeStore', {
         
         
         
+        
         if (Ext.isDefined(me.nodeParameter)) {
             if (Ext.isDefined(Ext.global.console)) {
-                Ext.global.console.warn('Ext.data.TreeStore: nodeParameter has been deprecated. Please use nodeParam instead.');
+                Ext.global.console.warn('Ext.data.TreeStore: nodeParameter has been deprecated. ' + 'Please use nodeParam instead.');
             }
             me.nodeParam = me.nodeParameter;
             delete me.nodeParameter;
@@ -66543,6 +68719,7 @@ Ext.define('Ext.data.TreeStore', {
                 proxy.setIdParam(this.getNodeParam());
             }
             
+            
             reader = proxy.getReader();
             if (Ext.isEmpty(reader.getRootProperty())) {
                 reader.setRootProperty(this.getDefaultRootProperty());
@@ -66557,8 +68734,9 @@ Ext.define('Ext.data.TreeStore', {
         this.changingProxy = false;
     },
     updateModel: function(model) {
+        var isNode;
         if (model) {
-            var isNode = model.prototype.isNode;
+            isNode = model.prototype.isNode;
             
             Ext.data.NodeInterface.decorate(model);
             
@@ -66665,7 +68843,9 @@ Ext.define('Ext.data.TreeStore', {
                 priority: 1001
             });
         } else 
+        
         {
+            
             
             
             
@@ -66673,21 +68853,25 @@ Ext.define('Ext.data.TreeStore', {
             nodeProxy = node.getProxy();
             nodeReader = nodeProxy ? nodeProxy.getReader() : null;
             
+            
             reader = nodeReader && nodeReader.initialConfig.rootProperty ? nodeReader : storeReader;
+            
             
             
             
             children = reader.getRoot(node.raw || node.data);
             
             
+            
             if (children || (node.phantom && !node.isRoot())) {
                 
-                if (children) {
-                    me.fillNode(node, reader.extractData(children, {
-                        model: node.childType,
-                        recordCreator: me.recordCreator
-                    }));
-                }
+                
+                
+                
+                me.fillNode(node, reader.extractData(children || [], {
+                    model: node.childType,
+                    recordCreator: me.recordCreator
+                }));
                 callbackArgs = [
                     node.childNodes
                 ];
@@ -66791,6 +68975,7 @@ Ext.define('Ext.data.TreeStore', {
         
         
         
+        
         if (records.length && me.isVisible(parent)) {
             
             lastNodeIndexPlus = me.indexOfNextVisibleNode(parent);
@@ -66803,6 +68988,7 @@ Ext.define('Ext.data.TreeStore', {
     indexOfNextVisibleNode: function(node) {
         var result;
         while (node.parentNode) {
+            
             
             for (result = node.nextSibling; result && !result.get('visible'); result = result.nextSibling) {}
             
@@ -66886,6 +69072,7 @@ Ext.define('Ext.data.TreeStore', {
                 childNodes
             ];
         }
+        
         var me = this,
             len = childNodes.length,
             
@@ -66893,7 +69080,7 @@ Ext.define('Ext.data.TreeStore', {
             
             
             removed = me.removedNodes,
-            i, startNode;
+            startNode, i;
         
         for (i = 0; !startNode && i < len; i++) {
             if (childNodes[i].get('visible')) {
@@ -66932,6 +69119,8 @@ Ext.define('Ext.data.TreeStore', {
         
         
         
+        
+        
         for (i = 0; i < len; i++) {
             childNodes[i].cascade(function(node) {
                 
@@ -66939,14 +69128,19 @@ Ext.define('Ext.data.TreeStore', {
                 
                 
                 
+                
                 if (removed && !isMove) {
+                    
+                    
                     
                     
                     if (!node.phantom && !node.erasing && !me.loading) {
                         
                         
+                        
                         node.removedFrom = me.indexOf(node);
                         removed.push(node);
+                        
                         
                         
                         me.needsSync = true;
@@ -66960,7 +69154,9 @@ Ext.define('Ext.data.TreeStore', {
     
     
     
+    
     afterDrop: Ext.emptyFn,
+    
     
     
     onNodeRemove: function(parentNode, childNodes, isMove, removeRange) {
@@ -67028,14 +69224,17 @@ Ext.define('Ext.data.TreeStore', {
         
         Ext.Array.remove(removed, node);
         
+        
         me.needsSync = me.needsSync || node.phantom || node.dirty;
         if (!node.isLeaf() && !node.isLoaded() && !me.lazyFill) {
+            
             
             
             
             storeReader = me.getProxy().getReader();
             nodeProxy = node.getProxy();
             nodeReader = nodeProxy ? nodeProxy.getReader() : null;
+            
             
             reader = nodeReader && nodeReader.initialConfig.rootProperty ? nodeReader : storeReader;
             dataRoot = reader.getRoot(data);
@@ -67101,6 +69300,8 @@ Ext.define('Ext.data.TreeStore', {
         me.suspendAutoSync();
         
         
+        
+        
         if ((me.indexOf(node) !== -1 && node.isExpanded()) || (node === me.getRoot() && !me.getRootVisible())) {
             Ext.suspendLayouts();
             me.onNodeCollapse(node, childNodes);
@@ -67142,10 +69343,10 @@ Ext.define('Ext.data.TreeStore', {
     },
     updateRoot: function(newRoot, oldRoot) {
         var me = this,
-            oldOwner,
-            initial = !oldRoot,
-            toRemove,
-            removeRange = [];
+            removeRange = [],
+            initial = me.isConfiguring,
+            oldOwner, toRemove;
+        
         
         me.getTrackRemoved();
         
@@ -67195,10 +69396,13 @@ Ext.define('Ext.data.TreeStore', {
                     
                     
                     
+                    
                     if (!oldOwner.removeChild(newRoot, false, false, oldOwner.getTreeStore() === me)) {
                         return;
                     }
                 }
+                
+                
                 
                 else if ((oldOwner = newRoot.getTreeStore()) && oldOwner !== me && newRoot === oldOwner.getRoot()) {
                     oldOwner.setRoot(null);
@@ -67227,6 +69431,7 @@ Ext.define('Ext.data.TreeStore', {
                 
                 
                 
+                
                 newRoot.phantom = true;
             }
         }
@@ -67234,7 +69439,9 @@ Ext.define('Ext.data.TreeStore', {
             me.fireEvent('rootchange', newRoot, oldRoot);
         }
         
+        
         if (newRoot && (me.getAutoLoad() || newRoot.isExpanded())) {
+            
             
             if (newRoot.isLoaded()) {
                 me.onNodeExpand(newRoot, newRoot.childNodes);
@@ -67346,15 +69553,16 @@ Ext.define('Ext.data.TreeStore', {
     },
     
     findNode: function(fieldName, value, startsWith, endsWith, ignoreCase) {
+        var result = null,
+            regex;
         if (Ext.isEmpty(value, false)) {
-            return null;
+            return result;
         }
         
         if (fieldName === this.model.idProperty && arguments.length < 3) {
             return this.byIdMap[value];
         }
-        var regex = Ext.String.createRegex(value, startsWith, endsWith, ignoreCase),
-            result = null;
+        regex = Ext.String.createRegex(value, startsWith, endsWith, ignoreCase);
         Ext.Object.eachValue(this.byIdMap, function(node) {
             if (node && regex.test(node.get(fieldName))) {
                 result = node;
@@ -67366,6 +69574,7 @@ Ext.define('Ext.data.TreeStore', {
     
     load: function(options) {
         var node = options && options.node;
+        
         
         
         if (!node && !(node = this.getRoot())) {
@@ -67394,9 +69603,9 @@ Ext.define('Ext.data.TreeStore', {
     flushLoad: function() {
         var me = this,
             options = me.pendingLoadOptions,
-            node, callback, scope,
             clearOnLoad = me.getClearOnLoad(),
-            isRootLoad, operation, doClear;
+            node, callback, scope, isRootLoad, operation, doClear;
+        
         
         me.clearLoadTask();
         if (!options) {
@@ -67478,6 +69687,7 @@ Ext.define('Ext.data.TreeStore', {
                 }
                 if (me.getTrackRemoved() && me.getClearRemovedOnLoad()) {
                     
+                    
                     me.clearRemoved(node);
                 }
                 if (clearOnLoad) {
@@ -67487,6 +69697,7 @@ Ext.define('Ext.data.TreeStore', {
             
             
             if (me.loading && node) {
+                
                 node.set('loading', true, {
                     silent: !(me.contains(node) || node === me.getRoot())
                 });
@@ -67581,6 +69792,7 @@ Ext.define('Ext.data.TreeStore', {
             }
             if (targetNode) {
                 
+                
                 recordsToClear[removedNode.getId()] = removedNode;
             }
         }
@@ -67597,6 +69809,7 @@ Ext.define('Ext.data.TreeStore', {
     fillNode: function(node, newNodes) {
         var me = this,
             newNodeCount = newNodes ? newNodes.length : 0;
+        
         
         if (++me.bulkUpdate === 1) {
             me.suspendEvent('datachanged');
@@ -67625,6 +69838,7 @@ Ext.define('Ext.data.TreeStore', {
             sorters = me.getSorters(),
             needsIndexSort = false,
             newNodeCount = newNodes.length,
+            
             performLocalSort = me.sortOnLoad && newNodeCount > 1 && !me.getRemoteSort() && me.getFolderSort() || sorters.length,
             performLocalFilter = me.needsLocalFilter(),
             node1, node2, i;
@@ -67632,6 +69846,7 @@ Ext.define('Ext.data.TreeStore', {
         if (performLocalFilter) {
             me.doFilter(newNodes[0]);
         }
+        
         
         for (i = 1; i < newNodeCount; i++) {
             node1 = newNodes[i];
@@ -67679,6 +69894,7 @@ Ext.define('Ext.data.TreeStore', {
             for (i = 0 , len = fillArray.length; i < len; i++) {
                 index = me.indexOf(fillArray[i][0]);
                 
+                
                 if (index !== -1) {
                     me.fireEvent('add', me, fillArray[i], index);
                 }
@@ -67712,6 +69928,7 @@ Ext.define('Ext.data.TreeStore', {
             result = [],
             nodeMap = {},
             i, node, parentId, parent, id, children;
+        
         
         for (i = 0; i < len; i++) {
             node = records[i];
@@ -67769,14 +69986,22 @@ Ext.define('Ext.data.TreeStore', {
         return out;
     },
     removeAll: function() {
-        this.suspendEvents();
-        this.setRoot(null);
-        this.resumeEvents();
-        this.callParent();
+        var me = this,
+            root = me.getRoot(),
+            ln = me.getData().length;
+        me.suspendEvents();
+        me.setRoot(null);
+        me.resumeEvents();
+        me.callParent();
+        if (ln) {
+            me.fireEvent('clear', me);
+            me.fireEvent('rootchange', root, null);
+        }
     },
     doSort: function(sorterFn) {
         var me = this;
         if (me.getRemoteSort()) {
+            
             
             me.load();
         } else {
@@ -67868,6 +70093,8 @@ Ext.define('Ext.data.TreeStore', {
             if (len) {
                 for (i = 0; i < len; ++i) {
                     
+                    
+                    
                     matchingChildren = me.filterNodes(childNodes[i], filterFn, match || bottomUpFiltering) || matchingChildren;
                 }
                 if (bottomUpFiltering) {
@@ -67919,7 +70146,7 @@ Ext.define('Ext.data.Types', {
     var SortTypes = Ext.data.SortTypes;
     Ext.apply(Types, {
         
-        stripRe: /[\$,%]/g,
+        stripRe: /[$,%]/g,
         
         AUTO: {
             sortType: SortTypes.none,
@@ -67970,6 +70197,7 @@ Ext.define('Ext.data.Types', {
                 }
                 return v === 'true' || v == 1;
             },
+            
             sortType: SortTypes.none,
             type: 'bool'
         },
@@ -67981,6 +70209,7 @@ Ext.define('Ext.data.Types', {
                 if (!v) {
                     return null;
                 }
+                
                 
                 if (v instanceof Date) {
                     return v;
@@ -68037,6 +70266,7 @@ Ext.define('Ext.data.Validation', {
         if (this.isBase) {
             return;
         }
+        
         var me = this,
             data = me.data,
             record = me.record,
@@ -68045,7 +70275,7 @@ Ext.define('Ext.data.Validation', {
             recordData = record.data,
             sep = record.validationSeparator,
             values = null,
-            defaultMessage, currentValue, error, field, item, i, j, jLen, len, msg, val, name;
+            defaultMessage, currentValue, error, field, i, len, msg, val, name;
         if (force || me.syncGeneration !== generation) {
             me.syncGeneration = generation;
             for (i = 0 , len = fields.length; i < len; ++i) {
@@ -68215,10 +70445,11 @@ Ext.define('Ext.dom.Helper', function() {
         },
         
         markup: function(spec) {
+            var buf;
             if (typeof spec === "string") {
                 return spec;
             }
-            var buf = this.generateMarkup(spec, []);
+            buf = this.generateMarkup(spec, []);
             return buf.join('');
         },
         
@@ -68240,7 +70471,7 @@ Ext.define('Ext.dom.Helper', function() {
             return fragment;
         },
         
-        createDom: function(o, parentNode) {
+        createDom: function(o) {
             var me = this,
                 markup = me.markup(o),
                 div = me.detachedDiv,
@@ -68384,7 +70615,9 @@ Ext.define('Ext.dom.Helper', function() {
                 }
                 if (bb_ae_PositionHash[where]) {
                     el.parentNode.insertBefore(newNode, where === beforebegin ? el : el.nextSibling);
-                } else if (el.firstChild && where === afterbegin) {
+                }
+                
+                else if (el.firstChild && where === afterbegin) {
                     el.insertBefore(newNode, el.firstChild);
                 } else {
                     el.appendChild(newNode);
@@ -68406,6 +70639,8 @@ Ext.define('Ext.dom.Helper', function() {
 
 
 Ext.define('Ext.dom.Query', function() {
+    
+    
     var DQ,
         doc = document,
         cache, simpleCache, valueCache,
@@ -68506,14 +70741,16 @@ Ext.define('Ext.dom.Query', function() {
     next = useElementPointer ? function(n) {
         return n.nextElementSibling;
     } : function(n) {
-        while ((n = n.nextSibling) && n.nodeType != 1){}
+        while ((n = n.nextSibling) && n.nodeType != 1) {}
+        
         return n;
     };
     
     prev = useElementPointer ? function(n) {
         return n.previousElementSibling;
     } : function(n) {
-        while ((n = n.previousSibling) && n.nodeType != 1){}
+        while ((n = n.previousSibling) && n.nodeType != 1) {}
+        
         return n;
     };
     
@@ -68537,8 +70774,8 @@ Ext.define('Ext.dom.Query', function() {
     }
     
     
-    byClassName = useClassList ? 
-    function(nodeSet, cls) {
+    
+    byClassName = useClassList ? function(nodeSet, cls) {
         cls = unescapeCssSelector(cls);
         if (!cls) {
             return nodeSet;
@@ -68650,15 +70887,18 @@ Ext.define('Ext.dom.Query', function() {
         }
         
         
+        
         else if (mode == "+") {
             utag = tagName.toUpperCase();
             for (i = 0; n = ns[i]; i++) {
-                while ((n = n.nextSibling) && n.nodeType != 1){}
+                while ((n = n.nextSibling) && n.nodeType != 1) {}
+                
                 if (n && (n.nodeName == utag || n.nodeName == tagName || tagName == '*')) {
                     result[++ri] = n;
                 }
             }
         }
+        
         
         
         else if (mode == "~") {
@@ -68736,6 +70976,7 @@ Ext.define('Ext.dom.Query', function() {
                     hasXml = true;
                 }
                 
+                
                 if (!xml) {
                     if (useGetStyle) {
                         a = DQ.getStyle(ci, attr);
@@ -68788,11 +71029,9 @@ Ext.define('Ext.dom.Query', function() {
             return [];
         }
         var len = cs.length,
-            c, i,
             r = cs,
-            cj,
             ri = -1,
-            d, j;
+            c, cj, i, d, j;
         if (!len || typeof cs.nodeType != "undefined" || len == 1) {
             return cs;
         }
@@ -68859,9 +71098,10 @@ Ext.define('Ext.dom.Query', function() {
         return r;
     }
     function quickId(ns, mode, root, id) {
+        var d;
         if (ns == root) {
             id = unescapeCssSelector(id);
-            var d = root.ownerDocument || root;
+            d = root.ownerDocument || root;
             return d.getElementById(id);
         }
         ns = getNodes(ns, mode, "*");
@@ -68905,10 +71145,9 @@ Ext.define('Ext.dom.Query', function() {
                 lastPath,
                 matchers = DQ.matchers,
                 matchersLn = matchers.length,
-                modeMatch,
                 
                 lmode = path.match(modeRe),
-                tokenMatch, matched, j, t, m;
+                modeMatch, tokenMatch, matched, j, t, m;
             path = setupEscapes(path);
             if (lmode && lmode[1]) {
                 fn[fn.length] = 'mode="' + lmode[1].replace(trimRe, "") + '";';
@@ -69032,6 +71271,7 @@ Ext.define('Ext.dom.Query', function() {
                 try {
                     
                     if (root.parentNode && (root.nodeType !== 9) && path.indexOf(',') === -1 && !startIdRe.test(path)) {
+                        
                         path = Ext.makeIdSelector(Ext.id(root)) + ' ' + path;
                         root = root.parentNode;
                     }
@@ -69040,6 +71280,7 @@ Ext.define('Ext.dom.Query', function() {
                     ] : Ext.Array.toArray(root.querySelectorAll(path));
                 } catch (e) {}
             }
+            
             return DQ.jsSelect.call(this, path, root, type);
         } : function(path, root, type) {
             return DQ.jsSelect.call(this, path, root, type);
@@ -69052,7 +71293,7 @@ Ext.define('Ext.dom.Query', function() {
         selectValue: function(path, root, defaultValue) {
             path = path.replace(trimRe, "");
             var query = valueCache.get(path),
-                n, v;
+                n;
             if (!query) {
                 query = DQ.compile(path, "select");
                 valueCache.add(path, query);
@@ -69142,7 +71383,8 @@ Ext.define('Ext.dom.Query', function() {
                     ri = -1,
                     n, i, ci;
                 for (i = 0; (ci = n = c[i]); i++) {
-                    while ((n = n.previousSibling) && n.nodeType != 1){}
+                    while ((n = n.previousSibling) && n.nodeType != 1) {}
+                    
                     if (!n) {
                         r[++ri] = ci;
                     }
@@ -69154,7 +71396,8 @@ Ext.define('Ext.dom.Query', function() {
                     ri = -1,
                     n, i, ci;
                 for (i = 0; (ci = n = c[i]); i++) {
-                    while ((n = n.nextSibling) && n.nodeType != 1){}
+                    while ((n = n.nextSibling) && n.nodeType != 1) {}
+                    
                     if (!n) {
                         r[++ri] = ci;
                     }
@@ -69165,6 +71408,7 @@ Ext.define('Ext.dom.Query', function() {
                 var r = [],
                     ri = -1,
                     m = nthRe.exec(a == "even" && "2n" || a == "odd" && "2n+1" || !nthRe2.test(a) && "n+" + a || a),
+                    
                     f = (m[1] || 1) - 0,
                     l = m[2] - 0,
                     i, n, j, cn, pn;
@@ -69371,8 +71615,8 @@ Ext.define('Ext.dom.Query', function() {
 
 
 Ext.define('Ext.data.reader.Xml', {
-    alternateClassName: 'Ext.data.XmlReader',
     extend: Ext.data.reader.Reader,
+    alternateClassName: 'Ext.data.XmlReader',
     alias: 'reader.xml',
     config: {
         
@@ -69380,6 +71624,8 @@ Ext.define('Ext.data.reader.Xml', {
         
         namespace: ''
     },
+    
+    responseType: 'document',
     
     createAccessor: function(expr) {
         if (Ext.isEmpty(expr)) {
@@ -69496,7 +71742,7 @@ Ext.define('Ext.data.reader.Xml', {
         },
         getRootValue: function(data, prop) {
             var nodeName = data.nodeName;
-            if (!prop || (nodeName && nodeName == prop)) {
+            if (!prop || (nodeName && nodeName === prop)) {
                 return data;
             } else if (typeof prop === 'function') {
                 return prop(data);
@@ -69523,11 +71769,9 @@ Ext.define('Ext.data.reader.Xml', {
 
 
 Ext.define('Ext.data.writer.Xml', {
-    
     extend: Ext.data.writer.Writer,
     alternateClassName: 'Ext.data.XmlWriter',
     alias: 'writer.xml',
-    
     config: {
         
         documentRoot: 'xmlData',
@@ -69538,6 +71782,7 @@ Ext.define('Ext.data.writer.Xml', {
         
         record: 'record'
     },
+    
     
     selectorRe: /[^>\s]+/g,
     writeRecords: function(request, data) {
@@ -69587,9 +71832,8 @@ Ext.define('Ext.data.writer.Xml', {
     },
     
     objectToElement: function(name, o, output) {
-        var key, datum,
-            subOutput = [],
-            subKeys, subKeyLen, i, subObject, subObjects, lastObject, lastKey;
+        var subOutput = [],
+            key, datum, subKeys, subKeyLen, subObject, subObjects, lastObject, lastKey, i;
         if (!output) {
             output = [];
         }
@@ -69628,6 +71872,7 @@ Ext.define('Ext.data.writer.Xml', {
         }
         output.push('>');
         output.push.apply(output, subOutput);
+        
         
         if (subObjects) {
             for (key in subObjects) {
@@ -69702,8 +71947,8 @@ Ext.define('Ext.data.identifier.Uuid', {
                 length = pattern.length,
                 parts = [];
             return function() {
-                for (var r, c,
-                    i = 0; i < length; ++i) {
+                var r, c, i;
+                for (i = 0; i < length; ++i) {
                     c = pattern[i];
                     if (c !== '-' && c !== '4') {
                         r = Math.random() * 16;
@@ -69723,17 +71968,18 @@ Ext.define('Ext.data.identifier.Uuid', {
                 saltHi = salt.hi,
                 timeLo = time.lo,
                 timeHi = time.hi,
-                toHex = function(value, length) {
-                    var ret = value.toString(16).toLowerCase();
-                    if (ret.length > length) {
-                        ret = ret.substring(ret.length - length);
-                    }
-                    
-                    else if (ret.length < length) {
-                        ret = Ext.String.leftPad(ret, length, '0');
-                    }
-                    return ret;
-                };
+                toHex;
+            toHex = function(value, length) {
+                var ret = value.toString(16).toLowerCase();
+                if (ret.length > length) {
+                    ret = ret.substring(ret.length - length);
+                }
+                
+                else if (ret.length < length) {
+                    ret = Ext.String.leftPad(ret, length, '0');
+                }
+                return ret;
+            };
             if (typeof salt === 'number') {
                 saltHi = Math.floor(salt / twoPow32);
                 saltLo = Math.floor(salt - saltHi * twoPow32);
@@ -69786,12 +72032,12 @@ Ext.define('Ext.data.proxy.WebStorage', {
         this.cache = {};
         
         if (this.getStorageObject() === undefined) {
-            Ext.raise("Local Storage is not supported in this browser, please use another type of data proxy");
+            Ext.raise("Local Storage is not supported in this browser, please use another type " + "of data proxy");
         }
         
         
         if (this.getId() === undefined) {
-            Ext.raise("No unique id was provided to the local storage proxy. See Ext.data.proxy.LocalStorage documentation for details");
+            Ext.raise("No unique id was provided to the local storage proxy. " + "See Ext.data.proxy.LocalStorage documentation for details");
         }
         
         this.initialize();
@@ -69804,6 +72050,8 @@ Ext.define('Ext.data.proxy.WebStorage', {
             ids = me.getIds(),
             id, record, i, identifier;
         if (me.isHierarchical === undefined) {
+            
+            
             
             
             me.isHierarchical = !!records[0].isNode;
@@ -69914,6 +72162,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
             record.commit();
             
             
+            
             id = record.getId();
             if (id !== undefined && Ext.Array.indexOf(ids, id) === -1) {
                 ids.push(id);
@@ -69948,12 +72197,14 @@ Ext.define('Ext.data.proxy.WebStorage', {
     getRecord: function(id) {
         var me = this,
             cache = me.cache,
-            data = !cache[id] ? Ext.decode(me.getStorageObject().getItem(me.getRecordKey(id))) : cache[id];
+            data;
+        data = !cache[id] ? Ext.decode(me.getStorageObject().getItem(me.getRecordKey(id))) : cache[id];
         if (!data) {
             return null;
         }
         cache[id] = data;
         data[me.getModel().prototype.idProperty] = id;
+        
         
         
         return Ext.merge({}, data);
@@ -69967,6 +72218,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
         } else {
             id = record.getId();
         }
+        
         var me = this,
             rawData = record.getData(),
             data = {},
@@ -69990,6 +72242,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
         }
         
         delete data[model.prototype.idProperty];
+        
         
         if (record.isNode && record.get('depth') === 1) {
             delete data.parentId;
@@ -70099,17 +72352,21 @@ Ext.define('Ext.data.proxy.WebStorage', {
             recordHash[id] = record;
             if (!record.parentId) {
                 
+                
                 root.push(record);
             }
         }
         rootLength = root.length;
         
+        
         Ext.Array.sort(records, me.sortByParentId);
+        
         
         for (i = rootLength; i < length; i++) {
             record = records[i];
             parentId = record.parentId;
             if (!parent || parent[idProperty] !== parentId) {
+                
                 
                 parent = recordHash[parentId];
                 parent.children = children = [];
@@ -70120,6 +72377,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
         for (i = length; i--; ) {
             record = records[i];
             if (!record.children && !record.leaf) {
+                
                 
                 record.loaded = true;
             }
@@ -70170,7 +72428,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
     
     getStorageObject: function() {
         
-        Ext.raise("The getStorageObject function has not been defined in your Ext.data.proxy.WebStorage subclass");
+        Ext.raise("The getStorageObject function has not been defined in your " + "Ext.data.proxy.WebStorage subclass");
     }
 });
 
@@ -70417,6 +72675,19 @@ Ext.define('Ext.data.summary.Min', {
 });
 
 
+Ext.define('Ext.data.summary.None', {
+    extend: Ext.data.summary.Base,
+    alias: 'data.summary.none',
+    config: {
+        
+        value: null
+    },
+    calculate: function() {
+        return this.getValue();
+    }
+});
+
+
 Ext.define('Ext.data.validator.AbstractDate', {
     extend: Ext.data.validator.Validator,
     config: {
@@ -70440,6 +72711,7 @@ Ext.define('Ext.data.validator.AbstractDate', {
         if (Ext.isDate(value)) {
             return value;
         }
+        
         var me = this,
             format = me.getFormat(),
             len = format.length,
@@ -70748,6 +73020,7 @@ Ext.define('Ext.data.validator.Currency', {
 });
 
 
+
 Ext.define('Ext.data.validator.CurrencyUS', {
     extend: Ext.data.validator.Currency,
     alias: 'data.validator.currency-us',
@@ -70843,6 +73116,9 @@ Ext.define('Ext.data.validator.Email', {
     
     
     
+    
+    
+    
     matcher: /^(")?(?:[^\."])(?:(?:[\.])?(?:[\w\-!#$%&'*+\/=?\^_`{|}~]))*\1@(\w[\-\w]*\.){1,5}([A-Za-z]){2,6}$/
 });
 
@@ -70894,10 +73170,12 @@ Ext.define('Ext.data.validator.IPAddress', {
     message: 'Is not a valid IP address',
     
     
+    
     matcher: new RegExp('^(' + 
     '((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)' + '|' + 
     '((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]).){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]).){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))' + ')$')
 });
+
 
 
 Ext.define('Ext.data.validator.Inclusion', {
@@ -71046,6 +73324,7 @@ Ext.define('Ext.data.validator.Url', {
     
     
     
+    
     matcher: /^(http:\/\/|https:\/\/|ftp:\/\/|\/\/)([-a-zA-Z0-9@:%_\+.~#?&//=])+$/
 });
 
@@ -71163,6 +73442,7 @@ Ext.define('Ext.data.virtual.Page', {
         var me = this,
             records = me.records,
             begin = me.begin,
+            store = me.pageMap.store,
             i, n, record;
         if (records) {
             
@@ -71171,10 +73451,12 @@ Ext.define('Ext.data.virtual.Page', {
             if (by) {
                 for (i = 0; i < n; ++i) {
                     record = records[i];
+                    record.join(store);
                     out[record[by]] = withIndex ? begin + i : record;
                 }
             } else {
                 for (i = 0; i < n; ++i) {
+                    records[i].join(store);
                     out[begin + i] = records[i];
                 }
             }
@@ -71326,7 +73608,11 @@ Ext.define('Ext.data.virtual.PageMap', {
         me.loadNext();
     },
     indexOf: function(record) {
-        var ret = this.indexMap[record.internalId];
+        var ret;
+        
+        if (record) {
+            ret = this.indexMap[record.internalId];
+        }
         return (ret || ret === 0) ? ret : -1;
     },
     getByInternalId: function(internalId) {
@@ -71454,6 +73740,7 @@ Ext.define('Ext.data.virtual.PageMap', {
         prefetchSortFn: function(a, b) {
             a = a.number;
             b = b.number;
+            
             var M = Math,
                 firstPage = this.sortFirstPage,
                 lastPage = this.sortLastPage,
@@ -71572,6 +73859,10 @@ Ext.define('Ext.data.virtual.Range', {
                 endBufferZone = me.leadingBufferZone,
                 adjustingPages = me.adjustingPages,
                 activePages, page, pg, direction, prefetchBegin, prefetchEnd, prefetchPages;
+            
+            if (limit === 0) {
+                return;
+            }
             adjustingPages.length = 0;
             
             
@@ -71765,6 +74056,7 @@ Ext.define('Ext.data.virtual.Range', {
             me.begin = me.end = 0;
             me.direction = 1;
             me.prefetchPages = me.activePages = null;
+            
             me.goto(begin, end);
         }
     }
@@ -71881,7 +74173,7 @@ Ext.define('Ext.data.virtual.Store', {
         me.grouper = grouper;
         if (!me.isConfiguring) {
             me.reload();
-            me.fireEvent('groupchange', me, grouper);
+            me.fireGroupChange(grouper);
         }
     },
     getByInternalId: function(internalId) {
@@ -71896,12 +74188,17 @@ Ext.define('Ext.data.virtual.Store', {
         var rec = this.getById(id);
         return rec ? this.indexOf(rec) : -1;
     },
+    
+    isLoaded: function() {
+        return Ext.isNumber(this.totalCount);
+    },
     load: function(options) {
         if (typeof options === 'function') {
             options = {
                 callback: options
             };
         }
+        
         var me = this,
             page = (options && options.page) || 1,
             pageSize = me.getPageSize(),
@@ -71913,16 +74210,21 @@ Ext.define('Ext.data.virtual.Store', {
                 sorters: me.getSorters().items,
                 grouper: me.getGrouper()
             }, options));
-        operation.execute();
+        if (me.fireEvent('beforeload', me, operation) !== false) {
+            me.onBeforeLoad(operation);
+            operation.execute();
+        } else {
+            operation.setCompleted();
+        }
         return operation;
     },
     reload: function(options) {
+        var me = this;
         if (typeof options === 'function') {
             options = {
                 callback: options
             };
         }
-        var me = this;
         if (me.fireEvent('beforereload') === false) {
             return null;
         }
@@ -71938,12 +74240,14 @@ Ext.define('Ext.data.virtual.Store', {
     
     
     removeAll: function() {
-        var activeRanges = this.activeRanges,
+        var me = this,
+            activeRanges = me.activeRanges,
             i;
-        this.pageMap.clear();
+        me.pageMap.clear();
         for (i = activeRanges.length; i-- > 0; ) {
             activeRanges[i].reset();
         }
+        me.fireEvent('clear', me);
     },
     
     applyProxy: function(proxy) {
@@ -72054,6 +74358,11 @@ Ext.define('Ext.data.virtual.Store', {
         this.callParent(arguments);
     },
     
+    afterEdit: function(record, modifiedFieldNames) {
+        var me = this;
+        me.fireEvent('update', me, record, Ext.data.Model.EDIT, modifiedFieldNames);
+        me.fireEvent('datachanged', me);
+    },
     privates: {
         attachSummaryData: function(resultSet) {
             var me = this,
@@ -72079,9 +74388,12 @@ Ext.define('Ext.data.virtual.Store', {
                 activeRanges = me.activeRanges,
                 len = activeRanges.length,
                 pageMap = me.pageMap,
+                resultSet = op.getResultSet(),
+                wasSuccessful = op.wasSuccessful(),
+                rsRecords = [],
                 i, range;
-            if (op.wasSuccessful()) {
-                me.readTotalCount(op.getResultSet());
+            if (wasSuccessful) {
+                me.readTotalCount(resultSet);
                 me.fireEvent('reload', me, op);
                 for (i = 0; i < len; ++i) {
                     range = activeRanges[i];
@@ -72090,6 +74402,10 @@ Ext.define('Ext.data.virtual.Store', {
                     }
                 }
             }
+            if (resultSet) {
+                rsRecords = resultSet.records;
+            }
+            me.fireEvent('load', me, rsRecords, wasSuccessful, op);
         },
         loadVirtualPage: function(page, callback, scope) {
             var me = this,
@@ -72098,7 +74414,8 @@ Ext.define('Ext.data.virtual.Store', {
                 page: page.number + 1,
                 
                 internalCallback: function(op) {
-                    var resultSet = op.getResultSet();
+                    var resultSet = op.getResultSet(),
+                        rsRecords = [];
                     if (pageMapGeneration === me.pageMap.generation) {
                         if (op.wasSuccessful()) {
                             me.readTotalCount(resultSet);
@@ -72106,6 +74423,10 @@ Ext.define('Ext.data.virtual.Store', {
                         }
                         callback.call(scope || page, op);
                         me.groupSummaryData = null;
+                        if (resultSet) {
+                            rsRecords = resultSet.records;
+                        }
+                        me.fireEvent('load', me, rsRecords, op.wasSuccessful(), op);
                     }
                 }
             });
@@ -72405,6 +74726,7 @@ Ext.define('Ext.util.TaskRunner', {
             expires, newTasks, i, task, rt, remove, args;
         
         var timer = Ext.Timer.get(me.timerId);
+        
         if (timer) {
             timer.tasks = [];
         }
@@ -72462,9 +74784,10 @@ Ext.define('Ext.util.TaskRunner', {
                                 if (task.onError) {
                                     rt = task.onError.call(task.scope || task, task, taskError);
                                 }
-                            } catch (ignore) {}
+                            } catch (e) {}
                         }
                     }
+                    
                     
                     
                     task.taskRunTime = now;
@@ -72547,6 +74870,7 @@ Ext.define('Ext.util.TaskRunner', {
             me.nextExpires = expires;
             
             var timer = Ext.Timer.get(me.timerId);
+            
             if (timer) {
                 timer.runner = me;
             }
@@ -72633,6 +74957,7 @@ Ext.define('Ext.direct.PollingProvider', {
         if (pollFn && Ext.isString(pollFn)) {
             
             var fnName = pollFn;
+            
             
             me.pollFn = pollFn = Ext.direct.Manager.parseMethod(pollFn);
             
@@ -72812,13 +75137,13 @@ Ext.define('Ext.direct.RemotingMethod', {
         var me = this,
             params = config.params,
             paramOrder = config.paramOrder,
-            paramsAsArray = config.paramsAsArray,
             metadata = config.metadata,
             options = config.options,
             args = [],
             flatten, i, len;
         if (me.ordered) {
             if (me.len > 0) {
+                
                 
                 if (paramOrder) {
                     
@@ -73010,7 +75335,7 @@ Ext.define('Ext.direct.RemotingProvider', {
         me.callParent([
             config
         ]);
-        me.namespace = (Ext.isString(me.namespace)) ? Ext.ns(me.namespace) : me.namespace || Ext.global;
+        me.namespace = (Ext.isString(me.namespace) ? Ext.ns(me.namespace) : me.namespace) || Ext.global;
         me.callBuffer = [];
     },
     destroy: function() {
@@ -73114,6 +75439,7 @@ Ext.define('Ext.direct.RemotingProvider', {
             Ext.direct.Manager.addTransaction(transaction);
             if (transaction.isForm) {
                 form = transaction.form;
+                
                 isUpload = String(form.getAttribute("enctype")).toLowerCase() === 'multipart/form-data';
                 postParams = {
                     extTID: transaction.id,
@@ -73234,6 +75560,7 @@ Ext.define('Ext.direct.RemotingProvider', {
             }
             if (enableUrlEncode) {
                 params = {};
+                
                 params[Ext.isString(enableUrlEncode) ? enableUrlEncode : 'data'] = Ext.encode(callData);
                 request.params = params;
             } else {
@@ -73300,6 +75627,7 @@ Ext.define('Ext.direct.RemotingProvider', {
                 } else {
                     me.fireEvent('data', me, event);
                     me.fireEvent('exception', me, event);
+                    
                     if (transaction && me.fireEvent('beforecallback', me, event, transaction) !== false) {
                         me.runCallback(transaction, event, false);
                     }
@@ -73389,6 +75717,7 @@ Ext.define('Ext.dom.Fly', {
         me.dom = Ext.getDom(dom);
         
         
+        
         if (!Ext.cache[dom.id]) {
             data = me.peekData();
             if (data) {
@@ -73431,10 +75760,19 @@ Ext.define('Ext.dom.Fly', {
             
             
             
+            
             if (Fly.prototype.validNodeTypes[nodeType] || (!nodeType && (dom.window == dom))) {
                 fly = Ext.cache[dom.id];
                 
+                
                 if (!fly || fly.dom !== dom) {
+                    
+                    
+                    
+                    
+                    if (named === 'constructor') {
+                        named = '$constructor';
+                    }
                     fly = flyweights[named] || (flyweights[named] = new Fly());
                     fly.dom = dom;
                     data = fly.peekData();
@@ -73523,7 +75861,7 @@ Ext.define('Ext.dom.CompositeElementLite', {
         if (!els) {
             return this;
         }
-        if (typeof els == "string") {
+        if (typeof els === "string") {
             els = Ext.fly(root || document).query(els);
         } else if (els.isComposite) {
             els = els.elements;
@@ -73602,7 +75940,7 @@ Ext.define('Ext.dom.CompositeElementLite', {
             len = els.length,
             out = [],
             i = 0,
-            isFunc = typeof selector == 'function',
+            isFunc = typeof selector === 'function',
             add, el;
         for (; i < len; i++) {
             el = els[i];
@@ -73660,6 +75998,7 @@ Ext.define('Ext.dom.CompositeElementLite', {
         if (typeof els === "string") {
             els = Ext.dom.Element.selectorFunction(els, root);
         }
+        
         var yels = this.elements,
             eLen = els.length,
             e;
@@ -73678,16 +76017,15 @@ Ext.define('Ext.dom.CompositeElementLite', {
     },
     
     contains: function(el) {
-        return this.indexOf(el) != -1;
+        return this.indexOf(el) !== -1;
     },
     
     removeElement: function(keys, removeDom) {
-        keys = [].concat(keys);
         var me = this,
             elements = me.elements,
-            kLen = keys.length,
-            val, el, k;
-        for (k = 0; k < kLen; k++) {
+            val, el, k, kLen;
+        keys = [].concat(keys);
+        for (k = 0 , kLen = keys.length; k < kLen; k++) {
             val = keys[k];
             if ((el = (elements[val] || elements[val = me.indexOf(val)]))) {
                 if (removeDom) {
@@ -73749,6 +76087,7 @@ Ext.define('Ext.dom.GarbageCollector', {
             eid, dom, el, t, isGarbage, tagName;
         
         var collectedIds = [];
+        
         
         for (eid in cache) {
             if (!cache.hasOwnProperty(eid)) {
@@ -74000,9 +76339,10 @@ Ext.define('Ext.dom.TouchAction', {
         }
         
         if (Ext.isFunction(Object.freeze)) {
-            var objectValues = me.objectValues;
-            for (var i = 0,
-                ln = objectValues.length; i < ln; i++) {
+            
+            var objectValues = me.objectValues,
+                i, ln;
+            for (i = 0 , ln = objectValues.length; i < ln; i++) {
                 Object.freeze(objectValues[i]);
             }
         }
@@ -74027,7 +76367,7 @@ Ext.define('Ext.dom.TouchAction', {
         var me = this,
             overflowName = vertical ? 'overflow-y' : 'overflow-x',
             overflowStyle, cls;
-        if (!me.disabledOverflowDom && !Ext.isiOS && !Ext.getScrollbarSize().width) {
+        if (!me.disabledOverflowDom && !Ext.isiOS && !Ext.scrollbar.width()) {
             me.disabledOverflowDom = dom;
             cls = vertical ? me.panXCls : me.panYCls;
             while (dom) {
@@ -74164,6 +76504,7 @@ Ext.define('Ext.dom.TouchAction', {
                     
                     
                     if (!prevent && me.isScrollable(dom, isVertical, (isVertical ? deltaY : deltaX) < 0)) {
+                        
                         break;
                     }
                 } else if (me.containsTargets(dom, e)) {
@@ -74393,6 +76734,7 @@ Ext.define('Ext.drag.Constraint', {
             if (!snap) {
                 return position;
             }
+            
             var ratio = (position - initial) / snap,
                 floor = Math.floor(ratio);
             
@@ -74513,6 +76855,7 @@ Ext.define('Ext.drag.Info', {
         if (!source) {
             return;
         }
+        
         var me = this,
             local = source.getLocal(),
             el, proxyEl, proxy, x, xy, y, pageXY, elPageXY;
@@ -74809,6 +77152,7 @@ Ext.define('Ext.drag.Info', {
             if (me.needsCursorCheck) {
                 proxyData.isUnderCursor = !(x < alignX || y < alignY || x > proxyData.width + alignX || y > proxyData.height + alignY);
             }
+            
             if (!beforeStart && proxy) {
                 proxy.setXY(me, alignXY);
             }
@@ -74881,8 +77225,9 @@ Ext.define('Ext.drag.Item', {
             el.destroy();
         }
         me.callParent();
-        me.destroying = false;
     },
+    
+    
     privates: {
         
         disabled: false,
@@ -74931,6 +77276,7 @@ Ext.define('Ext.drag.Manager', {
     
     
     
+    
     pointerBug: Ext.isTouch || (!Ext.supports.CSSPointerEvents || Ext.isIE10m || Ext.isOpera),
     constructor: function() {
         this.targets = {};
@@ -74968,8 +77314,9 @@ Ext.define('Ext.drag.Manager', {
         }
         me.targets = null;
         me.callParent();
-        me.destroying = false;
     },
+    
+    
     privates: {
         
         elementFromPoint: function(x, y) {
@@ -75113,10 +77460,13 @@ Ext.define('Ext.drag.Manager', {
         },
         
         unregister: function(target) {
+            var id;
             if (this.destroying) {
                 return;
             }
-            delete this.targets[target.getId()];
+            id = target.getId();
+            this.targets[id] = null;
+            delete this.targets[id];
         }
     }
 });
@@ -75168,6 +77518,7 @@ Ext.define('Ext.drag.Source', {
         this.manager = Ext.drag['Manager'];
     },
     
+    
     describe: Ext.emptyFn,
     
     isDragging: function() {
@@ -75197,8 +77548,9 @@ Ext.define('Ext.drag.Source', {
         }
     },
     updateActiveCls: function(cls, oldCls) {
+        var el;
         if (this.dragging) {
-            var el = this.getElement();
+            el = this.getElement();
             el.replaceCls(oldCls, cls);
         }
     },
@@ -75287,6 +77639,7 @@ Ext.define('Ext.drag.Source', {
         revertCls: Ext.baseCSSPrefix + 'drag-revert',
         canActivateOnLongPress: function(e) {
             var activate = this.getActivateOnLongPress();
+            
             return !!(activate && (activate === true || Ext.Array.contains(activate, e.pointerType)));
         },
         
@@ -75308,14 +77661,14 @@ Ext.define('Ext.drag.Source', {
         },
         
         getElListeners: function() {
-            var o = {
+            var handle = this.getHandle(),
+                o = {
                     touchstart: 'handleTouchStart',
                     dragstart: 'handleDragStart',
                     drag: 'handleDragMove',
                     dragend: 'handleDragEnd',
                     dragcancel: 'handleDragCancel'
-                },
-                handle = this.getHandle();
+                };
             if (handle) {
                 o.dragstart = {
                     fn: o.dragstart,
@@ -75347,6 +77700,7 @@ Ext.define('Ext.drag.Source', {
             if (!this.dragging) {
                 return;
             }
+            
             var me = this,
                 manager = me.manager,
                 revert = me.getRevert(),
@@ -76428,6 +78782,7 @@ Ext.define('Ext.event.gesture.EdgeSwipe', {
         }
         direction = me.direction || (me.direction = direction);
         
+        
         if (direction === 'up') {
             distance = deltaY * -1;
         } else if (direction === 'left') {
@@ -76820,10 +79175,9 @@ Ext.define('Ext.event.publisher.Focus', {
     },
     processFocusIn: function(e, fromElement, toElement) {
         var me = this,
-            commonAncestor, node,
-            targets = [],
             focusFly = me.focusFly,
-            backwards, event, focusEnterEvent;
+            targets = [],
+            commonAncestor, node, backwards, event, focusEnterEvent;
         
         
         if ((fromElement && focusFly.attach(fromElement).isFocusSuspended()) || (toElement && focusFly.attach(toElement).isFocusSuspended())) {
@@ -76833,6 +79187,8 @@ Ext.define('Ext.event.publisher.Focus', {
             
             backwards = !!(toElement.compareDocumentPosition(fromElement) & 4);
         }
+        
+        
         
         for (node = fromElement , commonAncestor = Ext.dom.Element.getCommonAncestor(toElement, fromElement, true); node && node !== commonAncestor; node = node.parentNode) {
             targets.push(node);
@@ -76845,6 +79201,7 @@ Ext.define('Ext.event.publisher.Focus', {
                 return;
             }
         }
+        
         
         targets.length = 0;
         for (node = toElement; node && node !== commonAncestor; node = node.parentNode) {
@@ -77107,7 +79464,8 @@ Ext.define('Ext.field.InputMask', function(InputMask) {
             return s;
         },
         getEditPosLeft: function(pos) {
-            for (var i = pos; i >= 0; --i) {
+            var i;
+            for (i = pos; i >= 0; --i) {
                 if (!this.isFixedChar(i)) {
                     return i;
                 }
@@ -77211,8 +79569,8 @@ Ext.define('Ext.field.InputMask', function(InputMask) {
             return !rule || rule.test(character || '') || (allowBlankChar && character === me.getBlank());
         },
         isEmpty: function(value) {
-            for (var i = 0,
-                len = value.length; i < len; ++i) {
+            var i, len;
+            for (i = 0 , len = value.length; i < len; ++i) {
                 if (!this.isFixedChar(i) && this.isAllowedChar(value[i], i)) {
                     return false;
                 }
@@ -77258,6 +79616,7 @@ Ext.define('Ext.field.InputMask', function(InputMask) {
             }
         },
         onFocus: function(field, value) {
+            
             
             
             if (field.getAutoHideInputMask() !== false) {
@@ -77309,6 +79668,7 @@ Ext.define('Ext.field.InputMask', function(InputMask) {
             if (event.ctrlKey || event.metaKey) {
                 return;
             }
+            
             var me = this,
                 
                 key = event.keyCode === event.DELETE,
@@ -77761,8 +80121,11 @@ Ext.define('Ext.fx.runner.CssTransition', {
         return this.callParent(arguments);
     },
     attachListeners: function() {
+        
+        
+        var target = (top === window) ? Ext.getWin() : Ext.getBody();
         this.listenersAttached = true;
-        Ext.getWin().on('transitionend', 'onTransitionEnd', this);
+        target.on('transitionend', 'onTransitionEnd', this);
     },
     onTransitionEnd: function(e) {
         var target = e.target,
@@ -77837,15 +80200,15 @@ Ext.define('Ext.fx.runner.CssTransition', {
     refreshRunningAnimationsData: function(element, propertyNames, interrupt, replace) {
         var id = this.getElementId(element),
             runningAnimationsData = this.runningAnimationsData,
-            runningData = runningAnimationsData[id];
+            runningData = runningAnimationsData[id],
+            hasCompletedSession = false,
+            nameMap, nameList, sessions, name, session, map, list, i, ln, j, subLn;
         if (!runningData) {
             return;
         }
-        var nameMap = runningData.nameMap,
-            nameList = runningData.nameList,
-            sessions = runningData.sessions,
-            ln, j, subLn, name, i, session, map, list,
-            hasCompletedSession = false;
+        nameMap = runningData.nameMap;
+        nameList = runningData.nameList;
+        sessions = runningData.sessions;
         interrupt = Boolean(interrupt);
         replace = Boolean(replace);
         if (!sessions) {
@@ -77874,13 +80237,13 @@ Ext.define('Ext.fx.runner.CssTransition', {
                         delete map[name];
                         Ext.Array.remove(list, name);
                         session.length--;
-                        if (--nameMap[name] == 0) {
+                        if (--nameMap[name] === 0) {
                             delete nameMap[name];
                             Ext.Array.remove(nameList, name);
                         }
                     }
                 }
-                if (session.length == 0) {
+                if (session.length === 0) {
                     sessions.splice(i, 1);
                     i--;
                     ln--;
@@ -77889,7 +80252,7 @@ Ext.define('Ext.fx.runner.CssTransition', {
                 }
             }
         }
-        if (!replace && !interrupt && sessions.length == 0 && hasCompletedSession) {
+        if (!replace && !interrupt && sessions.length === 0 && hasCompletedSession) {
             this.onAllAnimationsEnd(element);
         }
     },
@@ -77916,6 +80279,7 @@ Ext.define('Ext.fx.runner.CssTransition', {
             if (testElement.ownerDocument.defaultView !== iframe.contentWindow) {
                 iframeDocument = iframe.contentDocument;
                 iframeDocument.body.appendChild(testElement);
+                
                 me.testElementComputedStyle = iframeDocument.defaultView.getComputedStyle(testElement);
             }
         } else {
@@ -77951,6 +80315,8 @@ Ext.define('Ext.fx.runner.CssTransition', {
             style = testElement.style;
         style.setProperty(name, value);
         if (Ext.browser.is.Firefox) {
+            
+            
             
             testElement.offsetHeight;
         }
@@ -78083,6 +80449,7 @@ Ext.define('Ext.fx.runner.CssTransition', {
                 var messageFollowupFn;
                 me.messageTimerId = null;
                 if (Ext.isIE) {
+                    
                     
                     
                     
@@ -78269,7 +80636,6 @@ Ext.define('Ext.fx.animation.Cube', {
             direction = this.getDirection(),
             el = this.getElement(),
             elW = el.getWidth(),
-            elH = el.getHeight(),
             origin = out ? '100% 100%' : '0% 0%',
             fromOpacity = 1,
             toOpacity = 1,
@@ -78281,7 +80647,7 @@ Ext.define('Ext.fx.animation.Cube', {
                 rotateY: 0,
                 translateZ: 0
             };
-        if (direction == "left" || direction == "right") {
+        if (direction === "left" || direction === "right") {
             if (out) {
                 toOpacity = 0.5;
                 transformTo.translateZ = elW;
@@ -78329,6 +80695,7 @@ Ext.define('Ext.fx.animation.Wipe', {
             maskToX = 0,
             maskToY = 0,
             mask, tmp;
+        
         switch (direction) {
             case 'up':
                 if (out) {
@@ -78373,6 +80740,7 @@ Ext.define('Ext.fx.animation.Wipe', {
                 };
                 break;
         }
+        
         if (!out) {
             tmp = maskFromY;
             maskFromY = maskToY;
@@ -78493,7 +80861,7 @@ Ext.define('Ext.fx.easing.BoundMomentum', {
             direction = startVelocity > 0 ? 1 : -1,
             minValue = this.getMinMomentumValue(),
             maxValue = this.getMaxMomentumValue(),
-            boundedValue = (direction == 1) ? maxValue : minValue,
+            boundedValue = (direction === 1) ? maxValue : minValue,
             lastValue = this.lastValue,
             value, velocity;
         if (startVelocity === 0) {
@@ -78515,12 +80883,12 @@ Ext.define('Ext.fx.easing.BoundMomentum', {
         if (!this.isEnded) {
             if (!this.isBouncingBack) {
                 if (lastValue !== null) {
-                    if ((direction == 1 && value < lastValue) || (direction == -1 && value > lastValue)) {
+                    if ((direction === 1 && value < lastValue) || (direction === -1 && value > lastValue)) {
                         this.isBouncingBack = true;
                     }
                 }
             } else {
-                if (Math.round(value) == boundedValue) {
+                if (Math.round(value) === boundedValue) {
                     this.isEnded = true;
                 }
             }
@@ -78790,6 +81158,7 @@ Ext.define('Ext.list.AbstractTreeItem', {
     },
     updateNode: function(node) {
         if (node) {
+            
             var me = this,
                 map = me.itemMap,
                 childNodes, owner, len, i, item, child;
@@ -78812,8 +81181,9 @@ Ext.define('Ext.list.AbstractTreeItem', {
         }
     },
     updateSelected: function(selected) {
+        var parent;
         if (!this.isConfiguring) {
-            var parent = this.getParentItem();
+            parent = this.getParentItem();
             while (parent && !parent.isRootListItem) {
                 parent.setSelectedParent(selected);
                 parent = parent.getParentItem();
@@ -79066,6 +81436,7 @@ Ext.define('Ext.mixin.ItemRippler', {
         if (!item) {
             return;
         }
+        
         var me = this,
             start = e.type.match(me.rippleStateRe),
             itemRipple = me.shouldRippleItem(item, e),
@@ -79101,7 +81472,8 @@ Ext.define('Ext.mixin.ItemRippler', {
         }
     },
     destroyAllRipples: function() {
-        for (var items = this.$rippledItems; items && items.length; ) {
+        var items;
+        for (items = this.$rippledItems; items && items.length; ) {
             items.pop().destroyAllRipples();
         }
     },
@@ -79176,10 +81548,11 @@ Ext.define('Ext.list.TreeItem', {
         ]
     },
     constructor: function(config) {
+        var toolDom;
         this.callParent([
             config
         ]);
-        var toolDom = this.toolElement.dom;
+        toolDom = this.toolElement.dom;
         
         
         toolDom.parentNode.removeChild(toolDom);
@@ -79292,12 +81665,14 @@ Ext.define('Ext.list.TreeItem', {
         ]);
     },
     updateExpandable: function(expandable) {
-        var node = this.getNode();
         this.updateExpandCls();
-        if (node) {
-            node.set('expandable', expandable);
-        }
     },
+    
+    
+    
+    
+    
+    
     updateExpanded: function(expanded) {
         var node = this.getNode();
         this.updateExpandCls();
@@ -79344,9 +81719,10 @@ Ext.define('Ext.list.TreeItem', {
         }
     },
     updateSelectedParent: function(selectedParent) {
-        var me = this;
+        var me = this,
+            tool;
         me.element.toggleCls(me.selectedParentCls, selectedParent);
-        var tool = me.getToolElement();
+        tool = me.getToolElement();
         if (tool) {
             tool.toggleCls(me.selectedCls, selectedParent);
         }
@@ -79383,6 +81759,7 @@ Ext.define('Ext.list.TreeItem', {
         },
         updateExpandCls: function() {
             if (!this.updatingExpandCls) {
+                
                 var me = this,
                     expandable = me.getExpandable(),
                     element = me.element,
@@ -79473,6 +81850,7 @@ Ext.define('Ext.list.Tree', {
         
         highlightPath: null,
         iconSize: null,
+        
         indent: null,
         
         micro: false,
@@ -79575,6 +81953,7 @@ Ext.define('Ext.list.Tree', {
             if (item) {
                 item.setSelected(true);
                 while (parent = item.getParentItem()) {
+                    
                     parent.setExpanded(true);
                     item = parent;
                 }
@@ -79604,14 +81983,14 @@ Ext.define('Ext.list.Tree', {
             me.storeListeners = store.on({
                 destroyable: true,
                 scope: me,
-                filterchange: 'onFilterChange',
                 nodeappend: 'onNodeAppend',
                 nodecollapse: 'onNodeCollapse',
                 nodeexpand: 'onNodeExpand',
                 nodeinsert: 'onNodeInsert',
                 noderemove: 'onNodeRemove',
                 rootchange: 'onRootChange',
-                update: 'onNodeUpdate'
+                update: 'onNodeUpdate',
+                refresh: 'onRefresh'
             });
             root = store.getRoot();
             if (root) {
@@ -79808,16 +82187,12 @@ Ext.define('Ext.list.Tree', {
                 }
             }
         },
-        onFilterChange: function(store) {
-            
-            
-            this.onRootChange(store.getRoot());
-        },
         
         onNodeAppend: function(parentNode, node) {
+            var item;
             
             if (parentNode) {
-                var item = this.itemMap[parentNode.internalId];
+                item = this.itemMap[parentNode.internalId];
                 if (item) {
                     item.nodeInsert(node, null);
                 }
@@ -79860,11 +82235,12 @@ Ext.define('Ext.list.Tree', {
         },
         
         onNodeRemove: function(parentNode, node, isMove) {
+            var item;
             
             
             
             if (parentNode && !isMove) {
-                var item = this.itemMap[parentNode.internalId];
+                item = this.itemMap[parentNode.internalId];
                 if (item) {
                     item.nodeRemove(node);
                 }
@@ -79876,6 +82252,13 @@ Ext.define('Ext.list.Tree', {
             if (item) {
                 item.nodeUpdate(node, modifiedFieldNames);
             }
+        },
+        
+        onRefresh: function(store) {
+            
+            
+            
+            this.onRootChange(store.getRoot());
         },
         
         onRootChange: function(root) {
@@ -79979,6 +82362,7 @@ Ext.define('Ext.list.Tree', {
 
 Ext.define('Ext.mixin.ConfigProxy', function(ConfigProxy) {
     return {
+        
         extend: Ext.Mixin,
         mixinConfig: {
             id: 'configproxy',
@@ -80190,6 +82574,7 @@ Ext.define('Ext.mixin.ConfigState', {
 
 Ext.define('Ext.mixin.Mashup', function(Mashup) {
     return {
+        
         extend: 'Ext.Mixin',
         mixinConfig: {
             id: 'mashup',
@@ -80269,267 +82654,6 @@ Ext.define('Ext.mixin.Mashup', function(Mashup) {
         }
     };
 });
-
-
-Ext.define('Ext.mixin.Responsive', function(Responsive) {
-    return {
-        extend: Ext.Mixin,
-        mixinConfig: {
-            id: 'responsive',
-            after: {
-                destroy: 'destroy'
-            }
-        },
-        config: {
-            
-            responsiveConfig: {
-                $value: undefined,
-                merge: function(newValue, oldValue, target, mixinClass) {
-                    if (!newValue) {
-                        return oldValue;
-                    }
-                    var ret = oldValue ? Ext.Object.chain(oldValue) : {},
-                        rule;
-                    for (rule in newValue) {
-                        if (!mixinClass || !(rule in ret)) {
-                            ret[rule] = {
-                                fn: null,
-                                
-                                config: newValue[rule]
-                            };
-                        }
-                    }
-                    return ret;
-                }
-            },
-            
-            responsiveFormulas: {
-                $value: 0,
-                merge: function(newValue, oldValue, target, mixinClass) {
-                    return this.mergeNew(newValue, oldValue, target, mixinClass);
-                }
-            }
-        },
-        
-        destroy: function() {
-            Responsive.unregister(this);
-        },
-        
-        privates: {
-            statics: {
-                
-                active: false,
-                
-                all: {},
-                
-                context: Ext.Object.chain(Ext.platformTags),
-                
-                count: 0,
-                
-                nextId: 0,
-                
-                activate: function() {
-                    Responsive.active = true;
-                    Responsive.updateContext();
-                    Ext.on('resize', Responsive.onResize, Responsive);
-                },
-                
-                deactivate: function() {
-                    Responsive.active = false;
-                    Ext.un('resize', Responsive.onResize, Responsive);
-                },
-                
-                notify: function() {
-                    var all = Responsive.all,
-                        context = Responsive.context,
-                        globalEvents = Ext.GlobalEvents,
-                        timer = Responsive.timer,
-                        id;
-                    if (timer) {
-                        Responsive.timer = Ext.unasap(timer);
-                    }
-                    Responsive.updateContext();
-                    Ext.suspendLayouts();
-                    globalEvents.fireEvent('beforeresponsiveupdate', context);
-                    for (id in all) {
-                        all[id].setupResponsiveContext();
-                    }
-                    globalEvents.fireEvent('beginresponsiveupdate', context);
-                    for (id in all) {
-                        all[id].updateResponsiveState();
-                    }
-                    globalEvents.fireEvent('responsiveupdate', context);
-                    Ext.resumeLayouts(true);
-                },
-                
-                onResize: function() {
-                    if (!Responsive.timer) {
-                        Responsive.timer = Ext.asap(Responsive.onTimer);
-                    }
-                },
-                
-                onTimer: function() {
-                    Responsive.timer = null;
-                    Responsive.notify();
-                },
-                
-                processConfig: function(instance, instanceConfig, name) {
-                    var value = instanceConfig && instanceConfig[name],
-                        config = instance.config,
-                        cfg, configurator;
-                    
-                    
-                    if (value) {
-                        configurator = instance.self.getConfigurator();
-                        cfg = configurator.configs[name];
-                        
-                        
-                        config[name] = cfg.merge(value, config[name], instance);
-                    }
-                },
-                register: function(responder) {
-                    var id = responder.$responsiveId;
-                    if (!id) {
-                        responder.$responsiveId = id = ++Responsive.nextId;
-                        Responsive.all[id] = responder;
-                        if (++Responsive.count === 1) {
-                            Responsive.activate();
-                        }
-                    }
-                },
-                unregister: function(responder) {
-                    var id = responder.$responsiveId;
-                    if (id in Responsive.all) {
-                        responder.$responsiveId = null;
-                        delete Responsive.all[id];
-                        if (--Responsive.count === 0) {
-                            Responsive.deactivate();
-                        }
-                    }
-                },
-                
-                updateContext: function() {
-                    var El = Ext.Element,
-                        width = El.getViewportWidth(),
-                        height = El.getViewportHeight(),
-                        context = Responsive.context;
-                    context.width = width;
-                    context.height = height;
-                    context.tall = width < height;
-                    context.wide = !context.tall;
-                    context.landscape = context.portrait = false;
-                    if (!context.platform) {
-                        context.platform = Ext.platformTags;
-                    }
-                    context[Ext.dom.Element.getOrientation()] = true;
-                }
-            },
-            
-            
-            
-            afterClassMixedIn: function(targetClass) {
-                var proto = targetClass.prototype,
-                    responsiveConfig = proto.responsiveConfig,
-                    responsiveFormulas = proto.responsiveFormulas,
-                    config;
-                if (responsiveConfig || responsiveFormulas) {
-                    config = {};
-                    if (responsiveConfig) {
-                        delete proto.responsiveConfig;
-                        config.responsiveConfig = responsiveConfig;
-                    }
-                    if (responsiveFormulas) {
-                        delete proto.responsiveFormulas;
-                        config.responsiveFormulas = responsiveFormulas;
-                    }
-                    targetClass.getConfigurator().add(config);
-                }
-            },
-            
-            
-            
-            
-            applyResponsiveConfig: function(rules) {
-                for (var rule in rules) {
-                    rules[rule].fn = Ext.createRuleFn(rule);
-                }
-                return rules;
-            },
-            applyResponsiveFormulas: function(formulas) {
-                var ret = {},
-                    fn, name;
-                if (formulas) {
-                    for (name in formulas) {
-                        if (Ext.isString(fn = formulas[name])) {
-                            fn = Ext.createRuleFn(fn);
-                        }
-                        ret[name] = fn;
-                    }
-                }
-                return ret;
-            },
-            
-            getResponsiveState: function() {
-                var context = Responsive.context,
-                    rules = this.getResponsiveConfig(),
-                    ret = {},
-                    entry, rule;
-                if (rules) {
-                    for (rule in rules) {
-                        entry = rules[rule];
-                        if (entry.fn.call(this, context)) {
-                            Ext.merge(ret, entry.config);
-                        }
-                    }
-                }
-                return ret;
-            },
-            setupResponsiveContext: function() {
-                var formulas = this.getResponsiveFormulas(),
-                    context = Responsive.context,
-                    name;
-                if (formulas) {
-                    for (name in formulas) {
-                        context[name] = formulas[name].call(this, context);
-                    }
-                }
-            },
-            
-            transformInstanceConfig: function(instanceConfig) {
-                var me = this,
-                    ret;
-                Responsive.register(me);
-                
-                
-                
-                
-                if (instanceConfig) {
-                    Responsive.processConfig(me, instanceConfig, 'responsiveConfig');
-                    Responsive.processConfig(me, instanceConfig, 'responsiveFormulas');
-                }
-                
-                
-                me.setupResponsiveContext();
-                
-                
-                ret = me.getResponsiveState();
-                if (instanceConfig) {
-                    ret = Ext.merge({}, instanceConfig, ret);
-                    
-                    delete ret.responsiveConfig;
-                    delete ret.responsiveFormulas;
-                }
-                return ret;
-            },
-            
-            updateResponsiveState: function() {
-                var config = this.getResponsiveState();
-                this.setConfig(config);
-            }
-        }
-    };
-});
-
 
 
 Ext.define('Ext.mixin.Selectable', {
@@ -80706,7 +82830,7 @@ Ext.define('Ext.mixin.Selectable', {
         if (!records) {
             return;
         }
-        if (me.getMode() == "SINGLE" && records) {
+        if (me.getMode() === "SINGLE" && records) {
             record = records.length ? records[0] : records;
             me.doSingleSelect(record, suppressEvent);
         } else {
@@ -80727,19 +82851,18 @@ Ext.define('Ext.mixin.Selectable', {
         records = !Ext.isArray(records) ? [
             records
         ] : records;
+        
         var me = this,
             selected = me.getSelected(),
             selectionCount = selected.getCount(),
+            store = me.getStore(),
             toRemove = [],
-            ln = records.length,
-            change = false,
-            i = 0,
-            record;
+            record, i, len;
         if (!keepExisting && selectionCount) {
             toRemove = selected.getRange();
         }
         
-        for (i = 0; i < ln; i++) {
+        for (i = 0 , len = records.length; i < len; i++) {
             record = records[i];
             if (typeof record === 'number') {
                 records[i] = store.getAt(record);
@@ -80754,19 +82877,18 @@ Ext.define('Ext.mixin.Selectable', {
     },
     
     deselect: function(records, suppressEvent) {
-        var me = this;
+        var me = this,
+            selected, store, record, i, len;
         if (me.getDisableSelection()) {
             return;
         }
         records = Ext.isArray(records) ? records : [
             records
         ];
-        var selected = me.getSelected(),
-            store = me.getStore(),
-            len = records.length,
-            i, record;
+        selected = me.getSelected();
+        store = me.getStore();
         
-        for (i = 0; i < len; i++) {
+        for (i = 0 , len = records.length; i < len; i++) {
             record = records[i];
             if (typeof record === 'number') {
                 records[i] = store.getAt(record);
@@ -80885,9 +83007,11 @@ Ext.define('Ext.mixin.Selectable', {
             record = records[i];
             if (selected.remove(record)) {
                 if (me.getLastSelected() == record) {
+                    
                     me.setLastSelected(null);
                 }
                 if (me.getLastFocused() == record) {
+                    
                     me.setLastFocused(null);
                 }
                 removed = removed || [];
@@ -80935,7 +83059,7 @@ Ext.define('Ext.mixin.StoreWatcher', {
         
         ownerListeners: {
             destroyable: true,
-            storechange: 'onStoreChange'
+            storechange: 'onOwnerStoreChange'
         },
         
         sourceListeners: null,
@@ -80959,18 +83083,7 @@ Ext.define('Ext.mixin.StoreWatcher', {
         }
         targetClass.addConfig(config);
     },
-    onFilterChange: function(store) {
-        var source;
-        if (!store) {
-            source = null;
-        } else if (store.getDataSource) {
-            source = store.getDataSource();
-        } else {
-            source = store.getData();
-        }
-        this.setDataSource(source);
-    },
-    onStoreChange: function(comp, store) {
+    onOwnerStoreChange: function(comp, store) {
         this.setStore(store);
     },
     
@@ -80980,8 +83093,13 @@ Ext.define('Ext.mixin.StoreWatcher', {
     },
     
     updateOwner: function(owner) {
-        this.syncListeners(owner, '$ownerListeners', 'getOwnerListeners');
-        this.setStore(owner ? owner.getStore() : null);
+        var me = this,
+            ownerProperty = me.ownerProperty;
+        if (ownerProperty) {
+            me[ownerProperty] = owner;
+        }
+        me.syncListeners(owner, '$ownerListeners', 'getOwnerListeners');
+        me.setStore(owner ? owner.getStore() : null);
     },
     
     applyStore: function(store) {
@@ -80989,9 +83107,21 @@ Ext.define('Ext.mixin.StoreWatcher', {
     },
     updateStore: function(store) {
         this.syncListeners(store, '$storeListeners', 'getStoreListeners');
-        this.onFilterChange(store);
+        this.syncDataSource();
     },
     privates: {
+        syncDataSource: function() {
+            var store = this.getStore(),
+                source;
+            if (!store) {
+                source = null;
+            } else if (store.getDataSource) {
+                source = store.getDataSource();
+            } else {
+                source = store.getData();
+            }
+            this.setDataSource(source);
+        },
         syncListeners: function(instance, token, listeners) {
             var me = this,
                 old = me[token];
@@ -81038,8 +83168,8 @@ Ext.define('Ext.perf.Accumulator', function() {
         
         
         getTimestamp = function() {
-            getTimestamp = Ext.now;
             var interval, toolbox;
+            getTimestamp = Ext.now;
             
             if (Ext.isChrome && khrome && khrome.Interval) {
                 interval = new khrome.Interval();
@@ -81050,8 +83180,8 @@ Ext.define('Ext.perf.Accumulator', function() {
             } else if (window.ActiveXObject) {
                 try {
                     
-                    toolbox = new ActiveXObject('SenchaToolbox.Toolbox');
                     
+                    toolbox = new ActiveXObject('SenchaToolbox.Toolbox');
                     Ext.senchaToolbox = toolbox;
                     
                     getTimestamp = function() {
@@ -81128,7 +83258,9 @@ Ext.define('Ext.perf.Accumulator', function() {
             getTimestamp: getTimestamp
         },
         format: function(calibration) {
+            var data;
             if (!formatTpl) {
+                
                 formatTpl = new Ext.XTemplate([
                     '{name} - {count} call(s)',
                     '<tpl if="count">',
@@ -81152,7 +83284,8 @@ Ext.define('Ext.perf.Accumulator', function() {
                     }
                 });
             }
-            var data = this.getData(calibration);
+            
+            data = this.getData(calibration);
             data.name = this.name;
             data.pure.type = 'Pure';
             data.total.type = 'Total';
@@ -81233,7 +83366,8 @@ Ext.define('Ext.perf.Accumulator', function() {
             return me;
         }
     };
-}, function() {
+}, 
+function() {
     Ext.perf.getTimestamp = this.getTimestamp;
 });
 
@@ -81330,9 +83464,9 @@ Ext.define('Ext.perf.Monitor', {
         }
     },
     watchGC: function() {
+        var toolbox = Ext.senchaToolbox;
         Ext.perf.getTimestamp();
         
-        var toolbox = Ext.senchaToolbox;
         if (toolbox) {
             this.get("GC");
             toolbox.watchGarbageCollector(false);
@@ -81340,6 +83474,7 @@ Ext.define('Ext.perf.Monitor', {
     },
     
     setup: function(config) {
+        var key, prop, accum, className, methods;
         if (!config) {
             config = {
                 
@@ -81392,7 +83527,6 @@ Ext.define('Ext.perf.Monitor', {
             };
         }
         this.currentConfig = config;
-        var key, prop, accum, className, methods;
         for (key in config) {
             if (config.hasOwnProperty(key)) {
                 prop = config[key];
@@ -81424,7 +83558,9 @@ Ext.define('Ext.perf.Monitor', {
                                 ret = this.callParent(arguments);
                                 diff = +Date.now() - before;
                                 if (window.console && diff > 0) {
+                                    
                                     idHolder = idProp === 'this' ? this : typeof idProp === 'string' ? this[idProp] : typeof idProp === 'number' ? arguments[idProp] : null;
+                                    
                                     if (idHolder) {
                                         id = idHolder.id;
                                     }
@@ -81524,6 +83660,7 @@ Ext.define('Ext.plugin.AbstractClipboard', {
             
             if (value) {
                 for (var i = value.length; i-- > 0; ) {
+                    
                     if (value[i] === 'system') {
                         Ext.raise('Invalid clipboard format "' + value[i] + '"');
                     }
@@ -81545,8 +83682,10 @@ Ext.define('Ext.plugin.AbstractClipboard', {
             }
             
             if (value) {
-                var formats = this.getFormats();
-                for (var i = value.length; i-- > 0; ) {
+                var formats = this.getFormats(),
+                    
+                    i;
+                for (i = value.length; i-- > 0; ) {
                     if (value[i] !== 'system' && !formats[value[i]]) {
                         Ext.raise('Invalid clipboard format "' + value[i] + '"');
                     }
@@ -81734,13 +83873,14 @@ Ext.define('Ext.plugin.AbstractClipboard', {
             }
         },
         setClipboardData: function(data) {
-            var clippy = window.clipboardData;
+            var me = this,
+                clippy = window.clipboardData,
+                area, focusEl;
             if (clippy && clippy.setData) {
                 clippy.setData("text", data);
             } else {
-                var me = this,
-                    area = me.getHiddenTextArea().dom,
-                    focusEl = Ext.Element.getActiveElement(true);
+                area = me.getHiddenTextArea().dom;
+                focusEl = Ext.Element.getActiveElement(true);
                 area.value = data;
                 
                 if (focusEl) {
@@ -81811,6 +83951,7 @@ Ext.define('Ext.plugin.MouseEnter', {
         if (!this.handler) {
             Ext.raise('mouseenter plugin must be configured with handler callback');
         }
+        
         
         var me = this,
             listeners = {
@@ -82106,9 +84247,9 @@ Ext.define('Ext.sparkline.CanvasCanvas', {
         context.beginPath();
         context.moveTo(path[0][0] + xIncr, path[0][1] + 0.5);
         for (i = 1 , plen = path.length; i < plen; i++) {
+            
             context.lineTo(path[i][0] + xIncr, path[i][1] + 0.5);
         }
-        
         if (lineColor != null) {
             context.stroke();
         }
@@ -82347,16 +84488,16 @@ Ext.define('Ext.sparkline.VmlCanvas', {
         var vpath,
             width = this.pixelWidth,
             height = this.pixelHeight,
-            startx, starty, endx, endy,
-            stroke = lineColor == null ? ' stroked="false" ' : ' strokeWeight="1px" strokeColor="' + lineColor + '" ',
-            fill = fillColor == null ? ' filled="false"' : ' fillColor="' + fillColor + '" filled="true" ';
+            startx, starty, endx, endy, stroke, fill;
+        stroke = lineColor == null ? ' stroked="false" ' : ' strokeWeight="1px" strokeColor="' + lineColor + '" ';
+        fill = fillColor == null ? ' filled="false"' : ' fillColor="' + fillColor + '" filled="true" ';
         
         if (startAngle === endAngle) {
             return '';
         }
         if ((endAngle - startAngle) === (2 * Math.PI)) {
-            startAngle = 0;
             
+            startAngle = 0;
             endAngle = (2 * Math.PI);
         }
         startx = x + Math.round(Math.cos(startAngle) * radius);
@@ -82490,7 +84631,7 @@ Ext.define('Ext.util.Color', {
     statics: {
         colorToHexRe: /(.*?)rgb\((\d+),\s*(\d+),\s*(\d+)\)/,
         rgbToHexRe: /\s*rgb\((\d+),\s*(\d+),\s*(\d+)\)/,
-        rgbaToHexRe: /\s*rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\.\d]+)\)/,
+        rgbaToHexRe: /\s*rgba\((\d+),\s*(\d+),\s*(\d+),\s*([.\d]+)\)/,
         hexRe: /\s*#([0-9a-fA-F][0-9a-fA-F]?)([0-9a-fA-F][0-9a-fA-F]?)([0-9a-fA-F][0-9a-fA-F]?)\s*/,
         
         
@@ -82581,6 +84722,7 @@ Ext.define('Ext.util.Color', {
             v = max;
         
         if (min != max) {
+            
             s = v ? C / v : 0;
             if (r === max) {
                 h = 60 * (g - b) / C;
@@ -82701,10 +84843,11 @@ Ext.define('Ext.util.Color', {
     },
     
     lighten: function(factor) {
+        var hsl;
         if (!factor && factor !== 0) {
             factor = this.lightnessFactor;
         }
-        var hsl = this.getHSL();
+        hsl = this.getHSL();
         this.setHSL(hsl[0], hsl[1], Ext.Number.constrain(hsl[2] + factor, 0, 1));
     },
     
@@ -82723,11 +84866,12 @@ Ext.define('Ext.util.Color', {
     
     toString: function() {
         var me = this,
-            round = Math.round;
+            round = Math.round,
+            r, g, b;
         if (me.a === 1) {
-            var r = round(me.r).toString(16),
-                g = round(me.g).toString(16),
-                b = round(me.b).toString(16);
+            r = round(me.r).toString(16);
+            g = round(me.g).toString(16);
+            b = round(me.b).toString(16);
             r = (r.length === 1) ? '0' + r : r;
             g = (g.length === 1) ? '0' + g : g;
             b = (b.length === 1) ? '0' + b : b;
@@ -83039,6 +85183,7 @@ Ext.define('Ext.sparkline.Base', {
         },
         
         
+        
         width: 0,
         height: 0
     },
@@ -83053,6 +85198,7 @@ Ext.define('Ext.sparkline.Base', {
                 proto = cls.prototype,
                 configs = cls.getConfigurator().configs,
                 config, updaterName;
+            
             
             for (config in configs) {
                 
@@ -83135,6 +85281,7 @@ Ext.define('Ext.sparkline.Base', {
             default:
                 nf = parseFloat(val);
                 if (val == nf) {
+                    
                     val = nf;
                 };
         }
@@ -83236,6 +85383,7 @@ Ext.define('Ext.sparkline.Base', {
         var me = this,
             values = me.getValues(),
             tipHtml, region;
+        
         
         
         
@@ -83482,8 +85630,8 @@ Ext.define('Ext.sparkline.Bar', {
     
     tipTpl: '&#9679; {prefix}{value}{suffix}',
     remove: function(vals, filter) {
-        var i, vl,
-            result = [];
+        var result = [],
+            i, vl;
         for (i = 0 , vl = vals.length; i < vl; i++) {
             if (vals[i] !== filter) {
                 result.push(vals[i]);
@@ -83531,11 +85679,10 @@ Ext.define('Ext.sparkline.Bar', {
             chartRangeClip = me.getChartRangeClip(),
             stackMin = Infinity,
             stackMax = -Infinity,
-            isStackString, groupMin, groupMax, stackRanges, numValues, i, vlen, range,
             zeroAxis = me.getZeroAxis(),
-            xAxisOffset, min, max, clipMin, clipMax, stacked, vlist, j, slen, svals, val, yoffset, yMaxCalc,
             stackTotals = [],
-            stackRangesNeg = [];
+            stackRangesNeg = [],
+            isStackString, groupMin, groupMax, stackRanges, numValues, i, vlen, range, xAxisOffset, min, max, clipMin, clipMax, stacked, vlist, j, slen, svals, val, yoffset, yMaxCalc;
         
         for (i = 0 , vlen = values.length; i < vlen; i++) {
             val = values[i];
@@ -83560,7 +85707,10 @@ Ext.define('Ext.sparkline.Bar', {
         me.stacked = stacked;
         me.regionShapes = {};
         me.totalBarWidth = barWidth + barSpacing;
-        me.width = (values.length * barWidth) + ((values.length - 1) * barSpacing);
+        
+        if (values.length) {
+            me.width = (values.length * barWidth) + ((values.length - 1) * barSpacing);
+        }
         if (chartRangeClip) {
             clipMin = chartRangeMin == null ? -Infinity : chartRangeMin;
             clipMax = chartRangeMax == null ? Infinity : chartRangeMax;
@@ -84100,6 +86250,7 @@ Ext.define('Ext.sparkline.Bullet', {
         var targetval = this.values[0],
             targetWidth = this.getTargetWidth(),
             x = Math.round(this.getWidth() * ((targetval - this.min) / this.range) - (targetWidth / 2)),
+            
             targettop = Math.round(this.getHeight() * 0.1),
             targetheight = this.getHeight() - (targettop * 2),
             color = this.getTargetColor();
@@ -84398,9 +86549,11 @@ Ext.define('Ext.sparkline.Line', {
         var normalRangeMin = this.getNormalRangeMin(),
             normalRangeMax = this.getNormalRangeMax(),
             ytop = canvasTop + Math.round(canvasHeight - (canvasHeight * ((normalRangeMax - this.miny) / rangey))),
+            
             height = Math.round((canvasHeight * (normalRangeMax - normalRangeMin)) / rangey);
         this.canvas.drawRect(canvasLeft, ytop, canvasWidth, height, undefined, this.normalRangeColor).append();
     },
+    
     renderGraph: function() {
         var me = this,
             canvas = me.canvas,
@@ -84445,10 +86598,12 @@ Ext.define('Ext.sparkline.Line', {
                 canvasHeight -= Math.ceil(spotRadius);
                 canvasTop += Math.ceil(spotRadius);
             }
+            
             if (hlSpotsEnabled || ((minSpotColor || maxSpotColor) && (yValues[0] === me.miny || yValues[0] === me.maxy))) {
                 canvasLeft += Math.ceil(spotRadius);
                 canvasWidth -= Math.ceil(spotRadius);
             }
+            
             if (hlSpotsEnabled || spotColor || (minSpotColor || maxSpotColor && (yValues[yvallast] === me.miny || yValues[yvallast] === me.maxy))) {
                 canvasWidth -= Math.ceil(spotRadius);
             }
@@ -84498,6 +86653,7 @@ Ext.define('Ext.sparkline.Line', {
                         canvasTop + canvasHeight
                     ]);
                 }
+                
                 vertex = [
                     xPos,
                     canvasTop + Math.round(canvasHeight - (canvasHeight * ((y - this.miny) / Y)))
@@ -84544,6 +86700,7 @@ Ext.define('Ext.sparkline.Line', {
         for (i = 0; i < plen; i++) {
             canvas.drawShape(lineShapes[i], me.getLineColor(), null, me.getLineWidth()).append();
         }
+        
         if (spotRadius && valueSpots) {
             if (valueSpots.get == null) {
                 valueSpots = new Ext.sparkline.RangeMap(valueSpots);
@@ -84568,6 +86725,7 @@ Ext.define('Ext.sparkline.Line', {
                 canvas.drawCircle(canvasLeft + Math.round((x - me.minx) * (canvasWidth / rangeX)), canvasTop + Math.round(canvasHeight - (canvasHeight * ((me.maxyorg - me.miny) / Y))), spotRadius, null, maxSpotColor).append();
             }
         }
+        
         me.canvasTop = canvasTop;
         
         if (me.currentPageXY && me.canvasRegion.contains(me.currentPageXY)) {
@@ -84839,12 +86997,12 @@ Ext.define('Ext.util.Base64', {
     _str: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
     
     encode: function(input) {
-        var me = this;
-        var output = '',
-            chr1, chr2, chr3, enc1, enc2, enc3, enc4,
-            i = 0;
+        var me = this,
+            output = '',
+            i = 0,
+            chr1, chr2, chr3, enc1, enc2, enc3, enc4, len;
         input = me._utf8_encode(input);
-        var len = input.length;
+        len = input.length;
         while (i < len) {
             chr1 = input.charCodeAt(i++);
             chr2 = input.charCodeAt(i++);
@@ -84864,12 +87022,13 @@ Ext.define('Ext.util.Base64', {
     },
     
     decode: function(input) {
-        var me = this;
-        var output = '',
-            chr1, chr2, chr3, enc1, enc2, enc3, enc4,
-            i = 0;
-        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-        var len = input.length;
+        var me = this,
+            output = '',
+            i = 0,
+            chr1, chr2, chr3, enc1, enc2, enc3, enc4, len;
+        input = input.replace(/[^A-Za-z0-9+=\/]/g, "");
+        
+        len = input.length;
         while (i < len) {
             enc1 = me._str.indexOf(input.charAt(i++));
             enc2 = me._str.indexOf(input.charAt(i++));
@@ -84891,12 +87050,11 @@ Ext.define('Ext.util.Base64', {
     },
     
     _utf8_encode: function(string) {
-        string = string.replace(/\r\n/g, "\n");
         var utftext = '',
-            n = 0,
-            len = string.length;
-        for (; n < len; n++) {
-            var c = string.charCodeAt(n);
+            c, n, len;
+        string = string.replace(/\r\n/g, "\n");
+        for (n = 0 , len = string.length; n < len; n++) {
+            c = string.charCodeAt(n);
             if (c < 128) {
                 utftext += String.fromCharCode(c);
             } else if ((c > 127) && (c < 2048)) {
@@ -84939,6 +87097,216 @@ Ext.define('Ext.util.Base64', {
 });
 
 
+Ext.define('Ext.util.CSS', function() {
+    var CSS,
+        rules = null,
+        doc = document,
+        camelRe = /(-[a-z])/gi,
+        camelFn = function(m, a) {
+            return a.charAt(1).toUpperCase();
+        };
+    return {
+        singleton: true,
+        rules: rules,
+        initialized: false,
+        
+        constructor: function() {
+            
+            CSS = this;
+        },
+        
+        createStyleSheet: function(cssText, id) {
+            var ss,
+                head = doc.getElementsByTagName('head')[0],
+                styleEl = doc.createElement('style');
+            styleEl.setAttribute('type', 'text/css');
+            if (id) {
+                styleEl.setAttribute('id', id);
+            }
+            
+            ss = styleEl.styleSheet;
+            if (ss) {
+                head.appendChild(styleEl);
+                ss.cssText = cssText;
+            } else {
+                styleEl.appendChild(doc.createTextNode(cssText));
+                head.appendChild(styleEl);
+                ss = styleEl.sheet;
+            }
+            CSS.cacheStyleSheet(ss);
+            return ss;
+        },
+        
+        removeStyleSheet: function(stylesheet) {
+            var styleEl = (typeof stylesheet === 'string') ? doc.getElementById(stylesheet) : stylesheet.ownerNode;
+            if (styleEl) {
+                styleEl.parentNode.removeChild(styleEl);
+            }
+        },
+        
+        swapStyleSheet: function(id, url) {
+            var ss;
+            CSS.removeStyleSheet(id);
+            ss = doc.createElement("link");
+            ss.setAttribute("rel", "stylesheet");
+            ss.setAttribute("type", "text/css");
+            ss.setAttribute("id", id);
+            ss.setAttribute("href", url);
+            doc.getElementsByTagName("head")[0].appendChild(ss);
+        },
+        
+        cacheStyleSheet: function(ss) {
+            if (!rules) {
+                rules = CSS.rules = {};
+            }
+            try {
+                
+                
+                var ssRules = ss.cssRules || ss.rules,
+                    i = ssRules.length - 1,
+                    imports = ss.imports,
+                    len = imports ? imports.length : 0,
+                    rule, j;
+                
+                for (j = 0; j < len; ++j) {
+                    CSS.cacheStyleSheet(imports[j]);
+                }
+                for (; i >= 0; --i) {
+                    rule = ssRules[i];
+                    
+                    if (rule.styleSheet) {
+                        CSS.cacheStyleSheet(rule.styleSheet);
+                    }
+                    CSS.cacheRule(rule, ss);
+                }
+            } catch (e) {}
+        },
+        
+        cacheRule: function(cssRule, styleSheet) {
+            var selectorText, selectorCount, j;
+            
+            if (cssRule.styleSheet) {
+                return CSS.cacheStyleSheet(cssRule.styleSheet);
+            }
+            selectorText = cssRule.selectorText;
+            if (selectorText) {
+                
+                selectorText = selectorText.split(',');
+                selectorCount = selectorText.length;
+                for (j = 0; j < selectorCount; j++) {
+                    
+                    
+                    rules[Ext.String.trim(selectorText[j]).toLowerCase()] = {
+                        parentStyleSheet: styleSheet,
+                        cssRule: cssRule
+                    };
+                }
+            }
+        },
+        
+        getRules: function(refreshCache) {
+            var result = {},
+                selector;
+            if (rules === null || refreshCache) {
+                CSS.refreshCache();
+            }
+            for (selector in rules) {
+                result[selector] = rules[selector].cssRule;
+            }
+            return result;
+        },
+        
+        refreshCache: function() {
+            var ds = doc.styleSheets,
+                i = 0,
+                len = ds.length;
+            rules = CSS.rules = {};
+            for (; i < len; i++) {
+                try {
+                    if (!ds[i].disabled) {
+                        CSS.cacheStyleSheet(ds[i]);
+                    }
+                } catch (e) {}
+            }
+        },
+        
+        
+        getRule: function(selector, refreshCache, rawCache) {
+            var i, result;
+            if (!rules || refreshCache) {
+                CSS.refreshCache();
+            }
+            if (!Ext.isArray(selector)) {
+                result = rules[selector.toLowerCase()];
+                if (result && !rawCache) {
+                    result = result.cssRule;
+                }
+                return result || null;
+            }
+            for (i = 0; i < selector.length; i++) {
+                if (rules[selector[i]]) {
+                    return rawCache ? rules[selector[i].toLowerCase()] : rules[selector[i].toLowerCase()].cssRule;
+                }
+            }
+            return null;
+        },
+        
+        createRule: function(styleSheet, selector, cssText) {
+            var result,
+                ruleSet = styleSheet.cssRules || styleSheet.rules,
+                index = ruleSet.length;
+            if (styleSheet.insertRule) {
+                styleSheet.insertRule(selector + ' {' + cssText + '}', index);
+            } else {
+                styleSheet.addRule(selector, cssText || ' ');
+            }
+            CSS.cacheRule(result = ruleSet[index], styleSheet);
+            return result;
+        },
+        
+        updateRule: function(selector, property, value) {
+            var rule, i, styles;
+            if (!Ext.isArray(selector)) {
+                rule = CSS.getRule(selector);
+                if (rule) {
+                    
+                    if (arguments.length === 2) {
+                        styles = Ext.Element.parseStyles(property);
+                        for (property in styles) {
+                            rule.style[property.replace(camelRe, camelFn)] = styles[property];
+                        }
+                    } else {
+                        rule.style[property.replace(camelRe, camelFn)] = value;
+                    }
+                    return true;
+                }
+            } else {
+                for (i = 0; i < selector.length; i++) {
+                    if (CSS.updateRule(selector[i], property, value)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        },
+        deleteRule: function(selector) {
+            var rule = CSS.getRule(selector, false, true),
+                styleSheet, index;
+            if (rule) {
+                styleSheet = rule.parentStyleSheet;
+                index = Ext.Array.indexOf(styleSheet.cssRules || styleSheet.rules, rule.cssRule);
+                if (styleSheet.deleteRule) {
+                    styleSheet.deleteRule(index);
+                } else {
+                    styleSheet.removeRule(index);
+                }
+                delete rules[selector];
+            }
+        }
+    };
+});
+
+
 Ext.define('Ext.util.DelimitedValue', {
     
     dateFormat: 'C',
@@ -84959,14 +87327,16 @@ Ext.define('Ext.util.DelimitedValue', {
         this.quoteREs = {};
     },
     
+    
     decode: function(input, delimiter, quoteChar) {
+        
         if (!input) {
             return [];
         }
+        
         var me = this,
             
             
-            delim = delimiter || me.delimiter,
             row = [],
             result = [
                 row
@@ -84975,16 +87345,14 @@ Ext.define('Ext.util.DelimitedValue', {
             quoteREs = me.quoteREs,
             parseREs = me.parseREs,
             parseRE, dblQuoteRE, arrMatches, strMatchedDelimiter, strMatchedValue;
+        delimiter = delimiter || me.delimiter;
         
         
-        parseRE = quote === me.quote ? parseREs[delim] : null;
-        parseRE = parseRE || new RegExp(
-        "(\\" + delim + "|\\r?\\n|\\r|^)" + 
-        "(?:" + (quote === null ? '()' : "\\" + quote + "([^\\" + quote + "]*(?:\\" + quote + "\\" + quote + "[^\\" + quote + "]*)*)\\" + quote + "|") + 
-        "([^" + (quote === null ? '' : quote) + delim + "\\r\\n]*))", "gi");
-        dblQuoteRE = quote === me.quote ? quoteREs[quote] : null;
-        dblQuoteRE = dblQuoteRE || new RegExp('\\' + quote + '\\' + quote, 'g');
-        input = input.replace(me.lastLineBreakRe, '');
+        parseRE = parseREs[delimiter] || new RegExp(
+        '(\\' + delimiter + '|\\r?\\n|\\r|^)' + 
+        '(?:\\' + quote + '([^\\' + quote + ']*(?:\\' + quote + '\\' + quote + '[^\\' + quote + ']*)*)\\' + quote + '|' + 
+        '([^\\' + delimiter + '\\r\\n]*))', 'gi');
+        dblQuoteRE = quoteREs[quote] || (quoteREs[quote] = new RegExp('\\' + quote + '\\' + quote, 'g'));
         
         
         while ((arrMatches = parseRE.exec(input))) {
@@ -84993,13 +87361,13 @@ Ext.define('Ext.util.DelimitedValue', {
             
             
             
-            if (strMatchedDelimiter.length && strMatchedDelimiter !== delim) {
+            if (strMatchedDelimiter.length && strMatchedDelimiter !== delimiter) {
                 
                 
                 result.push(row = []);
             }
             
-            if (!arrMatches.index && arrMatches[0].charAt(0) === delim) {
+            if (!arrMatches.index && arrMatches[0].charAt(0) === delimiter) {
                 row.push('');
             }
             
@@ -85018,7 +87386,9 @@ Ext.define('Ext.util.DelimitedValue', {
         return result;
     },
     
+    
     encode: function(input, delimiter, quoteChar) {
+        
         var me = this,
             delim = delimiter || me.delimiter,
             dateFormat = me.dateFormat,
@@ -85458,116 +87828,6 @@ Ext.define('Ext.util.LocalStorage', {
             keys.push(key);
         }
     }
-}, function() {
-    var LocalStorage = this;
-    if ('localStorage' in window) {
-        return;
-    }
-    if (!Ext.isIE) {
-        LocalStorage.supported = false;
-        
-        LocalStorage.prototype.init = function() {
-            Ext.raise("Local storage is not supported on this browser");
-        };
-        
-        return;
-    }
-    
-    
-    
-    
-    LocalStorage.override({
-        
-        data: null,
-        
-        
-        flushDelay: 1,
-        init: function() {
-            var me = this,
-                data = me.data,
-                el;
-            me.el = el = document.createElement('div');
-            el.id = (me.id || (me.id = 'extjs-localstore'));
-            el.addBehavior('#default#userdata');
-            
-            Ext.getHead().dom.appendChild(el);
-            el.load(me.id);
-            data = el.getAttribute('xdata');
-            me.data = data = (data ? Ext.decode(data) : {});
-            me._flushFn = function() {
-                me._timer = null;
-                me.save(0);
-            };
-        },
-        destroy: function() {
-            var me = this,
-                el = me.el;
-            if (el) {
-                
-                if (me._timer) {
-                    me.save();
-                }
-                el.parentNode.removeChild(el);
-                me.data = me.el = null;
-                me.callParent();
-            }
-        },
-        getKeys: function() {
-            var me = this,
-                keys = me._keys;
-            if (!keys) {
-                me._keys = keys = Ext.Object.getKeys(me.data);
-            }
-            return keys;
-        },
-        
-        save: function(delay) {
-            var me = this;
-            if (!delay) {
-                me._timer = Ext.undefer(me._timer);
-                me.el.setAttribute('xdata', Ext.encode(me.data));
-                me.el.save(me.id);
-            } else if (!me._timer) {
-                me._timer = Ext.defer(me._flushFn, delay);
-            }
-        },
-        clear: function() {
-            var me = this;
-            me.data = {};
-            me._keys = null;
-            me.save(me.flushDelay);
-        },
-        getItem: function(key) {
-            var data = this.data;
-            return (key in data) ? data[key] : null;
-        },
-        removeItem: function(key) {
-            var me = this,
-                keys = me._keys,
-                data = me.data;
-            if (key in data) {
-                delete data[key];
-                if (keys) {
-                    if (me.lazyKeys) {
-                        me._keys = null;
-                    } else {
-                        Ext.Array.remove(keys, key);
-                    }
-                }
-                me.save(me.flushDelay);
-            }
-        },
-        setItem: function(key, value) {
-            var me = this,
-                data = me.data,
-                keys = me._keys;
-            if (keys && !(key in data)) {
-                keys.push(key);
-            }
-            data[key] = value;
-            me.save(me.flushDelay);
-        }
-    });
 });
 
 
@@ -85591,6 +87851,7 @@ Ext.define('Ext.util.Spans', {
                 begin = begin[0];
             }
         }
+        
         var me = this,
             spans = me.spans,
             b, e, first, last, span;
@@ -85649,6 +87910,7 @@ Ext.define('Ext.util.Spans', {
                 begin = begin[0];
             }
         }
+        
         var spans = this.spans,
             index = this.bisect(begin),
             ret = false,
@@ -85685,6 +87947,7 @@ Ext.define('Ext.util.Spans', {
                 begin = begin[0];
             }
         }
+        
         var spans = this.spans,
             index = this.bisect(begin),
             ret = false;
@@ -85705,6 +87968,7 @@ Ext.define('Ext.util.Spans', {
                 begin = begin[0];
             }
         }
+        
         var me = this,
             spans = me.spans,
             first = me.bisect(begin),
@@ -85938,11 +88202,13 @@ Ext.define('Ext.util.sizemonitor.OverflowChange', {
         this.shrinkMonitor[method](Ext.browser.is.Firefox ? 'overflow' : 'overflowchanged', this.onShrink, true);
     },
     onExpand: function(e) {
+        
         if (!(this.destroyed || (Ext.browser.is.Webkit && e.horizontalOverflow && e.verticalOverflow))) {
             Ext.TaskQueue.requestRead('refresh', this);
         }
     },
     onShrink: function(e) {
+        
         if (!(this.destroyed || (Ext.browser.is.Webkit && !e.horizontalOverflow && !e.verticalOverflow))) {
             Ext.TaskQueue.requestRead('refresh', this);
         }
@@ -85951,6 +88217,7 @@ Ext.define('Ext.util.sizemonitor.OverflowChange', {
         if (this.destroying || this.destroyed) {
             return;
         }
+        
         var expandHelper = this.expandHelper,
             shrinkHelper = this.shrinkHelper,
             contentBounds = this.getContentBounds(),
@@ -85993,10 +88260,6 @@ Ext.define('Ext.util.translatable.ScrollParent', {
         var parent = this.parent;
         parent.setScrollLeft(Math.round(-x));
         parent.setScrollTop(Math.round(-y));
-        this.callParent([
-            x,
-            y
-        ]);
     },
     getPosition: function() {
         var me = this,
@@ -86004,6 +88267,41 @@ Ext.define('Ext.util.translatable.ScrollParent', {
             parent = me.parent;
         position.x = parent.getScrollLeft();
         position.y = parent.getScrollTop();
+        return position;
+    }
+});
+
+
+Ext.define('Ext.util.translatable.ScrollPosition', {
+    extend: Ext.util.translatable.Dom,
+    alias: 'translatable.scrollposition',
+    
+    constructor: function(config) {
+        if (config && config.element) {
+            this.x = config.element.getScrollLeft();
+            this.y = config.element.getScrollTop();
+        }
+        this.callParent([
+            config
+        ]);
+    },
+    translateAnimated: function() {
+        var element = this.getElement();
+        this.x = element.getScrollLeft();
+        this.y = element.getScrollTop();
+        this.callParent(arguments);
+    },
+    doTranslate: function(x, y) {
+        var element = this.getElement();
+        element.setScrollLeft(Math.round(x));
+        element.setScrollTop(Math.round(y));
+    },
+    getPosition: function() {
+        var me = this,
+            position = me.position,
+            element = me.getElement();
+        position.x = element.getScrollLeft();
+        position.y = element.getScrollTop();
         return position;
     }
 });
@@ -86016,7 +88314,9 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.Anim": [],
   "Ext.AnimationQueue": [],
   "Ext.Audio": [],
+  "Ext.BreadcrumbBar": [],
   "Ext.Button": [],
+  "Ext.Chip": [],
   "Ext.Component": [
     "Ext.lib.Component",
     "Ext.Gadget"
@@ -86061,12 +88361,14 @@ Ext.ClassManager.addNameAlternateMappings({
   ],
   "Ext.ProgressBase": [],
   "Ext.Promise": [],
+  "Ext.Responsive": [],
   "Ext.SegmentedButton": [
     "Ext.button.Segmented"
   ],
   "Ext.Sheet": [],
   "Ext.Spacer": [],
   "Ext.SplitButton": [],
+  "Ext.Stateful": [],
   "Ext.TaskQueue": [],
   "Ext.Template": [],
   "Ext.Title": [],
@@ -86120,6 +88422,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.data.Batch": [],
   "Ext.data.BufferedStore": [],
   "Ext.data.ChainedStore": [],
+  "Ext.data.ClientStore": [],
   "Ext.data.Connection": [],
   "Ext.data.DirectStore": [],
   "Ext.data.Error": [],
@@ -86141,6 +88444,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.data.NodeStore": [],
   "Ext.data.PageMap": [],
   "Ext.data.ProxyStore": [],
+  "Ext.data.Query": [],
   "Ext.data.Range": [],
   "Ext.data.Request": [],
   "Ext.data.ResultSet": [],
@@ -86215,6 +88519,10 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.data.proxy.WebStorage": [
     "Ext.data.WebStorageProxy"
   ],
+  "Ext.data.query.Compiler": [],
+  "Ext.data.query.Converter": [],
+  "Ext.data.query.Parser": [],
+  "Ext.data.query.Stringifier": [],
   "Ext.data.reader.Array": [
     "Ext.data.ArrayReader"
   ],
@@ -86246,6 +88554,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.data.summary.Count": [],
   "Ext.data.summary.Max": [],
   "Ext.data.summary.Min": [],
+  "Ext.data.summary.None": [],
   "Ext.data.summary.Sum": [],
   "Ext.data.validator.AbstractDate": [],
   "Ext.data.validator.Bound": [],
@@ -86289,6 +88598,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.dataview.BoundList": [],
   "Ext.dataview.BoundListLocation": [],
   "Ext.dataview.BoundListNavigationModel": [],
+  "Ext.dataview.ChipView": [],
   "Ext.dataview.Component": [],
   "Ext.dataview.DataItem": [
     "Ext.dataview.component.DataItem"
@@ -86299,6 +88609,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.dataview.Disclosable": [],
   "Ext.dataview.EmptyText": [],
   "Ext.dataview.GenericItem": [],
+  "Ext.dataview.GroupStore": [],
   "Ext.dataview.IndexBar": [
     "Ext.IndexBar"
   ],
@@ -86306,9 +88617,12 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.dataview.List": [
     "Ext.List"
   ],
+  "Ext.dataview.ListCollapser": [],
+  "Ext.dataview.ListGroup": [],
   "Ext.dataview.ListItem": [
     "Ext.dataview.component.ListItem"
   ],
+  "Ext.dataview.ListItemPlaceholder": [],
   "Ext.dataview.Location": [],
   "Ext.dataview.NavigationModel": [],
   "Ext.dataview.NestedList": [
@@ -86339,6 +88653,8 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.dataview.selection.Records": [],
   "Ext.dataview.selection.Rows": [],
   "Ext.dataview.selection.Selection": [],
+  "Ext.dd.Manager": [],
+  "Ext.dd.ScrollManager": [],
   "Ext.direct.Event": [],
   "Ext.direct.ExceptionEvent": [],
   "Ext.direct.JsonProvider": [],
@@ -86411,6 +88727,8 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.field.Checkbox": [
     "Ext.form.Checkbox"
   ],
+  "Ext.field.CheckboxGroup": [],
+  "Ext.field.ChipViewNavigationModel": [],
   "Ext.field.ComboBox": [
     "Ext.form.field.ComboBox"
   ],
@@ -86422,6 +88740,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.field.DatePickerNative": [
     "Ext.form.DatePickerNative"
   ],
+  "Ext.field.Dirty": [],
   "Ext.field.Display": [
     "Ext.form.Display"
   ],
@@ -86431,6 +88750,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.field.Field": [
     "Ext.form.Field"
   ],
+  "Ext.field.FieldGroupContainer": [],
   "Ext.field.File": [],
   "Ext.field.FileButton": [],
   "Ext.field.Hidden": [
@@ -86450,6 +88770,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.field.Radio": [
     "Ext.form.Radio"
   ],
+  "Ext.field.RadioGroup": [],
   "Ext.field.Search": [
     "Ext.form.Search"
   ],
@@ -86469,6 +88790,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.field.TextArea": [
     "Ext.form.TextArea"
   ],
+  "Ext.field.Time": [],
   "Ext.field.Toggle": [
     "Ext.form.Toggle"
   ],
@@ -86486,6 +88808,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.field.trigger.Search": [],
   "Ext.field.trigger.SpinDown": [],
   "Ext.field.trigger.SpinUp": [],
+  "Ext.field.trigger.Time": [],
   "Ext.field.trigger.Trigger": [],
   "Ext.form.Borders": [],
   "Ext.form.FieldSet": [],
@@ -86529,7 +88852,11 @@ Ext.ClassManager.addNameAlternateMappings({
   ],
   "Ext.grid.CellEditor": [],
   "Ext.grid.Grid": [],
+  "Ext.grid.GridDragZone": [],
+  "Ext.grid.GridDropZone": [],
   "Ext.grid.HeaderContainer": [],
+  "Ext.grid.HeaderDragZone": [],
+  "Ext.grid.HeaderDropZone": [],
   "Ext.grid.Location": [],
   "Ext.grid.NavigationModel": [],
   "Ext.grid.PagingToolbar": [],
@@ -86540,6 +88867,8 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.grid.Tree": [
     "Ext.tree.Tree"
   ],
+  "Ext.grid.TreeDragZone": [],
+  "Ext.grid.TreeDropZone": [],
   "Ext.grid.cell.Base": [],
   "Ext.grid.cell.Boolean": [],
   "Ext.grid.cell.Cell": [],
@@ -86557,13 +88886,28 @@ Ext.ClassManager.addNameAlternateMappings({
     "Ext.grid.column.Template"
   ],
   "Ext.grid.column.Date": [],
+  "Ext.grid.column.Drag": [],
   "Ext.grid.column.Number": [],
   "Ext.grid.column.RowNumberer": [],
   "Ext.grid.column.Selection": [],
   "Ext.grid.column.Text": [],
   "Ext.grid.column.Tree": [],
+  "Ext.grid.filters.Column": [],
+  "Ext.grid.filters.Plugin": [],
+  "Ext.grid.filters.menu.Base": [],
+  "Ext.grid.filters.menu.Boolean": [],
+  "Ext.grid.filters.menu.Date": [],
+  "Ext.grid.filters.menu.Number": [],
+  "Ext.grid.filters.menu.String": [],
+  "Ext.grid.locked.Grid": [
+    "Ext.grid.LockedGrid"
+  ],
+  "Ext.grid.locked.Region": [
+    "Ext.grid.LockedGridRegion"
+  ],
   "Ext.grid.menu.Columns": [],
   "Ext.grid.menu.GroupByThis": [],
+  "Ext.grid.menu.Shared": [],
   "Ext.grid.menu.ShowInGroups": [],
   "Ext.grid.menu.SortAsc": [],
   "Ext.grid.menu.SortDesc": [],
@@ -86571,7 +88915,9 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.grid.plugin.Clipboard": [],
   "Ext.grid.plugin.ColumnResizing": [],
   "Ext.grid.plugin.Editable": [],
+  "Ext.grid.plugin.HeaderReorder": [],
   "Ext.grid.plugin.PagingToolbar": [],
+  "Ext.grid.plugin.RowDragDrop": [],
   "Ext.grid.plugin.RowExpander": [],
   "Ext.grid.plugin.RowOperations": [
     "Ext.grid.plugin.MultiSelection"
@@ -86579,8 +88925,14 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.grid.plugin.Summary": [
     "Ext.grid.plugin.SummaryRow"
   ],
+  "Ext.grid.plugin.TreeDragDrop": [],
   "Ext.grid.plugin.ViewOptions": [],
   "Ext.grid.plugin.ViewOptionsListItem": [],
+  "Ext.grid.rowedit.Bar": [],
+  "Ext.grid.rowedit.Cell": [],
+  "Ext.grid.rowedit.Editor": [],
+  "Ext.grid.rowedit.Gap": [],
+  "Ext.grid.rowedit.Plugin": [],
   "Ext.grid.selection.Cells": [],
   "Ext.grid.selection.Columns": [],
   "Ext.grid.selection.Model": [],
@@ -86638,6 +88990,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.mixin.Container": [],
   "Ext.mixin.Dirty": [],
   "Ext.mixin.Factoryable": [],
+  "Ext.mixin.FieldDefaults": [],
   "Ext.mixin.Focusable": [],
   "Ext.mixin.FocusableContainer": [],
   "Ext.mixin.Hookable": [],
@@ -86655,6 +89008,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.mixin.Templatable": [],
   "Ext.mixin.Toolable": [],
   "Ext.mixin.Traversable": [],
+  "Ext.mixin.Watchable": [],
   "Ext.navigation.Bar": [],
   "Ext.navigation.View": [
     "Ext.NavigationView"
@@ -86664,8 +89018,11 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.overrides.Widget": [],
   "Ext.overrides.app.Application": [],
   "Ext.overrides.dom.Element": [],
+  "Ext.overrides.drag.proxy.Placeholder": [],
   "Ext.overrides.list.Tree": [],
   "Ext.overrides.list.TreeItem": [],
+  "Ext.panel.Accordion": [],
+  "Ext.panel.Buttons": [],
   "Ext.panel.Collapser": [],
   "Ext.panel.Collapsible": [],
   "Ext.panel.Date": [],
@@ -86674,6 +89031,9 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.panel.Header": [],
   "Ext.panel.Resizable": [],
   "Ext.panel.Resizer": [],
+  "Ext.panel.Time": [],
+  "Ext.panel.TimeHeader": [],
+  "Ext.panel.TimeView": [],
   "Ext.panel.Title": [],
   "Ext.panel.YearPicker": [],
   "Ext.parse.Parser": [],
@@ -86694,6 +89054,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.picker.Picker": [
     "Ext.Picker"
   ],
+  "Ext.picker.SelectPicker": [],
   "Ext.picker.Slot": [],
   "Ext.picker.Tablet": [],
   "Ext.plugin.Abstract": [
@@ -86703,14 +89064,23 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.plugin.MouseEnter": [],
   "Ext.plugin.Responsive": [],
   "Ext.plugin.TabGuard": [],
+  "Ext.plugin.dd.DragDrop": [],
+  "Ext.plugin.dd.DragZone": [],
+  "Ext.plugin.dd.DropZone": [],
   "Ext.promise.Consequence": [],
   "Ext.promise.Deferred": [],
   "Ext.promise.Promise": [],
   "Ext.route.Action": [],
+  "Ext.route.Handler": [],
   "Ext.route.Mixin": [],
   "Ext.route.Route": [],
   "Ext.route.Router": [],
+  "Ext.scroll.NativeScroller": [],
   "Ext.scroll.Scroller": [],
+  "Ext.scroll.VirtualScroller": [],
+  "Ext.scroll.indicator.Bar": [],
+  "Ext.scroll.indicator.Indicator": [],
+  "Ext.scroll.indicator.Overlay": [],
   "Ext.slider.Slider": [],
   "Ext.slider.Thumb": [],
   "Ext.slider.Toggle": [],
@@ -86728,6 +89098,10 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.sparkline.Shape": [],
   "Ext.sparkline.TriState": [],
   "Ext.sparkline.VmlCanvas": [],
+  "Ext.state.Builder": [],
+  "Ext.state.LocalStorage": [],
+  "Ext.state.Provider": [],
+  "Ext.state.Stateful": [],
   "Ext.tab.Bar": [
     "Ext.TabBar"
   ],
@@ -86743,7 +89117,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.util.Audio": [],
   "Ext.util.Bag": [],
   "Ext.util.Base64": [],
-  "Ext.util.BufferedCollection": [],
+  "Ext.util.BasicFilter": [],
   "Ext.util.CSS": [],
   "Ext.util.CSV": [],
   "Ext.util.ClickRepeater": [
@@ -86768,6 +89142,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.util.GroupCollection": [],
   "Ext.util.Grouper": [],
   "Ext.util.HashMap": [],
+  "Ext.util.HeightSynchronizer": [],
   "Ext.util.History": [
     "Ext.History"
   ],
@@ -86791,7 +89166,6 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.util.Offset": [],
   "Ext.util.PaintMonitor": [],
   "Ext.util.Point": [],
-  "Ext.util.PositionMap": [],
   "Ext.util.Positionable": [],
   "Ext.util.Region": [],
   "Ext.util.Schedulable": [],
@@ -86843,8 +89217,14 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.Audio": [
     "widget.audio"
   ],
+  "Ext.BreadcrumbBar": [
+    "widget.breadcrumbbar"
+  ],
   "Ext.Button": [
     "widget.button"
+  ],
+  "Ext.Chip": [
+    "widget.chip"
   ],
   "Ext.Component": [
     "widget.component"
@@ -86898,6 +89278,7 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "Ext.ProgressBase": [],
   "Ext.Promise": [],
+  "Ext.Responsive": [],
   "Ext.SegmentedButton": [
     "widget.segmentedbutton"
   ],
@@ -86910,6 +89291,7 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.SplitButton": [
     "widget.splitbutton"
   ],
+  "Ext.Stateful": [],
   "Ext.TaskQueue": [],
   "Ext.Template": [],
   "Ext.Title": [
@@ -86980,6 +89362,9 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.data.ChainedStore": [
     "store.chained"
   ],
+  "Ext.data.ClientStore": [
+    "store.clientstorage"
+  ],
   "Ext.data.Connection": [],
   "Ext.data.DirectStore": [
     "store.direct"
@@ -87003,6 +89388,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "Ext.data.PageMap": [],
   "Ext.data.ProxyStore": [],
+  "Ext.data.Query": [
+    "query.default"
+  ],
   "Ext.data.Range": [],
   "Ext.data.Request": [],
   "Ext.data.ResultSet": [],
@@ -87101,6 +89489,10 @@ Ext.ClassManager.addNameAliasMappings({
     "proxy.sessionstorage"
   ],
   "Ext.data.proxy.WebStorage": [],
+  "Ext.data.query.Compiler": [],
+  "Ext.data.query.Converter": [],
+  "Ext.data.query.Parser": [],
+  "Ext.data.query.Stringifier": [],
   "Ext.data.reader.Array": [
     "reader.array"
   ],
@@ -87148,6 +89540,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "Ext.data.summary.Min": [
     "data.summary.min"
+  ],
+  "Ext.data.summary.None": [
+    "data.summary.none"
   ],
   "Ext.data.summary.Sum": [
     "data.summary.sum"
@@ -87243,6 +89638,9 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.dataview.BoundListNavigationModel": [
     "navmodel.boundlist"
   ],
+  "Ext.dataview.ChipView": [
+    "widget.chipview"
+  ],
   "Ext.dataview.Component": [
     "widget.componentdataview"
   ],
@@ -87257,6 +89655,7 @@ Ext.ClassManager.addNameAliasMappings({
     "widget.emptytext"
   ],
   "Ext.dataview.GenericItem": [],
+  "Ext.dataview.GroupStore": [],
   "Ext.dataview.IndexBar": [
     "widget.indexbar"
   ],
@@ -87266,8 +89665,13 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.dataview.List": [
     "widget.list"
   ],
+  "Ext.dataview.ListCollapser": [],
+  "Ext.dataview.ListGroup": [],
   "Ext.dataview.ListItem": [
     "widget.listitem"
+  ],
+  "Ext.dataview.ListItemPlaceholder": [
+    "widget.listitemplaceholder"
   ],
   "Ext.dataview.Location": [],
   "Ext.dataview.NavigationModel": [
@@ -87321,6 +89725,8 @@ Ext.ClassManager.addNameAliasMappings({
     "selection.rows"
   ],
   "Ext.dataview.selection.Selection": [],
+  "Ext.dd.Manager": [],
+  "Ext.dd.ScrollManager": [],
   "Ext.direct.Event": [
     "direct.event"
   ],
@@ -87400,6 +89806,12 @@ Ext.ClassManager.addNameAliasMappings({
     "widget.checkbox",
     "widget.checkboxfield"
   ],
+  "Ext.field.CheckboxGroup": [
+    "widget.checkboxgroup"
+  ],
+  "Ext.field.ChipViewNavigationModel": [
+    "navmodel.fieldchipview"
+  ],
   "Ext.field.ComboBox": [
     "widget.combobox",
     "widget.comboboxfield"
@@ -87415,6 +89827,7 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.field.DatePickerNative": [
     "widget.datepickernativefield"
   ],
+  "Ext.field.Dirty": [],
   "Ext.field.Display": [
     "widget.displayfield"
   ],
@@ -87423,6 +89836,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "Ext.field.Field": [
     "widget.field"
+  ],
+  "Ext.field.FieldGroupContainer": [
+    "widget.groupcontainer"
   ],
   "Ext.field.File": [
     "widget.filefield"
@@ -87454,6 +89870,9 @@ Ext.ClassManager.addNameAliasMappings({
     "widget.radio",
     "widget.radiofield"
   ],
+  "Ext.field.RadioGroup": [
+    "widget.radiogroup"
+  ],
   "Ext.field.Search": [
     "widget.searchfield"
   ],
@@ -87474,6 +89893,9 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "Ext.field.TextArea": [
     "widget.textareafield"
+  ],
+  "Ext.field.Time": [
+    "widget.timefield"
   ],
   "Ext.field.Toggle": [
     "widget.togglefield"
@@ -87521,6 +89943,10 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.field.trigger.SpinUp": [
     "trigger.spinup",
     "widget.spinuptrigger"
+  ],
+  "Ext.field.trigger.Time": [
+    "trigger.time",
+    "widget.timetrigger"
   ],
   "Ext.field.trigger.Trigger": [
     "trigger.trigger",
@@ -87589,9 +90015,13 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.grid.Grid": [
     "widget.grid"
   ],
+  "Ext.grid.GridDragZone": [],
+  "Ext.grid.GridDropZone": [],
   "Ext.grid.HeaderContainer": [
     "widget.headercontainer"
   ],
+  "Ext.grid.HeaderDragZone": [],
+  "Ext.grid.HeaderDropZone": [],
   "Ext.grid.Location": [],
   "Ext.grid.NavigationModel": [
     "navmodel.grid"
@@ -87614,6 +90044,8 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.grid.Tree": [
     "widget.tree"
   ],
+  "Ext.grid.TreeDragZone": [],
+  "Ext.grid.TreeDropZone": [],
   "Ext.grid.cell.Base": [
     "widget.gridcellbase"
   ],
@@ -87661,6 +90093,9 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.grid.column.Date": [
     "widget.datecolumn"
   ],
+  "Ext.grid.column.Drag": [
+    "widget.dragcolumn"
+  ],
   "Ext.grid.column.Number": [
     "widget.numbercolumn"
   ],
@@ -87676,12 +90111,36 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.grid.column.Tree": [
     "widget.treecolumn"
   ],
+  "Ext.grid.filters.Column": [],
+  "Ext.grid.filters.Plugin": [
+    "plugin.gridfilters"
+  ],
+  "Ext.grid.filters.menu.Base": [],
+  "Ext.grid.filters.menu.Boolean": [
+    "gridFilters.boolean"
+  ],
+  "Ext.grid.filters.menu.Date": [
+    "gridFilters.date"
+  ],
+  "Ext.grid.filters.menu.Number": [
+    "gridFilters.number"
+  ],
+  "Ext.grid.filters.menu.String": [
+    "gridFilters.string"
+  ],
+  "Ext.grid.locked.Grid": [
+    "widget.lockedgrid"
+  ],
+  "Ext.grid.locked.Region": [
+    "widget.lockedgridregion"
+  ],
   "Ext.grid.menu.Columns": [
     "widget.gridcolumnsmenu"
   ],
   "Ext.grid.menu.GroupByThis": [
     "widget.gridgroupbythismenuitem"
   ],
+  "Ext.grid.menu.Shared": [],
   "Ext.grid.menu.ShowInGroups": [
     "widget.gridshowingroupsmenuitem"
   ],
@@ -87705,9 +90164,15 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.grid.plugin.Editable": [
     "plugin.grideditable"
   ],
+  "Ext.grid.plugin.HeaderReorder": [
+    "plugin.headerreorder"
+  ],
   "Ext.grid.plugin.PagingToolbar": [
     "plugin.gridpagingtoolbar",
     "plugin.pagingtoolbar"
+  ],
+  "Ext.grid.plugin.RowDragDrop": [
+    "plugin.gridrowdragdrop"
   ],
   "Ext.grid.plugin.RowExpander": [
     "plugin.rowexpander"
@@ -87722,11 +90187,29 @@ Ext.ClassManager.addNameAliasMappings({
     "plugin.gridsummaryrow",
     "plugin.summaryrow"
   ],
+  "Ext.grid.plugin.TreeDragDrop": [
+    "plugin.treedragdrop"
+  ],
   "Ext.grid.plugin.ViewOptions": [
     "plugin.gridviewoptions"
   ],
   "Ext.grid.plugin.ViewOptionsListItem": [
     "widget.viewoptionslistitem"
+  ],
+  "Ext.grid.rowedit.Bar": [
+    "widget.roweditorbar"
+  ],
+  "Ext.grid.rowedit.Cell": [
+    "widget.roweditorcell"
+  ],
+  "Ext.grid.rowedit.Editor": [
+    "widget.roweditor"
+  ],
+  "Ext.grid.rowedit.Gap": [
+    "widget.roweditorgap"
+  ],
+  "Ext.grid.rowedit.Plugin": [
+    "plugin.rowedit"
   ],
   "Ext.grid.selection.Cells": [
     "selection.cells"
@@ -87846,6 +90329,7 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.mixin.Container": [],
   "Ext.mixin.Dirty": [],
   "Ext.mixin.Factoryable": [],
+  "Ext.mixin.FieldDefaults": [],
   "Ext.mixin.Focusable": [],
   "Ext.mixin.FocusableContainer": [],
   "Ext.mixin.Hookable": [],
@@ -87863,6 +90347,7 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.mixin.Templatable": [],
   "Ext.mixin.Toolable": [],
   "Ext.mixin.Traversable": [],
+  "Ext.mixin.Watchable": [],
   "Ext.navigation.Bar": [],
   "Ext.navigation.View": [
     "widget.navigationview"
@@ -87872,8 +90357,13 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.overrides.Widget": [],
   "Ext.overrides.app.Application": [],
   "Ext.overrides.dom.Element": [],
+  "Ext.overrides.drag.proxy.Placeholder": [],
   "Ext.overrides.list.Tree": [],
   "Ext.overrides.list.TreeItem": [],
+  "Ext.panel.Accordion": [
+    "widget.accordion"
+  ],
+  "Ext.panel.Buttons": [],
   "Ext.panel.Collapser": [],
   "Ext.panel.Collapsible": [],
   "Ext.panel.Date": [
@@ -87890,6 +90380,15 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "Ext.panel.Resizable": [],
   "Ext.panel.Resizer": [],
+  "Ext.panel.Time": [
+    "widget.timepanel"
+  ],
+  "Ext.panel.TimeHeader": [
+    "widget.analogtimeheader"
+  ],
+  "Ext.panel.TimeView": [
+    "widget.analogtime"
+  ],
   "Ext.panel.Title": [
     "widget.paneltitle"
   ],
@@ -87912,6 +90411,9 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.picker.Picker": [
     "widget.picker"
   ],
+  "Ext.picker.SelectPicker": [
+    "widget.selectpicker"
+  ],
   "Ext.picker.Slot": [
     "widget.pickerslot"
   ],
@@ -87929,15 +90431,36 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.plugin.TabGuard": [
     "plugin.tabguard"
   ],
+  "Ext.plugin.dd.DragDrop": [
+    "plugin.viewdragdrop"
+  ],
+  "Ext.plugin.dd.DragZone": [],
+  "Ext.plugin.dd.DropZone": [],
   "Ext.promise.Consequence": [],
   "Ext.promise.Deferred": [],
   "Ext.promise.Promise": [],
   "Ext.route.Action": [],
+  "Ext.route.Handler": [],
   "Ext.route.Mixin": [],
   "Ext.route.Route": [],
   "Ext.route.Router": [],
+  "Ext.scroll.NativeScroller": [
+    "scroller.native"
+  ],
   "Ext.scroll.Scroller": [
     "scroller.scroller"
+  ],
+  "Ext.scroll.VirtualScroller": [
+    "scroller.virtual"
+  ],
+  "Ext.scroll.indicator.Bar": [
+    "scrollindicator.bar"
+  ],
+  "Ext.scroll.indicator.Indicator": [
+    "scrollindicator.indicator"
+  ],
+  "Ext.scroll.indicator.Overlay": [
+    "scrollindicator.overlay"
   ],
   "Ext.slider.Slider": [
     "widget.slider"
@@ -87978,6 +90501,10 @@ Ext.ClassManager.addNameAliasMappings({
     "widget.sparklinetristate"
   ],
   "Ext.sparkline.VmlCanvas": [],
+  "Ext.state.Builder": [],
+  "Ext.state.LocalStorage": [],
+  "Ext.state.Provider": [],
+  "Ext.state.Stateful": [],
   "Ext.tab.Bar": [
     "widget.tabbar"
   ],
@@ -87995,7 +90522,7 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.util.Audio": [],
   "Ext.util.Bag": [],
   "Ext.util.Base64": [],
-  "Ext.util.BufferedCollection": [],
+  "Ext.util.BasicFilter": [],
   "Ext.util.CSS": [],
   "Ext.util.CSV": [],
   "Ext.util.ClickRepeater": [],
@@ -88014,6 +90541,7 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.util.GroupCollection": [],
   "Ext.util.Grouper": [],
   "Ext.util.HashMap": [],
+  "Ext.util.HeightSynchronizer": [],
   "Ext.util.History": [],
   "Ext.util.Inflector": [],
   "Ext.util.InputBlocker": [],
@@ -88029,7 +90557,6 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.util.Offset": [],
   "Ext.util.PaintMonitor": [],
   "Ext.util.Point": [],
-  "Ext.util.PositionMap": [],
   "Ext.util.Positionable": [],
   "Ext.util.Region": [],
   "Ext.util.Schedulable": [],

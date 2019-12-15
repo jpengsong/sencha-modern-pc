@@ -15,24 +15,25 @@ Ext.define('Ext.dataview.Disclosable', {
 
     toolAnchorName: 'innerElement',
 
-    getDisclosure: function () {
+    getDisclosure: function() {
         return this.lookupTool('disclosure');
     },
 
     privates: {
-        invokeDisclosure: function (tool, handler, e) {
+        invokeDisclosure: function(tool, handler, e) {
             var parent = this.parent;
 
             if (tool.type === 'disclosure' && !handler) {
 
                 if (parent && parent.onItemDisclosureTap) {
                     parent.onItemDisclosureTap(this, e);
+
                     return true;
                 }
             }
         },
 
-        syncDisclosure: function (record) {
+        syncDisclosure: function(record) {
             var me = this,
                 disclosure = me.getDisclosure(),
                 parent = me.parent;

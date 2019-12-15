@@ -1,14 +1,14 @@
-topSuite("Ext.chart.series.Pie3D", ['Ext.chart.*'], function() {
-    describe('radius', function () {
+topSuite("Ext.chart.series.Pie3D", ['Ext.chart.*', 'Ext.data.ArrayStore'], function() {
+    describe('radius', function() {
         var chart,
             layoutDone;
 
-        afterEach(function () {
+        afterEach(function() {
             chart = Ext.destroy(chart);
         });
 
-        it('should not be negative', function () {
-            runs(function () {
+        it('should not be negative', function() {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'polar',
                     width: 1,
@@ -26,31 +26,32 @@ topSuite("Ext.chart.series.Pie3D", ['Ext.chart.*'], function() {
                         angleField: 'x'
                     }],
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
-            runs(function () {
+            runs(function() {
                 expect(chart.getSeries()[0].getRadius() >= 0).toBe(true);
             });
         });
     });
-    describe("renderer", function () {
+
+    describe("renderer", function() {
         var chart,
             red = '#ff0000',
             layoutDone;
 
-        afterEach(function () {
+        afterEach(function() {
             chart = Ext.destroy(chart);
         });
 
-        it("should change slice colors", function () {
-            runs(function () {
+        it("should change slice colors", function() {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'polar',
 
@@ -68,45 +69,47 @@ topSuite("Ext.chart.series.Pie3D", ['Ext.chart.*'], function() {
                     series: [{
                         type: 'pie',
                         angleField: 'x',
-                        renderer: function () {
+                        renderer: function() {
                             return {
                                 fillStyle: red
                             };
                         }
                     }],
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                  var series = chart.getSeries()[0];
+
                  var sprites = series.getSprites();
 
                  for (var i = 0; i < sprites.length; i++) {
                      var sprite = sprites[i];
+
                      expect(sprite.attr.fillStyle).toBe(red);
                  }
             });
         });
     });
 
-    describe('dynamic configuration of visual style', function () {
+    describe('dynamic configuration of visual style', function() {
         var chart, layoutDone;
 
-        afterEach(function () {
+        afterEach(function() {
             chart = Ext.destroy(chart);
         });
 
-        it('should update the chart when configs affecting visual style change', function () {
-            runs(function () {
+        it('should update the chart when configs affecting visual style change', function() {
+            runs(function() {
                 chart = new Ext.chart.PolarChart({
                     renderTo: document.body,
                     width: 400,
@@ -128,18 +131,18 @@ topSuite("Ext.chart.series.Pie3D", ['Ext.chart.*'], function() {
                         angleField: 'x'
                     },
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var series = chart.getSeries()[0],
@@ -183,11 +186,11 @@ topSuite("Ext.chart.series.Pie3D", ['Ext.chart.*'], function() {
                 chart.setInnerPadding(50);
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var series = chart.getSeries()[0],
@@ -247,11 +250,11 @@ topSuite("Ext.chart.series.Pie3D", ['Ext.chart.*'], function() {
                 chart.performLayout();
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var series = chart.getSeries()[0],
@@ -269,7 +272,8 @@ topSuite("Ext.chart.series.Pie3D", ['Ext.chart.*'], function() {
                     '#00ff00',
                     '#ff0000'
                 ];
-                series.setRenderer(function (sprite, config, data, index) {
+
+                series.setRenderer(function(sprite, config, data, index) {
                     return {
                         fillStyle: colors[index % 3]
                     };
@@ -315,6 +319,7 @@ topSuite("Ext.chart.series.Pie3D", ['Ext.chart.*'], function() {
                 });
 
                 var oldLabel = series.getLabel();
+
                 labelInstances = oldLabel.instances;
 
                 expect(labelInstances[0].text).toBe("One");
@@ -333,15 +338,15 @@ topSuite("Ext.chart.series.Pie3D", ['Ext.chart.*'], function() {
         });
     });
 
-    describe('data changes', function () {
+    describe('data changes', function() {
         var chart, layoutDone;
 
-        afterEach(function () {
+        afterEach(function() {
             chart = Ext.destroy(chart);
         });
 
-        it('should update the series sprites when data changes', function () {
-            runs(function () {
+        it('should update the series sprites when data changes', function() {
+            runs(function() {
                 chart = new Ext.chart.PolarChart({
                     renderTo: document.body,
                     width: 400,
@@ -356,22 +361,24 @@ topSuite("Ext.chart.series.Pie3D", ['Ext.chart.*'], function() {
                         angleField: 'x'
                     },
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var sprites = chart.getSeries()[0].getSprites();
+
                 var legendSprites = chart.getLegend().getSprites();
+
                 expect(sprites.length).toBe(0);
                 expect(legendSprites.length).toBe(0);
 
@@ -382,15 +389,17 @@ topSuite("Ext.chart.series.Pie3D", ['Ext.chart.*'], function() {
                 ]);
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var sprites = chart.getSeries()[0].getSprites();
+
                 var legendSprites = chart.getLegend().getSprites();
+
                 expect(sprites.length).toBe(Ext.chart.series.Pie3D.prototype.spritesPerSlice);
                 expect(legendSprites.length).toBe(1);
 
@@ -404,15 +413,17 @@ topSuite("Ext.chart.series.Pie3D", ['Ext.chart.*'], function() {
                 ]);
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 var sprites = chart.getSeries()[0].getSprites();
+
                 var legendSprites = chart.getLegend().getSprites();
+
                 expect(sprites.length).toBe(Ext.chart.series.Pie3D.prototype.spritesPerSlice * 2);
                 expect(legendSprites.length).toBe(2);
             });
@@ -420,17 +431,17 @@ topSuite("Ext.chart.series.Pie3D", ['Ext.chart.*'], function() {
 
     });
 
-    describe("label.renderer", function () {
+    describe("label.renderer", function() {
         var chart,
             labelText = 'xd',
             layoutDone;
 
-        afterEach(function () {
+        afterEach(function() {
             chart = Ext.destroy(chart);
         });
 
-        it("should change slice labels", function () {
-            runs(function () {
+        it("should change slice labels", function() {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'polar',
 
@@ -450,29 +461,31 @@ topSuite("Ext.chart.series.Pie3D", ['Ext.chart.*'], function() {
                         angleField: 'x',
                         label: {
                             field: 'x',
-                            renderer: function () {
+                            renderer: function() {
                                 return labelText;
                             }
                         }
                     }],
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 var series = chart.getSeries()[0];
+
                 var sprites = series.getSprites();
 
                 for (var i = 0; i < sprites.length; i++) {
                     var sprite = sprites[i];
+
                     expect(sprite.getMarker('labels').get(0).text).toBe('xd');
                 }
             });

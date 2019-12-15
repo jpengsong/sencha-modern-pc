@@ -57,7 +57,7 @@ Ext.define('Ext.ux.google.map.Marker', {
         name: 'title',
         type: 'string',
         defaultValue: null
-    },  {
+    }, {
         name: 'animation',
         type: 'number',
         defaultValue: 'DROP',

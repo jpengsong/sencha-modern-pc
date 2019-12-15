@@ -1,10 +1,11 @@
 /**
- * A general picker class. {@link Ext.picker.Slot}s are used to organize multiple scrollable slots into a single picker. {@link #slots} is
- * the only necessary configuration.
+ * A general picker class. {@link Ext.picker.Slot}s are used to organize multiple scrollable
+ * slots into a single picker. {@link #slots} is the only necessary configuration.
  *
  * The {@link #slots} configuration with a few key values:
  *
- * - `name`: The name of the slot (will be the key when using {@link #getValues} in this {@link Ext.picker.Picker}).
+ * - `name`: The name of the slot (will be the key when using {@link #getValues} in this
+ *  {@link Ext.picker.Picker}).
  * - `title`: The title of this slot (if {@link #useTitles} is set to `true`).
  * - `data`/`store`: The data or store to use for this slot.
  *
@@ -30,7 +31,8 @@
  *     Ext.Viewport.add(picker);
  *     picker.show();
  *
- * You can also customize the top toolbar on the {@link Ext.picker.Picker} by changing the {@link #doneButton} and {@link #cancelButton} configurations:
+ * You can also customize the top toolbar on the {@link Ext.picker.Picker} by changing the
+ * {@link #doneButton} and {@link #cancelButton} configurations:
  *
  *     @example
  *     var picker = Ext.create('Ext.Picker', {
@@ -80,7 +82,7 @@
  */
 Ext.define('Ext.picker.Picker', {
     extend: 'Ext.Sheet',
-    alias : 'widget.picker',
+    xtype: 'picker',
     alternateClassName: 'Ext.Picker',
     requires: ['Ext.picker.Slot', 'Ext.TitleBar', 'Ext.data.Model', 'Ext.util.InputBlocker'],
 
@@ -192,12 +194,12 @@ Ext.define('Ext.picker.Picker', {
          * @inheritdoc
          */
         layout: {
-            type : 'hbox',
+            type: 'hbox',
             align: 'stretch'
         },
 
         /**
-         * @cfg
+         * @cfg centered
          * @hide
          */
         centered: false,
@@ -206,7 +208,7 @@ Ext.define('Ext.picker.Picker', {
          * @cfg left
          * @inheritdoc
          */
-        left : 0,
+        left: 0,
 
         /**
          * @cfg right
@@ -291,30 +293,34 @@ Ext.define('Ext.picker.Picker', {
      * @inheritdoc
      */
     floated: true,
-    
-    /**
-     * @property focusEl
-     * @inheritdoc
-     */
-    focusEl: null,
-    
+
     /**
      * @property focusable
      * @inheritdoc
      */
     focusable: true,
-    
+
     /**
      * @cfg tabIndex
      * @inheritdoc
      */
     tabIndex: -1,
 
+    constructor: function(config) {
+        this.callParent([config]);
+
+        // TODO: Should value be a config?
+        // It would entail overriding the generated getter & setter
+        if ('value' in config) {
+            this.setValue(config.value);
+        }
+    },
+
     initialize: function() {
         this.callParent();
 
         this.on({
-            scope   : this,
+            scope: this,
             delegate: 'pickerslot',
             slotpick: 'onSlotPick'
         });
@@ -364,7 +370,8 @@ Ext.define('Ext.picker.Picker', {
     },
 
     /**
-     * Updates the {@link #doneButton} configuration. Will change it into a button when appropriate, or just update the text if needed.
+     * Updates the {@link #doneButton} configuration. Will change it into a button when
+     * appropriate, or just update the text if needed.
      * @param {Object} config
      * @param {Object} oldButton
      * @return {Object}
@@ -375,7 +382,7 @@ Ext.define('Ext.picker.Picker', {
                 config = {};
             }
 
-            if (typeof config == "string") {
+            if (typeof config === "string") {
                 config = {
                     text: config
                 };
@@ -400,7 +407,8 @@ Ext.define('Ext.picker.Picker', {
     },
 
     /**
-     * Updates the {@link #cancelButton} configuration. Will change it into a button when appropriate, or just update the text if needed.
+     * Updates the {@link #cancelButton} configuration. Will change it into a button when
+     * appropriate, or just update the text if needed.
      * @param {Object} config
      * @param {Object} oldButton
      * @return {Object}
@@ -411,7 +419,7 @@ Ext.define('Ext.picker.Picker', {
                 config = {};
             }
 
-            if (typeof config == "string") {
+            if (typeof config === "string") {
                 config = {
                     text: config
                 };
@@ -444,14 +452,8 @@ Ext.define('Ext.picker.Picker', {
             cls = Ext.baseCSSPrefix + 'use-titles',
             i, innerItem;
 
-        //add a cls onto the picker
-        if (useTitles) {
-            this.addCls(cls);
-        } else {
-            this.removeCls(cls);
-        }
+        this.toggleCls(cls, useTitles);
 
-        //show the time on each of the slots
         for (i = 0; i < ln; i++) {
             innerItem = innerItems[i];
 
@@ -462,8 +464,8 @@ Ext.define('Ext.picker.Picker', {
     },
 
     applySlots: function(slots) {
-        //loop through each of the slots and add a reference to this picker
         if (slots) {
+            // eslint-disable-next-line vars-on-top
             var ln = slots.length,
                 i;
 
@@ -510,7 +512,7 @@ Ext.define('Ext.picker.Picker', {
             oldValue = me._value,
             newValue = me.getValue(true);
 
-        if (newValue != oldValue) {
+        if (newValue !== oldValue) {
             me._values = me._value = newValue;
 
             me.fireEvent('change', me, newValue);
@@ -538,20 +540,32 @@ Ext.define('Ext.picker.Picker', {
         this.fireEvent('pick', this, this.getValue(true), slot);
     },
 
-    afterShow: function(me) {
-        me.callParent([me]);
+    afterShow: function() {
+        this.callParent();
 
-        if (!me.isHidden()) {
-            me.setValue(me._value);
-        }
+        this.scrollSlotsIntoView();
 
         Ext.util.InputBlocker.blockInputs();
     },
 
-    updateDisplayed: function (displayed, oldDisplayed) {
+    updateDisplayed: function(displayed, oldDisplayed) {
         this.callParent([displayed, oldDisplayed]);
 
         Ext.util.InputBlocker.blockInputs();
+    },
+
+    scrollSlotsIntoView: function() {
+        var slots = this.getInnerItems(),
+            i, slot, location;
+
+        for (i = 0; i < slots.length; i++) {
+            slot = slots[i];
+            location = slot.getNavigationModel().location;
+
+            // MultiSelection means that you cannot scroll to a selection.
+            // Scroll to the last navigation position
+            slot.navigateToItem(location ? location.item : slot.itemFromRecord(0));
+        }
     },
 
     /**
@@ -568,22 +582,27 @@ Ext.define('Ext.picker.Picker', {
 
         if (!values) {
             values = {};
+
             for (i = 0; i < ln; i++) {
-                //set the value to false so the slot will return null when getValue is called
+                // Set the value to false so the slot will return null when getValue is called
                 values[slots[i].getName()] = null;
             }
         }
 
         for (key in values) {
             value = values[key];
+
             for (i = 0; i < slots.length; i++) {
                 slot = slots[i];
-                if (slot.getName() == key) {
+
+                if (slot.getName() === key) {
                     if (animated) {
                         slot.setValueAnimated(value);
-                    } else {
+                    }
+                    else {
                         slot.setValue(value);
                     }
+
                     break;
                 }
             }
@@ -611,6 +630,7 @@ Ext.define('Ext.picker.Picker', {
         if (useDom) {
             for (i = 0; i < ln; i++) {
                 item = items[i];
+
                 if (item && item.isSlot) {
                     values[item.getName()] = item.getValue(useDom);
                 }
@@ -628,20 +648,5 @@ Ext.define('Ext.picker.Picker', {
      */
     getValues: function() {
         return this.getValue();
-    },
-
-    privates: {
-        /**
-         * This override always reverts focus back to its ownerField on hide, as long
-         * as that field still owns focus. We always need to focus the field on picker hide.
-         * If we are hiding because the focus has left the ownerField, we do nothing.
-         */
-        _revertFocus: function() {
-            var ownerField = this.ownerField;
-
-            if (this.rendered && ownerField && ownerField.containsFocus) {
-                ownerField.revertFocusTo(ownerField.ariaEl);
-            }
-        }
     }
 });

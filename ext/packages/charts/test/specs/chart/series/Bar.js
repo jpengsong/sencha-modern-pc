@@ -1,14 +1,14 @@
 topSuite("Ext.chart.series.Bar", ['Ext.chart.*', 'Ext.data.ArrayStore'], function() {
-    describe("x axis range", function () {
+    describe("x axis range", function() {
         var chart, layoutDone;
 
-        afterEach(function () {
+        afterEach(function() {
             chart = Ext.destroy(chart);
             layoutDone = false;
         });
 
-        it("should be expanded on both sides by half bar width in case of two bars", function () {
-            runs(function () {
+        it("should be expanded on both sides by half bar width in case of two bars", function() {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'cartesian',
                     renderTo: document.body,
@@ -25,10 +25,10 @@ topSuite("Ext.chart.series.Bar", ['Ext.chart.*', 'Ext.data.ArrayStore'], functio
                     },
                     axes: [{
                         type: 'numeric',
-                        position: 'left',
+                        position: 'left'
                     }, {
                         type: 'category',
-                        position: 'bottom',
+                        position: 'bottom'
                     }],
                     series: {
                         type: 'bar',
@@ -36,18 +36,18 @@ topSuite("Ext.chart.series.Bar", ['Ext.chart.*', 'Ext.data.ArrayStore'], functio
                         yField: 'value'
                     },
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 var range = chart.getAxes()[1].getRange();
 
                 // Original range of [0, 1] is expanded to fit the left side
@@ -57,8 +57,8 @@ topSuite("Ext.chart.series.Bar", ['Ext.chart.*', 'Ext.data.ArrayStore'], functio
             });
         });
 
-        it("should be expanded on both sides by half bar width in case of multiple bars", function () {
-            runs(function () {
+        it("should be expanded on both sides by half bar width in case of multiple bars", function() {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'cartesian',
                     renderTo: document.body,
@@ -78,10 +78,10 @@ topSuite("Ext.chart.series.Bar", ['Ext.chart.*', 'Ext.data.ArrayStore'], functio
                     },
                     axes: [{
                         type: 'numeric',
-                        position: 'left',
+                        position: 'left'
                     }, {
                         type: 'category',
-                        position: 'bottom',
+                        position: 'bottom'
                     }],
                     series: {
                         type: 'bar',
@@ -89,18 +89,18 @@ topSuite("Ext.chart.series.Bar", ['Ext.chart.*', 'Ext.data.ArrayStore'], functio
                         yField: 'value'
                     },
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 var range = chart.getAxes()[1].getRange();
 
                 // Original range of [0, 1] is expanded to fit the left side
@@ -110,8 +110,8 @@ topSuite("Ext.chart.series.Bar", ['Ext.chart.*', 'Ext.data.ArrayStore'], functio
             });
         });
 
-        it("should not be expanded in case of a single bar", function () {
-            runs(function () {
+        it("should not be expanded in case of a single bar", function() {
+            runs(function() {
                 chart = Ext.create({
                     xtype: 'cartesian',
                     renderTo: document.body,
@@ -125,10 +125,10 @@ topSuite("Ext.chart.series.Bar", ['Ext.chart.*', 'Ext.data.ArrayStore'], functio
                     },
                     axes: [{
                         type: 'numeric',
-                        position: 'left',
+                        position: 'left'
                     }, {
                         type: 'category',
-                        position: 'bottom',
+                        position: 'bottom'
                     }],
                     series: {
                         type: 'bar',
@@ -136,18 +136,18 @@ topSuite("Ext.chart.series.Bar", ['Ext.chart.*', 'Ext.data.ArrayStore'], functio
                         yField: 'value'
                     },
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 var range = chart.getAxes()[1].getRange();
 
                 // Original range of [0, 1] is expanded to fit the left side

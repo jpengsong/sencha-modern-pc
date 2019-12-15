@@ -1,7 +1,8 @@
 /**
- * The Password field creates a password input and is usually created inside a form. Because it creates a password
- * field, when the user enters text it will show up as stars. Aside from that, the password field is just a normal text
- * field. Here's an example of how to use it in a form:
+ * The Password field creates a password input and is usually created inside a form. 
+ * Because it creates a password field, when the user enters text it will show up as stars. 
+ * Aside from that, the password field is just a normal text field. Here's an example of how 
+ * to use it in a form:
  *
  *     @example
  *     Ext.create('Ext.form.Panel', {
@@ -33,10 +34,10 @@
  *         value: 'existingPassword'
  *     });
  *
- * Because the password field inherits from {@link Ext.field.Text textfield} it gains all of the functionality that text
- * fields provide, including getting and setting the value at runtime, validations and various events that are fired as
- * the user interacts with the component. Check out the {@link Ext.field.Text} docs to see the additional functionality
- * available.
+ * Because the password field inherits from {@link Ext.field.Text textfield} it gains all of 
+ * the functionality that text fields provide, including getting and setting the value at runtime, 
+ * validations and various events that are fired as the user interacts with the component. 
+ * Check out the {@link Ext.field.Text} docs to see the additional functionality available.
  */
 Ext.define('Ext.field.Password', {
     extend: 'Ext.field.Text',
@@ -69,7 +70,7 @@ Ext.define('Ext.field.Password', {
             lazy: true
         }
     },
-    
+
     /**
      * @cfg inputType
      * @inheritdoc
@@ -138,7 +139,7 @@ Ext.define('Ext.field.Password', {
             return (value !== undefined && value !== null && value !== '');
         },
 
-        syncRevealTrigger: function () {
+        syncRevealTrigger: function() {
             var me = this,
                 triggers = me.getTriggers(),
                 revealTrigger = triggers && triggers.reveal,
@@ -149,13 +150,14 @@ Ext.define('Ext.field.Password', {
                     value = me.getValue();
 
                     if (value != null && value !== '' && !me.getDisabled() && !me.getReadOnly()) {
-                        visible = true
+                        visible = true;
                     }
                 }
 
                 if (visible) {
                     revealTrigger.show();
-                } else {
+                }
+                else {
                     revealTrigger.hide();
                 }
             }

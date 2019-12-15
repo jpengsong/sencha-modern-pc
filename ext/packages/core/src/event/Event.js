@@ -1,7 +1,7 @@
 /**
- * Just as {@link Ext.dom.Element} wraps around a native DOM node, {@link Ext.event.Event} wraps the browser's native
- * event-object normalizing cross-browser differences such as mechanisms to stop event-propagation along with a method
- * to prevent default actions from taking place.
+ * Just as {@link Ext.dom.Element} wraps around a native DOM node, {@link Ext.event.Event} wraps
+ * the browser's native event-object normalizing cross-browser differences such as mechanisms
+ * to stop event-propagation along with a method to prevent default actions from taking place.
  *
  * Here is a simple example of how you use it:
  *
@@ -20,11 +20,14 @@
  *         click: function(e, node) {
  *             var string = '';
  *
- *             string += 'You clicked at: <strong>{ x: ' + e.pageX + ', y: ' + e.pageY + ' }</strong> <i>(e.pageX & e.pageY)</i>';
+ *             string += 'You clicked at: { x: ' + e.pageX + ', y: ' + e.pageY + ' } ' +
+                         '<i>(e.pageX & e.pageY)</i>';
  *             string += '<hr />';
- *             string += 'The HTMLElement you clicked has the className of: <strong>' + e.target.className + '</strong> <i>(e.target)</i>';
+ *             string += 'The HTMLElement you clicked has the className of: <strong>' +
+                         e.target.className + '</strong> <i>(e.target)</i>';
  *             string += '<hr />';
- *             string += 'The HTMLElement which has the listener has a className of: <strong>' + e.currentTarget.className + '</strong> <i>(e.currentTarget)</i>';
+ *             string += 'The HTMLElement which has the listener has a className of: <strong>' +
+                          e.currentTarget.className + '</strong> <i>(e.currentTarget)</i>';
  *
  *             Ext.getCmp('logger').setHtml(string);
  *         }
@@ -32,9 +35,11 @@
  *
  * ## Recognizers
  *
- * Ext JS includes many default event recognizers to know when a user interacts with the application.
+ * Ext JS includes many default event recognizers to know when a user interacts with
+ * the application.
  *
- * For a full list of default recognizers, and more information, please view the {@link Ext.event.gesture.Recognizer} documentation.
+ * For a full list of default recognizers, and more information, please view the
+ * {@link Ext.event.gesture.Recognizer} documentation.
  * 
  * This class also provides a set of constants for use with key events.  These are useful
  * for determining if a specific key was pressed, and are available both on instances,
@@ -83,7 +88,7 @@ Ext.define('Ext.event.Event', {
      * Same as `currentTarget`
      * @deprecated 5.0.0 use {@link #currentTarget} instead.
      */
-    
+
     /**
      * @property {Number} button
      * Indicates which mouse button caused the event for mouse events, for example
@@ -127,7 +132,7 @@ Ext.define('Ext.event.Event', {
      * @property {Event} browserEvent
      * The raw browser event which this object wraps.
      */
-    
+
     /**
      * @property {String} pointerType
      * The pointer type for this event. May be empty if the event was
@@ -244,7 +249,7 @@ Ext.define('Ext.event.Event', {
             focusin: 1,
             focusenter: 1
         },
-        
+
         /**
          * @private
          */
@@ -252,6 +257,14 @@ Ext.define('Ext.event.Event', {
             blur: 1,
             focusout: 1,
             focusleave: 1
+        },
+
+        /**
+         * @private
+         */
+        wheelEvents: {
+            wheel: 1,
+            mousewheel: 1
         },
 
         // msPointerTypes in IE10 are numbers, in the w3c spec they are strings.
@@ -308,7 +321,8 @@ Ext.define('Ext.event.Event', {
             CONTEXT_MENU: '\u2630'
         },
 
-        _hyphenRe: /^[a-z]+\-/i,  // eg "Ctrl-" (instead of "Ctrl+")
+        // eslint-disable-next-line no-useless-escape
+        _hyphenRe: /^[a-z]+\-/i, // eg "Ctrl-" (instead of "Ctrl+")
 
         /**
          * Convert a key specification in the form eg: "CTRL+ALT+DELETE" to the glyph sequence
@@ -319,10 +333,12 @@ Ext.define('Ext.event.Event', {
             // Translate eg: 27 to "ESC"
             if (typeof keyName === 'number') {
                 keyName = this.keyCodes[keyName];
-            } else {
+            }
+            else {
                 keyName = keyName.toUpperCase();
             }
 
+            // eslint-disable-next-line vars-on-top
             var me = this,
                 delim = me._hyphenRe.test(keyName) ? '-' : '+',
                 parts = (keyName === delim) ? [delim] : keyName.split(delim),
@@ -339,29 +355,37 @@ Ext.define('Ext.event.Event', {
 
             for (i = 0; i < numModifiers; i++) {
                 eventFlag = me.keyFlags[parts[i]];
+
                 //<debug>
                 if (!eventFlag) {
                     Ext.raise('Invalid key modifier: "' + parts[i] + '"');
                 }
                 //</debug>
+
                 result[eventFlag] = true;
             }
+
             if (result.ctrlKey) {
                 result.push(me.modifierGlyphs.ctrlKey);
             }
+
             if (result.altKey) {
                 result.push(me.modifierGlyphs.altKey);
             }
+
             if (result.shiftKey) {
                 result.push(me.modifierGlyphs.shiftKey);
             }
+
             if (result.metaKey) {
                 result.push(me.modifierGlyphs.metaKey);
             }
+
             result.push(this.specialKeyGlyphs[rawKey] || rawKey);
+
             return result.join('');
         },
-        
+
         /**
          * @private
          */
@@ -370,7 +394,7 @@ Ext.define('Ext.event.Event', {
                 Ext.event.Event.forwardTab = !e.shiftKey;
             }
         },
-        
+
         /**
          * @private
          */
@@ -393,9 +417,8 @@ Ext.define('Ext.event.Event', {
             type = event.type,
             pointerType, relatedTarget;
 
-        // Do not use event.timeStamp as it is not consistent cross browser (some browsers
-        // use high resolution time stamps, while others use milliseconds)
-        me.timeStamp = me.time = Ext.now();
+        // This is a milliseconds value with decimal precision.
+        me.timeStamp = me.time = Ext.ticks();
 
         me.pageX = coordinateOwner.pageX;
         me.pageY = coordinateOwner.pageY;
@@ -405,24 +428,29 @@ Ext.define('Ext.event.Event', {
         me.target = me.delegatedTarget = resolveTextNode(event.target);
         me.currentTarget = resolveTextNode(event.currentTarget);
         relatedTarget = event.relatedTarget;
+
         if (relatedTarget) {
             if (Ext.isGecko && me.geckoRelatedTargetEvents[type]) {
                 try {
                     me.relatedTarget = resolveTextNode(relatedTarget);
-                } catch(e) {
+                }
+                catch (e) {
                     me.relatedTarget = null;
                 }
-            } else {
+            }
+            else {
                 me.relatedTarget = resolveTextNode(relatedTarget);
             }
         }
 
         me.browserEvent = me.event = event;
         me.type = type;
+
         // set button to 0 if undefined so that touchstart, touchend, and tap will quack
         // like left mouse button mousedown mouseup, and click
         me.button = event.button || 0;
         me.shiftKey = event.shiftKey;
+
         // mac metaKey behaves like ctrlKey
         me.ctrlKey = event.ctrlKey || event.metaKey || false;
         me.altKey = event.altKey;
@@ -430,6 +458,7 @@ Ext.define('Ext.event.Event', {
         me.keyCode = event.keyCode;
 
         me.buttons = event.buttons;
+
         // When invoking synthetic events, current APIs do not
         // have the ability to specify the buttons config, which
         // defaults to button. For buttons, 0 means no button
@@ -438,12 +467,12 @@ Ext.define('Ext.event.Event', {
         if (me.button === 0 && me.buttons === 0) {
             me.buttons = 1;
         }
-        
+
         if (self.focusEvents[type] || self.blurEvents[type]) {
             if (self.forwardTab !== undefined) {
                 me.forwardTab = self.forwardTab;
             }
-            
+
             if (self.focusEvents[type]) {
                 me.fromElement = event.relatedTarget;
                 me.toElement = event.target;
@@ -462,18 +491,21 @@ Ext.define('Ext.event.Event', {
 
         if (self.mouseEvents[type]) {
             pointerType = 'mouse';
-        } else if (self.clickEvents[type]) {
+        }
+        else if (self.clickEvents[type]) {
             // On pointer events browsers like IE11 and Edge click events have a pointerType
             // property.  On touch events devices we check if the last touchend event
             // happened less than a second ago - if so we can reasonably assume that
             // the click event happened because of a tap on the screen.
             pointerType = self.pointerTypeMap[event.pointerType] ||
-                (((Ext.now() - Ext.event.publisher.Dom.lastTouchEndTime) < 1000) ? 'touch' : 'mouse');
-        } else if (self.pointerEvents[type]) {
+                (((Ext.now() - Ext.event.publisher.Dom.lastTouchEndTime) < 1000) ? 'touch' : 'mouse'); // eslint-disable-line max-len
+        }
+        else if (self.pointerEvents[type]) {
             // In electron the mousemove event when the mouse first enters the document
             // can have a pointerType of "", so default it to mouse if not found in the map.
             pointerType = self.pointerTypeMap[event.pointerType] || 'mouse';
-        } else if (self.touchEvents[type]) {
+        }
+        else if (self.touchEvents[type]) {
             pointerType = 'touch';
         }
 
@@ -484,6 +516,10 @@ Ext.define('Ext.event.Event', {
         // Is this is not the primary touch for PointerEvents (first touch)
         // or there are multiples touches for Touch Events
         me.isMultitouch = event.isPrimary === false || (event.touches && event.touches.length > 1);
+
+        if (self.wheelEvents[type]) {
+            me.getWheelDeltas(); // call deprecated method to initialize deltaX and deltaY props
+        }
     },
 
     /**
@@ -496,7 +532,9 @@ Ext.define('Ext.event.Event', {
      */
     chain: function(props) {
         var e = Ext.Object.chain(this);
+
         e.parentEvent = this; // needed for stopPropagation
+
         return Ext.apply(e, props);
     },
 
@@ -505,19 +543,30 @@ Ext.define('Ext.event.Event', {
      * @param {Number} delta The delta value.
      * @private
      */
-    correctWheelDelta: function (delta) {
-        var scale = this.WHEEL_SCALE,
-            ret = Math.round(delta / scale);
+    correctWheelDelta: function(delta) {
+        var me = this,
+            // 0 = pixel
+            // 1 = line
+            // 2 = page
+            deltaMode = me.browserEvent.deltaMode,
+            correctedDelta = delta;
 
-        if (!ret && delta) {
-            ret = (delta < 0) ? -1 : 1; // don't allow non-zero deltas to go to zero!
+        if (deltaMode === 0) {
+            correctedDelta = delta * me.WHEEL_PIXEL_SIZE;
+        }
+        else if (deltaMode === 1) {
+            correctedDelta = delta * me.WHEEL_LINE_SIZE;
+        }
+        else if (deltaMode === 2) {
+            correctedDelta = delta * me.WHEEL_PAGE_SIZE;
         }
 
-        return ret;
+        return Math.round(correctedDelta);
     },
 
-    getChar: function () {
+    getChar: function() {
         var r = this.which();
+
         return String.fromCharCode(r);
     },
 
@@ -525,7 +574,7 @@ Ext.define('Ext.event.Event', {
      * Gets the character code for the event.
      * @return {Number}
      */
-    getCharCode: function(){
+    getCharCode: function() {
         return this.charCode || this.keyCode;
     },
 
@@ -533,27 +582,29 @@ Ext.define('Ext.event.Event', {
      * Returns a normalized keyCode for the event.
      * @return {Number} The key code
      */
-    getKey: function () {
+    getKey: function() {
         return this.keyCode || this.charCode;
     },
-    
+
     /**
      * Returns the name of the keyCode for the event.
      * @return {String} The key name
      */
     getKeyName: function() {
-        return this.type === 'keypress' ? String.fromCharCode(this.getCharCode()) : this.keyCodes[this.keyCode];
+        return this.type === 'keypress'
+            ? String.fromCharCode(this.getCharCode())
+            : this.keyCodes[this.keyCode];
     },
 
     /**
      * Returns the `key` property of a keyboard event.
      * @return {String}
      */
-    key: function () {
+    key: function() {
         return this.browserEvent.key;
     },
 
-    which: function () {
+    which: function() {
         var me = this,
             e = me.browserEvent,
             r = e.which;
@@ -596,6 +647,7 @@ Ext.define('Ext.event.Event', {
         }
         else if (clipIE && clipIE.getData) {
             typeIE = this.ieMimeType[type];
+
             if (typeIE) {
                 result = clipIE.getData(typeIE);
             }
@@ -608,7 +660,7 @@ Ext.define('Ext.event.Event', {
      * Returns a point object that consists of the object coordinates.
      * @return {Ext.util.Point} point
      */
-    getPoint: function () {
+    getPoint: function() {
         var me = this,
             point = me.point,
             xy;
@@ -632,7 +684,7 @@ Ext.define('Ext.event.Event', {
      * node.
      * @return {HTMLElement}
      */
-    getRelatedTarget: function(selector, maxDepth, returnEl){
+    getRelatedTarget: function(selector, maxDepth, returnEl) {
         var relatedTarget = this.relatedTarget,
             target = null;
 
@@ -642,10 +694,12 @@ Ext.define('Ext.event.Event', {
         if (relatedTarget && relatedTarget.nodeType) {
             if (selector) {
                 target = Ext.fly(relatedTarget).findParent(selector, maxDepth, returnEl);
-            } else {
+            }
+            else {
                 target = returnEl ? Ext.get(relatedTarget) : relatedTarget;
             }
         }
+
         return target;
     },
 
@@ -660,8 +714,9 @@ Ext.define('Ext.event.Event', {
      * @return {HTMLElement}
      */
     getTarget: function(selector, maxDepth, returnEl) {
-        return selector ? Ext.fly(this.target).findParent(selector, maxDepth, returnEl) :
-            (returnEl ? Ext.get(this.target) : this.target);
+        return selector
+            ? Ext.fly(this.target).findParent(selector, maxDepth, returnEl)
+            : (returnEl ? Ext.get(this.target) : this.target);
     },
 
     /**
@@ -676,8 +731,9 @@ Ext.define('Ext.event.Event', {
      * Normalizes mouse wheel y-delta across browsers. To get x-delta information, use
      * {@link #getWheelDeltas} instead.
      * @return {Number} The mouse wheel y-delta
+     * @deprecated 6.6.0 Use {@link #deltaY} instead
      */
-    getWheelDelta: function(){
+    getWheelDelta: function() {
         var deltas = this.getWheelDeltas();
 
         return deltas.y;
@@ -686,43 +742,38 @@ Ext.define('Ext.event.Event', {
     /**
      * Returns the mouse wheel deltas for this event.
      * @return {Object} An object with "x" and "y" properties holding the mouse wheel deltas.
+     * @deprecated 6.7.0 Use {@link #deltaX} and {@link #deltaY} instead
      */
-    getWheelDeltas: function () {
+    getWheelDeltas: function() {
         var me = this,
-            event = me.browserEvent,
-            dx = 0, dy = 0; // the deltas
+            wheelDeltas = me.wheelDeltas,
+            browserEvent, deltaX, deltaY;
 
-        if (Ext.isDefined(event.wheelDeltaX)) { // WebKit and Edge have both dimensions
-            dx = event.wheelDeltaX;
-            dy = event.wheelDeltaY;
-        } else if (event.wheelDelta) { // old WebKit and IE
-            dy = event.wheelDelta;
-        } else if ('deltaX' in event) { // IE11
-            dx = event.deltaX;
-            dy = -event.deltaY; // backwards
-        } else if (event.detail) { // Gecko
-            dy = -event.detail; // gecko is backwards
+        if (!wheelDeltas) {
+            browserEvent = me.browserEvent;
 
-            // Gecko sometimes returns really big values if the user changes settings to
-            // scroll a whole page per scroll
-            if (dy > 100) {
-                dy = 3;
-            } else if (dy < -100) {
-                dy = -3;
-            }
+            deltaX = me.correctWheelDelta(browserEvent.deltaX || 0);
 
-            // Firefox 3.1 adds an axis field to the event to indicate direction of
-            // scroll.  See https://developer.mozilla.org/en/Gecko-Specific_DOM_Events
-            if (Ext.isDefined(event.axis) && event.axis === event.HORIZONTAL_AXIS) {
-                dx = dy;
-                dy = 0;
-            }
+            deltaY = browserEvent.deltaY;
+            deltaY = me.correctWheelDelta(deltaY == null ? -browserEvent.wheelDelta : deltaY);
+
+            /**
+             * @property {Number} deltaX
+             */
+            me.deltaX = deltaX;
+
+            /**
+             * @property {Number} deltaY
+             */
+            me.deltaY = deltaY;
+
+            me.wheelDeltas = wheelDeltas = {
+                x: deltaX,
+                y: deltaY
+            };
         }
 
-        return {
-            x: me.correctWheelDelta(dx),
-            y: me.correctWheelDelta(dy)
-        };
+        return wheelDeltas;
     },
 
     /**
@@ -744,6 +795,7 @@ Ext.define('Ext.event.Event', {
         if (!xy) {
             xy = me.xy = [me.pageX, me.pageY];
             //<feature legacyBrowser>
+            // eslint-disable-next-line vars-on-top, one-var
             var x = xy[0],
                 browserEvent, doc, docEl, body;
 
@@ -757,13 +809,38 @@ Ext.define('Ext.event.Event', {
                     (docEl && docEl.scrollLeft || body && body.scrollLeft || 0) -
                     (docEl && docEl.clientLeft || body && body.clientLeft || 0);
                 xy[1] = browserEvent.clientY +
-                    (docEl && docEl.scrollTop  || body && body.scrollTop  || 0) -
-                    (docEl && docEl.clientTop  || body && body.clientTop  || 0);
+                    (docEl && docEl.scrollTop || body && body.scrollTop || 0) -
+                    (docEl && docEl.clientTop || body && body.clientTop || 0);
             }
             //</feature>
         }
 
         return xy;
+    },
+
+    /**
+     * @private
+     * Gets the event coordinates relative to the `currentTarget`s position.
+     * @param {Boolean} clip
+     * The returned coordinates are guaranteed to be within
+     * [0, width] and [0, height] of the target, if `clip` is set to `true`.
+     * @return {Number[]} The xy values like [x, y]
+     */
+    getLocalXY: function(clip) {
+        // TODO: check with RTL
+        var pageXY = this.getXY(),
+            targetXY = Ext.fly(this.currentTarget).getXY(),
+            localX = pageXY[0] - targetXY[0],
+            localY = pageXY[1] - targetXY[1],
+            size;
+
+        if (clip) {
+            size = Ext.fly(this.currentTarget).getSize();
+            localX = Math.max(0, Math.min(localX, size.width));
+            localY = Math.max(0, Math.min(localY, size.height));
+        }
+
+        return [localX, localY];
     },
 
     /**
@@ -774,12 +851,13 @@ Ext.define('Ext.event.Event', {
         return this.getXY()[1];
     },
 
-   /**
+    /**
     * Returns true if the control, meta, shift or alt key was pressed during this event.
     * @return {Boolean}
     */
     hasModifier: function() {
         var me = this;
+
         return !!(me.ctrlKey || me.altKey || me.shiftKey || me.metaKey);
     },
 
@@ -810,11 +888,9 @@ Ext.define('Ext.event.Event', {
             isKeyPress = me.type === 'keypress';
 
         // See specs for description of behaviour
-        return ((!isKeyPress || Ext.isGecko) && k >= 33 && k <= 40) ||  // Page Up/Down, End, Home, Left, Up, Right, Down
-               (!scrollableOnly &&
-               (k === me.RETURN ||
-                k === me.TAB ||
-                k === me.ESC));
+        // Page Up/Down, End, Home, Left, Up, Right, Down
+        return ((!isKeyPress || Ext.isGecko) && k >= 33 && k <= 40) ||
+               (!scrollableOnly && (k === me.RETURN || k === me.TAB || k === me.ESC));
     },
 
     /**
@@ -849,7 +925,7 @@ Ext.define('Ext.event.Event', {
             k = me.keyCode,
             isGecko = Ext.isGecko,
             isKeyPress = me.type === 'keypress';
-        
+
         // See specs for description of behaviour
         return (isGecko && isKeyPress && me.charCode === 0) ||
                (this.isNavKeyPress()) ||
@@ -923,6 +999,7 @@ Ext.define('Ext.event.Event', {
         if (me.mousedownEvents[me.type]) {
             Ext.GlobalEvents.fireMouseDown(me);
         }
+
         // Fire the "unstoppable" global mouseup event
         // (used for component unpressing, etc)
         if (me.mouseupEvents[me.type]) {
@@ -951,6 +1028,7 @@ Ext.define('Ext.event.Event', {
         if (!browserEvent.stopPropagation) {
             // IE < 10 does not have stopPropagation()
             browserEvent.cancelBubble = true;
+
             return me;
         }
         //</feature>
@@ -984,7 +1062,8 @@ Ext.define('Ext.event.Event', {
 
         if (parentEvent && !me.isGesture) {
             parentEvent.claimGesture();
-        } else {
+        }
+        else {
             // Claiming a gesture should also prevent default browser actions like pan/zoom
             // if possible (only works on browsers that support touch events - browsers that
             // use pointer events must declare a CSS touch-action on elements to prevent the
@@ -1053,7 +1132,7 @@ Ext.define('Ext.event.Event', {
                  * @member Ext.event.Event
                  */
                 getPageX: 'getX',
-                
+
                 /**
                  * @method getPageY
                  * Gets the y coordinate of the event.
@@ -1246,49 +1325,44 @@ Ext.define('Ext.event.Event', {
 
             /**
              * @property {Number}
-             * The mouse wheel delta scaling factor. This value depends on browser
-             * version and OS and attempts to produce a similar scrolling experience
-             * across all platforms and browsers.
+             * The mouse wheel delta scaling factor when the
+             * [`deltaMode`](https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent/deltaMode)
+             * is DOM_DELTA_PIXEL
              *
              * To change this value:
              *
-             *      Ext.event.Event.prototype.WHEEL_SCALE = 72;
+             *      Ext.event.Event.prototype.WHEEL_PIXEL_SIZE = 3;
              */
-            WHEEL_SCALE: 120 // IE, Opera and other Windows browsers use 120
+            WHEEL_PIXEL_SIZE: 1,
+
+            /**
+             * @property {Number}
+             * The mouse wheel delta scaling factor when the
+             * [`deltaMode`](https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent/deltaMode)
+             * is DOM_DELTA_LINE
+             *
+             * To change this value:
+             *
+             *      Ext.event.Event.prototype.WHEEL_LINE_SIZE = 16;
+             */
+            WHEEL_LINE_SIZE: 20,
+
+            /**
+             * @property {Number}
+             * The mouse wheel delta scaling factor when the
+             * [`deltaMode`](https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent/deltaMode)
+             * is DOM_DELTA_PAGE
+             *
+             * To change this value:
+             *
+             *      Ext.event.Event.prototype.WHEEL_PAGE_SIZE = 400;
+             */
+            WHEEL_PAGE_SIZE: 600
         },
         keyCodes = {},
         gestureEvents = Event.gestureEvents,
         prototype = Event.prototype,
-        i, keyName, keyCode, keys, s, scale;
-
-    if (Ext.isGecko) {
-        // Firefox uses 3 on all platforms
-        constants.WHEEL_SCALE = 3;
-    } else if (Ext.isMac) {
-        // Continuous scrolling devices have momentum and produce much more scroll than
-        // discrete devices on the same OS and browser. To make things exciting, Safari
-        // (and not Chrome) changed from small values to 120 (like IE).
-
-        if (Ext.isSafari && Ext.webKitVersion >= 532.0) {
-            // Safari changed the scrolling factor to match IE (for details see
-            // https://bugs.webkit.org/show_bug.cgi?id=24368). The WebKit version where this
-            // change was introduced was 532.0
-            //      Detailed discussion:
-            //      https://bugs.webkit.org/show_bug.cgi?id=29601
-            //      http://trac.webkit.org/browser/trunk/WebKit/chromium/src/mac/WebInputEventFactory.mm#L1063
-            scale = 120;
-        } else {
-            // MS optical wheel mouse produces multiples of 12 which is close enough
-            // to help tame the speed of the continuous mice...
-            scale = 12;
-        }
-
-        // Momentum scrolling produces very fast scrolling, so increase the scale factor
-        // to help produce similar results cross platform. This could be even larger and
-        // it would help those mice, but other mice would become almost unusable as a
-        // result (since we cannot tell which device type is in use).
-        constants.WHEEL_SCALE = 3 * scale;
-    }
+        i, keyName, keyCode, keys;
 
     Ext.apply(gestureEvents, Event.mouseEvents);
     Ext.apply(gestureEvents, Event.pointerEvents);
@@ -1296,15 +1370,12 @@ Ext.define('Ext.event.Event', {
 
     Ext.apply(Event, constants);
     Ext.apply(prototype, constants);
-    
-    // Don't need that
-    delete constants.WHEEL_SCALE;
-    
+
     // ENTER and RETURN has the same keyCode, but since RETURN
     // comes later it will win over ENTER down there. However
     // ENTER is used more often and feels more natural.
     delete constants.RETURN;
-    
+
     // We need this to do reverse lookup of key name by its code
     for (keyName in constants) {
         keyCode = constants[keyName];
@@ -1312,13 +1383,13 @@ Ext.define('Ext.event.Event', {
     }
 
     Event.keyCodes = prototype.keyCodes = keyCodes;
-    
+
     // Classic Event override will install this handler in IE9-
     if (!Ext.isIE9m) {
         document.addEventListener('keydown', Event.globalTabKeyDown, true);
-        document.addEventListener('keyup',   Event.globalTabKeyUp,   true);
+        document.addEventListener('keyup', Event.globalTabKeyUp, true);
     }
-    
+
     /**
      * @member Ext.event.Event
      * @private
@@ -1401,11 +1472,12 @@ Ext.define('Ext.event.Event', {
         for (i = 1; i < 25; ++i) {
             keys[i + 111] = 'F' + i; // F1 - F24
         }
+
         for (i = 0; i < 26; ++i) { // a-z, A-Z
             keys[i] = [String.fromCharCode(i + 97), String.fromCharCode(i + 65)];
         }
 
-        prototype.key = function () {
+        prototype.key = function() {
             var k = keys[this.browserEvent.which || this.keyCode];
 
             if (k && typeof k !== 'string') {

@@ -16,7 +16,7 @@ function() {
         }, cfg || {}));
     }
 
-    afterEach(function () {
+    afterEach(function() {
         Ext.destroy(toolbar);
         toolbar = null;
     });
@@ -46,8 +46,8 @@ function() {
         expect(button.getMenu().isVisible(true)).toBe(true);
     });
 
-    describe('addComponentToMenu', function () {
-        it('should create an overflowClone bound to each toolbar item', function () {
+    describe('addComponentToMenu', function() {
+        it('should create an overflowClone bound to each toolbar item', function() {
             createToolbar();
 
             toolbar.layout.overflowHandler.menu.show();
@@ -55,7 +55,7 @@ function() {
             expect(toolbar.items.getAt(0).overflowClone).toBeDefined();
         });
 
-        it('should create an overflowClone bound to each toolbar item that is a reference to each menu item', function () {
+        it('should create an overflowClone bound to each toolbar item that is a reference to each menu item', function() {
             var menu, item;
 
             createToolbar();
@@ -70,8 +70,8 @@ function() {
         });
     });
 
-    describe('createMenuConfig', function () {
-        it('should have same state as its complement toolbar item', function () {
+    describe('createMenuConfig', function() {
+        it('should have same state as its complement toolbar item', function() {
             var toolbarItems, overflowHandler, menuItems;
 
             createToolbar({
@@ -100,7 +100,7 @@ function() {
             expect(menuItems.getAt(1).checked).toBe(false);
         });
 
-        it('should be able to enable/disable a component', function () {
+        it('should be able to enable/disable a component', function() {
             var toolbarItems, overflowHandler, menuItems;
 
             createToolbar({
@@ -113,7 +113,7 @@ function() {
                     name: 'check2',
                     itemId: 'check2',
                     checked: true,
-                    disabled : true
+                    disabled: true
                 }]
             });
 
@@ -131,7 +131,7 @@ function() {
             expect(menuItems.getAt(1).disabled).toBe(false);
         });
 
-        it('should not overwrite listeners config defined on the original component', function () {
+        it('should not overwrite listeners config defined on the original component', function() {
             // This test demonstrates that the menu item created from the original component's config
             // will receive any listeners defined in the item's listeners config.
             var wasClicked = false,
@@ -142,7 +142,7 @@ function() {
                     // Button by default.
                     xtype: 'button',
                     listeners: {
-                        click: function () {
+                        click: function() {
                             wasClicked = true;
                         }
                     }
@@ -156,7 +156,7 @@ function() {
             expect(wasClicked).toBe(true);
         });
 
-        it('should apply overflowText if defined', function () {
+        it('should apply overflowText if defined', function() {
             var overflowHandler, menuItems;
 
             createToolbar({
@@ -165,7 +165,7 @@ function() {
                 }, {
                     text: 'Item Two',
                     overflowText: 'Two'
-                },{
+                }, {
                     overflowText: 'Three'
                 }]
             });
@@ -194,15 +194,15 @@ function() {
             });
             overflowHandler = toolbar.layout.overflowHandler;
             master = toolbar.down('#text1');
-            
+
             overflowHandler.menu.show();
             clone = overflowHandler.menu.down('[name=text1]');
 
             // Check syncing both ways
             master.setValue('foo');
-            expect(clone.getValue()).toBe('foo');            
+            expect(clone.getValue()).toBe('foo');
             clone.setValue('bar');
-            expect(master.getValue()).toBe('bar')
+            expect(master.getValue()).toBe('bar');
         });
     });
 });

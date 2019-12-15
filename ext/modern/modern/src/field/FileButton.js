@@ -46,20 +46,20 @@ Ext.define('Ext.field.FileButton', {
     preventDefaultAction: false,
     keyHandlersAdded: true,
 
-    eventHandlers: {
-        change: 'onChange'
-    },
-
     getButtonTemplate: function() {
         var template = this.callParent();
 
         template.tag = 'input';
-        template.onchange = 'return Ext.doEv(this, event);';
+        template.listeners = template.listeners || {};
+        template.listeners.change = {
+            fn: 'onChange',
+            delegated: false
+        };
 
         return template;
     },
 
-    applyAccept: function (value) {
+    applyAccept: function(value) {
         switch (value) {
             case "video":
             case "audio":
@@ -71,13 +71,15 @@ Ext.define('Ext.field.FileButton', {
         this.setInputAttribute('accept', value);
     },
 
-    applyCapture: function (value) {
+    applyCapture: function(value) {
         this.setInputAttribute('capture', value);
+
         return value;
     },
 
-    applyMultiple: function (value) {
+    applyMultiple: function(value) {
         this.setInputAttribute('multiple', value ? '' : null);
+
         return value;
     },
 
@@ -93,12 +95,12 @@ Ext.define('Ext.field.FileButton', {
      * Returns the field files.
      * @return {FileList} List of the files selected.
      */
-    getFiles: function () {
+    getFiles: function() {
         return this.buttonElement.dom.files;
     },
 
     privates: {
-        setInputAttribute: function (attribute, newValue) {
+        setInputAttribute: function(attribute, newValue) {
             var buttonElement = this.buttonElement.dom;
 
             if (!Ext.isEmpty(newValue, true)) {

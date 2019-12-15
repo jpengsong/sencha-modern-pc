@@ -13,7 +13,7 @@
  */
 Ext.define('Ext.ux.google.Map', {
     extend: 'Ext.Container',
-    xtype : ['map', 'google-map'],
+    xtype: ['map', 'google-map'],
     alternateClassName: 'Ext.Map',
     requires: ['Ext.util.Geolocation'],
     mixins: ['Ext.mixin.Mashup'],
@@ -256,16 +256,20 @@ Ext.define('Ext.ux.google.Map', {
 
     initMap: function() {
         var map = this.getMap();
-        if(!map) {
+
+        if (!map) {
             var gm = (window.google || {}).maps;
-            if(!gm) return null;
+
+            if (!gm) {
+                return null;
+            }
 
             var element = this.mapContainer,
                 mapOptions = this.getMapOptions(),
                 event = gm.event,
                 me = this;
 
-            //Remove the API Required div
+            // Remove the API Required div
             if (element.dom.firstChild) {
                 Ext.fly(element.dom.firstChild).destroy();
             }
@@ -296,6 +300,7 @@ Ext.define('Ext.ux.google.Map', {
             event.addListenerOnce(map, 'tilesloaded', Ext.bind(me.onTilesLoaded, me));
             this.addMapListeners();
         }
+
         return this.getMap();
     },
 
@@ -325,9 +330,11 @@ Ext.define('Ext.ux.google.Map', {
 
     updateMap: function(map) {
         var markers = this.getMarkers();
+
         if (markers) {
             markers.each(function(record) {
                 var marker = this.getMarkerForRecord(record);
+
                 if (marker) {
                     marker.setMap(map);
                 }
@@ -359,7 +366,8 @@ Ext.define('Ext.ux.google.Map', {
 
         if (Ext.isArray(value)) {
             value = { data: value };
-        } else if (Ext.isObject(value)) {
+        }
+        else if (Ext.isObject(value)) {
             value = { data: [value] };
         }
 
@@ -386,12 +394,13 @@ Ext.define('Ext.ux.google.Map', {
         }
     },
 
-    applyMarkerTemplate: function (value) {
+    applyMarkerTemplate: function(value) {
         return Ext.util.ObjectTemplate.create(value);
     },
 
     updateMarkerTemplate: function(value) {
         var markers = this.getMarkers();
+
         if (markers) {
             this.refreshMarkers(markers.getRange());
         }
@@ -407,6 +416,7 @@ Ext.define('Ext.ux.google.Map', {
 
     updateUseCurrentLocation: function(useCurrentLocation) {
         this.setGeo(useCurrentLocation);
+
         if (!useCurrentLocation) {
             this.setMapCenter();
         }
@@ -418,9 +428,9 @@ Ext.define('Ext.ux.google.Map', {
 
     updateGeo: function(newGeo, oldGeo) {
         var events = {
-            locationupdate : 'onGeoUpdate',
-            locationerror : 'onGeoError',
-            scope : this
+            locationupdate: 'onGeoUpdate',
+            locationerror: 'onGeoError',
+            scope: this
         };
 
         if (oldGeo) {
@@ -455,9 +465,9 @@ Ext.define('Ext.ux.google.Map', {
     /**
      * @private
      */
-	onTilesLoaded: function() {
-		this.fireEvent('maprender', this, this.getMap());
-	},
+    onTilesLoaded: function() {
+        this.fireEvent('maprender', this, this.getMap());
+    },
 
     /**
      * @private
@@ -467,18 +477,20 @@ Ext.define('Ext.ux.google.Map', {
             map = this.getMap(),
             mapListeners = this.getMapListeners();
 
-
         if (gm) {
             var event = gm.event,
                 me = this,
                 listener, scope, fn, callbackFn, handle;
+
             if (Ext.isSimpleObject(mapListeners)) {
                 for (var eventType in mapListeners) {
                     listener = mapListeners[eventType];
+
                     if (Ext.isSimpleObject(listener)) {
                         scope = listener.scope;
                         fn = listener.fn;
-                    } else if (Ext.isFunction(listener)) {
+                    }
+                    else if (Ext.isFunction(listener)) {
                         scope = null;
                         fn = listener;
                     }
@@ -486,17 +498,22 @@ Ext.define('Ext.ux.google.Map', {
                     if (fn) {
                         callbackFn = function() {
                             this.fn.apply(this.scope, [me]);
-                            if(this.handle) {
+
+                            if (this.handle) {
                                 event.removeListener(this.handle);
                                 delete this.handle;
                                 delete this.fn;
                                 delete this.scope;
                             }
                         };
+
                         handle = event.addListener(map, eventType, Ext.bind(callbackFn, callbackFn));
                         callbackFn.fn = fn;
                         callbackFn.scope = scope;
-                        if(listener.single === true) callbackFn.handle = handle;
+
+                        if (listener.single === true) {
+                            callbackFn.handle = handle;
+                        }
                     }
                 }
             }
@@ -546,8 +563,10 @@ Ext.define('Ext.ux.google.Map', {
                 else {
                     coordinates = new gm.LatLng(37.381592, -122.135672); // Palo Alto
                 }
-            } else if (coordinates.isModel) {
+            }
+            else if (coordinates.isModel) {
                 var marker = me.getMarkerForRecord(coordinates);
+
                 coordinates = marker && marker.position;
             }
 
@@ -590,6 +609,7 @@ Ext.define('Ext.ux.google.Map', {
 
         if (Ext.isEmpty(records)) {
             records = markers.getRange();
+
             if (Ext.isEmpty(records)) {
                 return;
             }
@@ -598,6 +618,7 @@ Ext.define('Ext.ux.google.Map', {
         b1 = new gm.LatLngBounds();
         Ext.each(records, function(record) {
             var marker = me.getMarkerForRecord(record);
+
             if (marker) {
                 b1.extend(marker.getPosition());
             }
@@ -611,7 +632,8 @@ Ext.define('Ext.ux.google.Map', {
         if ((b1ne.lat() - b1sw.lat()) > (b2ne.lat() - b2sw.lat()) ||
             (b1ne.lng() - b1sw.lng()) > (b2ne.lng() - b2sw.lng())) {
             map.fitBounds(b1);
-        } else {
+        }
+        else {
             map.panToBounds(b1);
         }
     },
@@ -619,7 +641,7 @@ Ext.define('Ext.ux.google.Map', {
     /**
      * @private
      */
-    onZoomChange : function() {
+    onZoomChange: function() {
         var mapOptions = this.getMapOptions(),
             map = this.getMap(),
             zoom;
@@ -636,7 +658,7 @@ Ext.define('Ext.ux.google.Map', {
     /**
      * @private
      */
-    onTypeChange : function() {
+    onTypeChange: function() {
         var mapOptions = this.getMapOptions(),
             map = this.getMap(),
             mapTypeId;
@@ -699,6 +721,7 @@ Ext.define('Ext.ux.google.Map', {
 
         getMarkerForRecord: function(record) {
             var expando = record && Ext.getExpando(record, this.getId());
+
             return (expando && expando.marker) || null;
         },
 
@@ -747,6 +770,7 @@ Ext.define('Ext.ux.google.Map', {
 
         removeMarkers: function(records) {
             var eid = this.getId();
+
             Ext.each(records, function(record) {
                 var expando = Ext.getExpando(record, eid),
                     marker = expando && expando.marker;
@@ -771,17 +795,18 @@ Ext.define('Ext.ux.google.Map', {
             for (i = 0; i < count; ++i) {
                 record = records[i];
                 marker = me.getMarkerForRecord(record);
+
                 if (marker) {
                     marker.setOptions(me.buildMarkerOptions(record, tpl));
                 }
             }
         },
 
-        onMarkersAdd: function(collection , details) {
+        onMarkersAdd: function(collection, details) {
             this.addMarkers(details.items);
         },
 
-        onMarkersRemove: function(collection , details) {
+        onMarkersRemove: function(collection, details) {
             this.removeMarkers(details.items);
         },
 

@@ -2,32 +2,19 @@ Ext.define("App.view.systemmanage.sysorg.SysOrgController", {
     extend: 'Ext.app.ViewController',
     alias: "controller.sysorg",
 
-    //左侧组织机构选中某一项
-    onTreeSelect: function (store, record, index, eOpts) {
-        var me = this, refs = me.getReferences(), vm = me.getViewModel(), querypanel = refs.query, gridStore = vm.getStore("gridstore");
-        Ext.override(querypanel, {
-            getQueryItems: function () {
-                var queryItems = App.Page.getQueryItems(Ext.ComponentQuery.query("container[reference='searchcondition']", querypanel)[0]);
-                queryItems["ParentOrgId"] = record.data.SysOrgId;
-                return queryItems;
-            }
-        });
-        App.Page.setQueryItems(gridStore, querypanel.getQueryItems());
-        gridStore.loadPage(1);
+    //加载Tree
+    loadTree:function(store, records, successful, operation, node, eOpts){
+        if (successful && records.length > 0) {
+            records[0].getOwnerTree().getSelectable().select(records[0]);
+        }
     },
 
-    //组织机构返回结果
-    treeNavNodeRenderer: function (value) {
-        return this.rendererRegExp ? value.replace(this.rendererRegExp, '<span style="color:red;font-weight:bold">$1</span>') : value;
-    },
-
-    //组织机构文本搜索
-    onFilterFieldChange: function (field, value) {
+    //文本搜索组织机构
+    onSearchTreeChange: function (field, value) {
         var me = this, store = me.getViewModel().get("treestore"), regExp, collection; me.rendererRegExp = null;
         if (store != null) {
             store.clearFilter();
             if (value) {
-                field.getTrigger('clear').show();
                 me.rendererRegExp = new RegExp('(' + value + ')');
                 regExp = new RegExp('.*' + value + '.*');
                 collection = new Ext.util.MixedCollection();
@@ -53,31 +40,43 @@ Ext.define("App.view.systemmanage.sysorg.SysOrgController", {
                         return false;
                     })
                 };
-            } else {
-                field.getTrigger('clear').hide();
             }
         }
     },
 
-    //组织机构清除图标
-    onFilterClearTriggerClick: function () {
-        this.getReferences().navtreeFilter.setValue();
+    //组织机构返回结果
+    treeNodeRenderer: function (value) {
+        return this.rendererRegExp ? value.replace(this.rendererRegExp, '<span style="color:red;font-weight:bold">$1</span>') : value;
     },
 
-    //组织机构放大镜图标
-    onFilterSearchTriggerClick: function () {
-        var field = this.getReferences().navtreeFilter;
-        this.onFilterFieldChange(field, field.getValue());
+    //左侧组织机构选中某一项
+    onTreeSelect: function (store, record, index, eOpts) {
+        var me = this, refs = me.getReferences(), vm = me.getViewModel(), gridStore = vm.getStore("gridstore"),queryItems =  App.Page.getQueryItems(refs.search);
+        me.onSearch();
+    },
+
+    //查询
+    onSearch:function(){
+        var me = this, refs = me.getReferences(), gridStore = refs.grid.getStore(),queryItems = App.Page.getQueryItems(refs.search),record = refs.tree.getSelectable().getSelectedRecord();
+        queryItems["ParentOrgId"] = record.get("SysOrgId");
+        App.Page.setQueryItems(gridStore,queryItems);
+        gridStore.loadPage(1);
+    },
+
+    //重置
+    onReset:function(){
+        var me = this, refs = me.getReferences();
+        App.Page.resetQueryItems(refs.search);
     },
 
     //添加
     onAdd: function () {
         var me = this, record, refs = me.getReferences();
         if (App.Page.selectionModel(refs.tree, false)) {
-            selRecord = refs.tree.getSelectionModel().getSelection()[0];
+            selRecord = refs.tree.getSelectable().getSelectedRecord();
             record = Ext.create("App.model.systemmanage.SysOrg");
             record.set("ParentOrgId", selRecord.get("SysOrgId"));
-            record.set("level", selRecord.get("level") + 1);
+            record.set("Level", selRecord.get("Level") + 1);
             Ext.widget({
                 title: "新增机构",
                 xtype: "sysorgedit",
@@ -102,8 +101,8 @@ Ext.define("App.view.systemmanage.sysorg.SysOrgController", {
     onEdit: function () {
         var me = this, record, refs = me.getReferences();
         if (App.Page.selectionModel(refs.grid, false)) {
-            record = refs.grid.getSelectionModel().getSelection()[0];
-            selRecord = refs.tree.getSelectionModel().getSelection()[0];
+            record = refs.grid.getSelectable().getSelectedRecord();
+            selRecord = refs.tree.getSelectable().getSelectedRecord();
             Ext.widget({
                 title: "编辑机构",
                 xtype: "sysorgedit",
@@ -128,7 +127,7 @@ Ext.define("App.view.systemmanage.sysorg.SysOrgController", {
     onDelete: function () {
         var me = this, refs = me.getReferences(), records, idArray = [];
         if (App.Page.selectionModel(refs.grid, true)) {
-            records = refs.grid.getSelectionModel().getSelection();
+            records = refs.grid.getSelectable().getSelectedRecords();
             Ext.each(records, function (record, index) {
                 idArray.push(record.get("SysOrgId"));
             })
@@ -145,15 +144,15 @@ Ext.define("App.view.systemmanage.sysorg.SysOrgController", {
                             params: idArray.join(','),
                             success: function (data) {
                                 if (data.Data > 0) {
-                                    App.Msg.Info("删除成功");
-                                    refs.grid.getStore().loadPage(1);
-                                    App.TreeNode.updateChildNodes(refs.tree.getSelectionModel().getSelection()[0]);
+                                    Ext.Msg.alert("提示","删除成功");
+                                    me.onSearch();
+                                    //App.TreeNode.updateChildNodes(refs.tree.getSelectable().getSelectedRecord());
                                 } else {
-                                    App.Msg.Error("删除失败");
+                                    Ext.Msg.alert("提示","删除失败");
                                 }
                             },
                             error: function (msg) {
-                                App.Msg.Error(msg);
+                                Ext.Msg.alert("提示",msg);
                             }
                         })
                     }

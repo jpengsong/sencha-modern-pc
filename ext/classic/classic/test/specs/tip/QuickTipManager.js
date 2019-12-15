@@ -1,5 +1,3 @@
-/* global Ext, expect */
-
 topSuite("Ext.tip.QuickTipManager", function() {
     // QuickTips are very special and persistent; when unit testing we override
     // the Manager to init QuickTips as soon as it's loaded, and add it to the list
@@ -8,7 +6,7 @@ topSuite("Ext.tip.QuickTipManager", function() {
         jasmine.removeAllowedComponent(Ext.QuickTips.tip, true);
         Ext.tip.QuickTipManager.destroy();
     });
-    
+
     // And when these tests are finished we need to make sure QuickTips are back
     // so that other tests depending on them wouldn't fail.
     afterAll(function() {
@@ -16,11 +14,11 @@ topSuite("Ext.tip.QuickTipManager", function() {
         Ext.tip.QuickTipManager.init();
         jasmine.addAllowedComponent(Ext.QuickTips.tip, true, true);
     });
-    
+
     afterEach(function() {
         Ext.tip.QuickTipManager.destroy();
     });
-    
+
     describe("init", function() {
         it("should create a new Ext.QuickTip instance", function() {
             expect(Ext.tip.QuickTipManager.getQuickTip()).toBe(null);
@@ -101,6 +99,7 @@ topSuite("Ext.tip.QuickTipManager", function() {
             Ext.tip.QuickTipManager.init();
             var spy = spyOn(Ext.tip.QuickTipManager.getQuickTip(), 'register'),
                 arg = {};
+
             Ext.tip.QuickTipManager.register(arg);
             expect(spy).toHaveBeenCalledWith(arg);
         });
@@ -112,6 +111,7 @@ topSuite("Ext.tip.QuickTipManager", function() {
             Ext.tip.QuickTipManager.init();
             var spy = spyOn(Ext.tip.QuickTipManager.getQuickTip(), 'unregister'),
                 arg = Ext.getBody();
+
             Ext.tip.QuickTipManager.unregister(arg);
             expect(spy).toHaveBeenCalledWith(arg);
         });

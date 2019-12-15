@@ -243,6 +243,55 @@ $treecell-expander-font-size: dynamic(null);
 $treecell-expander-font-size-big: dynamic(null);
 
 /**
+ * @var {string/list}
+ * Tree Cell checkbox icon when checked
+ */
+$treecell-checked-checkbox-icon: dynamic($checkboxfield-checked-checkbox-icon);
+
+/**
+ * @var {string/list}
+ * Tree Cell checkbox icon
+ */
+$treecell-checkbox-icon: dynamic($checkboxfield-checkbox-icon);
+
+/**
+ * @var {string/list}
+ * Tree Cell checkbox tri-state icon
+ */
+$treecell-tri-state-checkbox-icon: dynamic($checkboxfield-intermediate-checkbox-icon);
+
+/**
+ * @var {color}
+ * tree Cell checkbox color when checked
+ */
+$treecell-checked-checkbox-color: dynamic($checkboxfield-checked-checkbox-color);
+
+/**
+ * @var {color}
+ * tree Cell checkbox color when checked
+ */
+$treecell-checkbox-color: dynamic($checkboxfield-checkbox-color);
+
+// To do - Need to remove this variable once we get tri state icon
+/**
+ * @var {number}
+ * tree Cell checkbox size
+ */
+$treecell-checkbox-size: dynamic(18px);
+
+/**
+ * @var {number}
+ * tree Cell checkbox size
+ */
+$treecell-horizonal-spacing: dynamic(0 5px);
+
+/**
+ * @var {number}
+ * Tree Cell checkbox icon left padding
+ */
+$treecell-checkbox-padding: dynamic(5px);
+
+/**
  * Creates a visual theme for a Tree Cell.
  *
  * @param {string} $ui
@@ -371,6 +420,24 @@ $treecell-expander-font-size-big: dynamic(null);
  *
  * @param {number} $expander-font-size-big
  * Tree Cell expander icon font-size in the {@link Global_CSS#$enable-big big} sizing schem
+ *
+ * @param {string} $checkbox-checked-icon
+ * Tree Cell checkbox icon when it is checked
+ *
+ * @param {string} $checkbox-unchecked-icon
+ * Tree Cell checkbox icon when it is unchecked
+ *
+ * @param {color} $checkbox-checked-icon-color
+ * Tree Cell checkbox icon color when it is checked
+ *
+ * @param {color} $checkbox-unchecked-icon-color
+ * Tree Cell checkbox icon color when it is unchecked
+ *
+ * @param {number} $checkbox-size
+ * Tree Cell checkbox icon size
+ *
+ * @param {number} $checkbox-font-size
+ * Tree Cell checkbox icon font-size
  */
 @mixin treecell-ui(
     $ui: null,
@@ -414,8 +481,12 @@ $treecell-expander-font-size-big: dynamic(null);
     $expander-size: null,
     $expander-size-big: null,
     $expander-font-size: null,
-    $expander-font-size-big: null
-
+    $expander-font-size-big: null,
+    $checkbox-checked-icon: null,
+    $checkbox-unchecked-icon: null,
+    $checkbox-checked-icon-color: null,
+    $checkbox-unchecked-icon-color: null,
+    $checkbox-font-size:null
 ) {
     $ui-suffix: ui-suffix($ui);
 
@@ -487,6 +558,50 @@ $treecell-expander-font-size-big: dynamic(null);
             }
         }
 
+        &.#{$prefix}treecell-checkable {
+            .#{$prefix}check-el {
+                font-size: $treecell-checkbox-size;
+                height: $treecell-checkbox-size;
+                margin: $treecell-horizonal-spacing;
+                font-family: $checkboxfield-box-font-family;
+            }
+
+            &.#{$prefix}treecell-checked {
+                .#{$prefix}check-el {
+                    @include icon(
+                        $icon: $checkbox-checked-icon,
+                        $color: $checkbox-checked-icon-color,
+                        $font-size: $checkbox-font-size
+                    );
+                }   
+            }
+
+            &.#{$prefix}treecell-trimode {
+                .#{$prefix}check-el {
+                    @include icon(
+                        $icon: $treecell-tri-state-checkbox-icon,
+                        $color: $checkbox-checked-icon-color,
+                        $font-size: $checkbox-font-size
+                    );
+                }
+            }
+
+            &.#{$prefix}treecell-unchecked {
+                .#{$prefix}check-el {
+                    @include icon(  
+                        $icon: $checkbox-unchecked-icon,
+                        $color: $checkbox-unchecked-icon-color,
+                        $font-size: $checkbox-font-size
+                    );
+                }
+            }
+        }
+
+
+        &.#{$prefix}leaf .#{$prefix}expander-el + .#{$prefix}check-el:before {
+           padding-left: $treecell-checkbox-padding;
+        }
+
         // The indentation quantum for tree node levels is passed into a readable style.
         // Some browsers (FF, IE) don't support reading background-position-x
         background-position: ($expander-size + (left($icon-margin) or 0)) 0%;
@@ -509,4 +624,3 @@ $treecell-expander-font-size-big: dynamic(null);
         }
     }
 }
-

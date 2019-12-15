@@ -7,7 +7,7 @@ Ext.define('Ext.scroll.TableScroller', {
     },
 
     privates: {
-        getEnsureVisibleXY: function (el, options) {
+        getEnsureVisibleXY: function(el, options) {
             var lockingScroller = this.getLockingScroller(),
                 position = this.getPosition(),
                 newPosition;
@@ -23,11 +23,17 @@ Ext.define('Ext.scroll.TableScroller', {
                 position.y = lockingScroller.position.y;
             }
 
-            newPosition = Ext.fly(el).getScrollIntoViewXY(this.getElement(), position.x, position.y);
+            newPosition =
+                Ext.fly(el).getScrollIntoViewXY(this.getElement(), position.x, position.y);
+
             newPosition.x = (options.x === false) ? position.x : newPosition.x;
 
             if (lockingScroller) {
-                newPosition.y = (options.y === false) ? position.y : Ext.fly(el).getScrollIntoViewXY(lockingScroller.getElement(), position.x, position.y).y;
+                newPosition.y = (options.y === false)
+                    ? position.y
+                    : Ext.fly(el).getScrollIntoViewXY(
+                        lockingScroller.getElement(), position.x, position.y
+                    ).y;
             }
 
             return newPosition;
@@ -52,10 +58,11 @@ Ext.define('Ext.scroll.TableScroller', {
             if (lockedPromise) {
                 ret = Ext.Promise.all([ret, lockedPromise]);
             }
+
             return ret;
         },
 
-        restoreState: function () {
+        restoreState: function() {
             var me = this,
                 el = me.getScrollElement(),
                 lockingScroller = me.getLockingScroller(),
@@ -63,7 +70,9 @@ Ext.define('Ext.scroll.TableScroller', {
 
             if (el) {
                 // scrollTop is managed by the LockingScroller if there is one.
-                trackingScrollTop = lockingScroller ? lockingScroller.trackingScrollTop : me.trackingScrollTop;
+                trackingScrollTop = lockingScroller
+                    ? lockingScroller.trackingScrollTop
+                    : me.trackingScrollTop;
 
                 // Only restore state if has been previously captured! For example,
                 // floaters probably have not been hidden before initially shown.
@@ -88,5 +97,4 @@ Ext.define('Ext.scroll.TableScroller', {
             }
         }
     }
-
 });

@@ -1,13 +1,13 @@
 /**
- * History management component that allows you to register arbitrary tokens that signify application
- * history state on navigation actions.  You can then handle the history {@link #change} event in order
- * to reset your application UI to the appropriate state when the user navigates forward or backward through
- * the browser history stack.
+ * History management component that allows you to register arbitrary tokens that signify
+ * application history state on navigation actions.  You can then handle the history
+ * {@link #change} event in order to reset your application UI to the appropriate state when
+ * the user navigates forward or backward through the browser history stack.
  *
  * ## Initializing
  *
- * The {@link #init} method of the History object must be called before using History. This sets up the internal
- * state and must be the first thing called before using History.
+ * The {@link #init} method of the History object must be called before using History. This sets up
+ * the internal state and must be the first thing called before using History.
  */
 Ext.define('Ext.util.History', {
     singleton: true,
@@ -18,8 +18,9 @@ Ext.define('Ext.util.History', {
 
     /**
      * @property
-     * True to use `window.top.location.hash` or false to use `window.location.hash`. Must be set before {@link #init} is called
-     * because the `hashchange` event listener is added to the window at initialization time.
+     * True to use `window.top.location.hash` or false to use `window.location.hash`. Must be set
+     * before {@link #init} is called because the `hashchange` event listener is added to the window
+     * at initialization time.
      */
     useTopWindow: false,
 
@@ -47,7 +48,8 @@ Ext.define('Ext.util.History', {
     /**
      * @event change
      * Fires when navigation back or forwards within the local page's history occurs.
-     * @param {String} token An identifier associated with the page state at that point in its history.
+     * @param {String} token An identifier associated with the page state at that point
+     * in its history.
      */
 
     hashRe: /^(#?!?)/,
@@ -68,7 +70,7 @@ Ext.define('Ext.util.History', {
      * @private
      */
     getHash: function() {
-        return this.win.location.hash.replace(this.hashRe, '');
+        return (this.win.location.hash || '').replace(this.hashRe, '');
     },
 
     /**
@@ -91,13 +93,15 @@ Ext.define('Ext.util.History', {
         try {
             if (replace) {
                 loc.replace(hash);
-            } else {
+            }
+            else {
                 loc.hash = hash;
             }
 
-            //need to make sure currentToken is not prefixed
+            // need to make sure currentToken is not prefixed
             me.currentToken = hash.replace(hashRe, '');
-        } catch (e) {
+        }
+        catch (e) {
             // IE can give Access Denied (esp. in popup windows)
         }
     },
@@ -119,7 +123,7 @@ Ext.define('Ext.util.History', {
      * Bootstraps the initialization the location.hash.
      * @private
      */
-    startUp: function () {
+    startUp: function() {
         var me = this;
 
         me.currentToken = me.getHash();
@@ -130,7 +134,7 @@ Ext.define('Ext.util.History', {
         me.fireEvent('ready', me);
     },
 
-    onHashChange: function () {
+    onHashChange: function() {
         var me = this,
             newHash = me.getHash();
 
@@ -152,6 +156,7 @@ Ext.define('Ext.util.History', {
 
         if (me.ready) {
             Ext.callback(onReady, scope, [me]);
+
             return;
         }
 
@@ -159,6 +164,7 @@ Ext.define('Ext.util.History', {
             Ext.onInternalReady(function() {
                 me.init(onReady, scope);
             });
+
             return;
         }
 
@@ -166,8 +172,9 @@ Ext.define('Ext.util.History', {
         me.hash = me.getHash();
 
         if (onReady) {
-            me.on('ready', onReady, scope, {single: true});
+            me.on('ready', onReady, scope, { single: true });
         }
+
         me.startUp();
     },
 
@@ -182,12 +189,12 @@ Ext.define('Ext.util.History', {
      *     });
      *
      * @param {String} token The value that defines a particular application-specific history state
-     * @param {Boolean} [preventDuplicates=true] When true, if the passed token matches the current token
-     * it will not save a new history step. Set to false if the same state can be saved more than once
-     * at the same history stack location.
+     * @param {Boolean} [preventDuplicates=true] When true, if the passed token matches the current
+     * token it will not save a new history step. Set to false if the same state can be saved more
+     * than once at the same history stack location.
      *
-     * @return {Boolean} Whether the token was set in the case if the current token matches the token
-     * passed.
+     * @return {Boolean} Whether the token was set in the case if the current token matches
+     * the token passed.
      */
     add: function(token, preventDuplicates) {
         var me = this,
@@ -205,12 +212,12 @@ Ext.define('Ext.util.History', {
      * Replaces the current resource in history.
      *
      * @param {String} token The value that will replace the current resource in the history state.
-     * @param {Boolean} [preventDuplicates=true] When `true`, if the passed token matches the current token
-     * it will not save a new history step. Set to `false` if the same state can be saved more than once
-     * at the same history stack location.
+     * @param {Boolean} [preventDuplicates=true] When `true`, if the passed token matches
+     * the current token it will not save a new history step. Set to `false` if the same state
+     * can be saved more than once at the same history stack location.
      *
-     * @return {Boolean} Whether the token was set in the case if the current token matches the token
-     * passed.
+     * @return {Boolean} Whether the token was set in the case if the current token matches
+     * the token passed.
      */
     replace: function(token, preventDuplicates) {
         var me = this,
@@ -225,16 +232,18 @@ Ext.define('Ext.util.History', {
     },
 
     /**
-     * Programmatically steps back one step in browser history (equivalent to the user pressing the Back button).
+     * Programmatically steps back one step in browser history (equivalent to the user pressing
+     * the Back button).
      */
     back: function() {
         this.win.history.go(-1);
     },
 
     /**
-     * Programmatically steps forward one step in browser history (equivalent to the user pressing the Forward button).
+     * Programmatically steps forward one step in browser history (equivalent to the user pressing
+     * the Forward button).
      */
-    forward: function(){
+    forward: function() {
         this.win.history.go(1);
     },
 

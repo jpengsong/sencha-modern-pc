@@ -9,10 +9,10 @@ topSuite(
         'Ext.field.Text',
         'Ext.layout.Form'
     ],
-    function () {
+    function() {
         var ct;
 
-        function createContainer (cfg) {
+        function createContainer(cfg) {
             if (Ext.isArray(cfg)) {
                 cfg = {
                     items: cfg
@@ -22,17 +22,19 @@ topSuite(
             return ct = new MyContainer(cfg);
         }
 
-        function sortById (A, B) {
+        function sortById(A, B) {
             if (A.id < B.id) {
                 return -1;
             }
+
             if (A.id > B.id) {
                 return 1;
             }
+
             return 0;
         }
 
-        beforeAll(function () {
+        beforeAll(function() {
             Ext.define('MyContainer', {
                 extend: 'Ext.Container',
                 xtype: 'mycontainer',
@@ -45,11 +47,11 @@ topSuite(
 
                 defaultType: 'textfield',
 
-                updateRecord: function (record) {
+                updateRecord: function(record) {
                     this.consumeRecord(record);
                 },
 
-                updateDisabled: function (newDisabled, oldDisabled) {
+                updateDisabled: function(newDisabled, oldDisabled) {
                     this.mixins.fieldmanager.updateDisabled.call(this, newDisabled, oldDisabled);
 
                     this.callParent([newDisabled, oldDisabled]);
@@ -63,7 +65,7 @@ topSuite(
             });
         });
 
-        afterAll(function () {
+        afterAll(function() {
             Ext.undefine('MyContainer');
             Ext.undefine('MyModel');
 
@@ -71,18 +73,18 @@ topSuite(
             delete window.MyModel;
         });
 
-        afterEach(function () {
+        afterEach(function() {
             ct = Ext.destroy(ct);
         });
 
-        it('should get mixed in', function () {
+        it('should get mixed in', function() {
             createContainer();
 
             expect(ct.mixins.fieldmanager).toBeTruthy();
         });
 
-        describe('fillRecord', function () {
-            it('should fill passed record', function () {
+        describe('fillRecord', function() {
+            it('should fill passed record', function() {
                 var record = new MyModel({
                     id: 'mymodel'
                 });
@@ -116,7 +118,7 @@ topSuite(
                 });
             });
 
-            it('should fill passed record overwriting values', function () {
+            it('should fill passed record overwriting values', function() {
                 var record = new MyModel({
                     id: 'mymodel',
                     foo: 'blah',
@@ -152,7 +154,7 @@ topSuite(
                 });
             });
 
-            it('should not fill undefined record', function () {
+            it('should not fill undefined record', function() {
                 createContainer();
 
                 var spy = spyOn(ct, 'getValues');
@@ -163,8 +165,8 @@ topSuite(
             });
         });
 
-        describe('updateRecord', function () {
-            it('should set values from a record', function () {
+        describe('updateRecord', function() {
+            it('should set values from a record', function() {
                 createContainer();
 
                 var record = new MyModel({
@@ -187,7 +189,7 @@ topSuite(
                 });
             });
 
-            it('should not set values from an undefined record', function () {
+            it('should not set values from an undefined record', function() {
                 createContainer();
 
                 var spy = spyOn(ct, 'setValues');
@@ -198,8 +200,8 @@ topSuite(
             });
         });
 
-        describe('setValues', function () {
-            it('should set values to all fields', function () {
+        describe('setValues', function() {
+            it('should set values to all fields', function() {
                 createContainer([
                     { name: 'foo' },
                     { name: 'bar' },
@@ -248,7 +250,7 @@ topSuite(
                 });
             });
 
-            it('should not set values if none passed', function () {
+            it('should not set values if none passed', function() {
                 createContainer([
                     { name: 'foo' },
                     { name: 'bar' },
@@ -276,7 +278,9 @@ topSuite(
 
                 expect(ct.setValues()).toBe(ct);
 
-                expect(ct.getValues()).toEqual({
+                var values = ct.getValues();
+
+                expect(values).toEqual({
                     bar: null,
                     bazier: 'bazier 1',
                     foo: null,
@@ -285,8 +289,8 @@ topSuite(
             });
         });
 
-        describe('getValues', function () {
-            it('should get values from all fields', function () {
+        describe('getValues', function() {
+            it('should get values from all fields', function() {
                 createContainer([
                     { name: 'foo', value: 'foo value' },
                     { name: 'bar', value: 'bar value' },
@@ -325,8 +329,8 @@ topSuite(
             });
         });
 
-        describe('reset', function () {
-            it('should reset all fields', function () {
+        describe('reset', function() {
+            it('should reset all fields', function() {
                 createContainer([
                     { required: true, name: 'foo', value: 'foo value' },
                     { required: true, name: 'bar', value: 'bar value' },
@@ -388,7 +392,7 @@ topSuite(
                 expect(ct.getValues()).toEqual(origValues);
             });
 
-            it('should reset all fields and setError(null) each field', function () {
+            it('should reset all fields and setError(null) each field', function() {
                 createContainer([
                     { required: true, name: 'foo', value: 'foo value' },
                     { required: true, name: 'bar', value: 'bar value' },
@@ -454,8 +458,8 @@ topSuite(
             });
         });
 
-        describe('updateDisabled', function () {
-            it('should disable all fields', function () {
+        describe('updateDisabled', function() {
+            it('should disable all fields', function() {
                 createContainer([
                     { required: true, name: 'foo', value: 'foo value' },
                     { required: true, name: 'bar', value: 'bar value' },
@@ -480,12 +484,12 @@ topSuite(
                 expect(foo.getDisabled()).toBe(true);
                 expect(bar.getDisabled()).toBe(true);
 
-                baz.forEach(function (field) {
+                baz.forEach(function(field) {
                     expect(field.getDisabled()).toBe(true);
                 });
             });
 
-            it('should enable all fields', function () {
+            it('should enable all fields', function() {
                 createContainer([
                     { required: true, name: 'foo', value: 'foo value', disabled: true },
                     { required: true, name: 'bar', value: 'bar value', disabled: true },
@@ -508,7 +512,7 @@ topSuite(
                 expect(foo.getDisabled()).toBe(true);
                 expect(bar.getDisabled()).toBe(true);
 
-                baz.forEach(function (field) {
+                baz.forEach(function(field) {
                     expect(field.getDisabled()).toBe(true);
                 });
 
@@ -517,14 +521,14 @@ topSuite(
                 expect(foo.getDisabled()).toBe(false);
                 expect(bar.getDisabled()).toBe(false);
 
-                baz.forEach(function (field) {
+                baz.forEach(function(field) {
                     expect(field.getDisabled()).toBe(false);
                 });
             });
         });
 
-        describe('setErrors', function () {
-            it('should set errors on all fields', function () {
+        describe('setErrors', function() {
+            it('should set errors on all fields', function() {
                 createContainer([
                     { name: 'foo' },
                     { name: 'bar' },
@@ -569,16 +573,16 @@ topSuite(
                 expect(foo.getError()).toBe('Foo is in error!');
                 expect(bar.getError()).toEqual(['Bar is in error!', 'Bar still error!']);
 
-                baz.forEach(function (check) {
+                baz.forEach(function(check) {
                     expect(check.getError()).toBe('Baz is errored');
                 });
 
-                bazier.forEach(function (radio) {
+                bazier.forEach(function(radio) {
                     expect(radio.getError()).toBe('Bazier not very good');
                 });
             });
 
-            it('should not set errors if an array is passed', function () {
+            it('should not set errors if an array is passed', function() {
                 createContainer();
 
                 var spy = spyOn(Ext, 'raise');
@@ -588,7 +592,7 @@ topSuite(
                 expect(spy).toHaveBeenCalled();
             });
 
-            it('should not set errors if a string is passed', function () {
+            it('should not set errors if a string is passed', function() {
                 createContainer();
 
                 var spy = spyOn(Ext, 'raise');
@@ -598,7 +602,7 @@ topSuite(
                 expect(spy).toHaveBeenCalled();
             });
 
-            it('should set errors on nested fields', function () {
+            it('should set errors on nested fields', function() {
                 createContainer({
                     layout: {
                         type: 'form'
@@ -628,7 +632,7 @@ topSuite(
                     text = ct.lookupName('text'),
                     errors = {
                         text: 'Text value is bad!',
-                        //containerfield errors below
+                        // containerfield errors below
                         first: 'First is bad!',
                         middle: 'Middle is bad!',
                         last: 'Last is bad!'
@@ -643,8 +647,8 @@ topSuite(
             });
         });
 
-        describe('clearErrors', function () {
-            it('should clear all field errors', function () {
+        describe('clearErrors', function() {
+            it('should clear all field errors', function() {
                 createContainer([
                     { name: 'foo', error: 'foo error' },
                     { name: 'bar', error: 'bar error' },
@@ -668,7 +672,7 @@ topSuite(
                 expect(foo.getError()).toBe('foo error');
                 expect(bar.getError()).toBe('bar error');
 
-                bazier.forEach(function (radio) {
+                bazier.forEach(function(radio) {
                     expect(radio.getError()).toBe('bazier error');
                 });
 
@@ -677,12 +681,12 @@ topSuite(
                 expect(foo.getError()).toBeNull();
                 expect(bar.getError()).toBeNull();
 
-                bazier.forEach(function (radio) {
+                bazier.forEach(function(radio) {
                     expect(radio.getError()).toBeNull();
                 });
             });
 
-            it('should not clear fields without a name', function () {
+            it('should not clear fields without a name', function() {
                 createContainer([
                     { name: 'foo', error: 'foo error' },
                     { error: 'bar error' },
@@ -706,7 +710,7 @@ topSuite(
                 expect(foo.getError()).toBe('foo error');
                 expect(bar.getError()).toBe('bar error');
 
-                bazier.forEach(function (radio) {
+                bazier.forEach(function(radio) {
                     expect(radio.getError()).toBe('bazier error');
                 });
 
@@ -715,14 +719,14 @@ topSuite(
                 expect(foo.getError()).toBeNull();
                 expect(bar.getError()).toBe('bar error');
 
-                bazier.forEach(function (radio) {
+                bazier.forEach(function(radio) {
                     expect(radio.getError()).toBeNull();
                 });
             });
         });
 
-        describe('getErrors', function () {
-            it('should return field errors', function () {
+        describe('getErrors', function() {
+            it('should return field errors', function() {
                 createContainer([
                     { name: 'foo', error: 'foo error' },
                     { name: 'bar' },
@@ -746,10 +750,10 @@ topSuite(
             });
         });
 
-        describe('isValid', function () {
-            it('should stop checking fields when a field is not valid', function () {
+        describe('isValid', function() {
+            it('should stop checking fields when a field is not valid', function() {
 
-            it('should stop checking fields when a field is not valid', function () {
+            it('should stop checking fields when a field is not valid', function() {
                 createContainer([
                     { name: 'foo', error: 'foo error' },
                     { name: 'bar' }
@@ -764,7 +768,7 @@ topSuite(
             });
             });
 
-            it('should check all fields if valid', function () {
+            it('should check all fields if valid', function() {
                 createContainer([
                     { name: 'foo' },
                     { name: 'bar' }
@@ -778,8 +782,8 @@ topSuite(
             });
         });
 
-        describe('validate', function () {
-            it('should validate all fields', function () {
+        describe('validate', function() {
+            it('should validate all fields', function() {
                 createContainer([
                     { name: 'foo', required: true },
                     { name: 'bar' }
@@ -793,7 +797,7 @@ topSuite(
                 expect(spy).toHaveBeenCalled();
             });
 
-            it('should be valid', function () {
+            it('should be valid', function() {
                 createContainer([
                     { name: 'foo', value: 'foo', required: true },
                     { name: 'bar' }
@@ -808,8 +812,8 @@ topSuite(
             });
         });
 
-        describe('getFields', function () {
-            beforeEach(function () {
+        describe('getFields', function() {
+            beforeEach(function() {
                 createContainer([
                     { name: 'foo' },
                     { name: 'bar' },
@@ -836,8 +840,8 @@ topSuite(
                 ]);
             });
 
-            describe('return object', function () {
-                it('should return an object of fields by name', function () {
+            describe('return object', function() {
+                it('should return an object of fields by name', function() {
                     var fields = {
                             foo: ct.lookupName('foo'),
                             bar: ct.lookupName('bar'),
@@ -852,7 +856,7 @@ topSuite(
                     expect(found).toEqual(fields);
                 });
 
-                it('should return an object of shallow fields by name', function () {
+                it('should return an object of shallow fields by name', function() {
                     var fields = {
                         foo: ct.lookupName('foo'),
                         bar: ct.lookupName('bar')
@@ -862,8 +866,8 @@ topSuite(
                 });
             });
 
-            describe('return array', function () {
-                it('should return an array if byName is false', function () {
+            describe('return array', function() {
+                it('should return an array if byName is false', function() {
                     var fields = jasmine.array.toMap([
                         ct.lookupName('foo'),
                         ct.lookupName('bar')
@@ -875,40 +879,40 @@ topSuite(
                     expect(jasmine.array.toMap(ct.getFields(false), 'id')).toEqual(fields);
                 });
 
-                it('should return an array if name passed', function () {
+                it('should return an array if name passed', function() {
                     var fields = jasmine.array.toMap(ct.lookupName('baz'), 'id');
 
                     expect(jasmine.array.toMap(ct.getFields('baz'), 'id')).toEqual(fields);
                 });
             });
 
-            describe('return instance', function () {
-                it('should return an instance if name passed', function () {
+            describe('return instance', function() {
+                it('should return an instance if name passed', function() {
                     var field = ct.lookupName('foo');
 
                     expect(ct.getFields('foo')).toBe(field);
                 });
 
-                it('should return a shallow instance if name is passed', function () {
+                it('should return a shallow instance if name is passed', function() {
                     var field = ct.lookupName('foo');
 
                     expect(ct.getFields('foo', false)).toBe(field);
                 });
             });
 
-            describe('return undefined', function () {
-                it('should not return if name does not match', function () {
+            describe('return undefined', function() {
+                it('should not return if name does not match', function() {
                     expect(ct.getFields('foobar')).toBeUndefined();
                 });
 
-                it('should not return if name is passed but is not shallow', function () {
+                it('should not return if name is passed but is not shallow', function() {
                     expect(ct.getFields('baz', false)).toBeUndefined();
                 });
             });
         });
 
-        describe('getFocusedField', function () {
-            it('should find a focused field', function () {
+        describe('getFocusedField', function() {
+            it('should find a focused field', function() {
                 createContainer({
                     renderTo: Ext.getBody(),
                     items: [
@@ -919,18 +923,18 @@ topSuite(
 
                 var foo = ct.lookupName('foo');
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return ct.rendered;
                 });
 
-                runs(function () {
+                runs(function() {
                     foo.onFocus();
 
                     expect(ct.getFocusedField()).toBe(foo);
                 });
             });
 
-            it('should not find a focused field', function () {
+            it('should not find a focused field', function() {
                 createContainer({
                     renderTo: Ext.getBody(),
                     items: [
@@ -941,18 +945,18 @@ topSuite(
 
                 var foo = ct.lookupName('foo');
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return ct.rendered;
                 });
 
-                runs(function () {
+                runs(function() {
                     expect(ct.getFocusedField()).toBeNull();
                 });
             });
         });
 
-        describe('getNextField', function () {
-            it('should find the next field after the focused field', function () {
+        describe('getNextField', function() {
+            it('should find the next field after the focused field', function() {
                 createContainer({
                     renderTo: Ext.getBody(),
                     items: [
@@ -964,18 +968,18 @@ topSuite(
                 var foo = ct.lookupName('foo'),
                     bar = ct.lookupName('bar');
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return ct.rendered;
                 });
 
-                runs(function () {
+                runs(function() {
                     foo.onFocus();
 
                     expect(ct.getNextField()).toBe(bar);
                 });
             });
 
-            it('should not find the next field after the focused field', function () {
+            it('should not find the next field after the focused field', function() {
                 createContainer({
                     renderTo: Ext.getBody(),
                     items: [
@@ -987,16 +991,16 @@ topSuite(
                 var foo = ct.lookupName('foo'),
                     bar = ct.lookupName('bar');
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return ct.rendered;
                 });
 
-                runs(function () {
+                runs(function() {
                     expect(ct.getNextField()).toBe(false);
                 });
             });
 
-            it('should not find the next field if focused is last field', function () {
+            it('should not find the next field if focused is last field', function() {
                 createContainer({
                     renderTo: Ext.getBody(),
                     items: [
@@ -1007,11 +1011,11 @@ topSuite(
 
                 var bar = ct.lookupName('bar');
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return ct.rendered;
                 });
 
-                runs(function () {
+                runs(function() {
                     bar.onFocus();
 
                     expect(ct.getNextField()).toBe(false);
@@ -1019,8 +1023,8 @@ topSuite(
             });
         });
 
-        describe('focusNextField', function () {
-            it('should focus next field', function () {
+        describe('focusNextField', function() {
+            it('should focus next field', function() {
                 createContainer({
                     renderTo: Ext.getBody(),
                     items: [
@@ -1033,11 +1037,11 @@ topSuite(
                     bar = ct.lookupName('bar'),
                     spy = spyOn(bar, 'focus');
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return ct.rendered;
                 });
 
-                runs(function () {
+                runs(function() {
                     foo.onFocus();
 
                     expect(ct.focusNextField()).toBe(bar);
@@ -1045,7 +1049,7 @@ topSuite(
                 });
             });
 
-            it('should not focus next field if no field was focused', function () {
+            it('should not focus next field if no field was focused', function() {
                 createContainer({
                     renderTo: Ext.getBody(),
                     items: [
@@ -1058,17 +1062,17 @@ topSuite(
                     bar = ct.lookupName('bar'),
                     spy = spyOn(bar, 'focus');
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return ct.rendered;
                 });
 
-                runs(function () {
+                runs(function() {
                     expect(ct.focusNextField()).toBe(false);
                     expect(spy).not.toHaveBeenCalled();
                 });
             });
 
-            it('should not focus next field if focused is last field', function () {
+            it('should not focus next field if focused is last field', function() {
                 createContainer({
                     renderTo: Ext.getBody(),
                     items: [
@@ -1079,11 +1083,11 @@ topSuite(
 
                 var bar = ct.lookupName('bar');
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return ct.rendered;
                 });
 
-                runs(function () {
+                runs(function() {
                     bar.onFocus();
 
                     expect(ct.focusNextField()).toBe(false);
@@ -1091,8 +1095,8 @@ topSuite(
             });
         });
 
-        describe('getPreviousField', function () {
-            it('should get field before focused field', function () {
+        describe('getPreviousField', function() {
+            it('should get field before focused field', function() {
                 createContainer({
                     renderTo: Ext.getBody(),
                     items: [
@@ -1104,18 +1108,18 @@ topSuite(
                 var foo = ct.lookupName('foo'),
                     bar = ct.lookupName('bar');
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return ct.rendered;
                 });
 
-                runs(function () {
+                runs(function() {
                     bar.onFocus();
 
                     expect(ct.getPreviousField()).toBe(foo);
                 });
             });
 
-            it('should not find the previous field if no field is focused', function () {
+            it('should not find the previous field if no field is focused', function() {
                 createContainer({
                     renderTo: Ext.getBody(),
                     items: [
@@ -1127,16 +1131,16 @@ topSuite(
                 var foo = ct.lookupName('foo'),
                     bar = ct.lookupName('bar');
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return ct.rendered;
                 });
 
-                runs(function () {
+                runs(function() {
                     expect(ct.getPreviousField()).toBe(false);
                 });
             });
 
-            it('should not find the previous field if focused is first field', function () {
+            it('should not find the previous field if focused is first field', function() {
                 createContainer({
                     renderTo: Ext.getBody(),
                     items: [
@@ -1147,11 +1151,11 @@ topSuite(
 
                 var foo = ct.lookupName('foo');
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return ct.rendered;
                 });
 
-                runs(function () {
+                runs(function() {
                     foo.onFocus();
 
                     expect(ct.getPreviousField()).toBe(false);
@@ -1159,8 +1163,8 @@ topSuite(
             });
         });
 
-        describe('focusPreviousField', function () {
-                it('should focus previous field', function () {
+        describe('focusPreviousField', function() {
+                it('should focus previous field', function() {
                 createContainer({
                     renderTo: Ext.getBody(),
                     items: [
@@ -1173,11 +1177,11 @@ topSuite(
                     bar = ct.lookupName('bar'),
                     spy = spyOn(foo, 'focus');
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return ct.rendered;
                 });
 
-                runs(function () {
+                runs(function() {
                     bar.onFocus();
 
                     expect(ct.focusPreviousField()).toBe(foo);
@@ -1185,7 +1189,7 @@ topSuite(
                 });
             });
 
-            it('should not focus previous field if no field was focused', function () {
+            it('should not focus previous field if no field was focused', function() {
                 createContainer({
                     renderTo: Ext.getBody(),
                     items: [
@@ -1198,17 +1202,17 @@ topSuite(
                     bar = ct.lookupName('bar'),
                     spy = spyOn(foo, 'focus');
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return ct.rendered;
                 });
 
-                runs(function () {
+                runs(function() {
                     expect(ct.focusPreviousField()).toBe(false);
                     expect(spy).not.toHaveBeenCalled();
                 });
             });
 
-            it('should not focus previous field if focused is first field', function () {
+            it('should not focus previous field if focused is first field', function() {
                 createContainer({
                     renderTo: Ext.getBody(),
                     items: [
@@ -1219,11 +1223,11 @@ topSuite(
 
                 var foo = ct.lookupName('foo');
 
-                waitsFor(function () {
+                waitsFor(function() {
                     return ct.rendered;
                 });
 
-                runs(function () {
+                runs(function() {
                     foo.onFocus();
 
                     expect(ct.focusPreviousField()).toBe(false);

@@ -12,6 +12,12 @@
         z-index: 20;
     }
 
+    > .#{$prefix}body-el > .#{$prefix}innerhtml {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
     > .#{$prefix}body-el,
     > .#{$prefix}tool-dock {
         min-width: 100%;

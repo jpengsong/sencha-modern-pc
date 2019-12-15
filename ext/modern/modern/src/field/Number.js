@@ -1,7 +1,8 @@
 /**
- * The Number field creates an HTML5 text input that allows the editing of number values, and is usually created inside
- * a form. Most browsers will show a specialized virtual keyboard for entering numbers. The Number field
- * only accepts numerical input.  If you want a Number field with up/down spinners, see {@link Ext.field.Spinner}.
+ * The Number field creates an HTML5 text input that allows the editing of number values, 
+ * and is usually created inside a form. Most browsers will show a specialized virtual keyboard 
+ * for entering numbers. The Number field only accepts numerical input.  If you want a Number field 
+ * with up/down spinners, see {@link Ext.field.Spinner}.
  *
  *     @example
  *     Ext.create('Ext.form.Panel', {
@@ -32,8 +33,10 @@
  *
  * ## minValue, maxValue
  *
- * The {@link #minValue} and {@link #maxValue} configurations are self-explanatory and simply constrain the value
- * For example, to create a salary field that limits entry to between 25,000 and 50,000 we can do this:
+ * The {@link #minValue} and {@link #maxValue} configurations are self-explanatory and 
+ * simply constrain the value
+ * For example, to create a salary field that limits entry to between 25,000 and 50,000 
+ * we can do this:
  *
  *     @example
  *     Ext.create('Ext.form.Panel', {
@@ -55,12 +58,13 @@
  *         ]
  *     });
  *
- * This creates a field that starts with a value of $30,000 and will not go beneath $25,000 or above $50,000.
+ * This creates a field that starts with a value of $30,000 and will not go beneath $25,000 
+ * or above $50,000.
  *
- * Because number field inherits from {@link Ext.field.Text textfield} it gains all of the functionality that text
- * fields provide, including getting and setting the value at runtime, validations and various events that are fired as
- * the user interacts with the component. Check out the {@link Ext.field.Text} docs to see the additional functionality
- * available.
+ * Because number field inherits from {@link Ext.field.Text textfield} it gains all of the 
+ * functionality that text fields provide, including getting and setting the value at runtime, 
+ * validations and various events that are fired as the user interacts with the component. 
+ * Check out the {@link Ext.field.Text} docs to see the additional functionality available.
  */
 Ext.define('Ext.field.Number', {
     extend: 'Ext.field.Text',
@@ -94,7 +98,15 @@ Ext.define('Ext.field.Number', {
          * @cfg {Boolean} trim
          * `false` to always show zeros when formatting the number
          */
-        trim: true
+        trim: true,
+
+        /**
+         * @cfg {String} decimalSeparator
+         * Character(s) to allow as the decimal separator.
+         * Defaults to {@link Ext.util.Format#decimalSeparator decimalSeparator}.
+		 * @since 7.0
+         */
+        decimalSeparator: null
     },
 
     /**
@@ -143,19 +155,25 @@ Ext.define('Ext.field.Number', {
     parseValidator: 'number',
 
     initialize: function() {
-        // Force numberFormat creation
-        this.getDecimals();
+        var me = this;
 
-        this.callParent();
+        // Force numberFormat creation
+        me.getDecimals();
+
+        if (me.getDecimalSeparator() === null) {
+            me.setDecimalSeparator(Ext.util.Format.decimalSeparator);
+        }
+
+        me.callParent();
 
         // This isn't supported in browsers yet, but is part of the spec.
-        this.inputElement.dom.setAttribute('inputmode', 'numeric');
+        me.inputElement.dom.setAttribute('inputmode', 'numeric');
 
         //<debug>
         // Check after configuration to catch subclasses with config in prototype
         // We cannot uses masks. The parsing would not be able to deal with
         // fixed characters such as commas.
-        if (this.getInputMask()) {
+        if (me.getInputMask()) {
             Ext.raise('NumberFields cannot use input masks');
         }
         //</debug>
@@ -167,13 +185,18 @@ Ext.define('Ext.field.Number', {
             zeroChar = me.getTrim() ? '#' : '0',
             value;
 
+        // logic to allow decimals or no
+        me.syncDecimalValidator();
+
         if (decimals) {
             format += '.' + Ext.String.repeat(zeroChar, decimals);
         }
+
         me.numberFormat = format;
 
         if (!me.isConfiguring) {
             value = me.getValue();
+
             if (Ext.isDate(value)) {
                 me.setInputValue(value);
             }
@@ -181,15 +204,24 @@ Ext.define('Ext.field.Number', {
     },
 
     applyInputValue: function(value) {
+        var me = this,
+            decimalSeparator = me.getDecimalSeparator();
+
         // Force numberFormat creation
         this.getDecimals();
+
         if (typeof value === 'number') {
             value = Ext.util.Format.number(value, this.numberFormat);
         }
+
+        if (value && Ext.isString(value) && decimalSeparator) {
+            value = value.replace(Ext.util.Format.decimalSeparator, decimalSeparator);
+        }
+
         return value;
     },
 
-    doValidate: function (value, errors, skipLazy) {
+    doValidate: function(value, errors, skipLazy) {
         var me = this,
             String = Ext.String,
             minValue = me.getMinValue(),
@@ -217,6 +249,7 @@ Ext.define('Ext.field.Number', {
                 // If the resulting raw value would be invalid, veto the event
                 if (!me.specialKeys[e.getCharCode()] && !me.isAllowableValue(raw)) {
                     e.preventDefault();
+
                     return false;
                 }
             }
@@ -225,12 +258,18 @@ Ext.define('Ext.field.Number', {
         me.callParent([e]);
     },
 
-    transformValue: function (value) {
+    transformValue: function(value) {
         if (!(value || value === 0)) {
             value = null;
         }
 
         return value;
+    },
+
+    rawToValue: Ext.emptyFn,
+
+    updateDecimalSeparator: function() {
+        this.syncDecimalValidator();
     },
 
     privates: {
@@ -247,6 +286,7 @@ Ext.define('Ext.field.Number', {
             else {
                 raw = Ext.String.insert(raw, text, me.getCaretPos());
             }
+
             return raw;
         },
 
@@ -300,13 +340,32 @@ Ext.define('Ext.field.Number', {
             if (allowNegative && value === '-') {
                 return true;
             }
+
             if (me.getDecimals() && (value === '.' || (allowNegative && value === '-.'))) {
                 return true;
             }
+
             return false;
+        },
+
+        /**
+         * Validate field against decimals and decimalSeparator
+         * If decimals is 0, don't allow decimals else use decimalSeparator
+         */
+        syncDecimalValidator: function() {
+            var me = this,
+                separator = (me.getDecimals() === 0) ? null : me.getDecimalSeparator();
+
+            me.setParseValidator(
+                Ext.create('Ext.data.validator.Number', {
+                    decimalSeparator: separator
+                })
+            );
+
+            me.validate();
         }
     }
-}, function (C) {
+}, function(C) {
     var E = Ext.event.Event;
 
     C.prototype.specialKeys = Ext.Array.toMap([

@@ -92,13 +92,13 @@ Ext.define('Ext.Indicator', {
      * @param {Ext.Indicator} this
      */
 
-    constructor: function (config) {
+    constructor: function(config) {
         this.indicators = [];
 
         this.callParent([config]);
     },
 
-    initialize: function () {
+    initialize: function() {
         this.callParent();
 
         this.element.on({
@@ -107,14 +107,14 @@ Ext.define('Ext.Indicator', {
         });
     },
 
-    doDestroy: function () {
+    doDestroy: function() {
         Ext.destroy(this.indicators);
 
         this.callParent();
     },
 
     //<debug>
-    applyActiveIndex: function (index) {
+    applyActiveIndex: function(index) {
         var indicators = this.indicators,
             max = indicators.length - 1;
 
@@ -126,9 +126,8 @@ Ext.define('Ext.Indicator', {
     },
     //</debug>
 
-    updateActiveIndex: function (index, oldIndex) {
+    updateActiveIndex: function(index, oldIndex) {
         var activeCls = this.activeCls,
-            baseCls = this.baseCls,
             indicators = this.indicators,
             currentActiveItem = indicators[oldIndex],
             activeItem = indicators[index];
@@ -142,11 +141,11 @@ Ext.define('Ext.Indicator', {
         }
     },
 
-    updateCount: function (count) {
+    updateCount: function(count) {
         var indicators = this.indicators;
 
         while (indicators.length < count) {
-             this.doAdd()
+            this.doAdd();
         }
 
         while (indicators.length > count) {
@@ -155,7 +154,7 @@ Ext.define('Ext.Indicator', {
     },
 
     //<debug>
-    applyDirection: function (direction) {
+    applyDirection: function(direction) {
         if (direction !== 'vertical' && direction !== 'horizontal') {
             Ext.raise('Invalid indicator direction provided: ' + direction);
 
@@ -166,7 +165,7 @@ Ext.define('Ext.Indicator', {
     },
     //</debug>
 
-    updateDirection: function (newDirection, oldDirection) {
+    updateDirection: function(newDirection, oldDirection) {
         this.element.replaceCls(oldDirection, newDirection, this.baseCls);
     },
 
@@ -177,7 +176,7 @@ Ext.define('Ext.Indicator', {
      * @param {Number} activeIndex If specified, will set the {@link #activeIndex}.
      * @return {Ext.Indicator} this
      */
-    sync: function (count, activeIndex) {
+    sync: function(count, activeIndex) {
         if (Ext.isNumber(count)) {
             this.setCount(count);
         }
@@ -193,7 +192,7 @@ Ext.define('Ext.Indicator', {
      * Adds an indicator dot at the end.
      * @return {Ext.Indicator} this
      */
-    add: function () {
+    add: function() {
         var count = this.getCount();
 
         return this.setCount(++count);
@@ -203,7 +202,7 @@ Ext.define('Ext.Indicator', {
      * Removes all indicator dots.
      * @return {Ext.Indicator} this
      */
-    removeAll: function () {
+    removeAll: function() {
         return this.setCount(0);
     },
 
@@ -211,7 +210,7 @@ Ext.define('Ext.Indicator', {
      * Removes the last indicator dot.
      * @return {Ext.Indicator} this
      */
-    remove: function () {
+    remove: function() {
         var count = this.getCount();
 
         return this.setCount(--count);
@@ -222,7 +221,7 @@ Ext.define('Ext.Indicator', {
      * @private
      * @return {Ext.Indicator} this
      */
-    doAdd: function () {
+    doAdd: function() {
         var indicators = this.indicators;
 
         indicators.push(this.element.createChild({
@@ -238,7 +237,7 @@ Ext.define('Ext.Indicator', {
      * @private
      * @return {Ext.Indicator} this
      */
-    doRemove: function () {
+    doRemove: function() {
         var indicators = this.indicators,
             indicator = indicators.pop();
 
@@ -252,12 +251,13 @@ Ext.define('Ext.Indicator', {
     /**
      * @private
      */
-    onTap: function (e) {
+    onTap: function(e) {
         var mode = this.getTapMode();
 
         if (mode === 'item') {
             this.onTapItem(e);
-        } else {
+        }
+        else {
             this.onTapDirection(e);
         }
     },
@@ -266,7 +266,7 @@ Ext.define('Ext.Indicator', {
      * Handles the tap when {@link #tapMode} is set to `item`.
      * @private
      */
-    onTapItem: function (e) {
+    onTapItem: function(e) {
         var me = this,
             item = e.getTarget('.' + me.itemCls, 1, true),
             index;
@@ -277,8 +277,9 @@ Ext.define('Ext.Indicator', {
             if (index !== -1) {
                 me.fireEvent('indicatortap', me, index, item);
             }
-        } else {
-            //tap wasn't on a dot, go with direction
+        }
+        else {
+            // tap wasn't on a dot, go with direction
             me.onTapDirection(e);
         }
     },
@@ -287,7 +288,7 @@ Ext.define('Ext.Indicator', {
      * Handles the tap when {@link #tapMode} is set to `direction`.
      * @private
      */
-    onTapDirection: function (e) {
+    onTapDirection: function(e) {
         var me = this,
             direction = me.getDirection(),
             touch = e.touch,
@@ -295,7 +296,9 @@ Ext.define('Ext.Indicator', {
             centerX = box.left + (box.width / 2),
             centerY = box.top + (box.height / 2),
             event = (direction === 'horizontal' && touch.pageX >= centerX) ||
-                    (direction === 'vertical' && touch.pageY >= centerY) ? 'next' : 'previous';
+            (direction === 'vertical' && touch.pageY >= centerY)
+                ? 'next'
+                : 'previous';
 
         me.fireEvent(event, me);
     }

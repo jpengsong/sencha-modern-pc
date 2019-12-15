@@ -49,8 +49,8 @@ Ext.define('Ext.chart.navigator.Navigator', {
 
         /**
          * @cfg {Number} [tolerance=20]
-         * The maximum horizontal delta between the pointer/finger and the center of a navigator thumb.
-         * Used for hit testing.
+         * The maximum horizontal delta between the pointer/finger and the center of a navigator
+         * thumb. Used for hit testing.
          */
         tolerance: 20,
 
@@ -135,15 +135,15 @@ Ext.define('Ext.chart.navigator.Navigator', {
 
     dragType: null,
 
-    constructor: function (config) {
-        config = config || {};
-
+    constructor: function(config) {
         var me = this,
-            visibleRange = [
-                config.minimum || 0.8,
-                config.maximum || 1
-            ],
-            overlay;
+            visibleRange, overlay;
+
+        config = config || {};
+        visibleRange = [
+            config.minimum || 0.8,
+            config.maximum || 1
+        ];
 
         me.callParent([config]);
 
@@ -183,20 +183,22 @@ Ext.define('Ext.chart.navigator.Navigator', {
 
     createSurface: function(id) {
         var surface = this.callParent([id]);
+
         if (id === 'overlay') {
             this.overlaySurface = surface;
         }
+
         return surface;
     },
 
     // Note: 'applyDock' and 'updateDock' won't ever be called in Classic.
     // See Classic NavigatorBase.
 
-    applyAxis: function (axis) {
+    applyAxis: function(axis) {
         return this.getNavigatorContainer().getChart().getAxis(axis);
     },
 
-    updateAxis: function (axis, oldAxis) {
+    updateAxis: function(axis, oldAxis) {
         var me = this,
             eventName = 'visiblerangechange',
             eventHandler = 'onAxisVisibleRangeChange';
@@ -212,18 +214,18 @@ Ext.define('Ext.chart.navigator.Navigator', {
         me.axis = axis;
     },
 
-    getAxis: function () {
+    getAxis: function() {
         // The superclass doesn't have the 'axis' config, but it has the same method,
         // which we override here to act as a getter for the config. The user is not
         // expected to use the original method in this subclass anyway.
         return this.axis;
     },
 
-    onAxisVisibleRangeChange: function (axis, visibleRange) {
+    onAxisVisibleRangeChange: function(axis, visibleRange) {
         this.setVisibleRange(visibleRange);
     },
 
-    updateNavigatorContainer: function (navigatorContainer) {
+    updateNavigatorContainer: function(navigatorContainer) {
         var me = this,
             oldChart = me.chart,
             chart = me.chart = navigatorContainer && navigatorContainer.getChart(),
@@ -242,7 +244,8 @@ Ext.define('Ext.chart.navigator.Navigator', {
             oldChart.un('themechange', 'onChartThemeChange', me);
             oldChart.un('storechange', 'onChartStoreChange', me);
         }
-        chart.on('layout','afterBoundChartLayout', me);
+
+        chart.on('layout', 'afterBoundChartLayout', me);
 
         for (i = 0; i < chartSeriesList.length; i++) {
             chartSeries = chartSeriesList[i];
@@ -261,9 +264,11 @@ Ext.define('Ext.chart.navigator.Navigator', {
         if (chart) {
             me.setStore(chart.getStore());
             me.chartLegendStore = chartLegendStore = chart.getLegendStore();
+
             if (chartLegendStore) {
                 chartLegendStore.on(storeEventName, storeEventHandler, me);
             }
+
             chart.on('themechange', 'onChartThemeChange', me);
             chart.on('storechange', 'onChartStoreChange', me);
             me.onChartThemeChange(chart, chart.getTheme());
@@ -272,15 +277,15 @@ Ext.define('Ext.chart.navigator.Navigator', {
         me.setSeries(navigatorSeriesList);
     },
 
-    onChartThemeChange: function (chart, theme) {
+    onChartThemeChange: function(chart, theme) {
         this.setTheme(theme);
     },
 
-    onChartStoreChange: function (chart, store) {
+    onChartStoreChange: function(chart, store) {
         this.setStore(store);
     },
 
-    addCustomStyle: function (config, style, subStyle) {
+    addCustomStyle: function(config, style, subStyle) {
         var fillStyle, strokeStyle;
 
         style = style || {};
@@ -289,17 +294,16 @@ Ext.define('Ext.chart.navigator.Navigator', {
         config.style = config.style || {};
         config.subStyle = config.subStyle || {};
 
-
         fillStyle = style && (style.fillStyle || style.fill);
         strokeStyle = style && (style.strokeStyle || style.stroke);
 
         if (fillStyle) {
             config.style.fillStyle = fillStyle;
         }
+
         if (strokeStyle) {
             config.style.strokeStyle = strokeStyle;
         }
-
 
         fillStyle = subStyle && (subStyle.fillStyle || subStyle.fill);
         strokeStyle = subStyle && (subStyle.strokeStyle || subStyle.stroke);
@@ -307,6 +311,7 @@ Ext.define('Ext.chart.navigator.Navigator', {
         if (fillStyle) {
             config.subStyle.fillStyle = fillStyle;
         }
+
         if (strokeStyle) {
             config.subStyle.strokeStyle = strokeStyle;
         }
@@ -314,7 +319,7 @@ Ext.define('Ext.chart.navigator.Navigator', {
         return config;
     },
 
-    getSeriesConfig: function (chartSeries) {
+    getSeriesConfig: function(chartSeries) {
         var me = this,
             style = chartSeries.getStyle(),
             config;
@@ -327,20 +332,23 @@ Ext.define('Ext.chart.navigator.Navigator', {
                 yField: chartSeries.getYField(),
                 smooth: chartSeries.getSmooth()
             }, style);
-        } else if (chartSeries.isCandleStick) {
+        }
+        else if (chartSeries.isCandleStick) {
             config = me.addCustomStyle({
                 type: 'line',
                 fill: true,
                 xField: chartSeries.getXField(),
                 yField: chartSeries.getCloseField()
             }, style.raiseStyle);
-        } else if (chartSeries.isArea || chartSeries.isBar) {
+        }
+        else if (chartSeries.isArea || chartSeries.isBar) {
             config = me.addCustomStyle({
                 type: 'area',
                 xField: chartSeries.getXField(),
                 yField: chartSeries.getYField()
             }, style, chartSeries.getSubStyle());
-        } else {
+        }
+        else {
             Ext.raise("Navigator only works with 'line', 'bar', 'candlestick' and 'area' series.");
         }
 
@@ -349,21 +357,23 @@ Ext.define('Ext.chart.navigator.Navigator', {
         return config;
     },
 
-    onChartLegendStoreUpdate: function (store, record) {
+    onChartLegendStoreUpdate: function(store, record) {
         var me = this,
             chart = me.chart,
             series;
 
         if (chart && record) {
             series = chart.getSeries().map[record.get('series')];
+
             if (series && series.navigatorSeries) {
-                series.navigatorSeries.setHiddenByIndex(record.get('index'), record.get('disabled'));
+                series.navigatorSeries.setHiddenByIndex(record.get('index'),
+                                                        record.get('disabled'));
                 me.redraw();
             }
         }
     },
 
-    setupEvents: function () {
+    setupEvents: function() {
         // Called from NavigatorBase classes.
         var me = this,
             overlayEl = me.overlaySurface.element;
@@ -378,7 +388,7 @@ Ext.define('Ext.chart.navigator.Navigator', {
         });
     },
 
-    onMouseMove: function (e) {
+    onMouseMove: function(e) {
         var me = this,
             overlayEl = me.overlaySurface.element,
             style = overlayEl.dom.style,
@@ -389,15 +399,17 @@ Ext.define('Ext.chart.navigator.Navigator', {
             case 'max':
                 style.cursor = 'ew-resize';
                 break;
+
             case 'pan':
                 style.cursor = 'move';
                 break;
+
             default:
                 style.cursor = 'default';
         }
     },
 
-    getDragType: function (x) {
+    getDragType: function(x) {
         var me = this,
             t = me.getTolerance(),
             width = me.overlaySurface.element.getSize().width,
@@ -408,24 +420,28 @@ Ext.define('Ext.chart.navigator.Navigator', {
 
         if (x > min + t && x < max - t) {
             dragType = 'pan';
-        } else if (x <= min + t && x > min - t) {
+        }
+        else if (x <= min + t && x > min - t) {
             dragType = 'min';
-        } else if (x >= max - t && x < max + t) {
+        }
+        else if (x >= max - t && x < max + t) {
             dragType = 'max';
         }
 
         return dragType;
     },
 
-    onDragStart: function (e) {
+    onDragStart: function(e) {
+        var me = this,
+            x, dragType;
+
         // Limit drags to single touch.
-        if (this.dragType || e && e.touches && e.touches.length > 1) {
+        if (me.dragType || e && e.touches && e.touches.length > 1) {
             return;
         }
 
-        var me = this,
-            x = e.touches[0].pageX - me.overlaySurface.element.getXY()[0],
-            dragType = me.getDragType(x);
+        x = e.touches[0].pageX - me.overlaySurface.element.getXY()[0];
+        dragType = me.getDragType(x);
 
         me.rangeMask.attr.thumbOpacity = 1;
 
@@ -436,12 +452,12 @@ Ext.define('Ext.chart.navigator.Navigator', {
         }
     },
 
-    onDrag: function (e) {
-
+    onDrag: function(e) {
         if (e.touch.identifier !== this.touchId) {
             return;
         }
 
+        // eslint-disable-next-line vars-on-top
         var me = this,
             overlayEl = me.overlaySurface.element,
             width = overlayEl.getSize().width,
@@ -458,37 +474,48 @@ Ext.define('Ext.chart.navigator.Navigator', {
         if (dragType === 'pan') {
             min += dx;
             max += dx;
+
             if (min < 0) {
                 min = 0;
                 max = delta;
             }
+
             if (max > 1) {
                 max = 1;
                 min = max - delta;
             }
-        } else if (dragType === 'min') {
+        }
+        else if (dragType === 'min') {
             min += dx;
+
             if (min < 0) {
                 min = 0;
             }
+
             if (min > max - thumbGap) {
                 min = max - thumbGap;
             }
-        } else if (dragType === 'max') {
+        }
+        else if (dragType === 'max') {
             max += dx;
+
             if (max > 1) {
                 max = 1;
             }
+
             if (max < min + thumbGap) {
                 max = min + thumbGap;
             }
-        } else return;
+        }
+        else {
+            return;
+        }
 
         me.dragX = x;
         me.setVisibleRange([min, max]);
     },
 
-    onDragEnd: function () {
+    onDragEnd: function() {
         var me = this,
             autoHideThumbs = me.getAutoHideThumbs();
 
@@ -501,27 +528,27 @@ Ext.define('Ext.chart.navigator.Navigator', {
         }
     },
 
-    updateMinimum: function (mininum) {
+    updateMinimum: function(mininum) {
         if (!this.isConfiguring) {
             this.setVisibleRange([mininum, this.getMaximum()]);
         }
     },
 
-    updateMaximum: function (maximum) {
+    updateMaximum: function(maximum) {
         if (!this.isConfiguring) {
             this.setVisibleRange([this.getMinimum(), maximum]);
         }
     },
 
-    getMinimum: function () {
+    getMinimum: function() {
         return this.rangeMask.attr.min;
     },
 
-    getMaximum: function () {
+    getMaximum: function() {
         return this.rangeMask.attr.max;
     },
 
-    setVisibleRange: function (visibleRange) {
+    setVisibleRange: function(visibleRange) {
         var me = this,
             chart = me.chart;
 
@@ -537,7 +564,7 @@ Ext.define('Ext.chart.navigator.Navigator', {
         chart.resumeAnimation();
     },
 
-    afterBoundChartLayout: function () {
+    afterBoundChartLayout: function() {
         var me = this,
             spanSeries = me.getSpan() === 'series',
             mainRect = me.chart.getMainRect(),
@@ -554,7 +581,7 @@ Ext.define('Ext.chart.navigator.Navigator', {
         }
     },
 
-    afterChartLayout: function () {
+    afterChartLayout: function() {
         var me = this,
             size = me.overlaySurface.element.getSize();
 
@@ -566,7 +593,7 @@ Ext.define('Ext.chart.navigator.Navigator', {
         });
     },
 
-    doDestroy: function () {
+    doDestroy: function() {
         var chart = this.chart;
 
         if (chart && !chart.destroyed) {
@@ -575,5 +602,4 @@ Ext.define('Ext.chart.navigator.Navigator', {
 
         this.callParent();
     }
-
 });

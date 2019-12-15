@@ -179,7 +179,7 @@ Ext.define('Ext.ux.rating.Picker', {
             children: [{
                 reference: 'valueEl',
                 cls: 'u' + Ext.baseCSSPrefix + 'rating-picker-value'
-            },{
+            }, {
                 reference: 'trackerEl',
                 cls: 'u' + Ext.baseCSSPrefix + 'rating-picker-tracker'
             }]
@@ -199,12 +199,13 @@ Ext.define('Ext.ux.rating.Picker', {
     //-------------------------------------------------------------------------
     // Config Appliers
 
-    applyGlyphs: function (value) {
+    applyGlyphs: function(value) {
         if (typeof value === 'string') {
             //<debug>
             if (value.length !== 2) {
-                Ext.raise('Expected 2 characters for "glyphs" not "' + value +'".');
+                Ext.raise('Expected 2 characters for "glyphs" not "' + value + '".');
             }
+
             //</debug>
             value = [ value.charAt(0), value.charAt(1) ];
         }
@@ -226,7 +227,7 @@ Ext.define('Ext.ux.rating.Picker', {
         this.valueEl.applyStyles(style);
     },
 
-    applyTip: function (tip) {
+    applyTip: function(tip) {
         if (tip && typeof tip !== 'function') {
             if (!tip.isTemplate) {
                 tip = new Ext.XTemplate(tip);
@@ -238,15 +239,17 @@ Ext.define('Ext.ux.rating.Picker', {
         return tip;
     },
 
-    applyTrackingValue: function (value) {
+    applyTrackingValue: function(value) {
         return this.applyValue(value); // same rounding as normal value
     },
 
-    applyValue: function (v) {
+    applyValue: function(v) {
+        var rounding, limit, min;
+
         if (v !== null) {
-            var rounding = this.getRounding(),
-                limit = this.getLimit(),
-                min = this.getMinimum();
+            rounding = this.getRounding();
+            limit = this.getLimit();
+            min = this.getMinimum();
 
             v = Math.round(Math.round(v / rounding) * rounding * 1000) / 1000;
             v = (v < min) ? min : (v > limit ? limit : v);
@@ -258,52 +261,54 @@ Ext.define('Ext.ux.rating.Picker', {
     //-------------------------------------------------------------------------
     // Event Handlers
 
-    onClick: function (event) {
+    onClick: function(event) {
         var value = this.valueFromEvent(event);
+
         this.setValue(value);
     },
 
-    onMouseEnter: function () {
+    onMouseEnter: function() {
         this.element.addCls(this.overCls);
     },
 
-    onMouseLeave: function () {
+    onMouseLeave: function() {
         this.element.removeCls(this.overCls);
     },
 
-    onMouseMove: function (event) {
+    onMouseMove: function(event) {
         var value = this.valueFromEvent(event);
+
         this.setTrackingValue(value);
     },
 
     //-------------------------------------------------------------------------
     // Config Updaters
 
-    updateFamily: function (family) {
+    updateFamily: function(family) {
         this.element.setStyle('fontFamily', "'" + family + "'");
     },
 
-    updateGlyphs: function () {
+    updateGlyphs: function() {
         this.refreshGlyphs();
     },
 
-    updateLimit: function () {
+    updateLimit: function() {
         this.refreshGlyphs();
     },
 
-    updateScale: function (size) {
+    updateScale: function(size) {
         this.element.setStyle('fontSize', size);
     },
 
-    updateTip: function () {
+    updateTip: function() {
         this.refreshTip();
     },
 
-    updateTooltipText: function (text) {
+    updateTooltipText: function(text) {
         this.setTooltip(text);  // modern only (replaced by classic override)
     },
 
-    updateTrackingValue: function (value) {
+    updateTrackingValue: function(value) {
         var me = this,
             trackerEl = me.trackerEl,
             newWidth = me.valueToPercent(value);
@@ -313,11 +318,11 @@ Ext.define('Ext.ux.rating.Picker', {
         me.refreshTip();
     },
 
-    updateTrackOver: function (trackOver) {
+    updateTrackOver: function(trackOver) {
         this.element.toggleCls(this.trackOverCls, trackOver);
     },
 
-    updateValue: function (value, oldValue) {
+    updateValue: function(value, oldValue) {
         var me = this,
             animate = me.getAnimate(),
             valueEl = me.valueEl,
@@ -326,11 +331,12 @@ Ext.define('Ext.ux.rating.Picker', {
 
         if (me.isConfiguring || !animate) {
             valueEl.setStyle('width', newWidth);
-        } else {
+        }
+        else {
             valueEl.stopAnimation();
             valueEl.animate(Ext.merge({
                 from: { width: me.valueToPercent(oldValue) },
-                to:   { width: newWidth }
+                to: { width: newWidth }
             }, animate));
         }
 
@@ -368,7 +374,7 @@ Ext.define('Ext.ux.rating.Picker', {
     // the rendering as invalid and post-process these flags on the tail of any
     // bulk updates.
 
-    afterCachedConfig: function () {
+    afterCachedConfig: function() {
         // Now that we are done setting up the initial values we need to refresh the
         // DOM before we allow Ext.Widget's implementation to cloneNode on it.
         this.refresh();
@@ -376,7 +382,7 @@ Ext.define('Ext.ux.rating.Picker', {
         return this.callParent(arguments);
     },
 
-    initConfig: function (instanceConfig) {
+    initConfig: function(instanceConfig) {
         this.isConfiguring = true;
 
         this.callParent([ instanceConfig ]);
@@ -387,7 +393,7 @@ Ext.define('Ext.ux.rating.Picker', {
         this.refresh();
     },
 
-    setConfig: function () {
+    setConfig: function() {
         var me = this;
 
         // Since we could be updating multiple configs, save any updates that need
@@ -413,7 +419,7 @@ Ext.define('Ext.ux.rating.Picker', {
          * @return {HTMLElement} The text node.
          * @private
          */
-        getGlyphTextNode: function (dom) {
+        getGlyphTextNode: function(dom) {
             var node = dom.lastChild;
 
             // We want all our text nodes to be at the end of the child list, most
@@ -429,7 +435,7 @@ Ext.define('Ext.ux.rating.Picker', {
             return node;
         },
 
-        getTooltipData: function () {
+        getTooltipData: function() {
             var me = this;
 
             return {
@@ -444,7 +450,7 @@ Ext.define('Ext.ux.rating.Picker', {
          * Forcibly refreshes both glyph and tooltip rendering.
          * @private
          */
-        refresh: function () {
+        refresh: function() {
             var me = this;
 
             if (me.invalidGlyphs) {
@@ -462,7 +468,7 @@ Ext.define('Ext.ux.rating.Picker', {
          * @param {Boolean} now Pass `true` to force the refresh to happen now.
          * @private
          */
-        refreshGlyphs: function (now) {
+        refreshGlyphs: function(now) {
             var me = this,
                 later = !now && (me.isConfiguring || me.isReconfiguring),
                 el, glyphs, limit, on, off, trackerEl, valueEl;
@@ -475,7 +481,7 @@ Ext.define('Ext.ux.rating.Picker', {
                 glyphs = me.getGlyphs();
                 limit = me.getLimit();
 
-                for (on = off = ''; limit--; ) {
+                for (on = off = ''; limit--;) {
                     off += glyphs[0];
                     on += glyphs[1];
                 }
@@ -494,7 +500,7 @@ Ext.define('Ext.ux.rating.Picker', {
          * @param {Boolean} now Pass `true` to force the refresh to happen now.
          * @private
          */
-        refreshTip: function (now) {
+        refreshTip: function(now) {
             var me = this,
                 later = !now && (me.isConfiguring || me.isReconfiguring),
                 data, text, tooltip;
@@ -518,7 +524,7 @@ Ext.define('Ext.ux.rating.Picker', {
          * @return {Number} The rating based on the given event coordinates.
          * @private
          */
-        valueFromEvent: function (event) {
+        valueFromEvent: function(event) {
             var me = this,
                 el = me.innerEl,
                 ex = event.getX(),
@@ -548,8 +554,9 @@ Ext.define('Ext.ux.rating.Picker', {
          * @return {String} The width percentage to represent the given value.
          * @private
          */
-        valueToPercent: function (value) {
+        valueToPercent: function(value) {
             value = (value / this.getLimit()) * 100;
+
             return value + '%';
         }
     }

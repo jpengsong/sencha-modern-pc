@@ -17,6 +17,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
         for (i = start; i <= (rows + start - 1); ++i) {
             ret.push(makeItem(i));
         }
+
         return ret;
     }
 
@@ -46,17 +47,21 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
 
     function makeView(viewCfg, storeCfg, options) {
         viewCfg = viewCfg || {};
+
         if (!storeCfg && storeCfg !== 0) {
             storeCfg = storeCfg || {};
         }
+
         options = options || {};
 
         if (!viewCfg.store && !options.preventStore) {
             if (typeof storeCfg === 'number' || Ext.isArray(storeCfg)) {
                 storeCfg = makeStore(storeCfg);
             }
+
             viewCfg.store = storeCfg;
         }
+
         view = new Ext.dataview.DataView(Ext.apply({
             width: 400,
             itemTpl: '{name}',
@@ -86,6 +91,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
 
     function expectData(values) {
         var items = view.dataItems; // ignore things like emtpyTextCmp
+
         expect(values.length).toBe(items.length);
         values.forEach(function(v, i) {
             expect(items[i]).hasHTML(v);
@@ -95,6 +101,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
     describe("cleanup", function() {
         it("should have the same component count", function() {
             var count = Ext.ComponentManager.getCount();
+
             makeView(null, 10);
             view.destroy();
             expect(Ext.ComponentManager.getCount()).toBe(count);
@@ -113,6 +120,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                         o[key] = items[key];
                     }
                 }
+
                 return o;
             }
 
@@ -163,13 +171,16 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
             describe("dynamic", function() {
                 function expectMasked(masked) {
                     var mask = view.getMasked();
+
                     if (masked) {
                         expect(mask).toBeTruthy();
                         expect(mask.isVisible()).toBe(true);
-                    } else {
+                    }
+                    else {
                         if (mask) {
                             expect(mask.isVisible()).toBe(false);
-                        } else {
+                        }
+                        else {
                             expect(mask).toBeNull();
                         }
                     }
@@ -282,9 +293,11 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                                     expectMasked(options.expectMaskedInLoad);
                                     view.setStore(store);
                                     expectMasked(true);
+
                                     if (options.doExtraComplete) {
                                         Ext.Ajax.mockCompleteWithData([]);
                                     }
+
                                     Ext.Ajax.mockCompleteWithData(makeData(2));
                                     expectData(['Item1', 'Item2']);
                                 });
@@ -308,6 +321,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                         describe("old store is loading", function() {
                             makeSuite(function() {
                                 var s = makeStore();
+
                                 makeView({
                                     store: s
                                 });
@@ -422,6 +436,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                         });
 
                         var st = view.getStore();
+
                         expect(st).toBeNull();
 
                         view.setData(makeData(2));
@@ -454,9 +469,11 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                 if (text) {
                     expect(cmp.isVisible()).toBe(true);
                     expect(cmp.getHtml()).toBe(text);
-                } else if (cmp) {
+                }
+                else if (cmp) {
                     expect(cmp.isVisible()).toBe(false);
-                } else {
+                }
+                else {
                     expect(cmp).toBeFalsy();
                 }
             }
@@ -672,19 +689,24 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
         describe("inline", function() {
             function getX(index) {
                 var item = getElement(view.getItemAt(index));
+
                 return item.getX();
             }
 
             function getY(index) {
                 var item = getElement(view.getItemAt(index));
+
                 return item.getY();
             }
 
             function expectPositions(positions) {
                 positions.forEach(function(pos, idx) {
                     // Allow some fudge factor for subpixel rounding
-                    expect(getX(idx)).toBeWithin(2, pos[0]);
-                    expect(getY(idx)).toBeWithin(2, pos[1]);
+                    var x = getX(idx),
+                        y = getY(idx);
+
+                    expect(x).toBeWithin(2, pos[0]);
+                    expect(y).toBeWithin(2, pos[1]);
                 });
             }
 
@@ -698,6 +720,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                         name: '<div style="width: 50px; border: 1px solid red;">Item' + i + '</div>'
                     });
                 }
+
                 return data;
             }
 
@@ -753,6 +776,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                             inline: false
                         }, makeInlineData(10));
                         var h = getElement(view.getItemAt(0)).getHeight();
+
                         expectPositions(getInlineFalsePos(50, h));
                     });
                 });
@@ -763,6 +787,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                             inline: true
                         }, makeInlineData(10));
                         var h = getElement(view.getItemAt(0)).getHeight();
+
                         expectPositions(getInlineTruePos(50, h));
                     });
                 });
@@ -774,8 +799,12 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                                 wrap: false
                             }
                         }, makeInlineData(10));
+
                         var h = getElement(view.getItemAt(0)).getHeight();
-                        expectPositions(getInlineNoWrapPos(50, h));
+                        waits(100);
+                        runs(function(){
+                            expectPositions(getInlineNoWrapPos(50, h));
+                        });
                     });
                 });
             });
@@ -792,6 +821,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                         it("should layout horizontally and wrap", function() {
                             view.setInline(true);
                             var h = getElement(view.getItemAt(0)).getHeight();
+
                             expectPositions(getInlineTruePos(50, h));
                         });
                     });
@@ -802,7 +832,10 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                                 wrap: false
                             });
                             var h = getElement(view.getItemAt(0)).getHeight();
-                            expectPositions(getInlineNoWrapPos(50, h));
+                            waits(100);
+                            runs(function(){
+                                expectPositions(getInlineNoWrapPos(50, h));
+                            });
                         });
                     });
                 });
@@ -818,6 +851,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                         it("should lay out items vertically", function() {
                             view.setInline(false);
                             var h = getElement(view.getItemAt(0)).getHeight();
+
                             expectPositions(getInlineFalsePos(50, h));
                         });
                     });
@@ -827,7 +861,9 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                             view.setInline({
                                 wrap: false
                             });
+
                             var h = getElement(view.getItemAt(0)).getHeight();
+
                             expectPositions(getInlineNoWrapPos(50, h));
                         });
                     });
@@ -846,6 +882,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                         it("should lay out items vertically", function() {
                             view.setInline(false);
                             var h = getElement(view.getItemAt(0)).getHeight();
+
                             expectPositions(getInlineFalsePos(50, h));
                         });
                     });
@@ -854,6 +891,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                         it("should layout horizontally and wrap", function() {
                             view.setInline(true);
                             var h = getElement(view.getItemAt(0)).getHeight();
+
                             expectPositions(getInlineTruePos(50, h));
                         });
                     });
@@ -861,8 +899,8 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
             });
         });
 
-        describe('enableTextSelection', function () {
-            it('should set userSelectable on the bodyElement', function () {
+        describe('enableTextSelection', function() {
+            it('should set userSelectable on the bodyElement', function() {
                 makeView({}, 3);
                 view.setEnableTextSelection(true);
 
@@ -968,6 +1006,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
 
         describe("itemTpl", function() {
             var tpl = '{name} - {age}';
+
             describe("at construction", function() {
                 it("should use the passed itemTpl", function() {
                     makeView({
@@ -1004,6 +1043,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
     describe("methods", function() {
         function expectItems(values) {
             var items = view.getViewItems();
+
             expect(values.length).toBe(items.length);
             values.forEach(function(v, idx) {
                 expectItem(items[idx], v);
@@ -1049,6 +1089,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
             it("should not return a live collection", function() {
                 makeView(null, 3);
                 var items = view.getViewItems();
+
                 store.removeAt(0);
                 expect(view.getViewItems()).not.toBe(items);
                 expect(view.getViewItems().length).not.toBe(items.length);
@@ -1075,6 +1116,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
 
                 it("should return the first item", function() {
                     var item = view.getItemAt(0);
+
                     expectItem(item, 'Item1');
 
                     // Test negative indexing. -1 means last
@@ -1084,6 +1126,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
 
                 it("should return a middle item", function() {
                     var item = view.getItemAt(2);
+
                     expectItem(item, 'Item3');
 
                     // Test negative indexing. -1 means last
@@ -1093,6 +1136,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
 
                 it("should return the last item", function() {
                     var item = view.getItemAt(4);
+
                     expectItem(item, 'Item5');
 
                     // Test negative indexing. -1 means last
@@ -1111,6 +1155,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
             it("should return -1 for an item not in the view", function() {
                 makeView(null, 3);
                 var item = view.getItemAt(0);
+
                 store.removeAt(0);
                 expect(view.getItemIndex(item)).toBe(-1);
             });
@@ -1118,6 +1163,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
             it("should return the item index", function() {
                 makeView(null, 3);
                 var items = view.getViewItems();
+
                 expect(view.getItemIndex(items[0])).toBe(0);
                 expect(view.getItemIndex(items[1])).toBe(1);
                 expect(view.getItemIndex(items[2])).toBe(2);
@@ -1194,6 +1240,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
         describe("deprecated item events", function() {
             function makeWithEvent(event) {
                 var listeners = {};
+
                 listeners[event] = spy;
                 makeView({
                     listeners: listeners
@@ -1265,8 +1312,8 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
             it("should fire the itemlongpress event", function() {
                 makeWithEvent('itemlongpress');
                 touchStart(1);
-                //waits(Ext.event.gesture.LongPress.instance.getMinDuration());
-                waitsFor(function () {
+                // waits(Ext.event.gesture.LongPress.instance.getMinDuration());
+                waitsFor(function() {
                     return spy.callCount === 1;
                 });
                 runs(function() {
@@ -1279,8 +1326,8 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
             it("should fire the itemtaphold event", function() {
                 makeWithEvent('itemtaphold');
                 touchStart(1);
-                //waits(Ext.event.gesture.LongPress.instance.getMinDuration());
-                waitsFor(function () {
+                // waits(Ext.event.gesture.LongPress.instance.getMinDuration());
+                waitsFor(function() {
                     return spy.callCount === 1;
                 });
                 runs(function() {
@@ -1293,8 +1340,8 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
             it("should fire the itemsingletap event", function() {
                 makeWithEvent('itemsingletap');
                 tap(3);
-                //waits(Ext.event.gesture.DoubleTap.instance.getMaxDuration());
-                waitsFor(function () {
+                // waits(Ext.event.gesture.DoubleTap.instance.getMaxDuration());
+                waitsFor(function() {
                     return spy.callCount === 1;
                 });
                 runs(function() {
@@ -1308,8 +1355,8 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                 tap(0);
                 tap(0);
 
-                //waits(Ext.event.gesture.DoubleTap.instance.getMaxDuration());
-                waitsFor(function () {
+                // waits(Ext.event.gesture.DoubleTap.instance.getMaxDuration());
+                waitsFor(function() {
                     return spy.callCount === 1;
                 });
                 runs(function() {
@@ -1362,9 +1409,11 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
         function makeSuite(renderedFirst) {
             function makeSuiteView(viewCfg, storeCfg, options) {
                 viewCfg = viewCfg || {};
+
                 if (!renderedFirst) {
                     viewCfg.renderTo = null;
                 }
+
                 makeView(viewCfg, storeCfg, options);
             }
 
@@ -1521,23 +1570,27 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                                 return rec.get('name') >= 'Item2';
                             }
                         });
+
                         if (renderedFirst) {
                             expectData(['Item2', 'Item3', 'Item4', 'Item5']);
                         }
+
                         rec.set('name', 'Item6');
                         renderIf();
                         expectData(['Item2', 'Item3', 'Item4', 'Item5', 'Item6']);
                     });
 
-                    it("should hode the item when the change excludes it from the filter", function() {
+                    it("should hide the item when the change excludes it from the filter", function() {
                         store.getFilters().add({
                             filterFn: function(rec) {
                                 return rec.get('name') <= 'Item5';
                             }
                         });
+
                         if (renderedFirst) {
                             expectData(['Item1', 'Item2', 'Item3', 'Item4', 'Item5']);
                         }
+
                         store.first().set('name', 'Item6');
                         renderIf();
                         expectData(['Item2', 'Item3', 'Item4', 'Item5']);
@@ -1622,9 +1675,11 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
             describe("sorting", function() {
                 it("should react to sorting", function() {
                     makeSuiteView(null, 7);
+
                     if (renderedFirst) {
                         expectData(['Item1', 'Item2', 'Item3', 'Item4', 'Item5', 'Item6', 'Item7']);
                     }
+
                     store.getSorters().add({
                         property: 'name',
                         direction: 'DESC'
@@ -1633,7 +1688,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                     expectData(['Item7', 'Item6', 'Item5', 'Item4', 'Item3', 'Item2', 'Item1']);
                 });
             });
-			
+
             describe("selection while sorted", function() {
                 it("should save the item selection when list is sorted", function() {
                     store = makeStore(5);
@@ -1655,7 +1710,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                     expect(getElement(view.getItemAt(4))).not.toHaveCls('x-selected');
                 });
             });
-			
+
             describe("filtering", function() {
                 function filter(rec) {
                     return rec.id % 2 === 0;
@@ -1663,9 +1718,11 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
 
                 it("should exclude items that do not match the filter", function() {
                     makeSuiteView(null, 7);
+
                     if (renderedFirst) {
                         expectData(['Item1', 'Item2', 'Item3', 'Item4', 'Item5', 'Item6', 'Item7']);
                     }
+
                     store.getFilters().add({
                         filterFn: filter
                     });
@@ -1682,12 +1739,40 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                             }]
                         }
                     });
+
                     if (renderedFirst) {
                         expectData(['Item2', 'Item4', 'Item6']);
                     }
+
                     store.getFilters().removeAll();
                     renderIf();
                     expectData(['Item1', 'Item2', 'Item3', 'Item4', 'Item5', 'Item6', 'Item7']);
+                });
+
+                it('should update the scrollPosition.y if a filter results in truncation of scroll range while scrollToTopOnRefresh is false', function() {
+                    // This is a DOM test. Must be rendered.
+                    if (renderedFirst) {
+                        makeSuiteView({
+                            scrollToTopOnRefresh: false,
+                            maxHeight: 300
+                        }, 100);
+
+                        var scrollable = view.getScrollable(),
+                            scrollY;
+
+                        scrollable.scrollTo(null, 10000);
+                        scrollY = scrollable.getPosition().y;
+                        expect(scrollY).toBe(scrollable.getMaxPosition().y);
+                        view.hide();
+
+                        // Chop the view down to only 30 items
+                        store.filter(function(r) {
+                            return r.id < 30;
+                        });
+
+                        view.show();
+                        expect(scrollable.getPosition().y).toBeLessThan(scrollY);
+                    }
                 });
             });
         }
@@ -1761,7 +1846,8 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
                         view.el.contains(document.activeElement) === false &&
                         view.el.query('.' + view.focusedCls).length === 0;
                 }, 'focus to exit the view');
-            } else {
+            }
+ else {
                 var expectedLocation = new Ext.dataview.Location(view, (typeof expected === 'number') ? view.getViewItems()[expected] : expected);
 
                 waitsFor(function() {
@@ -1769,7 +1855,7 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
 
                     return location &&
                         navigationModel.getLocation().equals(expectedLocation) &&
-                        document.activeElement === location.getFocusEl(true) &&
+                        document.activeElement === location.getFocusEl('dom') &&
                         location.getFocusEl().hasCls(view.focusedCls);
                 }, 'location to be ' + expected);
             }
@@ -1871,6 +1957,71 @@ topSuite("Ext.dataview.DataView", ['Ext.data.ArrayStore'], function() {
             });
 
             expectLocation(1);
+        });
+    });
+
+    describe('Store configured with data Collection', function() {
+        var collection;
+
+        beforeEach(function() {
+            var data = makeData(100),
+                i;
+
+            for (i = 0; i < 100; i++) {
+                data[i] = new Model(data[i]);
+            }
+
+            // We don't set the rootProperty here. Part of the test is that
+            // Store does that itself which makes the mutation events work.
+            collection = new Ext.util.Collection();
+            collection.add(data);
+            store = new Ext.data.Store({
+                model: Model,
+                data: collection
+            });
+
+            // Create the view with the store created round the Collection
+            makeView({
+                store: store,
+                maxHeight: 300
+            }, null, {
+                preventStore: true
+            });
+        });
+
+        it('should respond to mutations', function() {
+            var initialStoreSize = store.getCount();
+
+            expect(view.getFastItems().length).toBe(initialStoreSize);
+
+            store.first().set('name', 'New Name');
+
+            // View must respond to record mutations
+            expect(view.getFastItems()[0].innerText).toBe('New Name');
+
+            store.removeAt(0, 50);
+
+            // Must respond to remove.
+            expect(view.getFastItems().length).toBe(initialStoreSize - 50);
+
+            store.add({
+                data: {
+                    id: 1000,
+                    name: 'Item 1000',
+                    age: 1020
+                }
+            });
+
+            // Must respond to add.
+            expect(view.getFastItems().length).toBe(initialStoreSize - 50 + 1);
+
+            // Only include records 61 to 64
+            store.filter(function(rec) {
+                return rec.id > 60 && rec.id < 65;
+            });
+
+            // Must respond to filter
+            expect(view.getFastItems().length).toBe(4);
         });
     });
 });

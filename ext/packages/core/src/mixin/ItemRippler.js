@@ -18,7 +18,7 @@ Ext.define('Ext.mixin.ItemRippler', {
         itemRipple: null
     },
 
-    shouldRippleItem: function (item, e) {
+    shouldRippleItem: function(item, e) {
         var itemRipple, ripple;
 
         if (e.getTarget(this.noItemRippleSelector, this.element)) {
@@ -38,11 +38,12 @@ Ext.define('Ext.mixin.ItemRippler', {
         return itemRipple;
     },
 
-    rippleItem: function (item, e) {
+    rippleItem: function(item, e) {
         if (!item) {
             return;
         }
 
+        // eslint-disable-next-line vars-on-top
         var me = this,
             start = e.type.match(me.rippleStateRe),
             itemRipple = me.shouldRippleItem(item, e),
@@ -75,7 +76,8 @@ Ext.define('Ext.mixin.ItemRippler', {
                     el.ripple(e, itemRipple);
                     rippledItems.push(el);
                 }
-            } else {
+            }
+            else {
                 el.ripple(e, itemRipple);
                 rippledItems.push(el);
             }
@@ -84,8 +86,10 @@ Ext.define('Ext.mixin.ItemRippler', {
         }
     },
 
-    destroyAllRipples: function () {
-        for (var items = this.$rippledItems; items && items.length; ) {
+    destroyAllRipples: function() {
+        var items;
+
+        for (items = this.$rippledItems; items && items.length;) {
             items.pop().destroyAllRipples();
         }
     },

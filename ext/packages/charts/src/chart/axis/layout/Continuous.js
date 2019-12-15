@@ -13,8 +13,8 @@ Ext.define('Ext.chart.axis.layout.Continuous', {
         adjustMinimumByMajorUnit: false,
         adjustMaximumByMajorUnit: false
     },
-    
-    getCoordFor: function (value, field, idx, items) {
+
+    getCoordFor: function(value, field, idx, items) {
         return +value;
     },
 
@@ -22,15 +22,15 @@ Ext.define('Ext.chart.axis.layout.Continuous', {
      * @method snapEnds
      * @inheritdoc
      */
-    snapEnds: function (context, min, max, estStepSize) {
+    snapEnds: function(context, min, max, estStepSize) {
         var segmenter = context.segmenter,
             axis = this.getAxis(),
             noAnimation = !axis.spriteAnimationCount,
             majorTickSteps = axis.getMajorTickSteps(),
             // if specific number of steps requested and the segmenter supports such segmentation
-            bucket = majorTickSteps && segmenter.exactStep ?
-                segmenter.exactStep(min, (max - min) / majorTickSteps) :
-                segmenter.preferredStep(min, estStepSize),
+            bucket = majorTickSteps && segmenter.exactStep
+                ? segmenter.exactStep(min, (max - min) / majorTickSteps)
+                : segmenter.preferredStep(min, estStepSize),
             unit = bucket.unit,
             step = bucket.step,
             diffSteps = segmenter.diff(min, max, unit),
@@ -57,7 +57,8 @@ Ext.define('Ext.chart.axis.layout.Continuous', {
         // unwanted effects during animation.
         if (majorTickSteps || (noAnimation && +segmenter.add(min, diffSteps, unit) === max)) {
             from = min;
-        } else {
+        }
+        else {
             from = segmenter.align(min, step, unit);
         }
 
@@ -73,13 +74,13 @@ Ext.define('Ext.chart.axis.layout.Continuous', {
             step: step,
             steps: steps,
             unit: unit,
-            get: function (currentStep) {
+            get: function(currentStep) {
                 return segmenter.add(this.from, this.step * currentStep, this.unit);
             }
         };
     },
 
-    snapMinorEnds: function (context) {
+    snapMinorEnds: function(context) {
         var majorTicks = context.majorTicks,
             minorTickSteps = this.getAxis().getMinorTickSteps(),
             segmenter = context.segmenter,
@@ -102,11 +103,12 @@ Ext.define('Ext.chart.axis.layout.Continuous', {
             step: step,
             steps: steps,
             unit: unit,
-            get: function (current) {
-                return (current % minorTickSteps + offset + 1 !== 0) ? // don't render minor tick in major tick position
-                    segmenter.add(this.from, this.step * current, unit) :
-                    null;
+            get: function(current) {
+                // don't render minor tick in major tick position
+                return (current % minorTickSteps + offset + 1 !== 0)
+                    ? segmenter.add(this.from, this.step * current, unit)
+                    : null;
             }
-        }
+        };
     }
 });

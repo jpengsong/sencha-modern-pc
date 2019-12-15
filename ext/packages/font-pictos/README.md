@@ -1,4 +1,4 @@
-# @extjs/ext-react-font-pictos
+# @extjs/ext-font-pictos
 --------------------------------------------------------
 This package contains the Sencha Cmd package `font-pictos@6.5.0`  
  

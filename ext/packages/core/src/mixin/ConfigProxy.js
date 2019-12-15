@@ -73,17 +73,18 @@
  * @private
  * @since 6.5.0
  */
-Ext.define('Ext.mixin.ConfigProxy', function (ConfigProxy) { return {
+Ext.define('Ext.mixin.ConfigProxy', function(ConfigProxy) { return { // eslint-disable-line brace-style, max-len
     extend: 'Ext.Mixin',
 
     mixinConfig: {
         id: 'configproxy',
 
-        extended: function (baseClass, derivedClass, classBody) {
+        extended: function(baseClass, derivedClass, classBody) {
             var proxyConfig = classBody.proxyConfig;
 
-            derivedClass.$configProxies = Ext.apply({},
-                derivedClass.superclass.self.$configProxies);
+            derivedClass.$configProxies = Ext.apply(
+                {}, derivedClass.superclass.self.$configProxies
+            );
 
             if (proxyConfig) {
                 delete classBody.proxyConfig;
@@ -92,7 +93,7 @@ Ext.define('Ext.mixin.ConfigProxy', function (ConfigProxy) { return {
         }
     },
 
-    onClassMixedIn: function (targetClass) {
+    onClassMixedIn: function(targetClass) {
         var prototype = targetClass.prototype,
             proxyConfig = prototype.proxyConfig,
             initConfig = prototype.initConfig;
@@ -102,7 +103,7 @@ Ext.define('Ext.mixin.ConfigProxy', function (ConfigProxy) { return {
             // contents are basically the same as the proxyConfig object.
         };
 
-        prototype.initConfig = function (config) {
+        prototype.initConfig = function(config) {
             initConfig.apply(this, arguments);
 
             // ensure future setter calls will pass through to the target:
@@ -131,7 +132,7 @@ Ext.define('Ext.mixin.ConfigProxy', function (ConfigProxy) { return {
      * @private
      * @since 6.5.0
      */
-    getProxiedConfigs: function (name) {
+    getProxiedConfigs: function(name) {
         var me = this,
             configs = me.config,  // the merged config set
             configProxies = me.self.$configProxies[name],
@@ -166,7 +167,7 @@ Ext.define('Ext.mixin.ConfigProxy', function (ConfigProxy) { return {
      * called at any other time this method simply returns the given `itemConfig`. This
      * makes it safe to code such appliers as follows:
      *
-     *      applyChildThing: function (config) {
+     *      applyChildThing: function(config) {
      *          config = this.mergeProxiedConfigs('childThing', config);
      *
      *          return new ChildThing(config);
@@ -180,7 +181,7 @@ Ext.define('Ext.mixin.ConfigProxy', function (ConfigProxy) { return {
      * @private
      * @since 6.5.0
      */
-    mergeProxiedConfigs: function (name, itemConfig, alwaysClone) {
+    mergeProxiedConfigs: function(name, itemConfig, alwaysClone) {
         var me = this,
             ret = itemConfig,
             proxied = me.getProxiedConfigs(name),
@@ -206,7 +207,7 @@ Ext.define('Ext.mixin.ConfigProxy', function (ConfigProxy) { return {
     },
 
     statics: {
-        processClass: function (targetClass, proxyConfig) {
+        processClass: function(targetClass, proxyConfig) {
             var ExtConfig = Ext.Config,
                 targetProto = targetClass.prototype,
                 add = {},
@@ -251,8 +252,10 @@ Ext.define('Ext.mixin.ConfigProxy', function (ConfigProxy) { return {
                     if (s in add) {
                         Ext.raise('Duplicate proxy config definitions for "' + s + '"');
                     }
+
                     if (s in targetProto.config) {
-                        Ext.raise('Config "'+s+'" already defined for class ' + targetProto.$className);
+                        Ext.raise('Config "' + s + '" already defined for class ' +
+                                  targetProto.$className);
                     }
                     //</debug>
 
@@ -264,7 +267,7 @@ Ext.define('Ext.mixin.ConfigProxy', function (ConfigProxy) { return {
                     }
                     //<debug>
                     else {
-                        Ext.raise('Cannot proxy "'+s+'" config getter');
+                        Ext.raise('Cannot proxy "' + s + '" config getter');
                     }
                     //</debug>
 
@@ -273,7 +276,7 @@ Ext.define('Ext.mixin.ConfigProxy', function (ConfigProxy) { return {
                     }
                     //<debug>
                     else {
-                        Ext.raise('Cannot proxy "'+s+'" config setter');
+                        Ext.raise('Cannot proxy "' + s + '" config setter');
                     }
                     //</debug>
                 }
@@ -282,24 +285,24 @@ Ext.define('Ext.mixin.ConfigProxy', function (ConfigProxy) { return {
             targetClass.addConfig(add);
         },
 
-        wrapFn: function (itemGetter, name) {
-            return function () {
+        wrapFn: function(itemGetter, name) {
+            return function() {
                 var item = this[itemGetter]();
 
                 return item && item[name].apply(item, arguments);
             };
         },
 
-        wrapGet: function (itemGetter, configGetter) {
-            return function () {
+        wrapGet: function(itemGetter, configGetter) {
+            return function() {
                 var item = this[itemGetter]();
 
                 return item && item[configGetter]();
             };
         },
 
-        wrapSet: function (itemGetter, configSetter, itemName) {
-            return function (value) {
+        wrapSet: function(itemGetter, configSetter, itemName) {
+            return function(value) {
                 var me = this,
                     item, proxiedConfigs;
 
@@ -312,6 +315,7 @@ Ext.define('Ext.mixin.ConfigProxy', function (ConfigProxy) { return {
                     item = me[itemGetter]();
 
                     proxiedConfigs = me.$proxiedConfigs; // lazy created by itemGetter
+
                     if (proxiedConfigs && proxiedConfigs[itemName]) {
                         delete proxiedConfigs[itemName]; // drop only the first set call
                         item = null;
@@ -326,4 +330,5 @@ Ext.define('Ext.mixin.ConfigProxy', function (ConfigProxy) { return {
             };
         }
     }
-}});
+};
+});

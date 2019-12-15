@@ -1,5 +1,5 @@
 Ext.define("App.model.systemmanage.SysUser", {
-    extend: "App.model.BaseModel",
+    extend: "App.ux.app.Model",
     identifier: "uuid",
     fields: [
         { name: 'SysUserId', type: 'string' },
@@ -9,7 +9,10 @@ Ext.define("App.model.systemmanage.SysUser", {
         { name: 'LoginPassWord', type: 'string' },
         { name: 'Mobile', type: 'string' },
         { name: 'Email', type: 'string' },
-        { name: 'IsEnable', type: 'int', defaultValue: 0 },
+        { name: 'IsEnable', type: 'int' },
+        { name: 'MenuLocation', type: 'string' },
+        { name: 'DarkMode', type: 'boolean' },
+        { name: 'Theme', type: 'string' },
         { name: 'IsDel', type: 'int' },
         { name: 'Description', type: 'string' },
         { name: 'CreateUserId', type: 'string' },

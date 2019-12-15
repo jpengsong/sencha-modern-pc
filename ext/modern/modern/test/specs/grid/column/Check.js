@@ -10,7 +10,7 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
             dataIndex: 'val'
         };
     }
-    
+
     function makeGrid(columns, data, gridCfg) {
         store = new Ext.data.Store({
             model: spec.CheckColumnModel,
@@ -30,7 +30,7 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
         if (!columns) {
             columns = [getColCfg()];
         }
-        
+
         grid = new Ext.grid.Grid(Ext.apply({
             width: 200,
             height: 200,
@@ -40,7 +40,7 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
         }, gridCfg));
         col = grid.getColumns()[0];
     }
-    
+
     function clickCheckbox(rowIdx, cellIdx, button, x, y) {
         var cell = new Ext.grid.Location(grid, {
                 row: rowIdx,
@@ -49,9 +49,11 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
             target = getCellCheckbox(rowIdx, cellIdx);
 
         grid.getNavigationModel().setLocation(cell);
+
         if (Ext.supports.TouchEvents) {
             Ext.testHelper.tap(target);
-        } else {
+        }
+ else {
             jasmine.fireMouseEvent(target, 'click', x, y, button);
         }
     }
@@ -60,9 +62,11 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
         return getCellComponent(rowIdx, cellIdx, 'el');
     }
 
-    function getCellComponent (rowIdx, cellIdx, member) {
+    function getCellComponent(rowIdx, cellIdx, member) {
         var rows = grid.query('gridrow');
+
         var row = rows[rowIdx];
+
         var cell = row.cells[cellIdx || 0];
 
         return member ? cell[member] : cell;
@@ -75,7 +79,8 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
     function clickHeader() {
         if (Ext.supports.TouchEvents) {
             Ext.testHelper.tap(col.checkboxElement);
-        } else {
+        }
+ else {
             jasmine.fireMouseEvent(col.checkboxElement, 'click');
         }
     }
@@ -90,14 +95,14 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
             fields: ['val']
         });
     });
-    
+
     afterEach(function() {
         Ext.destroy(grid, store);
         col = grid = store = null;
         Ext.undefine('spec.CheckColumnModel');
         Ext.data.Model.schema.clear();
     });
-    
+
     describe("check rendering", function() {
         it("should set the x-checked class on checked items", function() {
             makeGrid();
@@ -106,22 +111,23 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
             expect(getCell(2).hasCls('x-checked')).toBe(false);
         });
     });
-    
+
     describe("enable/disable", function() {
         describe("during config", function() {
             it("should not include the disabledCls if the column is not disabled", function() {
                 makeGrid();
                 expect(hasCls(getCell(0), Ext.grid.cell.Check.prototype.disabledCls)).toBe(false);
             });
-        
+
             it("should include the disabledCls if the column is disabled", function() {
                 var cfg = getColCfg();
+
                 cfg.disabled = true;
                 makeGrid([cfg]);
                 expect(hasCls(getCell(0), Ext.grid.cell.Check.prototype.disabledCls)).toBe(true);
             });
         });
-        
+
         describe("after render", function() {
             it("should add the disabledCls if disabling", function() {
                 makeGrid();
@@ -132,9 +138,10 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
                 expect(hasCls(getCell(3), Ext.grid.cell.Check.prototype.disabledCls)).toBe(true);
                 expect(hasCls(getCell(4), Ext.grid.cell.Check.prototype.disabledCls)).toBe(true);
             });
-            
+
             it("should remove the disabledCls if enabling", function() {
                 var cfg = getColCfg();
+
                 cfg.disabled = true;
                 makeGrid([cfg]);
                 col.enable();
@@ -146,12 +153,13 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
             });
         });
     });
-    
+
     describe("interaction", function() {
         describe("stopSelection", function() {
             describe("stopSelection: false", function() {
                 it("should select when a full row update is required", function() {
                     var cfg = getColCfg();
+
                     cfg.stopSelection = false;
                     // Template column always required a full update
                     makeGrid([cfg, {
@@ -169,6 +177,7 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
 
                 it("should select when a full row update is not required", function() {
                     var cfg = getColCfg();
+
                     cfg.stopSelection = false;
                     // Template column always required a full update
                     makeGrid([cfg, {
@@ -186,6 +195,7 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
             describe("stopSelection: true", function() {
                 it("should not select when a full row update is required", function() {
                     var cfg = getColCfg();
+
                     cfg.stopSelection = true;
                     // Template column always required a full update
                     makeGrid([cfg, {
@@ -199,6 +209,7 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
 
                 it("should not select when a full row update is not required", function() {
                     var cfg = getColCfg();
+
                     cfg.stopSelection = true;
                     // Template column always required a full update
                     makeGrid([cfg, {
@@ -213,6 +224,7 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
         describe("events", function() {
             it("should pass the cell, record index, new checked state & record for beforecheckchange", function() {
                 var arg1, arg2, arg3, arg4;
+
                 makeGrid();
                 col.on('beforecheckchange', function(a, b, c, d) {
                     arg1 = a;
@@ -226,9 +238,10 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
                 expect(arg3).toBe(false);
                 expect(arg4).toBe(store.getAt(0));
             });
-            
+
             it("should pass the cell, record index, new checked state & record for checkchange", function() {
                 var arg1, arg2, arg3, arg4;
+
                 makeGrid();
                 col.on('checkchange', function(a, b, c, d) {
                     arg1 = a;
@@ -242,9 +255,10 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
                 expect(arg3).toBe(true);
                 expect(arg4).toBe(store.getAt(2));
             });
-            
+
             it("should not fire fire checkchange if beforecheckchange returns false", function() {
                 var called = false;
+
                 makeGrid();
                 col.on('checkchange', function(a, b, c) {
                     called = true;
@@ -256,7 +270,7 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
                 expect(called).toBe(false);
             });
         });
-        
+
         it("should invert the record value", function() {
             makeGrid();
             clickCheckbox(0);
@@ -264,9 +278,10 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
             clickCheckbox(2);
             expect(store.getAt(2).get('val')).toBe(true);
         });
-        
+
         it("should not trigger any changes when disabled", function() {
             var cfg = getColCfg();
+
             cfg.disabled = true;
             makeGrid([cfg]);
             clickCheckbox(0);
@@ -275,7 +290,7 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
             expect(store.getAt(2).get('val')).toBe(false);
         });
     });
-    
+
     describe('Header checkbox', function() {
         beforeEach(function() {
             var ready;
@@ -297,6 +312,30 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
             waits(100);
         });
 
+        it("should be false by default", function() {
+            grid.destroy();
+            makeGrid([{
+                xtype: 'checkcolumn',
+                text: 'Checked',
+                dataIndex: 'val'
+            }]);
+
+            expect(col.getHeaderCheckbox()).toBe(false);
+        });
+
+        it("should allow sortable false when disabled", function() {
+            grid.destroy();
+            makeGrid([{
+                xtype: 'checkcolumn',
+                headerCheckbox: false,
+                text: 'Checked',
+                dataIndex: 'val',
+                sortable: false
+            }]);
+
+            expect(col.getSortable()).toBe(false);
+        });
+
         it('should toggle all on header checkbox click', function() {
             var headercheckchangeCount = 0;
 
@@ -315,9 +354,10 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
             // Header checkbox is updated on a timer for efficiency, so must wait
             waitsFor(function() {
                 expect(headercheckchangeCount).toBe(1);
+
                 return col.el.hasCls(col.checkedCls) === true;
             });
-            
+
             runs(function() {
                 // Test deselecting all
                 clickHeader();
@@ -329,6 +369,7 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
             // Header checkbox is updated on a timer for efficiency, so must wait
             waitsFor(function() {
                 expect(headercheckchangeCount).toBe(2);
+
                 return col.el.hasCls(col.checkedCls) === false;
             });
         });
@@ -427,7 +468,7 @@ topSuite("Ext.grid.column.Check", ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.
             // Nothing should happen.
             // We are expecting the header checkbox state to remain false
             waits(100);
-            
+
             runs(function() {
                 expect(col.el.hasCls(col.checkedCls)).toBe(false);
                 store.getAt(4).set('val', true);

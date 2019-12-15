@@ -1,5 +1,3 @@
-/* global expect, Ext, jasmine */
-
 topSuite("Ext.grid.column.Widget",
     ['Ext.grid.Panel', 'Ext.Button', 'Ext.app.ViewController', 'Ext.form.RadioGroup',
      'Ext.form.field.ComboBox', 'Ext.tab.Panel', 'Ext.ProgressBarWidget'],
@@ -9,9 +7,11 @@ function() {
         proxyStoreLoad = Ext.data.ProxyStore.prototype.load,
         loadStore = function() {
             proxyStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         };
 
@@ -34,7 +34,7 @@ function() {
                 a: i + 'a',
                 b: i + 'b',
                 c: i + 'c',
-                d: i/10
+                d: i / 10
             });
         }
 
@@ -56,7 +56,7 @@ function() {
             xtype: 'button'
         })];
 
-        if (typeof data == 'number' || data == null) {
+        if (typeof data === 'number' || data == null) {
             data = generateData(data || 4);
         }
 
@@ -84,7 +84,7 @@ function() {
         navModel = view.getNavigationModel();
         colRef = grid.getColumnManager().getColumns();
     }
-    
+
     beforeEach(function() {
         // Override so that we can control asynchronous loading
         Ext.data.ProxyStore.prototype.load = loadStore;
@@ -100,14 +100,16 @@ function() {
 
     function getWidget(index, col) {
         col = col || colRef[0];
+
         return col.getWidget(store.getAt(index));
     }
 
     function getPadding() {
         var cell = grid.getView().getEl().down(colRef[0].getCellInnerSelector());
+
         return parseInt(cell.getStyle('padding-left'), 10) + parseInt(cell.getStyle('padding-right'), 10);
     }
-    
+
     describe("refocusing after using a column widget to trigger a delete", function() {
         it("should refocus the next row upon deletion", function() {
             createGrid([{
@@ -120,6 +122,7 @@ function() {
                     text: 'Delete row',
                     handler: function(button) {
                         var rec = button.getWidgetRecord();
+
                         store.remove(rec);
                     }
                 }
@@ -141,7 +144,7 @@ function() {
 
             // Wait for the widget to be focused
             waitsForFocus(widget0);
-            
+
             runs(function() {
                 jasmine.fireKeyEvent(widget0.focusEl, 'keydown', Ext.event.Event.SPACE);
 
@@ -228,6 +231,7 @@ function() {
                     xtype: 'button',
                     handler: function(btn) {
                         var rec = btn.getWidgetRecord();
+
                         store.remove(rec);
                     }
                 })]
@@ -264,7 +268,7 @@ function() {
         it("should select the row on click of the widget with stopSelection: false", function() {
             colRef[0].stopSelection = false;
             navModel.setPosition(new Ext.grid.CellContext(view).setPosition(0, 0));
-            
+
             waitsForFocus(view);
 
             // Wait for focus to be in the view.
@@ -284,6 +288,7 @@ function() {
             });
 
             var ctrl = new Cls();
+
             createGrid([getColCfg({
                 xtype: 'button',
                 handler: 'onButtonClick'
@@ -310,6 +315,7 @@ function() {
             })]);
 
             var btn = getWidget(0);
+
             spyOn(btn, 'onButtonClick');
 
             jasmine.fireMouseEvent(getWidget(0).getEl().dom, 'click');
@@ -393,8 +399,9 @@ function() {
                         enableToggle: true,
                         pressed: true
                     })]);
-                    
+
                     var widget = getWidget(0);
+
                     expect(widget.pressed).toBe(true);
                     expect(widget.enableToggle).toBe(true);
                     checkPositions();
@@ -431,7 +438,7 @@ function() {
                 it("should not modify the defaultBindProperty if there is no dataIndex", function() {
                     makeGrid([{
                         xtype: 'widgetcolumn',
-                        width: 200, 
+                        width: 200,
                         widget: {
                             xtype: 'button',
                             text: 'Foo'
@@ -453,10 +460,10 @@ function() {
                             return 'foo';
                         }
                     })]);
-                    expect(view.getCellByPosition({row: 0, column: 0}, true)).toHaveCls('foo');
-                    expect(view.getCellByPosition({row: 1, column: 0}, true)).toHaveCls('foo');
-                    expect(view.getCellByPosition({row: 2, column: 0}, true)).toHaveCls('foo');
-                    expect(view.getCellByPosition({row: 3, column: 0}, true)).toHaveCls('foo');
+                    expect(view.getCellByPosition({ row: 0, column: 0 }, true)).toHaveCls('foo');
+                    expect(view.getCellByPosition({ row: 1, column: 0 }, true)).toHaveCls('foo');
+                    expect(view.getCellByPosition({ row: 2, column: 0 }, true)).toHaveCls('foo');
+                    expect(view.getCellByPosition({ row: 3, column: 0 }, true)).toHaveCls('foo');
                 });
 
                 it("should combine a tdCls on the column with the tdCls on the widget", function() {
@@ -466,21 +473,23 @@ function() {
                             return 'foo';
                         }
                     });
+
                     cfg.tdCls = 'bar';
                     makeGrid([cfg]);
-                    expect(view.getCellByPosition({row: 0, column: 0}, true)).toHaveCls('foo');
-                    expect(view.getCellByPosition({row: 0, column: 0}, true)).toHaveCls('bar');
-                    expect(view.getCellByPosition({row: 1, column: 0}, true)).toHaveCls('foo');
-                    expect(view.getCellByPosition({row: 1, column: 0}, true)).toHaveCls('bar');
-                    expect(view.getCellByPosition({row: 2, column: 0}, true)).toHaveCls('foo');
-                    expect(view.getCellByPosition({row: 2, column: 0}, true)).toHaveCls('bar');
-                    expect(view.getCellByPosition({row: 3, column: 0}, true)).toHaveCls('foo');
-                    expect(view.getCellByPosition({row: 3, column: 0}, true)).toHaveCls('bar');
+                    expect(view.getCellByPosition({ row: 0, column: 0 }, true)).toHaveCls('foo');
+                    expect(view.getCellByPosition({ row: 0, column: 0 }, true)).toHaveCls('bar');
+                    expect(view.getCellByPosition({ row: 1, column: 0 }, true)).toHaveCls('foo');
+                    expect(view.getCellByPosition({ row: 1, column: 0 }, true)).toHaveCls('bar');
+                    expect(view.getCellByPosition({ row: 2, column: 0 }, true)).toHaveCls('foo');
+                    expect(view.getCellByPosition({ row: 2, column: 0 }, true)).toHaveCls('bar');
+                    expect(view.getCellByPosition({ row: 3, column: 0 }, true)).toHaveCls('foo');
+                    expect(view.getCellByPosition({ row: 3, column: 0 }, true)).toHaveCls('bar');
                 });
             });
 
             describe("onWidgetAttach", function() {
                 var spy;
+
                 beforeEach(function() {
                     spy = jasmine.createSpy();
                 });
@@ -493,6 +502,7 @@ function() {
                     var cfg = getColCfg({
                         xtype: 'button'
                     });
+
                     cfg.onWidgetAttach = spy;
                     makeGrid([cfg]);
                     expect(spy.callCount).toBe(store.getCount());
@@ -502,6 +512,7 @@ function() {
                     var cfg = getColCfg({
                         xtype: 'button'
                     });
+
                     cfg.onWidgetAttach = spy;
                     makeGrid([cfg]);
 
@@ -526,6 +537,7 @@ function() {
                     var cfg = getColCfg({
                         xtype: 'button'
                     });
+
                     cfg.onWidgetAttach = spy;
                     makeGrid([cfg]);
                     spy.reset();
@@ -535,7 +547,7 @@ function() {
                     expect(spy.calls[0].args[1].isButton).toBe(true);
                     expect(spy.calls[0].args[2]).toBe(rec);
                 });
-                
+
                 it("should be called after rendering the widget", function() {
                     var isAttached = false,
                         cfg = getColCfg({
@@ -543,15 +555,15 @@ function() {
                         });
 
                     cfg.onWidgetAttach = spy;
-                    
+
                     makeGrid([cfg]);
-                    
+
                     spy.andCallFake(function(column, widget) {
                         isAttached = Ext.getBody().isAncestor(widget.el);
                     });
-                    
+
                     store.insert(2, {});
-                    
+
                     expect(isAttached).toBe(true);
                 });
 
@@ -559,69 +571,72 @@ function() {
                     describe("buffered rendering", function() {
                         var recordSize = 10000,
                             data, i;
-                        
+
                         beforeEach(function() {
                              var cfg = getColCfg({
                                 xtype: 'button'
                             });
-                            
+
                             cfg.onWidgetAttach = spy;
-                            
+
                             data = [];
-                            
+
                             for (i = 1; i <= recordSize; ++i) {
                                 data.push({
                                     id: 'rec' + i
                                 });
                             }
-                            
+
                             makeGrid([cfg], data);
                         });
-                        
+
                         it("should only be called for records in the view", function() {
                             var view = grid.getView(),
                                 nodes = view.getNodes(),
                                 firstNode = nodes[0],
                                 len = nodes.length;
-    
+
                             expect(spy.callCount).toBeLessThan(recordSize);
+
                             for (i = 0; i < len; ++i) {
                                 expect(spy.calls[i].args[2]).toBe(store.getAt(i));
                             }
+
                             checkPositions();
-    
+
                             spy.reset();
                             // Force it to the end, wait for the re-render
                             grid.bufferedRenderer.scrollTo(recordSize * 100);
                             waitsFor(function() {
                                 return view.getNodes()[0] !== firstNode;
                             });
-    
+
                             runs(function() {
                                 nodes = view.getNodes();
                                 len = nodes.length;
                                 var offset = recordSize - len;
-    
+
                                 for (i = 0; i < len; ++i) {
                                     expect(spy.calls[i].args[2]).toBe(store.getAt(i + offset));
                                 }
+
                                 checkPositions(offset);
                             });
                         });
-                        
+
                         // https://sencha.jira.com/browse/EXTJS-19251
                         it("should be called after reattaching the widget to DOM", function() {
                             var isAttached = false;
-                            
+
                             spy.andCallFake(function(column, widget) {
                                 isAttached = isAttached || Ext.getBody().isAncestor(widget.el);
                             });
                             spy.reset();
-                            
+
                             grid.bufferedRenderer.scrollTo(recordSize * 100);
-                            
+
                             waitForSpy(spy, 'scrolling to occur', 1000);
-                            
+
                             runs(function() {
                                 expect(isAttached).toBe(true);
                             });
@@ -634,6 +649,7 @@ function() {
                         var cfg = getColCfg({
                             xtype: 'button'
                         });
+
                         cfg.onWidgetAttach = spy;
                         makeGrid([cfg]);
                         expect(spy.mostRecentCall.object).toBe(colRef[0]);
@@ -641,8 +657,10 @@ function() {
 
                     it("should use a passed scope", function() {
                         var cfg = getColCfg({
-                            xtype: 'button'
-                        }), o = {};
+                                xtype: 'button'
+                            }),
+                            o = {};
+
                         cfg.onWidgetAttach = spy;
                         cfg.scope = o;
                         makeGrid([cfg]);
@@ -653,7 +671,9 @@ function() {
                         var cfg = getColCfg({
                             xtype: 'button'
                         });
+
                         var ctrl = new Ext.app.ViewController();
+
                         ctrl.doSomething = spy;
                         cfg.onWidgetAttach = 'doSomething';
                         makeGrid([cfg], null, {
@@ -778,11 +798,13 @@ function() {
                     var col = getColCfg({
                         xtype: 'button'
                     });
+
                     delete col.width;
                     col.flex = 1;
                     makeGrid([col]);
 
                     var padding = getPadding();
+
                     expect(getWidget(0).getWidth()).toBe(1000 - padding);
                     expect(getWidget(1).getWidth()).toBe(1000 - padding);
                     expect(getWidget(2).getWidth()).toBe(1000 - padding);
@@ -798,17 +820,18 @@ function() {
 
                 it("should run layouts on components initially and when they are sized", function() {
                     var col = getColCfg({
-                        xtype: 'container',
-                        layout: 'hbox',
-                        defaultType: 'component',
-                        items: [{
-                            flex: 1,
-                            html: 'A'
-                        }, {
-                            flex: 1,
-                            html: 'B'
-                        }]
-                    }), widget;
+                            xtype: 'container',
+                            layout: 'hbox',
+                            defaultType: 'component',
+                            items: [{
+                                flex: 1,
+                                html: 'A'
+                            }, {
+                                flex: 1,
+                                html: 'B'
+                            }]
+                        }),
+                        widget;
 
                     delete col.dataIndex;
 
@@ -849,8 +872,9 @@ function() {
 
                 it("should run layouts when the grid has a pending layout", function() {
                     var col = getColCfg({
-                        xtype: 'component'
-                    }), widget, count;
+                            xtype: 'component'
+                        }),
+                        widget, count;
 
                     makeGrid([col], generateData(2));
 
@@ -952,7 +976,7 @@ function() {
                         });
                         store.first().set('a', 'NewValue');
                         grid.render(document.body);
-                        
+
                         // Dirty class should be rendered into the cell
                         expect(view.getCellByPosition({
                             row: 0,
@@ -994,11 +1018,14 @@ function() {
 
                         updateText: function(text) {
                             col = this.getWidgetColumn();
+
                             if (text === 'foo') {
                                 fooRec = this.getWidgetRecord();
-                            } else if (text === 'bar') {
+                            }
+                            else if (text === 'bar') {
                                 barRec = this.getWidgetRecord();
                             }
+
                             this.callParent(arguments);
                         }
                     });
@@ -1093,9 +1120,9 @@ function() {
                 });
             });
 
-            describe("on refresh", function () {
-                describe("beforerefresh", function () {
-                    it("should recycle the widget dom tree hierarchy when refreshed", function () {
+            describe("on refresh", function() {
+                describe("beforerefresh", function() {
+                    it("should recycle the widget dom tree hierarchy when refreshed", function() {
                         // See EXTJS-14874.
                         // We need the view to overflow to cause the bug in IE 8.
                         var data = generateData(100),
@@ -1142,7 +1169,7 @@ function() {
                     expect(childNodes.length).toBe(1);
 
                     store.removeAt(1);
-                    
+
                     expect(childNodes.length).toBe(1);
                 });
             });
@@ -1164,6 +1191,7 @@ function() {
                     var col = getColCfg({
                         xtype: 'foo'
                     });
+
                     col.hidden = true;
                     makeGrid([col]);
                     // Gets called once during construction to set the tdCls
@@ -1175,10 +1203,12 @@ function() {
                     var col = getColCfg({
                         xtype: 'button'
                     });
+
                     col.hidden = true;
                     makeGrid([col]);
                     colRef[0].show();
                     var padding = getPadding();
+
                     expect(getWidget(0).getWidth()).toBe(200 - padding);
                     expect(getWidget(1).getWidth()).toBe(200 - padding);
                     expect(getWidget(2).getWidth()).toBe(200 - padding);
@@ -1213,6 +1243,7 @@ function() {
                 it("should be able to update value from column's dataIndex", function() {
                     var changed = false,
                         widget;
+
                     createGrid([getColCfg({
                         xtype: 'radiogroup',
                         // The local config means child Radio names are scoped to this RadioGroup
@@ -1243,7 +1274,8 @@ function() {
                     if (Ext.isIE9m) {
                         // jasmine fireMouseEvent doesn't work properly to simulate clicks on a radion button on legacy browsers
                         widget.items.first().setValue(true);
-                    } else {
+                    }
+                    else {
                         jasmine.fireMouseEvent(widget.items.first().inputEl.el, 'click');
                     }
 
@@ -1273,7 +1305,7 @@ function() {
                                 radioGroup.getWidgetRecord().set('a', newValue);
                             }
                         }
-                    }),{
+                    }), {
                         text: 'Name',
                         dataIndex: 'b',
                         sortable: true
@@ -1282,7 +1314,7 @@ function() {
                             value: '2'
                         },
                         b: 'Vince'
-                    },{
+                    }, {
                         a: {
                             value: '1'
                         },
@@ -1335,7 +1367,7 @@ function() {
 
                     jasmine.fireMouseEvent(getWidget(0).focusEl, 'click');
                     expect(getWidget(0).menu.isVisible()).toBe(false);
-                    
+
                     jasmine.fireMouseEvent(view.getCellByPosition({
                         row: 0,
                         column: 0
@@ -1355,11 +1387,10 @@ function() {
                     var normalGrid, lockedGrid, firstNormalRow, firstLockedRow;
 
                     afterEach(function() {
-                        normalGrid = lockedGrid = firstNormalRow, firstLockedRow = null;
+                        normalGrid = lockedGrid = firstNormalRow = firstLockedRow = null;
                     });
 
                     it("should keep line heights synced after sorting", function() {
-                        
 
                         createGrid(null, null, {
                             columns: [Ext.apply(getColCfg({
@@ -1413,7 +1444,7 @@ function() {
                             }
                         ],
                         renderTo: document.body
-                    });    
+                    });
                 });
 
                 afterEach(function() {
@@ -1461,6 +1492,7 @@ function() {
             });
         });
     }
+
     createBufferedSuite(false);
     createBufferedSuite(true);
 });

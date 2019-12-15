@@ -151,8 +151,10 @@
 Ext.define('Ext.field.Panel', {
     extend: 'Ext.Panel',
     xtype: 'fieldpanel',
+    isFieldPanel: true,
 
     mixins: [
+        'Ext.field.Dirty',
         'Ext.field.Manager',
         'Ext.form.Borders'
     ],
@@ -186,6 +188,10 @@ Ext.define('Ext.field.Panel', {
      * @inheritdoc
      */
     nameHolder: true,
+
+    publishes: {
+        dirty: 1
+    },
 
     /**
      * @event exception
@@ -358,36 +364,39 @@ Ext.define('Ext.field.Panel', {
      *
      * @return {Ext.data.Connection} The request object.
      */
-    load: function (options) {
+    load: function(options) {
+        var me = this,
+            api, url, waitMsg, successFn, failureFn, load, args;
+
         options = options || {};
 
-        var me = this,
-            api = me.getApi(),
-            url = options.url || me.getUrl(),
-            waitMsg = options.waitMsg,
-            successFn = function (response, data) {
-                me.setValues(data.data);
+        api = me.getApi();
+        url = options.url || me.getUrl();
+        waitMsg = options.waitMsg;
 
-                if (Ext.isFunction(options.success)) {
-                    options.success.call(options.scope || me, me, response, data);
-                }
+        successFn = function(response, data) {
+            me.setValues(data.data);
 
-                me.fireEvent('load', me, response);
-            },
-            failureFn = function (response, data) {
-                if (Ext.isFunction(options.failure)) {
-                    options.failure.call(options.scope, me, response, data);
-                }
+            if (Ext.isFunction(options.success)) {
+                options.success.call(options.scope || me, me, response, data);
+            }
 
-                me.fireEvent('exception', me, response);
-            },
-            load, args;
+            me.fireEvent('load', me, response);
+        };
+
+        failureFn = function(response, data) {
+            if (Ext.isFunction(options.failure)) {
+                options.failure.call(options.scope, me, response, data);
+            }
+
+            me.fireEvent('exception', me, response);
+        };
 
         if (options.waitMsg) {
             if (typeof waitMsg === 'string') {
                 waitMsg = {
-                    xtype   : 'loadmask',
-                    message : waitMsg
+                    xtype: 'loadmask',
+                    message: waitMsg
                 };
             }
 
@@ -409,12 +418,13 @@ Ext.define('Ext.field.Panel', {
                 paramOrder: me.getParamOrder(),
                 paramsAsHash: me.getParamsAsHash(),
                 scope: me,
-                callback: function (data, response, success) {
+                callback: function(data, response, success) {
                     me.setMasked(false);
 
                     if (success) {
                         successFn(response, data);
-                    } else {
+                    }
+                    else {
                         failureFn(response, data);
                     }
                 }
@@ -430,11 +440,11 @@ Ext.define('Ext.field.Panel', {
                 autoAbort: options.autoAbort,
                 headers: Ext.apply(
                     {
-                        'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                     },
                     options.headers || {}
                 ),
-                callback: function (callbackOptions, success, response) {
+                callback: function(callbackOptions, success, response) {
                     var responseText = response.responseText,
                         statusResult = Ext.data.request.Ajax.parseStatus(response.status, response);
 
@@ -443,14 +453,16 @@ Ext.define('Ext.field.Panel', {
                     if (success) {
                         if (statusResult && responseText.length === 0) {
                             success = true;
-                        } else {
+                        }
+                        else {
                             response = Ext.decode(responseText);
                             success = !!response.success;
                         }
 
                         if (success) {
                             successFn(response, responseText);
-                        } else {
+                        }
+                        else {
                             failureFn(response, responseText);
                         }
                     }
@@ -465,11 +477,11 @@ Ext.define('Ext.field.Panel', {
     /**
      * @private
      */
-    getParams: function (params) {
+    getParams: function(params) {
         return Ext.apply({}, params, this.getBaseParams());
     },
 
-    updateDisabled: function (newDisabled, oldDisabled) {
+    updateDisabled: function(newDisabled, oldDisabled) {
         this.mixins.fieldmanager.updateDisabled.call(this, newDisabled, oldDisabled);
 
         this.callParent([newDisabled, oldDisabled]);

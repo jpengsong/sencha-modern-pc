@@ -574,6 +574,20 @@ $menu-component-margin: dynamic(2px $menu-text-spacing);
 $menu-component-margin-big: dynamic(3px $menu-text-spacing-big);
 
 /**
+ * @var {number/list}
+ * The vertical spacing of child components that are {@link Ext.field.Text}
+ */
+$menu-component-textfield-vertical-spacing: dynamic(8px);
+
+/**
+ * @var {number/list}
+ * The vertical spacing of child components that are {@link Ext.field.Text}
+ * in the {@link Global_CSS#$enable-big big} sizing scheme
+ */
+$menu-component-textfield-vertical-spacing-big: dynamic(10px);
+
+
+/**
  * Creates a visual theme for a Menu.
  *
  * @param {string} $ui
@@ -982,7 +996,9 @@ $menu-component-margin-big: dynamic(3px $menu-text-spacing-big);
     $separator-border-color: null,
     $separator-background-color: null,
     $component-margin: null,
-    $component-margin-big: null
+    $component-margin-big: null,
+    $component-textfield-vertical-spacing: null,
+    $component-textfield-vertical-spacing-big: null
 ) {
     $ui-suffix: ui-suffix($ui);
 
@@ -1007,6 +1023,28 @@ $menu-component-margin-big: dynamic(3px $menu-text-spacing-big);
             @if $enable-big {
                 .#{$prefix}big & {
                     margin: $component-margin-big;
+                }
+            }
+        }
+
+        > .#{$prefix}non-menuitem.#{$prefix}textfield {
+            &:first-child {
+                margin-top: $component-textfield-vertical-spacing;
+            }
+
+            &:last-child {
+                margin-bottom: $component-textfield-vertical-spacing;
+            }
+
+            @if $enable-big {
+                .#{$prefix}big & {
+                    &:first-child {
+                        margin-top: $component-textfield-vertical-spacing-big;
+                    }
+        
+                    &:last-child {
+                        margin-bottom: $component-textfield-vertical-spacing-big;
+                    }
                 }
             }
         }
@@ -1068,7 +1106,12 @@ $menu-component-margin-big: dynamic(3px $menu-text-spacing-big);
             }
         }
     }
+
+    .#{$prefix}#{$xtype}#{$ui-suffix} .#{$prefix}#{$xtype}-boxscroller {
+        @if $body-background-color == null {
+            background-color: $panel-body-background-color;
+        } @else {
+            background-color: $body-background-color;
+        }
+    }
 }
-
-
-

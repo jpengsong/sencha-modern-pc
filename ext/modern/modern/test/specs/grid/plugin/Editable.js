@@ -1,9 +1,9 @@
 topSuite('Ext.grid.plugin.Editable', [
     'Ext.grid.Grid'
-], function () {
+], function() {
     var grid, plugin, store;
 
-    function createGrid (pluginCfg, cfg) {
+    function createGrid(pluginCfg, cfg) {
         cfg = cfg || {};
 
         var plugins = cfg.plugins || {};
@@ -32,24 +32,24 @@ topSuite('Ext.grid.plugin.Editable', [
         store = grid.getStore();
     }
 
-    function findCell (rowIdx, cellIdx) {
+    function findCell(rowIdx, cellIdx) {
         var row = grid.mapToItem(store.getAt(rowIdx));
 
         return row.cells[cellIdx].element.dom;
     }
 
-    function waitsForSheetAnim () {
-        waitsFor(function () {
+    function waitsForSheetAnim() {
+        waitsFor(function() {
             return !plugin.sheet.activeAnimation;
         });
     }
 
-    afterEach(function () {
+    afterEach(function() {
         grid = store = Ext.destroy(grid);
     });
 
-    describe('sheet', function () {
-        it('should open sheet on doubletap', function () {
+    describe('sheet', function() {
+        it('should open sheet on doubletap', function() {
             createGrid();
 
             var cell = findCell(0, 0);
@@ -62,7 +62,7 @@ topSuite('Ext.grid.plugin.Editable', [
             waitsForSheetAnim();
         });
 
-        it('should open sheet on tap', function () {
+        it('should open sheet on tap', function() {
             createGrid({
                 triggerEvent: 'childtap'
             });
@@ -77,7 +77,7 @@ topSuite('Ext.grid.plugin.Editable', [
             waitsForSheetAnim();
         });
 
-        it('should cancel an edit', function () {
+        it('should cancel an edit', function() {
             createGrid();
 
             var cell = findCell(0, 0);
@@ -89,7 +89,7 @@ topSuite('Ext.grid.plugin.Editable', [
 
             waitsForSheetAnim();
 
-            runs(function () {
+            runs(function() {
                 var field = plugin.form.down('textfield'),
                     record = store.getAt(0);
 
@@ -104,8 +104,8 @@ topSuite('Ext.grid.plugin.Editable', [
         });
     });
 
-    describe('form', function () {
-        it('should add fields to form', function () {
+    describe('form', function() {
+        it('should add fields to form', function() {
             createGrid();
 
             var cell = findCell(0, 0);
@@ -117,7 +117,7 @@ topSuite('Ext.grid.plugin.Editable', [
 
             waitsForSheetAnim();
 
-            runs(function () {
+            runs(function() {
                 var form = plugin.form,
                     fields = form.query('field');
 
@@ -127,7 +127,7 @@ topSuite('Ext.grid.plugin.Editable', [
             });
         });
 
-        it('should warn on duplicate dataIndex', function () {
+        it('should warn on duplicate dataIndex', function() {
             createGrid(null, {
                 columns: [{
                     dataIndex: 'name',
@@ -138,14 +138,14 @@ topSuite('Ext.grid.plugin.Editable', [
                 }]
             });
 
-            var test = function () {
+            var test = function() {
                 plugin.getEditorFields(grid.getColumns());
             };
 
             expect(test).toThrow('An editable column with the same dataIndex "name" already exists.');
         });
 
-        it('should disable submit button', function () {
+        it('should disable submit button', function() {
             createGrid(null, {
                 columns: [{
                     dataIndex: 'name',
@@ -165,7 +165,7 @@ topSuite('Ext.grid.plugin.Editable', [
 
             waitsForSheetAnim();
 
-            runs(function () {
+            runs(function() {
                 var form = plugin.form,
                     field = form.down('field');
 
@@ -179,8 +179,8 @@ topSuite('Ext.grid.plugin.Editable', [
         });
     });
 
-    describe('edit record', function () {
-        it ('should edit record', function () {
+    describe('edit record', function() {
+        it('should edit record', function() {
             createGrid();
 
             var cell = findCell(0, 0);
@@ -192,7 +192,7 @@ topSuite('Ext.grid.plugin.Editable', [
 
             waitsForSheetAnim();
 
-            runs(function () {
+            runs(function() {
                 var field = plugin.form.down('textfield'),
                     record = store.getAt(0);
 
@@ -207,8 +207,8 @@ topSuite('Ext.grid.plugin.Editable', [
         });
     });
 
-    describe('formConfig', function () {
-        it('should show custom form', function () {
+    describe('formConfig', function() {
+        it('should show custom form', function() {
             createGrid({
                 formConfig: {
                     items: [{
@@ -227,7 +227,7 @@ topSuite('Ext.grid.plugin.Editable', [
 
             waitsForSheetAnim();
 
-            runs(function () {
+            runs(function() {
                 var form = plugin.form,
                     fieldset = form.child('fieldset'),
                     fields = form.query('field');
@@ -239,7 +239,7 @@ topSuite('Ext.grid.plugin.Editable', [
             });
         });
 
-        it('should allow edit from custom form', function () {
+        it('should allow edit from custom form', function() {
             createGrid({
                 formConfig: {
                     items: [{
@@ -258,7 +258,7 @@ topSuite('Ext.grid.plugin.Editable', [
 
             waitsForSheetAnim();
 
-            runs(function () {
+            runs(function() {
                 var form = plugin.form,
                     field = form.child('field'),
                     record = store.getAt(0);

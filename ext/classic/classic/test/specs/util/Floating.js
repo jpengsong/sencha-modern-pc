@@ -1,14 +1,14 @@
 /* global expect, spyOn, Ext, jasmine, xdescribe, describe */
 
 topSuite("Ext.util.Floating",
-    ['Ext.window.Window', 'Ext.menu.Menu', 'Ext.Button', 'Ext.form.Panel', 'Ext.form.field.*',
+    ['Ext.window.Window', 'Ext.menu.Menu', 'Ext.Button', 'Ext.form.Panel', 'Ext.form.Label', 'Ext.form.field.*',
      'Ext.grid.Panel'],
 function() {
     var component,
         describeGoodBrowsers = Ext.isWebKit || Ext.isGecko || Ext.isChrome ? describe : xdescribe,
         itNotTouch = jasmine.supportsTouch ? xit : it;
 
-    function makeComponent(cfg){
+    function makeComponent(cfg) {
         component = new Ext.Component(Ext.apply({
             floating: true
         }, cfg));
@@ -21,6 +21,7 @@ function() {
         spy = spyOn(obj, 'fn');
 
         object.addListener(eventName, obj.fn, null, options);
+
         return spy;
     }
 
@@ -88,6 +89,7 @@ function() {
 
     it("should render the component to the renderTo element", function() {
         var el = Ext.getBody().createChild();
+
         makeComponent({
             renderTo: el
         });
@@ -100,6 +102,7 @@ function() {
 
     it("should render the component as hidden to the renderTo el if hidden is true", function() {
         var el = Ext.getBody().createChild();
+
         makeComponent({
             renderTo: el,
             hidden: true
@@ -111,14 +114,14 @@ function() {
         el.destroy();
     });
 
-    it("it should show the element when the component is shown", function () {
+    it("it should show the element when the component is shown", function() {
         makeComponent();
         component.show();
 
         expect(component.el.isVisible()).toBe(true);
     });
 
-    it("it should hide the element when the component is hidden", function () {
+    it("it should hide the element when the component is hidden", function() {
         makeComponent();
         component.show();
         component.hide();
@@ -251,11 +254,11 @@ function() {
             }, 'shadow to be shown after animation finishes');
 
             runs(function() {
-                
+
                 // IE8 does shadows the hard way
                 expect(shadow.el.getX()).toBe(Ext.isIE8 ? 345 : 350);
                 expect(shadow.el.getY()).toBe(Ext.isIE8 ? 397 : 404);
-                
+
                 // FFWindows gets this off by one
                 expect(shadow.el.getWidth()).toBeApprox(Ext.isIE8 ? 209 : 200, 1);
                 expect(shadow.el.getHeight()).toBe(Ext.isIE8 ? 107 : 96);
@@ -299,11 +302,11 @@ function() {
             runs(function() {
                 expect(shadow.hide).not.toHaveBeenCalled();
                 expect(shadow.el.isVisible()).toBe(true);
-                
+
                 // IE8 does shadows the hard way
                 expect(shadow.el.getX()).toBe(Ext.isIE8 ? 345 : 350);
                 expect(shadow.el.getY()).toBe(Ext.isIE8 ? 397 : 404);
-                expect(shadow.el.getWidth()).toBeApprox(Ext.isIE8 ? 209: 200, 1);
+                expect(shadow.el.getWidth()).toBeApprox(Ext.isIE8 ? 209 : 200, 1);
                 expect(shadow.el.getHeight()).toBe(Ext.isIE8 ? 107 : 96);
             });
         });
@@ -321,6 +324,7 @@ function() {
                     }]
                 });
                 var text = component.down('#text');
+
                 jasmine.focusAndWait(text);
                 runs(function() {
                     component.onFocusTopmost();
@@ -358,7 +362,8 @@ function() {
     });
 
     describe("scroll alignment when rendered to body", function() {
-        var spy, c, scroller, floater, count, oldOnError = window.onerror;
+        var spy, c, scroller, floater, count,
+            oldOnError = window.onerror;
 
         function makeTestComponent(alignToComponent) {
             spy = jasmine.createSpy();
@@ -371,6 +376,7 @@ function() {
                 height: 400,
                 scrollable: true
             };
+
             if (alignToComponent) {
                 c.items = [{
                     xtype: 'component',
@@ -386,7 +392,8 @@ function() {
                         style: 'float:left;width:100px;height:200px'
                     }
                 }];
-            } else {
+            }
+            else {
                 c.html = Ext.DomHelper.createHtml({
                     children: [{
                         html: 'A',
@@ -406,6 +413,7 @@ function() {
                     }]
                 });
             }
+
             c = new (alignToComponent ? Ext.Container : Ext.Component)(c);
             scroller = c.getScrollable();
             scroller.refresh(true);
@@ -418,7 +426,7 @@ function() {
                 height: 50,
                 style: 'border: 1px solid black'
             });
-        };
+        }
 
         afterEach(function() {
             Ext.un('scroll', spy);
@@ -487,7 +495,7 @@ function() {
                     expect(floater.getEl().getTop()).toBe(200);
                 });
             });
-            
+
             it('should unbind the resize listener when alignTo element is destroyed', function() {
                 var alignEl = c.getEl().down('.align', true),
                     spy = spyOnEvent(Ext.GlobalEvents, 'resize', null, {
@@ -500,7 +508,7 @@ function() {
                 expect(floater.getEl().getTop()).toBe(200);
 
                 alignEl.parentNode.removeChild(alignEl);
-                
+
                 window.onerror = onErrorSpy.andCallFake(function() {
                     if (oldOnError) {
                         oldOnError();
@@ -508,17 +516,22 @@ function() {
                 });
 
                 Ext.GlobalEvents.fireEvent('resize', 500, 500);
+
                 waitsFor(function() {
                     return spy.callCount === 1;
                 });
+
                 runs(function() {
                     Ext.GlobalEvents.fireEvent('resize', 1000, 1000);
                 });
+
                 waitsFor(function() {
                     return spy.callCount === 2;
                 });
+
                 runs(function() {
                     expect(onErrorSpy).not.toHaveBeenCalled();
+                    Ext.GlobalEvents.un('resize', spy);
                 });
             });
         });
@@ -602,6 +615,7 @@ function() {
                 height: 400,
                 scrollable: true
             };
+
             if (alignToComponent) {
                 c.items = [{
                     xtype: 'component',
@@ -617,7 +631,8 @@ function() {
                         style: 'float:left;width:100px;height:200px'
                     }
                 }];
-            } else {
+            }
+            else {
                 c.html = Ext.DomHelper.createHtml({
                     children: [{
                         html: 'A',
@@ -637,6 +652,7 @@ function() {
                     }]
                 });
             }
+
             c = new (alignToComponent ? Ext.Container : Ext.Component)(c);
             scroller = c.getScrollable();
             scroller.refresh(true);
@@ -702,12 +718,12 @@ function() {
                     expect(alignToSpy.callCount).toBe(1);
 
                     expect(floater.getEl().getTop()).toBe(100);
-                    
+
                     c.getEl().down('.align').destroy();
                 });
             });
         });
-        
+
         describe('aligning to Component', function() {
             beforeEach(function() {
                 makeTestComponent(true);
@@ -756,7 +772,7 @@ function() {
             });
         });
     });
-    
+
     describeGoodBrowsers('Chained aligning and scrolling and clipping', function() {
         var panel;
 
@@ -801,7 +817,7 @@ function() {
                     store: {
                         fields: ['col1', 'col2'],
                         data: [
-                            {col1: 'grid' + (i + 1) + '/1', col2: 'grid' + (i + 1) + '/2'}
+                            { col1: 'grid' + (i + 1) + '/1', col2: 'grid' + (i + 1) + '/2' }
                         ]
                     }
                 }, {
@@ -816,6 +832,7 @@ function() {
                     }]
                 });
             }
+
             panel = new Ext.form.Panel({
                 frame: true,
                 style: 'marginTop:50px',
@@ -848,9 +865,10 @@ function() {
             headerMenu = col.activeMenu;
             columnsItem = headerMenu.child('[text=Columns]');
             jasmine.fireMouseEvent(columnsItem.el, 'mouseover');
-            
+
             waitsFor(function() {
                 columnsMenu = columnsItem.menu;
+
                 return columnsMenu && columnsMenu.isVisible();
             });
             runs(function() {
@@ -893,6 +911,7 @@ function() {
 
             waitsFor(function() {
                 columnsMenu = columnsItem.menu;
+
                 return columnsMenu && columnsMenu.isVisible();
             });
             runs(function() {
@@ -921,9 +940,10 @@ function() {
             headerMenu = col.activeMenu;
             columnsItem = headerMenu.child('[text=Columns]');
             jasmine.fireMouseEvent(columnsItem.el, 'mouseover');
-            
+
             waitsFor(function() {
                 columnsMenu = columnsItem.menu;
+
                 return columnsMenu && columnsMenu.isVisible();
             });
             runs(function() {
@@ -964,20 +984,21 @@ function() {
             });
         });
     });
-    
+
     describe('showing a focusable floater while there is an unfocable, alwaysOnTop floater visible', function() {
-        var transient, focusable;
-        
+        var transientCmp, focusable;
+
         afterEach(function() {
-            Ext.destroy(transient, focusable);
+            Ext.destroy(transientCmp, focusable);
         });
         it('should focus the focusable', function() {
-            transient = new Ext.Component({
+            transientCmp = new Ext.Component({
                 focusable: false,
                 floating: true,
                 alwaysOnTop: true,
                 renderTo: document.body
             });
+
             focusable = new Ext.window.Window({
                 title: 'I should get focused'
             }).show();
@@ -1021,6 +1042,80 @@ function() {
 
             // Window w1 should now be on top, even though it was already visible.
             expect(w1.el.getZIndex()).toBeGreaterThan(w.el.getZIndex());
+        });
+    });
+
+    describe('window rendering', function() {
+        var w,
+        button,
+        onElementShowSpy;
+
+        afterEach(function() {
+            Ext.destroy(w, button);
+        });
+
+        it('should not render shadow to destination if there is animation', function() {
+
+            button = Ext.create('Ext.Button', {
+                text: 'Click me',
+                renderTo: Ext.getBody(),
+                handler: function() {
+                    w = Ext.create('Ext.window.Window', {
+                        autoShow: true,
+                        viewModel: {
+                            data: {
+                                demo: 'Some Text Here'
+                            }
+                        },
+                        animateTarget: button,
+                        height: 100,
+                        width: 430,
+                        items: [{
+                            xtype: 'label',
+                            bind: {
+                                text: '{demo}'
+                            }
+                        }]
+
+                    });
+
+                    onElementShowSpy = spyOn(w.el, 'show').andCallFake(function(anim) {
+                        expect(!w.el.shadow.hidden).toBe(!(w.el.getData().isVisible === false));
+                    });
+                }
+            });
+            button.click();
+            waitsFor(function() {
+                return onElementShowSpy.callCount === 1;
+            }, "Element not attempted to be visible", 1000);
+        });
+
+        it('should render shadow to destination if there is no animation', function() {
+            button = Ext.create('Ext.Button', {
+                text: 'Click me',
+                renderTo: Ext.getBody(),
+                handler: function() {
+                    w = Ext.create('Ext.window.Window', {
+                        autoShow: true,
+                        viewModel: {
+                            data: {
+                                demo: 'Some Text Here'
+                            }
+                        },
+                        height: 100,
+                        width: 430,
+                        items: [{
+                            xtype: 'label',
+                            bind: {
+                                text: '{demo}'
+                            }
+                        }]
+
+                    });
+                }
+            });
+            button.click();
+            expect(!w.el.shadow.hidden).toBe(!(w.el.getData().isVisible === false));
         });
     });
 });

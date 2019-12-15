@@ -1,5 +1,6 @@
 /**
- * Specialized {@link Ext.field.Slider} with a single thumb which only supports two {@link #value values}.
+ * Specialized {@link Ext.field.Slider} with a single thumb which only supports 
+ * two {@link #value values}.
  *
  * ## Examples
  *
@@ -51,7 +52,7 @@
  */
 Ext.define('Ext.field.Toggle', {
     extend: 'Ext.field.SingleSlider',
-    xtype : 'togglefield',
+    xtype: 'togglefield',
     alternateClassName: 'Ext.form.Toggle',
     requires: ['Ext.slider.Toggle'],
 
@@ -165,9 +166,11 @@ Ext.define('Ext.field.Toggle', {
 
     applyValue: function(value, oldValue) {
         value = this.callParent([value, oldValue]);
+
         if (typeof value !== 'boolean') {
             value = value !== 0;
         }
+
         return value;
     },
 
@@ -185,6 +188,7 @@ Ext.define('Ext.field.Toggle', {
 
     setSliderValue: function(value) {
         this.getSlider().setValue(value ? 1 : 0);
+
         return !!value;
 
     },
@@ -196,6 +200,18 @@ Ext.define('Ext.field.Toggle', {
     toggle: function() {
         // We call setValue directly so the change event can be fired
         this.setValue(!this.getValue());
+
         return this;
-    }
+    },
+
+    /**
+     * Returns the toggled state of the togglefield.
+     * @return {Boolean} True if toggled on, else false
+	 * @since 7.0
+     */
+    getRawValue: function() {
+        return this.getValue();
+    },
+
+    rawToValue: Ext.emptyFn
 });

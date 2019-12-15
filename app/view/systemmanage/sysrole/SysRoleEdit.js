@@ -1,54 +1,60 @@
 Ext.define("App.view.systemmanage.sysrole.SysRoleEdit", {
     alias: "widget.sysroleedit",
-    extend: "Ext.window.Window",
-    maximizable: true,
-    autoShow:true,
+    extend: "Ext.Dialog",
+    displayed: true,
+    closable: true,
     modal: true,
     width: 400,
     height: 300,
-    layout: "fit",
+    layout: 'fit',
+    padding: "0 0",
     items: [
         {
-            xtype: "form",
+            xtype: "formpanel",
             reference: "form",
-            layout: "form",
-            items: [
-                {
-                    xtype: "textfield",
-                    fieldLabel: '角色名',
-                    allowBlank: false,
-                    bind: "{role.RoleName}",
-                    afterLabelTextTpl: config.AfterLabelTextRequired
+
+            defaults: {
+                labelAlign: "left",
+                labelTextAlign: "center",
+                labelWrap: true,
+                border: true,
+                width: "100%",
+                labelWidth: 70,
+                margin: "0",
+                clearable: false
+            },
+            buttonToolbar: {
+                xtype: 'toolbar',
+                docked: 'bottom',
+                defaultType: 'button',
+                weighted: true,
+                ui: 'footer',
+                defaultButtonUI: 'action',
+                layout: {
+                    type: 'box',
+                    vertical: false,
+                    pack: 'center'
                 },
-                {
-                    fieldLabel: '描述',
-                    bind: "{role.Description}",
-                    xtype: 'textareafield'
+                defaults: {
+                    margin: "0px 5px"
                 }
-            ]
-        }
-    ],
-    dockedItems: [
-        {
-            xtype: 'toolbar',
-            dock: 'bottom',
-            ui: "footer",
-            layout: {
-                type: "hbox",
-                align: "center",
-                pack: "center"
             },
             items: [
                 {
-                    text: '保存',
-                    iconCls: "x-fa fa-floppy-o",
-                    handler: "onSave"
+                    xtype: "textfield",
+                    label: '角色名',
+                    required: true,
+                    bind: "{role.RoleName}"
                 },
                 {
-                    text: '重置',
-                    iconCls: "x-fa fa-refresh",
-                    handler: "onReset"
+                    label: '描述',
+                    bind: "{role.Description}",
+                    xtype: 'textareafield'
                 }
+            ],
+            buttons: [
+                { text: '保存', iconCls: "x-far fa-save", handler: 'onSave' },
+                { text: '重置', iconCls: "x-far fa-history", handler: 'onReset' }
             ]
         }
     ],
@@ -58,11 +64,10 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleEdit", {
         onSave: function () {
             var me = this,
                 view = me.getView(),
-                scope =view.scope,
-                record = me.getViewModel().get("role"),
-                refs = me.getReferences(),
-                form = refs.form;
-            if (form.isValid()) {
+                refs = me.getReferences();
+            scope = view.scope,
+                record = me.getViewModel().get("role");
+            if (refs.form.validate()) {
                 App.Ajax.request({
                     url: "/api/SystemManage/SysRole/" + (view.status == "add" ? "AddSysRole" : "EditSysRole"),
                     method: (view.status == "add" ? "POST" : "PUT"),
@@ -72,16 +77,16 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleEdit", {
                     maskmsg: "正在保存...",
                     params: record.getData(),
                     success: function (data) {
-                        if(data.Data>0){
+                        if (data.Data > 0) {
                             scope.grid.getStore().loadPage(1);
                             view.close();
-                            App.Msg.Info("保存成功");
-                        }else{
-                            App.Msg.Error("保存失败");
+                            Ext.Msg.alert("提示","保存成功");
+                        } else {
+                            Ext.Msg.alert("提示","保存失败");
                         }
                     },
                     error: function (msg) {
-                        App.Msg.Error(msg);
+                        Ext.Msg.alert("提示",msg);
                     }
                 })
             }

@@ -1,6 +1,6 @@
 topSuite("Ext.data.operation.Update", ['Ext.data.ArrayStore'], function() {
     var op, clientAlien1, serverAlien1, clientAlien2, serverAlien2;
-    
+
     function makeOperation(cfg) {
         op = new Ext.data.operation.Update(cfg);
     }
@@ -35,17 +35,19 @@ topSuite("Ext.data.operation.Update", ['Ext.data.ArrayStore'], function() {
             planet: 'Vorash'
         };
     });
-    
-    afterEach(function(){
+
+    afterEach(function() {
         op = clientAlien1 = serverAlien1 = clientAlien2 = serverAlien2 = null;
         Ext.data.Model.schema.clear();
         Ext.undefine('spec.Alien');
     });
-    
+
     describe("execute", function() {
         it("should call the proxy update method and pass itself", function() {
             var proxy = new Ext.data.proxy.Proxy();
+
             spyOn(proxy, 'update').andReturn(new Ext.data.Request());
+
             makeOperation({
                 proxy: proxy
             });
@@ -53,7 +55,7 @@ topSuite("Ext.data.operation.Update", ['Ext.data.ArrayStore'], function() {
             expect(proxy.update).toHaveBeenCalledWith(op);
         });
     });
-    
+
     describe("updating records", function() {
         describe("single record", function() {
             beforeEach(function() {
@@ -87,7 +89,6 @@ topSuite("Ext.data.operation.Update", ['Ext.data.ArrayStore'], function() {
             });
         });
 
-
         describe("updating a single record with no matching server record id", function() {
             beforeEach(function() {
                 clientAlien1.setId(100);
@@ -97,7 +98,7 @@ topSuite("Ext.data.operation.Update", ['Ext.data.ArrayStore'], function() {
                 makeOperation({
                     records: [clientAlien1]
                 });
-                
+
                 spyOn(Ext.log, 'warn');
 
                 spec.Alien.prototype.clientIdProperty = 'clientId';
@@ -128,7 +129,7 @@ topSuite("Ext.data.operation.Update", ['Ext.data.ArrayStore'], function() {
                 clientAlien1.dirty = true;
                 clientAlien2.setId(100);
                 clientAlien2.dirty = true;
-                
+
                 serverAlien2.clientId = clientAlien1.id;
 
                 spyOn(clientAlien2, 'set').andCallThrough();
@@ -136,7 +137,7 @@ topSuite("Ext.data.operation.Update", ['Ext.data.ArrayStore'], function() {
                 makeOperation({
                     records: [clientAlien1, clientAlien2]
                 });
-                
+
                 spyOn(Ext.log, 'warn');
 
                 spec.Alien.prototype.clientIdProperty = 'clientId';

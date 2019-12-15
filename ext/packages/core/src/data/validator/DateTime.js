@@ -26,6 +26,7 @@ Ext.define('Ext.data.validator.DateTime', {
     privates: {
         getDefaultFormat: function() {
             var D = Ext.Date;
+
             return D.defaultFormat + ' ' + D.defaultTimeFormat;
         }
     }

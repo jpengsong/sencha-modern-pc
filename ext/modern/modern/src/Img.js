@@ -1,7 +1,7 @@
 /**
- * This is a simple way to add an image of any size to your application and have it participate in the layout system
- * like any other component. This component typically takes between 1 and 3 configurations - a {@link #src}, and
- * optionally a {@link #height} and a {@link #width}:
+ * This is a simple way to add an image of any size to your application and have it participate in
+ * the layout system like any other component. This component typically takes between 1 and 3
+ * configurations - a {@link #src}, and optionally a {@link #height} and a {@link #width}:
  *
  *     @example
  *     var img = Ext.create('Ext.Img', {
@@ -31,10 +31,11 @@
  *         ]
  *     });
  *
- * Here we created a panel which contains an image (a profile picture in this case) and a text area to allow the user
- * to enter profile information about themselves. In this case we used an {@link Ext.layout.HBox hbox layout} and
- * flexed the image to take up one third of the width and the text area to take two thirds of the width. See the
- * {@link Ext.layout.HBox hbox docs} for more information on flexing items.
+ * Here we created a panel which contains an image (a profile picture in this case) and a text area
+ * to allow the user to enter profile information about themselves. In this case we used an
+ * {@link Ext.layout.HBox hbox layout} and flexed the image to take up one third of the width and
+ * the text area to take two thirds of the width. See the {@link Ext.layout.HBox hbox docs} for
+ * more information on flexing items.
  */
 Ext.define('Ext.Img', {
     extend: 'Ext.Component',
@@ -71,20 +72,22 @@ Ext.define('Ext.Img', {
         src: null,
 
         /**
-         * @cfg {String} imageCls The CSS class to be used when {@link #mode} is not set to 'background'
+         * @cfg {String} imageCls The CSS class to be used when {@link #mode} is not set to
+         * 'background'
          * @accessor
          */
-        imageCls : Ext.baseCSSPrefix + 'img-image',
+        imageCls: Ext.baseCSSPrefix + 'img-image',
 
         /**
-         * @cfg {String} backgroundCls The CSS class to be used when {@link #mode} is set to 'background'
+         * @cfg {String} backgroundCls The CSS class to be used when {@link #mode} is set to
+         * 'background'
          * @accessor
          */
-        backgroundCls : Ext.baseCSSPrefix + 'img-background',
+        backgroundCls: Ext.baseCSSPrefix + 'img-background',
 
         /**
-         * @cfg {String} mode If set to 'background', uses a background-image CSS property instead of an
-         * `<img>` tag to display the image.
+         * @cfg {String} mode If set to 'background', uses a background-image CSS property instead
+         * of an `<img>` tag to display the image.
          */
         mode: 'background'
     },
@@ -93,12 +96,14 @@ Ext.define('Ext.Img', {
 
     beforeInitialize: function() {
         var me = this;
+
         me.onLoad = me.onLoad.bind(me);
         me.onError = me.onError.bind(me);
     },
 
     initialize: function() {
         var me = this;
+
         me.callParent();
 
         me.relayEvents(me.renderElement, '*');
@@ -114,13 +119,15 @@ Ext.define('Ext.Img', {
 
         me.callParent(arguments);
         me.hiddenSrc = me.hiddenSrc || me.getSrc();
+
         if (!me.isDestroying) {
             me.setSrc(null);
         }
     },
 
     afterShow: function() {
-        this.callParent(arguments);
+        this.callParent();
+
         if (this.hiddenSrc) {
             this.setSrc(this.hiddenSrc);
             delete this.hiddenSrc;
@@ -128,8 +135,8 @@ Ext.define('Ext.Img', {
     },
 
     updateMode: function(mode) {
-        var me            = this,
-            imageCls      = me.getImageCls(),
+        var me = this,
+            imageCls = me.getImageCls(),
             backgroundCls = me.getBackgroundCls();
 
         if (mode === 'background') {
@@ -140,18 +147,19 @@ Ext.define('Ext.Img', {
             }
 
             me.replaceCls(imageCls, backgroundCls);
-        } else {
+        }
+        else {
             me.imageElement = me.element.createChild({ tag: 'img' });
 
             me.replaceCls(backgroundCls, imageCls);
         }
     },
 
-    updateImageCls : function (newCls, oldCls) {
+    updateImageCls: function(newCls, oldCls) {
         this.replaceCls(oldCls, newCls);
     },
 
-    updateBackgroundCls : function (newCls, oldCls) {
+    updateBackgroundCls: function(newCls, oldCls) {
         this.replaceCls(oldCls, newCls);
     },
 
@@ -159,7 +167,7 @@ Ext.define('Ext.Img', {
         this.fireEvent('tap', this, e);
     },
 
-    applySrc: function (src) {
+    applySrc: function(src) {
         return src && Ext.resolveResource(src);
     },
 
@@ -193,7 +201,7 @@ Ext.define('Ext.Img', {
         }
     },
 
-    onLoad : function(e) {
+    onLoad: function(e) {
         this.detachListeners();
 
         if (this.getMode() === 'background') {
@@ -203,7 +211,7 @@ Ext.define('Ext.Img', {
         this.fireEvent('load', this, e);
     },
 
-    onError : function(e) {
+    onError: function(e) {
         this.detachListeners();
 
         // Attempt to set the src even though the error event fired.

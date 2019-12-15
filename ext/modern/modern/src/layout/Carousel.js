@@ -69,10 +69,10 @@ Ext.define('Ext.layout.Carousel', {
         });
     },
 
-    onContainerInitialized: function() {
+    onContainerInitialized: function(container) {
         var me = this;
 
-        me.callParent();
+        me.callParent([ container ]);
 
         // We don't want to stomp on front seat being set during configuration
         // but we need to make sure it's primed if it wasn't yet.
@@ -162,7 +162,8 @@ Ext.define('Ext.layout.Carousel', {
 
         if (increment < 0) {
             index = index < 0 ? count - 1 : index;
-        } else if (increment > 0) {
+        }
+        else if (increment > 0) {
             index = index >= count ? 0 : index;
         }
 
@@ -175,6 +176,7 @@ Ext.define('Ext.layout.Carousel', {
 
     getEdgeItem: function(increment) {
         var items = this.getOrderedLayoutItems();
+
         return increment < 0 ? items[0] : items[items.length - 1];
     },
 
@@ -198,6 +200,7 @@ Ext.define('Ext.layout.Carousel', {
 
     getOrderedLayoutItems: function() {
         var items = Ext.Array.clone(this.getLayoutItems());
+
         return items.sort(this.sortByOrder);
     },
 
@@ -207,7 +210,7 @@ Ext.define('Ext.layout.Carousel', {
             target = container.getRenderTarget(),
             frontIndex = me.getFrontIndex(),
             visibleChildren = me.getVisibleChildren(),
-            items, item, frontItem, oldFrontItem, oldFrontIndex,
+            items, item, oldFrontItem, oldFrontIndex,
             visibleItems, direction, basis, i, len, ret, deferred;
 
         items = me.getLayoutItems();
@@ -224,7 +227,7 @@ Ext.define('Ext.layout.Carousel', {
         target.setStyle('left', '-' + basis + '%');
 
         oldFrontItem = me.getFrontItem();
-        me.frontItem = frontItem = items[index];
+        me.frontItem = items[index];
 
         // Carousel seats are shifted one position to the left to avoid flickering,
         // and frontIndex needs to be adjusted accordingly
@@ -245,9 +248,12 @@ Ext.define('Ext.layout.Carousel', {
             if (typeof animate === 'boolean') {
                 animate = {};
             }
+
             // If old front item is less than half items away from new front (0 index)
             // then it was in front before, and we're moving backwards
-            direction = oldFrontIndex > -1 && oldFrontIndex <= Math.floor(items.length / 2) ? 1 : -1;
+            direction = oldFrontIndex > -1 && oldFrontIndex <= Math.floor(items.length / 2)
+                ? 1
+                : -1;
             Ext.destroy(me.activeAnim);
 
             deferred = new Ext.Deferred();
@@ -269,6 +275,7 @@ Ext.define('Ext.layout.Carousel', {
         }
 
         me.visibleItems = visibleItems = [];
+
         for (i = 0, len = items.length; i < len; i++) {
             item = items[i];
 
@@ -277,6 +284,7 @@ Ext.define('Ext.layout.Carousel', {
             if (i > 0 && i <= visibleChildren) {
                 visibleItems.push(item);
             }
+
             item.$carouselOrder = i + 1;
         }
 
@@ -292,7 +300,9 @@ Ext.define('Ext.layout.Carousel', {
 
     getMoveItem: function(increment) {
         var index = this.getFrontItemIndex();
+
         index = this.shiftIndex(index, increment);
+
         return this.getLayoutItems()[index];
     },
 

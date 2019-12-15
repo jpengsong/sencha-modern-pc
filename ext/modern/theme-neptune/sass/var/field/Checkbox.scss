@@ -42,13 +42,19 @@ $checkboxfield-checkbox-margin-big: dynamic(null);
  * @var {string/list}
  * Checkbox Field checkbox icon
  */
-$checkboxfield-checkbox-icon: dynamic($fa-var-square-o);
+$checkboxfield-checkbox-icon: dynamic($fa-var-square);
 
 /**
  * @var {string/list}
  * Checkbox Field checkbox icon when checked
  */
-$checkboxfield-checked-checkbox-icon: dynamic($fa-var-check-square-o);
+$checkboxfield-checked-checkbox-icon: dynamic($fa-var-check-square);
+
+/**
+ * @var {string/list}
+ * Checkbox Field checkbox icon when its in intermediate state
+ */
+$checkboxfield-intermediate-checkbox-icon: dynamic($fa-var-minus-square);
 
 /**
  * @var {color}
@@ -115,6 +121,12 @@ $checkboxfield-box-label-line-height-big: dynamic($field-box-label-line-height-b
  * Checkbox Field {@link #boxLabel} font-family
  */
 $checkboxfield-box-label-font-family: dynamic($field-box-label-font-family);
+
+/**
+ * @var {string}
+ * Checkbox Field box font-family
+ */
+ $checkboxfield-box-font-family: dynamic('Font Awesome 5 Free Regular');
 
 /**
  * @var {number/list}
@@ -236,6 +248,7 @@ $checkboxfield-box-label-padding-big: dynamic($field-box-label-padding-big);
 
         .#{$prefix}icon-el {
             margin: $checkbox-margin;
+            font-family: $checkboxfield-box-font-family;
 
             @if $enable-big {
                 .#{$prefix}big & {
@@ -256,6 +269,7 @@ $checkboxfield-box-label-padding-big: dynamic($field-box-label-padding-big);
         &.#{$prefix}checked .#{$prefix}icon-el {
             @include icon($checked-checkbox-icon);
             color: $checked-checkbox-color;
+            font-family: $checkboxfield-box-font-family;
         }
 
         &.#{$prefix}focused .#{$prefix}icon-el {

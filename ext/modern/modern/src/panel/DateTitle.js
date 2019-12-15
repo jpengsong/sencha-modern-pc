@@ -58,7 +58,7 @@ Ext.define('Ext.panel.DateTitle', {
         this.yearElement.toggleCls(cls, titleActive);
     },
 
-    updateYear: function(year)  {
+    updateYear: function(year) {
         this.yearElement.dom.textContent = year;
     },
 

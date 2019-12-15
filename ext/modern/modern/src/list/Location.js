@@ -9,7 +9,7 @@ Ext.define('Ext.list.Location', {
     /**
      * @property {Boolean} isListLocation
      * @readonly
-     * `true` in this class to identify an object as an instantiated list Location, or subclass thereof.
+     * `true` in this class to identify an object this type, or subclass thereof.
      */
     isListLocation: true,
 
@@ -44,13 +44,15 @@ Ext.define('Ext.list.Location', {
         me.callParent([source]);
 
         item = me.item;
+
         if (item) {
             me.header = item.$dataItem === 'header';
             me.footer = item.$dataItem === 'footer';
 
             if (me.header || me.footer) {
                 me.group = me.getGroup();
-            } else {
+            }
+            else {
                 me.dataItem = true;
             }
         }

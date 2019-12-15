@@ -57,9 +57,7 @@
 Ext.define('Ext.field.Manager', {
     mixinId: 'fieldmanager',
 
-    requires: [
-        'Ext.Ajax'
-    ],
+    requires: ['Ext.Ajax'],
 
     /**
      * Set the fields of the provided `record` from the {@link Ext.field.Field#cfg!name named}
@@ -67,7 +65,7 @@ Ext.define('Ext.field.Manager', {
      * @param {Ext.data.Model} record
      * @return {Ext.field.Manager} this
      */
-    fillRecord: function (record) {
+    fillRecord: function(record) {
         var values, name;
 
         if (record) {
@@ -85,6 +83,7 @@ Ext.define('Ext.field.Manager', {
 
     consumeRecord: function(record) {
         var data = record && record.data;
+
         if (data) {
             this.setValues(data);
         }
@@ -115,7 +114,7 @@ Ext.define('Ext.field.Manager', {
      * @param {Object} values field name => value mapping object.
      * @return {Ext.field.Manager} this
      */
-    setValues: function (values) {
+    setValues: function(values) {
         var fields = this.getFields(),
             name, field, value, ln, i, f;
 
@@ -141,13 +140,16 @@ Ext.define('Ext.field.Manager', {
                                 // will handle all of the radio fields
                                 f.setGroupValue(value);
                                 break;
-                            } else if (f.isCheckbox) {
+                            }
+                            else if (f.isCheckbox) {
                                 if (Ext.isArray(value)) {
-                                   f.setChecked((value.indexOf(f._value) != -1));
-                               } else {
-                                   f.setChecked((value == f._value));
-                               }
-                            } else {
+                                    f.setChecked(value.indexOf(f._value) !== -1);
+                                }
+                                else {
+                                    f.setChecked(value === f._value);
+                                }
+                            }
+                            else {
                                 // If it is a bunch of fields with the same name, check
                                 // if the value is also an array, so we can map it to
                                 // each field
@@ -156,18 +158,20 @@ Ext.define('Ext.field.Manager', {
                                 }
                             }
                         }
-                    } else {
+                    }
+                    else {
                         if (field.isRadio || field.isCheckbox) {
                             // If the field is a radio or a checkbox
                             field.setChecked(value);
-                        } else {
+                        }
+                        else {
                             // If just a normal field
                             field.setValue(value);
                         }
                     }
 
                     if (this.getTrackResetOnLoad && this.getTrackResetOnLoad()) {
-                       field.resetOriginalValue();
+                        field.resetOriginalValue();
                     }
                 }
             }
@@ -192,29 +196,40 @@ Ext.define('Ext.field.Manager', {
      *         ]
      *     }
      *
-     * @param {Boolean} [enabled] `true` to return only enabled fields.
-     * @param {Boolean} [all] `true` to return all fields even if they don't have a
-     * {@link Ext.field.Field#name name} configured.
+     * @param {Object/Boolean} [options] An object containing options to control the values
+     * retrieved. If a boolean is passed, this is the same as passing the `enabled` property
+     * on the object.
+     * @param {Boolean} [options.enabled] `true` to return only enabled fields.
+     * @param {Boolean} [options.nameless] `true` to return all fields even if they don't
+     * have a {@link Ext.field.Field#name name} configured.
+     * @param {Boolean} [options.serialize] Pass `true` to return serialized values.
      * @return {Object} Object mapping field name to its value.
      */
-    getValues: function (enabled, all) {
+    getValues: function(options, nameless) {
         var fields = this.getFields(),
             values = {},
             isArray = Ext.isArray,
-            field, value, addValue, bucket, name, ln, i;
+            enabled = options,
+            field, value, addValue, bucket, name, ln, i, serialize;
+
+        if (Ext.isObject(options)) {
+            enabled = options.enabled;
+            nameless = options.nameless;
+            serialize = options.serialize;
+        }
 
         // Function which you give a field and a name, and it will add it into the values
         // object accordingly
         addValue = function(field, name) {
-            if (!all && (!name || name === 'null') || field.isFile) {
+            if ((!nameless && (!name || name === 'null')) || field.isFile) {
                 return;
             }
 
-            if (field.isCheckbox) {
-                value = field.getSubmitValue();
-            } else {
-                value = field.getValue();
-            }
+            // Checkboxes have a "value" but it is behaves differently than regular
+            // fields. When the checkbox is checked, its value is returned and otherwise
+            // it returns null. By default, that value is true. This is handled by
+            // serialize/getSubmitValue so we always need to call it for checkboxes.
+            value = (serialize || field.isCheckbox) ? field.serialize() : field.getValue();
 
             if (!(enabled && field.getDisabled())) {
                 // RadioField is a special case where the value returned is the fields valUE
@@ -223,7 +238,8 @@ Ext.define('Ext.field.Manager', {
                     if (field.isChecked()) {
                         values[name] = value;
                     }
-                } else {
+                }
+                else {
                     // Check if the value already exists
                     bucket = values[name];
 
@@ -239,12 +255,14 @@ Ext.define('Ext.field.Manager', {
                             if (isArray(value)) {
                                 // Concat it into the other values
                                 bucket = values[name] = bucket.concat(value);
-                            } else {
+                            }
+                            else {
                                 // If it isn't an array, just pushed more values
                                 bucket.push(value);
                             }
                         }
-                    } else {
+                    }
+                    else {
                         values[name] = value;
                     }
                 }
@@ -258,10 +276,12 @@ Ext.define('Ext.field.Manager', {
 
                 if (isArray(field)) {
                     ln = field.length;
+
                     for (i = 0; i < ln; i++) {
                         addValue(field[i], name);
                     }
-                } else {
+                }
+                else {
                     addValue(field, name);
                 }
             }
@@ -271,13 +291,22 @@ Ext.define('Ext.field.Manager', {
     },
 
     /**
+     * Convenience method which calls getValues, passing `serialize: true`.
+     * @param {Object} [options] (Optional) The `options` parameter
+     * passed to {@link #method-getValues}
+     */
+    getSubmitValues: function(options) {
+        return this.getValues(Ext.applyIf({ serialize: true }, options));
+    },
+
+    /**
      * Resets all fields in the form back to their original values.
      * @param {boolean} clearInvalid If `true` will clear any invalid UI state for the fields
      * as well.
      * @return {Ext.field.Manager} this
      */
-    reset: function (clearInvalid) {
-        this.getFields(false).forEach(function (field) {
+    reset: function(clearInvalid) {
+        this.getFields(false).forEach(function(field) {
             field.reset();
 
             if (clearInvalid) {
@@ -292,8 +321,8 @@ Ext.define('Ext.field.Manager', {
      * A convenient method to disable all fields in this form.
      * @return {Ext.field.Manager} this
      */
-    updateDisabled: function (newDisabled) {
-        this.getFields(false).forEach(function (field) {
+    updateDisabled: function(newDisabled) {
+        this.getFields(false).forEach(function(field) {
             field.setDisabled(newDisabled);
         });
 
@@ -311,8 +340,8 @@ Ext.define('Ext.field.Manager', {
      * @param {Object} errors The errors to set child fields with.
      * @return {Ext.field.Manager} this
      */
-    setErrors: function (errors) {
-        var setError = function (field, fieldname) {
+    setErrors: function(errors) {
+        var setError = function(field, fieldname) {
                 if (field) {
                     messages = errors[fieldname];
 
@@ -324,8 +353,7 @@ Ext.define('Ext.field.Manager', {
                     }
                 }
             },
-            fieldname, field, messages,
-            i, length;
+            fieldname, field, messages, i, length;
 
         //<debug>
         if (!Ext.isObject(errors)) {
@@ -340,7 +368,8 @@ Ext.define('Ext.field.Manager', {
                 for (i = 0, length = field.length; i < length; i++) {
                     setError(field[i], fieldname);
                 }
-            } else {
+            }
+            else {
                 setError(field, fieldname);
             }
         }
@@ -353,7 +382,7 @@ Ext.define('Ext.field.Manager', {
      *
      * @return {Ext.field.Manager} this
      */
-    clearErrors: function () {
+    clearErrors: function() {
         var fields = this.getFields(false),
             i, length, field;
 
@@ -373,12 +402,13 @@ Ext.define('Ext.field.Manager', {
      *
      * The Object returned is exactly the same as one that can be passed to {@link #setErrors}.
      */
-    getErrors: function () {
+    getErrors: function() {
         var errors = {},
-            fields = this.getFields(false).filter(function (field) {
-                return field.getName();
-            }),
-            i, length, field, error;
+            fields, i, length, field, error;
+
+        fields = this.getFields(false).filter(function(field) {
+            return field.getName();
+        });
 
         for (i = 0, length = fields.length; i < length; i++) {
             field = fields[i];
@@ -404,7 +434,7 @@ Ext.define('Ext.field.Manager', {
      *
      * @return {Boolean} `true` if all fields are currently valid.
      */
-    isValid: function () {
+    isValid: function() {
         var fields = this.getFields(false),
             i, length;
 
@@ -428,18 +458,19 @@ Ext.define('Ext.field.Manager', {
      * @return {Boolean} `true` if all fields in the form are valid, false if
      * any one (or more) of the fields is invalid.
      */
-    validate: function (skipLazy) {
+    validate: function(skipLazy) {
         var fields = this.getFields(false),
             valid = true,
             i, length;
 
         for (i = 0, length = fields.length; i < length; i++) {
             if (!fields[i].validate(skipLazy)) {
-                //don't stop the loop, need to validate all fields
-                //so all fields can show validation status
+                // don't stop the loop, need to validate all fields
+                // so all fields can show validation status
                 valid = false;
             }
         }
+
         return valid;
     },
 
@@ -452,8 +483,9 @@ Ext.define('Ext.field.Manager', {
      * @return {Object/Ext.field.Field/Ext.field.Field[]} All field instances, mapped by field name;
      * or an array if `byName` is passed.
      */
-    getFields: function (byName, deep) {
-        var selector = (deep === false ? '> ' : '') + 'field' + (byName ? '[name=' + byName + ']' : ''),
+    getFields: function(byName, deep) {
+        var relation = deep === false ? '>' : '',
+            selector = relation + 'field' + (byName ? '[name=' + byName + ']' : ''),
             fields = this.query(selector),
             asArray = byName === false,
             obj, i, length, field, name, bucket;
@@ -461,8 +493,9 @@ Ext.define('Ext.field.Manager', {
         if (!fields && asArray) {
             // no fields were found but we want an array
             return [];
-        } else if (fields && !asArray) {
-            // we weren't told to alway return an array
+        }
+        else if (fields && !asArray) {
+            // we weren't told to always return an array
             if (!byName) {
                 // no name was provided so we need to build a map
                 // of field names to instance(s)
@@ -476,16 +509,19 @@ Ext.define('Ext.field.Manager', {
                     if (bucket) {
                         if (Ext.isArray(bucket)) {
                             bucket.push(field);
-                        } else {
+                        }
+                        else {
                             obj[name] = [bucket, field];
                         }
-                    } else {
+                    }
+                    else {
                         obj[name] = field;
                     }
                 }
 
                 return obj;
-            } else if (fields.length < 2) {
+            }
+            else if (fields.length < 2) {
                 // since asArray is falsy and there is 1 or less fields
                 // if length is 0, will return undefined
                 return fields[0];
@@ -500,7 +536,7 @@ Ext.define('Ext.field.Manager', {
      * @return {Ext.field.Field} The currently focused field, if one is focused or `null`.
      * @private
      */
-    getFocusedField: function () {
+    getFocusedField: function() {
         var fields = this.getFields(false),
             ln = fields.length,
             field, i;
@@ -520,7 +556,7 @@ Ext.define('Ext.field.Manager', {
      * @return {Boolean/Ext.field.Field} The next field if one exists, or `false`.
      * @private
      */
-    getNextField: function () {
+    getNextField: function() {
         var fields = this.getFields(false),
             focusedField = this.getFocusedField(),
             index;
@@ -530,6 +566,7 @@ Ext.define('Ext.field.Manager', {
 
             if (index !== fields.length - 1) {
                 index++;
+
                 return fields[index];
             }
         }
@@ -542,11 +579,12 @@ Ext.define('Ext.field.Manager', {
      * @return {Boolean/Ext.field.Field} The next field that was focused, or `false`.
      * @private
      */
-    focusNextField: function () {
+    focusNextField: function() {
         var field = this.getNextField();
 
         if (field) {
             field.focus();
+
             return field;
         }
 
@@ -557,7 +595,7 @@ Ext.define('Ext.field.Manager', {
      * @private
      * @return {Boolean/Ext.field.Field} The next field if one exists, or `false`.
      */
-    getPreviousField: function () {
+    getPreviousField: function() {
         var fields = this.getFields(false),
             focusedField = this.getFocusedField(),
             index;
@@ -567,6 +605,7 @@ Ext.define('Ext.field.Manager', {
 
             if (index !== 0) {
                 index--;
+
                 return fields[index];
             }
         }
@@ -579,11 +618,12 @@ Ext.define('Ext.field.Manager', {
      * @return {Boolean/Ext.field.Field} The previous field that was focused, or `false`.
      * @private
      */
-    focusPreviousField: function () {
+    focusPreviousField: function() {
         var field = this.getPreviousField();
 
         if (field) {
             field.focus();
+
             return field;
         }
 

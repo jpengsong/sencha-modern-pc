@@ -13,12 +13,11 @@ Ext.define('Ext.util.TsvDecoder', {
     alternateClassName: 'Ext.util.TSV',
 
     delimiter: '\t'
-},
-function(TSVClass) {
-/*
- * @singleton
- * @class Ext.util.TSV
- * @alternateClassName Ext.util.TsvDecoder
- */
+}, function(TSVClass) {
+    /*
+     * @singleton
+     * @class Ext.util.TSV
+     * @alternateClassName Ext.util.TsvDecoder
+     */
     Ext.util.TSV = new TSVClass();
 });

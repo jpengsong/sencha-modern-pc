@@ -1,5 +1,3 @@
-/* global expect, Ext, MockAjaxManager, xit */
-
 topSuite("Ext.grid.feature.Summary",
     ['Ext.grid.Panel', 'Ext.grid.feature.*'],
 function() {
@@ -8,15 +6,17 @@ function() {
         proxyStoreLoad = Ext.data.ProxyStore.prototype.load,
         loadStore = function() {
             proxyStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         };
 
     function makeSuite(withLocking) {
         describe(withLocking ? "with locking" : "without locking", function() {
-            var grid, view, store, summary, params, selector, 
+            var grid, view, store, summary, params, selector,
                 data, lockedGrid, normalGrid, lockedView, normalView,
                 hideMarkColumn = false;
 
@@ -25,15 +25,15 @@ function() {
                     student: 'Student 1',
                     subject: 'Math',
                     mark: 84
-                },{
+                }, {
                     student: 'Student 1',
                     subject: 'Science',
                     mark: 72
-                },{
+                }, {
                     student: 'Student 2',
                     subject: 'Math',
                     mark: 96
-                },{
+                }, {
                     student: 'Student 2',
                     subject: 'Science',
                     mark: 68
@@ -55,9 +55,11 @@ function() {
                 }, summaryCfg));
 
                 gridCfg = gridCfg || {};
+
                 if (gridCfg.features) {
                     gridCfg.features.push(summary);
-                } else {
+                }
+                else {
                     gridCfg.features = summary;
                 }
 
@@ -71,8 +73,9 @@ function() {
                         width: withLocking ? 500 : undefined,
                         text: 'Name',
                         summaryType: 'count',
-                        summaryRenderer: function (value, summaryData, field) {
+                        summaryRenderer: function(value, summaryData, field) {
                             params = arguments;
+
                             return Ext.String.format('{0} student{1}', value, value !== 1 ? 's' : '');
                         }
                     }, {
@@ -89,6 +92,7 @@ function() {
 
                 view = grid.getView();
                 selector = summary.summaryRowSelector;
+
                 if (withLocking) {
                     lockedGrid = grid.lockedGrid;
                     lockedView = lockedGrid.view;
@@ -102,11 +106,12 @@ function() {
                 Ext.data.ProxyStore.prototype.load = loadStore;
             });
 
-            afterEach(function () {
+            afterEach(function() {
                 // Undo the overrides.
                 Ext.data.ProxyStore.prototype.load = proxyStoreLoad;
 
                 grid = view = store = summary = params = Ext.destroy(grid);
+
                 if (withLocking) {
                     lockedGrid = lockedView = normalGrid = normalView = null;
                 }
@@ -114,6 +119,7 @@ function() {
 
             function getSummary(theView) {
                 theView = theView || view;
+
                 return theView.el.down(selector, true) || null;
             }
 
@@ -124,7 +130,8 @@ function() {
                 if (withLocking) {
                     s += getRowContent(lockedView);
                     s += getRowContent(normalView);
-                } else {
+                }
+                else {
                     s += getRowContent(view);
                 }
 
@@ -138,21 +145,24 @@ function() {
                 if (el) {
                     s = el.textContent || el.innerText;
                 }
+
                 return s || '';
             }
 
-            describe('init', function () {
-                it('should give the item a default class', function () {
+            describe('init', function() {
+                it('should give the item a default class', function() {
                     createGrid();
+
                     if (withLocking) {
                         expect(getSummary(lockedView)).toHaveCls(summary.summaryRowCls);
                         expect(getSummary(normalView)).toHaveCls(summary.summaryRowCls);
-                    } else {
+                    }
+                    else {
                         expect(getSummary()).toHaveCls(summary.summaryRowCls);
                     }
                 });
 
-                it('should respect configured value for summaryRowCls', function () {
+                it('should respect configured value for summaryRowCls', function() {
                     var cls = 'utley';
 
                     createGrid(null, {
@@ -162,16 +172,17 @@ function() {
                     if (withLocking) {
                         expect(getSummary(lockedView)).toHaveCls(cls);
                         expect(getSummary(normalView)).toHaveCls(cls);
-                    } else {
+                    }
+                    else {
                         expect(getSummary()).toHaveCls(cls);
                     }
                 });
             });
 
             describe('No data', function() {
-                it('should size the columns in the summary', function () {
+                it('should size the columns in the summary', function() {
                     var row;
-                    
+
                     createGrid(null, null, null, []);
 
                     // TableLayout should also flush when no data, just summary rows.
@@ -181,7 +192,8 @@ function() {
 
                         row = getSummary(normalView);
                         expect(row.childNodes[0].offsetWidth).toBe(100);
-                    } else {
+                    }
+                    else {
                         row = getSummary();
                         expect(row.childNodes[0].offsetWidth).toBe(498);
                         expect(row.childNodes[1].offsetWidth).toBe(100);
@@ -190,6 +202,7 @@ function() {
 
                 it("should not add summary rows on sort", function() {
                     var column;
+
                     createGrid(null, null, null, []);
 
                     column = grid.getColumnManager().getColumns()[0];
@@ -200,7 +213,7 @@ function() {
                 });
             });
 
-            describe('summaryRenderer', function () {
+            describe('summaryRenderer', function() {
                 it("should render a column's summary on show of the column", function() {
                     hideMarkColumn = true;
                     createGrid();
@@ -218,8 +231,31 @@ function() {
                         return getSummaryContent() === '4students80';
                     });
                 });
-                
-                it('should be passed the expected function parameters', function () {
+
+                it("should hide a column's summary on hide of the column", function() {
+                    hideMarkColumn = false;
+                    createGrid();
+                    hideMarkColumn = true;
+
+                    // Only one column, so only that column's summary shown
+                    expect(getSummaryContent()).toBe('4students80');
+
+                    // When the Mark column is hidden, that column's summary should be hidden
+                    grid.getColumnManager().getColumns()[1].hide();
+
+                    // Syncing of column arrangement is deferred to batch multiple
+                    // changes into one syncLockedWidth call, so wait for the correct state.
+                    waitsFor(function() {
+                        return getSummaryContent() === '4students';
+                    });
+
+                    // set mark column to be unhidden
+                    runs(function() {
+                        hideMarkColumn = false;
+                    });
+                });
+
+                it('should be passed the expected function parameters', function() {
                     createGrid();
 
                     // Params should be:
@@ -229,17 +265,21 @@ function() {
                     //     metaData - The collection of metadata about the current cell.
                     expect(params.length).toBe(4);
                     expect(params[0]).toBe(4);
-                    expect(params[1]).toEqual(withLocking ? {
-                        studentColumn: 4
-                    } : {
-                        studentColumn: 4,
-                        markColumn: 80
-                    });
+                    expect(params[1]).toEqual(
+                        withLocking
+                            ? {
+                                studentColumn: 4
+                            }
+                            : {
+                                studentColumn: 4,
+                                markColumn: 80
+                            }
+                    );
                     expect(params[2]).toBe('student');
                     expect(params[3].tdCls).toBeDefined();
                 });
 
-                it('should not blow out the table cell if the value returned from the renderer is bigger than the allotted width', function () {
+                it('should not blow out the table cell if the value returned from the renderer is bigger than the allotted width', function() {
                     createGrid({
                         columns: [{
                             itemId: 'studentColumn',
@@ -248,7 +288,7 @@ function() {
                             locked: withLocking,
                             width: 200,
                             summaryType: 'count',
-                            summaryRenderer: function (value, summaryData, field) {
+                            summaryRenderer: function(value, summaryData, field) {
                                 return 'Lily Rupert Utley Molly Pete';
                             }
                         }, {
@@ -260,19 +300,21 @@ function() {
                     });
 
                     var rec = store.getAt(0);
+
                     // For the comparison, just grab the first table cell in the view and compare it to the first table cell within the feature.
                     if (withLocking) {
                         expect(getSummary(lockedView).firstChild.offsetWidth).toBe(lockedView.getCell(rec, grid.down('#studentColumn')).offsetWidth);
                         expect(getSummary(normalView).firstChild.offsetWidth).toBe(normalView.getCell(rec, grid.down('#markColumn')).offsetWidth);
-                    } else {
+                    }
+                    else {
                         expect(getSummary().firstChild.offsetWidth).toBe(view.getCell(rec, grid.down('#studentColumn')).offsetWidth);
                         expect(getSummary().lastChild.offsetWidth).toBe(view.getCell(rec, grid.down('#markColumn')).offsetWidth);
                     }
                 });
             });
 
-            describe('no summaryRenderer', function () {
-                it('should display the summary result', function () {
+            describe('no summaryRenderer', function() {
+                it('should display the summary result', function() {
                     createGrid({
                         columns: [{
                             id: 'markColumn',
@@ -297,16 +339,19 @@ function() {
                     createGrid(null, {
                         dock: 'top'
                     });
+
                     if (withLocking) {
                         expect(lockedGrid.getDockedItems()[1]).toBe(summary.summaryBar);
                         expect(normalGrid.getDockedItems()[1]).toBe(normalGrid.features[0].summaryBar);
-                    } else {
+                    }
+                    else {
                         expect(grid.getDockedItems()[1]).toBe(summary.summaryBar);
                     }
                 });
 
                 it("should dock at the bottom under the headers", function() {
                     var item;
+
                     createGrid(null, {
                         dock: 'bottom'
                     });
@@ -319,7 +364,8 @@ function() {
                         item = normalGrid.getDockedItems()[1];
                         expect(item).toBe(normalGrid.features[0].summaryBar);
                         expect(item.dock).toBe('bottom');
-                    } else {
+                    }
+                    else {
                         item = grid.getDockedItems()[1];
                         expect(item).toBe(summary.summaryBar);
                         expect(item.dock).toBe('bottom');
@@ -338,14 +384,17 @@ function() {
                             if (visible) {
                                 expect(getSummary(lockedView)).not.toBeNull();
                                 expect(getSummary(normalView)).not.toBeNull();
-                            } else {
+                            }
+                            else {
                                 expect(getSummary(lockedView)).toBeNull();
                                 expect(getSummary(normalView)).toBeNull();
                             }
-                        } else {
+                        }
+                        else {
                             if (visible) {
                                 expect(getSummary()).not.toBeNull();
-                            } else {
+                            }
+                            else {
                                 expect(getSummary()).toBeNull();
                             }
                         }
@@ -401,13 +450,13 @@ function() {
                         store.first().set('mark', 0);
                         toggle();
 
-
                         cellSelector = grid.down('#markColumn').getCellSelector();
-                        
+
                         if (withLocking) {
                             cell = getSummary(normalView).querySelector(cellSelector);
                             content = cell.querySelector(normalView.innerSelector).innerHTML;
-                        } else {
+                        }
+                        else {
                             cell = getSummary().querySelector(cellSelector, true);
                             content = cell.querySelector(view.innerSelector).innerHTML;
                         }
@@ -480,19 +529,74 @@ function() {
                         toggle();
 
                         cellSelector = grid.down('#markColumn').getCellSelector();
+
                         if (withLocking) {
                             cell = normalGrid.features[0].summaryBar.getEl().down(cellSelector, true);
                             content = cell.querySelector(normalView.innerSelector).innerHTML;
-                        } else {
+                        }
+                        else {
                             cell = summary.summaryBar.getEl().down(cellSelector, true);
                             content = cell.querySelector(grid.getView().innerSelector).innerHTML;
                         }
 
                         expect(content).toBe('59');
                     });
+
+                    it("should include the summaryBar in the columnSizer array", function() {
+                        var columns;
+
+                        createGrid({
+                            columns: [{
+                                dataIndex: 'student',
+                                locked: withLocking,
+                                text: 'Name',
+                                summaryType: 'count',
+                                summaryRenderer: function(value, summaryData, dataIndex) {
+                                    return Ext.String.format('{0} power{1}', value, value !== 1 ? 's' : '');
+                                }
+                            }, {
+                                dataIndex: 'mark',
+                                text: 'Total',
+                                summaryType: function(arr) {
+                                    return Ext.Array.reduce(arr, function(a, b) {
+                                        if (a && a.get) {
+                                            a = a.get('mark');
+                                        }
+
+                                        if (b && b.get) {
+                                            b = b.get('mark');
+                                        }
+
+                                        if (a === null) {
+                                            return b;
+                                        }
+
+                                        return Math.pow(a, b);
+                                    }, null);
+                                }
+                            }]
+                        },
+                        null, null,
+                        [
+                            { student: 'Power 1', mark: 2 },
+                            { student: 'Power 2', mark: 3 },
+                            { student: 'Power 3', mark: 3 },
+                            { student: 'Power 4', mark: 3 },
+                            { student: 'Power 5', mark: 1 }
+                        ]);
+
+                        columns = grid.getColumns();
+
+                        for (var i = 0; i < columns.length; i++) {
+                            columns[i].autoSize();
+                        }
+
+                        expect(columns[0].getWidth()).toBeApprox(57, 2);
+                        expect(columns[1].getWidth()).toBeApprox(67, 2);
+                    });
                 });
             });
-            
+
             describe('calculated fields', function() {
                 it('should work', function() {
                     createGrid({
@@ -558,7 +662,7 @@ function() {
                 });
             });
 
-            describe('remoteRoot', function () {
+            describe('remoteRoot', function() {
                 function completeWithData(data) {
                     Ext.Ajax.mockComplete({
                         status: 200,
@@ -566,7 +670,7 @@ function() {
                     });
                 }
 
-                beforeEach(function () {
+                beforeEach(function() {
                     MockAjaxManager.addMethods();
 
                     createGrid(null, {
@@ -581,7 +685,7 @@ function() {
                                 rootProperty: 'data'
                             }
                         },
-                        grouper: {property: 'student'},
+                        grouper: { property: 'student' },
                         data: null
                     });
 
@@ -598,15 +702,15 @@ function() {
                     });
                 });
 
-                afterEach(function () {
+                afterEach(function() {
                     MockAjaxManager.removeMethods();
                 });
 
-                it('should correctly render the data in the view', function () {
+                it('should correctly render the data in the view', function() {
                     expect(getSummaryContent()).toBe('15students42');
                 });
 
-                it('should create a summaryRecord', function () {
+                it('should create a summaryRecord', function() {
                     var record = summary.summaryRecord;
 
                     expect(record.isModel).toBe(true);
@@ -623,10 +727,12 @@ function() {
                         if (withLocking) {
                             content = extractContent(summary.summaryBar, lockedView);
                             content += extractContent(normalGrid.features[0].summaryBar, normalView);
-                        } else {
+                        }
+                        else {
                             content = extractContent(summary.summaryBar);
                         }
-                    } else {
+                    }
+                    else {
                         content = getSummaryContent();
                     }
 
@@ -635,21 +741,23 @@ function() {
 
                 function extractContent(bar, theView) {
                     theView = theView || view;
+
                     var content = '';
 
                     Ext.Array.forEach(bar.el.query(theView.innerSelector), function(node) {
                         content += node.textContent || node.innerText || '';
                     });
+
                     return content.replace(/\s/g, '');
                 }
-                
+
                 function expectPosition(dock, expectedIndex) {
                     var theView, summaryRow, parentNode;
-                    
+
                     if (!dock) {
                         if (withLocking) {
                             summaryRow = getSummary(lockedView);
-                            
+
                             // Summary row table attached directly to nodeContainer
                             if (expectedIndex === -1) {
                                 summaryRow = Ext.fly(summaryRow).up('table', 50, true);
@@ -658,14 +766,14 @@ function() {
                             else {
                                 parentNode = lockedView.getRow(expectedIndex).parentNode;
                             }
-                            
+
                             expect(summaryRow.parentNode).toBe(parentNode);
                         }
-                        
+
                         theView = normalView || view;
-                        
+
                         summaryRow = getSummary(theView);
-                        
+
                         if (expectedIndex === -1) {
                             summaryRow = Ext.fly(summaryRow).up('table', 50, true);
                             parentNode = theView.getNodeContainer();
@@ -673,7 +781,7 @@ function() {
                         else {
                             parentNode = theView.getRow(expectedIndex).parentNode;
                         }
-                        
+
                         expect(summaryRow.parentNode).toBe(parentNode);
                     }
                 }
@@ -730,6 +838,7 @@ function() {
                             });
                         });
                     }
+
                     beforeRenderSuite(false);
                     beforeRenderSuite(true);
                 });
@@ -784,6 +893,7 @@ function() {
                             });
                         });
                     }
+
                     makeOriginalStoreSuite(false);
                     makeOriginalStoreSuite(true);
                 });
@@ -796,6 +906,7 @@ function() {
                                     dock: withDocking ? 'top' : null
                                 });
                                 var oldStore = store;
+
                                 store = new Ext.data.Store({
                                     fields: ['student', 'subject', {
                                         name: 'mark',
@@ -854,6 +965,7 @@ function() {
                             });
                         });
                     }
+
                     makeReconfigureSuite(false);
                     makeReconfigureSuite(true);
                 });
@@ -882,7 +994,7 @@ function() {
                         scroller = withLocking ? grid.getScrollable() : view.getScrollable();
 
                     expect(theView.getEl().down(selector, true)).toBeNull();
-                    
+
                     // Scroll downwards 100px at a time
                     // While the last row is not present, there should be no summary el.
                     // As soon as it is present, check that the summary is there and quit.
@@ -898,7 +1010,7 @@ function() {
                         }
                     // 30 seconds should be enough even for IE8
                     }, 'downward scrolling to complete', 30000);
-                    
+
                     runs(function() {
                         expect(summaryErroreouslyRendered).toBe(false);
                         expect(theView.getEl().down(selector, true)).not.toBeNull();
@@ -910,7 +1022,7 @@ function() {
                 describe("count", function() {
                     it("should be able to provide the correct value when using grouping", function() {
                         createGrid({
-                            features: [{ftype: 'grouping'}]
+                            features: [{ ftype: 'grouping' }]
                         }, null, {
                             groupField: 'subject'
                         });
@@ -933,7 +1045,7 @@ function() {
                     var testEl = view.body || view.el,
                         expectText = withLocking ? "subject:MathStudent1Student22studentssubject:ScienceStudent1Student22students4studentssubject:Math849690subject:Science72687080" : "subject:MathStudent184Student2962students90subject:ScienceStudent172Student2682students704students80",
                         haveText;
-                    
+
                     haveText = (testEl.dom.textContent || testEl.dom.innerText)
                         .replace(/\r\n?|\n|\s/g, '')
                         .replace(/Loading\.\.\./, '');
@@ -948,7 +1060,7 @@ function() {
                     haveText = (testEl.dom.textContent || testEl.dom.innerText)
                         .replace(/\r\n?|\n|\s/g, '')
                         .replace(/Loading\.\.\./, '');
-                    
+
                     expect(haveText).toBe(expectText);
                 });
             });

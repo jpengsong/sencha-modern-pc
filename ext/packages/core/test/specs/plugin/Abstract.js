@@ -1,11 +1,8 @@
-topSuite("Ext.plugin.Abstract", [
-    'Ext.Container',
-    'Ext.app.ViewController',
-    'Ext.plugin.Responsive'
-], function() {
-    var PTYPE = Ext.isClassic ? 'ptype' : 'type';
-    var Plugin, Component;
-    var component, spies;
+topSuite("Ext.plugin.Abstract",
+    ['Ext.Container', 'Ext.app.ViewController', 'Ext.plugin.Responsive'],
+function() {
+    var PTYPE = Ext.isClassic ? 'ptype' : 'type',
+        Plugin, Component, component, spies;
 
     function defineComponent(cfg) {
         Component = Ext.define(null, Ext.apply({
@@ -20,7 +17,7 @@ topSuite("Ext.plugin.Abstract", [
         Plugin = Component = null;
     });
 
-    describe('creation', function () {
+    describe('creation', function() {
         var Plugin1, Plugin2;
 
         function definePlugin(cfg) {
@@ -36,7 +33,7 @@ topSuite("Ext.plugin.Abstract", [
             }, cfg));
         }
 
-        beforeEach(function () {
+        beforeEach(function() {
             Plugin1 = definePlugin();
             Plugin2 = definePlugin({
                 xclass: 'Ext.test.plugin.Abstract2',
@@ -44,16 +41,17 @@ topSuite("Ext.plugin.Abstract", [
             });
         });
 
-        afterEach(function () {
+        afterEach(function() {
             Ext.undefine('Ext.test.plugin.Abstract');
             Ext.undefine('Ext.test.plugin.Abstract2');
 
             Plugin1 = Plugin2 = null;
         });
 
-        describe('plugins: config object', function () {
-            it('should create a plugin defined on the class', function () {
+        describe('plugins: config object', function() {
+            it('should create a plugin defined on the class', function() {
                 var p2 = {};
+
                 p2[PTYPE] = 'plugintest';
 
                 defineComponent({
@@ -69,8 +67,8 @@ topSuite("Ext.plugin.Abstract", [
             });
         });
 
-        describe('plugins: string', function () {
-            it('should create a plugin defined on the class', function () {
+        describe('plugins: string', function() {
+            it('should create a plugin defined on the class', function() {
                 defineComponent({
                     plugins: 'plugintest'
                 });
@@ -83,8 +81,8 @@ topSuite("Ext.plugin.Abstract", [
             });
         });
 
-        describe('plugins: string[]', function () {
-            it('should create plugins defined on the class', function () {
+        describe('plugins: string[]', function() {
+            it('should create plugins defined on the class', function() {
                 defineComponent({
                     plugins: ['plugintest', 'plg']
                 });
@@ -100,9 +98,10 @@ topSuite("Ext.plugin.Abstract", [
             });
         });
 
-        describe('plugins: mixed[]', function () {
-            it('should create plugins defined on the class', function () {
+        describe('plugins: mixed[]', function() {
+            it('should create plugins defined on the class', function() {
                 var p2 = {};
+
                 p2[PTYPE] = 'plg';
 
                 defineComponent({
@@ -120,8 +119,8 @@ topSuite("Ext.plugin.Abstract", [
             });
         });
 
-        describe('plugins: keyed object', function () {
-            it('should create plugins defined on the class', function () {
+        describe('plugins: keyed object', function() {
+            it('should create plugins defined on the class', function() {
                 defineComponent({
                     plugins: {
                         plugintest: true,
@@ -134,6 +133,7 @@ topSuite("Ext.plugin.Abstract", [
                 component = new Component();
 
                 var plugin = component.findPlugin('plugintest');
+
                 expect(plugin instanceof Plugin1).toBe(true);
 
                 plugin = component.getPlugin('plugintest');
@@ -146,7 +146,7 @@ topSuite("Ext.plugin.Abstract", [
                 expect(plugin instanceof Plugin2).toBe(true);
             });
 
-            it('should create and order plugins defined on the class', function () {
+            it('should create and order plugins defined on the class', function() {
                 defineComponent({
                     plugins: {
                         plugintest: true,
@@ -165,7 +165,7 @@ topSuite("Ext.plugin.Abstract", [
                 expect(plugins[1] instanceof Plugin2).toBe(true);
             });
 
-            it('should create and reverse order plugins defined on the class', function () {
+            it('should create and reverse order plugins defined on the class', function() {
                 defineComponent({
                     plugins: {
                         plugintest: true,
@@ -185,7 +185,7 @@ topSuite("Ext.plugin.Abstract", [
             });
 
             if (Ext.isModern) {
-                it('should override plugins defined on the class by instance config', function () {
+                it('should override plugins defined on the class by instance config', function() {
                     defineComponent({
                         plugins: {
                             plugintest: true,
@@ -223,7 +223,7 @@ topSuite("Ext.plugin.Abstract", [
                     expect(plugins[0] instanceof Plugin2).toBe(true);
                 });
 
-                it('should be able to activate a plugin early', function () {
+                it('should be able to activate a plugin early', function() {
                     defineComponent({
                         config: {
                             foo: null,
@@ -272,7 +272,7 @@ topSuite("Ext.plugin.Abstract", [
 
     describe("listener scope resolution", function() {
         var plugin, Parent, parent,
-            Controller, Controller, ParentController;
+            Controller, ParentController;
 
         function defineParent(cfg) {
             Parent = Ext.define(null, Ext.apply({
@@ -297,7 +297,8 @@ topSuite("Ext.plugin.Abstract", [
                 if (name === scope) {
                     expect(spy).toHaveBeenCalled();
                     expect(spy.mostRecentCall.object).toBe(scopes[name]);
-                } else {
+                }
+                else {
                     expect(spy).not.toHaveBeenCalled();
                 }
             }
@@ -327,6 +328,7 @@ topSuite("Ext.plugin.Abstract", [
             if (plugin) {
                 plugin.destroy();
             }
+
             if (parent) {
                 parent.destroy();
             }
@@ -759,7 +761,7 @@ topSuite("Ext.plugin.Abstract", [
                         listeners: {
                             foo: handler
                         }
-                    }, cfg))
+                    }, cfg));
                 }
 
                 beforeEach(function() {

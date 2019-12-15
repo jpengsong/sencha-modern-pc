@@ -121,21 +121,23 @@ Ext.define('Ext.plugin.AbstractClipboard', {
         gridListeners: null
     },
 
-    destroy: function () {
+    destroy: function() {
         var me = this,
             keyMap = me.keyMap,
             shared = me.shared;
-        
+
         Ext.destroy(me.destroyListener);
 
         if (keyMap) {
             // If we have a keyMap then we have incremented the shared usage counter
             // and now need to remove ourselves.
             me.keyMap = Ext.destroy(keyMap);
+
             if (! --shared.counter) {
                 shared.textArea = Ext.destroy(shared.textArea);
             }
-        } else {
+        }
+        else {
             // If we don't have a keyMap it is because we are waiting for the render
             // event and haven't connected to the shared context.
             me.renderListener = Ext.destroy(me.renderListener);
@@ -144,13 +146,14 @@ Ext.define('Ext.plugin.AbstractClipboard', {
         me.callParent();
     },
 
-    init: function (comp) {
+    init: function(comp) {
         var me = this,
             listeners = me.getGridListeners();
 
         if (comp.rendered) {
             me.finishInit(comp);
-        } else if (listeners) {
+        }
+        else if (listeners) {
             me.renderListener = comp.on(Ext.apply({
                 scope: me,
                 destroyable: true,
@@ -159,7 +162,7 @@ Ext.define('Ext.plugin.AbstractClipboard', {
         }
     },
 
-    onCmpReady: function () {
+    onCmpReady: function() {
         this.renderListener = null;
         this.finishInit(this.getCmp());
     },
@@ -209,13 +212,13 @@ Ext.define('Ext.plugin.AbstractClipboard', {
             textArea: null
         },
 
-        applyMemory: function (value) {
+        applyMemory: function(value) {
             // Same as "source" config but that allows "system" as a format.
             value = this.applySource(value);
 
             //<debug>
             if (value) {
-                for (var i = value.length; i-- > 0; ) {
+                for (var i = value.length; i-- > 0;) { // eslint-disable-line vars-on-top
                     if (value[i] === 'system') {
                         Ext.raise('Invalid clipboard format "' + value[i] + '"');
                     }
@@ -226,21 +229,23 @@ Ext.define('Ext.plugin.AbstractClipboard', {
             return value;
         },
 
-        applySource: function (value) {
+        applySource: function(value) {
             // Make sure we have a non-empty String[] or null
             if (value) {
                 if (Ext.isString(value)) {
                     value = [value];
-                } else if (value.length === 0) {
+                }
+                else if (value.length === 0) {
                     value = null;
                 }
             }
 
             //<debug>
             if (value) {
-                var formats = this.getFormats();
+                var formats = this.getFormats(), // eslint-disable-line vars-on-top
+                    i;
 
-                for (var i = value.length; i-- > 0; ) {
+                for (i = value.length; i-- > 0;) {
                     if (value[i] !== 'system' && !formats[value[i]]) {
                         Ext.raise('Invalid clipboard format "' + value[i] + '"');
                     }
@@ -252,7 +257,7 @@ Ext.define('Ext.plugin.AbstractClipboard', {
         },
 
         //<debug>
-        applySystem: function (value) {
+        applySystem: function(value) {
             var formats = this.getFormats();
 
             if (!formats[value]) {
@@ -263,7 +268,7 @@ Ext.define('Ext.plugin.AbstractClipboard', {
         },
         //</debug>
 
-        doCutCopy: function (event, erase) {
+        doCutCopy: function(event, erase) {
             var me = this,
                 formats = me.allFormats || me.syncFormats(),
                 data = me.getData(erase, formats),
@@ -279,20 +284,22 @@ Ext.define('Ext.plugin.AbstractClipboard', {
 
             if (system) {
                 sys = data[system];
+
                 if (formats[system] < 3) {
                     delete data[system];
                 }
+
                 me.setClipboardData(sys);
             }
         },
 
-        doPaste: function (format, data) {
+        doPaste: function(format, data) {
             var formats = this.getFormats();
 
             this[formats[format].put](data, format);
         },
 
-        finishInit: function (comp) {
+        finishInit: function(comp) {
             var me = this;
 
             me.keyMap = new Ext.util.KeyMap({
@@ -316,7 +323,7 @@ Ext.define('Ext.plugin.AbstractClipboard', {
             });
         },
 
-        getData: function (erase, format) {
+        getData: function(erase, format) {
             var me = this,
                 formats = me.getFormats(),
                 data, i, name, names;
@@ -327,8 +334,10 @@ Ext.define('Ext.plugin.AbstractClipboard', {
                     Ext.raise('Invalid clipboard format "' + format + '"');
                 }
                 //</debug>
+
                 data = me[formats[format].get](format, erase);
-            } else {
+            }
+            else {
                 data = {};
                 names = [];
 
@@ -339,13 +348,15 @@ Ext.define('Ext.plugin.AbstractClipboard', {
                             Ext.raise('Invalid clipboard format "' + name + '"');
                         }
                         //</debug>
+
                         names.push(name);
                     }
-                } else {
+                }
+                else {
                     names = Ext.Object.getAllKeys(formats);
                 }
 
-                for (i = names.length; i-- > 0; ) {
+                for (i = names.length; i-- > 0;) {
                     data[name] = me[formats[name].get](name, erase && !i);
                 }
             }
@@ -357,12 +368,12 @@ Ext.define('Ext.plugin.AbstractClipboard', {
          * @private
          * @return {Ext.dom.Element}
          */
-        getHiddenTextArea: function () {
+        getHiddenTextArea: function() {
             var shared = this.shared,
                 el;
-            
+
             el = shared.textArea;
-            
+
             if (!el) {
                 el = shared.textArea = Ext.getBody().createChild({
                     tag: 'textarea',
@@ -374,23 +385,23 @@ Ext.define('Ext.plugin.AbstractClipboard', {
                         height: '1px'
                     }
                 });
-                
+
                 // We don't want this element to fire focus events ever
                 el.suspendFocusEvents();
             }
-            
+
             return el;
         },
 
-        onCopy: function (keyCode, event) {
+        onCopy: function(keyCode, event) {
             this.doCutCopy(event, false);
         },
 
-        onCut: function (keyCode, event) {
+        onCut: function(keyCode, event) {
             this.doCutCopy(event, true);
         },
 
-        onPaste: function (keyCode, event) {
+        onPaste: function(keyCode, event) {
             var me = this,
                 sharedData = me.shared.data,
                 source = me.getSource(),
@@ -409,7 +420,8 @@ Ext.define('Ext.plugin.AbstractClipboard', {
                         s = me.getSystem();
                         me.pasteClipboardData(s);
                         break;
-                    } else if (sharedData && (s in sharedData)) {
+                    }
+                    else if (sharedData && (s in sharedData)) {
                         me.doPaste(s, sharedData[s]);
                         break;
                     }
@@ -423,7 +435,7 @@ Ext.define('Ext.plugin.AbstractClipboard', {
                 area, focusEl;
 
             if (clippy && clippy.getData) {
-                 me.doPaste(format, clippy.getData("text"));
+                me.doPaste(format, clippy.getData("text"));
             }
             else {
                 focusEl = Ext.Element.getActiveElement(true);
@@ -434,7 +446,7 @@ Ext.define('Ext.plugin.AbstractClipboard', {
                 if (focusEl) {
                     focusEl.suspendFocusEvents();
                 }
-                
+
                 area.focus();
 
                 // Between now and the deferred function, the CTRL+V hotkey will have
@@ -444,11 +456,11 @@ Ext.define('Ext.plugin.AbstractClipboard', {
                     // Focus back to the real destination
                     if (focusEl) {
                         focusEl.focus();
-                        
+
                         // Restore framework focus handling
                         focusEl.resumeFocusEvents();
                     }
-                    
+
                     me.doPaste(format, area.value);
                     area.value = '';
                 }, 100, me);
@@ -456,15 +468,16 @@ Ext.define('Ext.plugin.AbstractClipboard', {
         },
 
         setClipboardData: function(data) {
-            var clippy = window.clipboardData;
+            var me = this,
+                clippy = window.clipboardData,
+                area, focusEl;
 
             if (clippy && clippy.setData) {
                 clippy.setData("text", data);
             }
             else {
-                var me = this,
-                    area = me.getHiddenTextArea().dom,
-                    focusEl = Ext.Element.getActiveElement(true);
+                area = me.getHiddenTextArea().dom;
+                focusEl = Ext.Element.getActiveElement(true);
 
                 area.value = data;
 
@@ -472,7 +485,7 @@ Ext.define('Ext.plugin.AbstractClipboard', {
                 if (focusEl) {
                     focusEl.suspendFocusEvents();
                 }
-                
+
                 area.focus();
                 area.select();
 
@@ -481,10 +494,10 @@ Ext.define('Ext.plugin.AbstractClipboard', {
                 // textarea.
                 Ext.defer(function() {
                     area.value = '';
-                    
+
                     if (focusEl) {
                         focusEl.focus();
-                        
+
                         // Restore framework focus handling
                         focusEl.resumeFocusEvents();
                     }
@@ -492,7 +505,7 @@ Ext.define('Ext.plugin.AbstractClipboard', {
             }
         },
 
-        syncFormats: function () {
+        syncFormats: function() {
             var me = this,
                 map = {},
                 memory = me.getMemory(),
@@ -504,7 +517,7 @@ Ext.define('Ext.plugin.AbstractClipboard', {
             }
 
             if (memory) {
-                for (i = memory.length; i-- > 0; ) {
+                for (i = memory.length; i-- > 0;) {
                     s = memory[i];
                     map[s] = map[s] ? 3 : 2;
                 }
@@ -516,11 +529,11 @@ Ext.define('Ext.plugin.AbstractClipboard', {
             return me.allFormats = map; // jshint ignore:line
         },
 
-        updateMemory: function () {
+        updateMemory: function() {
             this.allFormats = null;
         },
 
-        updateSystem: function () {
+        updateSystem: function() {
             this.allFormats = null;
         },
 

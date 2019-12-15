@@ -28,11 +28,13 @@ Ext.define('Ext.grid.cell.Number', {
 
     zeroValue: null,
 
-    updateColumn: function (column, oldColumn) {
+    updateColumn: function(column, oldColumn) {
+        var format;
+
         this.callParent([ column, oldColumn ]);
 
         if (column && column.isNumberColumn) {
-            var format = column.getFormat();
+            format = column.getFormat();
 
             if (format !== null) {
                 this.setFormat(format);
@@ -40,19 +42,20 @@ Ext.define('Ext.grid.cell.Number', {
         }
     },
 
-    updateFormat: function (format) {
+    updateFormat: function(format) {
         if (!this.isConfiguring) {
             this.writeValue();
         }
     },
 
-    formatValue: function (value) {
+    formatValue: function(value) {
         var hasValue = value || value === 0,
             zeroValue;
 
         if (value === 0 && (zeroValue = this.getZeroValue()) !== null) {
             value = zeroValue || '';
-        } else {
+        }
+        else {
             value = hasValue ? Ext.util.Format.number(value, this.getFormat()) : '';
         }
 

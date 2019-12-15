@@ -7,7 +7,7 @@ Ext.define('Ext.data.summary.Sum', {
 
     alias: 'data.summary.sum',
 
-    calculate: function (records, property, root, begin, end) {
+    calculate: function(records, property, root, begin, end) {
         var n = end - begin,
             i, sum, v;
 

@@ -1,10 +1,10 @@
 /**
- * Panels are {@link Ext.Container containers} with an optional 
- * {@link Ext.panel.Header header} that can be positioned using the 
+ * Panels are {@link Ext.Container containers} with an optional
+ * {@link Ext.panel.Header header} that can be positioned using the
  * {@link #cfg-headerPosition headerPosition} config option.
- * 
+ *
  * Panels add extra functionality by providing various options for configuring a header
- * that is docked inside the panel.  Setting any of the following panel config options 
+ * that is docked inside the panel.  Setting any of the following panel config options
  * will automatically create a header:
  * - {@link #cfg-title title}
  * - {@link #cfg-iconCls iconCls}
@@ -14,15 +14,15 @@
  *
  * It is also possible to configure the header directly using the {@link #header}
  * configuration. See {@link Ext.panel.Header} for more information.
- * 
+ *
  * ### Simple Panel Example (with body text / html)
- * 
+ *
  * Usually, Panels are used as constituents within an
  * {@link Ext.app.Application application}, in which case, they
  * would be used as child items of {@link Ext.Container Containers}, and would themselves
  * use {@link Ext.Component Ext.Components} as child {@link #cfg-items items}. However,
  * to illustrate simply rendering a Panel into the document, here's how to do it:
- * 
+ *
  *     @example
  *     Ext.create({
  *         xtype: 'panel',
@@ -34,10 +34,10 @@
  *         html: 'Sample HTML text',
  *         renderTo: Ext.getBody()
  *     });
- * 
+ *
  * ### Panel Example (with child items)
- * 
- * Panels are, by virtue of their inheritance from {@link Ext.Container}, capable of 
+ *
+ * Panels are, by virtue of their inheritance from {@link Ext.Container}, capable of
  * being configured with a {@link Ext.Container#layout layout}, and containing child
  * {@link Ext.Component Components}.
  *
@@ -56,19 +56,19 @@
  *         }],
  *         renderTo: Ext.getBody()
  *     });
- * 
+ *
  * Panel also provides built-in {@link #cfg-collapsible collapsible, expandable}, and
- * {@link #cfg-closable closable} behavior. Panels can be easily dropped into any 
+ * {@link #cfg-closable closable} behavior. Panels can be easily dropped into any
  * {@link Ext.Container Container} or layout, and the layout and rendering pipeline
  * is {@link Ext.Container#method-add completely managed by the framework}.
  *
  * ### Floating Panels
- * 
+ *
  * Panels are also useful as Overlays - containers that float over your application.
  * If configured with `{@link #cfg-anchor anchor}` set to `true`, when you
  * {@link #method-showBy showBy} another component, there will be an anchor arrow
  * pointing to the reference component.
- * 
+ *
  *     @example
  *     var panel = Ext.create({
  *         xtype: 'panel',
@@ -83,7 +83,7 @@
  *         closeAction: 'hide',
  *         anchor: true
  *     });
- *     
+ *
  *     Ext.create({
  *         xtype: 'button',
  *         text: 'Show Popup',
@@ -94,21 +94,21 @@
  *         },
  *         renderTo: Ext.getBody()
  *     });
- * 
- * **Note:** By default, the `{@link #cfg-closable close}` header tool _destroys_ the 
+ *
+ * **Note:** By default, the `{@link #cfg-closable close}` header tool _destroys_ the
  * Panel resulting in removal of the Panel and the destruction of any descendant
- * Components. This makes the Panel object, and all its descendants **unusable**. To 
+ * Components. This makes the Panel object, and all its descendants **unusable**. To
  * enable the close tool to simply _hide_ a Panel for later re-use, configure the Panel
  * with `{@link #closeAction closeAction}: 'hide'`.
  */
-Ext.define('Ext.Panel', function (Panel) {
-    var mac = Ext.platformTags.ios || Ext.platformTags.mac;
-
-return { // do not indent :)
+Ext.define('Ext.Panel', {
     extend: 'Ext.Container',
     xtype: 'panel',
+    alternateClassName: 'Ext.panel.Panel',
+    isPanel: true,
 
     mixins: [
+        'Ext.panel.Buttons',
         'Ext.mixin.Toolable'
     ],
 
@@ -117,15 +117,11 @@ return { // do not indent :)
         'Ext.Toolbar'
     ],
 
-    alternateClassName: 'Ext.panel.Panel',
-
     /**
      * @property defaultBindProperty
      * @inheritdoc
      */
     defaultBindProperty: 'title',
-
-    isPanel: true,
 
     config: {
         /**
@@ -198,158 +194,16 @@ return { // do not indent :)
          * or false to hide the button and disallow closing the window.
          *
          * By default, when close is requested by clicking the close button in the
-         * header, the {@link #method-close} method will be called. This will 
-         * _{@link Ext.Component#method-destroy destroy}_ the Panel and its content 
+         * header, the {@link #method-close} method will be called. This will
+         * _{@link Ext.Component#method-destroy destroy}_ the Panel and its content
          * meaning that it may not be reused.
          *
-         * To make closing a Panel _hide_ the Panel so that it may be reused, set 
+         * To make closing a Panel _hide_ the Panel so that it may be reused, set
          * {@link #closeAction} to 'hide'.
          */
         closable: null,
 
-        /**
-         * @cfg {String} [buttonAlign='center']
-         * The alignment of any buttons added to this panel. Valid values are 'right',
-         * 'left' and 'center'
-         * @since 6.5.0
-         */
-        buttonAlign: null,
-
-        buttonDefaults: null,
-
-        /**
-         * @cfg {Object} standardButtons
-         * This object contains config objects for the standard `buttons` (such as `OK`
-         * and `Cancel`). This object is keyed by the `itemId` for the button and
-         * contains the `text` and a default `weight` for
-         * {@link Ext.Container#cfg!weighted weighted} containers to use. These default
-         * weights vary by OS to provide the user with a button order that is consistent
-         * for their platform. In particular, Windows and Linux (or rather all platforms
-         * other then Mac OS and iOS) present the `OK` button followed by `Cancel` while
-         * Mac OS and iOS present them in reverse order of 'Cancel` followed by `OK`.
-         *
-         * The standard buttons, in weight order, are as follows:
-         *
-         *  - `ok`
-         *  - `abort`
-         *  - `retry`
-         *  - `ignore`
-         *  - `yes`
-         *  - `no`
-         *  - `cancel`
-         *  - `apply`
-         *  - `save`
-         *  - `submit`
-         *  - `help`
-         *  - `close`
-         *
-         * On Mac OS and iOS this order is reversed with the exception of `help` which
-         * is the first button. The buttons are assigned weights from `10` to `200`.
-         *
-         * @locale
-         * @since 6.5.0
-         */
-        standardButtons: {
-            ok: {
-                text: 'OK',
-                weight: mac ? 120 : 10
-            },
-            abort: {
-                text: 'Abort',
-                weight: mac ? 110 : 20
-            },
-            retry: {
-                text: 'Retry',
-                weight: mac ? 100 : 30
-            },
-            ignore: {
-                text: 'Ignore',
-                weight: mac ? 90 : 40
-            },
-            yes: {
-                text: 'Yes',
-                weight: mac ? 80 : 50
-            },
-            no: {
-                text: 'No',
-                weight: mac ? 70 : 60
-            },
-            cancel: {
-                text: 'Cancel',
-                weight: mac ? 60 : 70
-            },
-            apply: {
-                text: 'Apply',
-                weight: mac ? 50 : 80
-            },
-            save: {
-                text: 'Save',
-                weight: mac ? 40 : 90
-            },
-            submit: {
-                text: 'Submit',
-                weight: mac ? 30 : 100
-            },
-            help: {
-                text: 'Help',
-                weight: mac ? 10 : 110
-            },
-            close: {
-                text: 'Close',
-                weight: mac ? 20 : 120
-            }
-        },
-
-        /**
-         * @cfg {Number} minButtonWidth
-         * Minimum width of all {@link #cfg-buttonToolbar buttonToolbar} buttons in 
-         * pixels. If set, this will be used as the default value for the 
-         * {@link Ext.Button#minWidth} config of each {@link Ext.Button Button} added to
-         * the `buttonToolbar via the {@link #cfg-buttons buttons} toolbar.
-         *
-         * It will be ignored for buttons that have a `minWidth` configured some other
-         * way, e.g. in their own config object or via the 
-         * {@link Ext.Container#defaults defaults} of their parent container.
-         * @since 6.5.0
-         */
-        minButtonWidth: 75,
-
-        /**
-         * @cfg {Object/Ext.Button[]} buttons
-         * The buttons for this panel to be displayed in the `buttonToolbar` as a keyed
-         * object (or array) of button configuration objects.
-         *
-         *     @example
-         *     Ext.create({
-         *         xtype: 'panel',
-         *         html: 'hello world',
-         *         padding: 20,
-         *         buttons: {
-         *            ok: {text: 'OK', handler: 'onOK'}
-         *         }
-         *     });
-         *
-         * For buttons that are defined in `standardButtons` (such as `'ok'`), there is a
-         * more convenient short-hand for this config:
-         *
-         *     @example
-         *     Ext.create({
-         *         fullscreen: true,
-         *         xtype: 'panel',
-         *         html: 'hello world',
-         *         padding: 20,
-         *         buttons: {
-         *            ok: 'onOK',
-         *            cancel: 'onCancel'
-         *         }
-         *     });
-         *
-         * The {@link #minButtonWidth} is used as the default
-         * {@link Ext.Button#minWidth minWidth} for the buttons in the buttons toolbar.
-         * @since 6.5.0
-         */
-        buttons: null,
-
+        // eslint-disable-next-line max-len
         // @cmd-auto-dependency {aliasPrefix: "widget.", typeProperty: "xtype", defaultType: "toolbar"}
         /**
          * @cfg {Object/Object[]} bbar
@@ -389,6 +243,7 @@ return { // do not indent :)
          */
         bbar: null,
 
+        // eslint-disable-next-line max-len
         // @cmd-auto-dependency {aliasPrefix: "widget.", typeProperty: "xtype", defaultType: "toolbar"}
         /**
          * @cfg {Object/Object[]} lbar
@@ -428,6 +283,7 @@ return { // do not indent :)
          */
         lbar: null,
 
+        // eslint-disable-next-line max-len
         // @cmd-auto-dependency {aliasPrefix: "widget.", typeProperty: "xtype", defaultType: "toolbar"}
         /**
          * @cfg {Object/Object[]} rbar
@@ -467,6 +323,7 @@ return { // do not indent :)
          */
         rbar: null,
 
+        // eslint-disable-next-line max-len
         // @cmd-auto-dependency {aliasPrefix: "widget.", typeProperty: "xtype", defaultType: "toolbar"}
         /**
          * @cfg {Object/Object[]} tbar
@@ -517,7 +374,7 @@ return { // do not indent :)
         /**
          * @cfg {Boolean} bodyBorder
          * Controls the border style of the panel body using the following values:
-         * 
+         *
          * - `true` to enable the border around the panel body (as defined by the theme)
          * Note that even when enabled, the bodyBorder is only visible when there are
          * docked items around the edges of the panel.  Where the bodyBorder touches the
@@ -525,21 +382,21 @@ return { // do not indent :)
          *
          * - `false` to disable the body border
          *
-         * - `null` - use the value of {@link #cfg-border border} as the value for 
+         * - `null` - use the value of {@link #cfg-border border} as the value for
          * `bodyBorder`
          */
         bodyBorder: null,
 
         /**
          * @cfg {Number/Boolean/String} bodyPadding
-         * A shortcut for setting a padding style on the body element. The value can 
+         * A shortcut for setting a padding style on the body element. The value can
          * either be a number to be applied to all sides, or a normal CSS string
          * describing padding.
-         * 
+         *
          *     bodyPadding: 5 // 5px padding on all sides
-         *     
+         *
          *     bodyPadding: '10 20' // 10px top and bottom padding - 20px side padding
-         * 
+         *
          * *See the {@link Ext.dom.Element#static-method-unitizeBox unitizeBox} method
          * for more information on what string values are valid*
          */
@@ -550,7 +407,7 @@ return { // do not indent :)
          * Custom CSS styles to be applied to the panel's body element, which can be
          * supplied as a valid CSS style string or an object containing style property
          * name/value pairs.
-         * 
+         *
          * For example, these two formats are interpreted to be equivalent:
          *
          *     bodyStyle: 'background:#ffc; padding:10px;'
@@ -564,6 +421,41 @@ return { // do not indent :)
          * @since 6.5.0
          */
         bodyStyle: null,
+
+        /**
+         * @cfg {Object/Ext.Button[]} buttons
+         * The buttons for this panel to be displayed in the `buttonToolbar` as a keyed
+         * object (or array) of button configuration objects.
+         *
+         *     @example
+         *     Ext.create({
+         *         xtype: 'panel',
+         *         html: 'hello world',
+         *         padding: 20,
+         *         buttons: {
+         *            ok: {text: 'OK', handler: 'onOK'}
+         *         }
+         *     });
+         *
+         * For buttons that are defined in `standardButtons` (such as `'ok'`), there is a
+         * more convenient short-hand for this config:
+         *
+         *     @example
+         *     Ext.create({
+         *         fullscreen: true,
+         *         xtype: 'panel',
+         *         html: 'hello world',
+         *         padding: 20,
+         *         buttons: {
+         *            ok: 'onOK',
+         *            cancel: 'onCancel'
+         *         }
+         *     });
+         *
+         * The {@link #minButtonWidth} is used as the default
+         * {@link Ext.Button#minWidth minWidth} for the buttons in the buttons toolbar.
+         * @since 6.5.0
+         */
 
         /**
          * @cfg {Object/Ext.Toolbar} buttonToolbar
@@ -592,16 +484,19 @@ return { // do not indent :)
          *
          * - **`'{@link #method-destroy}'`** :
          *
-         *   {@link #method-remove remove} the window from the DOM and {@link Ext.Component#method-destroy destroy} it and all descendant
-         *   Components. The window will **not** be available to be redisplayed via the {@link #method-show} method.
+         *   {@link #method-remove remove} the window from the DOM and
+         *   {@link Ext.Component#method-destroy destroy} it and all descendant Components.
+         *   The window will **not** be available to be redisplayed via the
+         *   {@link #method-show} method.
          *
          * - **`'{@link #method-hide}'`** :
          *
-         *   {@link #method-hide} the window by setting visibility to hidden and applying negative offsets. The window will be
-         *   available to be redisplayed via the {@link #method-show} method.
+         *   {@link #method-hide} the window by setting visibility to hidden and applying
+         *   negative offsets. The window will be available to be redisplayed via the
+         *   {@link #method-show} method.
          *
-         * **Note:** This behavior has changed! setting *does* affect the {@link #method-close} method which will invoke the
-         * appropriate closeAction.
+         * **Note:** This behavior has changed! setting *does* affect the {@link #method-close}
+         * method which will invoke the appropriate closeAction.
          */
         closeAction: 'destroy',
 
@@ -656,6 +551,19 @@ return { // do not indent :)
         }]
     }],
 
+    initialize: function() {
+        var me = this,
+            scrollable;
+
+        me.callParent();
+        // TODO: make autoAutoRefresh public and remove this code from here
+        scrollable = me.getScrollable();
+
+        if (scrollable && scrollable.isVirtualScroller) {
+            scrollable.setAutoRefresh(true);
+        }
+    },
+
     /**
      * Adds a CSS class to the body element. If not rendered, the class will be added
      * when the panel is rendered.
@@ -664,6 +572,7 @@ return { // do not indent :)
      */
     addBodyCls: function(cls) {
         this.bodyElement.addCls(cls);
+
         return this;
     },
 
@@ -674,6 +583,7 @@ return { // do not indent :)
      */
     removeBodyCls: function(cls) {
         this.bodyElement.removeCls(cls);
+
         return this;
     },
 
@@ -689,7 +599,7 @@ return { // do not indent :)
         return bodyPadding;
     },
 
-    applyBodyStyle: function (bodyStyle, oldBodyStyle) {
+    applyBodyStyle: function(bodyStyle, oldBodyStyle) {
         // If we're doing something with data binding, say:
         // style: {
         //     backgroundColor: 'rgba({r}, {g}, {b}, 1)'
@@ -706,21 +616,23 @@ return { // do not indent :)
     },
 
     //<debug>
-    getBodyStyle: function () {
-        Ext.Error.raise("'bodyStyle' is a write-only config.  To query element styles use the Ext.dom.Element API.");
+    getBodyStyle: function() {
+        Ext.Error.raise(
+            "'bodyStyle' is a write-only config.  To query element styles use the " +
+            "Ext.dom.Element API.");
     },
     //</debug>
 
     /**
      * Add tools to this panel {@link Ext.panel.Header header}
-     * 
+     *
      *     panel.addTool({
      *         type: 'gear',
      *         handler: function () {
      *             // ....
      *         }
      *     });
-     *     
+     *
      *     panel.addTool([{
      *         type: 'gear',
      *         handler: 'viewControllerGearMethod'
@@ -729,23 +641,23 @@ return { // do not indent :)
      *         handler: 'viewControllerSaveMethod'
      *     }]);
      *
-     * By default the tools will be accessible via keyboard, with the exception of 
+     * By default the tools will be accessible via keyboard, with the exception of
      * automatically added collapse/expand and close tools.
      *
      * If you implement keyboard equivalents of your tools' actions elsewhere and do not
-     * want the tools to participate in keyboard navigation, you can make them 
+     * want the tools to participate in keyboard navigation, you can make them
      * presentational instead:
-     * 
+     *
      *     panel.addTool({
      *         type: 'mytool',
      *         focusable: false,
      *         ariaRole: 'presentation'
      *         // ...
      *     });
-     * 
+     *
      * @param {Object/Object[]/Ext.Tool/Ext.Tool[]} tool The tool or tools to add.
      */
-    addTool: function (tool) {
+    addTool: function(tool) {
         var header = this.ensureHeader(),  // creates if header !== false
             items;
 
@@ -760,8 +672,9 @@ return { // do not indent :)
         return items;
     },
 
-    applyHeader: function (newHeader, oldHeader) {
-        // This method should never call any getters here doing so will cause re-entry into this method. Extra Headers will be created
+    applyHeader: function(newHeader, oldHeader) {
+        // This method should never call any getters here doing so will cause re-entry into
+        // this method. Extra Headers will be created
         var me = this,
             header = oldHeader,
             isTrue;
@@ -774,14 +687,17 @@ return { // do not indent :)
 
         if (newHeader && me.allowHeader) {
             isTrue = newHeader === true;
+
             if (header) {
                 if (!isTrue) {
                     header.setConfig(newHeader);
                 }
-            } else {
+            }
+            else {
                 if (isTrue) {
                     newHeader = {};
                 }
+
                 newHeader.$initParent = me;
                 header = Ext.factory(me.createHeader(newHeader));
                 me.header = header;
@@ -804,12 +720,13 @@ return { // do not indent :)
     updateHeader: function(header) {
         if (header) {
             this.positionHeader(header);
-        } else {
+        }
+        else {
             this.syncBorders();
         }
     },
 
-    applyTools: function (tools) {
+    applyTools: function(tools) {
         var header = this.ensureHeader(),  // creates if header !== false
             items;
 
@@ -848,7 +765,7 @@ return { // do not indent :)
         }
     },
 
-    createHeader: function (config) {
+    createHeader: function(config) {
         var me = this,
             ret = {
                 xtype: 'panelheader',
@@ -882,10 +799,13 @@ return { // do not indent :)
             }
 
             icon = me.getIconCls();
+
             if (icon != null) {
                 ret.iconCls = icon;
-            } else {
+            }
+            else {
                 icon = me.getIcon();
+
                 if (icon != null) {
                     ret.icon = icon;
                 }
@@ -893,6 +813,7 @@ return { // do not indent :)
         }
 
         me._isCreatingHeader = false;
+
         return ret;
     },
 
@@ -906,7 +827,8 @@ return { // do not indent :)
             // Already have one - undefined means no change`
             if (oldAnchor) {
                 return;
-            } else {
+            }
+            else {
                 anchor = me.el.insertFirst({
                     cls: Ext.baseCSSPrefix + 'anchor-el'
                 });
@@ -916,6 +838,7 @@ return { // do not indent :)
                 svgEl.appendChild(pathEl);
                 anchor.dom.appendChild(svgEl);
             }
+
             // Anchor is positioned outside the element bounds.
             // Must show overflow while anchor is enabled.
             el.style.overflow = 'visible';
@@ -931,7 +854,6 @@ return { // do not indent :)
 
     initAnchor: function() {
         var me = this,
-            el = me.el,
             anchor = me.getAnchor(),
             cls = me.sideCls.top,
             svgEl = anchor.dom.firstChild,
@@ -950,7 +872,10 @@ return { // do not indent :)
         // Draw our arrow.
         svgEl.setAttribute('height', anchorSize.y);
         svgEl.setAttribute('width', anchorSize.x);
-        pathEl.setAttribute('d', 'M0 ' + anchorSize.y + ' L' + anchorSize.x / 2 + ' 0.5 L' + anchorSize.x + ' ' + anchorSize.y);
+        pathEl.setAttribute(
+            'd',
+            'M0 ' + anchorSize.y + ' L' + anchorSize.x / 2 + ' 0.5 L' + anchorSize.x +
+            ' ' + anchorSize.y);
         anchorSize.y -= parseFloat(Ext.fly(pathEl).getStyle('stroke-width'));
 
         anchor.removeCls(cls);
@@ -960,8 +885,7 @@ return { // do not indent :)
     updateAnchorPosition: function(anchorPosition, oldAnchorPosition) {
         var me = this,
             anchorEl = me.getAnchor(),
-            sideCls = me.sideCls,
-            el = me.el;
+            sideCls = me.sideCls;
 
         // If we have no anchor, there's nothing to do.
         if (anchorEl) {
@@ -973,7 +897,8 @@ return { // do not indent :)
                 anchorEl.addCls(sideCls[anchorPosition.side]);
                 anchorEl.translate(anchorPosition.x, anchorPosition.y);
                 anchorEl.show();
-            } else {
+            }
+            else {
                 anchorEl.hide();
             }
         }
@@ -982,7 +907,7 @@ return { // do not indent :)
     updateBorder: function(border, oldBorder) {
         var me = this;
 
-        me.callParent([ border, oldBorder ]);
+        me.callParent([border, oldBorder]);
 
         if (me.getBodyBorder() === null) {
             me.setBodyBorderEnabled(border !== false);
@@ -1018,7 +943,7 @@ return { // do not indent :)
                 tooltip: me.getCloseToolText(),
                 $internal: true
             });
-            
+
             if (tools && tools.length) {
                 me.closeTool = tools[0];
             }
@@ -1032,7 +957,7 @@ return { // do not indent :)
         this.moveHeaderPosition(headerPosition, oldHeaderPosition);
     },
 
-    updateIcon: function (icon) {
+    updateIcon: function(icon) {
         var header = this.ensureHeader();  // creates if header !== false
 
         if (header) {
@@ -1040,7 +965,7 @@ return { // do not indent :)
         }
     },
 
-    updateIconCls: function (iconCls) {
+    updateIconCls: function(iconCls) {
         var header = this.ensureHeader();  // creates if header !== false
 
         if (header) {
@@ -1048,7 +973,7 @@ return { // do not indent :)
         }
     },
 
-    updateIconAlign: function (iconAlign) {
+    updateIconAlign: function(iconAlign) {
         var header = this.ensureHeader();  // creates if header !== false
 
         if (header) {
@@ -1056,97 +981,23 @@ return { // do not indent :)
         }
     },
 
-    applyBbar: function (toolbar, previous) {
-        return this.normalizeDockedBars(toolbar, previous, 'bottom');
+    applyBbar: function(toolbar, previous) {
+        return this.normalizeButtonBar(toolbar, previous, 'bottom');
     },
 
-    applyButtons: function (buttons, oldButtons) {
-        var me = this,
-            array = Ext.convertKeyedItems(buttons, 'xxx', 'xxx'), // to detect handlers
-            buttonDefaults = me.getButtonDefaults(),
-            standardButtons = me.getStandardButtons(),
-            toolbar = me.getButtonToolbar(),
-            n = array ? array.length : 0,
-            button, defaults, handler, i;
-
-        if (buttons && typeof buttons === 'object') {
-            if (buttons.xtype || buttons.itemId || buttons.items || buttons.reference) {
-                // Single config object is understood to be the toolbar not a single
-                // buttom...
-                return me.normalizeDockedBars(buttons, oldButtons, 'bottom', toolbar);
-            }
-        }
-
-        if (buttons) {
-            if (array === buttons) { // if (wasn't an object)
-                array = [];
-
-                for (i = 0; i < n; ++i) {
-                    button = buttons[i];
-
-                    if (typeof button === 'string') {
-                        if (!Ext.Toolbar.shortcuts[button]) {
-                            button = Ext.applyIf({
-                                itemId: button,
-                                text: button
-                            }, buttonDefaults);
-                        }
-                    }
-                    else if (buttonDefaults) {
-                        button = Ext.apply({}, button, buttonDefaults);
-                    }
-
-                    array[i] = button;
-                }
-            }
-            else {
-                // convertKeyedItems has already shallow copied each item in order
-                // to place in the itemId, so leverage that... It has also promoted
-                // string items like 'foo' in to objects like { xxx: 'foo' } so we
-                // can make sure they have buttonDefaults
-                for (i = 0; i < n; ++i) {
-                    button = array[i];
-                    handler = button.xxx;
-                    defaults = standardButtons[button.itemId];
-
-                    if (defaults) {
-                        Ext.applyIf(button, defaults);
-                        // ok: 'onOK'  ==> { handler: 'onOK', text: 'OK', weight: 10 }
-                    }
-                    //<debug>
-                    else if (handler) {
-                        Ext.raise('Button handler short-hand is only valid for standardButtons');
-                    }
-                    //</debug>
-
-                    if (handler) {
-                        delete button.xxx;
-                        button.handler = handler;
-                        // ok: 'onOK'  ==> { handler: 'onOK' }
-                    }
-
-                    if (buttonDefaults) {
-                        Ext.applyIf(button, buttonDefaults);
-                    }
-                }
-            }
-        }
-        return me.normalizeDockedBars(array, oldButtons, 'bottom', toolbar);
+    applyLbar: function(toolbar, previous) {
+        return this.normalizeButtonBar(toolbar, previous, 'left');
     },
 
-    applyLbar: function (toolbar, previous) {
-        return this.normalizeDockedBars(toolbar, previous, 'left');
+    applyRbar: function(toolbar, previous) {
+        return this.normalizeButtonBar(toolbar, previous, 'right');
     },
 
-    applyRbar: function (toolbar, previous) {
-        return this.normalizeDockedBars(toolbar, previous, 'right');
+    applyTbar: function(toolbar, previous) {
+        return this.normalizeButtonBar(toolbar, previous, 'top');
     },
 
-    applyTbar: function (toolbar, previous) {
-        return this.normalizeDockedBars(toolbar, previous, 'top');
-    },
-
-    updateTitle: function (title) {
+    updateTitle: function(title) {
         var header = this.ensureHeader(),
             tab = this.tab;
 
@@ -1159,7 +1010,7 @@ return { // do not indent :)
         }
     },
 
-    updateTitleAlign: function (titleAlign) {
+    updateTitleAlign: function(titleAlign) {
         var header = this.ensureHeader();  // creates if header !== false
 
         if (header) {
@@ -1204,8 +1055,11 @@ return { // do not indent :)
         anchorMargin = me.anchorMargin;
 
         // Passed "component" may be a Region, Component, oer element
-        target = component.isRegion ? component :
-            (component.isWidget ? component.el : Ext.fly(component)).getRegion();
+        target = component.isRegion
+            ? component
+            : (component.isWidget
+                ? component.el
+                : Ext.fly(component)).getRegion();
 
         target.adjust(-anchorMargin, anchorMargin, anchorMargin, -anchorMargin);
         alignmentInfo = me.getAlignmentInfo(target, alignment);
@@ -1219,7 +1073,8 @@ return { // do not indent :)
         if (!me.getFloated()) {
             if (!parent) {
                 me.setFloated(true);
-            } else {
+            }
+            else {
                 me.positioned = true;
             }
         }
@@ -1227,6 +1082,7 @@ return { // do not indent :)
         if ('unconstrainedWidth' in me) {
             me.setWidth(me.unconstrainedWidth);
         }
+
         if ('unconstrainedHeight' in me) {
             me.setHeight(me.unconstrainedHeight);
         }
@@ -1245,10 +1101,12 @@ return { // do not indent :)
         if (resultRegion) {
             setX.call(me, resultRegion.x);
             setY.call(me, resultRegion.y);
+
             if (resultRegion.constrainWidth) {
                 me.unconstrainedWidth = config.width || me.self.prototype.width;
 
-                // We must deal with height changing if we restrict width and we are aligning above
+                // We must deal with height changing if we restrict width and we are aligning
+                // above
                 oldHeight = me.el.getHeight();
                 me.setWidth(alignmentInfo.stats.width = resultRegion.getWidth());
 
@@ -1258,18 +1116,21 @@ return { // do not indent :)
                     setY.call(me, resultRegion.y + (oldHeight - me.el.getHeight()));
                 }
             }
+
             if (resultRegion.constrainHeight) {
                 me.unconstrainedHeight = config.height || me.self.prototype.height;
                 me.setHeight(alignmentInfo.stats.height = resultRegion.getHeight());
             }
+
             if (resultRegion.anchor) {
                 x = 0;
                 y = 0;
 
                 // The result is to the left or right of the target
                 if (resultRegion.anchor.align & 1) {
-                   y = resultRegion.anchor.y - resultRegion.y;
-                } else {
+                    y = resultRegion.anchor.y - resultRegion.y;
+                }
+                else {
                     x = resultRegion.anchor.x - resultRegion.x;
                 }
 
@@ -1278,11 +1139,14 @@ return { // do not indent :)
                     x: x,
                     y: y
                 });
-            } else {
+            }
+            else {
                 me.setAnchorPosition(null);
             }
+
             me.setCurrentAlignmentInfo(alignmentInfo);
-        } else if (anchorElement) {
+        }
+        else if (anchorElement) {
             // Already aligned
             anchorElement.show();
         }
@@ -1303,26 +1167,28 @@ return { // do not indent :)
         if (header) {
             // Header is logically and visually the first item, so
             // header, then header items are *prepended* to results.
-            if (deep) {
+            if (deep && header.getRefItems) {
                 items.unshift.apply(items, header.getRefItems(deep));
             }
+
             items.unshift(header);
         }
 
         return items;
     },
 
-    onCloseTool: function () {
+    onCloseTool: function() {
         this.close();
     },
 
-    onRender: function () {
+    onRender: function() {
         var me = this,
             header;
 
         me.callParent();
 
         header = me.getHeader();
+
         if (header) {
             header.setRendered(true);
         }
@@ -1361,7 +1227,12 @@ return { // do not indent :)
             }
         },
 
-        ensureHeader: function () {
+        adjustButtons: function(buttons, oldButtons) {
+            return this.normalizeButtonBar(buttons, oldButtons, 'bottom',
+                                           this.getButtonToolbar());
+        },
+
+        ensureHeader: function() {
             var me = this,
                 header;
 
@@ -1394,11 +1265,13 @@ return { // do not indent :)
                 if (oldHeaderPosition) {
                     el.removeCls(oldCls);
                 }
+
                 el.addCls(newCls);
             }
 
             if (oldHeaderPosition || headerPosition !== 'top') {
                 header = me.ensureHeader();
+
                 if (header) {
                     if (!me.isConfiguring) {
                         me.positionHeader(header, headerPosition);
@@ -1412,107 +1285,6 @@ return { // do not indent :)
             }
 
             return header;
-        },
-
-        _packButtonAlign: {
-            left: 'start',
-            right: 'end',
-            center: 'center'
-        },
-
-        normalizeDockedBars: function (toolbar, previous, pos, buttonToolbarCfg,
-                                       disableFocusableContainer) {
-            if (!toolbar) {
-                if (previous) {
-                    previous.destroy();
-                }
-                return toolbar;
-            }
-
-            var me = this,
-                isComponent = toolbar.isComponent,
-                buttonAlign, buttonToolbarDefaults, index, layout, minButtonWidth, pack;
-
-            if (Ext.isArray(toolbar)) {
-                toolbar = {
-                    xtype: 'toolbar',
-                    items: toolbar
-                };
-            } else if (!isComponent) {
-                // Incoming toolbar config can be a property on the prototype
-                toolbar = Ext.clone(toolbar);
-            }
-
-            if (!toolbar.xtype) {
-                toolbar.xtype = 'toolbar';
-            }
-
-            if (isComponent) {
-                toolbar.setDocked(pos);
-            } else {
-                toolbar.docked = pos;
-            }
-
-            if (disableFocusableContainer) {
-                if (isComponent) {
-                    toolbar.setEnableFocusableContainer(false);
-                } else {
-                    toolbar.enableFocusableContainer = false;
-                }
-            }
-
-            // Support for buttonAlign (only used by buttons)
-            if (buttonToolbarCfg && !isComponent) {
-                toolbar = Ext.merge(Ext.clone(buttonToolbarCfg), toolbar);
-                toolbar.layout = Ext.merge(layout = {}, toolbar.layout);
-
-                buttonAlign = me.getButtonAlign();
-                if (buttonAlign) {
-                    pack = me._packButtonAlign[buttonAlign];
-                    if (pack) {
-                        layout.pack = pack;
-                    }
-                }
-
-                minButtonWidth = this.getMinButtonWidth();
-                buttonToolbarDefaults = toolbar.defaults;
-
-                toolbar.defaults = function (config) {
-                    var defaults = buttonToolbarDefaults || {},
-                        // no xtype or a button instance
-                        isButton = !config.xtype || config.isButton,
-                        cls;
-
-                    // Here we have an object config with an xtype, check if it's a button
-                    // or a button subclass
-                    if (!isButton) {
-                        cls = Ext.ClassManager.getByAlias('widget.' + config.xtype);
-
-                        if (cls) {
-                            isButton = cls.prototype.isButton;
-                        }
-                    }
-
-                    if (isButton && minButtonWidth && !('minWidth' in defaults)) {
-                        defaults = Ext.apply({minWidth: minButtonWidth}, defaults);
-                    }
-
-                    return defaults;
-                };
-            }
-
-            if (previous) {
-                // Since these fellows will often have the same itemId, we need to
-                // remove the remove toolbar before adding the new one.
-                index = me.indexOf(previous);
-                previous.destroy();
-                toolbar = me.insert(index, toolbar);
-            }
-            else {
-                toolbar = me.add(toolbar);
-            }
-
-            return toolbar;
         },
 
         positionHeader: function(header, position) {
@@ -1534,4 +1306,4 @@ return { // do not indent :)
             }
         }
     }
-};});
+});

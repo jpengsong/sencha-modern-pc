@@ -11,42 +11,42 @@ Ext.define('Ext.list.AbstractTreeItem', {
      * @method setExpandable
      * @ignore
      */
-    
+
     /**
      * @method setExpanded
      * @ignore
      */
-    
+
     /**
      * @method setIconCls
      * @ignore
      */
-    
+
     /**
      * @method setLeaf
      * @ignore
      */
-    
+
     /**
      * @method setOwner
      * @ignore
      */
-    
+
     /**
      * @method setLoading
      * @ignore
      */
-    
+
     /**
      * @method setNode
      * @ignore
      */
-    
+
     /**
      * @method setParentItem
      * @ignore
      */
-    
+
     /**
      * @method setText
      * @ignore
@@ -155,8 +155,9 @@ Ext.define('Ext.list.AbstractTreeItem', {
         textProperty: 'text'
     },
 
-    updateNode: function (node) {
+    updateNode: function(node) {
         if (node) {
+            // eslint-disable-next-line vars-on-top
             var me = this,
                 map = me.itemMap,
                 childNodes, owner, len, i, item, child;
@@ -167,8 +168,10 @@ Ext.define('Ext.list.AbstractTreeItem', {
                 childNodes = node.childNodes;
                 owner = me.getOwner();
                 me.itemMap = map = {};
+
                 for (i = 0, len = childNodes.length; i < len; ++i) {
                     child = childNodes[i];
+
                     if (child.data.visible) {
                         item = owner.createItem(child, me);
                         map[child.internalId] = item;
@@ -183,8 +186,11 @@ Ext.define('Ext.list.AbstractTreeItem', {
     },
 
     updateSelected: function(selected) {
+        var parent;
+
         if (!this.isConfiguring) {
-            var parent = this.getParentItem();
+            parent = this.getParentItem();
+
             while (parent && !parent.isRootListItem) {
                 parent.setSelectedParent(selected);
                 parent = parent.getParentItem();
@@ -195,14 +201,14 @@ Ext.define('Ext.list.AbstractTreeItem', {
     /**
      * Collapse this item. Does nothing if already collapsed.
      */
-    collapse: function () {
+    collapse: function() {
         this.getNode().collapse();
     },
 
     /**
      * Expand this item. Does nothing if already expanded.
      */
-    expand: function () {
+    expand: function() {
         this.getNode().expand();
     },
 
@@ -233,7 +239,7 @@ Ext.define('Ext.list.AbstractTreeItem', {
      * Check if the current item is expanded.
      * @return {Boolean} `true` if this item is expanded.
      */
-    isExpanded: function () {
+    isExpanded: function() {
         return this.getExpanded();
     },
 
@@ -265,7 +271,7 @@ Ext.define('Ext.list.AbstractTreeItem', {
      * @param collapsingForExpand
      * @protected
      */
-    nodeCollapse: function (node, collapsingForExpand) {
+    nodeCollapse: function(node, collapsingForExpand) {
         var me = this,
             owner = me.getOwner(),
             animation = me.preventAnimation ? null : owner.getAnimation();
@@ -277,7 +283,7 @@ Ext.define('Ext.list.AbstractTreeItem', {
         }
     },
 
-    nodeCollapseBegin: function (animation, collapsingForExpand) {
+    nodeCollapseBegin: function(animation, collapsingForExpand) {
         var me = this,
             owner = me.getOwner();
 
@@ -286,7 +292,7 @@ Ext.define('Ext.list.AbstractTreeItem', {
         owner.fireEvent('itemcollapse', owner, me);
     },
 
-    nodeCollapseEnd: function (collapsingForExpand) {
+    nodeCollapseEnd: function(collapsingForExpand) {
         if (!collapsingForExpand && !this.destroying) {
             this.getOwner().updateLayout();
         }
@@ -298,7 +304,7 @@ Ext.define('Ext.list.AbstractTreeItem', {
      *
      * @protected
      */
-    nodeExpand: function (node) {
+    nodeExpand: function(node) {
         var me = this,
             owner = me.getOwner(),
             floated = me.getFloated(),
@@ -311,7 +317,7 @@ Ext.define('Ext.list.AbstractTreeItem', {
         }
     },
 
-    nodeExpandBegin: function (animation) {
+    nodeExpandBegin: function(animation) {
         var me = this,
             owner = me.getOwner();
 
@@ -320,7 +326,7 @@ Ext.define('Ext.list.AbstractTreeItem', {
         owner.fireEvent('itemexpand', owner, me);
     },
 
-    nodeExpandEnd: function () {
+    nodeExpandEnd: function() {
         if (!this.destroying) {
             this.getOwner().updateLayout();
         }
@@ -334,7 +340,7 @@ Ext.define('Ext.list.AbstractTreeItem', {
      *
      * @protected
      */
-    nodeInsert: function (node, refNode) {
+    nodeInsert: function(node, refNode) {
         var me = this,
             owner = me.getOwner(),
             map = me.itemMap,
@@ -347,13 +353,16 @@ Ext.define('Ext.list.AbstractTreeItem', {
             oldParent = item.getParentItem();
             // May have some kind of custom removal processing, allow it to happen, even if it's us
             oldParent.removeItem(item);
+
             if (oldParent !== me) {
                 oldParent.doUpdateExpandable();
                 item.setParentItem(me);
             }
-        } else {
+        }
+        else {
             item = me.getOwner().createItem(node, me);
         }
+
         map[id] = item;
 
         if (refNode) {
@@ -374,7 +383,7 @@ Ext.define('Ext.list.AbstractTreeItem', {
      *
      * @protected
      */
-    nodeRemove: function (node) {
+    nodeRemove: function(node) {
         var me = this,
             map = me.itemMap,
             owner = me.getOwner(),
@@ -402,7 +411,7 @@ Ext.define('Ext.list.AbstractTreeItem', {
      *
      * @protected
      */
-    nodeUpdate: function (node, modifiedFieldNames) {
+    nodeUpdate: function(node, modifiedFieldNames) {
         this.doNodeUpdate(node);
     },
 
@@ -412,7 +421,7 @@ Ext.define('Ext.list.AbstractTreeItem', {
      *
      * @protected
      */
-    onClick: function (e) {
+    onClick: function(e) {
         var me = this,
             owner = me.getOwner(),
             node = me.getNode(),
@@ -474,7 +483,7 @@ Ext.define('Ext.list.AbstractTreeItem', {
      * @method destroy
      * @inheritdoc
      */
-    destroy: function () {
+    destroy: function() {
         var me = this,
             map = me.itemMap,
             owner = me.getOwner(),
@@ -484,6 +493,7 @@ Ext.define('Ext.list.AbstractTreeItem', {
             for (key in map) {
                 map[key].destroy();
             }
+
             me.itemMap = null;
         }
 
@@ -507,7 +517,7 @@ Ext.define('Ext.list.AbstractTreeItem', {
          *
          * @private
          */
-        doNodeUpdate: function (node, modifiedFieldNames) {
+        doNodeUpdate: function(node, modifiedFieldNames) {
             var me = this,
                 textProperty = this.getTextProperty(),
                 iconClsProperty = this.getIconClsProperty();
@@ -525,20 +535,22 @@ Ext.define('Ext.list.AbstractTreeItem', {
             me.doUpdateExpandable();
         },
 
-        doUpdateExpandable: function () {
+        doUpdateExpandable: function() {
             var node = this.getNode();
+
             this.setExpandable(node.isExpandable());
         },
 
         toggleExpanded: function() {
             if (this.isExpanded()) {
                 this.collapse();
-            } else {
+            }
+            else {
                 this.expand();
             }
         },
 
-        updateIndent: function (value) {
+        updateIndent: function(value) {
             var items = this.itemMap,
                 id;
 

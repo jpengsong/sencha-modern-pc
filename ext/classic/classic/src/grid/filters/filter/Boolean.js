@@ -61,7 +61,8 @@ Ext.define('Ext.grid.filters.filter.Boolean', {
 
     /**
      * @cfg {Boolean} defaultValue
-     * Set this to null if you do not want either option to be checked by default. Defaults to false.
+     * Set this to null if you do not want either option to be checked by default.
+     * Defaults to false.
      */
     defaultValue: false,
 
@@ -100,7 +101,7 @@ Ext.define('Ext.grid.filters.filter.Boolean', {
      * @private
      * Template method that is to initialize the filter and install required menu items.
      */
-    createMenu: function (config) {
+    createMenu: function(config) {
         var me = this,
             gId = Ext.id(),
             listeners = {
@@ -131,7 +132,7 @@ Ext.define('Ext.grid.filters.filter.Boolean', {
     /**
      * @private
      */
-    onClick: function (field) {
+    onClick: function(field) {
         this.setValue(!!field.filterKey);
     },
 
@@ -140,7 +141,7 @@ Ext.define('Ext.grid.filters.filter.Boolean', {
      * Template method that is to set the value of the filter.
      * @param {Object} value The value to set the filter.
      */
-    setValue: function (value) {
+    setValue: function(value) {
         var me = this;
 
         me.filter.setValue(value);
@@ -148,7 +149,8 @@ Ext.define('Ext.grid.filters.filter.Boolean', {
         if (value !== undefined && me.active) {
             me.value = value;
             me.updateStoreFilter();
-        } else {
+        }
+        else {
             me.setActive(true);
         }
     },
@@ -156,4 +158,3 @@ Ext.define('Ext.grid.filters.filter.Boolean', {
     // This is supposed to be just a stub.
     activateMenu: Ext.emptyFn
 });
-

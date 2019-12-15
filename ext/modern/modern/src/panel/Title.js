@@ -94,7 +94,6 @@ Ext.define('Ext.panel.Title', {
         reference: 'bodyElement',
         cls: Ext.baseCSSPrefix + 'body-el',
 
-
         children: [{
             reference: 'iconElement',
             cls: Ext.baseCSSPrefix + 'icon-el ' + Ext.baseCSSPrefix + 'font-icon'
@@ -150,7 +149,7 @@ Ext.define('Ext.panel.Title', {
         me.syncIconVisibility();
         iconEl = me.iconElement;
 
-        iconEl.setStyle('background-image', icon ? 'url(' + icon + ')': '');
+        iconEl.setStyle('background-image', icon ? 'url(' + icon + ')' : '');
     },
 
     updateIconAlign: function(align, oldAlign) {
@@ -189,13 +188,17 @@ Ext.define('Ext.panel.Title', {
             horizontalCls = me.horizontalCls,
             el = me.el;
 
-        if (oldRotation != 0) {
+        oldRotation = parseInt(oldRotation, 10);
+        rotation = parseInt(rotation, 10);
+
+        if (oldRotation !== 0) {
             el.removeCls(me._rotationClasses[oldRotation]);
         }
-        
-        if (rotation == 0) {
+
+        if (rotation === 0) {
             el.replaceCls(verticalCls, horizontalCls);
-        } else {
+        }
+        else {
             el.replaceCls(horizontalCls, [verticalCls, me._rotationClasses[rotation]]);
         }
 
@@ -210,6 +213,7 @@ Ext.define('Ext.panel.Title', {
 
     updateText: function(text) {
         var el = this.textElement.dom;
+
         el.innerHTML = text || '&#160;';
         el.setAttribute('data-title', text);
     },
@@ -241,10 +245,11 @@ Ext.define('Ext.panel.Title', {
             // min-width to '' hopefully ends up with everything the same size as before
             // thus minimizing the effect on the surrounding dom.
             bodyStyle.width = '-webkit-min-content';
+            // eslint-disable-next-line no-unused-expressions
             bodyElement.offsetWidth;
             bodyStyle.width = '';
         },
-        
+
         syncIconVisibility: function() {
             this.el.toggleCls(this.hasIconCls, !!(this.getIcon() || this.getIconCls()));
         }

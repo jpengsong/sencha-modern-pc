@@ -14,15 +14,17 @@ Ext.define('Ext.grid.cell.RowNumberer', {
      */
     format: '0,000',
 
-    refreshValue: function (context) {
+    refreshValue: function(context) {
         var row = context.row,
             ret;
 
         if (context.summary) {
             ret = '\xA0';
-        } else {
+        }
+        else {
             ret = row ? row.$datasetIndex + 1 : null;
         }
+
         return ret;
     }
 });

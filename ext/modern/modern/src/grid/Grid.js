@@ -36,7 +36,7 @@
  *
  * The code above produces a simple grid with three columns. We specified a Store which will
  * load JSON data inline. In most apps we would be placing the grid inside another container
- * and wouldn't need to provide the {@link #height}, {@link #width} and 
+ * and wouldn't need to provide the {@link #height}, {@link #width} and
  * {@link #cfg-fullscreen} options but they are included here to for demonstration.
  *
  * The grid we created above will contain a header bar with a title ('Simpsons'), a row of
@@ -72,7 +72,7 @@
  * {@link Ext.grid.plugin.ViewOptions ViewOptions} plugin). See the
  * {@link Ext.grid.column.Column column class} for more details.
  *
- * A top-level column definition may contain a `columns` configuration. This means that the 
+ * A top-level column definition may contain a `columns` configuration. This means that the
  * resulting header will be a group header, and will contain the child columns.
  *
  * ## Rows and Cells
@@ -213,15 +213,15 @@
  * Grid supports addition of extra functionality through plugins:
  *
  * - {@link Ext.grid.plugin.ViewOptions ViewOptions} - adds the ability to show/hide
- *  columns and reorder them.
+ *   columns and reorder them.
  *
  * - {@link Ext.grid.plugin.ColumnResizing ColumnResizing} - allows for the ability to
- *  resize columns.
+ *   resize columns.
  *
  * - {@link Ext.grid.plugin.Editable Editable} - editing grid contents one row at a time.
  *
  * - {@link Ext.grid.plugin.RowOperations RowOperations} - selecting and performing tasks
- *  on severalrows at a time (e.g. deleting them).
+ *   on severalrows at a time (e.g. deleting them).
  *
  * - {@link Ext.grid.plugin.PagingToolbar PagingToolbar} - adds a toolbar at the bottom of
  *   the grid that allows you to quickly navigate to another page of data.
@@ -245,7 +245,8 @@ Ext.define('Ext.grid.Grid', {
         'Ext.grid.menu.*',
         'Ext.grid.HeaderContainer',
         'Ext.grid.selection.*',
-        'Ext.grid.plugin.ColumnResizing'
+        'Ext.grid.plugin.ColumnResizing',
+        'Ext.grid.plugin.HeaderReorder'
     ],
 
     mixins: [
@@ -306,34 +307,37 @@ Ext.define('Ext.grid.Grid', {
          * This can be configured as `null` to prevent columns from showing a column menu.
          */
         columnMenu: {
-            xtype: 'menu',
-            weighted: true,
-            align: 'tl-bl?',
-            hideOnParentHide: false,  // Persists when owning Column is hidden
-            items: {
-                sortAsc: {
-                    xtype: 'gridsortascmenuitem',
-                    group: 'sortDir',
-                    weight: -100 // Wants to be the first
-                },
-                sortDesc: {
-                    xtype: 'gridsortdescmenuitem',
-                    group: 'sortDir',
-                    weight: -90 // Wants to be the second
-                },
-                //---------------------------------
-                // Columns menu is inserted here
-                //---------------------------------
-                groupByThis: {
-                    xtype: 'gridgroupbythismenuitem',
-                    handler: 'column.onGroupByThis',
-                    separator: true,
-                    weight: -70
-                },
-                showInGroups: {
-                    xtype: 'gridshowingroupsmenuitem',
-                    handler: 'column.onToggleShowInGroups',
-                    weight: -60
+            cached: true,
+            $value: {
+                xtype: 'menu',
+                weighted: true,
+                align: 'tl-bl?',
+                hideOnParentHide: false,  // Persists when owning Column is hidden
+                items: {
+                    sortAsc: {
+                        xtype: 'gridsortascmenuitem',
+                        group: 'sortDir',
+                        weight: -100 // Wants to be the first
+                    },
+                    sortDesc: {
+                        xtype: 'gridsortdescmenuitem',
+                        group: 'sortDir',
+                        weight: -90 // Wants to be the second
+                    },
+                    //---------------------------------
+                    // Columns menu is inserted here
+                    //---------------------------------
+                    groupByThis: {
+                        xtype: 'gridgroupbythismenuitem',
+                        handler: 'column.onGroupByThis',
+                        separator: true,
+                        weight: -50
+                    },
+                    showInGroups: {
+                        xtype: 'gridshowingroupsmenuitem',
+                        handler: 'column.onToggleShowInGroups',
+                        weight: -40
+                    }
                 }
             }
         },
@@ -357,6 +361,22 @@ Ext.define('Ext.grid.Grid', {
         hideHeaders: false,
 
         /**
+         * @cfg {Boolean} enableColumnMove
+         * Set to `false` to disable column reorder.
+         * 
+         * **Note**: if `gridviewoptions` plugin is enabled on grids gets 
+         * precedence over `enableColumnMove` for touch supported device.
+         */
+        enableColumnMove: true,
+
+        /**
+         * @cfg {Boolean} hideScrollbar
+         *
+         * @private
+         */
+        hideScrollbar: null,
+
+        /**
          * @hide
          * Grid Rows are not focusable. Cells are focusable.
          */
@@ -368,6 +388,10 @@ Ext.define('Ext.grid.Grid', {
          */
         title: '',
 
+        /**
+         * @cfg {Object} titleBar
+         * The TitleBar.
+         */
         titleBar: {
             xtype: 'titlebar',
             docked: 'top'
@@ -423,10 +447,11 @@ Ext.define('Ext.grid.Grid', {
 
         /**
          * @cfg {Boolean/Object} [rowNumbers=false]
-         * Configure as `true` to a {@link Ext.grid.column.RowNumberer row numberer} column which gravitates to the
-         * start of the grid.
+         * Configure as `true` to a {@link Ext.grid.column.RowNumberer row numberer}
+         * column which gravitates to the start of the grid.
          *
-         * May be a {@link Ext.grid.column.RowNumberer} configuration object. For instance to set the column title use
+         * May be a {@link Ext.grid.column.RowNumberer} configuration object. For
+         * instance to set the column title use:
          *
          *     rowNumbers: {
          *         text: 'Index'
@@ -439,10 +464,12 @@ Ext.define('Ext.grid.Grid', {
      * @cfg {Object/Ext.grid.Row} itemConfig
      * The object is used to configure the {@link Ext.grid.Row rows) created by this Grid.
      *
-     * An `xtype` property may be included to specify a user-supplied subclass of {@link Ext.grid.Row}.
+     * An `xtype` property may be included to specify a user-supplied subclass of
+     * {@link Ext.grid.Row}.
      *
-     * See the {@link Ext.grid.row#cfg!body} and {@link Ext.grid.row#cfg!expandedField} configs on
-     * the {@link Ext.grid.RowRow class} to easily add extra content to grid rows.
+     * See the {@link Ext.grid.row#cfg!body} and {@link Ext.grid.row#cfg!expandedField}
+     * configs on the {@link Ext.grid.RowRow class} to easily add extra content to grid
+     * rows.
      *
      * Be aware that if you specify a {@link Ext.grid.row#cfg!body row body}, you must
      * configure the owning grid with `{@link #variableHeights}: true`.
@@ -501,35 +528,35 @@ Ext.define('Ext.grid.Grid', {
              * @cfg {Boolean} [reserveScrollbar=false]
              * *only meaningful on platforms which has space-consuming scroll bars*
              *
-             * Configure as `true` to leave space for a scrollbar to appear even if the content does not
-             * overflow.
+             * Configure as `true` to leave space for a scrollbar to appear even if the
+             * content does not overflow.
              *
-             * This is useful for trees which may expand and collapse causing visual flickering
-             * when scrollbars appear or disappear.
+             * This is useful for trees which may expand and collapse causing visual
+             * flickering when scrollbars appear or disappear.
              */
             'reserveScrollbar'
         ]
     },
 
     /**
-     * @cfg {Object} selectable
+     * @cfg {Ext.grid.selection.Model} selectable
      * A configuration object which allows passing of configuration options to create or
-     * reconfigure a {@link Ext.dataview.selection.Model selection model}.
+     * reconfigure a {@link Ext.grid.selection.Model selection model}.
      *
-     * May contain the following options:
+     * The following options control what can be selected:
      *
-     *     - mode `'single'`, `'multi'` Allow selection of only a single or multiple *records*.
-     *     This is only valid when selecting {@link #cfg!rows}.
-     *     - deselectable Configure as false to disallow deselecting down to zero selected *records*.
-     *     This is only valid when selecting {@link #cfg!rows}.
-     *     - drag `true` or `false` to allow drag gestures to swipt a rage of cells or rows.
-     *     - columns `true` to enable column selection by clicking on headers. Defaults to `false`
-     *     - cells `true` to enable cell selection by clicking or dragging on cells. Defaults to `false`
-     *     - rows Set to `false` to disable selecting rows. Defaults to `true`
-     *     - checkbox `true` to add a checkbox column to display selected state. `'only'` to indicate
-     *     that only clicks on the checkbox affect row selected state.
-     *     - extensible `true` to enable the selection to be extended either in the `X` or `Y` axis
-     *     or `'x'` or `'y'` to configure
+     *  - {@link Ext.grid.selection.Model#cfg!cells cells}
+     *  - {@link Ext.grid.selection.Model#cfg!columns columns}
+     *  - {@link Ext.grid.selection.Model#cfg!rows rows}
+     *
+     * These options control how selections can be made:
+     *
+     *  - {@link Ext.grid.selection.Model#cfg!checkbox checkbox}
+     *  - {@link Ext.grid.selection.Model#cf!deselectable deselectable}
+     *  - {@link Ext.grid.selection.Model#cfg!drag drag}
+     *  - {@link Ext.grid.selection.Model#cfg!extensible extensible}
+     *  - {@link Ext.grid.selection.Model#cfg!mode mode}
+     *  - {@link Ext.grid.selection.Model#cfg!reducible reducible}
      */
 
     /**
@@ -539,7 +566,7 @@ Ext.define('Ext.grid.Grid', {
      * @param {Ext.grid.column.Column} column The added column.
      * @param {Number} index The index of the added column.
      */
-    
+
     /**
      * @event columnmove
      * Fires whenever a column is moved in the grid.
@@ -583,21 +610,90 @@ Ext.define('Ext.grid.Grid', {
      * Fires whenever a column is sorted in the Grid.
      * @param {Ext.grid.Grid} this The Grid instance.
      * @param {Ext.grid.column.Column} column The sorted column.
-     * @param {String} direction The direction of the sort on this Column. Either 'asc' or 'desc'.
+     * @param {String} direction The direction of the sort on this Column. Either 'asc'
+     * or 'desc'.
      */
 
     /**
      * @event cellselection
      * Fires when cell selection is being used and cells are selected or deselected.
      * @param {Ext.grid.Grid} grid this Grid
-     * @param {Ext.grid.selection.Rows} selection An object which encapsulates the selected cell range(s).
+     * @param {Ext.grid.selection.Rows} selection An object which encapsulates the
+     * selected cell range(s).
      */
 
     /**
      * @event columnselection
      * Fires when column selection is being used and columns are selected or deselected.
      * @param {Ext.grid.Grid} grid this Grid
-     * @param {Ext.grid.selection.Columns} selection An object which encapsulates the selected columns.
+     * @param {Ext.grid.selection.Columns} selection An object which encapsulates the
+     * selected columns.
+     */
+
+    /**
+     * @event beforestartedit
+     * Fires when editing is initiated, but before the value changes.  Editing can be canceled by
+     * returning false from the handler of this event.
+     * @param {Ext.Editor} editor
+     * @param {Ext.dom.Element} boundEl The underlying element bound to this editor
+     * @param {Object} value The field value being set
+     * @param {Ext.grid.Location} The location where actionable mode was successfully started
+     * @since 7.0
+     */
+
+    /**
+     * @event startedit
+     * Fires when this editor is displayed
+     * @param {Ext.Editor} editor
+     * @param {Ext.dom.Element} boundEl The underlying element bound to this editor
+     * @param {Object} value The starting field value
+     * @param {Ext.grid.Location} The location where actionable mode was successfully started
+     * @since 7.0
+     */
+
+    /**
+     * @event beforecomplete
+     * Fires after a change has been made to the field, but before the change is reflected in the
+     * underlying field.  Saving the change to the field can be canceled by returning false from
+     * the handler of this event. Note that if the value has not changed and ignoreNoChange = true,
+     * the editing will still end but this event will not fire since no edit actually occurred.
+     * @param {Ext.Editor} editor
+     * @param {Object} value The current field value
+     * @param {Object} startValue The original field value
+     * @param {Ext.grid.Location} The location where actionable mode was successfully started
+     * @since 7.0
+     */
+
+    /**
+     * @event complete
+     * Fires after editing is complete and any changed value has been written to the underlying
+     * field.
+     * @param {Ext.Editor} editor
+     * @param {Object} value The current field value
+     * @param {Object} startValue The original field value
+     * @param {Ext.grid.Location} The location where actionable mode was successfully started
+     * @since 7.0
+     */
+
+    /**
+     * @event canceledit
+     * Fires after editing has been canceled and the editor's value has been reset.
+     * @param {Ext.Editor} editor
+     * @param {Object} value The user-entered field value that was discarded
+     * @param {Object} startValue The original field value that was set back into the editor after
+     * cancel
+     * @since 7.0
+     */
+
+    /**
+     * @event specialkey
+     * Fires when any key related to navigation (arrows, tab, enter, esc, etc.) is pressed. You can
+     * check
+     * {@link Ext.event.Event#getKey} to determine which key was pressed.
+     * @param {Ext.Editor} editor
+     * @param {Ext.form.field.Field} field The field attached to this editor
+     * @param {Ext.event.Event} event The event object
+     * @since 7.0
      */
 
     /**
@@ -636,6 +732,8 @@ Ext.define('Ext.grid.Grid', {
 
     initialize: function() {
         var me = this,
+            columns = me.getColumns(),
+            persist = me.registeredColumns,
             titleBar = me.getTitleBar(),
             headerContainer = me.getHeaderContainer(),
             scroller = me.getScrollable(),
@@ -656,14 +754,14 @@ Ext.define('Ext.grid.Grid', {
         if (selectable) {
             selectable.onViewCreated(me);
         }
-    },
 
-    addColumn: function(column) {
-        return this.getHeaderContainer().add([column])[0];
-    },
-
-    beforeShowColumnMenu: function (column, menu) {
-        return this.fireEvent('beforeshowcolumnmenu', this, column, menu);
+        // In the case of a grid without configured columns, registered columns will never
+        // be added as they are normally added during updateColumns. Here we catch that case
+        // and add all registeredColumns. This issue comes from ExtAngular and how it creates
+        // the grid.
+        if (!columns.length && persist && persist.length) {
+            headerContainer.add(persist);
+        }
     },
 
     doDestroy: function() {
@@ -671,7 +769,55 @@ Ext.define('Ext.grid.Grid', {
         this.callParent();
     },
 
-    getColumnForField: function (fieldName) {
+    addColumn: function(column) {
+        return this.getHeaderContainer().add(column);
+    },
+
+    addSharedMenuItem: function(sharedItem) {
+        (this.sharedMenuItems || (this.sharedMenuItems = [])).push(sharedItem);
+    },
+
+    removeSharedMenuItem: function(sharedItem) {
+        var sharedMenuItems = this.sharedMenuItems;
+
+        if (sharedMenuItems) {
+            Ext.Array.remove(sharedMenuItems, sharedItem);
+        }
+    },
+
+    beforeShowColumnMenu: function(column, menu) {
+        var me = this,
+            i, n, item, sharedMenuItems;
+
+        me.getColumnsMenuItem();  // ensure "Columns" menu is created and registered
+
+        sharedMenuItems = me.sharedMenuItems;
+
+        for (i = 0, n = sharedMenuItems && sharedMenuItems.length; i < n; ++i) {
+            item = sharedMenuItems[i];
+
+            item.onBeforeShowColumnMenu(menu, column, me);
+        }
+
+        return me.fireEvent('beforeshowcolumnmenu', me, column, menu);
+    },
+
+    onColumnMenuHide: function(column, menu) {
+        var me = this,
+            sharedMenuItems = me.sharedMenuItems,
+            n = sharedMenuItems && sharedMenuItems.length,
+            i, item;
+
+        for (i = 0; i < n; ++i) {
+            item = sharedMenuItems[i];
+
+            if (!item.destroyed && !item.destroying && !menu.isHidden()) {
+                item.onColumnMenuHide(menu, column, me);
+            }
+        }
+    },
+
+    getColumnForField: function(fieldName) {
         return this.getHeaderContainer().getColumnForField(fieldName);
     },
 
@@ -698,12 +844,26 @@ Ext.define('Ext.grid.Grid', {
         return this.getHeaderContainer().insert(index, column);
     },
 
+    insertColumnBefore: function(column, before) {
+        var ret;
+
+        if (!before) {
+            ret = this.getHeaderContainer().add(column);
+        }
+        else {
+            ret = before.getParent().insertBefore(column, before);
+        }
+
+        return ret;
+    },
+
     /**
      * Converts the given parameter to a cell.
-     * @param {Ext.event.Event/Ext.dom.Element/HTMLElement/Ext.data.Model/Ext.grid.Row} value The value.
-     * Can be an event or an element to find the cell via the DOM. Otherwise, a record or row can be passed. If
-     * this occurs, the column parameter also needs to be passed.
-     * @param {Ext.grid.column.Column} [column] The column. Needed if the first parameter is a model or a row.
+     * @param {HTMLElement/Ext.event.Event/Ext.dom.Element/Ext.data.Model/Ext.grid.Row} value The
+     * value. Can be an event or an element to find the cell via the DOM. Otherwise, a record or
+     * row can be passed. If this occurs, the column parameter also needs to be passed.
+     * @param {Ext.grid.column.Column} [column] The column. Needed if the first parameter is a
+     * model or a row.
      * @return {Ext.grid.cell.Base} The cell, if it can be found.
      *
      * @since 6.5.0
@@ -715,7 +875,8 @@ Ext.define('Ext.grid.Grid', {
         if (value) {
             if (value.isGridCell && value.row.getGrid() === me) {
                 ret = value;
-            } else {
+            }
+            else {
                 if (value.isEntity) {
                     value = me.mapToItem(value);
                 }
@@ -723,15 +884,18 @@ Ext.define('Ext.grid.Grid', {
                 if (value) {
                     if (value.isGridRow) {
                         column = column || me.getFirstVisibleColumn();
+
                         if (column) {
                             ret = value.getCellByColumn(column);
                         }
-                    } else {
+                    }
+                    else {
                         ret = Ext.Component.from(value, me.innerCt, 'gridcellbase');
                     }
                 }
             }
         }
+
         return ret || null;
     },
 
@@ -739,13 +903,16 @@ Ext.define('Ext.grid.Grid', {
         if (value && value.isGridCell) {
             value = value.row;
         }
+
         return this.callParent([value, as]);
     },
 
     /**
      * Converts the given parameter to a row body.
-     * @param {Ext.event.Event/Ext.dom.Element/HTMLElement/Ext.data.Model/Ext.grid.Row} value The value.
-     * Can be an event or an element to find the row body via the DOM. Otherwise, a record or row can be passed.
+     * @param {Ext.event.Event/Ext.dom.Element/HTMLElement/Ext.data.Model/Ext.grid.Row} value The
+     * value.
+     * Can be an event or an element to find the row body via the DOM. Otherwise, a record or row
+     * can be passed.
      * @return {Ext.grid.RowBody} The row body, if it can be found.
      *
      * @since 6.5.0
@@ -760,6 +927,7 @@ Ext.define('Ext.grid.Grid', {
                 value = value.getBody();
             }
         }
+
         return value || null;
     },
 
@@ -772,9 +940,10 @@ Ext.define('Ext.grid.Grid', {
      * This method is for use by plugins which require the grid to enter actionable mode
      * to focus in-cell elements.
      *
-     * An example of this can be found in the {@link Ext.grid.plugin.CellEditing cell editing} plugin.
+     * An example of this can be found in the {@link Ext.grid.plugin.CellEditing cell editing}
+     * plugin.
      *
-     * Actionable plugins must implement the `{@link Ext.grid.plugin.CellEditing#activateCell activateCell}`
+     * Actionable plugins have an `{@link Ext.grid.plugin.CellEditing#activateCell activateCell}`
      * method which will be called whenever the application wants to enter actionable mode
      * on a certain cell. A {@link Ext.grid.Location grid location} object will be passed.
      *
@@ -807,7 +976,7 @@ Ext.define('Ext.grid.Grid', {
     //-------------------------
     // Event handlers
 
-    onColumnAdd: function (container, column, columnIndex) {
+    onColumnAdd: function(container, column, columnIndex) {
         var me = this,
             items, ln, i, row;
 
@@ -817,7 +986,8 @@ Ext.define('Ext.grid.Grid', {
 
             for (i = 0; i < ln; i++) {
                 row = items[i];
-                if (row.isGridRow) {
+
+                if (row.hasGridCells) {
                     row.insertColumn(columnIndex, column);
                 }
             }
@@ -826,7 +996,7 @@ Ext.define('Ext.grid.Grid', {
         }
     },
 
-    onColumnHide: function (container, column) {
+    onColumnHide: function(container, column) {
         var me = this,
             items, ln, i, row;
 
@@ -837,7 +1007,7 @@ Ext.define('Ext.grid.Grid', {
             for (i = 0; i < ln; i++) {
                 row = items[i];
 
-                if (row.isGridRow) {
+                if (row.hasGridCells) {
                     row.hideColumn(column);
                 }
             }
@@ -846,7 +1016,7 @@ Ext.define('Ext.grid.Grid', {
         }
     },
 
-    onColumnMove: function (container, columns, group, fromIdx) {
+    onColumnMove: function(container, columns, group, fromIdx) {
         var me = this,
             before = null,
             colLen = columns.length,
@@ -860,18 +1030,21 @@ Ext.define('Ext.grid.Grid', {
             // Find the item that will be after the last leaf we're going to insert
             // Don't bother checking the array bounds, if it goes out of bounds then
             // null is the right answer
-            leaves = me.getHeaderContainer().getLeaves();
+            leaves = me.getHeaderContainer().getColumns();
             index = leaves.indexOf(columns[colLen - 1]);
             before = leaves[index + 1] || null;
 
             for (i = colLen - 1; i >= 0; --i) {
                 column = columns[i];
+
                 for (j = 0; j < ln; j++) {
                     row = items[j];
-                    if (row.isGridRow) {
+
+                    if (row.hasGridCells) {
                         row.insertColumnBefore(column, before);
                     }
                 }
+
                 me.onColumnChange('columnmove', [me, column, fromIdx + i, leaves.indexOf(column)]);
 
                 before = column;
@@ -879,7 +1052,7 @@ Ext.define('Ext.grid.Grid', {
         }
     },
 
-    onColumnRemove: function (container, column) {
+    onColumnRemove: function(container, column) {
         var me = this,
             items, ln, i, row;
 
@@ -893,7 +1066,8 @@ Ext.define('Ext.grid.Grid', {
 
             for (i = 0; i < ln; i++) {
                 row = items[i];
-                if (row.isGridRow) {
+
+                if (row.hasGridCells) {
                     row.removeColumn(column);
                 }
             }
@@ -902,16 +1076,22 @@ Ext.define('Ext.grid.Grid', {
         }
     },
 
-    onColumnResize: function (container, column, width, oldWidth) {
-        if (!this.destroying) {
+    onColumnResize: function(container, column, width, oldWidth) {
+        var me = this;
+
+        if (!me.destroying) {
             // Will be null on the first time
             if (oldWidth && !column.getHidden()) {
-                this.fireEvent('columnresize', this, column, width);
+                if (me.infinite) {
+                    me.refreshScrollerSize();
+                }
+
+                me.fireEvent('columnresize', me, column, width);
             }
         }
     },
 
-    onColumnShow: function (container, column) {
+    onColumnShow: function(container, column) {
         var me = this,
             items, ln, i, row;
 
@@ -922,7 +1102,7 @@ Ext.define('Ext.grid.Grid', {
             for (i = 0; i < ln; i++) {
                 row = items[i];
 
-                if (row.isGridRow) {
+                if (row.hasGridCells) {
                     row.showColumn(column);
                 }
             }
@@ -981,6 +1161,7 @@ Ext.define('Ext.grid.Grid', {
             }
 
             columns.push(column);
+
             // We may have already configured the columns, even if we are
             // configuring, so check if we have items
             if (!me.isConfiguring || (headerCt && headerCt.items.getCount())) {
@@ -1021,7 +1202,7 @@ Ext.define('Ext.grid.Grid', {
             // This is used solely by the view event listener to filter the event reactions
             // to the level of granularity needed.
             // At the Grid level, this will be cell elements.
-            me.eventDelegate = function (candidate) {
+            me.eventDelegate = function(candidate) {
                 var comp = Ext.Component.from(candidate),
                     ret = true,
                     row;
@@ -1034,12 +1215,14 @@ Ext.define('Ext.grid.Grid', {
                 // If it's a direct child of the grid, and it's a row or header/footer, it's ok
                 if (comp.getRefOwner() === me) {
                     ret = comp.isGridRow || me.dataItemMap[comp.$dataItem];
-                } else {
+                }
+                else {
                     // Otherwise, this is to check for either:
                     // a) cell
                     // b) a row body
                     //
-                    // We don't want to fire events for things inside the row body, or items inside cells
+                    // We don't want to fire events for things inside the row body, or items inside
+                    // cells
                     row = comp.row;
 
                     // GroupHeaders and GroupFooters are created at the List class level
@@ -1053,6 +1236,7 @@ Ext.define('Ext.grid.Grid', {
 
         getFirstVisibleColumn: function() {
             var columns = this.getVisibleColumns();
+
             return columns.length ? columns[0] : null;
         },
 
@@ -1071,8 +1255,8 @@ Ext.define('Ext.grid.Grid', {
             return this.getLastVisibleColumn() === column;
         },
 
-        createDataItem: function (cfg) {
-            var item = this.callParent([ cfg ]);
+        createDataItem: function(cfg) {
+            var item = this.callParent([cfg]);
 
             item.grid = this;
 
@@ -1087,7 +1271,8 @@ Ext.define('Ext.grid.Grid', {
 
             // Total width will change upon add/remove/hide/show
             // So keep innerCt size synced
-            if (changeEvent !== 'columnmove' && changeEvent !== 'columnadd' && changeEvent !== 'columnremove') {
+            if (changeEvent !== 'columnmove' && changeEvent !== 'columnadd' &&
+                changeEvent !== 'columnremove') {
                 me.refreshInnerWidth();
             }
 
@@ -1099,19 +1284,16 @@ Ext.define('Ext.grid.Grid', {
             // TODO: This may cause a change in row heights, currently should
             // be handled by using variableHeights, but the grid could re-measure as
             // needed
-            //this.refreshScrollerSize();
+            // this.refreshScrollerSize();
         },
 
-        refreshInnerWidth: function () {
-            var headerCtBody = this.getHeaderContainer().bodyElement.dom,
-                scrollWidth;
+        refreshInnerWidth: function() {
+            var body = this.getHeaderContainer().bodyElement.dom;
 
-            // Set the item containing element to the correct width.
-            scrollWidth = headerCtBody.scrollWidth;
-            this.setInnerWidth(scrollWidth > headerCtBody.clientWidth ? scrollWidth : null);
+            this.setInnerWidth(Math.max(body.scrollWidth, body.clientWidth));
         },
 
-        onColumnComputedWidthChange: function (changedColumns, totalColumnWidth) {
+        onColumnComputedWidthChange: function(changedColumns, totalColumnWidth) {
             var me = this,
                 groupingInfo = me.groupingInfo;
 
@@ -1123,12 +1305,14 @@ Ext.define('Ext.grid.Grid', {
                 me.setCellSizes(changedColumns, me.itemCache);
 
                 if (me.isGrouping()) {
-                    me.setCellSizes(changedColumns, groupingInfo.headers.unused);
-                    me.setCellSizes(changedColumns, groupingInfo.footers.unused);
+                    me.setCellSizes(changedColumns, groupingInfo.header.unused);
+                    me.setCellSizes(changedColumns, groupingInfo.footer.unused);
                 }
 
                 // Row sizing rules change if we have flexed columns.
-                me.fireEvent('columnlayout', me, changedColumns, totalColumnWidth);
+                if (me.hasListeners.columnlayout) {
+                    me.fireEvent('columnlayout', me, changedColumns, totalColumnWidth);
+                }
             }
         },
 
@@ -1157,7 +1341,7 @@ Ext.define('Ext.grid.Grid', {
             for (i = 0; i < len; i++) {
                 row = items[i];
 
-                if (row.isGridRow) {
+                if (row.hasGridCells) {
                     for (j = 0; j < changedColCount; j++) {
                         row.setColumnWidth(changedColumns[j]);
                     }
@@ -1170,13 +1354,13 @@ Ext.define('Ext.grid.Grid', {
 
         // columnLines
 
-        updateColumnLines: function (columnLines) {
+        updateColumnLines: function(columnLines) {
             this.el.toggleCls(this.columnLinesCls, columnLines);
         },
 
         // columnResize
 
-        updateColumnResize: function (enabled) {
+        updateColumnResize: function(enabled) {
             var me = this,
                 plugin = me.findPlugin('columnresizing');
 
@@ -1192,7 +1376,7 @@ Ext.define('Ext.grid.Grid', {
 
         // columns
 
-        updateColumns: function (columns) {
+        updateColumns: function(columns) {
             var me = this,
                 header = me.getHeaderContainer(),
                 count = columns && columns.length,
@@ -1217,12 +1401,12 @@ Ext.define('Ext.grid.Grid', {
 
                         // Also preserve any returning columns...
                         if (count) {
-                            header.remove(columns.filter(function (col) {
+                            header.remove(columns.filter(function(col) {
                                 return col.isInstance;
-                            }), /*destroy=*/false);
+                            }), /* destroy= */ false);
                         }
 
-                        header.removeAll(/*destroy=*/true, /*everything=*/true);
+                        header.removeAll(/* destroy= */ true, /* everything= */ true);
                     }
 
                     if (count) {
@@ -1240,7 +1424,7 @@ Ext.define('Ext.grid.Grid', {
                         // TODO: This may cause a change in row heights, currently should
                         // be handled by using variableHeights, but the grid could re-measure as
                         // needed
-                        //me.refreshScrollerSize();
+                        // me.refreshScrollerSize();
                     }
 
                     header.endColumnUpdate();
@@ -1273,16 +1457,16 @@ Ext.define('Ext.grid.Grid', {
         },
 
         renderEmpty: function() {
-            return '\u00a0';
+            return '\xA0';
         },
 
         // columnsMenuItem
 
-        applyColumnsMenuItem: function (config, existing) {
+        applyColumnsMenuItem: function(config, existing) {
             return Ext.updateWidget(existing, config, this, 'createColumnsMenuItem');
         },
 
-        createColumnsMenuItem: function (config) {
+        createColumnsMenuItem: function(config) {
             return Ext.apply({
                 grid: this
             }, config);
@@ -1290,7 +1474,7 @@ Ext.define('Ext.grid.Grid', {
 
         // headerContainer
 
-        applyHeaderContainer: function (config, existing) {
+        applyHeaderContainer: function(config, existing) {
             return Ext.updateWidget(existing, config, this, 'createHeaderContainer');
             //
             // if (headerContainer && !headerContainer.isComponent) {
@@ -1303,16 +1487,17 @@ Ext.define('Ext.grid.Grid', {
             // return headerContainer;
         },
 
-        createHeaderContainer: function (config) {
-            config = this.mergeProxiedConfigs('headerContainer', config, /*alwaysClone=*/true);
+        createHeaderContainer: function(config) {
+            config = this.mergeProxiedConfigs('headerContainer', config, /* alwaysClone= */ true);
             config.sortable = this.getSortable();
             config.grid = this;
+
             return config;
         },
 
-        updateHeaderContainer: function (headerContainer) {
+        updateHeaderContainer: function(headerContainer) {
             if (headerContainer) {
-                //TODO just call these methods directly from rootHeaderCt?
+                // TODO just call these methods directly from rootHeaderCt?
                 // the old headerContainers are destroyed if they are replaced...
                 headerContainer.on({
                     columnresize: 'onColumnResize',
@@ -1330,7 +1515,8 @@ Ext.define('Ext.grid.Grid', {
         // hideHeaders
 
         updateHideHeaders: function(hideHeaders) {
-            if (this.isRendered) {
+            if (this.rendered) {
+                // eslint-disable-next-line vars-on-top
                 var headerContainer = this.getHeaderContainer();
 
                 // To hide the headers, just pull the following element upwards to cover it
@@ -1338,12 +1524,19 @@ Ext.define('Ext.grid.Grid', {
                     headerContainer.el.setStyle({
                         marginBottom: '-' + headerContainer.el.measure('h') + 'px'
                     });
-                } else {
+                }
+                else {
                     headerContainer.el.setStyle({
                         marginBottom: ''
                     });
                 }
             }
+        },
+
+        updateHideScrollbar: function(hide) {
+            var w = Ext.scrollbar.width();
+
+            this.element.setStyle('margin-right', hide ? -w + 'px' : '');
         },
 
         // title
@@ -1358,7 +1551,8 @@ Ext.define('Ext.grid.Grid', {
                     if (titleBar.isHidden()) {
                         titleBar.show();
                     }
-                } else {
+                }
+                else {
                     titleBar.hide();
                 }
             }
@@ -1366,11 +1560,11 @@ Ext.define('Ext.grid.Grid', {
 
         // titleBar
 
-        applyTitleBar: function (config, existing) {
+        applyTitleBar: function(config, existing) {
             return Ext.updateWidget(existing, config);
         },
 
-        updateTitleBar: function (titleBar) {
+        updateTitleBar: function(titleBar) {
             if (titleBar && !titleBar.getTitle()) {
                 titleBar.setTitle(this.getTitle());
             }
@@ -1378,7 +1572,7 @@ Ext.define('Ext.grid.Grid', {
 
         // totalColumnWidth
 
-        applyTotalColumnWidth: function (totalColumnWidth) {
+        applyTotalColumnWidth: function(totalColumnWidth) {
             var rows = this.dataItems;
 
             // If we don't have any items yet, wait
@@ -1387,16 +1581,73 @@ Ext.define('Ext.grid.Grid', {
 
         // verticalOverflow
 
-        updateVerticalOverflow: function (value, was) {
+        updateVerticalOverflow: function(value, was) {
             var headerContainer = this.getHeaderContainer(),
-                verticalScrollbarWidth = Ext.getScrollbarSize().width;
+                summaryRow = this.findPlugin('summaryrow') || this.findPlugin('gridsummaryrow'),
+                scrollable = this.getScrollable(),
+                verticalScrollbarWidth = scrollable && scrollable.getScrollbarSize().width,
+                y = !!(scrollable && scrollable.getY()),
+                addOverflow = y && verticalScrollbarWidth > 0 && value,
+                row;
 
-            this.callParent([ value, was ]);
+            this.callParent([value, was]);
 
-            headerContainer.setVerticalOverflow(verticalScrollbarWidth > 0 && value);
+            // TODO: refactor this code within headerContainer and summaryRow
+            headerContainer.setVerticalOverflow(addOverflow);
+
+            if (summaryRow) {
+                row = summaryRow.getRow();
+
+                if (!row.destroyed) {
+                    row.rightSpacer.setStyle({
+                        width: (addOverflow ? (verticalScrollbarWidth - 1) : 0) + 'px'
+                    });
+                }
+            }
+        },
+
+        // Enable column reorder
+        updateEnableColumnMove: function(enabled) {
+            var me = this,
+                plugin = me.findPlugin('headerreorder');
+
+            if (!plugin && enabled) {
+                plugin = me.addPlugin('headerreorder');
+            }
+
+            if (plugin) {
+                plugin.setGrid(enabled ? me : null);
+            }
+        },
+
+        /**
+         * @method getSelection
+         * Returns the grid's selection if {@link Ext.grid.selection.Model#cfg!mode mode} is single 
+         * @return {Ext.data.Model} returns selected record if selectable is rows
+         * @return {Ext.grid.column.Column} returns selected column if selectable is columns
+         * @return {Ext.data.Model} returns selected record if selectable is cells
+         * 
+         * Returns the last selected column/cell's record/row's record based on selectable
+         * if {@link Ext.grid.selection.Model#cfg!mode mode} is multi
+         */
+        getSelection: function() {
+            var me = this,
+                selectable = me.getSelectable(),
+                selection = selectable.getSelection(),
+                selectionType = selection.type;
+
+            if (selectionType === 'columns') {
+                return selection.lastColumnSelected;
+            }
+
+            if (selectionType === 'cells') {
+                return selection.endCell && selection.endCell.record;
+            }
+
+            return this.callParent();
         }
     } // privates
-},
-function (Grid) {
+
+}, function(Grid) {
     Grid.prototype.indexModifiedFields = Ext.Array.toMap;
 });

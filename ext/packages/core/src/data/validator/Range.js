@@ -49,9 +49,11 @@ Ext.define('Ext.data.validator.Range', {
 
     validateValue: function(value) {
         var msg = this.callParent([value]);
+
         if (msg === true && isNaN(value)) {
             msg = this.getNanMessage();
         }
+
         return msg;
     }
 });

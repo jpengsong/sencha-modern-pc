@@ -42,7 +42,9 @@ Ext.define('Ext.dataview.selection.Selection', {
                 selectionModel: config.getSelectionModel()
             };
         }
+
         this.initConfig(config);
+
         //<debug>
         if (!this.getSelectionModel()) {
             Ext.raise('Selection must be configured with a SelectionModel');
@@ -105,26 +107,23 @@ Ext.define('Ext.dataview.selection.Selection', {
      * @method eachColumn
      */
 
-     /**
-      * Called when selection is completed.
-      * @method onSelectionFinish
-      * @private
-      */
+    /**
+     * Called when selection is completed.
+     * @method onSelectionFinish
+     * @private
+     */
 
-     privates: {
-         applySelectionModel: function(selectionModel) {
-            var view;
+    privates: {
+        applySelectionModel: function(selectionModel) {
+            var view = selectionModel.getView();
 
-             // We use the topmost (possible locking View) view
-             // We store an unprefixed view property.
-            this.view = view = selectionModel.getView();
-
-            // If we are acting for a grid, we must look at the topmost grid in a locking assembly.
-            if (view.isGrid) {
-                this.view = view.ownerGrid;
-            }
+            // We use the topmost (possible locking View) view
+            // We store an unprefixed view property.
+            // If we are acting for a grid, we must look at the topmost grid in a
+            // locking assembly.
+            this.view = view.isGrid ? view.ownerGrid : view;
 
             return selectionModel;
         }
-     }
+    }
 });

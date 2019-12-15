@@ -43,13 +43,11 @@ Ext.define('Ext.field.Container', {
     extend: 'Ext.field.Field',
     xtype: [
         'containerfield',
-        'fieldcontainer' //classic compat
+        'fieldcontainer' // classic compat
     ],
+    requires: ['Ext.field.Text'],
 
-    mixins: [
-        'Ext.field.Manager',
-        'Ext.mixin.ConfigProxy'
-    ],
+    mixins: ['Ext.field.Manager', 'Ext.mixin.ConfigProxy', 'Ext.mixin.FieldDefaults'],
 
     /**
      * @cfg error
@@ -72,6 +70,11 @@ Ext.define('Ext.field.Container', {
                 type: 'hbox'
             }
         }
+
+        /**
+         * @cfg {Object} fieldDefaults
+         * The properties in this object are used as default config values for field instance.
+         */
     },
 
     proxyConfig: {
@@ -177,13 +180,13 @@ Ext.define('Ext.field.Container', {
         '</ul>' +
     '</tpl>',
 
-    doDestroy: function () {
+    doDestroy: function() {
         this.setContainer(null);
 
         this.callParent();
     },
 
-    applyContainer: function (container, oldContainer) {
+    applyContainer: function(container, oldContainer) {
         if (container) {
             if (!container.isInstance) {
                 container = this.mergeProxiedConfigs('container', container);
@@ -198,7 +201,7 @@ Ext.define('Ext.field.Container', {
         return container;
     },
 
-    updateContainer: function (container, oldContainer) {
+    updateContainer: function(container, oldContainer) {
         var bodyElement = this.bodyElement;
 
         if (oldContainer) {
@@ -216,7 +219,7 @@ Ext.define('Ext.field.Container', {
         this.consumeRecord(record);
     },
 
-    onFieldErrorChange: function (field) {
+    onFieldErrorChange: function(field) {
         var me = this,
             errors = me.getErrors(),
             fields = me.getFields(),
@@ -228,18 +231,17 @@ Ext.define('Ext.field.Container', {
 
             if (fieldErrors) {
                 label = field.getLabel() || field.getPlaceholder() || field.getName();
-                fieldErrors = Ext.Array
-                    .from(fieldErrors)
-                    .map(function (error) {
-                        return {
-                            label: label,
-                            error: error
-                        };
-                    });
+                fieldErrors = Ext.Array.from(fieldErrors).map(function(error) {
+                    return {
+                        label: label,
+                        error: error
+                    };
+                });
 
                 if (messages) {
                     messages = messages.concat(fieldErrors);
-                } else {
+                }
+                else {
                     messages = fieldErrors;
                 }
             }
@@ -254,7 +256,7 @@ Ext.define('Ext.field.Container', {
      * which can potentially be considered a child of this container.
      * @param {Boolean} deep `true` to find grandchildren of child containers.
      */
-    getRefItems: function (deep) {
+    getRefItems: function(deep) {
         var refItems = [],
             container = this.getContainer();
 
@@ -272,7 +274,7 @@ Ext.define('Ext.field.Container', {
     /**
      * @localdoc Finds the first form field that can be focused.
      */
-    getFocusEl: function () {
+    getFocusEl: function() {
         var items = this.getFields(false),
             length = items && items.length,
             i, item, focusEl;
@@ -289,7 +291,7 @@ Ext.define('Ext.field.Container', {
         return this.callParent();
     },
 
-    reset: function (clearInvalid) {
+    reset: function(clearInvalid) {
         if (clearInvalid) {
             this.setError(null);
         }
@@ -343,7 +345,7 @@ Ext.define('Ext.field.Container', {
      * @param {Object} errors The errors to set child fields with.
      * @return {Ext.field.Container} this
      */
-    setErrors: function (errors) {
+    setErrors: function(errors) {
         var me = this,
             fields = me.getFields(),
             fieldname, field, messages;
@@ -364,7 +366,8 @@ Ext.define('Ext.field.Container', {
 
                 if (messages == null || (Ext.isArray(messages) && messages.length === 0)) {
                     field.setError(null);
-                } else {
+                }
+                else {
                     field.setError(Ext.Array.from(messages));
                 }
             }
@@ -373,17 +376,17 @@ Ext.define('Ext.field.Container', {
         return me;
     },
 
-    isValid: function () {
+    isValid: function() {
         return this.mixins.fieldmanager.isValid.call(this);
     },
 
-    validate: function (skiplazy) {
+    validate: function(skiplazy) {
         return this.mixins.fieldmanager.validate.call(this, skiplazy);
     },
 
-    getFields: function (byName, deep) {
+    getFields: function(byName, deep) {
         if (deep == null) {
-            //if not passed in, default to false
+            // if not passed in, default to false
             deep = false;
         }
 

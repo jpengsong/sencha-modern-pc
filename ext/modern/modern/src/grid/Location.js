@@ -1,12 +1,12 @@
 /**
  * Instances of this class encapsulate a position in a grid's row/column coordinate system.
  *
- * Cell addresses are configured using the owning {@link #property!record} and {@link #property!column}
- * for robustness.
+ * Cell addresses are configured using the owning {@link #property!record} and
+ * {@link #property!column} for robustness.
  *
- * The column may be moved, the store may be sorted, and the grid Location will still reference
- * the same *logical* cell. Be aware that due to buffered rendering the *physical* cell may
- * be recycled and used by another record.
+ * The column may be moved, the store may be sorted, and the grid Location will still
+ * reference the same *logical* cell. Be aware that due to buffered rendering the *physical*
+ * cell may be recycled and used by another record.
  *
  * Be careful not to make `grid Location` objects *too* persistent. If the owning record
  * is removed or filtered out, or the owning column is removed, the reference will be stale.
@@ -31,7 +31,7 @@ Ext.define('Ext.grid.Location', {
     /**
      * @property {Boolean} isGridLocation
      * @readonly
-     * `true` in this class to identify an object as an instantiated grid Location, or subclass thereof.
+     * `true` in this class to identify an object this type, or subclass thereof.
      */
     isGridLocation: true,
 
@@ -89,9 +89,10 @@ Ext.define('Ext.grid.Location', {
          */
         defineProtoProperty: function(propName, getterName) {
             Object.defineProperty(this.prototype, propName, {
-                get: function () {
+                get: function() {
                     // This refers to the class instance
                     var v = this[getterName]();
+
                     // Mask the proto defineProperty with the instance value
                     Object.defineProperty(this, propName, {
                         value: v,
@@ -127,10 +128,13 @@ Ext.define('Ext.grid.Location', {
 
         if (source.constructor === Object) {
             sourceRec = source.record;
+
             if (typeof sourceRec === 'number') {
                 sourceRec = store.getAt(Math.max(Math.min(sourceRec, store.getCount() - 1), 0));
             }
+
             sourceCol = source.column;
+
             if (typeof sourceCol === 'number') {
                 columns = view.getVisibleColumns();
                 sourceCol = columns[Math.max(Math.min(sourceCol, columns.length - 1), 0)];
@@ -139,11 +143,14 @@ Ext.define('Ext.grid.Location', {
             if (!(sourceRec && sourceCol)) {
                 if (sourceRec) {
                     sourceCol = view.getFirstVisibleColumn();
-                } else {
+                }
+                else {
                     sourceRec = store.getAt(0);
                 }
             }
+
             cell = view.mapToCell(sourceRec, sourceCol);
+
             if (cell) {
                 source = cell.element;
             }
@@ -160,34 +167,57 @@ Ext.define('Ext.grid.Location', {
         if (item && item.isGridRow) {
             me.row = item;
             me.summary = item.isSummaryRow;
+
             if (!cell) {
                 cell = view.mapToCell(source);
+
                 if (!cell) {
                     columns = view.getVisibleColumns();
                     first = columns[0];
+
                     if (first) {
                         cell = item.getCellByColumn(first);
                     }
                 }
             }
+
             me.cell = cell;
+
             if (cell) {
                 me.column = column = cell.getColumn();
                 columns = columns || view.getVisibleColumns();
                 me.columnIndex = columns.indexOf(column);
                 me.isTreeLocation = !!cell.isTreeCell;
-            } else {
+            }
+            else {
                 me.rowBody = view.mapToRowBody(source);
             }
         }
+    },
+
+    beforeEdit: function(editor) {
+        return this.fireEditEvent('beforeedit', editor);
+    },
+
+    fireEditEvent: function(eventName, editor) {
+        var me = this,
+            view = me.view;
+
+        if (editor) {
+            me.editor = editor;
+        }
+
+        return view.fireEvent(eventName, view, me);
     },
 
     /**
      * Creates a clone of this Location, optionally moving either the record or column
      * to a different position.
      * @param {Object} [options] The different `record` or `column` to attach the clone to.
-     * @param {Ext.data.Model/Number/Ext.dom.Element} [options.record] The different `record` or DataView item to attach the clone to.
-     * @param {Ext.grid.column.Column/Number} [options.column] The different `column` to attach the clone to.
+     * @param {Ext.data.Model/Number/Ext.dom.Element} [options.record] The different `record` or
+     * DataView item to attach the clone to.
+     * @param {Ext.grid.column.Column/Number} [options.column] The different `column` to which to
+     * attach the clone.
      * @return {Ext.grid.Location} The clone, optionally repositioned using the options parameter.
      */
     clone: function(options) {
@@ -199,25 +229,30 @@ Ext.define('Ext.grid.Location', {
             if (options.record !== undefined) {
                 record = options.record;
             }
+
             if (options.column !== undefined) {
                 column = options.column;
             }
+
             delete ret.sourceElement;
         }
 
-        if (record) {
+        if (record != null) {
             delete me.source;
+
             me.superclass.attach.call(ret, record);
             ret.row = ret.item;
-        } else {
+        }
+        else {
             ret.row = ret.child = me.row;
             ret.summary = me.summary;
             ret.rowBody = me.rowBody;
         }
 
-        if (column) {
+        if (column != null) {
             ret._setColumn(column);
-        } else {
+        }
+        else {
             ret.cell = cell = me.cell;
             ret.column = me.column;
             ret.columnIndex = me.columnIndex;
@@ -234,9 +269,10 @@ Ext.define('Ext.grid.Location', {
     },
 
     /**
-     * Compares this grid Location object to another grid Location to see if they refer to the same cell
-     * *and*, if actionable, the same element in the same cell. So an actionable location focused upon
-     * a {@link Ext.Tool} inside a cell will not be equal to the raw Location of that cell.
+     * Compares this grid Location object to another grid Location to see if they refer to the same
+     * cell *and*, if actionable, the same element in the same cell. So an actionable location
+     * focused upon a {@link Ext.Tool} inside a cell will not be equal to the raw Location of that
+     * cell.
      * @param {Ext.grid.Location} other The grid Location to compare.
      * @return {Boolean} `true` if the other cell Location references the same cell in the same
      * action/navigation mode as this.
@@ -259,9 +295,10 @@ Ext.define('Ext.grid.Location', {
             // recordIndex and column identity.
 
             // We'll always have a recordIndex (even if it's -1 due to virtual stores).
-            // Therefore it's valid to check both record indices.
-            // If they differ, the locations can never be equal.
-            if (me.recordIndex !== other.recordIndex) {
+            // Therefore it's valid to check both record indices. If they differ, the locations can
+            // never be equal.
+            // And if index is the same but records are different, our location needs to be updated.
+            if ((me.recordIndex !== other.recordIndex) || me.record !== other.record) {
                 return false;
             }
 
@@ -276,7 +313,8 @@ Ext.define('Ext.grid.Location', {
     },
 
     /**
-     * Compares this grid Location object to another grid Location to see if they refer to the same cell address.
+     * Compares this grid Location object to another grid Location to see if they refer to the same
+     * cell address.
      * @param {Ext.grid.Location} other The grid Location to compare.
      * @return {Boolean} `true` if the other cell Location references the same cell address as this.
      */
@@ -284,24 +322,24 @@ Ext.define('Ext.grid.Location', {
         var me = this;
 
         return other && other.view === me.view && other.isGridLocation &&
-               me.recordIndex === other.recordIndex &&
-               me.column === other.column;
+            me.recordIndex === other.recordIndex &&
+            me.column === other.column;
     },
 
     getFocusEl: function(as) {
-        var cell = this.get(),
+        var me = this,
             ret;
 
-        if (this.actionable) {
-            ret = this.sourceElement;
-        } else {
-            ret = cell && !cell.destroyed && cell.el.dom;
+        if (me.actionable) {
+            ret = me.sourceElement;
+        }
+        else {
+            ret = me.get();
+            ret = ret && !ret.destroyed && ret.el.dom;
         }
 
         // Only return the element if it is still in the document.
-        return Ext.getBody().contains(ret) ?
-            (as === 'dom' || as === true) ? ret : Ext.get(ret) :
-            null;
+        return Ext.getBody().contains(ret) ? me.as(ret, as || 'el') : null;
     },
 
     /**
@@ -319,8 +357,11 @@ Ext.define('Ext.grid.Location', {
             ret = null;
 
         if (result) {
-            ret = (as === 'dom' || as === true) ? result.el.dom : (as === 'cmp' ? result : result.el);
+            ret = (as === 'dom' || as === true)
+                ? result.el.dom
+                : (as === 'cmp' ? result : result.el);
         }
+
         return ret;
     },
 
@@ -392,12 +433,14 @@ Ext.define('Ext.grid.Location', {
 
         if (me.actionable) {
             return me.navigate();
-        } else {
-            // Maintainer: This is an empty loop. It just skips non-focusable Locations
-            for (
-                candidate = me.nextCell(options);
+        }
+        else {
+            for (candidate = me.nextCell(options);
                 candidate && !candidate.get().el.isFocusable();
-                candidate = candidate.nextCell(options));
+                candidate = candidate.nextCell(options)) {
+                // just skips non-focusable Locations...
+            }
+
             return candidate || me;
         }
     },
@@ -414,12 +457,14 @@ Ext.define('Ext.grid.Location', {
 
         if (me.actionable) {
             return me.navigate(true);
-        } else {
-            // Maintainer: This is an empty loop. It just skips non-focusable Locations
-            for (
-                candidate = me.previousCell(options);
+        }
+        else {
+            for (candidate = me.previousCell(options);
                 candidate && !candidate.get().el.isFocusable();
-                candidate = candidate.previousCell(options));
+                candidate = candidate.previousCell(options)) {
+                // just skips non-focusable Locations...
+            }
+
             return candidate || me;
         }
     },
@@ -440,17 +485,21 @@ Ext.define('Ext.grid.Location', {
         if (candidate) {
             candidate._setColumn(column);
             cell = candidate.get();
+
             while (candidate && (!cell || !cell.el.isFocusable())) {
                 candidate = candidate.nextItem(options);
+
                 if (candidate) {
                     candidate._setColumn(column);
                     cell = candidate.get();
                 }
             }
+
             if (candidate && !candidate.equals(me)) {
                 return candidate;
             }
         }
+
         return me;
     },
 
@@ -470,17 +519,21 @@ Ext.define('Ext.grid.Location', {
         if (candidate) {
             candidate._setColumn(column);
             cell = candidate.get();
+
             while (candidate && (!cell || !cell.el.isFocusable())) {
                 candidate = candidate.previousItem(options);
+
                 if (candidate) {
                     candidate._setColumn(column);
                     cell = candidate.get();
                 }
             }
         }
+
         if (candidate && !candidate.equals(me)) {
             return candidate;
         }
+
         return me;
     },
 
@@ -493,7 +546,7 @@ Ext.define('Ext.grid.Location', {
             // If targetElement is *not* one of our cells, then if it's focusable
             // this is an actionable location.
             //
-            // For example, a floated menu or any focusable thing popped up by a widget inside a cell.
+            // For example, a floated menu or any focusable thing popped up by a widget in a cell.
             if (target && (!cell || cell.destroyed || cell.element.dom !== target)) {
                 actionable = Ext.fly(target).isFocusable(true);
             }
@@ -520,6 +573,7 @@ Ext.define('Ext.grid.Location', {
                 visitOptions = {
                     callback: function(el) {
                         testEl = Ext.fly(el);
+
                         if (!testEl.$isFocusTrap && testEl.isFocusable()) {
                             component = Ext.Component.from(el);
 
@@ -533,7 +587,8 @@ Ext.define('Ext.grid.Location', {
                     reverse: reverse,
                     skipSelf: true
                 },
-                i, result, component, focusables = [];
+                focusables = [],
+                i, result, component;
 
             // Loop in the passed direction until we either find a result, or we walk off the end of
             // the rendered block, in which case we have to give up.
@@ -545,31 +600,32 @@ Ext.define('Ext.grid.Location', {
                 // See if there's a next focusable element in the current candidate
                 activeEl = focusables[
                     activeEl ? (Ext.Array.indexOf(focusables, activeEl) + 1) : 0
-                    ];
+                ];
 
                 if (activeEl) {
                     result = candidate;
                     result.source = result.sourceElement = activeEl;
                     delete result.actionable;
 
-                    // We want to see the whole item which *contains* the activeEl, so we must scroll
+                    // We want to see the whole item which contains the activeEl, so we must scroll
                     // vertically to bring that into view, then scroll the activeEl into view (which
                     // will most likely do nothing unless it's a horizontal scroll needed)
                     if (candidate.child) {
                         scrollable.ensureVisible(candidate.child.el);
                     }
+
                     scrollable.ensureVisible(activeEl);
                     activeEl.focus();
                 }
-
                 // If we found no next focusable internal element, move to next cell and ask
                 // the Actionables whether they are interested in it.
                 else {
                     candidate = candidate[reverse ? 'previousCell' : 'nextCell']();
 
-                    // The previousCell/nextCell methods return the same logical location to indicate
-                    // inability to navigate that direction so we're done, the loop through candidates
-                    // was unable to settle on an actionable location, so the "new" location is me.
+                    // The previousCell/nextCell methods return the same logical location to
+                    // indicate inability to navigate that direction so we're done, the loop through
+                    // candidates was unable to settle on an actionable location, so the "new"
+                    // location is me.
                     if (candidate.equals(previousCandidate)) {
                         return me;
                     }
@@ -577,12 +633,17 @@ Ext.define('Ext.grid.Location', {
                     // If we cannot navigate, previousCell and nextCell return the same Location
                     if (candidate && len) {
                         for (i = 0; !result && i < len; i++) {
+                            view.ensureVisible(candidate.record, {
+                                column: candidate.columnIndex, focus: true }
+                            );
                             result = actionables[i].activateCell(candidate);
                         }
                     }
                 }
+
                 previousCandidate = candidate;
             }
+
             return result || me;
         },
 
@@ -600,6 +661,7 @@ Ext.define('Ext.grid.Location', {
                 callback: function(el) {
                     if (Ext.fly(el).isFocusable()) {
                         activeEl = el;
+
                         return false;
                     }
                 },
@@ -617,10 +679,10 @@ Ext.define('Ext.grid.Location', {
                 if (candidate.child) {
                     scrollable.ensureVisible(candidate.child.el);
                 }
+
                 scrollable.ensureVisible(activeEl);
                 activeEl.focus();
             }
-
             // If we found no tabbable internal elements, ask the Actionables whether they
             // are interested in it.
             else {
@@ -628,6 +690,7 @@ Ext.define('Ext.grid.Location', {
                     result = actionables[i].activateCell(candidate);
                 }
             }
+
             return result;
         },
 
@@ -637,7 +700,7 @@ Ext.define('Ext.grid.Location', {
 
             if (element) {
                 Ext.fly(element).visit({
-                    callback: function (el) {
+                    callback: function(el) {
                         if (Ext.fly(el).isFocusable()) {
                             focusables.push(el);
                         }
@@ -645,6 +708,7 @@ Ext.define('Ext.grid.Location', {
                     skipSelf: true
                 });
             }
+
             return focusables;
         },
 
@@ -657,30 +721,38 @@ Ext.define('Ext.grid.Location', {
          */
         nextCell: function(options) {
             var me = this,
-                view = me.view,
                 startPoint = me.clone(),
                 result = me.clone(),
-                columns = view.getVisibleColumns(),
-                len = columns.length,
-                wrap;
+                columns = me.getVisibleColumns(),
+                rowIndex = me.view.store.indexOf(me.row.getRecord()),
+                targetIndex,
+                wrap = false;
 
             if (options) {
                 if (typeof options === 'boolean') {
                     wrap = options;
-                } else {
+                }
+                else {
                     wrap = options.wrap;
                 }
             }
 
             do {
-                // If we are at the end of the row, or it's not a grid row,
-                // go down to column 0
-                if (result.column === columns[len - 1] || !me.child.isGridRow) {
-                    result = me.down(Ext.apply({
-                        column: columns[0]
-                    }, options));
-                } else {
-                    result._setColumn(result.columnIndex + 1);
+                // If we are at the start of the row, or it's not a grid row,
+                // Go up to the last column.
+                targetIndex = columns.indexOf(result.column) + 1;
+
+                if (targetIndex === columns.length || !me.child.isGridRow) {
+                    // We need to move down only if current row index > 1
+                    if (rowIndex < me.view.store.getData().count() - 1) {
+                        result = me.getUpdatedLocation(columns[0], rowIndex + 1);
+                    }
+                    else if (wrap) {
+                        result = me.getUpdatedLocation(columns[0], 0);
+                    }
+                }
+                else {
+                    result = me.getUpdatedLocation(columns[targetIndex], rowIndex);
                 }
 
                 // We've wrapped all the way round without finding a visible location.
@@ -688,9 +760,33 @@ Ext.define('Ext.grid.Location', {
                 if (result && result.equals(startPoint)) {
                     break;
                 }
+
+                if (!result) {
+                    result = startPoint;
+                    break;
+                }
             } while (result && !result.sourceElement);
 
             return result;
+        },
+
+        /**
+         * Get all  the visible columns including partners as well
+         */
+        getVisibleColumns: function() {
+
+            var me = this,
+                view = me.view,
+                partners = view.allPartners || [view],
+                partnerLen = partners.length,
+                i,
+                visibleColumns = [];
+
+            for (i = 0; i < partnerLen; i++) {
+                visibleColumns = visibleColumns.concat(partners[i].getVisibleColumns());
+            }
+
+            return visibleColumns;
         },
 
         /**
@@ -702,29 +798,39 @@ Ext.define('Ext.grid.Location', {
          */
         previousCell: function(options) {
             var me = this,
-                view = me.view,
                 startPoint = me.clone(),
                 result = me.clone(),
-                columns = view.getVisibleColumns(),
-                wrap;
+                columns = me.getVisibleColumns(),
+                rowIndex = me.view.store.indexOf(me.row.getRecord()),
+                targetIndex,
+                wrap = false;
 
             if (options) {
                 if (typeof options === 'boolean') {
                     wrap = options;
-                } else {
+                }
+                else {
                     wrap = options.wrap;
                 }
             }
 
             do {
                 // If we are at the start of the row, or it's not a grid row,
-                // Ggo up to the last column.
-                if (result.column === columns[0] || !me.child.isGridRow) {
-                    result = me.up(Ext.apply({
-                        column: columns.length - 1
-                    }, options));
-                } else {
-                    result._setColumn(result.columnIndex - 1);
+                // Go up to the last column.
+                targetIndex = columns.indexOf(result.column) - 1;
+
+                if (targetIndex === -1 || !me.child.isGridRow) {
+                    // We need to move up only if current row index > 1
+                    if (rowIndex > 0) {
+                        result = me.getUpdatedLocation(columns[columns.length - 1], rowIndex - 1);
+                    }
+                    else if (wrap) {
+                        result = me.getUpdatedLocation(columns[columns.length - 1],
+                                                       me.view.store.getData().count() - 1);
+                    }
+                }
+                else {
+                    result = me.getUpdatedLocation(columns[targetIndex], rowIndex);
                 }
 
                 // We've wrapped all the way round without finding a visible location.
@@ -732,9 +838,44 @@ Ext.define('Ext.grid.Location', {
                 if (result && result.equals(startPoint)) {
                     break;
                 }
+
+                if (!result) {
+                    result = startPoint;
+                    break;
+                }
             } while (result && !result.sourceElement);
 
             return result;
+        },
+
+        /**
+         *  Function to get the new location object based on target columns and the row num. 
+         *  @param {Ext.Grid.Column} Column target column in for which we need the location
+         *  @param {Int} targetRowIndex target row in which we need to find the column
+         */
+        getUpdatedLocation: function(column, targetRowIndex) {
+            var me = this,
+                grid = column.getGrid(),
+                targetRecord = me.view.store.getData().getAt(targetRowIndex),
+                location = grid.createLocation(targetRecord);
+
+            // Update location
+            location.column = column;
+            location.columnIndex = grid.getVisibleColumns().indexOf(column);
+            location.cell = location.row && location.row.getCellByColumn(column);
+
+            if (location.cell) {
+                delete me.event;
+                delete me.actionable;
+
+                location.isTreeLocation = !!location.cell.isTreeCell;
+                location.sourceElement = location.cell.el.dom;
+
+                return location;
+            }
+            else {
+                return null;
+            }
         },
 
         /**
@@ -750,15 +891,18 @@ Ext.define('Ext.grid.Location', {
             if (typeof column === 'number') {
                 index = column;
                 column = columns[index];
-            } else {
+            }
+            else {
                 index = columns.indexOf(column);
             }
 
             delete me.event;
             delete me.actionable;
+
             me.column = column;
             me.columnIndex = index;
             me.cell = me.row && me.row.getCellByColumn(column);
+
             if (me.cell) {
                 me.isTreeLocation = !!me.cell.isTreeCell;
                 me.sourceElement = me.cell.el.dom;
@@ -767,6 +911,7 @@ Ext.define('Ext.grid.Location', {
             return me;
         }
     }
+
 }, function(Cls) {
     Cls.defineProtoProperty('actionable', 'determineActionable');
 });

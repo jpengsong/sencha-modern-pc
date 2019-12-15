@@ -48,12 +48,12 @@ Ext.define('Ext.data.virtual.Range', {
      */
     direction: 1,
 
-    constructor: function (config) {
+    constructor: function(config) {
         this.adjustingPages = [];
         this.callParent([config]);
     },
 
-    reset: function () {
+    reset: function() {
         var me = this;
 
         me.records = {};
@@ -61,7 +61,7 @@ Ext.define('Ext.data.virtual.Range', {
     },
 
     privates: {
-        adjustPageLocks: function (kind, adjustment) {
+        adjustPageLocks: function(kind, adjustment) {
             var me = this,
                 pages = me.adjustingPages,
                 n = pages.length,
@@ -134,6 +134,11 @@ Ext.define('Ext.data.virtual.Range', {
                 activePages, page, pg, direction,
                 prefetchBegin, prefetchEnd, prefetchPages;
 
+            // If store.totalCount is 0: no need to goto any page, just return from here
+            if (limit === 0) {
+                return;
+            }
+
             adjustingPages.length = 0;
 
             // Forwards
@@ -190,7 +195,8 @@ Ext.define('Ext.data.virtual.Range', {
             // Retain the direction if narrowing or widening the range
             if ((begin > beginWas && end < endWas) || (begin < beginWas && end > endWas)) {
                 direction = me.direction;
-            } else {
+            }
+            else {
                 direction = (begin < beginWas) ? -1 : ((begin > beginWas) ? 1 : me.direction);
             }
 
@@ -205,10 +211,12 @@ Ext.define('Ext.data.virtual.Range', {
 
             if (prefetch) {
                 me.prefetchBegin = prefetchBegin = Math.max(0, begin - beginBufferZone);
+
                 // If we don't know the size of the store yet, don't try and limit the pages
                 if (limit === null) {
                     limit = Number.MAX_VALUE;
                 }
+
                 me.prefetchEnd = prefetchEnd = Math.min(limit, end + endBufferZone);
 
                 me.prefetchPages = prefetchPages = pageMap.getPages(prefetchBegin, prefetchEnd);
@@ -245,7 +253,8 @@ Ext.define('Ext.data.virtual.Range', {
                     // We will unlock any activePages we no longer need so remove
                     // those we will be keeping:
                     delete activePagesWas[pg];
-                } else {
+                }
+                else {
                     // For pages that weren't previously active, lock them now.
                     page.adjustLock('active', 1);
                     page.fillRecords(records);
@@ -258,7 +267,8 @@ Ext.define('Ext.data.virtual.Range', {
                         // If page was previously locked for prefetch, we don't want to
                         // release it...
                         delete prefetchPagesWas[pg];
-                    } else {
+                    }
+                    else {
                         prefetchPages[pg].adjustLock('prefetch', 1);
                     }
                 }
@@ -292,7 +302,8 @@ Ext.define('Ext.data.virtual.Range', {
             }
 
             if (prefetchPages) {
-                pageMap.prioritizePrefetch(direction, pageMap.getPageIndex(begin), pageMap.getPageIndex(end - 1));
+                pageMap.prioritizePrefetch(direction, pageMap.getPageIndex(begin),
+                                           pageMap.getPageIndex(end - 1));
             }
 
             me.lastBegin = begin;
@@ -307,12 +318,13 @@ Ext.define('Ext.data.virtual.Range', {
             if (activePages) {
                 delete activePages[n];
             }
+
             if (prefetchPages) {
                 delete prefetchPages[n];
             }
         },
 
-        onPageLoad: function (page) {
+        onPageLoad: function(page) {
             var me = this,
                 callback = me.callback,
                 first, last;
@@ -331,15 +343,15 @@ Ext.define('Ext.data.virtual.Range', {
             }
         },
 
-        pageSortBackFn: function (page1, page2) {
+        pageSortBackFn: function(page1, page2) {
             return page2.number - page1.number;
         },
 
-        pageSortFwdFn: function (page1, page2) {
+        pageSortFwdFn: function(page1, page2) {
             return page1.number - page2.number;
         },
 
-        refresh: function () {
+        refresh: function() {
             // ... we don't want to reset this.records
             this.records = this.records || {};
         },
@@ -352,6 +364,8 @@ Ext.define('Ext.data.virtual.Range', {
             me.begin = me.end = 0;
             me.direction = 1;
             me.prefetchPages = me.activePages = null;
+
+            /* eslint-disable-next-line dot-notation */
             me.goto(begin, end);
         }
     }

@@ -1,6 +1,7 @@
 /**
- * A Column definition class which renders boolean data fields.  See the {@link Ext.grid.column.Column#xtype xtype}
- * config option of {@link Ext.grid.column.Column} for more details.
+ * A Column definition class which renders boolean data fields.
+ * See the {@link Ext.grid.column.Column#xtype xtype} config option of
+ * {@link Ext.grid.column.Column} for more details.
  *
  *     @example
  *     var store = Ext.create('Ext.data.Store', {
@@ -70,13 +71,13 @@ Ext.define('Ext.grid.column.Boolean', {
      * @hide
      */
 
-     /**
+    /**
      * @cfg producesHTML
      * @inheritdoc
      */
     producesHTML: false,
 
-    defaultRenderer: function(value){
+    defaultRenderer: function(value) {
         if (value === undefined) {
             return this.undefinedText;
         }
@@ -84,10 +85,12 @@ Ext.define('Ext.grid.column.Boolean', {
         if (!value || value === 'false') {
             return this.falseText;
         }
+
         return this.trueText;
     },
 
     updater: function(cell, value) {
-        Ext.fly(cell).down(this.getView().innerSelector, true).innerHTML = Ext.grid.column.Boolean.prototype.defaultRenderer.call(this, value);
+        Ext.fly(cell).down(this.getView().innerSelector, true).innerHTML =
+            Ext.grid.column.Boolean.prototype.defaultRenderer.call(this, value);
     }
 });

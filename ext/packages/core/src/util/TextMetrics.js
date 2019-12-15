@@ -124,7 +124,7 @@
  *         }]
  *     });
  */
- Ext.define('Ext.util.TextMetrics', {
+Ext.define('Ext.util.TextMetrics', {
     requires: [
         'Ext.dom.Element'
     ],
@@ -134,12 +134,13 @@
 
         /**
          * Measures the size of the specified text
-         * @param {String/HTMLElement} el The element, dom node or id from which to copy existing CSS styles
-         * that can affect the size of the rendered text
+         * @param {String/HTMLElement} el The element, dom node or id from which to copy existing
+         * CSS styles that can affect the size of the rendered text
          * @param {String} text The text to measure
          * @param {Number} [fixedWidth] If the text will be multiline, you have to set a fixed width
          * in order to accurately measure the text height
-         * @return {Object} An object containing the text's size `{width: (width), height: (height)}`
+         * @return {Object} An object containing the text's size
+         * `{width: (width), height: (height)}`
          * @static
          */
         measure: function(el, text, fixedWidth) {
@@ -148,9 +149,10 @@
 
             shared.bind(el);
             shared.setFixedWidth(fixedWidth || 'auto');
+
             return shared.getSize(text);
         },
-        
+
         /**
          * Destroy the TextMetrics instance created by {@link #measure}.
          * @static
@@ -159,7 +161,7 @@
             this.shared = Ext.destroy(this.shared);
         }
     },
-    
+
     /**
      * Creates new TextMetrics.
      * @param {String/HTMLElement/Ext.dom.Element} bindTo The element or its ID to bind to.
@@ -187,33 +189,35 @@
         }
 
         if (fixedWidth) {
-           measure.setWidth(fixedWidth);
+            measure.setWidth(fixedWidth);
         }
     },
-    
+
     /**
-     * Returns the size of the specified text based on the internal element's style and width properties
+     * Returns the size of the specified text based on the internal element's style and width
+     * properties
      * @param {String} text The text to measure
      * @return {Object} An object containing the text's size `{width: (width), height: (height)}`
      */
     getSize: function(text) {
         var measure = this.measure,
             size;
-        
+
         measure.setHtml(text);
         size = measure.getSize();
         measure.setHtml('');
+
         return size;
     },
-    
+
     /**
      * Binds this TextMetrics instance to a new element
      * @param {String/HTMLElement/Ext.dom.Element} el The element or its ID.
      */
     bind: function(el) {
         this.measure.setStyle(
-            // Create an Ext.dom.Fly instance on our prototype unless we've already been through here.
-            // Attach it to the passed HTMLElement/Ext.Element
+            // Create an Ext.dom.Fly instance on our prototype unless we've already been through
+            // here. Attach it to the passed HTMLElement/Ext.Element
             (this.el || (this.self.prototype.el = new Ext.dom.Fly())).attach(el).getStyle([
                 'font-size',
                 'font-size-adjust',
@@ -230,44 +234,46 @@
             ])
         );
     },
-    
+
     /**
-     * Sets a fixed width on the internal measurement element.  If the text will be multiline, you have
-     * to set a fixed width in order to accurately measure the text height.
+     * Sets a fixed width on the internal measurement element.  If the text will be multiline,
+     * you have to set a fixed width in order to accurately measure the text height.
      * @param {Number} width The width to set on the element
      */
-     setFixedWidth : function(width){
-         this.measure.setWidth(width);
-     },
-     
-     /**
+    setFixedWidth: function(width) {
+        this.measure.setWidth(width);
+    },
+
+    /**
       * Returns the measured width of the specified text
       * @param {String} text The text to measure
       * @return {Number} width The width in pixels
       */
-     getWidth : function(text){
-         this.measure.dom.style.width = 'auto';
-         return this.getSize(text).width;
-     },
-     
-     /**
+    getWidth: function(text) {
+        this.measure.dom.style.width = 'auto';
+
+        return this.getSize(text).width;
+    },
+
+    /**
       * Returns the measured height of the specified text
       * @param {String} text The text to measure
       * @return {Number} height The height in pixels
       */
-     getHeight : function(text){
-         return this.getSize(text).height;
-     },
-     
-     /**
+    getHeight: function(text) {
+        return this.getSize(text).height;
+    },
+
+    /**
       * Destroy this instance
       */
-     destroy: function(){
-         var me = this;
-         me.el = me.measure = Ext.destroy(me.measure);
-         me.callParent();
-     }
-}, function(){
+    destroy: function() {
+        var me = this;
+
+        me.el = me.measure = Ext.destroy(me.measure);
+        me.callParent();
+    }
+}, function() {
     Ext.Element.override({
         /**
          * Returns the width in pixels of the passed text, or the width of the text in this Element.
@@ -277,8 +283,14 @@
          * @return {Number} The text width in pixels.
          * @member Ext.dom.Element
          */
-        getTextWidth : function(text, min, max){
-            return Ext.Number.constrain(Ext.util.TextMetrics.measure(this.dom, Ext.valueFrom(text, this.dom.innerHTML, true)).width, min || 0, max || 1000000);
+        getTextWidth: function(text, min, max) {
+            return Ext.Number.constrain(
+                Ext.util.TextMetrics.measure(
+                    this.dom, Ext.valueFrom(text, this.dom.innerHTML, true)
+                ).width,
+                min || 0,
+                max || 1000000
+            );
         }
     });
 });

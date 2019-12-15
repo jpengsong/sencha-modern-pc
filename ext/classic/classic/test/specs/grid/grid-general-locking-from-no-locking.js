@@ -1,5 +1,3 @@
-/* global Ext, expect, spyOn, jasmine, xit, MockAjaxManager, it */
-
 topSuite("grid-general-locking-from-no-locking",
     [false, 'Ext.grid.Panel', 'Ext.data.ArrayStore'],
 function() {
@@ -8,9 +6,11 @@ function() {
         proxyStoreLoad = Ext.data.ProxyStore.prototype.load,
         loadStore = function() {
             proxyStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         };
 
@@ -40,8 +40,10 @@ function() {
 
             if (Ext.supports.CssTransforms && !Ext.isIE9m) {
                 transform = dom.style[transformStyleName];
+
                 return transform ? parseInt(transform.split(',')[1], 10) : 0;
-            } else {
+            }
+            else {
                 return parseInt(dom.style.top || '0', 10);
             }
         }
@@ -78,13 +80,16 @@ function() {
                     }],
                     data: (function() {
                         var data = [];
+
                         var len = 44; // <-- 43 records does not trigger error
+
                         while (len--) {
                             data.unshift({
                                 name: 'User ' + len,
                                 age: Ext.Number.randomInt(0, 100)
                             });
                         }
+
                         return data;
                     })()
                 },
@@ -112,8 +117,10 @@ function() {
                 expect(grid.lockedScrollbar.isVisible()).toBe(false);
             });
         }
+
         it('should display the locked side if all columns are locked', function() {
             var width;
+
             grid.reconfigure([
                 {
                     text: 'Locked',
@@ -127,7 +134,7 @@ function() {
             expect(width).not.toBe(0);
             expect(grid.normalGrid.view.getX()).toBeGreaterThan(width);
         });
-        
+
         describe('scrolling with no locked columns', function() {
             var oldOnError = window.onerror;
 
@@ -144,7 +151,7 @@ function() {
                         oldOnError();
                     }
                 });
-                
+
                 scroller.on({
                     scrollend: function() {
                         scrollFinished = true;
@@ -152,7 +159,7 @@ function() {
                 });
 
                 scroller.scrollBy(0, 100);
-                
+
                 waitsFor(function() {
                     return scrollFinished;
                 }, 'scroll to be handled', 500);

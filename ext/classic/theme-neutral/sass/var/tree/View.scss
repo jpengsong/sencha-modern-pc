@@ -65,7 +65,7 @@ $tree-glyph-color: dynamic($color);
  * @var {string/list}
  * Glyph for the "folder" tree icon when {@link Global_CSS#$enable-font-icons} is `true`.
  */
-$tree-folder-glyph: dynamic($fa-var-folder-o $tree-glyph-font-size $font-icon-font-family);
+$tree-folder-glyph: dynamic($fa-var-folder $tree-glyph-font-size $font-icon-font-family);
 
 /**
  * @var {color}
@@ -77,7 +77,7 @@ $tree-folder-glyph-color: dynamic($tree-glyph-color);
  * @var {string/list}
  * Glyph for the "open folder" tree icon when {@link Global_CSS#$enable-font-icons} is `true`.
  */
-$tree-folder-open-glyph: dynamic($fa-var-folder-open-o $tree-glyph-font-size $font-icon-font-family);
+$tree-folder-open-glyph: dynamic($fa-var-folder-open $tree-glyph-font-size $font-icon-font-family);
 
 /**
  * @var {color}
@@ -89,7 +89,7 @@ $tree-folder-open-glyph-color: dynamic($tree-folder-glyph-color);
  * @var {string/list}
  * Glyph for the "leaf" tree icon when {@link Global_CSS#$enable-font-icons} is `true`.
  */
-$tree-leaf-glyph: dynamic($fa-var-file-o $tree-glyph-font-size $font-icon-font-family);
+$tree-leaf-glyph: dynamic($fa-var-file $tree-glyph-font-size $font-icon-font-family);
 
 /**
  * @var {color}

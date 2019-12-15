@@ -58,11 +58,9 @@ Ext.define('Ext.mixin.Container', {
      * container has no descendants with a `name` specified.
      * @since 6.5.0
      */
-    getNamedItems: function () {
-        var CM = Ext.ComponentManager;
-
-        if (CM.referencesDirty) {
-            CM.fixReferences();
+    getNamedItems: function() {
+        if (Ext.referencesDirty) {
+            Ext.fixReferences();
         }
 
         return this.nameRefs || null;
@@ -94,11 +92,9 @@ Ext.define('Ext.mixin.Container', {
      * specified.
      * @since 5.0.0
      */
-    getReferences: function () {
-        var CM = Ext.ComponentManager;
-
-        if (CM.referencesDirty) {
-            CM.fixReferences();
+    getReferences: function() {
+        if (Ext.referencesDirty) {
+            Ext.fixReferences();
         }
 
         return this.refs || null;
@@ -114,8 +110,9 @@ Ext.define('Ext.mixin.Container', {
      * @return {Ext.Component} The referenced component or `null` if it is not found.
      * @since 6.0.1
      */
-    lookup: function (ref) {
+    lookup: function(ref) {
         var refs = this.getReferences();
+
         return (refs && refs[ref]) || null;
     },
 
@@ -126,8 +123,9 @@ Ext.define('Ext.mixin.Container', {
      * @return {Ext.Component} The component or `null` if it is not found.
      * @since 6.5.0
      */
-    lookupName: function (name) {
+    lookupName: function(name) {
         var items = this.getNamedItems();
+
         return (items && items[name]) || null;
     },
 
@@ -140,7 +138,7 @@ Ext.define('Ext.mixin.Container', {
      * @return {Ext.Component} The referenced component or `null` if it is not found.
      * @since 5.0
      */
-    lookupReference: function (ref) {
+    lookupReference: function(ref) {
         return this.lookup(ref);
     },
 
@@ -150,7 +148,7 @@ Ext.define('Ext.mixin.Container', {
          * @param {Ext.Component} component The component to reference.
          * @private
          */
-        attachNameRef: function (component) {
+        attachNameRef: function(component) {
             var me = this,
                 key = component.name || component._name,
                 entry, nameRefs;
@@ -159,6 +157,7 @@ Ext.define('Ext.mixin.Container', {
             if (key && !me.destroying && !me.destroyed) {
                 nameRefs = me.nameRefs || (me.nameRefs = {});
                 entry = nameRefs[key];
+
                 if (!entry) {
                     entry = component.shareableName ? [component] : component;
                 }
@@ -184,7 +183,7 @@ Ext.define('Ext.mixin.Container', {
          * @param {Ext.Component} component The component to reference.
          * @private
          */
-        attachReference: function (component) {
+        attachReference: function(component) {
             var me = this,
                 key, refs;
 
@@ -205,11 +204,9 @@ Ext.define('Ext.mixin.Container', {
 
         containerOnAdded: function(component, instanced) {
             // We have been added to a container, we may have child references
-            // or be a reference ourself. At this point we have no way of knowing if 
+            // or be a reference ourselves. At this point we have no way of knowing if
             // our references are correct, so trigger a fix.
-            if (instanced) {
-                Ext.ComponentManager.markReferencesDirty();
-            }
+            Ext.ComponentManager.markReferencesDirty();
         },
 
         containerOnRemoved: function(destroying) {
@@ -241,13 +238,15 @@ Ext.define('Ext.mixin.Container', {
             if (controller) {
                 inheritedState.referenceHolder = controller;
                 referenceHolder = true;
-            } else if (referenceHolder) {
+            }
+            else if (referenceHolder) {
                 inheritedState.referenceHolder = me;
             }
 
             if (referenceHolder) {
                 inheritedState.referencePath = '';
-            } else if (reference && me.isParentReference) {
+            }
+            else if (reference && me.isParentReference) {
                 inheritedState.referencePath = me.referenceKey + '.';
             }
 
@@ -257,11 +256,12 @@ Ext.define('Ext.mixin.Container', {
 
             if (viewModel) {
                 inheritedState.viewModelPath = '';
-            } else if (reference && me.isParentReference) {
+            }
+            else if (reference && me.isParentReference) {
                 inheritedState.viewModelPath = me.viewModelKey + '.';
             }
         },
-        
+
         setupReference: function(reference) {
             var len;
 

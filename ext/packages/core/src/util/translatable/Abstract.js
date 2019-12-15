@@ -1,8 +1,8 @@
 /**
  * @private
  *
- * The abstract class. Sub-classes are expected, at the very least, to implement translation logics inside
- * the 'translate' method
+ * The abstract class. Sub-classes are expected, at the very least, to implement translation logics
+ * inside the 'translate' method
  */
 Ext.define('Ext.util.translatable.Abstract', {
     extend: 'Ext.Evented',
@@ -27,7 +27,11 @@ Ext.define('Ext.util.translatable.Abstract', {
 
         easingY: {
             duration: 300
-        }
+        },
+
+        offsetX: 0,
+
+        offsetY: 0
     },
 
     /**
@@ -78,7 +82,7 @@ Ext.define('Ext.util.translatable.Abstract', {
 
     constructor: function(config) {
         this.callParent([config]);
-        
+
         // this.position is simply an internal reusable object for GC purposes and should
         // not be accessed directly as it's values are not kept in sync.  always use
         // getPosition() to get the position
@@ -107,29 +111,60 @@ Ext.define('Ext.util.translatable.Abstract', {
         return this.factoryEasing(easing);
     },
 
-    doTranslate: function(x, y) {
-        if (this.hasListeners.translate) {
-            this.fireEvent('translate', this, x, y);
+    updateOffsetX: function() {
+        var me = this;
+
+        if (!me.isConfiguring && !me.isAnimating) {
+            me.translateXY(me.x, me.y);
+        }
+    },
+
+    updateOffsetY: function() {
+        var me = this;
+
+        if (!me.isConfiguring && !me.isAnimating) {
+            me.translateXY(me.x, me.y);
         }
     },
 
     translate: function(x, y, animation) {
+        var me = this;
+
         if (animation) {
-            return this.translateAnimated(x, y, animation);
+            return me.translateAnimated(x, y, animation);
         }
 
-        if (this.isAnimating) {
-            this.stopAnimation();
+        if (me.isAnimating) {
+            me.stopAnimation();
         }
 
         if (!isNaN(x) && typeof x === 'number') {
-            this.x = x;
+            me.x = x;
+        }
+        else {
+            x = me.x;
         }
 
         if (!isNaN(y) && typeof y === 'number') {
-            this.y = y;
+            me.y = y;
         }
-        this.doTranslate(x, y);
+        else {
+            y = me.y;
+        }
+
+        me.translateXY(x, y);
+    },
+
+    translateXY: function(x, y) {
+        var me = this;
+
+        if (!me.destroyed) {
+            me.doTranslate(x + me.getOffsetX(), y + me.getOffsetY());
+
+            if (me.hasListeners.translate) {
+                me.fireEvent('translate', me, x, y);
+            }
+        }
     },
 
     translateAxis: function(axis, value, animation) {
@@ -166,15 +201,18 @@ Ext.define('Ext.util.translatable.Abstract', {
         me.activeEasingY = easingY;
 
         me.isAnimating = true;
+
         if (me.ownerCmp) {
             me.ownerCmp.isTranslating = true;
         }
+
         me.lastX = null;
         me.lastY = null;
 
         Ext.AnimationQueue.start(me.doAnimationFrame, me);
 
         me.fireEvent('animationstart', me, me.x, me.y);
+
         return me;
     },
 
@@ -196,8 +234,14 @@ Ext.define('Ext.util.translatable.Abstract', {
 
         now = Ext.Date.now();
         easing = animation.easing;
-        easingX = (typeof x === 'number') ? (animation.easingX || easing || me.getEasingX() || true) : null;
-        easingY = (typeof y === 'number') ? (animation.easingY || easing || me.getEasingY() || true) : null;
+
+        easingX = (typeof x === 'number')
+            ? (animation.easingX || easing || me.getEasingX() || true)
+            : null;
+
+        easingY = (typeof y === 'number')
+            ? (animation.easingY || easing || me.getEasingY() || true)
+            : null;
 
         if (easingX) {
             easingX = me.factoryEasing(easingX);
@@ -239,6 +283,7 @@ Ext.define('Ext.util.translatable.Abstract', {
 
         if (easingX === null && easingY === null) {
             me.stopAnimation();
+
             return;
         }
 
@@ -267,7 +312,7 @@ Ext.define('Ext.util.translatable.Abstract', {
         }
 
         if (me.lastX !== x || me.lastY !== y) {
-            me.doTranslate(x, y);
+            me.translateXY(x, y);
 
             me.lastX = x;
             me.lastY = y;
@@ -287,12 +332,13 @@ Ext.define('Ext.util.translatable.Abstract', {
         me.activeEasingY = null;
 
         me.isAnimating = false;
+
         if (me.ownerCmp) {
             me.ownerCmp.isTranslating = false;
         }
 
         Ext.AnimationQueue.stop(me.doAnimationFrame, me);
-        
+
         me.fireEvent('animationend', me, me.x, me.y);
 
         if (me.callback) {
@@ -305,7 +351,7 @@ Ext.define('Ext.util.translatable.Abstract', {
         this.translate(this.x, this.y);
     },
 
-    resolveListenerScope: function () {
+    resolveListenerScope: function() {
         var ownerCmp = this.ownerCmp,
             a = arguments;
 
@@ -318,16 +364,17 @@ Ext.define('Ext.util.translatable.Abstract', {
 
     destroy: function() {
         var me = this;
-        
+
         me.destroying = true;
-        
+
         if (me.isAnimating) {
             me.stopAnimation();
         }
 
         me.callParent();
-        
-        me.destroying = false;
+
+        // This just makes it hard to ask "was destroy() called?":
+        // me.destroying = false; // removed in 7.0
         me.destroyed = true;
     }
 });

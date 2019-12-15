@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * Basic Toolbar class. Although the {@link Ext.container.Container#defaultType defaultType} for
  * Toolbar is {@link Ext.button.Button button}, Toolbar elements (child items for the Toolbar container)
@@ -184,6 +185,7 @@
  * @constructor
  * Creates a new Toolbar
  * @param {Object/Object[]} config A config object or an array of buttons to {@link #method-add}
+ * eslint-enable max-len
  */
 Ext.define('Ext.toolbar.Toolbar', {
     extend: 'Ext.container.Container',
@@ -332,7 +334,7 @@ Ext.define('Ext.toolbar.Toolbar', {
         }
     },
 
-    initComponent: function () {
+    initComponent: function() {
         var me = this,
             layout = me.layout,
             vertical = me.vertical;
@@ -341,16 +343,18 @@ Ext.define('Ext.toolbar.Toolbar', {
             me.vertical = vertical = me.dock === 'right' || me.dock === 'left';
         }
 
-        me.layout = layout = Ext.applyIf(Ext.isString(layout) ? {
-            type: layout
-        } : layout || {}, {
-            type: vertical ? 'vbox' : 'hbox',
-            align: vertical ? 'stretchmax' : 'middle'
-        });
+        me.layout = layout = Ext.applyIf(
+            Ext.isString(layout) ? { type: layout } : layout || {},
+            {
+                type: vertical ? 'vbox' : 'hbox',
+                align: vertical ? 'stretchmax' : 'middle'
+            }
+        );
 
         if (me.overflowHandler) {
             layout.overflowHandler = me.overflowHandler;
-        } else if (me.enableOverflow) {
+        }
+        else if (me.enableOverflow) {
             layout.overflowHandler = 'menu';
         }
 
@@ -385,7 +389,7 @@ Ext.define('Ext.toolbar.Toolbar', {
         }
     },
 
-    getRefItems: function (deep) {
+    getRefItems: function(deep) {
         var me = this,
             items = me.callParent(arguments),
             layout = me.layout,
@@ -393,10 +397,12 @@ Ext.define('Ext.toolbar.Toolbar', {
 
         if (deep && (me.enableOverflow || (me.overflowHandler === 'menu'))) {
             handler = layout.overflowHandler;
+
             if (handler && handler.menu) {
                 items = items.concat(handler.menu.getRefItems(deep));
             }
         }
+
         return items;
     },
 
@@ -406,7 +412,8 @@ Ext.define('Ext.toolbar.Toolbar', {
      *
      * **Note**: See the notes within {@link Ext.container.Container#method-add}.
      *
-     * @param {Ext.Component.../Object.../String.../HTMLElement...} args The following types of arguments are all valid:
+     * @param {Ext.Component.../Object.../String.../HTMLElement...} args The following types
+     * of arguments are all valid:
      *
      *  - `{@link Ext.button.Button config}`: A valid button config object
      *  - `HTMLElement`: Any standard HTML element
@@ -438,7 +445,7 @@ Ext.define('Ext.toolbar.Toolbar', {
     /**
      * @private
      */
-    lookupComponent: function (c) {
+    lookupComponent: function(c) {
         var args = arguments,
             shortcut, T;
 
@@ -450,9 +457,11 @@ Ext.define('Ext.toolbar.Toolbar', {
                 c = {
                     xtype: shortcut
                 };
-            } else if (shortcut) {
+            }
+            else if (shortcut) {
                 c = Ext.apply({}, shortcut);
-            } else {
+            }
+            else {
                 c = {
                     xtype: 'tbtext',
                     text: c
@@ -468,19 +477,22 @@ Ext.define('Ext.toolbar.Toolbar', {
         return this.callParent(args);
     },
 
-    onBeforeAdd: function (component) {
+    onBeforeAdd: function(component) {
         var me = this,
             isFooter = me.ui === 'footer',
             defaultButtonUI = isFooter ? me.defaultFooterButtonUI : me.defaultButtonUI;
 
         if (component.isSegmentedButton) {
-            if (component.getDefaultUI() === 'default' && !component.config.hasOwnProperty('defaultUI')) {
+            if (component.getDefaultUI() === 'default' &&
+                !component.config.hasOwnProperty('defaultUI')) {
                 component.setDefaultUI(defaultButtonUI);
             }
-        } else if (component.ui === 'default' && !component.hasOwnProperty('ui')) {
+        }
+        else if (component.ui === 'default' && !component.hasOwnProperty('ui')) {
             if (component.isButton) {
                 component.ui = defaultButtonUI;
-            } else if (component.isFormField) {
+            }
+            else if (component.isFormField) {
                 component.ui = isFooter ? me.defaultFooterFieldUI : me.defaultFieldUI;
             }
         }
@@ -495,7 +507,7 @@ Ext.define('Ext.toolbar.Toolbar', {
 
     onAdd: function(component) {
         var me = this;
-        
+
         // If we encounter a child component that needs to handle arrow keys
         // (input fields, sliders) we opt out of FocusableContainer behavior
         // because it becomes highly confusing for the keyboard users. We also
@@ -512,31 +524,32 @@ Ext.define('Ext.toolbar.Toolbar', {
             me.focusableContainer = false;
             me.ariaRole = 'group';
         }
-        
+
         me.callParent(arguments);
         me.trackMenu(component);
     },
 
-    onRemove: function (c) {
+    onRemove: function(c) {
         this.callParent(arguments);
         this.trackMenu(c, true);
     },
-    
+
     privates: {
         /**
          * @private
          */
-        applyDefaults: function (c) {
+        applyDefaults: function(c) {
             if (!Ext.isString(c)) {
                 c = this.callParent(arguments);
             }
+
             return c;
         },
 
         /**
          * @private
          */
-        trackMenu: function (item, remove) {
+        trackMenu: function(item, remove) {
             var me = this;
 
             if (item.menu) {
@@ -548,14 +561,14 @@ Ext.define('Ext.toolbar.Toolbar', {
             }
         },
 
-        getChildItemsToDisable: function () {
+        getChildItemsToDisable: function() {
             return this.items.getRange();
         },
 
         /**
          * @private
          */
-        onItemOver: function (e, target) {
+        onItemOver: function(e, target) {
             var btn = Ext.Component.from(target),
                 activeMenuBtn = this.activeMenuBtn;
 
@@ -569,14 +582,14 @@ Ext.define('Ext.toolbar.Toolbar', {
         /**
          * @private
          */
-        onButtonMenuShow: function (btn) {
+        onButtonMenuShow: function(btn) {
             this.activeMenuBtn = btn;
         },
 
         /**
          * @private
          */
-        onButtonMenuHide: function (btn) {
+        onButtonMenuHide: function(btn) {
             this.activeMenuBtn = null;
         }
     }

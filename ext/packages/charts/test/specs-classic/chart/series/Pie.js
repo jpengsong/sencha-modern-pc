@@ -6,17 +6,17 @@ function() {
         spyOn(Ext.log, 'warn');
     });
 
-    describe('label.display', function () {
+    describe('label.display', function() {
         var chart;
 
         afterEach(function() {
             Ext.destroy(chart);
         });
 
-        it('should hide the labels if set to `none`', function () {
+        it('should hide the labels if set to `none`', function() {
             var layoutDone;
 
-            runs(function () {
+            runs(function() {
                 chart = new Ext.chart.PolarChart({
                     renderTo: document.body,
                     animation: false,
@@ -43,18 +43,22 @@ function() {
                         }]
                     },
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutDone = true;
                         }
                     }
                 });
             });
-            waitsFor(function () {
+
+            waitsFor(function() {
                 return layoutDone;
             });
-            runs(function () {
+
+            runs(function() {
                 var series = chart.getSeries()[0];
+
                 var labels = series.getSprites()[0].getMarker('labels');
+
                 expect(labels.instances[0].hidden).toBe(false);
                 expect(labels.instances[1].hidden).toBe(false);
                 expect(labels.attr.hidden).toBe(true);
@@ -62,6 +66,7 @@ function() {
                 series.setLabel({
                     display: 'inside'
                 });
+
                 expect(labels.instances[0].display).toBe('inside');
                 expect(labels.instances[1].display).toBe('inside');
                 expect(labels.instances[0].hidden).toBe(false);
@@ -70,5 +75,4 @@ function() {
             });
         });
     });
-
 });

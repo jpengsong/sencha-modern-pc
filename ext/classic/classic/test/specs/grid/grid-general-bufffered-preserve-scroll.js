@@ -1,6 +1,4 @@
-/* global Ext, expect, spyOn, jasmine, xit, MockAjaxManager */
-
-(Ext.isIE8 ? xtopSuite : topSuite)("grid-general-buffered-preserve-scroll",
+(Ext.isIE8 || Ext.os.is.Android ? xtopSuite : topSuite)("grid-general-buffered-preserve-scroll",
     [false, 'Ext.grid.Panel', 'Ext.data.ArrayStore', 'Ext.data.BufferedStore'],
 function() {
     var grid, store,
@@ -8,9 +6,11 @@ function() {
         proxyStoreLoad = Ext.data.ProxyStore.prototype.load,
         loadStore = function() {
             proxyStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         };
 
@@ -40,8 +40,10 @@ function() {
 
             if (Ext.supports.CssTransforms && !Ext.isIE9m) {
                 transform = dom.style[transformStyleName];
+
                 return transform ? parseInt(transform.split(',')[1], 10) : 0;
-            } else {
+            }
+            else {
                 return parseInt(dom.style.top || '0', 10);
             }
         }
@@ -81,6 +83,7 @@ function() {
                     title: 'Title' + i
                 });
             }
+
             return recs;
         }
 
@@ -113,7 +116,7 @@ function() {
             for (i = 0, len = requests.length; i < len; i++) {
                 request = requests[i];
                 params = request.options.params;
-                
+
                 if (Ext.Array.contains(pages, params.page)) {
                     data = getData(params.start, params.limit);
 
@@ -179,7 +182,7 @@ function() {
 
             // Load inline in the scroll event
             bufferedRenderer.scrollToLoadBuffer = 0;
-            
+
             scrollRequestCount = 0;
         });
 
@@ -207,6 +210,7 @@ function() {
                     if (!store.data.peekPage(1)) {
                         return true;
                     }
+
                     view.scrollBy(null, 100);
                     scrollRequestCount++;
                 }
@@ -216,7 +220,7 @@ function() {
                 scrollEventCount = 0;
                 scroller.scrollTo(0, 0);
             });
-            
+
             waitsFor(function() {
                 return scrollEventCount === 1;
             }, 'A scroll event to fire', 20000);
@@ -247,7 +251,7 @@ function() {
                 scrollEventCount = 0;
                 scroller.scrollTo(0, 0);
             });
-            
+
             waitsFor(function() {
                 return scrollEventCount === 1;
             });
@@ -275,14 +279,14 @@ function() {
                 if (scrollEventCount === scrollRequestCount) {
                     view.scrollBy(null, scrollSize);
                     scrollRequestCount++;
-                } 
+                }
             });
 
             runs(function() {
                 scrollEventCount = 0;
                 scroller.scrollTo(0, 0);
             });
-            
+
             waitsFor(function() {
                 return scrollEventCount === 1;
             });
@@ -317,6 +321,7 @@ function() {
 
             waitsFor(function() {
                 satisfyRequests();
+
                 return scrollDone;
             }, 'scroll to finish');
 
@@ -334,6 +339,7 @@ function() {
 
             waitsFor(function() {
                 satisfyRequests();
+
                 return refreshed;
             }, 'store to reload');
 

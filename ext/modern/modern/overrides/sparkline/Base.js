@@ -7,6 +7,7 @@ Ext.define('Ext.override.sparkline.Base', {
 
     statics: {
         constructTip: function() {
+            // eslint-disable-next-line dot-notation
             return new Ext.tip['ToolTip']({
                 id: 'sparklines-tooltip',
                 trackMouse: true,
@@ -17,7 +18,7 @@ Ext.define('Ext.override.sparkline.Base', {
         }
     },
 
-    onMouseMove: function (e) {
+    onMouseMove: function(e) {
         this.currentEvent = e;
         this.getSharedTooltip().currentTarget.attach(this.element);
         this.callParent([e]);
@@ -26,6 +27,7 @@ Ext.define('Ext.override.sparkline.Base', {
     privates: {
         hideTip: function() {
             var tip = this.getSharedTooltip();
+
             // Will detach the currentTarget and hide soon...
             // unless we quickly attach to a new one.
             tip.delayHide();

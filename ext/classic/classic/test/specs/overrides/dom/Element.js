@@ -1,114 +1,119 @@
 topSuite("Ext.overrides.dom.Element", [false, 'Ext.dom.Element', 'Ext.window.Window'], function() {
     var E = Ext.dom.Element,
         topEl, el, dom;
-    
+
+    var fakeScope = {
+        id: "fakeScope",
+        fakeScope: true
+    };
+
     function createElement(markup, selector) {
         if (topEl) {
             topEl.destroy();
         }
-        
+
         if (Ext.isArray(markup)) {
             markup = markup.join('');
         }
-        
+
         topEl = Ext.dom.Helper.insertFirst(Ext.getBody(), markup, true);
-        
+
         el = selector ? topEl.down(selector) : topEl;
         dom = el.dom;
     }
-    
+
     afterEach(function() {
         if (topEl) {
             topEl.destroy();
         }
-        
+
         if (el) {
             el.destroy();
         }
 
         topEl = el = dom = null;
     });
-    
+
     describe("shim", function() {
         var iframe, win;
-        
+
         afterEach(function() {
             Ext.destroy(iframe, win);
         });
-        
+
         it("should mask all iframes when resizing an element with shim and unmask when done.", function() {
             iframe = Ext.getBody().createChild({
-                tag : 'iframe',
+                tag: 'iframe',
                 src: 'about:blank',
                 style: 'position:absolute;left:0px;top:0px;width:200px;height:100px;'
             });
-            
+
             win = new Ext.window.Window({
-                width : 100,
+                width: 100,
                 height: 100,
                 title: 'Test',
                 shim: true
             }).show();
-            
+
             jasmine.fireMouseEvent(win.resizer.south, 'mousedown');
-            
+
             expect(Ext.fly(iframe.dom.parentNode).isMasked()).toBe(true);
-            
+
             jasmine.fireMouseEvent(win.resizer.south, 'mouseup');
-            
+
             expect(Ext.fly(iframe.dom.parentNode).isMasked()).toBe(false);
         });
     });
-    
+
     describe("setVisible", function() {
         var offsetsCls = Ext.baseCSSPrefix + 'hidden-offsets',
             clipCls = Ext.baseCSSPrefix + 'hidden-clip',
             visible = Ext.isIE8 ? 'inherit' : 'visible';
-        
+
         beforeEach(function() {
             createElement({});
         });
-        
+
         describe("mode: DISPLAY", function() {
             describe("hiding", function() {
                 beforeEach(function() {
                     el.setVisibilityMode(Ext.dom.Element.DISPLAY);
                     el.setVisible(false);
                 });
-                
+
                 it("should assign display:none", function() {
                     expect(el.getStyle('display')).toBe('none');
                 });
-                
+
                 it("should not assign visibility:hidden", function() {
                     expect(el.getStyle('visibility')).toBe(visible);
                 });
-                
+
                 it("should not assign offsetsCls", function() {
                     expect(el.hasCls(offsetsCls)).toBe(false);
                 });
-                
+
                 it("should not assign clipCls", function() {
                     expect(el.hasCls(clipCls)).toBe(false);
                 });
-                
+
                 describe("showing", function() {
                     beforeEach(function() {
                         el.setVisible(true);
                     });
-                    
+
                     it("should assign display:block", function() {
                         expect(el.getStyle('display')).toBe('block');
                     });
-                    
+
                     it("should not assign visibility:hidden", function() {
                         expect(el.getStyle('visibility')).toBe(visible);
                     });
-                    
+
                     it("should not assign offsetsCls", function() {
                         expect(el.hasCls(offsetsCls)).toBe(false);
                     });
-                    
+
                     it("should not assign clipCls", function() {
                         expect(el.hasCls(clipCls)).toBe(false);
                     });
@@ -122,40 +127,40 @@ topSuite("Ext.overrides.dom.Element", [false, 'Ext.dom.Element', 'Ext.window.Win
                     el.setVisibilityMode(Ext.dom.Element.VISIBILITY);
                     el.setVisible(false);
                 });
-                
+
                 it("should assign visibility:hidden", function() {
                     expect(el.getStyle('visibility')).toBe('hidden');
                 });
-                
+
                 it("should not assign display:none", function() {
                     expect(el.getStyle('display')).toBe('block');
                 });
-                
+
                 it("should not assign offsetsCls", function() {
                     expect(el.hasCls(offsetsCls)).toBe(false);
                 });
-                
+
                 it("should not assign clipCls", function() {
                     expect(el.hasCls(clipCls)).toBe(false);
                 });
-                
+
                 describe("showing", function() {
                     beforeEach(function() {
                         el.setVisible(true);
                     });
-                    
+
                     it("should assign visibility:visible", function() {
                         expect(el.getStyle('visibility')).toBe(visible);
                     });
-                    
+
                     it("should not assign display:none", function() {
                         expect(el.getStyle('display')).toBe('block');
                     });
-                    
+
                     it("should not assign offsetsCls", function() {
                         expect(el.hasCls(offsetsCls)).toBe(false);
                     });
-                    
+
                     it("should not assign clipCls", function() {
                         expect(el.hasCls(clipCls)).toBe(false);
                     });
@@ -169,36 +174,36 @@ topSuite("Ext.overrides.dom.Element", [false, 'Ext.dom.Element', 'Ext.window.Win
                     el.setVisibilityMode(Ext.dom.Element.OFFSETS);
                     el.setVisible(false);
                 });
-                
+
                 it("should assign offsetsCls", function() {
                     expect(el.hasCls(offsetsCls)).toBe(true);
                 });
-                
+
                 it("should not assign display:none", function() {
                     expect(el.getStyle('display')).toBe('block');
                 });
-                
+
                 it("should not assign clipCls", function() {
                     expect(el.hasCls(clipCls)).toBe(false);
                 });
-                
+
                 describe("showing", function() {
                     beforeEach(function() {
                         el.setVisible(true);
                     });
-                    
+
                     it("should reset offsetsCls", function() {
                         expect(el.hasCls(offsetsCls)).toBe(false);
                     });
-                    
+
                     it("should not assign display:none", function() {
                         expect(el.getStyle('display')).toBe('block');
                     });
-                    
+
                     it("should not assign visibility:hidden", function() {
                         expect(el.getStyle('visibility')).toBe(visible);
                     });
-                    
+
                     it("should not assign clipCls", function() {
                         expect(el.hasCls(clipCls)).toBe(false);
                     });
@@ -212,40 +217,40 @@ topSuite("Ext.overrides.dom.Element", [false, 'Ext.dom.Element', 'Ext.window.Win
                     el.setVisibilityMode(Ext.dom.Element.CLIP);
                     el.setVisible(false);
                 });
-                
+
                 it("should assign clipCls", function() {
                     expect(el.hasCls(clipCls)).toBe(true);
                 });
-                
+
                 it("should not assign display:none", function() {
                     expect(el.getStyle('display')).toBe('block');
                 });
-                
+
                 it("should not assign visibility:hidden", function() {
                     expect(el.getStyle('visibility')).toBe(visible);
                 });
-                
+
                 it("should not assign offsetsCls", function() {
                     expect(el.hasCls(offsetsCls)).toBe(false);
                 });
-                
+
                 describe("showing", function() {
                     beforeEach(function() {
                         el.setVisible(true);
                     });
-                    
+
                     it("should reset clipCls", function() {
                         expect(el.hasCls(clipCls)).toBe(false);
                     });
-                    
+
                     it("should not assign display:none", function() {
                         expect(el.getStyle('display')).toBe('block');
                     });
-                    
+
                     it("should not assign visibility:hidden", function() {
                         expect(el.getStyle('visibility')).toBe(visible);
                     });
-                    
+
                     it("should not assign offsetsCls", function() {
                         expect(el.hasCls(offsetsCls)).toBe(false);
                     });
@@ -253,7 +258,7 @@ topSuite("Ext.overrides.dom.Element", [false, 'Ext.dom.Element', 'Ext.window.Win
             });
         });
     });
-    
+
     describe("masking", function() {
         describe("isMasked", function() {
             beforeEach(function() {
@@ -270,15 +275,15 @@ topSuite("Ext.overrides.dom.Element", [false, 'Ext.dom.Element', 'Ext.window.Win
                     }]
                 }, '#bar');
             });
-            
+
             afterEach(function() {
                 Ext.getBody().unmask();
             });
-            
+
             it("should be false when no elements are masked", function() {
                 expect(el.isMasked()).toBe(false);
             });
-            
+
             it("should be false when child element is masked", function() {
                 var baz = el.down('#baz');
 
@@ -288,32 +293,32 @@ topSuite("Ext.overrides.dom.Element", [false, 'Ext.dom.Element', 'Ext.window.Win
 
                 baz.destroy();
             });
-            
+
             it("should be true when el is masked", function() {
                 el.mask();
-                
+
                 expect(el.isMasked()).toBe(true);
             });
-            
+
             it("should be false when !hierarchy and the parent is masked", function() {
                 topEl.mask();
-                
+
                 expect(el.isMasked()).toBe(false);
             });
-            
+
             it("should be true when hierarchy === true and parent is masked", function() {
                 topEl.mask();
-                
+
                 expect(el.isMasked(true)).toBe(true);
             });
-            
+
             it("should be true when hierarchy === true and body is masked", function() {
                 Ext.getBody().mask();
-                
+
                 expect(el.isMasked(true)).toBe(true);
             });
         });
-        
+
         describe("an element", function() {
             beforeEach(function() {
                 createElement([
@@ -325,48 +330,48 @@ topSuite("Ext.overrides.dom.Element", [false, 'Ext.dom.Element', 'Ext.window.Win
                     '</div>'
                 ]);
             });
-            
+
             describe("when masked", function() {
                 beforeEach(function() {
                     el.mask();
                 });
-                
+
                 it("should save its tabbable state", function() {
                     expect(el.isTabbable()).toBeFalsy();
                 });
-            
+
                 it("should save its children tabbable states", function() {
                     var tabbables = el.findTabbableElements({
                         skipSelf: true
                     });
-                
+
                     expect(tabbables.length).toBe(0);
                 });
             });
-            
+
             describe("when unmasked", function() {
                 beforeEach(function() {
                     el.mask();
                     el.unmask();
                 });
-                
+
                 it("should restore its tabbable state", function() {
                     expect(el.isTabbable()).toBeTruthy();
                 });
-                
+
                 it("should restore its children tabbable state", function() {
                     var tabbables = el.findTabbableElements({
                         skipSelf: true
                     });
-                    
+
                     expect(tabbables.length).toBe(2);
                 });
             });
         });
-        
+
         describe("document body", function() {
             var el, saved;
-            
+
             beforeEach(function() {
                 createElement([
                     '<div id="foo" tabindex="0">',
@@ -376,49 +381,49 @@ topSuite("Ext.overrides.dom.Element", [false, 'Ext.dom.Element', 'Ext.window.Win
                         '</div>',
                     '</div>'
                 ]);
-                
+
                 el = Ext.getBody();
                 saved = el.isTabbable();
             });
-            
+
             afterEach(function() {
                 saved = undefined;
                 el.unmask();
             });
-            
+
             describe("when masked", function() {
                 beforeEach(function() {
                     el.mask();
                 });
-                
+
                 it("should not change its tabbable state", function() {
                     expect(el.isTabbable()).toBe(saved);
                 });
-                
+
                 it("should save its children tabbable states", function() {
                     var tabbables = el.findTabbableElements({
                         skipSelf: true
                     });
-                    
+
                     expect(tabbables.length).toBe(0);
                 });
             });
-            
+
             describe("when unmasked", function() {
                 beforeEach(function() {
                     el.mask();
                     el.unmask();
                 });
-                
+
                 it("should not change its tabbable state", function() {
                     expect(el.isTabbable()).toBe(saved);
                 });
-                
+
                 it("should restore its children tabbable states", function() {
                     var tabbables = el.findTabbableElements({
                         skipSelf: true
                     });
-                    
+
                     expect(tabbables.length).toBe(3);
                 });
             });
@@ -426,12 +431,13 @@ topSuite("Ext.overrides.dom.Element", [false, 'Ext.dom.Element', 'Ext.window.Win
     });
 
     function describeMethods(fly) {
-        describe('methods (using ' + (fly ? 'Ext.fly()' : 'new Ext.dom.Element()') + ')', function(){
+        describe('methods (using ' + (fly ? 'Ext.fly()' : 'new Ext.dom.Element()') + ')', function() {
             var domEl, element;
 
             function addElement(tag) {
                 domEl = document.createElement(tag || 'div');
                 document.body.appendChild(domEl);
+
                 return fly ? Ext.fly(domEl) : Ext.get(domEl);
             }
 
@@ -446,8 +452,10 @@ topSuite("Ext.overrides.dom.Element", [false, 'Ext.dom.Element', 'Ext.window.Win
 
             describe("hover", function() {
                 var overFn, outFn, options;
+
                 beforeEach(function() {
                     element = addElement('div');
+
                     overFn = function() {
                         return 1;
                     };
@@ -504,33 +512,37 @@ topSuite("Ext.overrides.dom.Element", [false, 'Ext.dom.Element', 'Ext.window.Win
                                 '-ms-transform: rotate(90deg);', // IE9
                                 'transform: rotate(90deg);'
                             ];
-                        
+
                         // SASS mixin only applies filter in IE8
                         if (Ext.isIE8) {
                             props.push('filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);');
                         }
-                        
+
                         props = props.join('');
-                        
+
                         if (styleSheet.insertRule) {
                             styleSheet.insertRule(selector + '{' + props + '}', styleSheet.cssRules.length);
-                        } else {
+                        }
+                        else {
                             // IE8
                             styleSheet.addRule(selector, props);
                         }
+
                         element = addElement('div');
                         element.setWidth(100);
                         element.setHeight(30);
-                        
+
                         element.setVertical(90, 'vert');
                     });
 
                     afterEach(function() {
                         var styleSheet = document.styleSheets[0];
+
                         if (styleSheet.deleteRule) {
 
                             styleSheet.deleteRule(1);
-                        } else {
+                        }
+                        else {
                             // IE8
                             styleSheet.removeRule(styleSheet.rules.length - 1);
                         }

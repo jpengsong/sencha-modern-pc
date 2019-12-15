@@ -1,2 +1,0 @@
-# theme-crimson - Read Me
-

@@ -1,4 +1,4 @@
-topSuite("Ext.carousel.Carousel", 
+topSuite("Ext.carousel.Carousel",
     ['Ext.form.Panel', 'Ext.field.Text'],
  function() {
     var carousel;
@@ -52,7 +52,7 @@ topSuite("Ext.carousel.Carousel",
         var form;
 
         beforeEach(function() {
-            form = Ext.create('Ext.form.Panel',{
+            form = Ext.create('Ext.form.Panel', {
                 renderTo: document.body,
                 width: 500,
                 height: 500
@@ -87,9 +87,10 @@ topSuite("Ext.carousel.Carousel",
                 expect(Ext.ComponentQuery.query('carousel field').length).toBe(3 * n);
             });
 
-            it("should work with form getValues" + n + " pages", function(){ 
+            it("should work with form getValues" + n + " pages", function() {
                 addPages(n, carousel.getItems());
                 var values = form.getValues();
+
                 expect((Ext.isString(values.a) ? [values.a] : values.a).length).toBe(n);
                 expect((Ext.isString(values.b) ? [values.b] : values.b).length).toBe(n);
                 expect((Ext.isString(values.c) ? [values.c] : values.c).length).toBe(n);

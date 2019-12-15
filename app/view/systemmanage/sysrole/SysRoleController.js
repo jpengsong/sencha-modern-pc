@@ -2,6 +2,19 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleController", {
     extend: 'Ext.app.ViewController',
     alias: 'controller.sysrole',
 
+    //查询
+    onSearch: function () {
+        var me = this, refs = me.getReferences(), gridStore = refs.grid.getStore();
+        App.Page.setQueryItems(gridStore, App.Page.getQueryItems(refs.search));
+        gridStore.loadPage(1);
+    },
+
+    //重置
+    onReset: function () {
+        var me = this, refs = me.getReferences();
+        App.Page.resetQueryItems(refs.search);
+    },
+
     //新增
     onAdd: function () {
         var me = this, refs = me.getReferences();
@@ -22,7 +35,7 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleController", {
     onEdit: function () {
         var me = this, refs = me.getReferences();
         if (App.Page.selectionModel(refs.grid, false)) {
-            record = refs.grid.getSelectionModel().getSelection()[0];
+            record = refs.grid.getSelectable().getSelectedRecord().clone();
             Ext.widget({
                 scope: refs,
                 xtype: "sysroleedit",
@@ -30,7 +43,7 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleController", {
                 title: '编辑角色',
                 viewModel: {
                     data: {
-                        role: Ext.create("App.model.systemmanage.SysRole", record.data)
+                        role: record
                     }
                 }
             })
@@ -41,7 +54,7 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleController", {
     onDel: function () {
         var me = this, refs = me.getReferences(), records, idArray = [];
         if (App.Page.selectionModel(refs.grid, true)) {
-            records = refs.grid.getSelectionModel().getSelection();
+            records = refs.grid.getSelectable().getSelectedRecords();
             Ext.each(records, function (record, index) {
                 idArray.push(record.id);
             })
@@ -58,14 +71,14 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleController", {
                             params: idArray.join(","),
                             success: function (data) {
                                 if (data.Data > 0) {
-                                    App.Msg.Info("删除成功");
+                                    Ext.Msg.alert("提示","删除成功");
                                     refs.grid.getStore().loadPage(1);
                                 } else {
-                                    App.Msg.Info("删除失败");
+                                    Ext.Msg.alert("提示","删除失败");
                                 }
                             },
                             error: function (data) {
-                                App.Msg.Error("删除异常");
+                                Ext.Msg.alert("提示","删除异常");
                             }
                         })
                     }
@@ -77,11 +90,11 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleController", {
     onMenuRole: function () {
         var me = this, refs = me.getReferences(), record, window;
         if (App.Page.selectionModel(refs.grid, false)) {
-            record = refs.grid.getSelectionModel().getSelection()[0];
-            window = Ext.widget({
-                references: me.getReferences(),
+            record = refs.grid.getSelectable().getSelectedRecord();
+            Ext.create({
                 xtype: "sysrolemenu",
                 title: '分配权限',
+                references: me.getReferences(),
                 viewModel: {
                     data: {
                         role: record
@@ -96,7 +109,6 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleController", {
                     }
                 }
             })
-            window.show();
         }
     }
 })

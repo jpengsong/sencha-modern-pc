@@ -1,7 +1,7 @@
-topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
+topSuite("Ext.route.Action", ['Ext.app.Controller'], function() {
     var instance;
 
-    function promiseHasBeenResolved (promise) {
+    function promiseHasBeenResolved(promise) {
         var resolved = spyOn({
                     test: Ext.emptyFn
                 }, 'test'),
@@ -13,13 +13,13 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
         waitsForSpy(resolved, 'Promise was never resolved');
 
-        runs(function () {
+        runs(function() {
             expect(resolved).toHaveBeenCalled();
             expect(rejected).not.toHaveBeenCalled();
         });
     }
 
-    function promiseHasBeenRejected (promise) {
+    function promiseHasBeenRejected(promise) {
         var resolved = spyOn({
                     test: Ext.emptyFn
                 }, 'test'),
@@ -31,21 +31,21 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
         waitsForSpy(rejected, 'Promise was never rejected');
 
-        runs(function () {
+        runs(function() {
             expect(rejected).toHaveBeenCalled();
             expect(resolved).not.toHaveBeenCalled();
         });
     }
 
-    afterEach(function () {
+    afterEach(function() {
         if (instance) {
             instance.destroy();
             instance = null;
         }
     });
 
-    describe("constructing", function () {
-        it("should have array of before functions passing a single object", function () {
+    describe("constructing", function() {
+        it("should have array of before functions passing a single object", function() {
             instance = new Ext.route.Action({
                 befores: {
                     fn: Ext.emptyFn,
@@ -56,7 +56,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
             expect(instance.getBefores().length).toBe(1);
         });
 
-        it("should have array of before functions passing multiple objects", function () {
+        it("should have array of before functions passing multiple objects", function() {
             instance = new Ext.route.Action({
                 befores: [{
                     fn: Ext.emptyFn,
@@ -70,7 +70,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
             expect(instance.getBefores().length).toBe(2);
         });
 
-        it("should have array of action functions passing a single object", function () {
+        it("should have array of action functions passing a single object", function() {
             instance = new Ext.route.Action({
                 actions: {
                     fn: Ext.emptyFn,
@@ -81,7 +81,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
             expect(instance.getActions().length).toBe(1);
         });
 
-        it("should have array of action functions passing multiple objects", function () {
+        it("should have array of action functions passing multiple objects", function() {
             instance = new Ext.route.Action({
                 actions: [{
                     fn: Ext.emptyFn,
@@ -96,7 +96,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
         });
     });
 
-    describe("run", function () {
+    describe("run", function() {
         var actionExecuted = 0,
             beforeExecuted = 0,
             numArgs = 0,
@@ -104,9 +104,9 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
             token = 'foo/bar',
             controller;
 
-        beforeEach(function () {
+        beforeEach(function() {
             controller = new Ext.app.Controller({
-                beforeHandleRoute: function () {
+                beforeHandleRoute: function() {
                     numBeforeArgs += arguments.length;
                     beforeExecuted++;
 
@@ -115,23 +115,23 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
                     action.resume();
                 },
 
-                beforeHandleRouteBlock: function () {
+                beforeHandleRouteBlock: function() {
                     numBeforeArgs += arguments.length;
                     beforeExecuted++;
 
                     var action = arguments[arguments.length - 1];
 
-                    action.stop(); //stop the current route
+                    action.stop(); // stop the current route
                 },
 
-                handleRoute: function () {
+                handleRoute: function() {
                     numArgs = arguments.length;
                     actionExecuted++;
                 }
             });
         });
 
-        afterEach(function () {
+        afterEach(function() {
             controller.destroy();
 
             controller = null;
@@ -141,7 +141,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
             numBeforeArgs = 0;
         });
 
-        it("should return promise", function () {
+        it("should return promise", function() {
             instance = new Ext.route.Action({
                 actions: {
                     fn: 'handleRoute',
@@ -152,7 +152,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
             expect(instance.run() instanceof Ext.promise.Promise).toBeTruthy();
         });
 
-        it("should resolve promise", function () {
+        it("should resolve promise", function() {
             var promise;
 
             instance = new Ext.route.Action({
@@ -167,7 +167,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
             promiseHasBeenResolved(promise);
         });
 
-        it("should reject promise", function () {
+        it("should reject promise", function() {
             var promise;
 
             instance = new Ext.route.Action({
@@ -182,7 +182,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
             promiseHasBeenRejected(promise);
         });
 
-        it("should be destroyed after running", function () {
+        it("should be destroyed after running", function() {
             var promise;
 
             instance = new Ext.route.Action({
@@ -196,12 +196,12 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
             promiseHasBeenResolved(promise);
 
-            runs(function () {
+            runs(function() {
                 expect(instance.destroyed).toBeTruthy();
             });
         });
 
-        it("should run a single before function", function () {
+        it("should run a single before function", function() {
             var promise;
 
             instance = new Ext.route.Action({
@@ -215,19 +215,19 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
             promiseHasBeenResolved(promise);
 
-            runs(function () {
+            runs(function() {
                 expect(beforeExecuted).toBe(1);
             });
         });
 
-        it("should run multiple before functions", function () {
+        it("should run multiple before functions", function() {
             var promise;
 
             instance = new Ext.route.Action({
                 befores: [{
                     fn: 'beforeHandleRoute',
                     scope: controller
-                },{
+                }, {
                     fn: 'beforeHandleRoute',
                     scope: controller
                 }]
@@ -237,12 +237,12 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
             promiseHasBeenResolved(promise);
 
-            runs(function () {
+            runs(function() {
                 expect(beforeExecuted).toBe(2);
             });
         });
 
-        it("should run a single action function", function () {
+        it("should run a single action function", function() {
             var promise;
 
             instance = new Ext.route.Action({
@@ -256,19 +256,19 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
             promiseHasBeenResolved(promise);
 
-            runs(function () {
+            runs(function() {
                 expect(actionExecuted).toBe(1);
             });
         });
 
-        it("should run multiple action functions", function () {
+        it("should run multiple action functions", function() {
             var promise;
 
             instance = new Ext.route.Action({
                 actions: [{
                     fn: 'handleRoute',
                     scope: controller
-                },{
+                }, {
                     fn: 'handleRoute',
                     scope: controller
                 }]
@@ -278,15 +278,15 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
             promiseHasBeenResolved(promise);
 
-            runs(function () {
+            runs(function() {
                 expect(actionExecuted).toBe(2);
             });
         });
     });
 
-    describe("before", function () {
-        describe("as a config", function () {
-            it("should add before as an object", function () {
+    describe("before", function() {
+        describe("as a config", function() {
+            it("should add before as an object", function() {
                 instance = new Ext.route.Action({
                     befores: {}
                 });
@@ -294,7 +294,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
                 expect(instance.getBefores().length).toBe(1);
             });
 
-            it("should add before as an array of objects", function () {
+            it("should add before as an array of objects", function() {
                 instance = new Ext.route.Action({
                     befores: [{}, {}]
                 });
@@ -302,9 +302,9 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
                 expect(instance.getBefores().length).toBe(2);
             });
 
-            it("should run before", function () {
+            it("should run before", function() {
                 var fn = spyOn({
-                    test: function (action) {
+                    test: function(action) {
                         action.resume();
                     }
                 }, 'test').andCallThrough();
@@ -321,39 +321,39 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
             });
         });
 
-        describe("added using method", function () {
-            it("should add before when no stack exists", function () {
+        describe("added using method", function() {
+            it("should add before when no stack exists", function() {
                 instance = new Ext.route.Action();
 
-                instance.before(function () {});
+                instance.before(function() {});
 
                 expect(instance.getBefores().length).toBe(1);
             });
 
-            it("should add before to empty before stack", function () {
+            it("should add before to empty before stack", function() {
                 instance = new Ext.route.Action({
                     befores: []
                 });
 
-                instance.before(function () {});
+                instance.before(function() {});
 
                 expect(instance.getBefores().length).toBe(1);
             });
 
-            it("should add before to non-empty before stack", function () {
+            it("should add before to non-empty before stack", function() {
                 instance = new Ext.route.Action({
                     befores: [{}]
                 });
 
-                instance.before(function () {});
+                instance.before(function() {});
 
                 expect(instance.getBefores().length).toBe(2);
             });
 
-            describe("run added before", function () {
-                it("should run before when stack was empty", function () {
+            describe("run added before", function() {
+                it("should run before when stack was empty", function() {
                     var fn = spyOn({
-                            test: function (action) {
+                            test: function(action) {
                                 action.resume();
                             }
                         }, 'test').andCallThrough(),
@@ -367,14 +367,14 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     promiseHasBeenResolved(promise);
 
-                    runs(function () {
+                    runs(function() {
                         expect(fn).toHaveBeenCalled();
                     });
                 });
 
-                it("should run before when stack not empty", function () {
+                it("should run before when stack not empty", function() {
                     var fn = spyOn({
-                            test: function (action) {
+                            test: function(action) {
                                 action.resume();
                             }
                         }, 'test').andCallThrough(),
@@ -382,7 +382,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     instance = new Ext.route.Action({
                         befores: {
-                            fn: function (action) {
+                            fn: function(action) {
                                 action.resume();
                             }
                         }
@@ -394,14 +394,14 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     promiseHasBeenResolved(promise);
 
-                    runs(function () {
+                    runs(function() {
                         expect(fn).toHaveBeenCalled();
                     });
                 });
 
-                it("should not run before when stack not empty", function () {
+                it("should not run before when stack not empty", function() {
                     var fn = spyOn({
-                            test: function (action) {
+                            test: function(action) {
                                 action.resume();
                             }
                         }, 'test').andCallThrough(),
@@ -409,7 +409,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     instance = new Ext.route.Action({
                         befores: {
-                            fn: function (action) {
+                            fn: function(action) {
                                 action.stop();
                             }
                         }
@@ -421,15 +421,15 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     promiseHasBeenRejected(promise);
 
-                    runs(function () {
+                    runs(function() {
                         expect(fn).not.toHaveBeenCalled();
                     });
                 });
 
-                //before inception
-                it("should run before when added in a before", function () {
+                // before inception
+                it("should run before when added in a before", function() {
                     var fn = spyOn({
-                            test: function (action) {
+                            test: function(action) {
                                 action.resume();
                             }
                         }, 'test').andCallThrough(),
@@ -437,7 +437,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     instance = new Ext.route.Action({
                         befores: {
-                            fn: function (action) {
+                            fn: function(action) {
                                 action.before(fn).resume();
                             }
                         }
@@ -447,14 +447,14 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     promiseHasBeenResolved(promise);
 
-                    runs(function () {
+                    runs(function() {
                         expect(fn).toHaveBeenCalled();
                     });
                 });
 
-                it("should not run before when added in a before that will stop", function () {
+                it("should not run before when added in a before that will stop", function() {
                     var fn = spyOn({
-                            test: function (action) {
+                            test: function(action) {
                                 action.resume();
                             }
                         }, 'test').andCallThrough(),
@@ -462,7 +462,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     instance = new Ext.route.Action({
                         befores: {
-                            fn: function (action) {
+                            fn: function(action) {
                                 action.before(fn).stop();
                             }
                         }
@@ -472,17 +472,17 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     promiseHasBeenRejected(promise);
 
-                    runs(function () {
+                    runs(function() {
                         expect(fn).not.toHaveBeenCalled();
                     });
                 });
             });
 
-            describe("run added before with promises", function () {
-                it("should run before when stack was empty", function () {
+            describe("run added before with promises", function() {
+                it("should run before when stack was empty", function() {
                     var fn = spyOn({
-                            test: function (action) {
-                                return new Ext.Promise(function (resolve) {
+                            test: function(action) {
+                                return new Ext.Promise(function(resolve) {
                                     resolve();
                                 });
                             }
@@ -497,15 +497,15 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     promiseHasBeenResolved(promise);
 
-                    runs(function () {
+                    runs(function() {
                         expect(fn).toHaveBeenCalled();
                     });
                 });
 
-                it("should run before when stack not empty", function () {
+                it("should run before when stack not empty", function() {
                     var fn = spyOn({
-                            test: function (action) {
-                                return new Ext.Promise(function (resolve) {
+                            test: function(action) {
+                                return new Ext.Promise(function(resolve) {
                                     resolve();
                                 });
                             }
@@ -514,8 +514,8 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     instance = new Ext.route.Action({
                         befores: {
-                            fn: function (action) {
-                                return new Ext.Promise(function (resolve) {
+                            fn: function(action) {
+                                return new Ext.Promise(function(resolve) {
                                     resolve();
                                 });
                             }
@@ -528,15 +528,15 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     promiseHasBeenResolved(promise);
 
-                    runs(function () {
+                    runs(function() {
                         expect(fn).toHaveBeenCalled();
                     });
                 });
 
-                it("should not run before when stack not empty", function () {
+                it("should not run before when stack not empty", function() {
                     var fn = spyOn({
-                            test: function (action) {
-                                return new Ext.Promise(function (resolve) {
+                            test: function(action) {
+                                return new Ext.Promise(function(resolve) {
                                     resolve();
                                 });
                             }
@@ -545,8 +545,8 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     instance = new Ext.route.Action({
                         befores: {
-                            fn: function (action) {
-                                return new Ext.Promise(function (resolve, reject) {
+                            fn: function(action) {
+                                return new Ext.Promise(function(resolve, reject) {
                                     reject();
                                 });
                             }
@@ -559,15 +559,15 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     promiseHasBeenRejected(promise);
 
-                    runs(function () {
+                    runs(function() {
                         expect(fn).not.toHaveBeenCalled();
                     });
                 });
 
-                it("should run before when added in a before", function () {
+                it("should run before when added in a before", function() {
                     var fn = spyOn({
-                            test: function (action) {
-                                return new Ext.Promise(function (resolve) {
+                            test: function(action) {
+                                return new Ext.Promise(function(resolve) {
                                     resolve();
                                 });
                             }
@@ -576,10 +576,10 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     instance = new Ext.route.Action({
                         befores: {
-                            fn: function (action) {
+                            fn: function(action) {
                                 action.before(fn);
 
-                                return new Ext.Promise(function (resolve) {
+                                return new Ext.Promise(function(resolve) {
                                     resolve();
                                 });
                             }
@@ -590,15 +590,15 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     promiseHasBeenResolved(promise);
 
-                    runs(function () {
+                    runs(function() {
                         expect(fn).toHaveBeenCalled();
                     });
                 });
 
-                it("should not run before when added in a before that will stop", function () {
+                it("should not run before when added in a before that will stop", function() {
                     var fn = spyOn({
-                            test: function (action) {
-                                return new Ext.Promise(function (resolve) {
+                            test: function(action) {
+                                return new Ext.Promise(function(resolve) {
                                     resolve();
                                 });
                             }
@@ -607,10 +607,10 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     instance = new Ext.route.Action({
                         befores: {
-                            fn: function (action) {
+                            fn: function(action) {
                                 action.before(fn);
 
-                                return new Ext.Promise(function (resolve, reject) {
+                                return new Ext.Promise(function(resolve, reject) {
                                     reject();
                                 });
                             }
@@ -621,7 +621,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     promiseHasBeenRejected(promise);
 
-                    runs(function () {
+                    runs(function() {
                         expect(fn).not.toHaveBeenCalled();
                     });
                 });
@@ -629,9 +629,9 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
         });
     });
 
-    describe("action", function () {
-        describe("as a config", function () {
-            it("should add action as an object", function () {
+    describe("action", function() {
+        describe("as a config", function() {
+            it("should add action as an object", function() {
                 instance = new Ext.route.Action({
                     actions: {}
                 });
@@ -639,7 +639,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
                 expect(instance.getActions().length).toBe(1);
             });
 
-            it("should add action as an array of objects", function () {
+            it("should add action as an array of objects", function() {
                 instance = new Ext.route.Action({
                     actions: [{}, {}]
                 });
@@ -647,7 +647,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
                 expect(instance.getActions().length).toBe(2);
             });
 
-            it("should run action", function () {
+            it("should run action", function() {
                 var fn = spyOn({
                     test: Ext.emptyFn
                 }, 'test');
@@ -664,37 +664,37 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
             });
         });
 
-        describe("added using method", function () {
-            it("should add action when no stack exists", function () {
+        describe("added using method", function() {
+            it("should add action when no stack exists", function() {
                 instance = new Ext.route.Action();
 
-                instance.action(function () {});
+                instance.action(function() {});
 
                 expect(instance.getActions().length).toBe(1);
             });
 
-            it("should add action to empty action stack", function () {
+            it("should add action to empty action stack", function() {
                 instance = new Ext.route.Action({
                     actions: []
                 });
 
-                instance.action(function () {});
+                instance.action(function() {});
 
                 expect(instance.getActions().length).toBe(1);
             });
 
-            it("should add action to non-empty action stack", function () {
+            it("should add action to non-empty action stack", function() {
                 instance = new Ext.route.Action({
                     actions: [{}]
                 });
 
-                instance.action(function () {});
+                instance.action(function() {});
 
                 expect(instance.getActions().length).toBe(2);
             });
 
-            describe("run added action", function () {
-                it("should run action when stack was empty", function () {
+            describe("run added action", function() {
+                it("should run action when stack was empty", function() {
                     var fn = spyOn({
                             test: Ext.emptyFn
                         }, 'test'),
@@ -708,12 +708,12 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     promiseHasBeenResolved(promise);
 
-                    runs(function () {
+                    runs(function() {
                         expect(fn).toHaveBeenCalled();
                     });
                 });
 
-                it("should run action when stack not empty", function () {
+                it("should run action when stack not empty", function() {
                     var fn = spyOn({
                             test: Ext.emptyFn
                         }, 'test'),
@@ -731,12 +731,12 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     promiseHasBeenResolved(promise);
 
-                    runs(function () {
+                    runs(function() {
                         expect(fn).toHaveBeenCalled();
                     });
                 });
 
-                it("should run action when added in a before", function () {
+                it("should run action when added in a before", function() {
                     var fn = spyOn({
                             test: Ext.emptyFn
                         }, 'test'),
@@ -744,7 +744,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     instance = new Ext.route.Action({
                         befores: {
-                            fn: function (action) {
+                            fn: function(action) {
                                 action.action(fn).resume();
                             }
                         }
@@ -754,12 +754,12 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     promiseHasBeenResolved(promise);
 
-                    runs(function () {
+                    runs(function() {
                         expect(fn).toHaveBeenCalled();
                     });
                 });
 
-                it("should not run action when added in a before and action is stopped", function () {
+                it("should not run action when added in a before and action is stopped", function() {
                     var fn = spyOn({
                             test: Ext.emptyFn
                         }, 'test'),
@@ -767,7 +767,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     instance = new Ext.route.Action({
                         befores: {
-                            fn: function (action) {
+                            fn: function(action) {
                                 action.action(fn).stop();
                             }
                         }
@@ -777,7 +777,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
                     promiseHasBeenRejected(promise);
 
-                    runs(function () {
+                    runs(function() {
                         expect(fn).not.toHaveBeenCalled();
                     });
                 });
@@ -785,8 +785,8 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
         });
     });
 
-    describe("then", function () {
-        it("should execute resolve function", function () {
+    describe("then", function() {
+        it("should execute resolve function", function() {
             var resolve = spyOn({
                     test: Ext.emptyFn
                 }, 'test'),
@@ -800,12 +800,12 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
             promiseHasBeenResolved(promise);
 
-            runs(function () {
+            runs(function() {
                 expect(resolve).toHaveBeenCalled();
             });
         });
 
-        it("should execute reject function", function () {
+        it("should execute reject function", function() {
             var resolve = spyOn({
                     test: Ext.emptyFn
                 }, 'test'),
@@ -816,7 +816,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
             instance = new Ext.route.Action({
                 befores: {
-                    fn: function (action) {
+                    fn: function(action) {
                         action.stop();
                     }
                 }
@@ -828,7 +828,7 @@ topSuite("Ext.route.Action", ['Ext.app.Controller'], function () {
 
             promiseHasBeenRejected(promise);
 
-            runs(function () {
+            runs(function() {
                 expect(resolve).not.toHaveBeenCalled();
                 expect(reject).toHaveBeenCalled();
             });

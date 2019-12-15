@@ -72,6 +72,10 @@ $tool-collapse-left-icon: dynamic($ios-arrow-left $font-icon-font-family);
 $tool-expand-right-icon: dynamic($ios-arrow-right $font-icon-font-family);
 $tool-collapse-right-icon: dynamic($ios-arrow-right $font-icon-font-family);
 
+$tool-edit-icon: dynamic($fa-var-edit 'Font Awesome 5 Free');
+//$tool-trash-icon: dynamic($fa-var-trash-o 'FontAwesome');
+$tool-trash-icon: dynamic($ios-remove $font-icon-font-family);
+
 $tool-scroll-up-icon: dynamic($ios-arrow-up $font-icon-font-family);
 $tool-scroll-down-icon: dynamic($ios-arrow-down $font-icon-font-family);
 $tool-scroll-left-icon: dynamic($ios-arrow-left $font-icon-font-family);

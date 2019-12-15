@@ -99,13 +99,14 @@ Ext.define('Ext.chart.axis.layout.CombineByIndex', {
     extend: 'Ext.chart.axis.layout.Discrete',
     alias: 'axisLayout.combineByIndex',
 
-    getCoordFor: function (value, field, idx, items) {
+    getCoordFor: function(value, field, idx, items) {
         var labels = this.labels,
             result = idx;
 
         if (labels[idx] !== value) {
             result = labels.push(value) - 1;
         }
+
         return result;
     }
 });

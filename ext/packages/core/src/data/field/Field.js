@@ -286,8 +286,9 @@ Ext.define('Ext.data.field.Field', {
      * @cfg {Boolean} allowBlank
      * @private
      *
-     * Used for validating a {@link Ext.data.Model model}. Defaults to true. An empty value here will cause
-     * {@link Ext.data.Model}.{@link Ext.data.Model#isValid isValid} to evaluate to false.
+     * Used for validating a {@link Ext.data.Model model}. Defaults to true. An empty value here
+     * will cause {@link Ext.data.Model}.{@link Ext.data.Model#isValid isValid} to evaluate to
+     * `false`.
      */
     allowBlank: true,
 
@@ -518,7 +519,17 @@ Ext.define('Ext.data.field.Field', {
      *   to the field name. If a function is passed, a single argument is received which
      *   contains the record node:
      *
-     *       // Server returns <Root><Person><Name>Foo</Name><Age>1</Age></Person><Person><Name>Bar</Name><Age>2</Age></Person></Root>
+     *       // Server returns:
+     *       // <Root>
+     *       //     <Person>
+     *       //         <Name>Foo</Name>
+     *       //         <Age>1</Age>
+     *       //     </Person>
+     *       //     <Person>
+     *       //         <Name>Bar</Name>
+     *       //         <Age>2</Age>
+     *       //     </Person>
+     *       // </Root>
      *       mapping: function(data) {
      *           return data.firstChild.textContent;
      *       }
@@ -586,7 +597,7 @@ Ext.define('Ext.data.field.Field', {
      * @cfg serialize
      * @inheritdoc Ext.data.field.Field#method-serialize
      */
-    
+
     /**
      * @cfg {String/Object/Function} summary
      * The summary type for this field. This is used to calculate a
@@ -658,7 +669,7 @@ Ext.define('Ext.data.field.Field', {
     /**
      * @property {Number} rank
      * This is a 1-based value that describes the dependency order of this field. This is
-     * initialized to `null` (falsey) so we can cheaply topo-sort the fields of a class.
+     * initialized to `null` (falsy) so we can cheaply topo-sort the fields of a class.
      * @private
      * @readonly
      */
@@ -671,7 +682,7 @@ Ext.define('Ext.data.field.Field', {
      * @readonly
      * @protected
      */
-    stripRe: /[\$,%]/g,
+    stripRe: /[$,%]/g,
 
     /**
      * @property {Boolean} calculated
@@ -717,11 +728,22 @@ Ext.define('Ext.data.field.Field', {
      */
     identifier: false,
 
-    onClassExtended: function (cls, data) {
+    onClassExtended: function(cls, data) {
         var sortType = data.sortType,
             proto = cls.prototype,
             superValidators = proto.validators,
-            validators = data.validators;
+            validators = data.validators,
+            alias = data.alias;
+
+        if (alias) {
+            if (typeof alias !== 'string') {
+                alias = alias[0];
+            }
+
+            if (alias) {
+                proto.type = alias.substr(alias.lastIndexOf('.') + 1);
+            }
+        }
 
         if (sortType && Ext.isString(sortType)) {
             proto.sortType = Ext.data.SortTypes[sortType];
@@ -732,20 +754,22 @@ Ext.define('Ext.data.field.Field', {
             if (!Ext.isArray(validators)) {
                 validators = [validators];
             }
+
             delete data.validators;
 
             // Need to join them
             if (superValidators) {
                 validators = superValidators.concat(validators);
             }
+
             proto.validators = validators;
         }
     },
 
-    argumentNamesRe: /^function\s*\(\s*([^,\)\s]+)/,
-    calculateRe: /[^\.a-z0-9_]([a-z_][a-z_0-9]*)\.([a-z_][a-z_0-9]*)/gi,
+    argumentNamesRe: /^function\s*\(\s*([^,\)\s]+)/, // eslint-disable-line no-useless-escape
+    calculateRe: /[^.a-z0-9_]([a-z_][a-z_0-9]*)\.([a-z_][a-z_0-9]*)/gi,
 
-    constructor: function (config) {
+    constructor: function(config) {
         var me = this,
             calculateRe = me.calculateRe,
             calculate, calculated, defaultValue, sortType,
@@ -757,12 +781,15 @@ Ext.define('Ext.data.field.Field', {
         if (config) {
             if (Ext.isString(config)) {
                 me.name = config;
-            } else {
+            }
+            else {
                 validators = config.validators;
+
                 if (validators) {
                     delete config.validators;
                     me.instanceValidators = validators;
                 }
+
                 Ext.apply(me, config);
             }
         }
@@ -799,6 +826,7 @@ Ext.define('Ext.data.field.Field', {
         }
 
         defaultValue = me.defaultValue;
+
         if (me.convert) {
             me.calculated = calculated = me.convert.length > 1;
             me.evil = calculated && !depends;
@@ -809,9 +837,11 @@ Ext.define('Ext.data.field.Field', {
         }
 
         sortType = me.sortType;
+
         if (!me.sortType) {
             me.sortType = Ext.data.SortTypes.none;
-        } else if (Ext.isString(sortType)) {
+        }
+        else if (Ext.isString(sortType)) {
             me.sortType = Ext.data.SortTypes[sortType];
         }
 
@@ -821,7 +851,7 @@ Ext.define('Ext.data.field.Field', {
 
         me.cloneDefaultValue = defaultValue !== undefined &&
                                (Ext.isDate(defaultValue) || Ext.isArray(defaultValue) ||
-                                Ext.isObject(defaultValue));
+                               Ext.isObject(defaultValue));
     },
 
     setModelValidators: function(modelValidators) {
@@ -829,17 +859,17 @@ Ext.define('Ext.data.field.Field', {
         this.modelValidators = modelValidators;
     },
 
-    constructValidators: function (validators) {
+    constructValidators: function(validators) {
+        var all, length, i, item, validator, presence;
+
         if (validators) {
             if (!(validators instanceof Array)) {
                 validators = [validators];
             }
 
-            var length = validators.length,
-                all = this._validators, // we are inside getValidators so this is OK
-                i, item, validator, presence;
+            all = this._validators; // we are inside getValidators so this is OK
 
-            for (i = 0; i < length; ++i) {
+            for (i = 0, length = validators.length; i < length; ++i) {
                 item = validators[i];
 
                 if (item.fn) {
@@ -850,7 +880,8 @@ Ext.define('Ext.data.field.Field', {
 
                 if (!validator.isPresence) {
                     all.push(validator);
-                } else {
+                }
+                else {
                     presence = validator;
                 }
             }
@@ -866,10 +897,10 @@ Ext.define('Ext.data.field.Field', {
      * any {@link #sortType}. Also see {@link #compare}.
      * @param {Object} value1 The first value.
      * @param {Object} value2 The second value.
-     * @return {Number} `-1` if `value1` is less than `value2`. `1` if `value1` is greater than `value2`.
-     * `0` otherwise.
+     * @return {Number} `-1` if `value1` is less than `value2`; `1` if `value1` is greater than
+     * `value2`; `0` otherwise.
      */
-    collate: function (value1, value2) {
+    collate: function(value1, value2) {
         var me = this,
             lhs = value1,
             rhs = value2;
@@ -887,10 +918,10 @@ Ext.define('Ext.data.field.Field', {
      * {@link #collate}.
      * @param {Object} value1 The first value.
      * @param {Object} value2 The second value.
-     * @return {Number} `-1` if `value1` is less than `value2`. `1` if `value1` is greater than `value2`.
-     * `0` otherwise.
+     * @return {Number} `-1` if `value1` is less than `value2`; `1` if `value1` is greater than
+     * `value2`; `0` otherwise.
      */
-    compare: function (value1, value2) {
+    compare: function(value1, value2) {
         return (value1 === value2) ? 0 : ((value1 < value2) ? -1 : 1);
     },
 
@@ -902,7 +933,7 @@ Ext.define('Ext.data.field.Field', {
      * @param {Object} value2 The second value.
      * @return {Boolean} `true` if the values are equal.
      */
-    isEqual: function (value1, value2) {
+    isEqual: function(value1, value2) {
         return this.compare(value1, value2) === 0;
     },
 
@@ -977,8 +1008,8 @@ Ext.define('Ext.data.field.Field', {
     convert: null,
 
     /**
-     * A function which converts the Model's value for this Field into a form which can be used by whatever {@link Ext.data.writer.Writer Writer}
-     * is being used to sync data with the server.
+     * A function which converts the Model's value for this Field into a form which can be used
+     * by whatever {@link Ext.data.writer.Writer Writer} is being used to sync data with the server.
      *
      * @method
      * @param {Mixed} value The Field's value - the value to be serialized.
@@ -1015,6 +1046,7 @@ Ext.define('Ext.data.field.Field', {
 
         if (presence && (value == null || value === '')) {
             result = me.validateGroup(presence, value, separator, errors, record);
+
             if (result !== true) {
                 return result;
             }
@@ -1033,21 +1065,28 @@ Ext.define('Ext.data.field.Field', {
 
             if (result !== true) {
                 result = result || this.defaultInvalidMessage;
+
                 if (errors) {
                     if (errors.isMixedCollection) {
                         errors.add(this.name, result);
-                    } else if (errors.isCollection) {
+                    }
+                    else if (errors.isCollection) {
                         errors.add(result);
-                    } else {
+                    }
+                    else {
                         errors.push(result);
                     }
+
                     ret = ret || result;
-                } else if (separator) {
+                }
+                else if (separator) {
                     if (ret) {
                         ret += separator;
                     }
+
                     ret += result;
-                } else {
+                }
+                else {
                     ret = result;
                     break;
                 }
@@ -1057,7 +1096,7 @@ Ext.define('Ext.data.field.Field', {
         return ret || true;
     },
 
-    doCalculate: function (v, rec) {
+    doCalculate: function(v, rec) {
         return rec ? this.calculate(rec.data) : v;
     },
 
@@ -1123,6 +1162,7 @@ Ext.define('Ext.data.field.Field', {
      */
     hasMapping: function() {
         var map = this.mapping;
+
         return !!(map || map === 0);
     },
 
@@ -1197,7 +1237,7 @@ Ext.define('Ext.data.field.Field', {
                  * @deprecated 5.1 Setting sortDir and calling getSortDir were never applied by the
                  * the Sorter.  This functionality does not natively exist on field instances.
                  */
-                getSortDir: function () {
+                getSortDir: function() {
                     return this.sortDir;
                 }
             }

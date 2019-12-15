@@ -5,10 +5,10 @@ topSuite("Ext.grid.plugin.RowExpander", ['Ext.grid.Grid', 'Ext.data.ArrayStore',
         store = new Ext.data.Store(Ext.apply({
             fields: ['name', 'email', 'phone', 'income'],
             data: [
-                { 'name': 'Lisa',  'email':'lisa@simpsons.com',  'phone':'555-111-1224'},
-                { 'name': 'Bart',  'email':'bart@simpsons.com',  'phone':'555-222-1234'},
-                { 'name': 'Homer', 'email':'homer@simpsons.com', 'phone':'555-222-1244'},
-                { 'name': 'Marge', 'email':'marge@simpsons.com', 'phone':'555-222-1254'}
+                { 'name': 'Lisa',  'email': 'lisa@simpsons.com',  'phone': '555-111-1224' },
+                { 'name': 'Bart',  'email': 'bart@simpsons.com',  'phone': '555-222-1234' },
+                { 'name': 'Homer', 'email': 'homer@simpsons.com', 'phone': '555-222-1244' },
+                { 'name': 'Marge', 'email': 'marge@simpsons.com', 'phone': '555-222-1254' }
             ],
             autoDestroy: true
         }, storeCfg));
@@ -53,8 +53,8 @@ topSuite("Ext.grid.plugin.RowExpander", ['Ext.grid.Grid', 'Ext.data.ArrayStore',
         panel = store = null;
     });
 
-    describe('constructor', function () {
-        it('should be rendered as the first column', function () {
+    describe('constructor', function() {
+        it('should be rendered as the first column', function() {
             createGrid({
                 renderTo: Ext.getBody()
             });

@@ -6,7 +6,7 @@ Ext.define('Ext.chart.overrides.AbstractChart', {
     // may end up on top of modal dialogs shown over the chart.
     zIndex: 0,
 
-    updateLegend: function (legend, oldLegend) {
+    updateLegend: function(legend, oldLegend) {
         this.callParent([legend, oldLegend]);
 
         if (legend && legend.isDomLegend) {
@@ -14,21 +14,23 @@ Ext.define('Ext.chart.overrides.AbstractChart', {
         }
     },
 
-    onItemRemove: function (item, index, destroy) {
+    onItemRemove: function(item, index, destroy) {
         var map = this.surfaceMap,
             type = item.type,
             items = map && map[type];
 
         this.callParent([item, index, destroy]);
+
         if (items) {
             Ext.Array.remove(items, item);
+
             if (items.length === 0) {
                 delete map[type];
             }
         }
     },
 
-    doDestroy: function () {
+    doDestroy: function() {
         this.destroyChart();
         this.callParent();
     }

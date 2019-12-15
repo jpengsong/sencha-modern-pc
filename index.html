@@ -1,40 +1,53 @@
 <!DOCTYPE HTML>
 <html manifest="">
-
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=10, user-scalable=yes">
 
-    <title>app</title>
+    
+    <title>Sencha</title>
+   
+    <!--[if gt IE 9]><!-->
+        <link href="resources/loader.css"  rel="stylesheet" type="text/css"/>
+        <link rel="icon" href="resources/images/favicon.png" type="image/x-icon">
+        <!--<![endif]-->
+        <!--[if lte IE 9]>
+        <link href="resources/loader_ie.css" rel="stylesheet" type="text/css"/>
+        <![endif]-->
+        
+    <!-- The line below must be kept intact for Sencha Cmd to build your application -->
+    <script id="microloader" data-app="d45ccdce-ef53-4c0f-b708-0ae32b0c4c69" type="text/javascript" src="bootstrap.js"></script>
 
-    <script type="text/javascript">
-        var Ext = Ext || {};
-        Ext.beforeLoad = function (tag) {
-            if (Ext.manifest != "bootstrap.json") {
-                var themeName = GetCookie("manifest");
-                if (themeName != null) {
-                    Ext.manifest = themeName + '.json';
-                } else {
-                    Ext.manifest = 'green.json';
-                }
-            }
-        };
 
-        function GetCookie(name) {
-            var arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
-            if (arr !== null) {
-                return unescape(arr[2]);
-            }
-            return null;
-        }
-
-    </script>
-    <script id="microloader" data-app="6a3da2d1-1004-4a55-ab28-e516eab2415b" type="text/javascript"
-        src="bootstrap.js"></script>
+    <!-- The line below must be kept intact for Sencha Cmd to build your application -->
+    <script id="microloader" data-app="13aaf953-f655-402a-8aae-5c964cdd8755" type="text/javascript" src="bootstrap.js"></script>
 
 </head>
 
-<body></body>
+<body>
+    <div id="loadingSplash">
+        <div id="loadingSplashTop"></div>
+        <div id="loadingSplashBottom"></div>
+        <div class="loading-fading-circle" id="loadingSplashCircles">
+            <div class="loading-circle-1 loading-circle"></div>
+            <div class="loading-circle-2 loading-circle"></div>
+            <div class="loading-circle-3 loading-circle"></div>
+            <div class="loading-circle-4 loading-circle"></div>
+            <div class="loading-circle-5 loading-circle"></div>
+            <div class="loading-circle-6 loading-circle"></div>
+            <div class="loading-circle-7 loading-circle"></div>
+            <div class="loading-circle-8 loading-circle"></div>
+            <div class="loading-circle-9 loading-circle"></div>
+            <div class="loading-circle-10 loading-circle"></div>
+            <div class="loading-circle-11 loading-circle"></div>
+            <div class="loading-circle-12 loading-circle"></div>
+        </div>
+    </div>
 
+    <script type="text/javascript">
+        var loading = document.getElementById('loadingSplash');
+    </script>
+
+</body>
 </html>

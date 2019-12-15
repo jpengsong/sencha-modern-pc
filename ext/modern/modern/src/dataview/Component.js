@@ -278,14 +278,17 @@ Ext.define('Ext.dataview.Component', {
     lastCls: Ext.baseCSSPrefix + 'last',
     oddCls: Ext.baseCSSPrefix + 'odd',
 
-    beforeInitialize: function (config) {
+    beforeInitialize: function(config) {
         /**
          * @property {Ext.Component[]} itemCache
          * The array of component items previously created for this view but not in
          * current use. This array will contain no more then `maxItemCache` items.
          * @private
          */
-        this.itemCache = [];
+        this.itemCache = {
+            max: 0,
+            unused: []
+        };
 
         this.callParent([ config ]);
     },
@@ -308,19 +311,24 @@ Ext.define('Ext.dataview.Component', {
 
     doDestroy: function() {
         // dataItems are also in this container, so they will be handled...
-        Ext.destroy(this.itemCache, this.dataRange);
+        Ext.destroy(this.itemCache.unused, this.dataRange);
 
         this.callParent();
     },
 
     onRender: function() {
         var me = this,
-            itemConfig = me.getItemConfig();
+            itemConfig = me.getItemConfig(),
+            vm = itemConfig.viewModel;
 
         // If we have a viewmodel on our items, then ensure we have a single entry point
         // to allow us to notify all of them when required
-        if (itemConfig.viewModel) {
+        if (vm) {
             me.hasItemVm = true;
+
+            itemConfig.viewModel = Ext.applyIf({
+                scheduler: null
+            }, vm);
 
             if (!me.lookupViewModel()) {
                 me.setViewModel(true);
@@ -334,16 +342,16 @@ Ext.define('Ext.dataview.Component', {
         return this.getInnerItems().slice();
     },
 
-    onStoreAdd: function (store, records, index) {
+    onStoreAdd: function(store, records, index) {
         var me = this;
-        
+
         me.callParent(arguments);
 
         me.setItemCount(store.getCount());
         me.syncItemRange(me.getStoreChangeSyncIndex(index));
     },
 
-    onStoreRemove: function (store, records, index) {
+    onStoreRemove: function(store, records, index) {
         var me = this,
             len = records.length,
             dataItems = me.dataItems.splice(index, len),
@@ -356,7 +364,7 @@ Ext.define('Ext.dataview.Component', {
             return;
         }
 
-        for (i = len; i-- > 0; ) {
+        for (i = len; i-- > 0; /* empty */) {
             me.removeDataItem(dataItems[i]); // less ripple-down cost...
         }
 
@@ -366,12 +374,13 @@ Ext.define('Ext.dataview.Component', {
     },
 
     //--------------------------------------------
-    // Private Configs
+    // Configs
 
     // itemInnerCls
 
-    updateItemInnerCls: function (cls) {
+    updateItemInnerCls: function(cls) {
         if (!this.isConfiguring) {
+            // eslint-disable-next-line vars-on-top
             var items = this.dataItems,
                 len = items.length,
                 i, item;
@@ -388,12 +397,13 @@ Ext.define('Ext.dataview.Component', {
 
     // itemConfig
 
-    applyItemConfig: function (itemConfig, oldItemConfig) {
+    applyItemConfig: function(itemConfig, oldItemConfig) {
         // If the itemConfig is being set after creation, preserve the original
         // xtype/xclass if one wasn't provided
         itemConfig = itemConfig || {};
 
         if (oldItemConfig && !itemConfig.xtype && !itemConfig.xclass) {
+            // eslint-disable-next-line vars-on-top
             var xtype = oldItemConfig.xtype,
                 xclass = oldItemConfig.xclass;
 
@@ -406,7 +416,7 @@ Ext.define('Ext.dataview.Component', {
         return itemConfig;
     },
 
-    updateItemConfig: function () {
+    updateItemConfig: function() {
         if (!this.isConfiguring) {
             this.clearItems();
             this.refresh();
@@ -415,8 +425,9 @@ Ext.define('Ext.dataview.Component', {
 
     // itemContentCls
 
-    updateItemContentCls: function (cls) {
+    updateItemContentCls: function(cls) {
         if (!this.isConfiguring) {
+            // eslint-disable-next-line vars-on-top
             var items = this.dataItems,
                 len = items.length,
                 i, item;
@@ -433,13 +444,19 @@ Ext.define('Ext.dataview.Component', {
 
     // itemDataMap
 
-    applyItemDataMap: function (dataMap) {
+    applyItemDataMap: function(dataMap) {
         return Ext.dataview.DataItem.parseDataMap(dataMap);
+    },
+
+    // maxItemCache
+
+    updateMaxItemCache: function(max) {
+        this.itemCache.max = max;
     },
 
     // striped
 
-    updateStriped: function (striped) {
+    updateStriped: function(striped) {
         var me = this,
             dataItems = me.dataItems,
             oddCls = me.oddCls,
@@ -470,7 +487,7 @@ Ext.define('Ext.dataview.Component', {
             'changeItemIsLast'
         ],
 
-        acquireItem: function (cfg, itemsFocusable) {
+        acquireItem: function(cfg, itemsFocusable) {
             var me = this,
                 at = null,
                 el, item;
@@ -486,7 +503,7 @@ Ext.define('Ext.dataview.Component', {
             }
 
             // Pull from the itemCache first
-            if (!(item = me.itemCache.pop())) {
+            if (!(item = me.itemCache.unused.pop())) {
                 // Failing that, create new ones
                 item = me.createDataItem(cfg);
                 item = me.addDataItem(item, at);
@@ -513,11 +530,11 @@ Ext.define('Ext.dataview.Component', {
             return item;
         },
 
-        addDataItem: function (item, at) {
+        addDataItem: function(item, at) {
             var me = this;
 
             if (at === null) {
-                at = me.findTailItem(/*rawElements=*/false);
+                at = me.findTailItem(/* rawElements= */false);
             }
 
             item = (at < 0) ? me.add(item) : me.insert(at, item);
@@ -534,22 +551,23 @@ Ext.define('Ext.dataview.Component', {
          * @param {Number} recordIndex The record's index in the store.
          * @private
          */
-        changeItem: function (itemIndex, recordIndex) {
+        changeItem: function(itemIndex, recordIndex) {
             var me = this,
                 store = me.store,
                 page = store.currentPage,
                 datasetIndex = recordIndex + (page ? ((page - 1) * store.pageSize) : 0),
                 dataItems = me.dataItems,
                 realIndex = (itemIndex < 0) ? dataItems.length + itemIndex : itemIndex,
-                item = dataItems[realIndex],
+                record = me.dataRange.records[recordIndex],
+                item = me.getItemForRecord(realIndex, record, recordIndex),
                 storeCount = store.getCount(),
                 handlers = me._itemChangeHandlers,
                 options = {
                     isFirst: !recordIndex,
-                    isLast: recordIndex === storeCount -1,
+                    isLast: recordIndex === storeCount - 1,
                     item: item,
                     itemIndex: realIndex,
-                    record: me.dataRange.records[recordIndex],
+                    record: record,
                     recordIndex: recordIndex,
                     datasetIndex: datasetIndex
                 },
@@ -560,7 +578,7 @@ Ext.define('Ext.dataview.Component', {
             options.afterEl = options.beforeEl = options.itemEl = itemEl =
                 item.renderElement;
 
-            options.itemClasses = itemEl.getClassMap(/*clone=*/false);
+            options.itemClasses = itemEl.getClassMap(/* clone= */false);
             options.isFirstChanged = item.isFirst !== options.isFirst;
             options.isLastChanged = item.isLast !== options.isLast;
 
@@ -568,16 +586,17 @@ Ext.define('Ext.dataview.Component', {
                 me[handlers[i]](options);
             }
 
-            itemEl.setClassMap(options.itemClasses, /*keep=*/true);
+            itemEl.setClassMap(options.itemClasses, /* keep= */true);
 
             return options;
         },
 
-        changeItemIsFirst: function (options) {
+        changeItemIsFirst: function(options) {
             if (!options.isFirstChanged) {
                 return;
             }
 
+            // eslint-disable-next-line vars-on-top
             var me = this,
                 firstCls = me.firstCls,
                 item = options.item,
@@ -604,11 +623,12 @@ Ext.define('Ext.dataview.Component', {
             }
         },
 
-        changeItemIsLast: function (options) {
+        changeItemIsLast: function(options) {
             if (!options.isLastChanged) {
                 return;
             }
 
+            // eslint-disable-next-line vars-on-top
             var me = this,
                 item = options.item,
                 itemClasses = options.itemClasses,
@@ -635,11 +655,11 @@ Ext.define('Ext.dataview.Component', {
             }
         },
 
-        changeItemRecord: function (options) {
+        changeItemRecord: function(options) {
             this.syncItemRecord(options);
         },
 
-        changeItemRecordIndex: function (options) {
+        changeItemRecordIndex: function(options) {
             var item = options.item,
                 recordIndex = options.recordIndex,
                 itemClasses = options.itemClasses,
@@ -653,7 +673,8 @@ Ext.define('Ext.dataview.Component', {
                 if (item.getRecordIndex() !== recordIndex) {
                     item.setRecordIndex(recordIndex);
                 }
-            } else {
+            }
+            else {
                 item.el.dom.setAttribute('data-recordindex', recordIndex);
             }
 
@@ -666,16 +687,18 @@ Ext.define('Ext.dataview.Component', {
         },
 
         clearItemCaches: function() {
-            var cache = this.itemCache;
+            var cache = this.itemCache.unused;
+
             Ext.destroy(cache);
+
             cache.length = 0;
         },
 
-        clearItems: function () {
+        clearItems: function() {
             var me = this,
                 dataItems = me.dataItems,
                 len = dataItems.length,
-                itemCache = me.itemCache,
+                itemCache = me.itemCache.unused,
                 i;
 
             for (i = 0; i < len; ++i) {
@@ -689,39 +712,36 @@ Ext.define('Ext.dataview.Component', {
             me.setItemCount(0);
         },
 
-        createDataItem: function (cfg) {
+        createDataItem: function(cfg) {
             var me = this,
-                markDirty = me.getMarkDirty(),
-                cls = markDirty ? me.markDirtyCls : '',
-                itemCls = me.getItemCls(),
-                config;
+                cls, config;
 
-            if (itemCls) {
-                if (markDirty) {
-                    cls += ' ';
-                }
-
-                cls += itemCls;
-            }
-            
             config = {
                 xtype: me.getDefaultType(),
-                cls: cls,
                 tpl: me.getItemTpl(),
                 $dataItem: 'record'
             };
 
             cls = me.getItemInnerCls();
+
             if (cls) {
                 config.innerCls = cls;
             }
 
             cls = me.getItemContentCls();
+
             if (cls) {
                 config.contentCls = cls;
             }
 
-            return Ext.apply(config, cfg || me.getItemConfig());
+            config = Ext.apply(config, cfg || me.getItemConfig());
+
+            // itemConfig might contain a cls property. We need to add to that.
+            config.cls = [
+                config.cls, me.getMarkDirty() ? me.markDirtyCls : '', me.getItemCls()
+            ].join(' ');
+
+            return config;
         },
 
         doClear: function() {
@@ -755,6 +775,7 @@ Ext.define('Ext.dataview.Component', {
                 if (me.hasSelection()) {
                     me.setItemSelection(me.getSelections(), true);
                 }
+
                 restoreFocus();
             }
             else {
@@ -762,28 +783,40 @@ Ext.define('Ext.dataview.Component', {
             }
         },
 
+        getCacheForItem: function() {
+            return this.itemCache;
+        },
+
         getFastItems: function() {
             return this.getInnerItems();
+        },
+
+        getItemForRecord: function(viewIndex) {
+            return this.dataItems[viewIndex];
         },
 
         getStoreChangeSyncIndex: function(index) {
             return index;
         },
 
-        removeCachedItem: function(item, preventCache, cache, max, preventRemoval) {
+        removeCachedItem: function(item, preventCache, cache, preventRemoval) {
             var me = this,
-                ret = false;
+                ret = false,
+                unused = !preventCache && cache && cache.unused;
 
-            if (!preventCache && cache.length < max) {
+            if (unused && unused.length < cache.max) {
                 // If we are allowed to do so, then cache what we don't
                 // need right now
                 if (preventRemoval) {
                     me.setItemHidden(item, true);
-                } else {
-                    me.remove(item, /*destroy=*/false);
                 }
-                cache.push(item);
-            } else {
+                else {
+                    me.remove(item, /* destroy= */false);
+                }
+
+                unused.push(item);
+            }
+            else {
                 item.destroy();
                 ret = true;
             }
@@ -791,12 +824,12 @@ Ext.define('Ext.dataview.Component', {
             return ret;
         },
 
-        removeDataItem: function (item, preventCache) {
-            return this.removeCachedItem(item, preventCache, this.itemCache,
-                this.getMaxItemCache());
+        removeDataItem: function(item, preventCache) {
+            return this.removeCachedItem(item, preventCache,
+                                         !preventCache && this.getCacheForItem(item));
         },
 
-        syncItemRange: function (start, end) {
+        syncItemRange: function(start, end) {
             var count = this.store.getCount(),
                 i;
 
@@ -809,7 +842,7 @@ Ext.define('Ext.dataview.Component', {
             }
         },
 
-        syncItemRecord: function (options, tombstoneRec) {
+        syncItemRecord: function(options, tombstoneRec) {
             var me = this,
                 item = options.item,
                 itemClasses = options && options.itemClasses,
@@ -850,6 +883,17 @@ Ext.define('Ext.dataview.Component', {
                 item.setRecord(record);
 
                 item.el.dom.setAttribute('data-recordid', record.internalId);
+
+                // Update dragging row highlighted cls while dragging in case of infinite grid
+                // where same dom will be reused.
+                if (item.isDragging) {
+                    if (item.draggingRecordId === record.id) {
+                        itemClasses[item.dragMarkerCls] = true;
+                    }
+                    else {
+                        delete itemClasses[item.dragMarkerCls];
+                    }
+                }
             }
 
             if (dataMap) {
@@ -863,7 +907,7 @@ Ext.define('Ext.dataview.Component', {
             }
         },
 
-        traverseItem: function (item, delta) {
+        traverseItem: function(item, delta) {
             var me = this,
                 items = me.innerItems,
                 next = null,
@@ -876,6 +920,7 @@ Ext.define('Ext.dataview.Component', {
                 }
 
                 i = items.indexOf(cmp);
+
                 if (i > -1) {
                     next = items[i + delta] || null;
                 }
@@ -889,7 +934,7 @@ Ext.define('Ext.dataview.Component', {
 
         // itemCount
 
-        updateItemCount: function (count) {
+        updateItemCount: function(count) {
             var me = this,
                 items = me.dataItems,
                 cfg, itemsFocusable;
@@ -909,8 +954,8 @@ Ext.define('Ext.dataview.Component', {
         }
 
     } // privates
-},
-function (ComponentDataView) {
+
+}, function(ComponentDataView) {
     var proto = ComponentDataView.prototype;
 
     proto._cachedRemoveClasses = [

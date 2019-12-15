@@ -1,26 +1,49 @@
 Ext.define("App.view.systemmanage.sysmenu.SysMenuEdit", {
     alias: "widget.sysmenuedit",
     extend: "Ext.window.Window",
-    maximizable: true,
-    autoShow: true,
+    extend: "Ext.Dialog",
+    displayed: true,
+    closable: true,
     modal: true,
     width: 450,
     height: 550,
-    layout: {
-        type: 'vbox',
-        align: "stretch",
-    },
+    layout: "fit",
+    padding:"0 0",
     items: [
         {
-            xtype: "form",
-            reference: "form",
-            trackResetOnLoad: true,
-            layout: "form",
+            xtype: "formpanel",
+            reference:"form",
+            defaults: {
+                labelAlign: "left",
+                labelTextAlign: "center",
+                labelWrap: true,
+                border: true,
+                width: "100%",
+                labelWidth: 70,
+                margin: "0",
+                clearable: false
+            },
+            buttonToolbar: {
+                xtype: 'toolbar',
+                docked: 'bottom',
+                defaultType: 'button',
+                weighted: true,
+                ui: 'footer',
+                defaultButtonUI: 'action',
+                layout: {
+                    type: 'box',
+                    vertical: false,
+                    pack: 'center'
+                },
+                defaults: {
+                    margin: "0px 5px"
+                }
+            },
             items: [
                 {
                     xtype: "combobox",
                     reference: "comboType",
-                    fieldLabel: "类型",
+                    label: "类型",
                     displayField: 'name',
                     valueField: 'id',
                     editable: false,
@@ -34,7 +57,7 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenuEdit", {
                 },
                 {
                     xtype: "combobox",
-                    fieldLabel: "视图类型",
+                    label: "视图类型",
                     reference: "PageType",
                     displayField: 'name',
                     valueField: 'id',
@@ -47,24 +70,23 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenuEdit", {
                 },
                 {
                     xtype: "textfield",
-                    fieldLabel: '页面类型',
-                    allowBlank: false,
+                    label: '页面类型',
+                    required: true,
                     reference: "ViewType",
                     afterLabelTextTpl: config.AfterLabelTextRequired,
                     bind: "{model.ViewType}"
                 },
                 {
                     xtype: "textfield",
-                    fieldLabel: '按钮编码',
+                    label: '按钮编码',
                     reference: "Code",
                     bind: "{model.MenuCode}",
-                    allowBlank: false,
-                    afterLabelTextTpl: config.AfterLabelTextRequired
+                    required: true
                 },
                 {
                     xtype: "textfield",
                     reference: "IconCls",
-                    fieldLabel: "图标",
+                    label: "图标",
                     bind: "{model.IconCls}"
                 },
                 {
@@ -72,66 +94,43 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenuEdit", {
                     reference: "Name",
                     bind: {
                         value: "{model.MenuName}",
-                        fieldLabel: '{fieldlabelName}'
+                        label: '{labelName}'
                     },
-                    allowBlank: false,
-                    afterLabelTextTpl: config.AfterLabelTextRequired
+                    required: true
                 },
                 {
                     xtype: "numberfield",
-                    fieldLabel: '排序',
-                    allowBlank: false,
+                    label: '排序',
+                    required: true,
                     reference: "Order",
-                    bind: "{model.Order}",
-                    afterLabelTextTpl: config.AfterLabelTextRequired
+                    bind: "{model.Order}"
                 },
                 {
                     xtype: 'radiogroup',
-                    fieldLabel: '是否启用',
+                    label: '是否启用',
                     bind: "{model.IsEnable}",
-                    simpleValue: true,
                     items: [
-                        { boxLabel: '启用', name: 'IsEnable', inputValue: 1, margin: "0 0 0 70", checked: true },
-                        { boxLabel: '禁用', name: 'IsEnable', inputValue: 0, margin: "0 0 0 30" }
+                        { label: '启用', name: 'IsEnable', margin: "0 0 0 50", value: 1 },
+                        { label: '禁用', name: 'IsEnable', value: 0 }
                     ]
                 },
                 {
                     xtype: 'textareafield',
-                    fieldLabel: '描述',
+                    label: '描述',
                     bind: "{model.Description}"
                 }
-            ]
-
-        }
-    ],
-    dockedItems: [
-        {
-            xtype: 'toolbar',
-            dock: 'bottom',
-            ui: "footer",
-            layout: {
-                type: "hbox",
-                align: "center",
-                pack: "center"
-            },
-            items: [
-                {
-                    text: '保存',
-                    iconCls: "x-fa fa-floppy-o",
-                    handler: "onSave"
-                },
-                {
-                    text: '重置',
-                    iconCls: "x-fa fa-refresh",
-                    handler: "onReset"
-                }
+            ],
+            buttons: [
+                { text: '保存', iconCls: "x-far fa-save", handler: 'onSave' },
+                { text: '重置', iconCls: "x-far fa-history", handler: 'onReset' }
             ]
         }
     ],
     listeners: {
-        render: "onRender"
+        initialize: "onInitialize"
     },
     controller: {
+
         //保存
         onSave: function () {
             var me = this,
@@ -142,7 +141,7 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenuEdit", {
                 url,
                 selNode = vm.get("selNode"),
                 newNode,
-                data={};
+                data = {};
             if (refs.comboType.getValue() == 0) {
                 data.SysMenuId = model.get("SysMenuId");
                 data.ParentId = model.get("ParentId");
@@ -151,7 +150,7 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenuEdit", {
                 data.Order = model.get("Order");
                 data.ViewType = model.get("ViewType");
                 data.PageType = model.get("PageType");
-                data.IsEnable = model.get("IsEnable");
+                data.IsEnable = refs.form.getValues().IsEnable;
                 data.Description = model.get("Description");
                 url = view.status == "add" ? "/api/SystemManage/SysMenu/AddSysMenu" : "/api/SystemManage/SysMenu/EditSysMenu";
             } else {
@@ -160,7 +159,7 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenuEdit", {
                 data.BtnCode = model.get("MenuCode");
                 data.BtnName = model.get("MenuName");
                 data.Order = model.get("Order");
-                data.IsEnable = model.get("IsEnable");
+                data.IsEnable = refs.form.getValues().IsEnable;
                 data.Description = model.get("Description");
                 url = view.status == "add" ? "/api/SystemManage/SysMenuButton/AddSysMenuButton" : url = "/api/SystemManage/SysMenuButton/EditSysMenuButton";
             }
@@ -168,7 +167,7 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenuEdit", {
                 refs.comboType.getValue() == 1 && refs.Name.validate() && refs.Code.validate() && refs.Order.validate()) {
                 App.Ajax.request({
                     url: url,
-                    method:  (view.status == "add" ? "POST" : "PUT"),
+                    method: (view.status == "add" ? "POST" : "PUT"),
                     nosim: false,
                     type: "JSON",
                     showmask: true,
@@ -177,19 +176,19 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenuEdit", {
                     success: function (data) {
                         if (!Ext.isEmpty(data.Data)) {
                             if (view.status == "add") {
-                                newNode = Ext.create("App.model.systemmanage.SysMenuButtonDetail",data.Data);
+                                newNode = Ext.create("App.model.systemmanage.SysMenuButtonDetail", data.Data);
                                 App.TreeNode.appendNode(selNode, newNode);
                             } else {
-                                App.TreeNode.updateNode(selNode,data.Data);
+                                App.TreeNode.updateNode(selNode, data.Data);
                             }
-                            App.Msg.Info("保存成功");
+                            Ext.Msg.alert("提示","保存成功");
                             view.close();
                         } else {
-                            App.Msg.Info("保存失败");
+                            Ext.Msg.alert("提示","保存失败");
                         }
                     },
                     error: function (msg) {
-                        App.Msg.Error(msg);
+                        Ext.Msg.alert("提示",msg);
                     }
                 })
             }
@@ -208,18 +207,18 @@ Ext.define("App.view.systemmanage.sysmenu.SysMenuEdit", {
                 refs.ViewType.show();
                 refs.PageType.show();
                 refs.IconCls.show();
-                vm.set("fieldlabelName", "菜单名称");
+                vm.set("labelName", "菜单名称");
             } else {
                 refs.Code.show();
                 refs.ViewType.hide();
                 refs.PageType.hide();
                 refs.IconCls.hide();
-                vm.set("fieldlabelName", "按钮名称");
+                vm.set("labelName", "按钮名称");
             }
         },
 
         //呈现组件后触发
-        onRender: function () {
+        onInitialize: function () {
             var me = this, refs = me.getReferences();
             if (me.getView().status == "edit") {
                 refs.comboType.setDisabled(true);

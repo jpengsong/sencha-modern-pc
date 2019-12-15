@@ -6,13 +6,13 @@ function() {
 
     function createGrid(storeCfg, gridCfg) {
         store = new Ext.data.Store(Ext.apply({
-            storeId:'simpsonsStore',
-            fields:['name', 'email', 'phone', 'adult'],
+            storeId: 'simpsonsStore',
+            fields: ['name', 'email', 'phone', 'adult'],
             data: [
-                { 'name': 'Lisa', 'email':'lisa@simpsons.com', 'phone':'555-111-1224', 'adult': false },
-                { 'name': 'Bart', 'email':'bart@simpsons.com', 'phone':'555-222-1234', 'adult': false },
-                { 'name': 'Homer', 'email':'homer@simpsons.com', 'phone':'555-222-1244', 'adult': true },
-                { 'name': 'Marge', 'email':'marge@simpsons.com', 'phone':'555-222-1254', 'adult': true }
+                { 'name': 'Lisa', 'email': 'lisa@simpsons.com', 'phone': '555-111-1224', 'adult': false },
+                { 'name': 'Bart', 'email': 'bart@simpsons.com', 'phone': '555-222-1234', 'adult': false },
+                { 'name': 'Homer', 'email': 'homer@simpsons.com', 'phone': '555-222-1244', 'adult': true },
+                { 'name': 'Marge', 'email': 'marge@simpsons.com', 'phone': '555-222-1254', 'adult': true }
             ]
         }, storeCfg));
 
@@ -63,10 +63,10 @@ function() {
         wasCalled = false;
     });
 
-    describe("initializing", function () {
-        describe("setting as active", function () {
-            describe("defined value", function () {
-                it("should set as active when value is `true`", function () {
+    describe("initializing", function() {
+        describe("setting as active", function() {
+            describe("defined value", function() {
+                it("should set as active when value is `true`", function() {
                     createGrid(null, {
                         columns: [
                             { header: 'Name',  dataIndex: 'name', width: 100 },
@@ -83,7 +83,7 @@ function() {
                 });
 
                 it("should not have a default value if defaultValue is null", function() {
-                    var menu, items; 
+                    var menu, items;
 
                     createGrid(null, {
                         columns: [
@@ -105,7 +105,7 @@ function() {
                     expect(items[1].checked).toBe(false);
                 });
 
-                it("should set as active when value is `false`", function () {
+                it("should set as active when value is `false`", function() {
                     createGrid(null, {
                         columns: [
                             { header: 'Name',  dataIndex: 'name', width: 100 },
@@ -121,7 +121,7 @@ function() {
                     expect(grid.columnManager.getHeaderByDataIndex('adult').filter.active).toBe(true);
                 });
 
-                it("should set as active when value is `null`", function () {
+                it("should set as active when value is `null`", function() {
                     createGrid(null, {
                         columns: [
                             { header: 'Name',  dataIndex: 'name', width: 100 },
@@ -138,8 +138,8 @@ function() {
                 });
             });
 
-            describe("undefined value", function () {
-                it("should not set as active when value is omitted", function () {
+            describe("undefined value", function() {
+                it("should not set as active when value is omitted", function() {
                     createGrid(null, {
                         columns: [
                             { header: 'Name',  dataIndex: 'name', width: 100 },
@@ -154,7 +154,7 @@ function() {
                     expect(grid.columnManager.getHeaderByDataIndex('adult').filter.active).toBe(false);
                 });
 
-                it("should not set as active when value is `undefined`", function () {
+                it("should not set as active when value is `undefined`", function() {
                     createGrid(null, {
                         columns: [
                             { header: 'Name',  dataIndex: 'name', width: 100 },

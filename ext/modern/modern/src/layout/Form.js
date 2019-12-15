@@ -66,9 +66,12 @@ Ext.define('Ext.layout.Form', {
     hasLabelWidthCls: Ext.baseCSSPrefix + 'has-label-width',
 
     //<debug>
-    onItemAdd: function (item, index) {
+    onItemAdd: function(item, index) {
         if (item.isInner && !item.isFormField) {
-            Ext.raise("Cannot add item to container.  Only Ext.field.Field instances are allowed as inner items in a form layout.");
+            Ext.raise(
+                "Cannot add item to container.  " +
+                "Only Ext.field.Field instances are allowed as inner items in a form layout."
+            );
         }
 
         this.callParent([item, index]);
@@ -93,7 +96,9 @@ Ext.define('Ext.layout.Form', {
     },
 
     updateItemSpacing: function(itemSpacing) {
-        this.getContainer().getRenderTarget().setStyle('border-spacing', Ext.Element.addUnits(itemSpacing));
+        var renderTarget = this.getContainer().getRenderTarget();
+
+        renderTarget.setStyle('border-spacing', Ext.Element.addUnits(itemSpacing));
     },
 
     updateLabelWidth: function(labelWidth) {

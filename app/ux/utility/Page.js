@@ -11,8 +11,8 @@ Ext.define('App.ux.utility.Page', {
         */
         getQueryItems: function (component) {
             var queryItems = {}, fields = Ext.ComponentQuery.query("field", component);
-            Ext.Array.each(fields, function (field, index) {
-                if(!Ext.isEmpty(field.getValue())){
+            Ext.Array.each(fields, function(field, index, countriesItSelf) {
+                if(!Ext.isEmpty(field.getValue())&& !Ext.isEmpty(field.name)){
                     queryItems[field.name] = field.getValue();
                 }
             })
@@ -75,7 +75,6 @@ Ext.define('App.ux.utility.Page', {
         * @param {String} name 
         * @return {Object} 没有返回null
         * @static
-        * 
         */
         getQueryString: function (url, name) {
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -83,31 +82,57 @@ Ext.define('App.ux.utility.Page', {
             if (r != null) return unescape(r[2]); return null;
         },
 
-        //选择行数据
+        /**
+        * 选中行数据
+        * @param {Component} grid 
+        * @param {Boolean} isMultSet 是否多选
+        * @return {Boolean} 选中返回true 没有返回false
+        * @static
+        */
         selectionModel: function (grid, isMultSet) {
             var records, rs; rs = false;
-            records = grid.getSelectionModel().getSelection();
+            records = grid.getSelectable().getSelectedRecords();
             if (records.length > 0) {
                 if (records.length > 1 && !isMultSet) {
-                    App.Msg.Warning("只能选择一行数据");
+                    Ext.Msg.alert("提示","只能选择一行数据");
                 } else {
                     rs = true;
                 }
             } else {
-                App.Msg.Warning("请选择数据,再操作！");
+                Ext.Msg.alert("提示","请选择数据,再操作！");
             }
             return rs;
         },
 
-        //删除
+        /**
+        * 获取选中行某列的集合
+        * @param {Component} grid
+        * @param {field} 字段名称
+        * @return {Array} ids
+        * @static
+        */
         getGridField: function (grid, field) {
-            var records, ids; ids = new Array();
-            records = grid.getSelectionModel().getSelection();
+            var records, ids; ids = new Array();    
+            records = grid.getSelectable().getSelectedRecords();
             for (var i = 0; i < records.length; i++) {
                 ids.push(records[i].data[field]);
             }
             return ids;
-        }
+        },
+
+        /**
+        * 重置
+        * @param {Component} 组件
+        * @static
+        */
+        resetQueryItems:function(component){
+            var fields = Ext.ComponentQuery.query("field", component);
+            Ext.Array.each(fields, function(field, index, countriesItSelf) {
+                if(!Ext.isEmpty(field.getValue())){
+                    field.reset();
+                }
+            })
+        },
     }
 })
 

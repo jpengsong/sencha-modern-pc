@@ -110,6 +110,7 @@ Ext.define('Ext.layout.wrapper.BoxDock', {
 
         for (sideItems = items.start, i = 0, ln = sideItems.length; i < ln; i++) {
             item = sideItems[i];
+
             if (container.indexOf(item) > index) {
                 slice.push(item);
             }
@@ -117,6 +118,7 @@ Ext.define('Ext.layout.wrapper.BoxDock', {
 
         for (sideItems = items.end, i = 0, ln = sideItems.length; i < ln; i++) {
             item = sideItems[i];
+
             if (container.indexOf(item) > index) {
                 slice.push(item);
             }
@@ -137,7 +139,8 @@ Ext.define('Ext.layout.wrapper.BoxDock', {
         if (oldInnerWrapper) {
             innerWrapper.getElement().replace(oldInnerWrapper.getElement(), false);
             oldInnerWrapper.$outerWrapper = null;
-        } else {
+        }
+        else {
             this.getElement().append(innerWrapper.getElement());
         }
 
@@ -165,11 +168,14 @@ Ext.define('Ext.layout.wrapper.BoxDock', {
         if (innerWrapper) {
             if (outerWrapper) {
                 outerWrapper.setInnerWrapper(innerWrapper);
-            } else {
+            }
+            else {
                 innerWrapperElement = innerWrapper.getElement();
+
                 if (!innerWrapperElement.destroyed) {
                     innerWrapperElement.replace(me.getElement());
                 }
+
                 delete innerWrapper.$outerWrapper;
             }
         }

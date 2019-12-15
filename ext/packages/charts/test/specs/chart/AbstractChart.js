@@ -1,10 +1,10 @@
+/* global topSuite */
 topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], function() {
-    var chart, store;
-
-    var Model = Ext.define(null, {
-        extend: 'Ext.data.Model',
-        fields: ['label', 'value']
-    });
+    var chart, store,
+        Model = Ext.define(null, {
+            extend: 'Ext.data.Model',
+            fields: ['label', 'value']
+        });
 
     function makeStore(rows) {
         var data = [],
@@ -22,7 +22,7 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
             data: data
         });
     }
-    
+
     beforeEach(function() {
         // Tons of warnings regarding Sencha download server in the console
         spyOn(Ext.log, 'warn');
@@ -56,15 +56,18 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
                     yField: 'value'
                 }, seriesCfg)
             }, chartCfg);
+
             if (storeOnSeries) {
                 if (!cfg.series.store) {
                     cfg.series.store = makeStore(3);
                 }
-            } else {
+            }
+            else {
                 if (!cfg.store) {
                     cfg.store = makeStore(3);
                 }
             }
+
             chart = new Ext.chart.CartesianChart(cfg);
         }
 
@@ -75,8 +78,10 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
             for (key in o) {
                 ret[key] = o[key];
             }
+
             delete ret._decr_;
             delete ret._incr_;
+
             return ret;
         }
 
@@ -120,7 +125,9 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
             describe("destruction", function() {
                 it("should remove all listeners", function() {
                     makeStore(3);
+
                     var listeners = extractHasListeners(store.hasListeners);
+
                     makeStoreChart({
                         store: store
                     });
@@ -148,8 +155,8 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
                 });
             });
 
-            describe("change", function () {
-                it("should fire 'storechange' event", function () {
+            describe("change", function() {
+                it("should fire 'storechange' event", function() {
                     var isFired = false,
                         store1 = new Ext.data.Store({
                             model: Model
@@ -163,7 +170,7 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
                         store: store1
                     });
 
-                    chart.on('storechange', function (chart, newStore, oldStore) {
+                    chart.on('storechange', function(chart, newStore, oldStore) {
                         isFired = true;
                         param1 = chart;
                         param2 = newStore;
@@ -223,7 +230,9 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
             describe("destruction", function() {
                 it("should remove all listeners", function() {
                     makeStore(3);
+
                     var listeners = extractHasListeners(store.hasListeners);
+
                     makeSeriesChart(null, {
                         store: store
                     });
@@ -278,8 +287,8 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
                 });
             });
 
-            describe("change", function () {
-                it("should fire 'storechange' event", function () {
+            describe("change", function() {
+                it("should fire 'storechange' event", function() {
                     var isFired = false,
                         store1 = new Ext.data.Store({
                             model: Model
@@ -295,7 +304,7 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
 
                     series = chart.getSeries()[0];
 
-                    series.on('storechange', function (series, newStore, oldStore) {
+                    series.on('storechange', function(series, newStore, oldStore) {
                         isFired = true;
                         param1 = series;
                         param2 = newStore;
@@ -322,8 +331,8 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
             store = new Ext.data.Store({
                 fields: ['x', 'y', 'z'],
                 data: [
-                    {x: 0, y: 0, z: 0},
-                    {x: 1, y: 1, z: 1}
+                    { x: 0, y: 0, z: 0 },
+                    { x: 1, y: 1, z: 1 }
                 ]
             });
             chart = new Ext.chart.CartesianChart({
@@ -339,14 +348,14 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
                     type: 'numeric'
                 }],
                 listeners: {
-                    layout: function () {
+                    layout: function() {
                         layoutDone = true;
                     }
                 }
             });
         });
 
-        afterEach(function () {
+        afterEach(function() {
             layoutDone = false;
         });
 
@@ -357,11 +366,11 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
         it('should add and remove series using setSeries', function() {
             var series;
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 chart.setSeries([{
@@ -372,11 +381,11 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
                 }]);
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 series = chart.getSeries();
@@ -392,11 +401,11 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
                 }]);
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 series = chart.getSeries();
@@ -409,11 +418,11 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
         it('should add series using addSeries', function() {
             var series;
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 chart.addSeries([{
@@ -424,11 +433,11 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
                 }]);
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 series = chart.getSeries();
@@ -444,11 +453,11 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
                 });
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 series = chart.getSeries();
@@ -462,11 +471,11 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
         it('should remove series using removeSeries', function() {
             var series;
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 chart.addSeries([{
@@ -482,11 +491,11 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
                 }]);
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 series = chart.getSeries();
@@ -499,11 +508,11 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
                 chart.removeSeries('xySeries');
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 series = chart.getSeries();
@@ -514,11 +523,11 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
                 chart.removeSeries(series[0]);
             });
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutDone;
             });
 
-            runs(function () {
+            runs(function() {
                 layoutDone = false;
 
                 expect(chart.getSeries().length).toBe(0);
@@ -526,8 +535,8 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
         });
     });
 
-    describe('getInteraction', function () {
-        it("should return a correct interaction based on its type", function () {
+    describe('getInteraction', function() {
+        it("should return a correct interaction based on its type", function() {
             makeStore(3);
             chart = new Ext.chart.CartesianChart({
                 store: store,
@@ -566,11 +575,11 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
         });
     });
 
-    describe('processData', function () {
-        it('should refresh legend store', function () {
+    describe('processData', function() {
+        it('should refresh legend store', function() {
             var layoutEnd, processDataSpy;
 
-            runs(function () {
+            runs(function() {
                 chart = new Ext.chart.PolarChart({
                     animation: false,
                     renderTo: document.body,
@@ -596,16 +605,16 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
                         }
                     },
                     listeners: {
-                        layout: function () {
+                        layout: function() {
                             layoutEnd = true;
                         }
                     }
                 });
             });
-            waitsFor(function () {
+            waitsFor(function() {
                 return layoutEnd;
             });
-            runs(function () {
+            runs(function() {
                 layoutEnd = false;
 
                 expect(chart.getLegend().getStore().getAt(0).get('name')).toBe('A');
@@ -623,8 +632,8 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
         });
     });
 
-    describe("update gradients", function () {
-        beforeEach(function () {
+    describe("update gradients", function() {
+        beforeEach(function() {
             makeStore(3);
             chart = new Ext.chart.CartesianChart({
                 store: store,
@@ -661,7 +670,7 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
             });
         });
 
-        it("should create sprites with the correct gradient applied", function () {
+        it("should create sprites with the correct gradient applied", function() {
             var seriesSprite = chart.getSeries()[0].sprites[0],
                 fillStyle = seriesSprite.attr.fillStyle;
 
@@ -669,7 +678,7 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
             expect(fillStyle.isGradient).toBe(true);
         });
 
-        it("should update sprites when gradient has been updated", function () {
+        it("should update sprites when gradient has been updated", function() {
             var seriesSprite = chart.getSeries()[0].sprites[0],
                 fillStyle = seriesSprite.attr.fillStyle,
                 newGradient = [{
@@ -697,6 +706,60 @@ topSuite("Ext.chart.AbstractChart", ['Ext.chart.*', 'Ext.data.ArrayStore'], func
             fillStyle = seriesSprite.attr.fillStyle;
             // should have different colors for updated gradient
             expect(fillStyle.getStops()[0].color).toBe('#000000');
+        });
+    });
+
+    describe('legend render checking if legend is getting rendered along with Chart', function() {
+
+        afterEach(function() {
+            chart = Ext.destroy(chart);
+        });
+
+        it("legend should be rendered", function() {
+            runs(function() {
+                chart = Ext.create({
+                    xtype: 'cartesian',
+                    renderTo: Ext.getBody(),
+                    width: 400,
+                    height: 400,
+                    innerPadding: 10,
+                    store: {
+                        fields: ['name', 'data1'],
+                        data: [[{
+                            age: '0',
+                            value: 400
+                        }, {
+                            age: '2',
+                            value: 150
+                        }, {
+                            age: '4',
+                            value: 120
+                        }, {
+                            age: '6',
+                            value: 100
+                        }, {
+                            age: '8',
+                            value: 1500
+                        }]]
+                    },
+                    legend: {
+                        type: 'dom',
+                        docked: 'right'
+                    },
+                    series: {
+                        type: 'pie',
+                        highlight: true,
+                        angleField: 'data1',
+                        donut: 30
+                    }
+                });
+            });
+
+            runs(function() {
+                var legend = chart.getLegend();
+
+                expect(legend.rendered).toBe(true);
+            });
         });
     });
 });

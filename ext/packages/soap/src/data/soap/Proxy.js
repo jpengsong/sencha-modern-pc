@@ -54,7 +54,7 @@ Ext.define('Ext.data.soap.Proxy', {
         *         destroy: undefined
         *     }
         */
-       soapAction: {},
+        soapAction: {},
 
         /**
         * @cfg {String} operationParam
@@ -75,7 +75,7 @@ Ext.define('Ext.data.soap.Proxy', {
         * be a proxied url to work around same-origin policy if the SOAP endpoint url is on
         * a different domain from your application.
         */
-       url: '',
+        url: '',
 
         /**
         * @cfg {String/Ext.XTemplate} envelopeTpl
@@ -91,7 +91,7 @@ Ext.define('Ext.data.soap.Proxy', {
         envelopeTpl: [
             '<?xml version="1.0" encoding="utf-8" ?>',
             '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">',
-                '{[values.bodyTpl.apply(values)]}',
+            '{[values.bodyTpl.apply(values)]}',
             '</soap:Envelope>'
         ],
 
@@ -100,7 +100,7 @@ Ext.define('Ext.data.soap.Proxy', {
         * The template used to create the SOAP body for the "create" action. If not specified
         * {@link #writeBodyTpl} will be used for the "create" action.
         */
-       createBodyTpl: null,
+        createBodyTpl: null,
 
         /**
         * @cfg {Ext.XTemplate/Array} readBodyTpl
@@ -118,11 +118,11 @@ Ext.define('Ext.data.soap.Proxy', {
         */
         readBodyTpl: [
             '<soap:Body>',
-                '<{operation} xmlns="{targetNamespace}">',
-                    '<tpl foreach="params">',
-                        '<{$}>{.}</{$}>',
-                    '</tpl>',
-                '</{operation}>',
+            '<{operation} xmlns="{targetNamespace}">',
+            '<tpl foreach="params">',
+            '<{$}>{.}</{$}>',
+            '</tpl>',
+            '</{operation}>',
             '</soap:Body>'
         ],
 
@@ -131,14 +131,14 @@ Ext.define('Ext.data.soap.Proxy', {
         * The template used to create the SOAP body for the "update" action. If not specified
         * {@link #writeBodyTpl} will be used for the "update" action.
         */
-       updateBodyTpl: null,
+        updateBodyTpl: null,
 
         /**
         * @cfg {Ext.XTemplate/Array} destroyBodyTpl
         * The template used to create the SOAP body for the "destroy" action. If not specified
         * {@link #writeBodyTpl} will be used for the "destroy" action.
         */
-       destroyBodyTpl: null,
+        destroyBodyTpl: null,
 
         /**
         * @cfg {Ext.XTemplate/Array} writeBodyTpl
@@ -164,16 +164,16 @@ Ext.define('Ext.data.soap.Proxy', {
         */
         writeBodyTpl: [
             '<soap:Body>',
-                '<{operation} xmlns="{targetNamespace}">',
-                    '<tpl for="records">',
-                        '{% var recordName=values.modelName.split(".").pop(); %}',
-                        '<{[recordName]}>',
-                            '<tpl for="fields">',
-                                '<{name}>{[parent.get(values.name)]}</{name}>',
-                            '</tpl>',
-                        '</{[recordName]}>',
-                    '</tpl>',
-                '</{operation}>',
+            '<{operation} xmlns="{targetNamespace}">',
+            '<tpl for="records">',
+            '{% var recordName=values.modelName.split(".").pop(); %}',
+            '<{[recordName]}>',
+            '<tpl for="fields">',
+            '<{name}>{[parent.get(values.name)]}</{name}>',
+            '</tpl>',
+            '</{[recordName]}>',
+            '</tpl>',
+            '</{operation}>',
             '</soap:Body>'
         ],
 
@@ -182,40 +182,41 @@ Ext.define('Ext.data.soap.Proxy', {
         * namespace URI used by {@link #createBodyTpl}, {@link #readBodyTpl}, {@link #updateBodyTpl},
         * and {@link #destroyBodyTpl} as the "xmlns" attribute for the operation element.
         */
-       targetNamespace: ''
+        targetNamespace: ''
     },
-    
+
     applyEnvelopeTpl: function(tpl) {
         return this.createTpl(tpl);
     },
-    
+
     applyCreateBodyTpl: function(tpl) {
         return this.createTpl(tpl);
     },
-    
+
     applyReadBodyTpl: function(tpl) {
         return this.createTpl(tpl);
     },
-    
+
     applyUpdateBodyTpl: function(tpl) {
         return this.createTpl(tpl);
     },
-    
+
     applyDestroyBodyTpl: function(tpl) {
         return this.createTpl(tpl);
     },
-    
+
     applyWriteBodyTpl: function(tpl) {
         return this.createTpl(tpl);
     },
-    
+
     createTpl: function(tpl) {
         if (tpl && !tpl.isTpl) {
             tpl = new Ext.XTemplate(tpl);
         }
+
         return tpl;
     },
-    
+
     /**
      * @property {Object} actionMethods
      * @readonly
@@ -249,12 +250,14 @@ Ext.define('Ext.data.soap.Proxy', {
             });
 
         request.setCallback(me.createRequestCallback(request, operation));
+
         return me.sendRequest(request);
     },
-    
+
     getBodyTpl: function(action) {
         action = Ext.String.capitalize(action);
         var tpl = this['get' + action + 'BodyTpl']();
+
         return tpl || this.getWriteBodyTpl();
     }
 });

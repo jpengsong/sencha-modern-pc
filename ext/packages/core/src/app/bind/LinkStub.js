@@ -10,7 +10,7 @@ Ext.define('Ext.app.bind.LinkStub', {
 
     binding: null,
 
-    destroy: function () {
+    destroy: function() {
         var me = this,
             binding = me.binding,
             owner = me.owner;
@@ -18,22 +18,25 @@ Ext.define('Ext.app.bind.LinkStub', {
         if (binding) {
             me.binding = null;
             binding.destroy();
+
             if (owner) {
                 delete owner.linkData[me.name];
             }
         }
+
         me.target = null;
 
         me.callParent();
     },
 
-    getFullName: function () {
+    getFullName: function() {
         var me = this;
+
         return me.fullName ||
               (me.fullName = '(' + me.callParent() + ' -> ' + me.binding.getFullName() + ')');
     },
 
-    getDataObject: function () {
+    getDataObject: function() {
         var binding = this.binding,
             root = this.parent,
             name = this.name,
@@ -41,44 +44,49 @@ Ext.define('Ext.app.bind.LinkStub', {
 
         if (root.isRootStub && !root.shouldClimb(name)) {
             rootData = root.owner.getData();
+
             if (!rootData.hasOwnProperty(name)) {
                 rootData[name] = ret = {};
             }
-        } else {
+        }
+        else {
             ret = binding && binding.getDataObject();
         }
+
         return ret;
     },
 
-    getRawValue: function () {
+    getRawValue: function() {
         var binding = this.binding;
+
         return binding && binding.getRawValue();
     },
 
-    getValue: function () {
+    getValue: function() {
         var binding = this.binding;
 
         return binding && binding.getValue();
     },
 
-    getTargetStub: function () {
+    getTargetStub: function() {
         var binding = this.binding;
+
         return binding && binding.stub;
     },
 
-    isAvailable: function () {
+    isAvailable: function() {
         var binding = this.binding;
 
         return binding ? binding.isAvailable() : false;
     },
 
-    isLoading: function () {
+    isLoading: function() {
         var binding = this.binding;
 
         return binding ? binding.isLoading() : false;
     },
 
-    link: function (bindDescriptor, target) {
+    link: function(bindDescriptor, target) {
         var me = this,
             binding = me.binding;
 
@@ -86,34 +94,35 @@ Ext.define('Ext.app.bind.LinkStub', {
             binding.destroy();
         }
 
-        target = me.target = target || me.owner; 
+        target = me.target = target || me.owner;
         me.linkDescriptor = bindDescriptor;
         me.binding = target.bind(bindDescriptor, me.onChange, me);
         me.binding.deep = true;
     },
 
-    onChange: function () {
+    onChange: function() {
         this.invalidate(true);
     },
 
-    react: function () {
+    react: function() {
         var me = this,
             linkData = me.owner.linkData;
 
         linkData[me.name] = me.getValue();
+
         me.callParent();
     },
-    
+
     privates: {
         collect: function() {
             var me = this,
                 result = me.callParent(),
                 binding = me.binding ? 1 : 0;
-            
+
             return result + binding;
         },
-        
-        sort: function () {
+
+        sort: function() {
             var binding = this.binding;
 
             if (binding) {

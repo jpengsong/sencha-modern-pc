@@ -1,5 +1,3 @@
-/* global Ext, jasmine, expect, describe, spyOn, xdescribe */
-
 topSuite("Ext.form.field.Picker",
     ['Ext.grid.Panel', 'Ext.grid.plugin.CellEditing', 'Ext.data.TreeStore',
      'Ext.tree.Panel', 'Ext.button.Button', 'Ext.window.Window'],
@@ -36,12 +34,14 @@ function() {
         if (component) {
             component.destroy();
         }
+
         component = makeComponent = null;
     });
 
     function clickTrigger(triggerName) {
         var trigger = component.getTrigger(triggerName || 'picker').el,
             xy = trigger.getXY();
+
         jasmine.fireMouseEvent(trigger.dom, 'click', xy[0], xy[1]);
     }
 
@@ -49,28 +49,28 @@ function() {
         beforeEach(function() {
             makeComponent();
         });
-        
+
         it("should have matchFieldWidth = true", function() {
             expect(component.matchFieldWidth).toBe(true);
         });
-        
+
         it("should have pickerAlign = 'tl-bl?'", function() {
             expect(component.pickerAlign).toEqual('tl-bl?');
         });
-        
+
         it("should have pickerOffset = undefined", function() {
             expect(component.pickerOffset).not.toBeDefined();
         });
-        
+
         describe("rendered", function() {
             beforeEach(function() {
                 component.render(Ext.getBody());
             });
-            
+
             it("should have aria-haspopup attribute", function() {
                 expect(component).toHaveAttr('aria-haspopup', 'true');
             });
-            
+
             it("should have aria-expanded attribute", function() {
                 expect(component).toHaveAttr('aria-expanded', 'false');
             });
@@ -83,7 +83,7 @@ function() {
                 renderTo: Ext.getBody()
             });
         });
-        
+
         it("should create the picker component", function() {
             expect(component.picker).not.toBeDefined();
             component.expand();
@@ -108,18 +108,19 @@ function() {
 
         it("should not set the picker's width if matchFieldWidth is false", function() {
             Ext.destroy(component);
-            
+
             makeComponent({
                 renderTo: Ext.getBody(),
                 matchFieldWidth: false
             });
-            
+
             component.expand();
             expect(component.picker.getWidth()).not.toEqual(component.inputEl.getWidth());
         });
 
         it("should fire the 'expand' event", function() {
             var spy = jasmine.createSpy();
+
             component.on('expand', spy);
             component.expand();
             expect(spy).toHaveBeenCalledWith(component);
@@ -134,23 +135,23 @@ function() {
             component.expand();
             expect(component.onExpand).toHaveBeenCalledWith();
         });
-        
+
         it("should set aria-expanded to true", function() {
             component.expand();
-            
+
             expect(component).toHaveAttr('aria-expanded', 'true');
         });
-        
+
         it("should set aria-owns attribute if missing", function() {
             component.expand();
-            
+
             expect(component).toHaveAttr('aria-owns', component.picker.el.id);
         });
-        
+
         it("should not override existing aria-owns attribute", function() {
             component.ariaEl.dom.setAttribute('aria-owns', 'blerg zurg throbbe');
             component.expand();
-            
+
             expect(component).toHaveAttr('aria-owns', 'blerg zurg throbbe');
         });
 
@@ -158,7 +159,6 @@ function() {
         xit("should monitor mousedown events on the document", function() { });
         xit("should monitor mousewheel events on the document", function() { });
     });
-
 
     describe("collapse", function() {
         beforeEach(function() {
@@ -175,6 +175,7 @@ function() {
 
         it("should fire the 'collapse' event", function() {
             var spy = jasmine.createSpy();
+
             component.on('collapse', spy);
             component.collapse();
             expect(spy).toHaveBeenCalledWith(component);
@@ -185,16 +186,16 @@ function() {
             component.collapse();
             expect(component.onCollapse).toHaveBeenCalledWith();
         });
-        
+
         it("should set aria-expanded to false", function() {
             component.collapse();
-            
+
             expect(component).toHaveAttr('aria-expanded', 'false');
         });
-        
+
         it("should not remove aria-owns", function() {
             component.collapse();
-            
+
             expect(component).toHaveAttr('aria-owns', component.picker.el.id);
         });
 
@@ -203,7 +204,6 @@ function() {
         xit("should stop monitoring mousewheel events on the document", function() { });
     });
 
-
     describe("trigger clicks", function() {
         describe("single trigger", function() {
             beforeEach(function() {
@@ -211,39 +211,39 @@ function() {
                     renderTo: Ext.getBody()
                 });
             });
-    
+
             it("should expand the picker if not already expanded", function() {
                 spyOn(component, 'expand');
                 clickTrigger();
                 expect(component.expand).toHaveBeenCalled();
             });
-    
+
             it("should collapse the picker if already expanded", function() {
                 component.expand();
                 spyOn(component, 'collapse');
                 clickTrigger();
                 expect(component.collapse).toHaveBeenCalled();
             });
-    
+
             it("should not blur the field", function() {
                 focusAndWait(component);
-                
+
                 runs(function() {
                     clickTrigger();
                 });
-                
+
                 // In IE focus events are async, so we have to wait to make sure the
                 // component did not lose focus as a result of the trigger click
                 expectFocused(component);
             });
-    
+
             it("should do nothing if the field is readOnly", function() {
                 component.setReadOnly(true);
                 spyOn(component, 'expand');
                 clickTrigger();
                 expect(component.expand).not.toHaveBeenCalled();
             });
-    
+
             it("should do nothing if the field is disabled", function() {
                 component.setDisabled(true);
                 spyOn(component, 'expand');
@@ -283,10 +283,10 @@ function() {
                 });
             }
         });
-        
+
         describe("multiple triggers", function() {
             var picker;
-            
+
             beforeEach(function() {
                 makeComponent({
                     renderTo: Ext.getBody(),
@@ -296,15 +296,15 @@ function() {
                         }
                     }
                 });
-                
+
                 picker = component.getPicker();
                 picker.el.dom.setAttribute('tabIndex', -1);
             });
-            
+
             afterEach(function() {
                 picker = null;
             });
-            
+
             describe("when picker is expanded and focused", function() {
                 beforeEach(function() {
                     component.expand();
@@ -323,10 +323,10 @@ function() {
                         });
                     });
                 }
-                
+
                 it("should not focus the input when clicking clear trigger", function() {
                     clickTrigger('clear');
-                    
+
                     runs(function() {
                         expectFocused(picker, true);
                     });
@@ -367,7 +367,7 @@ function() {
             blurSpy = jasmine.createSpy('blur event');
             focusLeaveSpy = jasmine.createSpy('focusleave event');
             validateSpy = jasmine.createSpy('validitychange event');
-            
+
             makeComponent({
                 renderTo: Ext.getBody(),
                 allowBlank: false,
@@ -395,7 +395,7 @@ function() {
                 }
             });
         });
-        
+
         afterEach(function() {
             blurSpy = focusLeaveSpy = validateSpy = null;
         });
@@ -406,10 +406,10 @@ function() {
                     renderTo: document.body,
                     text: 'foo'
                 });
-                
+
                 focusAndWait(component);
             });
-            
+
             afterEach(function() {
                 button = Ext.destroy(button);
             });
@@ -419,27 +419,27 @@ function() {
                     runs(function() {
                         expect(blurSpy).not.toHaveBeenCalled();
                     });
-                    
+
                     focusAndWait(button);
-                    
+
                     runs(function() {
                         expect(blurSpy).toHaveBeenCalled();
                     });
                 });
-                
+
                 it("should validate by default", function() {
                     focusAndWait(button);
-                    
+
                     runs(function() {
                         expect(validateSpy).toHaveBeenCalled();
                     });
                 });
-                
+
                 it("should not validate when validateOnBlur is false", function() {
                     component.validateOnBlur = false;
-                    
+
                     focusAndWait(button);
-                    
+
                     runs(function() {
                         expect(validateSpy).not.toHaveBeenCalled();
                     });
@@ -449,47 +449,47 @@ function() {
             describe("to the picker", function() {
                 it("should fire the blur event", function() {
                     component.expand();
-                    
+
                     focusAndWait(component.picker);
-                    
+
                     runs(function() {
                         expect(blurSpy).toHaveBeenCalled();
                     });
                 });
-                
+
                 it("should validate by default", function() {
                     component.expand();
-                    
+
                     focusAndWait(component.picker);
-                    
+
                     runs(function() {
                         expect(validateSpy).toHaveBeenCalled();
                     });
                 });
-                
+
                 it("should not validate when validateOnBlur is false", function() {
                     component.validateOnBlur = false;
                     component.expand();
-                    
+
                     focusAndWait(component.picker);
-                    
+
                     runs(function() {
                         expect(validateSpy).not.toHaveBeenCalled();
                     });
                 });
             });
         });
-        
+
         describe("focusleave event", function() {
             beforeEach(function() {
                 button = new Ext.button.Button({
                     renderTo: document.body,
                     text: 'foo'
                 });
-                
+
                 focusAndWait(component);
             });
-            
+
             afterEach(function() {
                 button = Ext.destroy(button);
             });
@@ -500,40 +500,40 @@ function() {
                         expect(blurSpy).not.toHaveBeenCalled();
                         expect(focusLeaveSpy).not.toHaveBeenCalled();
                     });
-                    
+
                     focusAndWait(button);
-                    
+
                     runs(function() {
                         expect(blurSpy).toHaveBeenCalled();
                         expect(focusLeaveSpy).toHaveBeenCalled();
                     });
                 });
-                
+
                 it("should validate by default", function() {
                     focusAndWait(button);
-                    
+
                     runs(function() {
                         expect(validateSpy).toHaveBeenCalled();
                     });
                 });
-                
+
                 it("should validate when validateOnBlur is false but validateOnFocusLeave is true", function() {
                     component.validateOnBlur = false;
                     component.validateOnFocusLeave = true;
-                    
+
                     focusAndWait(button);
-                    
+
                     runs(function() {
                         expect(validateSpy).toHaveBeenCalled();
                     });
                 });
-                
+
                 it("should not validate when both flags are false", function() {
                     component.validateOnBlur = false;
                     component.validateOnFocusLeave = false;
-                    
+
                     focusAndWait(button);
-                    
+
                     runs(function() {
                         expect(validateSpy).not.toHaveBeenCalled();
                     });
@@ -543,42 +543,42 @@ function() {
             describe("to the picker", function() {
                 it("should fire the blur event", function() {
                     component.expand();
-                    
+
                     focusAndWait(component.picker);
-                    
+
                     runs(function() {
                         expect(blurSpy).toHaveBeenCalled();
                     });
                 });
-                
+
                 it("should not fire the focusleave event", function() {
                     component.expand();
-                    
+
                     focusAndWait(component.picker);
-                    
+
                     runs(function() {
                         expect(focusLeaveSpy).not.toHaveBeenCalled();
                     });
                 });
-                
+
                 it("should validate by default", function() {
                     component.expand();
-                    
+
                     focusAndWait(component.picker);
-                    
+
                     runs(function() {
                         expect(validateSpy).toHaveBeenCalled();
                     });
                 });
-                
+
                 it("should not validate when validateOnBlur is false", function() {
                     component.validateOnBlur = false;
                     component.validateOnFocusLeave = true;
-                    
+
                     component.expand();
-                    
+
                     focusAndWait(component.picker);
-                    
+
                     runs(function() {
                         expect(validateSpy).not.toHaveBeenCalled();
                     });
@@ -596,7 +596,7 @@ function() {
             jasmine.fireMouseEvent(component.picker.el.dom, 'mouseup');
         });
     });
-    
+
     // This test is too brittle to make it pass consistently in IE9m :(
     (Ext.isIE9m ? xdescribe : describe)('Using PickerField as a cell editor where the picker dropdown is itself an editable grid!', function() {
         var testWindow,
@@ -614,8 +614,10 @@ function() {
                 row: rowIdx,
                 column: cellIdx
             }, true);
+
             jasmine.fireMouseEvent(target, type, x, y, button);
         }
+
         function triggerCellKeyEvent(view, type, rowIdx, cellIdx, key) {
             var target = view.getCellByPosition({
                 row: rowIdx,
@@ -635,22 +637,22 @@ function() {
             });
 
             MyField = Ext.define(null, {
-                extend : 'Ext.form.field.Picker',
+                extend: 'Ext.form.field.Picker',
 
-                createPicker : function () {
+                createPicker: function() {
                     var me = this;
 
                     pickerCellEditing = new Ext.grid.plugin.CellEditing();
                     pickerGrid = new Ext.grid.Panel({
-                        store    : new Ext.data.Store({
-                            fields : [{
+                        store: new Ext.data.Store({
+                            fields: [{
                                 type: 'int',
                                 name: 'a'
                             }, 'b'],
-                            data   : [
-                                { a : 123, b: '123 Text' },
-                                { a : 456, b: '456 Text' },
-                                { a : 789, b: '789 Text' }
+                            data: [
+                                { a: 123, b: '123 Text' },
+                                { a: 456, b: '456 Text' },
+                                { a: 789, b: '789 Text' }
                             ]
                         }),
                         floating: true,
@@ -697,13 +699,14 @@ function() {
                     if (r != null) {
                         picker.getSelectionModel().select(r, false, true);
                     }
+
                     this.callParent(arguments);
                 },
                 getValue: function() {
                     return parseInt(this.callParent());
                 }
             });
-    
+
             var pickerGrid,
                 pickerCellEditing,
                 pickerCellEditor,
@@ -715,7 +718,7 @@ function() {
                 rowLines: true,
                 columnLines: true,
                 rootVisible: false,
-                plugins  : cellEditing,
+                plugins: cellEditing,
                 store: Ext.create('Ext.data.TreeStore', {
                     autoLoad: false,
                     model: TestModel,
@@ -725,47 +728,47 @@ function() {
                             id: 1,
                             text: 'Node 1',
                             value: 123,
-                            children: [{id: 11, text: 'Child Of Node 1', leaf: true, value: 456}]
+                            children: [{ id: 11, text: 'Child Of Node 1', leaf: true, value: 456 }]
                         }, {
                             id: 2,
                             text: 'Node 2',
                             value: 123,
-                            children: [{id: 22, text: 'Child Of Node 2', leaf: true, value: 456}]
+                            children: [{ id: 22, text: 'Child Of Node 2', leaf: true, value: 456 }]
                         }, {
                             id: 3,
                             text: 'Node 3',
                             value: 123,
-                            children: [{id: 33, text: 'Child Of Node 3', leaf: true, value: 456}]
+                            children: [{ id: 33, text: 'Child Of Node 3', leaf: true, value: 456 }]
                         }, {
                             id: 4,
                             text: 'Node 4',
                             value: 123,
-                            children: [{id: 44, text: 'Child Of Node 4', leaf: true, value: 456}]
+                            children: [{ id: 44, text: 'Child Of Node 4', leaf: true, value: 456 }]
                         }, {
                             id: 5,
                             text: 'Node 5',
                             value: 123,
-                            children: [{id: 55, text: 'Child Of Node 5', leaf: true, value: 456}]
+                            children: [{ id: 55, text: 'Child Of Node 5', leaf: true, value: 456 }]
                         }, {
                             id: 6,
                             text: 'Node 6',
                             value: 123,
-                            children: [{id: 66, text: 'Child Of Node 6', leaf: true, value: 456}]
+                            children: [{ id: 66, text: 'Child Of Node 6', leaf: true, value: 456 }]
                         }, {
                             id: 7,
                             text: 'Node 7',
                             value: 123,
-                            children: [{id: 77, text: 'Child Of Node 7', leaf: true, value: 456}]
+                            children: [{ id: 77, text: 'Child Of Node 7', leaf: true, value: 456 }]
                         }, {
                             id: 8,
                             text: 'Node 8',
                             value: 123,
-                            children: [{id: 88, text: 'Child Of Node 8', leaf: true, value: 456}]
+                            children: [{ id: 88, text: 'Child Of Node 8', leaf: true, value: 456 }]
                         }, {
                             id: 9,
                             text: 'Node 9',
                             value: 123,
-                            children: [{id: 99, text: 'Child Of Node 9', leaf: true, value: 456}]
+                            children: [{ id: 99, text: 'Child Of Node 9', leaf: true, value: 456 }]
                         }]
                     }
 
@@ -783,7 +786,7 @@ function() {
                     text: 'Value',
                     flex: 1,
                     dataIndex: 'value',
-                    editor : new MyField()
+                    editor: new MyField()
                 }, {
                     text: 'Any Column 2',
                     width: 150
@@ -807,7 +810,7 @@ function() {
 
             Ext.QuickTips.init();
             testWindow = Ext.create('Ext.window.Window', {
-                layout: 'fit',    
+                layout: 'fit',
                 autoShow: true,
                 x: 100,
                 y: 100,
@@ -826,7 +829,7 @@ function() {
 
             // The boxready listener focuses the first row
             waitsFor(function() {
-                return view && Ext.Element.getActiveElement() === view.getCellByPosition({row:0,column:0}, true);
+                return view && Ext.Element.getActiveElement() === view.getCellByPosition({ row: 0, column: 0 }, true);
             }, 'the cell to be focused');
 
             runs(function() {
@@ -836,7 +839,7 @@ function() {
 
                 // We have a reference to the CellEditor
                 expect(cellEditor != null).toBe(true);
-                
+
                 editorField = cellEditor.field;
 
                 // The CellEditor's field is focused
@@ -844,22 +847,22 @@ function() {
 
                 // Focus on a cell elsewhere in the TreeGrid.
                 // Synthesized mousedowns do not move focus on some browsers.
-                view.getNavigationModel().setPosition(0,3);
+                view.getNavigationModel().setPosition(0, 3);
             });
 
             // Wait for the blur to result from the click to hide the editor
             waitsFor(function() {
                 return cellEditor.isVisible() === false;
             }, 'the CellEditor to be visible');
-            
+
             runs(function() {
                 // The edit should have been canceled, and focus should move to the clicked cell
-                expect(Ext.Element.getActiveElement() === view.getCellByPosition({row:0,column:3}, true)).toBe(true);
+                expect(Ext.Element.getActiveElement() === view.getCellByPosition({ row: 0, column: 3 }, true)).toBe(true);
 
                 // Start editing row 0, column 2
                 triggerCellMouseEvent(view, 'dblclick', 0, 2);
                 expect(cellEditor.isVisible()).toBe(true);
-                
+
                 staticField.inputEl.dom.focus();
             });
 
@@ -909,12 +912,12 @@ function() {
 
                 // Start editing within the picker grid at row 0, column 2
                 triggerCellMouseEvent(pickerGrid.getView(), 'dblclick', 0, 2);
-                
+
                 pickerCellEditor = pickerCellEditing.getActiveEditor();
 
                 // We have a reference to the CellEditor
                 expect(pickerCellEditor != null).toBe(true);
-                
+
                 pickerEditorField = pickerCellEditor.field;
 
                 // The CellEditor's field is focused
@@ -943,12 +946,12 @@ function() {
 
                 // Start editing within the picker grid at row 0, column 2
                 triggerCellMouseEvent(pickerGrid.getView(), 'dblclick', 0, 2);
-                
+
                 pickerCellEditor = pickerCellEditing.getActiveEditor();
 
                 // We have a reference to the CellEditor
                 expect(pickerCellEditor != null).toBe(true);
-                
+
                 pickerEditorField = pickerCellEditor.field;
 
                 // The CellEditor's field is focused
@@ -965,7 +968,7 @@ function() {
 
             runs(function() {
                 // The edit should have been canceled, and focus should move to the clicked cell
-                expect(Ext.Element.getActiveElement() === view.getCellByPosition({row:0,column:3}, true)).toBe(true);
+                expect(Ext.Element.getActiveElement() === view.getCellByPosition({ row: 0, column: 3 }, true)).toBe(true);
             });
         });
     });

@@ -32,7 +32,8 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
 
         /**
          * @cfg {Boolean} scaleDrag
-         * Determines if the delta of a drag should be scaled depending on where the drag is started.
+         * Determines if the delta of a drag should be scaled depending on 
+         * where the drag is started.
          * This causes drags that start in the middle of an item to move the items faster.
          * This means shorter drag distances when dragging from the middle or far sides
          */
@@ -69,16 +70,22 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
 
         children: [{
             reference: 'leftElement',
-            cls: Ext.baseCSSPrefix + 'listswiperaccordion-wrapper ' + Ext.baseCSSPrefix + 'listswiperaccordion-wrapper-left'
+            cls: Ext.baseCSSPrefix +
+                'listswiperaccordion-wrapper ' +
+                Ext.baseCSSPrefix +
+                'listswiperaccordion-wrapper-left'
         }, {
             reference: 'rightElement',
-            cls: Ext.baseCSSPrefix + 'listswiperaccordion-wrapper ' + Ext.baseCSSPrefix + 'listswiperaccordion-wrapper-right'
+            cls: Ext.baseCSSPrefix +
+                'listswiperaccordion-wrapper ' +
+                Ext.baseCSSPrefix +
+                'listswiperaccordion-wrapper-right'
         }]
     }],
 
     scrollDock: null,
 
-    constructor: function (config) {
+    constructor: function(config) {
         var me = this;
 
         me.left = {
@@ -96,7 +103,7 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
         me.callParent([config]);
     },
 
-    initialize: function () {
+    initialize: function() {
         var me = this,
             target = me.getTranslationTarget();
 
@@ -107,9 +114,13 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
         });
     },
 
-    destroy: function () {
+    destroy: function() {
         var me = this,
             target = me.getTranslationTarget();
+
+        if (me.$undoTimer) {
+            Ext.unraf(me.$undoTimer);
+        }
 
         //<debug>
         if (me.thresholdEl) {
@@ -125,16 +136,17 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
         me.callParent();
     },
 
-    applyLeftActions: function (items) {
+    applyLeftActions: function(items) {
         this.addActions('left', items);
     },
 
-    applyRightActions: function (items) {
+    applyRightActions: function(items) {
         this.addActions('right', items);
     },
 
-    applySide: function (side) {
+    applySide: function(side) {
         this.side = side && this[side];
+
         return side;
     },
 
@@ -145,7 +157,7 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
         return backgroundColorEl.getStyle('backgroundColor');
     },
 
-    addActions: function (side, items) {
+    addActions: function(side, items) {
         var me = this,
             i, config, action, button;
 
@@ -155,6 +167,7 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
         config = side.multiple ? me.getMultiActionDefaults() : me.getSingleActionDefaults();
         side.el.toggleCls(me.baseCls + '-multiple', side.multiple);
         side.el.toggleCls(me.baseCls + '-single', !side.multiple);
+
         for (i = 0; i < items.length; i++) {
             action = me.createActionItem(Ext.apply({}, items[i], config));
             action.$side = side;
@@ -168,11 +181,11 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
         }
     },
 
-    createActionItem: function (config) {
+    createActionItem: function(config) {
         return Ext.apply({}, config, this.getActionDefaults());
     },
 
-    getSwipeRange: function () {
+    getSwipeRange: function() {
         var me = this,
             side = me.side,
             plugin = me.owner,
@@ -181,7 +194,7 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
         return me.itemWidth * (swipeMax[side.multiple ? 'multiple' : 'single'] / 100);
     },
 
-    onActionTap: function (action, button, e) {
+    onActionTap: function(action, button, e) {
         var me = this,
             state = me.getState();
 
@@ -191,7 +204,7 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
         }
     },
 
-    onDismissTap: function () {
+    onDismissTap: function() {
         var me = this,
             plugin = me.owner,
             dimissOnTap = plugin.getDismissOnTap();
@@ -201,7 +214,7 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
         }
     },
 
-    onRender: function () {
+    onRender: function() {
         var me = this,
             item = me.ownerCmp;
 
@@ -209,19 +222,21 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
         me.syncSides();
     },
 
-    updateSide: function (side, oldSide) {
+    updateSide: function(side, oldSide) {
         var me = this,
             layout = me.getLayout();
+
         me.el.replaceCls(oldSide, side, me.baseCls + '-side');
 
         if (side === 'left') {
             layout.setPack('start');
-        } else {
+        }
+        else {
             layout.setPack('end');
         }
     },
 
-    updateState: function (state, oldState) {
+    updateState: function(state, oldState) {
         var me = this,
             side = me.side,
             defaultButton = me.getDefaultButton();
@@ -232,21 +247,23 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
             me.el.toggleCls(me.baseCls + '-collapsed', state === 'dragcommit');
 
             if (state === 'dragcommit') {
-                defaultButton.el.setStyle({'flex-basis': side.maxActionWidth + 'px'});
-            } else {
-                defaultButton.setStyle({'flex-basis': null});
+                defaultButton.el.setStyle({ 'flex-basis': side.maxActionWidth + 'px' });
+            }
+            else {
+                defaultButton.setStyle({ 'flex-basis': null });
             }
 
             if (oldState === 'dragcommit' && me.isDragging) {
                 me.el.addCls(me.baseCls + '-was-collapsed');
-            } else {
+            }
+            else {
                 me.el.removeCls(me.baseCls + '-was-collapsed');
             }
         }
     },
 
     privates: {
-        destroyItem: function () {
+        destroyItem: function() {
             var me = this,
                 plugin = me.owner,
                 item = me.ownerCmp;
@@ -257,23 +274,26 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
                 plugin.destroyItem(item);
             }
         },
-        animateItem: function (offset, config) {
+        animateItem: function(offset, config) {
+            var me = this,
+                side, target, duration, completeFn;
+
             config = config || {};
 
-            var me = this,
-                side = me.side,
-                target = this.getTranslationTarget(),
-                duration = config.duration || 150,
-                completeFn;
+            side = me.side;
+            target = this.getTranslationTarget();
+            duration = config.duration || 150;
 
-            return new Ext.Promise(function (resolve) {
+            return new Ext.Promise(function(resolve) {
                 me.animating = true;
                 me.offset = side.isLeft ? offset : -offset;
-                completeFn = function () {
+
+                completeFn = function() {
                     if (!me.destroyed) {
                         me.animating = false;
                         me.el.removeCls(me.baseCls + '-was-collapsed');
                     }
+
                     resolve();
                 };
 
@@ -299,13 +319,14 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
 
                         callback: completeFn
                     });
-                } else {
+                }
+                else {
                     completeFn();
                 }
             });
         },
 
-        commit: function (e, action, button) {
+        commit: function(e, action, button) {
             var me = this,
                 plugin = me.owner,
                 undoable, handler,
@@ -320,15 +341,17 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
             me.$precommitResult = precommitResult = me.invokeAction(action, 'precommit');
 
             if (handler) {
-                me.snapback().then(function () {
+                me.snapback().then(function() {
                     Ext.callback(handler, button.getScope(), [action, e], 0, button);
                 }).then(function() {
                     me.destroyItem();
                 });
-            } else {
+            }
+            else {
                 if (!undoable) {
                     me.dismiss();
-                } else {
+                }
+                else {
                     undo = me.add(me.getUndo());
                     undo.addUi(button.getUi());
 
@@ -337,9 +360,15 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
                         tap: 'onDismissTap'
                     });
 
-                    Ext.raf(function () {
+                    if (me.$undoTimer) {
+                        Ext.unraf(me.$undoTimer);
+                    }
+
+                    me.$undoTimer = Ext.raf(function() {
+                        me.$undoTimer = null;
                         me.setState('undo');
                         backgroundColor = me.getButtonBackgroundColor(button);
+
                         if (backgroundColor) {
                             me.el.setStyle('backgroundColor', backgroundColor);
                         }
@@ -347,12 +376,14 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
                         undo.setHandler(me.onUndoTap.bind(me));
 
                         delay = plugin.getCommitDelay();
+
                         if (delay) {
                             if (precommitResult && precommitResult.then) {
-                                precommitResult.then(function () {
+                                precommitResult.then(function() {
                                     plugin.dismissAllTask.delay(delay);
                                 });
-                            } else {
+                            }
+                            else {
                                 plugin.dismissAllTask.delay(delay);
                             }
                         }
@@ -361,11 +392,11 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
             }
         },
 
-        onUndoTap: function () {
+        onUndoTap: function() {
             this.undo();
         },
 
-        undo: function () {
+        undo: function() {
             var me = this,
                 action = me.getAction(),
                 precommitResult = me.$precommitResult;
@@ -373,14 +404,15 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
             me.setState('open');
 
             if (precommitResult && precommitResult.then) {
-                precommitResult.then(function () {
+                precommitResult.then(function() {
                     me.$precommitResult = null;
                     me.undo();
                 });
+
                 return;
             }
 
-            me.snapback().then(function () {
+            me.snapback().then(function() {
                 me.invokeAction(action, 'revert');
             }).then(function() {
                 me.destroyItem();
@@ -388,16 +420,18 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
         },
 
         //<debug>
-        createThresholds: function () {
+        createThresholds: function() {
             var me = this,
                 item = me.ownerCmp,
                 plugin = this.owner,
                 side = me.side,
                 swipeRange = me.getSwipeRange(),
                 commitThreshold = side.commitThreshold,
-                openThreshold = side.openThreshold;
+                openThreshold = side.openThreshold,
+                width;
 
             if (plugin.showThresholds && !me.thresholdEl) {
+                width = (swipeRange - (commitThreshold - openThreshold) - openThreshold);
                 me.thresholdEl = item.el.append({
                     style: {
                         display: 'flex',
@@ -412,9 +446,9 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
                     children: [
                         {
                             style: {
-                                width: (swipeRange - (commitThreshold - openThreshold) - openThreshold) + 'px',
+                                width: width + 'px',
                                 height: '6px',
-                                opacity: .8,
+                                opacity: 0.8,
                                 backgroundColor: '#EF5350'
                             }
                         },
@@ -422,7 +456,7 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
                             style: {
                                 width: (commitThreshold - openThreshold) + 'px',
                                 height: '6px',
-                                opacity: .8,
+                                opacity: 0.8,
                                 backgroundColor: '#FFEE58'
                             }
                         },
@@ -430,7 +464,7 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
                             style: {
                                 width: openThreshold + 'px',
                                 height: '6px',
-                                opacity: .8,
+                                opacity: 0.8,
                                 backgroundColor: '#66BB6A'
                             }
                         }
@@ -446,36 +480,40 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
         },
         //</debug>
 
-        dismiss: function () {
+        dismiss: function() {
             var me = this,
                 action = me.getAction(),
                 precommitResult = me.$precommitResult;
 
             if (precommitResult && precommitResult.then) {
-                precommitResult.then(function () {
+                precommitResult.then(function() {
                     me.$precommitResult = null;
                     me.dismiss();
                 });
+
                 return;
             }
 
             if (action) {
-                me.snapback().then(function () {
+                me.snapback().then(function() {
                     me.invokeAction(action, 'commit');
                 }).then(function() {
                     me.destroyItem();
                 });
-            } else {
+            }
+            else {
                 me.snapback(true);
             }
         },
 
-        onDragStart: function (e) {
+        onDragStart: function(e) {
             var me = this,
                 state = me.getState();
+
             if (me.animating || state === 'undo') {
                 return;
             }
+
             e.claimGesture();
             me.initialOffset = me.offset || 0;
             me.startX = e.getX() - me.el.getX() - me.initialOffset;
@@ -483,46 +521,57 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
             me.syncState(e.deltaX);
         },
 
-        onDragMove: function (e) {
+        onDragMove: function(e) {
             // Additonal check for undo state so that it will not create multiple undo buttons 
             if ((this.getState()) === 'undo') {
                 return;
             }
+
             e.preventDefault();
             this.syncState(e.deltaX);
         },
 
-        onDragEnd: function (e) {
+        onDragEnd: function(e) {
             var me = this,
                 state = me.getState();
+
             e.preventDefault();
             me.isDragging = false;
+
             if (state === 'dragcommit') {
                 me.commit(e);
-            } else if (state === 'dragopen') {
+            }
+            else if (state === 'dragopen') {
                 me.open();
-            } else if (state === 'undo') {
+            }
+            else if (state === 'undo') {
                 // avoid calling snapback in case it is already in undo state
                 return;
-            } else {
+            }
+            else {
                 me.snapback(true);
             }
         },
 
         getDefaultButton: function(side) {
+            var items;
+
             side = side || this.side;
 
-            var items = side.items;
+            items = side.items;
+
             return items[side.isLeft ? 0 : items.length - 1];
         },
 
-        getDefaultAction: function (side) {
+        getDefaultAction: function(side) {
             var button = this.getDefaultButton(side);
+
             return button && button.$action;
         },
 
-        getRenderTarget: function (item) {
+        getRenderTarget: function(item) {
             var side = item && item.$side;
+
             if (side) {
                 return side.el;
             }
@@ -530,25 +579,29 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
             return this.callParent(arguments);
         },
 
-        open: function () {
+        open: function() {
             return this.animateItem(this.side.naturalWidth);
         },
 
-        snapback: function (destroy) {
+        snapback: function(destroy) {
             var me = this,
                 anim = me.animateItem(0);
 
-            return destroy ? anim.then(function() { me.destroyItem(); }) : anim;
+            return destroy
+                ? anim.then(function() {
+                    me.destroyItem();
+                })
+                : anim;
         },
 
-        syncSides: function () {
+        syncSides: function() {
             var me = this;
 
             me.syncSide('left');
             me.syncSide('right');
         },
 
-        syncSide: function (side) {
+        syncSide: function(side) {
             var me = this,
                 thresholds = me.getThresholds(),
                 itemWidth = me.itemWidth,
@@ -576,28 +629,30 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
 
             if (thresholds && thresholds.open) {
                 side.openThreshold = (thresholds.open / 100) * itemWidth;
-            } else {
+            }
+            else {
                 side.openThreshold = maxActionWidth;
             }
 
             if (thresholds && thresholds.commit) {
                 side.commitThreshold = (thresholds.commit / 100) * itemWidth;
-            } else {
-                side.commitThreshold = Math.min(.95 * itemWidth, naturalWidth * 1.4);
+            }
+            else {
+                side.commitThreshold = Math.min(0.95 * itemWidth, naturalWidth * 1.4);
             }
 
             element.removeCls(me.baseCls + '-measure');
 
-
             if (side.multiple) {
                 backgroundColor = me.getButtonBackgroundColor(defaultButton);
+
                 if (backgroundColor) {
                     side.el.setStyle('backgroundColor', backgroundColor);
                 }
             }
         },
 
-        syncState: function (deltaX) {
+        syncState: function(deltaX) {
             var me = this,
                 plugin = me.owner,
                 itemWidth = me.itemWidth,
@@ -605,9 +660,15 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
                 scaleDrag = me.getScaleDrag(),
                 testOffset = me.initialOffset + deltaX,
                 side = this[(testOffset < 0 ? 'right' : 'left')],
-                // Determines the scale (1-3) inwhich to multiple the delta by depending on where you start the drag
-                // drags started in the middle will scale faster allowing for items to be seen without extremly long drags
-                scaler = scaleDrag ? Math.max(1, Math.min(3, Math.abs( (side.isLeft ? 0 : 1) - (me.startX / itemWidth)) * 3)) : 1,
+                // Determines the scale (1-3) in which to multiple the delta by depending 
+                // on where you start the drag.
+                // Drags started in the middle will scale faster allowing for items to be
+                // seen without extremely long drags.
+                scaler = scaleDrag
+                    ? Math.max(1, Math.min(3, Math.abs(
+                        (side.isLeft ? 0 : 1) - (me.startX / itemWidth)) * 3)
+                    )
+                    : 1,
                 offset = me.offset = me.initialOffset + (deltaX * scaler),
                 currentSide = me.side,
                 directionLock = plugin.getDirectionLock(),
@@ -618,15 +679,20 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
             }
 
             // Empty Items or Direction locked will friction drag
-            if (side.items.length === 0 || (currentSide && (side.name !== currentSide.name && directionLock))) {
+            if (
+                side.items.length === 0 ||
+                (currentSide && (side.name !== currentSide.name && directionLock))
+            ) {
                 offset = me.offset = me.initialOffset + (deltaX * 0.1);
 
                 // Possible first drag was on an empty side, we need to set the side
                 if (side.items.length === 0) {
                     me.setSide(side.name);
                 }
+
                 me.setState('draglocked');
-            } else {
+            }
+            else {
                 me.setSide(side.name);
 
                 // Depends on side being set, must be done after.
@@ -634,7 +700,10 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
                 openThreshold = side.openThreshold;
                 commitThreshold = side.commitThreshold;
 
-                positiveOffset = (side.isLeft ? Math.abs(Math.max(0, offset)) : Math.abs(Math.min(0, offset)));
+                positiveOffset = (side.isLeft
+                    ? Math.abs(Math.max(0, offset))
+                    : Math.abs(Math.min(0, offset))
+                );
 
                 //<debug>
                 me.createThresholds();
@@ -642,15 +711,18 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
 
                 if (positiveOffset <= openThreshold) {
                     me.setState('dragpeek');
-                } else if (positiveOffset <= commitThreshold || !swipeToCommit) {
+                }
+                else if (positiveOffset <= commitThreshold || !swipeToCommit) {
                     me.setState('dragopen');
-                } else {
+                }
+                else {
                     me.setState('dragcommit');
                 }
 
                 if (side.isLeft) {
                     offset = Math.min(offset, swipeRange);
-                } else {
+                }
+                else {
                     offset = Math.max(offset, -swipeRange);
                 }
             }
@@ -658,7 +730,7 @@ Ext.define('Ext.dataview.listswiper.Accordion', {
             me.setBodyOffset(offset);
         },
 
-        updateBodyOffset: function (offset) {
+        updateBodyOffset: function(offset) {
             var me = this,
                 side = me.side,
                 target = me.getTranslationTarget();

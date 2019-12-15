@@ -1,53 +1,90 @@
-﻿Ext.define("App.ux.page.TreePage", {
-    extend: "Ext.panel.Panel",
-    padding:"20px 20px",
+﻿/**
+ * 视图 页面基础类 使用例子范围适用于
+ * 左侧树右侧列表页面，例:组织机构页面
+ */
+Ext.define("App.ux.page.TreePage", {
+    extend: "Ext.Panel",
+    padding: "20px 20px",
+    shadow :true,
     layout: {
         type: 'hbox',
         align: 'stretch'
     },
-
-    treeList: null,
-
-    pageList: null,
-
-    initComponent: function () {
+    initialize: function () {
         var me = this;
         me.defaultPageLayout();
         me.callParent();
     },
 
     defaultPageLayout: function () {
-        var me = this, treePanel, pagePanel; me.items = [];
+        var me = this, treePanel, rightItem = {
+            padding: "1px 1px 1px 20px",
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            flex: 1,
+            items: []
+        };
+
         if (me.treeList.getCount() > 0) {
             treePanel = me.treeList.first();
-            treePanel.width = me.treeWidth;
+            treePanel.shadow = true;
+            me.add(treePanel);
+        }
+      
+        if (me.queryList.getCount() > 0) {
+            queryPanel = me.queryList.first();
+            queryPanel.shadow = true;
+            rightItem.items.push(queryPanel);
         }
 
-        if (me.pageList.getCount() > 0) {
-            pagePanel = me.pageList.first();
-            pagePanel.flex = 1;
-            pagePanel.margin = "0px 0px 0px 2px";
+        if (me.gridList.getCount() > 0) {
+            gridPanel = me.gridList.first();
+            gridPanel.flex = 1;
+            gridPanel.shadow = true;
+            rightItem.items.push(gridPanel);
         }
-        me.items = [treePanel, pagePanel];
+
+        if (me.queryList.getCount() > 0 || me.gridList.getCount() > 0) {
+            me.add(rightItem);
+        }
     },
 
-    addPage: function (key, page) {
+    addQuery: function (key, query) {
         var me = this;
-        
-        if (me.pageList.containsKey(key)) {
-            me.pageList.removeAtKey(key);
+        if (me.queryList.containsKey(key)) {
+            me.queryList.removeAtKey(key);
         }
-        me.pageList.add(key, page);
+        me.queryList.add(key, query);
     },
 
-    getPage: function (key) {
+    getQuery: function (key) {
         var me = this;
 
-        if (!me.pageList.containsKey(key)) {
+        if (!me.queryList.containsKey(key)) {
             return null;
         }
         else {
-            return me.pageList.get(key);
+            return me.queryList.get(key);
+        }
+    },
+
+    addGrid: function (key, grid) {
+        var me = this;
+        if (me.gridList.containsKey(key)) {
+            me.gridList.removeAtKey(key);
+        }
+        me.gridList.add(key, grid);
+    },
+
+    getGrid: function (key) {
+        var me = this;
+        if (!me.gridList.containsKey(key)) {
+            return null;
+        }
+        else {
+            return me.gridList.get(key);
         }
     },
 
@@ -62,19 +99,19 @@
 
     getTree: function (key) {
         var me = this;
-
-        if (!me.treeList.containsKey(key)) {
+        if (!me.gridList.containsKey(key)) {
             return null;
         }
         else {
-            return me.treeList.get(key);
+            return me.gridList.get(key);
         }
     },
 
     constructor: function (config) {
         var me = this;
-        me.pageList = new Ext.util.MixedCollection();
         me.treeList = new Ext.util.MixedCollection();
+        me.queryList = new Ext.util.MixedCollection();
+        me.gridList = new Ext.util.MixedCollection();
         me.callParent([config]);
     }
 })

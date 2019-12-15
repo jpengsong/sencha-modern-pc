@@ -1,3 +1,16 @@
+/**
+ *
+ *  Store通过Proxy请求本地模拟数据 使用例子如下：
+ *  proxy: {
+ *       type: 'server',
+ *       reader: {
+ *           type:"jsonreader",
+ *           datatype:config.DataType.GridStore
+ *       },
+ *       url: '/api/SystemManage/SysUser/GetSysUserPage',
+ *   }
+ * 
+*/
 Ext.define('App.ux.proxy.Server', {
     extend: 'Ext.data.proxy.Ajax',
     alias: 'proxy.server',

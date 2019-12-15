@@ -9,12 +9,12 @@ function() {
 
     function createGrid(gridCfg, storeCfg) {
         store = new Ext.data.Store(Ext.apply({
-            fields: ['name', 'email', 'phone', {name: 'bday', type:'date' }],
+            fields: ['name', 'email', 'phone', { name: 'bday', type: 'date' }],
             data: [
-                { 'name': 'Lisa',  'email':'lisa@simpsons.com',  'phone':'555-111-1224', bday: '01/01/1980' },
-                { 'name': 'Bart',  'email':'bart@simpsons.com',  'phone':'555-222-1234', bday: '12/31/1981' },
-                { 'name': 'Homer', 'email':'homer@simpsons.com', 'phone':'555-222-1244', bday: '02/28/1947' },
-                { 'name': 'Marge', 'email':'marge@simpsons.com', 'phone':'555-222-1254', bday: '04/01/1950' }
+                { 'name': 'Lisa',  'email': 'lisa@simpsons.com',  'phone': '555-111-1224', bday: '01/01/1980' },
+                { 'name': 'Bart',  'email': 'bart@simpsons.com',  'phone': '555-222-1234', bday: '12/31/1981' },
+                { 'name': 'Homer', 'email': 'homer@simpsons.com', 'phone': '555-222-1244', bday: '02/28/1947' },
+                { 'name': 'Marge', 'email': 'marge@simpsons.com', 'phone': '555-222-1254', bday: '04/01/1950' }
             ],
             autoDestroy: true
         }, storeCfg));
@@ -22,7 +22,7 @@ function() {
         panel = new Ext.grid.Grid(Ext.apply({
             store: store,
             columns: [
-                { header: 'Birthday', dataIndex: 'bday', width: 100, xtype: 'datecolumn'},
+                { header: 'Birthday', dataIndex: 'bday', width: 100, xtype: 'datecolumn' },
                 { header: 'Name',  dataIndex: 'name', width: 100 },
                 { header: 'Email', dataIndex: 'email', width: 100 },
                 { header: 'Phone', dataIndex: 'phone', width: 100 }
@@ -40,9 +40,11 @@ function() {
         // Override so that we can control asynchronous loading
         loadStore = Ext.data.ProxyStore.prototype.load = function() {
             proxyStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         };
 
@@ -64,8 +66,8 @@ function() {
         Ext.Factory.controller.instance.clearCache();
     });
 
-    describe('grids', function () {
-        it('should show the correct value in the cell', function () {
+    describe('grids', function() {
+        it('should show the correct value in the cell', function() {
             createGrid({
                 columns: [{
                     header: 'Birthday', dataIndex: 'bday', width: 100, xtype: 'datecolumn'
@@ -79,7 +81,7 @@ function() {
             expect(getCell(3, 0).el.down('.x-body-el', true).innerHTML).toBe('04/01/1950');
         });
 
-        it('should apply the format correctly', function () {
+        it('should apply the format correctly', function() {
             createGrid({
                 columns: [{
                     header: 'Birthday', dataIndex: 'bday', width: 100, xtype: 'datecolumn',
@@ -94,7 +96,7 @@ function() {
             expect(getCell(3, 0).el.down('.x-body-el', true).innerHTML).toBe('01.04.1950');
         });
 
-        it('should apply the cell format correctly from a VM', function () {
+        it('should apply the cell format correctly from a VM', function() {
             var vm = new Ext.app.ViewModel({
                 data: {
                     format: 'd.m.Y'

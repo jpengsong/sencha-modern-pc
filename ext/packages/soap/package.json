@@ -1,6 +1,10 @@
 {
-    "name": "@extjs/ext-react-soap",
-    "version": "6.5.3.57",
+    "name": "@extjs/ext-soap",
+    "ext-react-name": "@extjs/ext-react-soap",
+    "ext-name": "@extjs/ext-soap",
+    "SenchaExtName": "@sencha/ext-soap",
+    "SenchaExtReactName": "@sencha/ext-react-soap",
+    "version": "7.0.0.156",
     "sencha": {
         "name": "soap",
         "namespace": "Ext",
@@ -14,8 +18,8 @@
         "creator": "Sencha",
         "summary": "SOAP Data Support",
         "detailedDescription": "This package provides SOAP support for the Data package",
-        "version": "6.5.3.57",
-        "compatVersion": "6.0.0",
+        "version": "7.0.0.156",
+        "compatVersion": "7.0.0",
         "format": "1",
         "output": "${framework.dir}/build/packages/${package.name}",
         "local": true,

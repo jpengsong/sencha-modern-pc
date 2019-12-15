@@ -81,6 +81,7 @@ Ext.define('Ext.Widget', {
         typeProperty: 'xtype'
     },
 
+    /* eslint-disable max-len */
     /**
      * @property {Object} element
      * A configuration object for Ext.Element.create() that is used to create the Element
@@ -205,6 +206,7 @@ Ext.define('Ext.Widget', {
     element: {
         reference: 'element'
     },
+    /* eslint-enable */
 
     observableType: 'component',
 
@@ -217,6 +219,13 @@ Ext.define('Ext.Widget', {
          * @accessor
          */
         cls: null,
+
+        /**
+         * @cfg {Number/String} margin
+         * The margin to use on this Component. Can be specified as a number (in which
+         * case all edges get the same margin) or a CSS string like '5 10 10 10'
+         */
+        margin: null,
 
         /**
          * @cfg {String/Object} style
@@ -249,7 +258,8 @@ Ext.define('Ext.Widget', {
          * @cfg {Boolean} border Enables or disables bordering on this component.
          * The following values are accepted:
          *
-         * - `null` or `true (default): Do nothing and allow the border to be specified by the theme.
+         * - `null` or `true (default): Do nothing and allow the border to be specified
+         * by the theme.
          * - `false`: suppress the default border provided by the theme.
          *
          * Please note that enabling bordering via this config will not add a `border-color`
@@ -344,11 +354,12 @@ Ext.define('Ext.Widget', {
          *     });
          */
         touchAction: null,
-        
+
         /**
          * @cfg {Object} eventHandlers A map of event type to the corresponding handler method
          * name. This is used internally by native event handling mechanism.
          * @private
+         * @deprecated 6.6.0 Inline event handlers are deprecated
          */
         eventHandlers: {
             focus: 'handleFocusEvent',
@@ -357,14 +368,16 @@ Ext.define('Ext.Widget', {
     },
 
     /**
-     * @cfg {String} name Name for the widget to be used with {@link Ext.Container#lookupName} et al.
+     * @cfg {String} name Name for the widget to be used with {@link Ext.Container#lookupName}
+     * et al.
      */
     name: null,
 
     config: {
         /**
          * @cfg {Ext.Element} [renderTo] Optional element to render this Component to.
-         * Not required if this component is an {@link Ext.Container#items item} of a Container of a Container.
+         * Not required if this component is an {@link Ext.Container#items item} of a Container
+         * of a Container.
          */
         renderTo: null,
 
@@ -454,9 +467,10 @@ Ext.define('Ext.Widget', {
     eventedConfig: {
         /**
          * @cfg {Number/String} width
-         * The width of this Component; must be a valid CSS length value, e.g: `300`, `100px`, `30%`, etc.
-         * By default, if this is not explicitly set, this Component's element will simply have its own natural size.
-         * If set to `auto`, it will set the width to `null` meaning it will have its own natural size.
+         * The width of this Component; must be a valid CSS length value, e.g: `300`, `100px`,
+         * `30%`, etc. By default, if this is not explicitly set, this Component's element will
+         * simply have its own natural size. If set to `auto`, it will set the width to `null`
+         * meaning it will have its own natural size.
          * @accessor
          * @evented
          */
@@ -464,9 +478,10 @@ Ext.define('Ext.Widget', {
 
         /**
          * @cfg {Number/String} height
-         * The height of this Component; must be a valid CSS length value, e.g: `300`, `100px`, `30%`, etc.
-         * By default, if this is not explicitly set, this Component's element will simply have its own natural size.
-         * If set to `auto`, it will set the width to `null` meaning it will have its own natural size.
+         * The height of this Component; must be a valid CSS length value, e.g: `300`, `100px`,
+         * `30%`, etc. By default, if this is not explicitly set, this Component's element will
+         * simply have its own natural size. If set to `auto`, it will set the width to `null`
+         * meaning it will have its own natural size.
          * @accessor
          * @evented
          */
@@ -490,7 +505,7 @@ Ext.define('Ext.Widget', {
          */
         disabled: null
     },
-    
+
     /**
      * @property {Array} template
      * An array of child elements to use as the children of the main element in the {@link
@@ -550,11 +565,12 @@ Ext.define('Ext.Widget', {
     clearPropertiesOnDestroy: 'async',
     focusEl: 'element',
     ariaEl: 'element',
-    
+
     spaceRe: /\s+/,
 
     /**
-     * @property {String} [noBorderCls] The CSS class to add to this component should not have a border.
+     * @property {String} [noBorderCls] The CSS class to add to this component should not have
+     * a border.
      * @private
      * @readonly
      */
@@ -564,7 +580,7 @@ Ext.define('Ext.Widget', {
     heightedCls: Ext.baseCSSPrefix + 'heighted',
     widthedCls: Ext.baseCSSPrefix + 'widthed',
 
-    constructor: function (config) {
+    constructor: function(config) {
         var me = this,
             baseCls = me.baseCls,
             renderTo = config && config.renderTo,
@@ -578,7 +594,8 @@ Ext.define('Ext.Widget', {
 
         //<debug>
         if (config && ('baseCls' in config)) {
-            Ext.raise('baseCls cannot be used as an instance config. It must be specified at class definition time.');
+            Ext.raise('baseCls cannot be used as an instance config. It must be specified ' +
+                      'at class definition time.');
         }
         //</debug>
 
@@ -591,10 +608,12 @@ Ext.define('Ext.Widget', {
 
         me.initId(config);
         me.initElement();
+
         if (renderTo) {
             config = Ext.apply({}, config);
             delete config.renderTo;
         }
+
         me.mixins.observable.constructor.call(me, config);
 
         // Wait until configs have run to do this
@@ -602,17 +621,18 @@ Ext.define('Ext.Widget', {
             me.initFocusableEvents(true);
         }
 
-        if (renderTo) {
-            me.setRenderTo(renderTo);
-        }
-
         me.syncUiCls();
 
         Ext.ComponentManager.register(me);
 
         controller = me.getController();
+
         if (controller) {
             controller.init(me);
+        }
+
+        if (renderTo) {
+            me.setRenderTo(renderTo);
         }
     },
 
@@ -663,7 +683,7 @@ Ext.define('Ext.Widget', {
     updateDisabled: function(disabled) {
         var me = this,
             container = me.ownerFocusableContainer;
-        
+
         if (container) {
             if (disabled) {
                 if (!container.beforeFocusableChildDisable.$nullFn) {
@@ -676,9 +696,9 @@ Ext.define('Ext.Widget', {
                 }
             }
         }
-        
+
         me.element.toggleCls(me.disabledCls, disabled);
-        
+
         if (me.focusable) {
             if (disabled) {
                 me.disableFocusable();
@@ -687,7 +707,7 @@ Ext.define('Ext.Widget', {
                 me.enableFocusable();
             }
         }
-        
+
         if (container) {
             if (disabled) {
                 if (!container.onFocusableChildDisable.$nullFn) {
@@ -706,7 +726,7 @@ Ext.define('Ext.Widget', {
      * Disables this Component
      */
     disable: function() {
-       this.setDisabled(true);
+        this.setDisabled(true);
     },
 
     /**
@@ -728,7 +748,7 @@ Ext.define('Ext.Widget', {
      * Returns `true` if this Component is not currently disabled.
      * @return {Boolean} `true` if not currently disabled.
      */
-    isEnabled: function () {
+    isEnabled: function() {
         return !this.getDisabled();
     },
 
@@ -759,6 +779,7 @@ Ext.define('Ext.Widget', {
 
     clearListeners: function() {
         var me = this;
+
         me.mixins.observable.clearListeners.call(me);
         me.mixins.componentDelegation.clearDelegatedListeners.call(me);
     },
@@ -773,6 +794,7 @@ Ext.define('Ext.Widget', {
 
         // isDestroying added for compat reasons
         me.isDestroying = me.destroying = true;
+        me.destroy = Ext.emptyFn;
 
         me.doDestroy();
 
@@ -780,7 +802,8 @@ Ext.define('Ext.Widget', {
         // to let the interested parties fire events until the very end.
         me.clearListeners();
 
-        me.isDestroying = me.destroying = false;
+        // This just makes it hard to ask "was destroy() called?":
+        // me.isDestroying = me.destroying = false; // removed in 7.0
 
         // ComponentDelegation mixin does not install "after" interceptor on the
         // base class destructor so we need to call it explicitly.
@@ -815,6 +838,7 @@ Ext.define('Ext.Widget', {
         // Destroy all element references
         for (i = 0, ln = referenceList.length; i < ln; i++) {
             reference = referenceList[i];
+
             if (me.hasOwnProperty(reference)) {
                 me[reference].destroy();
                 me[reference] = null;
@@ -828,19 +852,24 @@ Ext.define('Ext.Widget', {
 
     doFireEvent: function(eventName, args, bubbles) {
         var me = this,
-            ret;
-        
+            ev, ret;
+
         ret = me.mixins.observable.doFireEvent.call(me, eventName, args, bubbles);
-        
-        // Could have been destroyed in event handler
+
+        // Could have been destroyed in event handler.
         if (ret !== false && !me.destroyed) {
-            ret = me.mixins.componentDelegation.doFireDelegatedEvent.call(me, eventName, args);
+            ev = me.events[eventName];
+
+            // Also, a suspendEvent() call on the target could be in effect:
+            if (!ev || !ev.suspended) {
+                ret = me.mixins.componentDelegation.doFireDelegatedEvent.call(me, eventName, args);
+            }
         }
 
         return ret;
     },
 
-    getBubbleTarget: function () {
+    getBubbleTarget: function() {
         return this.getRefOwner();
     },
 
@@ -903,7 +932,8 @@ Ext.define('Ext.Widget', {
                     for (i = 0, ln = classCls.length; i < ln; i++) {
                         (classes || (classes = [])).push(classCls[i]);
                     }
-                } else {
+                }
+                else {
                     (classes || (classes = [])).push(classCls);
                 }
             }
@@ -939,8 +969,8 @@ Ext.define('Ext.Widget', {
             prototype = me.self.prototype,
             id = me.getId(),
             // The double assignment is intentional to workaround a JIT issue that prevents
-            // me.referenceList from being assigned in random scenarios. The issue occurs on 4th gen 
-            // iPads and lower, possibly other older iOS devices. See EXTJS-16494.
+            // me.referenceList from being assigned in random scenarios. The issue occurs
+            // on 4th gen  iPads and lower, possibly other older iOS devices. See EXTJS-16494.
             referenceList = me.referenceList = me.referenceList = [],
             isFirstInstance = !prototype.hasOwnProperty('renderTemplate'),
             /**
@@ -950,10 +980,13 @@ Ext.define('Ext.Widget', {
              * Contains the `element` reference by default since the `element` always gets
              * non-suffixed ui-specific CSS class names added to it (see {@link #syncUiCls})
              */
-            uiReferences = prototype.hasOwnProperty('uiReferences') ? prototype.uiReferences :
-                (prototype.uiReferences = { element: '' }),
+            uiReferences = prototype.hasOwnProperty('uiReferences')
+                ? prototype.uiReferences
+                : (prototype.uiReferences = { element: '' }),
             renderTemplate, renderElement, renderConfig, element, referenceNodes, i, ln,
-            referenceNode, reference, classCls, uiCls, baseCls, referenceElement;
+            referenceNode, reference, classCls, uiCls, baseCls,
+            /* eslint-disable-next-line no-unused-vars */
+            referenceElement;
 
         if (isFirstInstance) {
             // this is the first instantiation of this widget type.  Process the element
@@ -973,9 +1006,11 @@ Ext.define('Ext.Widget', {
                 referenceNode = referenceNodes[i];
                 reference = referenceNode.getAttribute('reference');
                 uiCls = referenceNode.getAttribute('uiCls');
+
                 //<debug>
                 if (!reference) {
-                    Ext.raise('Cannot render element with uiCls="' + uiCls + '". uiCls is only allowed on elements that have a reference name.');
+                    Ext.raise('Cannot render element with uiCls="' + uiCls +
+                              '". uiCls is only allowed on elements that have a reference name.');
                 }
                 //</debug>
 
@@ -985,7 +1020,8 @@ Ext.define('Ext.Widget', {
                 // uiReferences map so it does not need to remain in the template
                 referenceNode.removeAttribute('uiCls');
             }
-        } else {
+        }
+        else {
             // we have already created an instance of this Widget type, so the element
             // config has already been processed, and the resulting DOM has been cached on
             // the prototype (see afterCachedConfig).  This means we can obtain our element
@@ -1018,6 +1054,7 @@ Ext.define('Ext.Widget', {
                     Ext.raise("Duplicate 'element' reference detected in '" +
                         me.$className + "' template.");
                 }
+
                 //</debug>
                 referenceNode.id = id;
                 // element reference needs to be established ASAP, so add the reference
@@ -1029,16 +1066,19 @@ Ext.define('Ext.Widget', {
 
                 if (isFirstInstance) {
                     classCls = me.getClassCls();
+
                     if (classCls) {
                         element.addCls(classCls);
                     }
 
                     baseCls = me.baseCls;
+
                     if (baseCls && (baseCls !== me.classCls)) {
                         element.addCls(baseCls);
                     }
                 }
-            } else {
+            }
+            else {
                 uiCls = uiReferences[reference];
 
                 if (uiCls && isFirstInstance) {
@@ -1053,16 +1093,17 @@ Ext.define('Ext.Widget', {
                     referenceElement = me.addElementReference(reference, referenceNode);
 
                     me.initUiReference(reference, uiCls, false);
-                } else {
+                }
+                else {
                     me.addElementReferenceOnDemand(reference, referenceNode);
                 }
             }
-            
+
             // At this point focusEl and ariaEl are still reference names
             if (reference === me.focusEl) {
                 me.addElementReference('focusEl', referenceNode);
             }
-            
+
             if (reference === me.ariaEl) {
                 me.addElementReferenceOnDemand('ariaEl', referenceNode);
             }
@@ -1087,7 +1128,7 @@ Ext.define('Ext.Widget', {
         renderElement.setAttribute(me.dataXid, me.$iid);
     },
 
-    dataXid: 'data-' + Ext.baseCSSPrefix.substr(0, Ext.baseCSSPrefix.length-1) + 'id',
+    dataXid: 'data-' + Ext.baseCSSPrefix.substr(0, Ext.baseCSSPrefix.length - 1) + 'id',
 
     /**
      * Tests whether this Widget matches a {@link Ext.ComponentQuery ComponentQuery}
@@ -1112,11 +1153,13 @@ Ext.define('Ext.Widget', {
 
         if (!hidden && deep) {
             owner = this.getRefOwner();
+
             while (owner && owner !== deep && !hidden) {
                 hidden = !!owner.getHidden();
                 owner = owner.getRefOwner();
             }
         }
+
         return hidden;
     },
 
@@ -1138,8 +1181,9 @@ Ext.define('Ext.Widget', {
     },
 
     /**
-     * Tests whether or not this Component is of a specific xtype. This can test whether this Component is descended
-     * from the xtype (default) or whether it is directly of the xtype specified (`shallow = true`).
+     * Tests whether or not this Component is of a specific xtype. This can test whether this
+     * Component is descended from the xtype (default) or whether it is directly of the xtype
+     * specified (`shallow = true`).
      * **If using your own subclasses, be aware that a Component must register its own xtype
      * to participate in determination of inherited xtypes.__
      *
@@ -1150,16 +1194,18 @@ Ext.define('Ext.Widget', {
      *     var t = new Ext.field.Text();
      *     var isText = t.isXType('textfield'); // true
      *     var isBoxSubclass = t.isXType('field'); // true, descended from Ext.field.Field
-     *     var isBoxInstance = t.isXType('field', true); // false, not a direct Ext.field.Field instance
+     *     var isBoxInstance = t.isXType('field', true); // false, not a direct
+     *                                                   // Ext.field.Field instance
      *
      * @param {String} xtype The xtype to check for this Component.
-     * @param {Boolean} shallow (optional) `false` to check whether this Component is descended from the xtype (this is
-     * the default), or `true` to check whether this Component is directly of the specified xtype.
-     * @return {Boolean} `true` if this component descends from the specified xtype, `false` otherwise.
+     * @param {Boolean} shallow (optional) `false` to check whether this Component is descended
+     * from the xtype (this is the default), or `true` to check whether this Component is directly
+     * of the specified xtype.
+     * @return {Boolean} `true` if this component descends from the specified xtype, `false`
+     * otherwise.
      */
     isXType: function(xtype, shallow) {
-        return shallow ? (Ext.Array.indexOf(this.xtypes, xtype) !== -1) :
-            !!this.xtypesMap[xtype];
+        return shallow ? (Ext.Array.indexOf(this.xtypes, xtype) !== -1) : !!this.xtypesMap[xtype];
     },
 
     /**
@@ -1179,7 +1225,8 @@ Ext.define('Ext.Widget', {
 
         if (element.isEvent) {
             element = element.target;
-        } else if (element.isElement) {
+        }
+        else if (element.isElement) {
             element = element.dom;
         }
 
@@ -1192,11 +1239,12 @@ Ext.define('Ext.Widget', {
         return result;
     },
 
-    render: function (container, insertBeforeElement) {
+    render: function(container, insertBeforeElement) {
         if (container && container.isWidget) {
             container = container.el;
         }
 
+        /* eslint-disable-next-line vars-on-top */
         var dom = this.renderElement.dom,
             containerDom = Ext.getDom(container),
             insertBeforeChildDom;
@@ -1204,6 +1252,7 @@ Ext.define('Ext.Widget', {
         if (Ext.isNumber(insertBeforeChildDom)) {
             insertBeforeElement = containerDom.childNodes[insertBeforeElement];
         }
+
         insertBeforeChildDom = Ext.getDom(insertBeforeElement);
 
         if (containerDom) {
@@ -1231,6 +1280,7 @@ Ext.define('Ext.Widget', {
      */
     toggleCls: function(className, state) {
         this.element.toggleCls(className, state);
+
         return this;
     },
 
@@ -1249,9 +1299,11 @@ Ext.define('Ext.Widget', {
         if (width && typeof width === 'object') {
             return this.setSize(width.width, width.height);
         }
+
         if (width !== undefined) {
             this.setWidth(width);
         }
+
         if (height !== undefined) {
             this.setHeight(height);
         }
@@ -1267,17 +1319,17 @@ Ext.define('Ext.Widget', {
      * @param {String} [prefix=""] Optional prefix to add to each class.
      * @param {String} [suffix=""] Optional suffix to add to each class.
      */
-    addCls: function (cls, prefix, suffix) {
+    addCls: function(cls, prefix, suffix) {
         if (!this.destroyed) {
             this.el.replaceCls(null, cls, prefix, suffix);
         }
     },
 
-    applyCls: function (cls) {
+    applyCls: function(cls) {
         return cls && Ext.dom.Element.splitCls(cls);
     },
 
-    applyUi: function (ui) {
+    applyUi: function(ui) {
         return this.parseUi(ui, true);
     },
 
@@ -1287,7 +1339,7 @@ Ext.define('Ext.Widget', {
      * @param {String} [prefix=""] Optional prefix to prepend before each class.
      * @param {String} [suffix=""] Optional suffix to append to each class.
      */
-    removeCls: function (cls, prefix, suffix) {
+    removeCls: function(cls, prefix, suffix) {
         if (!this.destroyed) {
             this.el.replaceCls(cls, null, prefix, suffix);
         }
@@ -1302,7 +1354,7 @@ Ext.define('Ext.Widget', {
      * @param {String} [prefix=""] Optional prefix to prepend before each class.
      * @param {String} [suffix=""] Optional suffix to append to each class.
      */
-    replaceCls: function (oldCls, newCls, prefix, suffix) {
+    replaceCls: function(oldCls, newCls, prefix, suffix) {
         if (!this.destroyed) {
             this.el.replaceCls(oldCls, newCls, prefix, suffix);
         }
@@ -1314,15 +1366,16 @@ Ext.define('Ext.Widget', {
      * @return {Boolean} `true` if the class exists, else `false`.
      * @method
      */
-    hasCls: function (className) {
+    hasCls: function(className) {
         return this.el.hasCls(className);
     },
 
     /**
      * @private
-     * All cls methods directly report to the {@link #cls} configuration, so anytime it changes, {@link #updateCls} will be called
+     * All cls methods directly report to the {@link #cls} configuration, so anytime it changes,
+     * {@link #updateCls} will be called
      */
-    updateCls: function (newCls, oldCls) {
+    updateCls: function(newCls, oldCls) {
         this.element.replaceCls(oldCls, newCls);
     },
 
@@ -1355,15 +1408,16 @@ Ext.define('Ext.Widget', {
         if (element && !element.destroyed) {
             if (hidden) {
                 element.hide();
-            } else {
+            }
+            else {
                 element.show();
             }
         }
-        
+
         if (me.focusableContainer && me.activateFocusableContainer) {
             me.activateFocusableContainer(!hidden);
         }
-        
+
         if (container) {
             if (hidden) {
                 if (!container.onFocusableChildHide.$nullFn) {
@@ -1378,25 +1432,30 @@ Ext.define('Ext.Widget', {
         }
     },
 
+    updateMargin: function(margin) {
+        this.element.setMargin(margin);
+    },
+
     updateRipple: function(ripple) {
         var me = this,
             el = me.el;
-        
+
         if (el) {
             el.un('touchstart', 'onRippleStart', me);
             el.un('touchend', 'onRippleStart', me);
-            
+
             el.destroyAllRipples();
 
             if (ripple.release) {
                 el.on('touchend', 'onRippleStart', me);
-            } else {
+            }
+            else {
                 el.on('touchstart', 'onRippleStart', me);
             }
         }
     },
 
-    shouldRipple: function (e) {
+    shouldRipple: function(e) {
         var me = this,
             disabled = me.getDisabled && me.getDisabled(),
             el = me.el,
@@ -1405,6 +1464,7 @@ Ext.define('Ext.Widget', {
 
         if (ripple && e) {
             target = e.getTarget(me.noRippleSelector);
+
             if (target) {
                 if ((el.dom === target) || el.contains(target)) {
                     ripple = null;
@@ -1444,7 +1504,8 @@ Ext.define('Ext.Widget', {
 
     //<debug>
     getStyle: function() {
-        Ext.Error.raise("'style' is a write-only config.  To query element styles use the Ext.dom.Element API.");
+        Ext.Error.raise("'style' is a write-only config. To query element styles use " +
+                        "the Ext.dom.Element API.");
     },
     //</debug>
 
@@ -1461,7 +1522,8 @@ Ext.define('Ext.Widget', {
 
             if (childEl && childEl.isElement) {
                 childEl.setTouchAction(value);
-            } else {
+            }
+            else {
                 hasRootActions = true;
             }
         }
@@ -1504,6 +1566,7 @@ Ext.define('Ext.Widget', {
      */
     isWidthed: function() {
         var width = this.getWidth();
+
         return width != null && width !== 'auto';
     },
 
@@ -1512,6 +1575,7 @@ Ext.define('Ext.Widget', {
      */
     isHeighted: function() {
         var height = this.getHeight();
+
         return height != null && height !== 'auto';
     },
 
@@ -1524,8 +1588,10 @@ Ext.define('Ext.Widget', {
      *     var owningTabPanel = grid.up('tabpanel');
      *
      * @param {String} selector (optional) The simple selector to test.
-     * @param {String/Number/Ext.Component} [limit] This may be a selector upon which to stop the upward scan, or a limit of the number of steps, or Component reference to stop on.
-     * @return {Ext.Container} The matching ancestor Container (or `undefined` if no match was found).
+     * @param {String/Number/Ext.Component} [limit] This may be a selector upon which to stop
+     * the upward scan, or a limit of the number of steps, or Component reference to stop on.
+     * @return {Ext.Container} The matching ancestor Container (or `undefined` if no match
+     * was found).
      */
     up: function(selector, limit) {
         var result = this.getRefOwner(),
@@ -1541,11 +1607,13 @@ Ext.define('Ext.Widget', {
                 }
 
                 steps++;
+
                 if (selector.isComponent || selector.isWidget) {
                     if (result === selector) {
                         return result;
                     }
-                } else {
+                }
+                else {
                     if (Ext.ComponentQuery.is(result, selector)) {
                         return result;
                     }
@@ -1555,14 +1623,17 @@ Ext.define('Ext.Widget', {
                 if (limitSelector && result.is(limit)) {
                     return;
                 }
+
                 if (limitCount && steps === limit) {
                     return;
                 }
+
                 if (limitComponent && result === limit) {
                     return;
                 }
             }
         }
+
         return result;
     },
 
@@ -1629,7 +1700,8 @@ Ext.define('Ext.Widget', {
 
     onClassExtended: function(Class, members) {
         if (members.config && members.config.baseCls) {
-            Ext.raise('baseCls must be declared directly on the class body. Please move it outside of the config block.');
+            Ext.raise('baseCls must be declared directly on the class body. Please move it ' +
+                      'outside of the config block.');
         }
     },
     //</debug>
@@ -1662,19 +1734,21 @@ Ext.define('Ext.Widget', {
                 // reference on demand because we need to make sure the element responds
                 // immediately to any events, even if its reference is never accessed
                 this.addElementReference(name, domNode);
-            } else {
+            }
+            else {
                 // no listeners - element reference can be resolved on demand.
                 // TODO: measure if this has any significant performance impact.
                 Ext.Object.defineProperty(this, name, {
                     get: function() {
                         if (this.destroyed) {
-                            return;
+                            return null;
                         }
 
                         // remove the property that was defined using defineProperty because
                         // addElementReference will set the property on the instance, - the
                         // getter is not needed after the first access.
                         delete this[name];
+
                         return this.addElementReference(name, domNode);
                     },
                     configurable: true
@@ -1723,6 +1797,7 @@ Ext.define('Ext.Widget', {
                 //
                 for (eventName in listeners) {
                     listener = listeners[eventName];
+
                     if (typeof listener === 'object') {
                         listener.scope = me;
                     }
@@ -1756,12 +1831,15 @@ Ext.define('Ext.Widget', {
 
         reattachToBody: function() {
             var detachedBody;
+
             if (this.isDetached) {
                 detachedBody = Ext.getDetachedBody();
+
                 if (detachedBody.contains(this.element)) {
                     Ext.getBody().appendChild(this.element, true);
                 }
             }
+
             // See detachFromBody
             this.isDetached = false;
         },
@@ -1778,18 +1856,23 @@ Ext.define('Ext.Widget', {
             if (elementName) {
                 //<debug>
                 if (Ext.Array.indexOf(me.referenceList, elementName) === -1) {
-                    Ext.Logger.error("Adding event listener with an invalid element reference of '" + elementName +
-                        "' for this component. Available values are: '" + me.referenceList.join("', '") + "'", me);
+                    Ext.Logger.error(
+                        "Adding event listener with an invalid element reference of '" +
+                        elementName + "' for this component. Available values are: '" +
+                        me.referenceList.join("', '") + "'", me
+                    );
                 }
                 //</debug>
 
                 listeners = {};
                 listeners[name] = fn;
+
                 if (scope) {
                     listeners.scope = scope;
                 }
 
                 eventOptions = Ext.Element.prototype.$eventOptions;
+
                 for (option in options) {
                     if (eventOptions[option]) {
                         listeners[option] = options[option];
@@ -1797,9 +1880,14 @@ Ext.define('Ext.Widget', {
                 }
 
                 me.mon(me[elementName], listeners);
+
                 return;
-            } else if (delegate) {
-                me.mixins.componentDelegation.addDelegatedListener.call(me, name, fn, scope, options, order, caller, manager);
+            }
+            else if (delegate) {
+                me.mixins.componentDelegation.addDelegatedListener.call(me, name, fn, scope,
+                                                                        options, order, caller,
+                                                                        manager);
+
                 return;
             }
 
@@ -1808,6 +1896,7 @@ Ext.define('Ext.Widget', {
 
         doRemoveListener: function(eventName, fn, scope) {
             var me = this;
+
             me.mixins.observable.doRemoveListener.call(me, eventName, fn, scope);
             me.mixins.componentDelegation.removeDelegatedListener.call(me, eventName, fn, scope);
         },
@@ -1857,16 +1946,19 @@ Ext.define('Ext.Widget', {
 
             if (prototype.hasOwnProperty('_elementListeners')) {
                 elementListeners = prototype._elementListeners;
-            } else {
+            }
+            else {
                 elementListeners = prototype._elementListeners =
                     (superElementListeners ? Ext.Object.chain(superElementListeners) : {});
             }
 
             if (reference) {
                 listeners = elementConfig.listeners;
+
                 if (listeners) {
                     if (superElementListeners) {
                         superListeners = superElementListeners[reference];
+
                         if (superListeners) {
                             listeners = Ext.Object.chain(superListeners);
                             Ext.apply(listeners, elementConfig.listeners);
@@ -1898,7 +1990,8 @@ Ext.define('Ext.Widget', {
                 // proper config, in which case it will be generated by the config system.
                 me.setId(id);
                 me.id = id;
-            } else {
+            }
+            else {
                 // if no id configured, generate one (Identifiable)
                 me.getId();
             }
@@ -1923,14 +2016,16 @@ Ext.define('Ext.Widget', {
 
             if (prototype.hasOwnProperty('_elementConfig')) {
                 elementConfig = prototype._elementConfig;
-            } else {
+            }
+            else {
                 // cache the elementConfig on the prototype, since we may end up here multiple
                 // times if there are multiple subclasses
                 elementConfig = prototype._elementConfig = prototype.getElementConfig();
 
                 if (superPrototype.isWidget) {
                     // Before initializing element listeners we must process the element template
-                    // for our superclass so that we can chain our listeners to the superclass listeners
+                    // for our superclass so that we can chain our listeners to the superclass
+                    // listeners
                     prototype.processElementConfig.call(superPrototype);
                 }
 
@@ -1944,7 +2039,7 @@ Ext.define('Ext.Widget', {
             return elementConfig;
         },
 
-        parseUi: function (ui, asString) {
+        parseUi: function(ui, asString) {
             ui = Ext.String.splitWords(ui);
 
             if (asString) {
@@ -1971,6 +2066,7 @@ Ext.define('Ext.Widget', {
 
                 for (i = 0; i < len; i++) {
                     u = ui[i];
+
                     if (Ext.Array.indexOf(oldUi, u) === -1) {
                         oldUi.push(u);
                     }
@@ -1986,7 +2082,7 @@ Ext.define('Ext.Widget', {
             this.setUi(this.doRemoveUi(ui, this.getUi()));
         },
 
-        doRemoveUi: function (ui, oldUi) {
+        doRemoveUi: function(ui, oldUi) {
             var me = this,
                 newUi = null,
                 i, u, index, len;
@@ -2000,6 +2096,7 @@ Ext.define('Ext.Widget', {
                 for (i = 0; i < len; i++) {
                     u = ui[i];
                     index = Ext.Array.indexOf(oldUi, u);
+
                     if (index !== -1) {
                         oldUi.splice(index, 1);
                     }
@@ -2037,6 +2134,7 @@ Ext.define('Ext.Widget', {
                 if (!me.hasOwnProperty('uiReferences')) {
                     me.uiReferences = Ext.clone(me.uiReferences);
                 }
+
                 me.uiReferences[referenceName] = uiCls;
             }
 
@@ -2111,11 +2209,11 @@ Ext.define('Ext.Widget', {
             }
         },
 
-        applyHideMode: function (mode) {
+        applyHideMode: function(mode) {
             return mode || 'display';
         },
 
-        updateHideMode: function (mode) {
+        updateHideMode: function(mode) {
             var me = this,
                 el = me.el,
                 shouldToggle = me.getHidden();

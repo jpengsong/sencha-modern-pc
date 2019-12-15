@@ -8,11 +8,13 @@ function() {
         describeNotIE9_10 = Ext.isIE9 || Ext.isIE10 ? xdescribe : describe,
         synchronousLoad = true,
         proxyStoreLoad = Ext.data.ProxyStore.prototype.load,
-        loadStore = function () {
+        loadStore = function() {
             proxyStoreLoad.apply(this, arguments);
+
             if (synchronousLoad) {
                 this.flushLoad.apply(this, arguments);
             }
+
             return this;
         };
 
@@ -35,6 +37,7 @@ function() {
                 }
             }
         });
+
         return store;
     }
 
@@ -62,6 +65,7 @@ function() {
             }]
         });
         tb = grid.getPlugins()[0];
+
         return grid;
     }
 
@@ -91,17 +95,18 @@ function() {
             responseText: responseText
         });
     }
+
     function requestCount() {
         return Ext.Ajax.mockGetAllRequests().length;
     }
 
-    beforeEach(function () {
+    beforeEach(function() {
         // Override so that we can control asynchronous loading
         Ext.data.ProxyStore.prototype.load = loadStore;
         MockAjaxManager.addMethods();
     });
 
-    afterEach(function () {
+    afterEach(function() {
         // Undo the overrides.
 
         Ext.data.ProxyStore.prototype.load = proxyStoreLoad;
@@ -114,7 +119,7 @@ function() {
         Ext.data.Model.schema.clear();
     });
 
-    describe("buffer/delay", function () {
+    describe("buffer/delay", function() {
         it("should not delay if not dragging", function() {
             makeGrid(250);
             store.load();
@@ -123,11 +128,11 @@ function() {
 
             tb.setCurrentPage(10);
             expect(requestCount()).toBe(1);
-            mockComplete(makeData(200, tb.getCurrentPage()*store.pageSize));
+            mockComplete(makeData(200, tb.getCurrentPage() * store.pageSize));
             expect(requestCount()).toBe(0);
             tb.setCurrentPage(30);
             expect(requestCount()).toBe(1);
-            mockComplete(makeData(200, tb.getCurrentPage()*store.pageSize));
+            mockComplete(makeData(200, tb.getCurrentPage() * store.pageSize));
             expect(requestCount()).toBe(0);
         });
 
@@ -148,7 +153,7 @@ function() {
                 return !!requestCount();
             });
             runs(function() {
-                mockComplete(makeData(200, tb.getCurrentPage()*store.pageSize));
+                mockComplete(makeData(200, tb.getCurrentPage() * store.pageSize));
                 expect(requestCount()).toBe(0);
             });
         });
@@ -171,7 +176,7 @@ function() {
                 return !!requestCount();
             });
             runs(function() {
-                mockComplete(makeData(200, tb.getCurrentPage()*store.pageSize));
+                mockComplete(makeData(200, tb.getCurrentPage() * store.pageSize));
                 expect(requestCount()).toBe(0);
             });
         });
@@ -192,7 +197,7 @@ function() {
                 expect(requestCount()).toBe(0);
                 tb.onPageSliderDragEnd();
                 expect(requestCount()).toBe(1);
-                mockComplete(makeData(200, tb.getCurrentPage()*store.pageSize));
+                mockComplete(makeData(200, tb.getCurrentPage() * store.pageSize));
             });
         });
 
@@ -215,7 +220,7 @@ function() {
                 expect(requestCount()).toBe(0);
                 tb.onPageSliderDragEnd();
                 expect(requestCount()).toBe(1);
-                mockComplete(makeData(200, tb.getCurrentPage()*store.pageSize));
+                mockComplete(makeData(200, tb.getCurrentPage() * store.pageSize));
             });
         });
 

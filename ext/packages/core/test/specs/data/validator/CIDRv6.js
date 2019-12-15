@@ -1,29 +1,29 @@
-describe("Ext.data.validator.CIDRv6", function() {
-    
+topSuite("Ext.data.validator.CIDRv6", function() {
     var v;
-    
+
     function validate(value) {
         v = new Ext.data.validator.CIDRv6();
+
         return v.validate(value);
     }
-    
+
     afterEach(function() {
         v = null;
     });
-    
+
     describe("invalid values", function() {
         it("should not validate if the value is undefined", function() {
             expect(validate(undefined)).toBe(v.getMessage());
         });
-    
+
         it("should not validate if the value is null", function() {
             expect(validate(null)).toBe(v.getMessage());
         });
-        
+
         it("should not validate if the value is an empty string", function() {
             expect(validate('')).toBe(v.getMessage());
         });
-        
+
         it("should not validate if the value is not a valid CIDR block", function() {
             expect(validate('fe80:0000:0000:0000:0204:61ff:fe9d:f156/')).toBe(v.getMessage());
             expect(validate('fe80:0000:0000:0000:0204:61ff:fe9d:f156/129')).toBe(v.getMessage());
@@ -33,9 +33,9 @@ describe("Ext.data.validator.CIDRv6", function() {
             expect(validate('fe80:0000:0000:0000:0204:61ff:fe9d:f156/03')).toBe(v.getMessage());
             expect(validate('fe80:0000:0000:0000:0204:61ff:fe9d:f156/sdfsdfs')).toBe(v.getMessage());
         });
-        
+
     });
-    
+
     describe("valid values", function() {
         it("should validate ipv6 CIDR", function() {
             expect(validate('fe80:0000:0000:0000:0204:61ff:fe9d:f156/0')).toBe(true);
@@ -169,7 +169,7 @@ describe("Ext.data.validator.CIDRv6", function() {
             expect(validate('fe80:0000:0000:0000:0204:61ff:fe9d:f156/128')).toBe(true);
         });
     });
-    
+
     describe("messages", function() {
         it("should accept a custom message", function() {
             v = new Ext.data.validator.CIDRv6({
@@ -178,6 +178,5 @@ describe("Ext.data.validator.CIDRv6", function() {
             expect(v.validate(undefined)).toBe('Foo');
         });
     });
-    
-});
 
+});

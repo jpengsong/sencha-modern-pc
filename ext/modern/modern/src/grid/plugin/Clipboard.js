@@ -39,7 +39,7 @@ Ext.define('Ext.grid.plugin.Clipboard', {
         initialize: 'onCmpReady'
     },
 
-    getCellData: function (format, erase) {
+    getCellData: function(format, erase) {
         var cmp = this.getCmp(),
             selectable = cmp.getSelectable(),
             selection = selectable && selectable.getSelection(),
@@ -49,12 +49,12 @@ Ext.define('Ext.grid.plugin.Clipboard', {
             data, dataIndex, lastRecord, column, record, row;
 
         if (selection) {
-            selection.eachCell(function (location, colIdx, rowIdx) {
+            selection.eachCell(function(location, colIdx, rowIdx) {
                 column = location.column;
                 record = location.record;
 
                 // Do not copy data from ignored columns
-                if(column.getIgnoreExport()) {
+                if (column.getIgnoreExport()) {
                     return;
                 }
 
@@ -69,6 +69,7 @@ Ext.define('Ext.grid.plugin.Clipboard', {
                 if (!isRaw) {
                     // printValue takes care of not yet rendered cells
                     data = column.printValue(data);
+
                     if (isText) {
                         data = Ext.util.Format.stripTags(data);
                     }
@@ -86,7 +87,7 @@ Ext.define('Ext.grid.plugin.Clipboard', {
         return Ext.util.TSV.encode(ret);
     },
 
-    getCells: function (format, erase) {
+    getCells: function(format, erase) {
         var cmp = this.getCmp(),
             selectable = cmp.getSelectable(),
             selection = selectable && selectable.getSelection(),
@@ -94,8 +95,9 @@ Ext.define('Ext.grid.plugin.Clipboard', {
             dataIndex, lastRecord, record, row;
 
         if (selection) {
-            selection.eachCell(function (location) {
+            selection.eachCell(function(location) {
                 record = location.record;
+
                 if (lastRecord !== record) {
                     lastRecord = record;
                     ret.push(row = {
@@ -120,11 +122,11 @@ Ext.define('Ext.grid.plugin.Clipboard', {
         return ret;
     },
 
-    getTextData: function (format, erase) {
+    getTextData: function(format, erase) {
         return this.getCellData(format, erase);
     },
 
-    putCellData: function (data, format) {
+    putCellData: function(data, format) {
         var cmp = this.getCmp(),
             // We pass null as field quote here to override default TSV decoding behavior
             // that will try to unquote fields and break if double quote character is
@@ -147,8 +149,9 @@ Ext.define('Ext.grid.plugin.Clipboard', {
         }
 
         if (selection) {
-            selection.eachCell(function (c) {
+            selection.eachCell(function(c) {
                 destination = c;
+
                 return false;
             });
         }
@@ -159,10 +162,12 @@ Ext.define('Ext.grid.plugin.Clipboard', {
         for (sourceRowIdx = 0; sourceRowIdx < recCount; sourceRowIdx++) {
             row = values[sourceRowIdx];
             recordIndex = startRecordIndex + sourceRowIdx;
+
             // If we are at the end of the destination store, break the row loop.
             if (recordIndex > maxRowIdx) {
                 break;
             }
+
             record = store.getAt(recordIndex);
 
             dataObject = {};
@@ -180,8 +185,10 @@ Ext.define('Ext.grid.plugin.Clipboard', {
                     if (dataIndex && (format === 'raw' || format === 'text')) {
                         dataObject[dataIndex] = row[sourceColIdx];
                     }
+
                     sourceColIdx++;
                 }
+
                 columnIndex++;
             }
 
@@ -190,7 +197,7 @@ Ext.define('Ext.grid.plugin.Clipboard', {
         }
     },
 
-    putTextData: function (data, format) {
+    putTextData: function(data, format) {
         this.putCellData(data, format);
     },
 
@@ -198,8 +205,8 @@ Ext.define('Ext.grid.plugin.Clipboard', {
         return comp.element;
     },
 
-    privates : {
-        validateAction : function(event) {
+    privates: {
+        validateAction: function(event) {
             var cmp = this.getCmp(),
                 viewLocation = cmp.getNavigationModel().getLocation(),
                 selectable = cmp.getSelectable(),

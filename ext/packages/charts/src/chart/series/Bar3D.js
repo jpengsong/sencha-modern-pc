@@ -112,18 +112,20 @@ Ext.define('Ext.chart.series.Bar3D', {
      */
     reversedSpriteZOrder: false,
 
-    updateXAxis: function (xAxis, oldXAxis) {
+    updateXAxis: function(xAxis, oldXAxis) {
         //<debug>
         if (xAxis.type !== 'category3d') {
             Ext.raise("'bar3d' series should be used with a 'category3d' axis." +
                 " Please refer to the 'bar3d' series docs.");
         }
+
         //</debug>
         this.callParent([xAxis, oldXAxis]);
     },
 
-    getDepth: function () {
+    getDepth: function() {
         var sprite = this.getSprites()[0];
+
         return sprite ? (sprite.depth || 0) : 0;
     }
 

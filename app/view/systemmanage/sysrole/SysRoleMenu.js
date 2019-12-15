@@ -1,7 +1,9 @@
 Ext.define("App.view.systemmanage.sysrole.SysRoleMenu", {
     alias: "widget.sysrolemenu",
-    extend: "Ext.window.Window",
+    extend: "Ext.Dialog",
     maximizable: true,
+    displayed: true,
+    closable: true,
     modal: true,
     width: 650,
     height: '90%',
@@ -10,24 +12,47 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleMenu", {
         align: "stretch"
     },
     defaults: {
-        margin: "5 5"
+        labelAlign: "left",
+        labelTextAlign: "center",
+        labelWrap: true,
+        border: true,
+        width: "100%",
+        labelWidth: 70,
+        margin: "0",
+        clearable: false
+    },
+    buttonToolbar: {
+        xtype: 'toolbar',
+        docked: 'bottom',
+        defaultType: 'button',
+        weighted: true,
+        ui: 'footer',
+        defaultButtonUI: 'action',
+        layout: {
+            type: 'box',
+            vertical: false,
+            pack: 'center'
+        },
+        defaults: {
+            margin: "0px 5px"
+        }
     },
     items: [
         {
+            flex: 1,
             xtype: 'fieldset',
             title: '所有权限',
-            collapsible: true,
             padding: "0 0 0 0",
             layout: "fit",
-            flex: 1,
+            style: 'border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;',
             items: [
                 {
-                    xtype: "treepanel",
-                    rootVisible: false,
+                    xtype: "tree",
                     reference: "tree",
+                    rootVisible: false,
                     flex: 1,
-                    displayField: "MenuName",
-                    valueField: "SysMenuId",
+                    hideHeaders: true,
+                    columns: [{ xtype: "treecolumn", dataIndex: "MenuName", flex: 1, menuDisabled: true }],
                     bind: {
                         store: '{menutreestore}'
                     },
@@ -45,46 +70,42 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleMenu", {
         {
             xtype: 'fieldset',
             title: '已有权限',
-            collapsible: true,
             padding: "0 0 0 0",
+            style: 'border-bottom: 1px solid #ddd;',
             layout: "fit",
             flex: 1,
             items: [
                 {
-                    xtype: "treepanel",
+                    xtype: "tree",
                     rootVisible: false,
+                    hideHeaders: true,
                     flex: 1,
-                    displayField: "MenuName",
-                    valueField: "SysMenuId",
+                    columns: [{ xtype: "treecolumn", dataIndex: "MenuName", flex: 1, menuDisabled: true }],
                     bind: {
                         store: '{menuroletreestore}'
+                    },
+                    plugins: {
+                        requestdata: {
+                            autoLoad: false,
+                            root: {
+                                expanded: true
+                            }
+                        }
                     }
                 }
             ]
         }
     ],
-    dockedItems: [
+    buttons: [
         {
-            xtype: 'toolbar',
-            dock: 'bottom',
-            ui: "footer",
-            layout: {
-                type: "hbox",
-                align: "center",
-                pack: "center"
-            },
-            items: [
-                {
-                    text: '保存',
-                    iconCls: "x-fa fa-floppy-o",
-                    handler: "onSave"
-                },
-                {
-                    text: '关闭',
-                    iconCls: "x-fa fa-close",
-                    handler: "onClose"
-                }
-            ]
+            text: '保存',
+            iconCls: "x-far fa-save",
+            handler: "onSave"
+        },
+        {
+            text: '关闭',
+            iconCls: "x-far fa-close",
+            handler: "onClose"
         }
     ],
     controller: {
@@ -96,17 +117,17 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleMenu", {
                 refs = me.getReferences(),
                 vm = me.getViewModel(),
                 records = refs.tree.getChecked(),
-                roleId =vm.get("role").get("SysRoleId"),
+                roleId = vm.get("role").get("SysRoleId"),
                 data = [];
             for (var i = 0; i < records.length; i++) {
                 data.push(
                     {
-                        SysMenRoleId:Ext.data.identifier.Uuid.create().generate(),
-                        MenuId:records[i].get("SysMenuId"),
-                        RoleId:roleId,
-                        Type:records[i].get("Type")
+                        SysMenRoleId: Ext.data.identifier.Uuid.create().generate(),
+                        MenuId: records[i].get("SysMenuId"),
+                        RoleId: roleId,
+                        Type: records[i].get("Type")
                     }
-                ) 
+                )
             }
             App.Ajax.request({
                 url: "/api/SystemManage/SysRole/AddSysMenuRole",
@@ -116,21 +137,19 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleMenu", {
                 showmask: true,
                 maskmsg: "正在保存...",
                 params: {
-                    RoleId:roleId,
-                    List: data  
+                    RoleId: roleId,
+                    List: data
                 },
                 success: function (data) {
-                    if(data.Data>0){
-                        App.Msg.Info("保存成功");
-                        var gridstore = view.references.grid.getStore();
-                        gridstore.loadPage(1);
+                    if (data.Data > 0) {
+                        Ext.Msg.alert("提示","保存成功");
                         view.close();
-                    }else{
-                        App.Msg.Info("保存失败");
+                    } else {
+                        Ext.Msg.alert("提示","保存失败");
                     }
                 },
                 error: function (data) {
-                    App.Msg.Error("保存异常");
+                    Ext.Msg.alert("提示","保存异常");
                 }
             })
         },
@@ -140,16 +159,19 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleMenu", {
             var me = this; me.getView().close();
         },
 
-        onRender: function () {
-            var me = this, vm = me.getViewModel(), store = vm.get("menuroletreestore"), allstore = vm.get("menutreestore");
-            App.Page.setExtraParamData(store, { SysRoleId: vm.get("role").get("SysRoleId") });
-            store.setAutoLoad(true);
-            store.on({
+        onInitialize: function (d,e,f) {
+            debugger;
+            var me = this, vm = me.getViewModel(), haveStore = vm.get("menuroletreestore"), allstore = vm.get("menutreestore");
+            
+            App.Page.setExtraParamData(haveStore, { SysRoleId: vm.get("role").get("SysRoleId") });
+            haveStore.setAutoLoad(true);
+
+            haveStore.on({
                 single: true,
                 load: function (store, records, successful) {
                     if (successful) {
                         me.storeSuccessful = true;
-                        me.checkedStatus(store, allstore);
+                        me.checkedStatus(haveStore, allstore);
                     }
                 }
             })
@@ -159,16 +181,16 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleMenu", {
                 load: function (allstore, records, successful) {
                     if (successful) {
                         me.allstoreSuccessful = true;
-                        me.checkedStatus(store, allstore);
+                        me.checkedStatus(haveStore, allstore);
                     }
                 }
             })
         },
 
-        checkedStatus: function (store, allstore) {
+        checkedStatus: function (haveStore, allstore) {
             var me = this;
             if (me.storeSuccessful && me.allstoreSuccessful) {
-                Ext.Object.eachValue(store.byIdMap, function (node) {
+                Ext.Object.eachValue(haveStore.byIdMap, function (node) {
                     if (node.get("SysMenuId") != "root") {
                         allstore.byIdMap[node.get("SysMenuId")].set("checked", true);
                     }
@@ -177,6 +199,6 @@ Ext.define("App.view.systemmanage.sysrole.SysRoleMenu", {
         }
     },
     listeners: {
-        render: "onRender"
+        painted : "onInitialize"
     }
 })

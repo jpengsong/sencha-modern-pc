@@ -18,12 +18,13 @@ topSuite("Ext.layout.container.Fit", ['Ext.Panel'], function() {
                 layout: Ext.apply({ type: 'fit' }, layoutOptions)
             }, options));
 
+        // eslint-disable-next-line eqeqeq
         if (failedLayouts != Ext.failedLayouts) {
             expect('failedLayout=true').toBe('false');
         }
     }
 
-    describe('should handle minWidth and/or minHeight', function () {
+    describe('should handle minWidth and/or minHeight', function() {
         it('should stretch the configured size child', function() {
             makeCt({
                     width: undefined,
@@ -31,7 +32,7 @@ topSuite("Ext.layout.container.Fit", ['Ext.Panel'], function() {
                     floating: true,
                     minWidth: 100,
                     minHeight: 100,
-                    //style: 'border: 1px solid red',
+                    // style: 'border: 1px solid red',
                     items: {
                         xtype: 'component',
                         width: 50,
@@ -244,7 +245,7 @@ topSuite("Ext.layout.container.Fit", ['Ext.Panel'], function() {
         it('should support margin and a style margin', function() {
             makeCt({
                     items: {
-                        style: {margin: '10px'}, // Will be ignored
+                        style: { margin: '10px' }, // Will be ignored
                         margin: 15
                     }
                 });
@@ -262,7 +263,7 @@ topSuite("Ext.layout.container.Fit", ['Ext.Panel'], function() {
                     style: 'position: relative',
                     items: [{}, {
                         // TODO: this is currently required but perhaps shouldn't be
-                        style: {position: 'absolute'},
+                        style: { position: 'absolute' },
                         itemId: 'second'
                     }]
                 });
@@ -284,7 +285,7 @@ topSuite("Ext.layout.container.Fit", ['Ext.Panel'], function() {
                         margin: true // 5
                     }, {
                         // TODO: this is currently required but perhaps shouldn't be
-                        style: {position: 'absolute'},
+                        style: { position: 'absolute' },
                         itemId: 'second',
                         margin: 20
                     }]
@@ -452,7 +453,7 @@ topSuite("Ext.layout.container.Fit", ['Ext.Panel'], function() {
             });
         });
 
-        it('should account for hscrollbar if overflowing', function () {
+        it('should account for hscrollbar if overflowing', function() {
             makeCt({
                     floating: true,
                     width: 100,
@@ -472,7 +473,7 @@ topSuite("Ext.layout.container.Fit", ['Ext.Panel'], function() {
             });
         });
 
-        it('should account for vscrollbar if overflowing', function () {
+        it('should account for vscrollbar if overflowing', function() {
             makeCt({
                     floating: true,
                     xtype: 'panel',
@@ -492,9 +493,9 @@ topSuite("Ext.layout.container.Fit", ['Ext.Panel'], function() {
                     0: { el: { xywh: '0 0 50 200' } }
                 }
             });
-        })
+        });
     });
-    
+
     it("should not fail when the item is hidden & the container is shrink wrapping", function() {
         expect(function() {
             ct = new Ext.container.Container({
@@ -506,6 +507,6 @@ topSuite("Ext.layout.container.Fit", ['Ext.Panel'], function() {
                     xtype: 'component'
                 }
             });
-        }).not.toThrow();        
+        }).not.toThrow();
     });
 });

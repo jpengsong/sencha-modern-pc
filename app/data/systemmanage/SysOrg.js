@@ -129,7 +129,7 @@ Ext.define('App.data.systemmanage.SysOrg', {
             delay: 0,
             url: "/api/SystemManage/SysOrg/DeleteSysOrg",
             getData: function (ctx) {
-                var data = me.RequestData(ctx).Data;
+                var data = me.RequestData(ctx).Data.split(",");
                 for (var i = 0; i < data.length; i++) {
                     for (var j = 0; j < me.dataSource.length; j++) {
                         if (me.dataSource[j].SysOrgId == data[i]) {

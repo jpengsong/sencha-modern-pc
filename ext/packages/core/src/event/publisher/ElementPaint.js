@@ -55,7 +55,7 @@ Ext.define('Ext.event.publisher.ElementPaint', {
             Ext.TaskQueue.cancelRead(element.activeRead);
         }
     },
-    
+
     fireElementPainted: function(element) {
         delete element.activeRead;
         this.fire(element, 'painted', [element]);
@@ -66,7 +66,7 @@ Ext.define('Ext.event.publisher.ElementPaint', {
             element.activeRead = Ext.TaskQueue.requestRead(
                 'fireElementPainted', this, [element]
                 //<debug>
-                , !!element.$skipResourceCheck
+                , !!element.$skipResourceCheck // eslint-disable-line comma-style
                 //</debug>
             );
         }

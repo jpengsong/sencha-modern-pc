@@ -55,12 +55,12 @@ Ext.define('Ext.draw.sprite.Line', {
         }
     },
 
-    updateLineBBox: function (bbox, isTransform, x1, y1, x2, y2) {
+    updateLineBBox: function(bbox, isTransform, x1, y1, x2, y2) {
         var attr = this.attr,
             matrix = attr.matrix,
             halfLineWidth = attr.lineWidth / 2,
             fromX, fromY, toX, toY,
-            p;
+            p, angle, sin, cos, dx, dy;
 
         if (attr.crisp) {
             x1 = this.align(x1);
@@ -80,16 +80,16 @@ Ext.define('Ext.draw.sprite.Line', {
         }
 
         fromX = Math.min(x1, x2);
-        toX   = Math.max(x1, x2);
+        toX = Math.max(x1, x2);
 
         fromY = Math.min(y1, y2);
-        toY   = Math.max(y1, y2);
+        toY = Math.max(y1, y2);
 
-        var angle = Math.atan2(toX - fromX, toY - fromY),
-            sin = Math.sin(angle),
-            cos = Math.cos(angle),
-            dx = halfLineWidth * cos,
-            dy = halfLineWidth * sin;
+        angle = Math.atan2(toX - fromX, toY - fromY);
+        sin = Math.sin(angle);
+        cos = Math.cos(angle);
+        dx = halfLineWidth * cos;
+        dy = halfLineWidth * sin;
 
         // Offset start and end points of the line by half its thickness,
         // while accounting for line's angle.
@@ -104,23 +104,23 @@ Ext.define('Ext.draw.sprite.Line', {
         bbox.height = toY - fromY;
     },
 
-    updatePlainBBox: function (plain) {
+    updatePlainBBox: function(plain) {
         var attr = this.attr;
 
         this.updateLineBBox(plain, false, attr.fromX, attr.fromY, attr.toX, attr.toY);
     },
 
-    updateTransformedBBox: function (transform, plain) {
+    updateTransformedBBox: function(transform, plain) {
         var attr = this.attr;
 
         this.updateLineBBox(transform, true, attr.fromX, attr.fromY, attr.toX, attr.toY);
     },
 
-    align: function (x) {
+    align: function(x) {
         return Math.round(x) - 0.5;
     },
 
-    render: function (surface, ctx) {
+    render: function(surface, ctx) {
         var me = this,
             attr = me.attr,
             matrix = attr.matrix;
@@ -131,8 +131,9 @@ Ext.define('Ext.draw.sprite.Line', {
 
         if (attr.crisp) {
             ctx.moveTo(me.align(attr.fromX), me.align(attr.fromY));
-            ctx.lineTo(me.align(attr.toX),   me.align(attr.toY));
-        } else {
+            ctx.lineTo(me.align(attr.toX), me.align(attr.toY));
+        }
+        else {
             ctx.moveTo(attr.fromX, attr.fromY);
             ctx.lineTo(attr.toX, attr.toY);
         }
@@ -140,13 +141,18 @@ Ext.define('Ext.draw.sprite.Line', {
         ctx.stroke();
 
         //<debug>
+        // eslint-disable-next-line vars-on-top
         var debug = attr.debug || this.statics().debug || Ext.draw.sprite.Sprite.debug;
+
         if (debug) {
             // This assumes no part of the sprite is rendered after this call.
             // If it is, we need to re-apply transformations.
             // But the bounding box should always be rendered as is, untransformed.
             this.attr.inverseMatrix.toContext(ctx);
-            debug.bbox && this.renderBBox(surface, ctx);
+
+            if (debug.bbox) {
+                this.renderBBox(surface, ctx);
+            }
         }
         //</debug>
     }

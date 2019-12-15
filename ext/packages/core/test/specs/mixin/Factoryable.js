@@ -1,4 +1,4 @@
-describe("Ext.mixin.Factoryable", function() {
+topSuite("Ext.mixin.Factoryable", function() {
     beforeEach(function() {
         Ext.define('spec.factoryable.Base', {
             mixins: [
@@ -20,13 +20,13 @@ describe("Ext.mixin.Factoryable", function() {
             alias: 'factoryable.singleton',
             singleton: true,
 
-            constructor: function () {
+            constructor: function() {
                 this.foo = 42;
             }
         });
     });
 
-    afterEach(function () {
+    afterEach(function() {
         Ext.undefine('spec.factoryable.Singleton');
         Ext.undefine('spec.factoryable.Class');
         Ext.undefine('spec.factoryable.Base');

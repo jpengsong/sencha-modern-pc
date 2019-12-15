@@ -103,5 +103,6 @@ Ext.define('Ext.event.gesture.LongPress', {
     }
 }, function(LongPress) {
     var gestures = Ext.manifest.gestures;
+
     LongPress.instance = new LongPress(gestures && gestures.longPress);
 });

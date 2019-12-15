@@ -51,7 +51,7 @@ Ext.define('Ext.data.validator.Number', {
         this.rebuildMatcher();
     },
 
-    parse: function (v) {
+    parse: function(v) {
         var sep = this.getDecimalSeparator(),
             N = Ext.Number;
 
@@ -59,6 +59,7 @@ Ext.define('Ext.data.validator.Number', {
             if (!this.matcher.test(v)) {
                 return null;
             }
+
             v = this.parseValue(v);
         }
 
@@ -79,6 +80,7 @@ Ext.define('Ext.data.validator.Number', {
                 t = Ext.String.escapeRegex(t);
                 s += '(?:\\d{1,3}(' + t + '\\d{3})*)|';
             }
+
             s += '\\d*)';
 
             if (d) {
@@ -104,10 +106,13 @@ Ext.define('Ext.data.validator.Number', {
             if (thousandMatcher) {
                 v = v.replace(thousandMatcher, '');
             }
+
             decimal = this.getDecimalSeparator();
+
             if (decimal && decimal !== '.') {
                 v = v.replace(decimal, '.');
             }
+
             return v;
         },
 
@@ -118,6 +123,7 @@ Ext.define('Ext.data.validator.Number', {
             if (!me.isConfiguring) {
                 sep = me.getThousandSeparator();
                 me.matcher = new RegExp('^' + me.getMatcherText() + '$');
+
                 if (sep) {
                     me.thousandMatcher = sep ? new RegExp(Ext.String.escapeRegex(sep), 'g') : null;
                 }

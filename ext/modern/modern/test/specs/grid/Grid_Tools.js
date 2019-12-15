@@ -1,7 +1,7 @@
 /* global Ext, jasmine, expect */
 
 topSuite("Ext.grid.Grid_Tools",
-    ['Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.layout.Fit'],
+    [false, 'Ext.grid.Grid', 'Ext.data.ArrayStore', 'Ext.layout.Fit'],
 function() {
 
     var Model = Ext.define(null, {
@@ -19,7 +19,8 @@ function() {
             if (typeof rows !== 'number') {
                 data = rows;
             }
-        } else if (rows !== 0) {
+        }
+ else if (rows !== 0) {
             rows = 20;
         }
 
@@ -47,7 +48,7 @@ function() {
         store = grid = Ext.destroy(grid, store);
     });
 
-    function makeColumns (num, group) {
+    function makeColumns(num, group) {
         var columns = [{/* f1 */}, {/* f2 */}, {/* f3 */}, {/* f4 */}, {/* f5 */}, {
             dataIndex: 'gf',
             itemId: 'groupFld'
@@ -64,10 +65,11 @@ function() {
         return columns;
     }
 
-    function makeGrid (options) {
+    function makeGrid(options) {
         options = options || {};
 
         var columns = options.columns;
+
         var gridOptions = options.grid || {};
 
         if (!store && !gridOptions.store) {
@@ -104,19 +106,19 @@ function() {
         setColMap();
     }
 
-    function renderGrid (el) {
+    function renderGrid(el) {
         grid.render(el || Ext.getBody());
         grid.refresh();
     }
 
-    function setColMap () {
+    function setColMap() {
         colMap = {};
         grid.query('column').forEach(function(col) {
             colMap[col.getItemId()] = col;
         });
     }
 
-    function getCells (col) {
+    function getCells(col) {
         var cells = [];
 
         if (typeof col === 'number') {
@@ -134,8 +136,8 @@ function() {
         return cells;
     }
 
-    describe('Cell tools', function () {
-        it('should create tools in isolation', function () {
+    describe('Cell tools', function() {
+        it('should create tools in isolation', function() {
             makeGrid({
                 columns: [{
                     cell: {
@@ -149,8 +151,9 @@ function() {
 
             var cells = getCells(0);
 
-            cells.forEach(function (cell) {
+            cells.forEach(function(cell) {
                 var tools = cell.getTools();
+
                 var tool = tools[0];
 
                 expect(tools.length).toBe(1);
@@ -164,7 +167,7 @@ function() {
             });
         });
 
-        it('should create tools in isolation with specified zone', function () {
+        it('should create tools in isolation with specified zone', function() {
             makeGrid({
                 columns: [{
                     cell: {
@@ -182,9 +185,11 @@ function() {
 
             var cells = getCells(0);
 
-            cells.forEach(function (cell) {
+            cells.forEach(function(cell) {
                 var tools = cell.getTools();
+
                 var gear = tools[0];
+
                 var search = tools[1];
 
                 expect(tools.length).toBe(2);
@@ -207,8 +212,8 @@ function() {
         });
     });
 
-    describe('Header tools', function () {
-        it('should create tools in isolation', function () {
+    describe('Header tools', function() {
+        it('should create tools in isolation', function() {
             makeGrid({
                 groups: 5,
 
@@ -249,7 +254,7 @@ function() {
             }
         });
 
-        it('should create tools in all 3 zones', function () {
+        it('should create tools in all 3 zones', function() {
             makeGrid({
                 groups: 5,
 
@@ -284,9 +289,13 @@ function() {
 
                 if (row) {
                     var header = row.$header;
+
                     var tools = header.getTools();
+
                     var print = tools[0];
+
                     var gear = tools[1];
+
                     var pin = tools[2];
 
                     expect(tools.length).toBe(3);
@@ -370,9 +379,9 @@ function() {
         });
     });
 
-    //TODO test handler parameters for cell tools
-    //TODO test handler parameters for header tools
-    //TODO test binding to cells
-    //TODO test binding to headers
-    //TODO implement and test CQ like down('tool')
+    // TODO test handler parameters for cell tools
+    // TODO test handler parameters for header tools
+    // TODO test binding to cells
+    // TODO test binding to headers
+    // TODO implement and test CQ like down('tool')
 });

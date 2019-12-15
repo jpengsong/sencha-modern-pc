@@ -1,13 +1,15 @@
 /**
  * Provides a time input field with a time dropdown and automatic time validation.
  *
- * This field recognizes and uses JavaScript Date objects as its main {@link #value} type (only the time portion of the
- * date is used; the month/day/year are ignored). In addition, it recognizes string values which are parsed according to
- * the {@link #format} and/or {@link #altFormats} configs. These may be reconfigured to use time formats appropriate for
+ * This field recognizes and uses JavaScript Date objects as its main {@link #value} type
+ * (only the time portion of the date is used; the month/day/year are ignored). In addition,
+ * it recognizes string values which are parsed according to the {@link #format} and/or
+ * {@link #altFormats} configs. These may be reconfigured to use time formats appropriate for
  * the user's locale.
  *
- * The field may be limited to a certain range of times by using the {@link #minValue} and {@link #maxValue} configs,
- * and the interval between time options in the dropdown can be changed with the {@link #increment} config.
+ * The field may be limited to a certain range of times by using the {@link #minValue} and
+ * {@link #maxValue} configs, and the interval between time options in the dropdown can be changed
+ * with the {@link #increment} config.
  *
  * Example usage:
  *
@@ -37,28 +39,35 @@
  *     });
  */
 Ext.define('Ext.form.field.Time', {
-    extend:'Ext.form.field.ComboBox',
+    extend: 'Ext.form.field.ComboBox',
     alias: 'widget.timefield',
-    requires: ['Ext.form.field.Date', 'Ext.picker.Time', 'Ext.view.BoundListKeyNav', 'Ext.Date'],
     alternateClassName: ['Ext.form.TimeField', 'Ext.form.Time'],
+
+    requires: [
+        'Ext.form.field.Date',
+        'Ext.picker.Time',
+        'Ext.view.BoundListKeyNav',
+        'Ext.Date'
+    ],
 
     /**
      * @cfg {String} triggerCls
-     * An additional CSS class used to style the trigger button. The trigger will always get the {@link Ext.form.trigger.Trigger#baseCls}
-     * by default and triggerCls will be **appended** if specified.
+     * An additional CSS class used to style the trigger button. The trigger will always get
+     * the {@link Ext.form.trigger.Trigger#baseCls} by default and triggerCls will be **appended**
+     * if specified.
      */
     triggerCls: Ext.baseCSSPrefix + 'form-time-trigger',
 
     /**
      * @cfg {Date/String} minValue
-     * The minimum allowed time. Can be either a Javascript date object with a valid time value or a string time in a
-     * valid format -- see {@link #format} and {@link #altFormats}.
+     * The minimum allowed time. Can be either a Javascript date object with a valid time value
+     * or a string time in a valid format -- see {@link #format} and {@link #altFormats}.
      */
 
     /**
      * @cfg {Date/String} maxValue
-     * The maximum allowed time. Can be either a Javascript date object with a valid time value or a string time in a
-     * valid format -- see {@link #format} and {@link #altFormats}.
+     * The maximum allowed time. Can be either a Javascript date object with a valid time value
+     * or a string time in a valid format -- see {@link #format} and {@link #altFormats}.
      */
 
     /**
@@ -94,7 +103,8 @@ Ext.define('Ext.form.field.Time', {
 
     /**
      * @cfg {String} [submitFormat=undefined]
-     * The date format string which will be submitted to the server. The format must be valid according to
+     * The date format string which will be submitted to the server. The format must be valid
+     * according to
      * {@link Ext.Date#parse}.
      *
      * Defaults to {@link #format}.
@@ -103,10 +113,11 @@ Ext.define('Ext.form.field.Time', {
 
     /**
      * @cfg {String} altFormats
-     * Multiple date formats separated by "|" to try when parsing a user input value and it doesn't match the defined
-     * format.
+     * Multiple date formats separated by "|" to try when parsing a user input value
+     * and it doesn't match the defined format.
      * @locale
      */
+    // eslint-disable-next-line max-len
     altFormats: "g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H|gi a|hi a|giA|hiA|gi A|hi A",
 
     /**
@@ -122,8 +133,8 @@ Ext.define('Ext.form.field.Time', {
      *
      * Note that this only affects the *list of suggested times.*
      *
-     * To enforce that only times on the list are valid, use {@link #snapToIncrement}. That will coerce
-     * any typed values to the nearest increment point upon blur.
+     * To enforce that only times on the list are valid, use {@link #snapToIncrement}.
+     * That will coerce any typed values to the nearest increment point upon blur.
      */
     increment: 15,
 
@@ -141,7 +152,8 @@ Ext.define('Ext.form.field.Time', {
 
     /**
      * @cfg {Boolean} snapToIncrement
-     * Specify as `true` to enforce that only values on the {@link #increment} boundary are accepted.
+     * Specify as `true` to enforce that only values on the {@link #increment} boundary
+     * are accepted.
      *
      * Typed values will be coerced to the nearest {@link #increment} point on blur.
      */
@@ -185,13 +197,16 @@ Ext.define('Ext.form.field.Time', {
         var me = this,
             min = me.minValue,
             max = me.maxValue;
-        
+
         if (min) {
             me.setMinValue(min);
         }
+
         if (max) {
             me.setMaxValue(max);
         }
+
+        /* eslint-disable indent, max-len */
         me.displayTpl = new Ext.XTemplate(
             '<tpl for=".">' +
                 '{[typeof values === "string" ? values : this.formatDate(values["' + me.displayField + '"])]}' +
@@ -199,6 +214,7 @@ Ext.define('Ext.form.field.Time', {
             '</tpl>', {
             formatDate: me.formatDate.bind(me)
         });
+        /* eslint-enable indent, max-len */
 
         // Create a store of times.
         me.store = Ext.picker.Time.createStore(me.format, me.increment);
@@ -209,11 +225,12 @@ Ext.define('Ext.form.field.Time', {
         // TimePicker does this on create.
         me.getPicker();
     },
-    
+
     afterQuery: function(queryPlan) {
         var me = this;
 
         me.callParent([queryPlan]);
+
         // Check the field for null value (TimeField returns null for invalid dates).
         // If value is null and a rawValue is present, then we we should manually
         // validate the field to display errors.
@@ -225,7 +242,7 @@ Ext.define('Ext.form.field.Time', {
     /**
      * @private
      */
-    isEqual: function (v1, v2) {
+    isEqual: function(v1, v2) {
         var fromArray = Ext.Array.from,
             isEqual = Ext.Date.isEqual,
             i, len;
@@ -254,7 +271,9 @@ Ext.define('Ext.form.field.Time', {
     setMinValue: function(value) {
         var me = this,
             picker = me.picker;
+
         me.setLimit(value, true);
+
         if (picker) {
             picker.setMinValue(me.minValue);
         }
@@ -267,7 +286,9 @@ Ext.define('Ext.form.field.Time', {
     setMaxValue: function(value) {
         var me = this,
             picker = me.picker;
+
         me.setLimit(value, false);
+
         if (picker) {
             picker.setMaxValue(me.maxValue);
         }
@@ -281,12 +302,14 @@ Ext.define('Ext.form.field.Time', {
     setLimit: function(value, isMin) {
         var me = this,
             d, val;
+
         if (Ext.isString(value)) {
             d = me.parseDate(value);
         }
         else if (Ext.isDate(value)) {
             d = value;
         }
+
         if (d) {
             val = me.getInitDate();
             val.setHours(d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds());
@@ -295,13 +318,14 @@ Ext.define('Ext.form.field.Time', {
         else {
             val = null;
         }
+
         me[isMin ? 'minValue' : 'maxValue'] = val;
     },
-    
-    getInitDate: function (hours, minutes, seconds) {
+
+    getInitDate: function(hours, minutes, seconds) {
         var parts = this.initDateParts;
 
-        return new Date(parts[0], parts[1], parts[2], hours || 0, minutes || 0, seconds || 0, 0);    
+        return new Date(parts[0], parts[1], parts[2], hours || 0, minutes || 0, seconds || 0, 0);
     },
 
     valueToRaw: function(value) {
@@ -309,16 +333,17 @@ Ext.define('Ext.form.field.Time', {
     },
 
     /**
-     * Runs all of Time's validations and returns an array of any errors. Note that this first runs Text's validations,
-     * so the returned array is an amalgamation of all field errors. The additional validation checks are testing that
-     * the time format is valid, that the chosen time is within the {@link #minValue} and {@link #maxValue} constraints
-     * set.
+     * Runs all of Time's validations and returns an array of any errors. Note that this first
+     * runs Text's validations, so the returned array is an amalgamation of all field errors.
+     * The additional validation checks are testing that the time format is valid, that the chosen
+     * time is within the {@link #minValue} and {@link #maxValue} constraints set.
      * @param {Object} [value] The value to get errors for (defaults to the current field value)
      * @return {String[]} All validation errors for this field
      */
     getErrors: function(value) {
         value = arguments.length > 0 ? value : this.getRawValue();
 
+        // eslint-disable-next-line vars-on-top
         var me = this,
             format = Ext.String.format,
             errors = me.callParent([value]),
@@ -329,34 +354,40 @@ Ext.define('Ext.form.field.Time', {
             i, len, date, item;
 
         if (data && data.length > 0) {
-            for (i = 0, len = data.length; i < len; i++ ){
+            for (i = 0, len = data.length; i < len; i++) {
                 item = data[i];
                 item = item.date || item.disp;
                 date = me.parseDate(item);
 
                 if (!date) {
                     errors.push(format(me.invalidText, item, Ext.Date.unescapeFormat(me.format)));
+
                     continue;
-                }                
+                }
             }
-        } else if (raw.length) {
+        }
+        else if (raw.length) {
             date = me.parseDate(raw);
+
             if (!date) {
                 // If we don't have any data & a rawValue, it means an invalid time was entered.
                 errors.push(format(me.invalidText, raw, Ext.Date.unescapeFormat(me.format)));
             }
         }
+
         // if we have a valid date, we need to check if it's within valid range
         // this is out of the loop because as the user types a date/time, the value
         // needs to be converted before it can be compared to min/max value
-        if(!errors.length) {
+        if (!errors.length) {
             if (minValue && date < minValue) {
                 errors.push(format(me.minText, me.formatDate(minValue)));
             }
+
             if (maxValue && date > maxValue) {
                 errors.push(format(me.maxText, me.formatDate(maxValue)));
             }
         }
+
         return errors;
     },
 
@@ -392,6 +423,7 @@ Ext.define('Ext.form.field.Time', {
             if (!val && altFormats) {
                 altFormatsArray = altFormatsArray || altFormats.split('|');
                 len = altFormatsArray.length;
+
                 for (; i < len && !val; ++i) {
                     val = me.safeParse(value, altFormatsArray[i]);
                 }
@@ -402,10 +434,11 @@ Ext.define('Ext.form.field.Time', {
         if (val && me.snapToIncrement) {
             val = new Date(Ext.Number.snap(val.getTime(), me.increment * 60 * 1000));
         }
+
         return val;
     },
 
-    safeParse: function(value, format){
+    safeParse: function(value, format) {
         var me = this,
             utilDate = Ext.Date,
             parsedDate,
@@ -414,13 +447,17 @@ Ext.define('Ext.form.field.Time', {
         if (utilDate.formatContainsDateInfo(format)) {
             // assume we've been given a full date
             result = utilDate.parse(value, format);
-        } else {
+        }
+        else {
             // Use our initial safe date
-            parsedDate = utilDate.parse(me.initDate + ' ' + value, me.initDateFormat + ' ' + format);
+            parsedDate =
+                utilDate.parse(me.initDate + ' ' + value, me.initDateFormat + ' ' + format);
+
             if (parsedDate) {
                 result = parsedDate;
             }
         }
+
         return result;
     },
 
@@ -452,6 +489,7 @@ Ext.define('Ext.form.field.Time', {
             format: me.format,
             maxHeight: me.pickerMaxHeight
         }, me.listConfig);
+
         return me.callParent();
     },
 
@@ -472,14 +510,15 @@ Ext.define('Ext.form.field.Time', {
      * @param {Object/String} value The value to match the field against.
      * @return {Ext.data.Model} The matched record or false.
      */
-    findRecordByValue: function (value) {
+    findRecordByValue: function(value) {
         if (typeof value === 'string') {
             value = this.parseDate(value);
         }
+
         return this.callParent([value]);
     },
 
-    rawToValue: function (item) {
+    rawToValue: function(item) {
         var me = this,
             items, values, i, len;
 
@@ -497,12 +536,13 @@ Ext.define('Ext.form.field.Time', {
         return me.parseDate(item);
     },
 
-    setValue: function (v) {
+    setValue: function(v) {
         var me = this;
 
-        // The timefield can get in a loop when creating its picker. For instance, when creating the picker, the
-        // timepicker will add a filter (see TimePicker#updateList) which will then trigger the checkValueOnChange
-        // listener which in turn calls into here, rinse and repeat.
+        // The timefield can get in a loop when creating its picker. For instance, when creating
+        // the picker, the timepicker will add a filter (see TimePicker#updateList) which will
+        // then trigger the checkValueOnChange listener which in turn calls into here,
+        // rinse and repeat.
         if (me.creatingPicker) {
             return;
         }
@@ -517,7 +557,7 @@ Ext.define('Ext.form.field.Time', {
         return me.callParent([v]);
     },
 
-    getValue: function () {
+    getValue: function() {
         return this.rawToValue(this.callParent(arguments));
     }
 });

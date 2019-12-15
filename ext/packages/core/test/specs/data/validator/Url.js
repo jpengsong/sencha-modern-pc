@@ -1,9 +1,9 @@
-describe("Ext.data.validator.Url", function() {
-
+topSuite("Ext.data.validator.Url", function() {
     var v;
 
     function validate(value) {
         v = new Ext.data.validator.Url();
+
         return v.validate(value);
     }
 

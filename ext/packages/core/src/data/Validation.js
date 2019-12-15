@@ -19,7 +19,7 @@ Ext.define('Ext.data.Validation', {
      * @readonly
      * @since 5.0.0
      */
-    syncGeneration: 0,  // Model generation starts at 1 so we start out-of-sync
+    syncGeneration: 0, // Model generation starts at 1 so we start out-of-sync
 
     /**
      * Attaches this instance to its associated `record`.
@@ -27,7 +27,7 @@ Ext.define('Ext.data.Validation', {
      * @private
      * @since 5.0.0
      */
-    attach: function (record) {
+    attach: function(record) {
         /**
          * @property {Ext.data.Model} record
          * The associated record for this validation instance.
@@ -42,7 +42,7 @@ Ext.define('Ext.data.Validation', {
         delete this.data.id;
     },
 
-    getValidation: function () {
+    getValidation: function() {
         return null;
     },
 
@@ -50,7 +50,7 @@ Ext.define('Ext.data.Validation', {
      * Returns true if the associated record (not this one) is valid.
      * @return {Boolean}
      */
-    isValid: function () {
+    isValid: function() {
         var me = this;
 
         if (me.syncGeneration !== me.record.generation) {
@@ -68,13 +68,14 @@ Ext.define('Ext.data.Validation', {
      * @private
      * @since 5.0.0
      */
-    refresh: function (force) {
+    refresh: function(force) {
         // If it's an Ext.data.Model instance directly, we can't
         // validate it because there can be no fields/validators.
         if (this.isBase) {
             return;
         }
 
+        /* eslint-disable-next-line vars-on-top */
         var me = this,
             data = me.data,
             record = me.record,
@@ -83,8 +84,8 @@ Ext.define('Ext.data.Validation', {
             recordData = record.data,
             sep = record.validationSeparator,
             values = null,
-            defaultMessage, currentValue, error, field, 
-            item, i, j, jLen, len, msg, val, name;
+            defaultMessage, currentValue, error, field,
+            i, len, msg, val, name;
 
         if (force || me.syncGeneration !== generation) {
             me.syncGeneration = generation;
@@ -101,12 +102,14 @@ Ext.define('Ext.data.Validation', {
                     // for all validated fields. This ensures that our non-dirty state
                     // equates to isValid.
                     data[name] = currentValue = true; // true === valid
-                } else {
+                }
+                else {
                     currentValue = data[name];
                 }
 
                 if (field.validate !== Ext.emptyFn) {
                     msg = field.validate(val, sep, null, record);
+
                     if (msg !== true) {
                         error = msg || defaultMessage;
                     }
@@ -115,6 +118,7 @@ Ext.define('Ext.data.Validation', {
                 if (!error) {
                     error = true; // valid state is stored as true
                 }
+
                 if (error !== currentValue) {
                     (values || (values = {}))[name] = error;
                 }

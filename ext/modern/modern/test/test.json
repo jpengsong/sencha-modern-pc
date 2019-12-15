@@ -19,8 +19,10 @@
             "../../../../packages/ux/test/modern/specs",
             "../../../../packages/google/test/specs",
             "../../../../packages/google/test/modern/specs",
+            "../../../../../packages/calendar/test/specs",
             "../../../../../packages/pivot/test/specs",
             "../../../../../packages/pivot/test/modern/specs",
+            "../../../../../packages/froala-editor/test/specs",
             "../../../../../packages/exporter/test/specs",
             "../../../../../packages/exporter/test/modern/specs"
         ]

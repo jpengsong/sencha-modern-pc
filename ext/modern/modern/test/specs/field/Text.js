@@ -9,7 +9,7 @@ topSuite("Ext.field.Text", [
     'Ext.app.ViewModel',
     'Ext.data.validator.*'
 ],
-function () {
+function() {
     var field, el, ct;
 
     function create(config) {
@@ -33,8 +33,8 @@ function () {
         }
     });
 
-    xdescribe('inputMask', function () {
-        it('should create an InputMask', function () {
+    xdescribe('inputMask', function() {
+        it('should create an InputMask', function() {
             create({
                 inputMask: 'aaa-###'
             });
@@ -324,6 +324,7 @@ function () {
             field = ct.child(0);
 
             var vm = ct.getViewModel();
+
             vm.notify();
 
             expect(field.isValid()).toBeTruthy();
@@ -367,6 +368,7 @@ function () {
             field = ct.child(0);
 
             var vm = ct.getViewModel();
+
             vm.notify();
 
             expect(field.isValid()).toBeTruthy();
@@ -429,11 +431,44 @@ function () {
                 expect(fired).toBeFalsy();
             });
         });
+
+        describe("keydown", function() {
+            it("should fire the keydown event", function() {
+                var spy = jasmine.createSpy();
+
+                create();
+                field.on('keydown', spy);
+                jasmine.fireKeyEvent(field.inputElement.dom, 'keydown');
+                expect(spy).toHaveBeenCalled();
+            });
+        });
+
+        describe("keypress", function() {
+            it("should fire the keypress event", function() {
+                var spy = jasmine.createSpy();
+
+                create();
+                field.on('keypress', spy);
+                jasmine.fireKeyEvent(field.inputElement.dom, 'keypress');
+                expect(spy).toHaveBeenCalled();
+            });
+        });
+
+        describe("keyup", function() {
+            it("should fire the keyup event", function() {
+                var spy = jasmine.createSpy();
+
+                create();
+                field.on('keyup', spy);
+                jasmine.fireKeyEvent(field.inputElement.dom, 'keyup');
+                expect(spy).toHaveBeenCalled();
+            });
+        });
     });
 
     describe("configurations", function() {
-        describe('clearable', function () {
-            it('should respond properly to the clear trigger', function () {
+        describe('clearable', function() {
+            it('should respond properly to the clear trigger', function() {
                 create({
                     clearable: true
                 });
@@ -445,6 +480,7 @@ function () {
                 Ext.testHelper.tap(trigger.element);
 
                 var v = field.getValue();
+
                 expect(v).toBe('');
                 expect(trigger.isVisible()).toBe(false);
             });
@@ -496,7 +532,6 @@ function () {
                         });
                     });
                 });
-
 
                 describe("removing", function() {
                     describe("before render", function() {
@@ -555,7 +590,6 @@ function () {
                         });
                     });
                 });
-
 
                 describe("removing", function() {
                     describe("before render", function() {
@@ -616,7 +650,6 @@ function () {
                         });
                     });
                 });
-
 
                 describe("removing", function() {
                     describe("before render", function() {
@@ -716,10 +749,12 @@ function () {
 
                     if (style.indexOf(key) > -1) {
                         match = style.match(re);
+
                         if (match) {
                             ret = parseInt(match[1], 10);
                         }
                     }
+
                     return ret;
                 }
 
@@ -727,6 +762,7 @@ function () {
                     expect(getTranslate('x')).toBe(x);
                     expect(getTranslate('y')).toBe(y);
                 }
+
                 describe("without initial value", function() {
                     beforeEach(function() {
                         create({
@@ -741,6 +777,31 @@ function () {
 
                     it("should move the label out if a value is set", function() {
                         field.setValue('test');
+
+                        waitsFor(function() {
+                            return getTranslate('x') === 0 && getTranslate('y') === 0;
+                        }, 2000);
+
+                        runs(function() {
+                            expect(field.labelTextElement.dom.innerHTML).toBe('foo');
+                        });
+                    });
+
+                    it("should move the label out if a value is autofill", function() {
+                        var inputEl = field.inputElement.dom,
+                            event;
+
+                        inputEl.value = 'test';
+
+                        if (jasmine.browser.isIE) {
+                            event = document.createEvent("CustomEvent");
+                            event.initCustomEvent('input', true, true, 'foo');
+                        }
+ else {
+                            event = new Event('input');
+                        }
+
+                        inputEl.dispatchEvent(event);
 
                         waitsFor(function() {
                             return getTranslate('x') === 0 && getTranslate('y') === 0;
@@ -890,7 +951,6 @@ function () {
                         });
                     });
 
-
                     describe("removing", function() {
                         describe("before render", function() {
                             it("should remove the autocomplete attribute from the inputEl", function() {
@@ -906,7 +966,7 @@ function () {
                             it("should remove the autocomplete attribute from the inputEl", function() {
                                 create(defaultConfig);
                                 field.setAutoComplete(null);
-                                
+
                                 expect(field.inputElement).toHaveAttribute('autocomplete', 'off');
                             });
                         });
@@ -947,7 +1007,6 @@ function () {
                             });
                         });
                     });
-
 
                     describe("removing", function() {
                         describe("before render", function() {
@@ -1060,7 +1119,6 @@ function () {
                         });
                     });
 
-
                     describe("removing", function() {
                         describe("before render", function() {
                             it("should remove the autocomplete attribute from the inputEl", function() {
@@ -1120,7 +1178,6 @@ function () {
                         });
                     });
 
-
                     describe("removing", function() {
                         describe("before render", function() {
                             it("should remove the autocapitalize attribute from the inputEl", function() {
@@ -1178,7 +1235,6 @@ function () {
                         });
                     });
 
-
                     describe("removing", function() {
                         describe("before render", function() {
                             it("should remove the autocapitalize attribute from the inputEl", function() {
@@ -1225,7 +1281,7 @@ function () {
                                 expect(field.inputElement).toHaveAttribute('autocapitalize', 'off');
                             });
                         });
-                        
+
                         describe("after render", function() {
                             it("should add the autocapitalize attribute to the inputEl", function() {
                                 create();
@@ -1235,7 +1291,7 @@ function () {
                             });
                         });
                     });
-                    
+
                     describe("removing", function() {
                         describe("before render", function() {
                             it("should remove the autocapitalize attribute from the inputEl", function() {
@@ -1245,7 +1301,7 @@ function () {
                                 expect(field.inputElement).toHaveAttribute('autocapitalize', 'off');
                             });
                         });
-                        
+
                         describe("after render", function() {
                             it("should remove the autocapitalize attribute from the inputEl", function() {
                                 create(defaultConfig);
@@ -1314,7 +1370,6 @@ function () {
                 });
             });
         });
-
 
         describe("autoCorrect", function() {
             describe("using value 'on'", function() {
@@ -1462,7 +1517,7 @@ function () {
                             });
                         });
                     });
-                    
+
                     describe("removing", function() {
                         describe("before render", function() {
                             it("should remove the autocorrect attribute from the inputEl", function() {
@@ -1545,26 +1600,26 @@ function () {
 
     describe("methods", function() {
         describe("reset", function() {
-            beforeEach(function () {
+            beforeEach(function() {
                 create({
                     value: 'foo'
                 });
                 field.setValue('foobar');
             });
 
-            it("should update the input field element", function () {
+            it("should update the input field element", function() {
                 field.reset();
 
                 expect(field.inputElement.dom.value).toBe('foo');
             });
 
-            it("should synchronize the value of the component with the field", function () {
+            it("should synchronize the value of the component with the field", function() {
                 field.reset();
 
                 expect(field.getValue()).toBe('foo');
             });
 
-            it('should keep caret position', function () {
+            it('should keep caret position', function() {
                 field.focus();
 
                 field.setCaretPos(1);
@@ -1767,7 +1822,7 @@ function () {
 
             expect(function() {
                 field.addTrigger('foo');
-            }).toThrow('Cannot add trigger "foo". A trigger config or instance is required.');
+            }).toThrow('Cannot add trigger "foo".');
         });
 
         it("should remove a trigger by key", function() {
@@ -1781,6 +1836,7 @@ function () {
             });
 
             var trigger = triggers.foo;
+
             var triggerEl = trigger.el.dom;
 
             field.removeTrigger('foo');
@@ -1799,6 +1855,7 @@ function () {
             });
 
             var trigger = triggers.foo;
+
             var triggerEl = trigger.el.dom;
 
             field.removeTrigger(triggers.foo);
@@ -1897,6 +1954,7 @@ function () {
             });
 
             var originalFoo = triggers.foo;
+
             var originalFooEl = triggers.foo.el.dom;
 
             field.setTriggers({
@@ -2179,6 +2237,47 @@ function () {
 
                     scope.destroy();
                 });
+            });
+        });
+    });
+
+    describe('raw value', function() {
+
+        describe('getRawValue', function() {
+            it('should return the input element value on getRawValue', function() {
+                create({
+                    value: 'foo'
+                });
+                expect(field.getRawValue()).toBe('foo');
+
+                field.setValue('test');
+                expect(field.getRawValue()).toBe('test');
+            });
+        });
+
+        describe('processRawValue', function() {
+            it('should return the raw value validating stripCharsRe config', function() {
+                create({
+                    value: 'foo',
+                    stripCharsRe: /[^0-9]/
+                });
+                expect(field.getRawValue()).toBe('');
+
+                field.setValue('test1234');
+                expect(field.getRawValue()).toBe('1234');
+            });
+        });
+
+         describe('rawToValue', function() {
+            it('should convert the raw value validating stripCharsRe config', function() {
+                create({
+                    value: 'foo',
+                    stripCharsRe: /[^0-9]/
+                });
+                expect(field.getRawValue()).toBe('');
+
+                field.setValue('test1234');
+                expect(field.getRawValue()).toBe('1234');
             });
         });
     });

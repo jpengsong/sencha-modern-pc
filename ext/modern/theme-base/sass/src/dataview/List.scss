@@ -12,8 +12,8 @@
         position: relative;
         width: 100%;
 
-        // We set this in order to lower it and its sub-tree below any positioned
-        // items that we might add to the List.
+        // We need to contain the z-index values of inner items so that they do not
+        // overlop positioned items that reside outside the outer-ct (e.g., indexbar).
         z-index: 0;
     }
 

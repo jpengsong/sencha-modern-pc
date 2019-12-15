@@ -1,4 +1,4 @@
-describe('Ext.field.TextArea_layout', function () {
+topSuite('Ext.field.TextArea_layout', [false, 'Ext.field.TextArea'], function() {
     var labelHtml = '<span style="display:inline-block;width:50px;background:green;">&nbsp;</span>',
         pctBug = Ext.supports.PercentageSizeFlexBug,
         container, field;
@@ -12,7 +12,8 @@ describe('Ext.field.TextArea_layout', function () {
 
         if (containerConfig === null && !field.getFloated()) {
             field.render(Ext.getBody());
-        } else {
+        }
+ else {
             container = new Ext.Container(Ext.apply({
                 renderTo: Ext.getBody(),
                 width: 600,
@@ -29,7 +30,7 @@ describe('Ext.field.TextArea_layout', function () {
         field.setError(msg || 'Err');
     }
 
-    afterEach(function () {
+    afterEach(function() {
         if (container) {
             container.destroy();
             container = null;
@@ -41,8 +42,8 @@ describe('Ext.field.TextArea_layout', function () {
         }
     });
 
-    describe('auto size', function () {
-        it('should layout with left label and side error', function () {
+    describe('auto size', function() {
+        it('should layout with left label and side error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'side'
@@ -62,7 +63,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'side'
@@ -82,7 +83,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'side'
@@ -102,7 +103,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'side'
@@ -122,7 +123,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'under'
@@ -142,7 +143,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'under'
@@ -162,7 +163,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'under'
@@ -182,7 +183,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'under'
@@ -203,8 +204,8 @@ describe('Ext.field.TextArea_layout', function () {
         });
     });
 
-    describe('configured width - larger than default width', function () {
-        it('should layout with left label and side error', function () {
+    describe('configured width - larger than default width', function() {
+        it('should layout with left label and side error', function() {
             create({
                 width: 400,
                 labelAlign: 'left',
@@ -225,7 +226,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 width: 400,
                 labelAlign: 'right',
@@ -246,7 +247,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 width: 400,
                 labelAlign: 'top',
@@ -267,7 +268,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 width: 400,
                 labelAlign: 'bottom',
@@ -288,7 +289,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 width: 400,
                 labelAlign: 'left',
@@ -309,7 +310,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 width: 400,
                 labelAlign: 'right',
@@ -330,7 +331,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 width: 400,
                 labelAlign: 'top',
@@ -351,7 +352,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 width: 400,
                 labelAlign: 'bottom',
@@ -373,8 +374,8 @@ describe('Ext.field.TextArea_layout', function () {
         });
     });
 
-    describe('configured width - smaller than default width', function () {
-        it('should layout with left label and side error', function () {
+    describe('configured width - smaller than default width', function() {
+        it('should layout with left label and side error', function() {
             create({
                 width: 240,
                 labelAlign: 'left',
@@ -395,7 +396,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 width: 240,
                 labelAlign: 'right',
@@ -416,7 +417,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 width: 140,
                 labelAlign: 'top',
@@ -437,7 +438,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 width: 140,
                 labelAlign: 'bottom',
@@ -458,7 +459,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 width: 240,
                 labelAlign: 'left',
@@ -479,7 +480,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 width: 240,
                 labelAlign: 'right',
@@ -500,7 +501,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 width: 140,
                 labelAlign: 'top',
@@ -521,7 +522,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 width: 140,
                 labelAlign: 'bottom',
@@ -543,8 +544,8 @@ describe('Ext.field.TextArea_layout', function () {
         });
     });
 
-    describe('configured width - smaller than label width', function () {
-        it('should layout with left label and side error', function () {
+    describe('configured width - smaller than label width', function() {
+        it('should layout with left label and side error', function() {
             create({
                 width: 50,
                 labelAlign: 'left',
@@ -560,7 +561,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 width: 50,
                 labelAlign: 'right',
@@ -576,7 +577,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 width: 50,
                 labelAlign: 'top',
@@ -597,7 +598,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 width: 50,
                 labelAlign: 'bottom',
@@ -618,7 +619,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 width: 50,
                 labelAlign: 'left',
@@ -630,11 +631,11 @@ describe('Ext.field.TextArea_layout', function () {
             expect(field).toHaveLayout({
                 element: { xywh: '0 0 50 75' },
                 labelElement: { xywh: '0 0 50 75' },
-                bodyWrapElement: { xywh: '50 0 0 75'}
+                bodyWrapElement: { xywh: '50 0 0 75' }
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 width: 50,
                 labelAlign: 'right',
@@ -646,11 +647,11 @@ describe('Ext.field.TextArea_layout', function () {
             expect(field).toHaveLayout({
                 element: { xywh: '0 0 50 75' },
                 labelElement: { xywh: '0 0 50 75' },
-                bodyWrapElement: { xywh: '0 0 0 75'}
+                bodyWrapElement: { xywh: '0 0 0 75' }
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 width: 50,
                 labelAlign: 'top',
@@ -671,7 +672,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 width: 50,
                 labelAlign: 'bottom',
@@ -693,7 +694,7 @@ describe('Ext.field.TextArea_layout', function () {
         });
     });
 
-    describe('flex grow width', function () {
+    describe('flex grow width', function() {
         var containerConfig = {
             width: 400,
             layout: 'hbox',
@@ -702,7 +703,7 @@ describe('Ext.field.TextArea_layout', function () {
             }
         };
 
-        it('should layout with left label and side error', function () {
+        it('should layout with left label and side error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'side'
@@ -726,12 +727,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '101 1 272 73' },
                 errorElement: { xywh: '374 30 26 16' },
                 errorIconElement: { xywh: '379 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'side'
@@ -755,12 +756,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '27 1 272 73' },
                 errorElement: { xywh: '0 30 26 16' },
                 errorIconElement: { xywh: '5 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '306 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '306 4 50 17' }
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'side'
@@ -775,12 +776,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 25 372 73' },
                 errorElement: { xywh: '374 54 26 16' },
                 errorIconElement: { xywh: '379 54 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'side'
@@ -795,12 +796,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 1 372 73' },
                 errorElement: { xywh: '374 30 26 16' },
                 errorIconElement: { xywh: '379 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 79 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 79 50 17' }
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'under'
@@ -825,11 +826,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '100 57 300 16' },
                 errorIconElement: { xywh: '100 57 16 16' },
                 errorMessageElement: { xywh: '121 57 279 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'under'
@@ -854,11 +855,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 57 300 16' },
                 errorIconElement: { xywh: '0 57 16 16' },
                 errorMessageElement: { xywh: '21 57 279 16' },
-                labelHtmlElement: { xywh: '306 4 50 17'}
+                labelHtmlElement: { xywh: '306 4 50 17' }
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'under'
@@ -874,11 +875,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 81 400 16' },
                 errorIconElement: { xywh: '0 81 16 16' },
                 errorMessageElement: { xywh: '21 81 379 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'under'
@@ -894,12 +895,12 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 57 400 16' },
                 errorIconElement: { xywh: '0 57 16 16' },
                 errorMessageElement: { xywh: '21 57 379 16' },
-                labelHtmlElement: { xywh: '0 79 50 17'}
+                labelHtmlElement: { xywh: '0 79 50 17' }
             });
         });
     });
 
-    describe('flex shrink width', function () {
+    describe('flex shrink width', function() {
         var containerConfig;
 
         beforeEach(function() {
@@ -912,7 +913,7 @@ describe('Ext.field.TextArea_layout', function () {
             };
         });
 
-        it('should layout with left label and side error', function () {
+        it('should layout with left label and side error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'side'
@@ -936,12 +937,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '101 1 112 73' },
                 errorElement: { xywh: '214 30 26 16' },
                 errorIconElement: { xywh: '219 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'side'
@@ -965,12 +966,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '27 1 112 73' },
                 errorElement: { xywh: '0 30 26 16' },
                 errorIconElement: { xywh: '5 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '146 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '146 4 50 17' }
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             containerConfig.width = 140;
 
             create({
@@ -987,12 +988,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 25 112 73' },
                 errorElement: { xywh: '114 54 26 16' },
                 errorIconElement: { xywh: '119 54 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             containerConfig.width = 140;
 
             create({
@@ -1009,12 +1010,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 1 112 73' },
                 errorElement: { xywh: '114 30 26 16' },
                 errorIconElement: { xywh: '119 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 79 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 79 50 17' }
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'under'
@@ -1039,11 +1040,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '100 57 140 16' },
                 errorIconElement: { xywh: '100 57 16 16' },
                 errorMessageElement: { xywh: '121 57 119 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'under'
@@ -1068,11 +1069,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 57 140 16' },
                 errorIconElement: { xywh: '0 57 16 16' },
                 errorMessageElement: { xywh: '21 57 119 16' },
-                labelHtmlElement: { xywh: '146 4 50 17'}
+                labelHtmlElement: { xywh: '146 4 50 17' }
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             containerConfig.width = 140;
 
             create({
@@ -1090,11 +1091,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 81 140 16' },
                 errorIconElement: { xywh: '0 81 16 16' },
                 errorMessageElement: { xywh: '21 81 119 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             containerConfig.width = 140;
 
             create({
@@ -1112,12 +1113,12 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 57 140 16' },
                 errorIconElement: { xywh: '0 57 16 16' },
                 errorMessageElement: { xywh: '21 57 119 16' },
-                labelHtmlElement: { xywh: '0 79 50 17'}
+                labelHtmlElement: { xywh: '0 79 50 17' }
             });
         });
     });
 
-    describe('flex shrink width - smaller than label width', function () {
+    describe('flex shrink width - smaller than label width', function() {
         var containerConfig = {
             width: 50,
             layout: 'hbox',
@@ -1126,7 +1127,7 @@ describe('Ext.field.TextArea_layout', function () {
             }
         };
 
-        it('should layout with left label and side error', function () {
+        it('should layout with left label and side error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'side'
@@ -1137,15 +1138,15 @@ describe('Ext.field.TextArea_layout', function () {
             expect(field).toHaveLayout(pctBug ? {
                 element: { xywh: '0 0 50 41' },
                 labelElement: { xywh: '0 0 50 41' },
-                bodyWrapElement: { xywh: '50 0 0 41'}
+                bodyWrapElement: { xywh: '50 0 0 41' }
             } : {
                 element: { xywh: '0 0 50 75' },
                 labelElement: { xywh: '0 0 50 75' },
-                bodyWrapElement: { xywh: '50 0 0 75'}
+                bodyWrapElement: { xywh: '50 0 0 75' }
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'side'
@@ -1156,15 +1157,15 @@ describe('Ext.field.TextArea_layout', function () {
             expect(field).toHaveLayout(pctBug ? {
                 element: { xywh: '0 0 50 41' },
                 labelElement: { xywh: '0 0 50 41' },
-                bodyWrapElement: { xywh: '0 0 0 41'}
+                bodyWrapElement: { xywh: '0 0 0 41' }
             } : {
                 element: { xywh: '0 0 50 75' },
                 labelElement: { xywh: '0 0 50 75' },
-                bodyWrapElement: { xywh: '0 0 0 75'}
+                bodyWrapElement: { xywh: '0 0 0 75' }
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'side'
@@ -1179,12 +1180,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 25 22 73' },
                 errorElement: { xywh: '24 54 26 16' },
                 errorIconElement: { xywh: '29 54 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'side'
@@ -1199,12 +1200,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 1 22 73' },
                 errorElement: { xywh: '24 30 26 16' },
                 errorIconElement: { xywh: '29 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 79 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 79 50 17' }
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'under'
@@ -1215,15 +1216,15 @@ describe('Ext.field.TextArea_layout', function () {
             expect(field).toHaveLayout(pctBug ? {
                 element: { xywh: '0 0 50 61' },
                 labelElement: { xywh: '0 0 50 61' },
-                bodyWrapElement: { xywh: '50 0 0 61'}
+                bodyWrapElement: { xywh: '50 0 0 61' }
             } : {
                 element: { xywh: '0 0 50 75' },
                 labelElement: { xywh: '0 0 50 75' },
-                bodyWrapElement: { xywh: '50 0 0 75'}
+                bodyWrapElement: { xywh: '50 0 0 75' }
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'under'
@@ -1234,15 +1235,15 @@ describe('Ext.field.TextArea_layout', function () {
             expect(field).toHaveLayout(pctBug ? {
                 element: { xywh: '0 0 50 61' },
                 labelElement: { xywh: '0 0 50 61' },
-                bodyWrapElement: { xywh: '0 0 0 61'}
+                bodyWrapElement: { xywh: '0 0 0 61' }
             } : {
                 element: { xywh: '0 0 50 75' },
                 labelElement: { xywh: '0 0 50 75' },
-                bodyWrapElement: { xywh: '0 0 0 75'}
+                bodyWrapElement: { xywh: '0 0 0 75' }
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'under'
@@ -1258,11 +1259,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 81 50 16' },
                 errorIconElement: { xywh: '0 81 16 16' },
                 errorMessageElement: { xywh: '21 81 29 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'under'
@@ -1278,13 +1279,13 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 57 50 16' },
                 errorIconElement: { xywh: '0 57 16 16' },
                 errorMessageElement: { xywh: '21 57 29 16' },
-                labelHtmlElement: { xywh: '0 79 50 17'}
+                labelHtmlElement: { xywh: '0 79 50 17' }
             });
         });
     });
 
-    describe('configured height - larger than default height', function () {
-        it('should layout with left label and side error', function () {
+    describe('configured height - larger than default height', function() {
+        it('should layout with left label and side error', function() {
             create({
                 height: 150,
                 labelAlign: 'left',
@@ -1305,7 +1306,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 height: 150,
                 labelAlign: 'right',
@@ -1326,7 +1327,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 height: 150,
                 labelAlign: 'top',
@@ -1347,7 +1348,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 height: 150,
                 labelAlign: 'bottom',
@@ -1368,7 +1369,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 height: 150,
                 labelAlign: 'left',
@@ -1389,7 +1390,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 height: 150,
                 labelAlign: 'right',
@@ -1410,7 +1411,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 height: 150,
                 labelAlign: 'top',
@@ -1431,7 +1432,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 height: 150,
                 labelAlign: 'bottom',
@@ -1453,8 +1454,8 @@ describe('Ext.field.TextArea_layout', function () {
         });
     });
 
-    describe('configured height - smaller than default height', function () {
-        it('should layout with left label and side error', function () {
+    describe('configured height - smaller than default height', function() {
+        it('should layout with left label and side error', function() {
             create({
                 height: 60,
                 labelAlign: 'left',
@@ -1475,7 +1476,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 height: 60,
                 labelAlign: 'right',
@@ -1496,7 +1497,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 height: 60,
                 labelAlign: 'top',
@@ -1517,7 +1518,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 height: 60,
                 labelAlign: 'bottom',
@@ -1538,7 +1539,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 height: 60,
                 labelAlign: 'left',
@@ -1559,7 +1560,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 height: 60,
                 labelAlign: 'right',
@@ -1580,7 +1581,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 height: 60,
                 labelAlign: 'top',
@@ -1601,7 +1602,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 height: 60,
                 labelAlign: 'bottom',
@@ -1623,7 +1624,7 @@ describe('Ext.field.TextArea_layout', function () {
         });
     });
 
-    describe('flex grow height', function () {
+    describe('flex grow height', function() {
         var containerConfig = {
             height: 150,
             layout: {
@@ -1635,7 +1636,7 @@ describe('Ext.field.TextArea_layout', function () {
             }
         };
 
-        it('should layout with left label and side error', function () {
+        it('should layout with left label and side error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'side'
@@ -1655,7 +1656,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'side'
@@ -1675,7 +1676,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'side'
@@ -1695,7 +1696,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'side'
@@ -1715,7 +1716,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'under'
@@ -1735,7 +1736,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'under'
@@ -1755,7 +1756,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'under'
@@ -1775,7 +1776,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'under'
@@ -1796,7 +1797,7 @@ describe('Ext.field.TextArea_layout', function () {
         });
     });
 
-    describe('flex shrink height', function () {
+    describe('flex shrink height', function() {
         var containerConfig = {
             height: 60,
             layout: {
@@ -1808,7 +1809,7 @@ describe('Ext.field.TextArea_layout', function () {
             }
         };
 
-        it('should layout with left label and side error', function () {
+        it('should layout with left label and side error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'side'
@@ -1828,7 +1829,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'side'
@@ -1848,7 +1849,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'side'
@@ -1868,7 +1869,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'side'
@@ -1888,7 +1889,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'under'
@@ -1908,7 +1909,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'under'
@@ -1928,7 +1929,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'under'
@@ -1948,7 +1949,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'under'
@@ -1969,13 +1970,13 @@ describe('Ext.field.TextArea_layout', function () {
         });
     });
 
-    describe('stretched width', function () {
+    describe('stretched width', function() {
         var containerConfig = {
             width: 400,
             layout: 'vbox'
         };
 
-        it('should layout with left label and side error', function () {
+        it('should layout with left label and side error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'side'
@@ -1990,12 +1991,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '101 1 272 73' },
                 errorElement: { xywh: '374 30 26 16' },
                 errorIconElement: { xywh: '379 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'side'
@@ -2010,12 +2011,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '27 1 272 73' },
                 errorElement: { xywh: '0 30 26 16' },
                 errorIconElement: { xywh: '5 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '306 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '306 4 50 17' }
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'side'
@@ -2030,12 +2031,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 25 372 73' },
                 errorElement: { xywh: '374 54 26 16' },
                 errorIconElement: { xywh: '379 54 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'side'
@@ -2050,12 +2051,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 1 372 73' },
                 errorElement: { xywh: '374 30 26 16' },
                 errorIconElement: { xywh: '379 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 79 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 79 50 17' }
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'under'
@@ -2071,11 +2072,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '100 57 300 16' },
                 errorIconElement: { xywh: '100 57 16 16' },
                 errorMessageElement: { xywh: '121 57 279 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'under'
@@ -2091,11 +2092,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 57 300 16' },
                 errorIconElement: { xywh: '0 57 16 16' },
                 errorMessageElement: { xywh: '21 57 279 16' },
-                labelHtmlElement: { xywh: '306 4 50 17'}
+                labelHtmlElement: { xywh: '306 4 50 17' }
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'under'
@@ -2111,11 +2112,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 81 400 16' },
                 errorIconElement: { xywh: '0 81 16 16' },
                 errorMessageElement: { xywh: '21 81 379 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'under'
@@ -2131,22 +2132,22 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 57 400 16' },
                 errorIconElement: { xywh: '0 57 16 16' },
                 errorMessageElement: { xywh: '21 57 379 16' },
-                labelHtmlElement: { xywh: '0 79 50 17'}
+                labelHtmlElement: { xywh: '0 79 50 17' }
             });
         });
     });
 
-    describe('stretched width - smaller than default width', function () {
+    describe('stretched width - smaller than default width', function() {
         var containerConfig;
 
         beforeEach(function() {
             containerConfig = {
                 width: 240,
                 layout: 'vbox'
-            }
+            };
         });
 
-        it('should layout with left label and side error', function () {
+        it('should layout with left label and side error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'side'
@@ -2161,12 +2162,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '101 1 112 73' },
                 errorElement: { xywh: '214 30 26 16' },
                 errorIconElement: { xywh: '219 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'side'
@@ -2181,12 +2182,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '27 1 112 73' },
                 errorElement: { xywh: '0 30 26 16' },
                 errorIconElement: { xywh: '5 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '146 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '146 4 50 17' }
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             containerConfig.width = 140;
 
             create({
@@ -2203,12 +2204,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 25 112 73' },
                 errorElement: { xywh: '114 54 26 16' },
                 errorIconElement: { xywh: '119 54 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             containerConfig.width = 140;
 
             create({
@@ -2225,12 +2226,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 1 112 73' },
                 errorElement: { xywh: '114 30 26 16' },
                 errorIconElement: { xywh: '119 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 79 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 79 50 17' }
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'under'
@@ -2246,11 +2247,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '100 57 140 16' },
                 errorIconElement: { xywh: '100 57 16 16' },
                 errorMessageElement: { xywh: '121 57 119 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'under'
@@ -2266,11 +2267,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 57 140 16' },
                 errorIconElement: { xywh: '0 57 16 16' },
                 errorMessageElement: { xywh: '21 57 119 16' },
-                labelHtmlElement: { xywh: '146 4 50 17'}
+                labelHtmlElement: { xywh: '146 4 50 17' }
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             containerConfig.width = 140;
 
             create({
@@ -2288,11 +2289,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 81 140 16' },
                 errorIconElement: { xywh: '0 81 16 16' },
                 errorMessageElement: { xywh: '21 81 119 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             containerConfig.width = 140;
 
             create({
@@ -2310,18 +2311,18 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 57 140 16' },
                 errorIconElement: { xywh: '0 57 16 16' },
                 errorMessageElement: { xywh: '21 57 119 16' },
-                labelHtmlElement: { xywh: '0 79 50 17'}
+                labelHtmlElement: { xywh: '0 79 50 17' }
             });
         });
     });
 
-    describe('stretched width - smaller than label width', function () {
+    describe('stretched width - smaller than label width', function() {
         var containerConfig = {
             width: 50,
             layout: 'vbox'
         };
 
-        it('should layout with left label and side error', function () {
+        it('should layout with left label and side error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'side'
@@ -2332,11 +2333,11 @@ describe('Ext.field.TextArea_layout', function () {
             expect(field).toHaveLayout({
                 element: { xywh: '0 0 50 75' },
                 labelElement: { xywh: '0 0 50 75' },
-                bodyWrapElement: { xywh: '50 0 0 75'}
+                bodyWrapElement: { xywh: '50 0 0 75' }
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'side'
@@ -2347,11 +2348,11 @@ describe('Ext.field.TextArea_layout', function () {
             expect(field).toHaveLayout({
                 element: { xywh: '0 0 50 75' },
                 labelElement: { xywh: '0 0 50 75' },
-                bodyWrapElement: { xywh: '0 0 0 75'}
+                bodyWrapElement: { xywh: '0 0 0 75' }
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'side'
@@ -2366,12 +2367,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 25 22 73' },
                 errorElement: { xywh: '24 54 26 16' },
                 errorIconElement: { xywh: '29 54 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'side'
@@ -2386,12 +2387,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 1 22 73' },
                 errorElement: { xywh: '24 30 26 16' },
                 errorIconElement: { xywh: '29 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 79 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 79 50 17' }
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'under'
@@ -2402,11 +2403,11 @@ describe('Ext.field.TextArea_layout', function () {
             expect(field).toHaveLayout({
                 element: { xywh: '0 0 50 75' },
                 labelElement: { xywh: '0 0 50 75' },
-                bodyWrapElement: { xywh: '50 0 0 75'}
+                bodyWrapElement: { xywh: '50 0 0 75' }
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'under'
@@ -2417,11 +2418,11 @@ describe('Ext.field.TextArea_layout', function () {
             expect(field).toHaveLayout({
                 element: { xywh: '0 0 50 75' },
                 labelElement: { xywh: '0 0 50 75' },
-                bodyWrapElement: { xywh: '0 0 0 75'}
+                bodyWrapElement: { xywh: '0 0 0 75' }
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'under'
@@ -2437,11 +2438,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 81 50 16' },
                 errorIconElement: { xywh: '0 81 16 16' },
                 errorMessageElement: { xywh: '21 81 29 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'under'
@@ -2457,18 +2458,18 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 57 50 16' },
                 errorIconElement: { xywh: '0 57 16 16' },
                 errorMessageElement: { xywh: '21 57 29 16' },
-                labelHtmlElement: { xywh: '0 79 50 17'}
+                labelHtmlElement: { xywh: '0 79 50 17' }
             });
         });
     });
 
-    describe('stretched height - larger than default height', function () {
+    describe('stretched height - larger than default height', function() {
         var containerConfig = {
             height: 150,
             layout: 'hbox'
         };
 
-        it('should layout with left label and side error', function () {
+        it('should layout with left label and side error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'side'
@@ -2483,12 +2484,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '101 1 142 148' },
                 errorElement: { xywh: '244 67 26 16' },
                 errorIconElement: { xywh: '249 67 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'side'
@@ -2503,12 +2504,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '27 1 142 148' },
                 errorElement: { xywh: '0 67 26 16' },
                 errorIconElement: { xywh: '5 67 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '176 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '176 4 50 17' }
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'side'
@@ -2523,12 +2524,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 25 142 124' },
                 errorElement: { xywh: '144 79 26 16' },
                 errorIconElement: { xywh: '149 79 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'side'
@@ -2543,12 +2544,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 1 142 124' },
                 errorElement: { xywh: '144 55 26 16' },
                 errorIconElement: { xywh: '149 55 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 130 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 130 50 17' }
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'under'
@@ -2564,11 +2565,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '100 132 170 16' },
                 errorIconElement: { xywh: '100 132 16 16' },
                 errorMessageElement: { xywh: '121 132 149 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'under'
@@ -2584,11 +2585,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 132 170 16' },
                 errorIconElement: { xywh: '0 132 16 16' },
                 errorMessageElement: { xywh: '21 132 149 16' },
-                labelHtmlElement: { xywh: '176 4 50 17'}
+                labelHtmlElement: { xywh: '176 4 50 17' }
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'under'
@@ -2604,11 +2605,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 132 170 16' },
                 errorIconElement: { xywh: '0 132 16 16' },
                 errorMessageElement: { xywh: '21 132 149 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'under'
@@ -2624,18 +2625,18 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 108 170 16' },
                 errorIconElement: { xywh: '0 108 16 16' },
                 errorMessageElement: { xywh: '21 108 149 16' },
-                labelHtmlElement: { xywh: '0 130 50 17'}
+                labelHtmlElement: { xywh: '0 130 50 17' }
             });
         });
     });
 
-    describe('stretched height - smaller than default height', function () {
+    describe('stretched height - smaller than default height', function() {
         var containerConfig = {
             height: 60,
             layout: 'hbox'
         };
 
-        it('should layout with left label and side error', function () {
+        it('should layout with left label and side error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'side'
@@ -2650,12 +2651,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '101 1 142 58' },
                 errorElement: { xywh: '244 22 26 16' },
                 errorIconElement: { xywh: '249 22 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'side'
@@ -2670,12 +2671,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '27 1 142 58' },
                 errorElement: { xywh: '0 22 26 16' },
                 errorIconElement: { xywh: '5 22 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '176 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '176 4 50 17' }
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'side'
@@ -2690,12 +2691,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 25 142 34' },
                 errorElement: { xywh: '144 34 26 16' },
                 errorIconElement: { xywh: '149 34 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'side'
@@ -2710,12 +2711,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 1 142 34' },
                 errorElement: { xywh: '144 10 26 16' },
                 errorIconElement: { xywh: '149 10 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 40 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 40 50 17' }
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 labelAlign: 'left',
                 errorTarget: 'under'
@@ -2731,11 +2732,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '100 42 170 16' },
                 errorIconElement: { xywh: '100 42 16 16' },
                 errorMessageElement: { xywh: '121 42 149 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 labelAlign: 'right',
                 errorTarget: 'under'
@@ -2751,11 +2752,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 42 170 16' },
                 errorIconElement: { xywh: '0 42 16 16' },
                 errorMessageElement: { xywh: '21 42 149 16' },
-                labelHtmlElement: { xywh: '176 4 50 17'}
+                labelHtmlElement: { xywh: '176 4 50 17' }
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 labelAlign: 'top',
                 errorTarget: 'under'
@@ -2771,11 +2772,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 42 170 16' },
                 errorIconElement: { xywh: '0 42 16 16' },
                 errorMessageElement: { xywh: '21 42 149 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 labelAlign: 'bottom',
                 errorTarget: 'under'
@@ -2791,13 +2792,13 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 18 170 16' },
                 errorIconElement: { xywh: '0 18 16 16' },
                 errorMessageElement: { xywh: '21 18 149 16' },
-                labelHtmlElement: { xywh: '0 40 50 17'}
+                labelHtmlElement: { xywh: '0 40 50 17' }
             });
         });
     });
 
-    describe('inline', function () {
-        it('should layout with left label and side error', function () {
+    describe('inline', function() {
+        it('should layout with left label and side error', function() {
             create({
                 inline: true,
                 labelAlign: 'left',
@@ -2818,7 +2819,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 inline: true,
                 labelAlign: 'right',
@@ -2839,7 +2840,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 inline: true,
                 labelAlign: 'top',
@@ -2860,7 +2861,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 inline: true,
                 labelAlign: 'bottom',
@@ -2881,7 +2882,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 inline: true,
                 labelAlign: 'left',
@@ -2902,7 +2903,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 inline: true,
                 labelAlign: 'right',
@@ -2923,7 +2924,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 inline: true,
                 labelAlign: 'top',
@@ -2944,7 +2945,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 inline: true,
                 labelAlign: 'bottom',
@@ -2966,8 +2967,8 @@ describe('Ext.field.TextArea_layout', function () {
         });
     });
 
-    describe('floated', function () {
-        it('should layout with left label and side error', function () {
+    describe('floated', function() {
+        it('should layout with left label and side error', function() {
             create({
                 floated: true,
                 labelAlign: 'left',
@@ -2983,12 +2984,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '101 1 142 73' },
                 errorElement: { xywh: '244 30 26 16' },
                 errorIconElement: { xywh: '249 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with right label and side error', function () {
+        it('should layout with right label and side error', function() {
             create({
                 floated: true,
                 labelAlign: 'right',
@@ -3004,12 +3005,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '27 1 142 73' },
                 errorElement: { xywh: '0 30 26 16' },
                 errorIconElement: { xywh: '5 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '176 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '176 4 50 17' }
             });
         });
 
-        it('should layout with top label and side error', function () {
+        it('should layout with top label and side error', function() {
             create({
                 floated: true,
                 labelAlign: 'top',
@@ -3025,12 +3026,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 25 142 73' },
                 errorElement: { xywh: '144 54 26 16' },
                 errorIconElement: { xywh: '149 54 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and side error', function () {
+        it('should layout with bottom label and side error', function() {
             create({
                 floated: true,
                 labelAlign: 'bottom',
@@ -3046,12 +3047,12 @@ describe('Ext.field.TextArea_layout', function () {
                 inputElement: { xywh: '1 1 142 73' },
                 errorElement: { xywh: '144 30 26 16' },
                 errorIconElement: { xywh: '149 30 16 16' },
-                errorMessageElement: {d: false},
-                labelHtmlElement: { xywh: '0 79 50 17'}
+                errorMessageElement: { d: false },
+                labelHtmlElement: { xywh: '0 79 50 17' }
             });
         });
 
-        it('should layout with left label and under error', function () {
+        it('should layout with left label and under error', function() {
             create({
                 floated: true,
                 labelAlign: 'left',
@@ -3068,11 +3069,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '100 57 170 16' },
                 errorIconElement: { xywh: '100 57 16 16' },
                 errorMessageElement: { xywh: '121 57 149 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with right label and under error', function () {
+        it('should layout with right label and under error', function() {
             create({
                 floated: true,
                 labelAlign: 'right',
@@ -3089,11 +3090,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 57 170 16' },
                 errorIconElement: { xywh: '0 57 16 16' },
                 errorMessageElement: { xywh: '21 57 149 16' },
-                labelHtmlElement: { xywh: '176 4 50 17'}
+                labelHtmlElement: { xywh: '176 4 50 17' }
             });
         });
 
-        it('should layout with top label and under error', function () {
+        it('should layout with top label and under error', function() {
             create({
                 floated: true,
                 labelAlign: 'top',
@@ -3110,11 +3111,11 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 81 170 16' },
                 errorIconElement: { xywh: '0 81 16 16' },
                 errorMessageElement: { xywh: '21 81 149 16' },
-                labelHtmlElement: { xywh: '0 4 50 17'}
+                labelHtmlElement: { xywh: '0 4 50 17' }
             });
         });
 
-        it('should layout with bottom label and under error', function () {
+        it('should layout with bottom label and under error', function() {
             create({
                 floated: true,
                 labelAlign: 'bottom',
@@ -3131,13 +3132,13 @@ describe('Ext.field.TextArea_layout', function () {
                 errorElement: { xywh: '0 57 170 16' },
                 errorIconElement: { xywh: '0 57 16 16' },
                 errorMessageElement: { xywh: '21 57 149 16' },
-                labelHtmlElement: { xywh: '0 79 50 17'}
+                labelHtmlElement: { xywh: '0 79 50 17' }
             });
         });
     });
 
-    describe('fit layout', function () {
-        it('should grow', function () {
+    describe('fit layout', function() {
+        it('should grow', function() {
             create({
                 label: null
             }, {
@@ -3157,7 +3158,7 @@ describe('Ext.field.TextArea_layout', function () {
             });
         });
 
-        it('should shrink', function () {
+        it('should shrink', function() {
             create({
                 label: null
             }, {

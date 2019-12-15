@@ -3,7 +3,7 @@
  * @since 6.5.0
  */
 Ext.define('Ext.grid.menu.Columns', {
-    extend: 'Ext.menu.Item',
+    extend: 'Ext.grid.menu.Shared',
 
     xtype: 'gridcolumnsmenu',
 
@@ -18,33 +18,35 @@ Ext.define('Ext.grid.menu.Columns', {
 
     menu: {},
 
-    updateMenu: function (menu, oldMenu) {
-        this.callParent([menu, oldMenu]);
+    updateMenu: function(menu, oldMenu) {
+        var me = this;
+
+        me.callParent([menu, oldMenu]);
+
+        Ext.destroy(me.menuListeners);
+
         if (menu) {
-            this.menuListeners = menu.on({
-                beforeshow: 'onBeforeShowColumnsMenu',
-                checkchange: {
-                    fn: 'onCheckItem',
-                    delegate: 'menucheckitem'
-                },
-                scope: this,
+            me.menuListeners = menu.on({
+                checkchange: 'onCheckItem',
+                delegate: 'menucheckitem',
+
+                scope: me,
                 destroyable: true
             });
-        } else {
-            Ext.destroy(this.menuListeners);
         }
     },
 
-    onBeforeShowColumnsMenu: function (menu) {
-        var me = this,
-            grid = me.grid,
-            columns = grid.getHeaderContainer().items.items,
+    onBeforeShowColumnMenu: function(menu, column, grid) {
+        var columns = grid.getHeaderContainer().items.items,
             items = [],
             len = columns.length,
-            i, column;
+            subMenu = this.getMenu(),
+            i, col;
+
+        this.callParent([ menu, column, grid ]);
 
         for (i = 0; i < len; ++i) {
-            column = columns[i];
+            col = columns[i];
 
             // If the column has the ability to hide, add it to the menu.
             // The item itself enables/disables depending on whether it is
@@ -52,18 +54,18 @@ Ext.define('Ext.grid.menu.Columns', {
             // menu offering columns still visible.
             // See HeaderContainer#updateMenuDisabledState for keeping this
             // synched while hiding and showing columns.
-            if (column.getHideable()) {
-                items.push(column.getHideShowMenuItem());
+            if (col.getHideable()) {
+                items.push(col.getHideShowMenuItem());
             }
         }
 
         // The MenuCheckItems are persistent, and lazily owned by each column.
         // We just remove non-destructively here, and add the new payload.
-        menu.removeAll(false);
-        menu.add(items);
+        subMenu.removeAll(false);
+        subMenu.add(items);
     },
 
-    onCheckItem: function (menuItem, checked) {
+    onCheckItem: function(menuItem, checked) {
         menuItem.column.setHidden(!checked);
     }
 });

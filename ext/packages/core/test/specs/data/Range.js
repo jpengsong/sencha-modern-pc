@@ -8,11 +8,12 @@ topSuite("Ext.data.Range", [
         extend: 'Ext.data.Model'
     });
 
-    function makeData (count) {
+    function makeData(count) {
         var data = [];
 
         if (count !== 0) {
             count = count || 100;
+
             for (var i = 0; i < count; ++i) {
                 data.push({
                     id: i + 1
@@ -23,7 +24,7 @@ topSuite("Ext.data.Range", [
         return data;
     }
 
-    function makeStore (data, cfg) {
+    function makeStore(data, cfg) {
         store = new Ext.data.Store(Ext.apply({
             asynchronousLoad: false,
             proxy: {
@@ -102,7 +103,7 @@ topSuite("Ext.data.Range", [
                 begin: 50,
                 end: 75
             });
-            
+
             expectRangeSize(50, 75);
         });
     });
@@ -277,6 +278,7 @@ topSuite("Ext.data.Range", [
             describe("adding", function() {
                 it("should not alter the size of the range, but should update the records", function() {
                     expectRangeSize(0, 100);
+
                     for (var i = 50; i < 99; ++i) {
                         expect(range.records[i]).toBeUndefined();
                     }
@@ -301,6 +303,7 @@ topSuite("Ext.data.Range", [
                         store.loadData(makeData(10));
 
                         expectRangeSize(0, 100);
+
                         for (var i = 10; i < 99; ++i) {
                             expect(range.records[i]).toBeUndefined();
                         }
@@ -312,6 +315,7 @@ topSuite("Ext.data.Range", [
                         store.loadData(makeData(110));
 
                         expectRangeSize(0, 100);
+
                         for (var i = 0; i < 110; ++i) {
                             expect(range.records[i].id).toBe(i + 1);
                         }
@@ -326,6 +330,7 @@ topSuite("Ext.data.Range", [
                         Ext.Ajax.mockCompleteWithData(makeData(10));
 
                         expectRangeSize(0, 100);
+
                         for (var i = 10; i < 99; ++i) {
                             expect(range.records[i]).toBeUndefined();
                         }
@@ -338,6 +343,7 @@ topSuite("Ext.data.Range", [
                         Ext.Ajax.mockCompleteWithData(makeData(110));
 
                         expectRangeSize(0, 100);
+
                         for (var i = 0; i < 110; ++i) {
                             expect(range.records[i].id).toBe(i + 1);
                         }

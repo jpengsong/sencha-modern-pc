@@ -1,6 +1,10 @@
 {
-    "name": "@extjs/ext-react-core",
-    "version": "6.5.3.57",
+    "name": "@extjs/ext-core",
+    "ext-react-name": "@extjs/ext-react-core",
+    "ext-name": "@extjs/ext-core",
+    "SenchaExtName": "@sencha/ext-core",
+    "SenchaExtReactName": "@sencha/ext-react-core",
+    "version": "7.0.0.156",
     "sencha": {
         "name": "core",
         "type": "code",
@@ -10,8 +14,8 @@
         "creator": "Sencha",
         "summary": "Sencha Core",
         "detailedDescription": "Sencha Core is the core package used by Sencha frameworks",
-        "version": "6.5.3.57",
-        "compatVersion": "6.0.0",
+        "version": "7.0.0.156",
+        "compatVersion": "7.0.0",
         "format": "1",
         "output": "${package.dir}/build",
         "local": true,

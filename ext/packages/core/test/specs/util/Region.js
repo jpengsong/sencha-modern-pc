@@ -1,5 +1,3 @@
-/* global expect, Ext */
-
 topSuite("Ext.util.Region", ['Ext.dom.Element'], function() {
     var region,
         region1,
@@ -22,12 +20,14 @@ topSuite("Ext.util.Region", ['Ext.dom.Element'], function() {
         expect(toTest.bottom).toBe(b);
         expect(toTest.right).toBe(r);
     }
+
     function expectXYWH(toTest, x, y, w, h) {
         expect(toTest.top).toBe(y);
         expect(toTest.left).toBe(x);
         expect(toTest.getWidth()).toBe(w);
         expect(toTest.getHeight()).toBe(h);
     }
+
     describe("contains", function() {
         describe("form region 1 point of view", function() {
             it("should not contain region 2", function() {
@@ -477,22 +477,16 @@ topSuite("Ext.util.Region", ['Ext.dom.Element'], function() {
     });
 
     describe('alignTo', function() {
-        var inside,
-            target,
-            testRegion,
-            result,
-            insideEl,
-            targetEl,
-            resultEl;
+        var inside, target, testRegion, result, insideEl, targetEl, resultEl, visualize;
 
         // For debugging purposes.
         // visualize the situation.
         visualize = function() {
-            insideEl = insideEl || Ext.getBody().createChild({style:'background-color:yellow;position:absolute'});
+            insideEl = insideEl || Ext.getBody().createChild({ style: 'background-color:yellow;position:absolute' });
             insideEl.setBox(inside);
-            targetEl = targetEl || Ext.getBody().createChild({style:'background-color:red;position:absolute'});
+            targetEl = targetEl || Ext.getBody().createChild({ style: 'background-color:red;position:absolute' });
             targetEl.setBox(target);
-            resultEl = resultEl || Ext.getBody().createChild({style:'background-color:blue;position:absolute'});
+            resultEl = resultEl || Ext.getBody().createChild({ style: 'background-color:blue;position:absolute' });
             resultEl.setBox(result);
         };
 
@@ -1844,7 +1838,7 @@ topSuite("Ext.util.Region", ['Ext.dom.Element'], function() {
                     expectXYWH(result, 510, 491, 90, 90);
                     expectXYWH(result.anchor, 500, 493, 10, 10);
                 });
-            })
+            });
         });
     });
 

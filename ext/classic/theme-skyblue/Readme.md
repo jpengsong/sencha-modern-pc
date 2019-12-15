@@ -1,2 +1,0 @@
-# thme-skyblue - Read Me
-

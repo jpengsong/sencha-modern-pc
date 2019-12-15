@@ -1,7 +1,7 @@
-topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Radio', 'Ext.field.Text'], function () {
+topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Radio', 'Ext.field.Text'], function() {
     var ct;
 
-    function createContainer (cfg) {
+    function createContainer(cfg) {
         if (Ext.isArray(cfg)) {
             cfg = {
                 items: cfg
@@ -11,12 +11,12 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
         return ct = new Ext.field.Container(Ext.apply({}, cfg));
     }
 
-    afterEach(function () {
+    afterEach(function() {
         ct = Ext.destroy(ct);
     });
 
-    describe('proxied', function () {
-        it('should have proxied container configs', function () {
+    describe('proxied', function() {
+        it('should have proxied container configs', function() {
             var proto = Ext.field.Container.prototype;
 
             expect(proto.hasConfig('defaults')).toBe(true);
@@ -32,15 +32,15 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             );
         });
 
-        it('should have proxied container methods', function () {
+        it('should have proxied container methods', function() {
             var proto = Ext.field.Container.prototype;
 
             expect(proto).toHaveProperties('add', 'insert', 'remove', 'removeAll', 'getAt');
         });
     });
 
-    describe('errorTarget', function () {
-        it('should set errorTarget to "parent" of configured items', function () {
+    describe('errorTarget', function() {
+        it('should set errorTarget to "parent" of configured items', function() {
             createContainer([
                 { label: 'foo', name: 'foo' },
                 { label: 'bar', name: 'bar' },
@@ -56,7 +56,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             expect(third.getErrorTarget()).toBe('parent');
         });
 
-        it('should set errorTarget to null of added item', function () {
+        it('should set errorTarget to null of added item', function() {
             createContainer();
 
             var item = ct.add({
@@ -67,7 +67,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             expect(item.getErrorTarget()).toBe('parent');
         });
 
-        it('should not set errorTarget of configured items', function () {
+        it('should not set errorTarget of configured items', function() {
             createContainer([
                 { label: 'foo', name: 'foo', errorTarget: 'qtip' },
                 { label: 'bar', name: 'bar', errorTarget: 'side' },
@@ -83,7 +83,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             expect(third.getErrorTarget()).toBe('under');
         });
 
-        it('should not set errorTarget of added item', function () {
+        it('should not set errorTarget of added item', function() {
             createContainer();
 
             var item = ct.add({
@@ -96,8 +96,8 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
         });
     });
 
-    describe('getValues', function () {
-        it('should return an object as a value', function () {
+    describe('getValues', function() {
+        it('should return an object as a value', function() {
             createContainer([
                 { label: 'foo', name: 'foo', value: 'Foo' },
                 { label: 'bar', name: 'bar', value: 'Bar' },
@@ -111,7 +111,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             });
         });
 
-        it('should return an object as a value with checkboxfields', function () {
+        it('should return an object as a value with checkboxfields', function() {
             createContainer([
                 { label: 'foo', name: 'foo', value: 'Foo' },
                 { xtype: 'checkboxfield', label: 'bar 1', name: 'bar', value: 'Bar 1', checked: true },
@@ -126,7 +126,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             });
         });
 
-        it('should return an object as a value with radiofields', function () {
+        it('should return an object as a value with radiofields', function() {
             createContainer([
                 { label: 'foo', name: 'foo', value: 'Foo' },
                 { xtype: 'radiofield', label: 'bar 1', name: 'bar', value: 'Bar 1' },
@@ -142,8 +142,8 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
         });
     });
 
-    describe('setValues', function () {
-        it('should set values on all fields', function () {
+    describe('setValues', function() {
+        it('should set values on all fields', function() {
             createContainer([
                 { label: 'foo', name: 'foo' },
                 { label: 'bar', name: 'bar' },
@@ -166,7 +166,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             expect(third.getValue()).toBe('Baz');
         });
 
-        it('should set values on some fields', function () {
+        it('should set values on some fields', function() {
             createContainer([
                 { label: 'foo', name: 'foo' },
                 { label: 'bar', name: 'bar' },
@@ -189,8 +189,8 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
         });
     });
 
-    describe('onFieldErrorChange', function () {
-        it('should get called when a field is marked with error', function () {
+    describe('onFieldErrorChange', function() {
+        it('should get called when a field is marked with error', function() {
             createContainer([
                 { label: 'foo', name: 'foo' },
                 { label: 'bar', name: 'bar' },
@@ -206,8 +206,8 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
         });
     });
 
-    describe('getRefItems', function () {
-        it('should find a field via down()', function () {
+    describe('getRefItems', function() {
+        it('should find a field via down()', function() {
             var container = new Ext.Container({
                     items: [
                         {},
@@ -228,7 +228,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             Ext.destroy(container);
         });
 
-        it('should find all fields via query()', function () {
+        it('should find all fields via query()', function() {
             var container = new Ext.Container({
                     items: [
                         {},
@@ -256,8 +256,8 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
         });
     });
 
-    describe('getFocusEl', function () {
-        it('should get first field\'s focus element', function () {
+    describe('getFocusEl', function() {
+        it('should get first field\'s focus element', function() {
             createContainer([
                 { label: 'foo', name: 'foo' },
                 { label: 'bar', name: 'bar' },
@@ -270,8 +270,8 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
         });
     });
 
-    describe('reset', function () {
-        it('should reset all fields', function () {
+    describe('reset', function() {
+        it('should reset all fields', function() {
             createContainer([
                 { label: 'foo', name: 'foo' },
                 { label: 'bar', name: 'bar', value: 'bar' }
@@ -290,8 +290,8 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
         });
     });
 
-    describe('setErrors', function () {
-        it('should only mark specified fields when passing an object', function () {
+    describe('setErrors', function() {
+        it('should only mark specified fields when passing an object', function() {
             createContainer([
                 { placeholder: 'foo', name: 'foo' },
                 { placeholder: 'bar', name: 'bar' },
@@ -324,7 +324,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             expect(third.getError()).toEqual(['Baz has an error']);
         });
 
-        it('should only mark specified fields when passing an object with nested array', function () {
+        it('should only mark specified fields when passing an object with nested array', function() {
             createContainer([
                 { placeholder: 'foo', name: 'foo' },
                 { placeholder: 'bar', name: 'bar' },
@@ -361,7 +361,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             expect(third.getError()).toEqual(['Baz has an error']);
         });
 
-        it('should clear all field invalids', function () {
+        it('should clear all field invalids', function() {
             createContainer([
                 { label: 'foo', name: 'foo' },
                 { label: 'bar', name: 'bar' },
@@ -390,8 +390,8 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             expect(third.getError()).toBeNull();
         });
 
-        describe('with child errorTarget', function () {
-            it('should only mark specified fields when passing an object', function () {
+        describe('with child errorTarget', function() {
+            it('should only mark specified fields when passing an object', function() {
                 createContainer([
                     { placeholder: 'foo', name: 'foo', errorTarget: 'side' },
                     { placeholder: 'bar', name: 'bar', errorTarget: 'side' },
@@ -415,7 +415,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
                 expect(third.getError()).toEqual(['Baz has an error']);
             });
 
-            it('should only mark specified fields when passing an object with nested array', function () {
+            it('should only mark specified fields when passing an object with nested array', function() {
                 createContainer([
                     { placeholder: 'foo', name: 'foo', errorTarget: 'side' },
                     { placeholder: 'bar', name: 'bar', errorTarget: 'side' },
@@ -439,7 +439,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
                 expect(third.getError()).toEqual(['Baz has an error']);
             });
 
-            it('should clear all field invalids', function () {
+            it('should clear all field invalids', function() {
                 createContainer([
                     { label: 'foo', name: 'foo', errorTarget: 'side' },
                     { label: 'bar', name: 'bar', errorTarget: 'side' },
@@ -470,8 +470,8 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
         });
     });
 
-    describe('isValid', function () {
-        it('should return true if all fields are valid', function () {
+    describe('isValid', function() {
+        it('should return true if all fields are valid', function() {
             createContainer([
                 { label: 'foo', name: 'foo' },
                 { label: 'bar', name: 'bar' }
@@ -480,7 +480,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             expect(ct.isValid()).toBe(true);
         });
 
-        it('should return false when one field is invalid', function () {
+        it('should return false when one field is invalid', function() {
             createContainer([
                 { label: 'foo', name: 'foo', required: true },
                 { label: 'bar', name: 'bar' }
@@ -491,7 +491,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             expect(ct.isValid()).toBe(false);
         });
 
-        it('should not check items after one field is found invalid', function () {
+        it('should not check items after one field is found invalid', function() {
             createContainer([
                 { label: 'foo', name: 'foo', required: true },
                 { label: 'bar', name: 'bar' }
@@ -507,8 +507,8 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
         });
     });
 
-    describe('validate', function () {
-        it('should return true if all fields are valid', function () {
+    describe('validate', function() {
+        it('should return true if all fields are valid', function() {
             createContainer([
                 { label: 'foo', name: 'foo' },
                 { label: 'bar', name: 'bar' }
@@ -517,7 +517,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             expect(ct.validate()).toBe(true);
         });
 
-        it('should return false when one field is invalid', function () {
+        it('should return false when one field is invalid', function() {
             createContainer([
                 { label: 'foo', name: 'foo', required: true },
                 { label: 'bar', name: 'bar' }
@@ -526,7 +526,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             expect(ct.validate()).toBe(false);
         });
 
-        it('should validate all fields', function () {
+        it('should validate all fields', function() {
             createContainer([
                 { label: 'foo', name: 'foo', required: true },
                 { label: 'bar', name: 'bar', required: true, requiredMessage: 'This field should not be empty' }
@@ -547,8 +547,8 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
         });
     });
 
-    describe('getFields', function () {
-        it('should get all child fields', function () {
+    describe('getFields', function() {
+        it('should get all child fields', function() {
             createContainer([
                 { label: 'foo', name: 'foo' },
                 { label: 'bar', name: 'bar' },
@@ -560,7 +560,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
                 third = ct.getAt(2),
                 fields = ct.getFields();
 
-            //tests if the deep arg works
+            // tests if the deep arg works
             expect(Object.keys(fields).length).toBe(3);
 
             expect(fields).toEqual({
@@ -570,7 +570,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             });
         });
 
-        it('should get all child fields by name', function () {
+        it('should get all child fields by name', function() {
             createContainer([
                 { label: 'foo', name: 'foo' },
                 { label: 'bar', name: 'bar' },
@@ -586,7 +586,7 @@ topSuite('Ext.field.Container', ['Ext.JSON', 'Ext.field.Checkbox', 'Ext.field.Ra
             expect(ct.getFields('baz')).toBe(third);
         });
 
-        it('should get all child fields as an array', function () {
+        it('should get all child fields as an array', function() {
             createContainer([
                 { label: 'foo', name: 'foo' },
                 { label: 'bar', name: 'bar' },

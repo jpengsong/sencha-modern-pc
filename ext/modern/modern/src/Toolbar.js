@@ -1,11 +1,14 @@
 /**
- * {@link Ext.Toolbar}s are most commonly used as docked items as within a {@link Ext.Container}. They can be docked either `top` or `bottom` using the {@link #docked} configuration.
+ * {@link Ext.Toolbar}s are most commonly used as docked items as within a {@link Ext.Container}.
+ * They can be docked either `top` or `bottom` using the {@link #docked} configuration.
  *
- * They allow you to insert items (normally {@link Ext.Button buttons}) and also add a {@link #title}.
+ * They allow you to insert items (normally {@link Ext.Button buttons}) and also add a
+ * {@link #title}.
  *
  * The {@link #defaultType} of {@link Ext.Toolbar} is {@link Ext.Button}.
  *
- * You can alternatively use {@link Ext.TitleBar} if you want the title to automatically adjust the size of its items.
+ * You can alternatively use {@link Ext.TitleBar} if you want the title to automatically adjust the
+ * size of its items.
  *
  * ## Examples
  *
@@ -51,9 +54,11 @@
  *                         text: 'Change title',
  *                         handler: function() {
  *                             var toolbar = Ext.ComponentQuery.query('toolbar')[0],
- *                                 titles = ['My Toolbar', 'Ext.Toolbar', 'Configurations are awesome!', 'Beautiful.'],
-                                   //internally, the title configuration gets converted into a {@link Ext.Title} component,
-                                   //so you must get the title configuration of that component
+ *                                 titles = ['My Toolbar', 'Ext.Toolbar',
+ *                                          'Configurations are awesome!', 'Beautiful.'],
+                                   // internally, the title configuration gets converted into a
+                                   // {@link Ext.Title} component,
+                                   // so you must get the title configuration of that component
  *                                 title = toolbar.getTitle().getTitle(),
  *                                 newTitle = titles[titles.indexOf(title) + 1] || titles[0];
  *
@@ -67,7 +72,8 @@
  *
  * ## Notes
  *
- * You must use a HTML5 doctype for {@link #docked} `bottom` to work. To do this, simply add the following code to the HTML file:
+ * You must use a HTML5 doctype for {@link #docked} `bottom` to work. To do this, simply add the
+ * following code to the HTML file:
  *
  *     <!doctype html>
  *
@@ -82,7 +88,7 @@
  */
 Ext.define('Ext.Toolbar', {
     extend: 'Ext.Container',
-    xtype : 'toolbar',
+    xtype: 'toolbar',
 
     requires: [
         'Ext.Button',
@@ -120,8 +126,9 @@ Ext.define('Ext.Toolbar', {
         /**
          * @cfg {String} docked
          * The docked position for this {@link Ext.Toolbar}.
-         * If you specify `left` or `right`, the {@link #layout} configuration will automatically change to a `vbox`. It's also
-         * recommended to adjust the {@link #width} of the toolbar if you do this.
+         * If you specify `left` or `right`, the {@link #layout} configuration will automatically
+         * change to a `vbox`. It's also recommended to adjust the {@link #width} of the toolbar if
+         * you do this.
          * @accessor
          */
 
@@ -154,8 +161,8 @@ Ext.define('Ext.Toolbar', {
          *         ]
          *     });
          *
-         * __Note:__ If you set the {@link #docked} configuration to `left` or `right`, the default layout will change from the
-         * `hbox` to a `vbox`.
+         * __Note:__ If you set the {@link #docked} configuration to `left` or `right`, the default
+         * layout will change from the `hbox` to a `vbox`.
          *
          * @accessor
          */
@@ -180,7 +187,7 @@ Ext.define('Ext.Toolbar', {
     constructor: function(config) {
         config = config || {};
 
-        if (config.docked == 'left' || config.docked == 'right') {
+        if (config.docked === 'left' || config.docked === 'right') {
             config.layout = Ext.apply({
                 type: 'box',
                 align: 'stretch',
@@ -195,10 +202,10 @@ Ext.define('Ext.Toolbar', {
      * @private
      */
     applyTitle: function(title) {
-        if (typeof title == 'string') {
+        if (typeof title === 'string') {
             title = {
                 title: title,
-                centered : true
+                centered: true
             };
         }
 
@@ -251,7 +258,8 @@ Ext.define('Ext.Toolbar', {
      * Use this to update the {@link #title} configuration.
      * @member Ext.Toolbar
      * @method setTitle
-     * @param {String/Ext.Title} title You can either pass a String, or a config/instance of {@link Ext.Title}.
+     * @param {String/Ext.Title} title You can either pass a String, or a config/instance of
+     * {@link Ext.Title}.
      */
 
     onItemAdd: function(item, index) {
@@ -262,7 +270,8 @@ Ext.define('Ext.Toolbar', {
                 if (item.getDefaultUI() == null) {
                     item.setDefaultUI(defaultButtonUI);
                 }
-            } else if (item.isButton && (item.getUi() == null)) {
+            }
+            else if (item.isButton && (item.getUi() == null)) {
                 item.setUi(defaultButtonUI);
             }
         }
@@ -270,14 +279,14 @@ Ext.define('Ext.Toolbar', {
         this.callParent([item, index]);
     },
 
-    factoryItem: function (config) {
+    factoryItem: function(config) {
         if (config === '->') {
             config = {
                 xtype: 'component',
                 flex: 1
             };
         }
+
         return this.callParent([config]);
     }
 });
-

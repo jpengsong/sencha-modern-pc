@@ -150,7 +150,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
         }
     },
 
-    constructor: function (config) {
+    constructor: function(config) {
         var me = this;
 
         me.repeaters = [];
@@ -171,7 +171,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
         me.getContainer().$onScrollerContainerVisible = me.sync.bind(me);
     },
 
-    applyWrap: function () {
+    applyWrap: function() {
         var me = this,
             container = me.getContainer(),
             containerBody = me.getContainer().bodyElement,
@@ -211,7 +211,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
         return wrap;
     },
 
-    getBody: function () {
+    getBody: function() {
         var body = this._body;
 
         if (!body) {
@@ -221,7 +221,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
         return this._body;
     },
 
-    onActiveItemChange: function (render, item) {
+    onActiveItemChange: function(render, item) {
         var me = this;
 
         if (me.getContainer().rendered) {
@@ -229,7 +229,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
         }
     },
 
-    onActiveTabChange: function (render, tab) {
+    onActiveTabChange: function(render, tab) {
         var me = this;
 
         if (me.getContainer().rendered) {
@@ -237,17 +237,17 @@ Ext.define('Ext.layout.overflow.Scroller', {
         }
     },
 
-    ensureVisible: function (item, animation) {
+    ensureVisible: function(item, animation) {
         var me = this;
 
         if (animation === undefined) {
             animation = me.getAnimation();
         }
 
-        me.getOwner().ensureVisible(item, {animation: animation});
+        me.getOwner().ensureVisible(item, { animation: animation });
     },
 
-    createForwardTool: function (config) {
+    createForwardTool: function(config) {
         var me = this;
 
         return Ext.apply({
@@ -257,7 +257,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
         }, config);
     },
 
-    createBackwardTool: function (config) {
+    createBackwardTool: function(config) {
         var me = this;
 
         return Ext.apply({
@@ -267,7 +267,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
         }, config);
     },
 
-    scrollToItemOffset: function (offset, page) {
+    scrollToItemOffset: function(offset, page) {
         var animate = this.getAnimation();
 
         this.getOwner().ensureVisible({
@@ -277,11 +277,11 @@ Ext.define('Ext.layout.overflow.Scroller', {
         });
     },
 
-    applyVertical: function (vertical) {
+    applyVertical: function(vertical) {
         return !!vertical;
     },
 
-    updateVertical: function (vertical) {
+    updateVertical: function(vertical) {
         var me = this,
             orientMap = me.orientMap[vertical];
 
@@ -298,7 +298,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
         }
     },
 
-    applyForwardTool: function (tool, oldTool) {
+    applyForwardTool: function(tool, oldTool) {
         var ct = this.getContainer();
 
         tool = Ext.updateWidget(oldTool, tool, this, 'createForwardTool');
@@ -311,7 +311,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
         return tool;
     },
 
-    applyBackwardTool: function (tool, oldTool) {
+    applyBackwardTool: function(tool, oldTool) {
         var ct = this.getContainer();
 
         tool = Ext.updateWidget(oldTool, tool, this, 'createBackwardTool');
@@ -324,7 +324,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
         return tool;
     },
 
-    updateArrows: function (arrows) {
+    updateArrows: function(arrows) {
         var me = this,
             container = me.getContainer(),
             el = me.getWrap(),
@@ -338,7 +338,8 @@ Ext.define('Ext.layout.overflow.Scroller', {
 
         if (container.rendered) {
             me.sync();
-        } else {
+        }
+        else {
             container.whenVisible('$onScrollerContainerVisible');
             container.on({
                 painted: 'sync',
@@ -348,13 +349,13 @@ Ext.define('Ext.layout.overflow.Scroller', {
         }
     },
 
-    updateMouseWheel: function () {
+    updateMouseWheel: function() {
         if (!this.isConfiguring) {
             this.syncMouseWheel();
         }
     },
 
-    updateOwner: function (owner) {
+    updateOwner: function(owner) {
         var me = this,
             container = owner.getContainer();
 
@@ -365,7 +366,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
         });
 
         Ext.override(container, {
-            getRefItems: function (deep) {
+            getRefItems: function(deep) {
                 var refItems = this.callParent([deep]), // this, not me!
                     forward = me.getForwardTool(),      // me, not this!
                     backward = me.getBackwardTool();    // me, not this!
@@ -384,17 +385,17 @@ Ext.define('Ext.layout.overflow.Scroller', {
         container.bodyElement.on('resize', 'sync', me);
     },
 
-    updateToolAlign: function (toolAlign, oldToolAlign) {
+    updateToolAlign: function(toolAlign, oldToolAlign) {
         var map = this.toolAlignCls;
 
         this.getWrap().replaceCls(map[oldToolAlign], map[toolAlign]);
     },
 
-    getContainer: function () {
+    getContainer: function() {
         return this.getOwner().getContainer();
     },
 
-    destroy: function () {
+    destroy: function() {
         var me = this;
 
         Ext.destroy(me.repeaters);
@@ -404,7 +405,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
     },
 
     privates: {
-        addClickListener: function (tool, clickFn) {
+        addClickListener: function(tool, clickFn) {
             var me = this,
                 repeat = me.getRepeatInterval(),
                 repeater;
@@ -420,7 +421,8 @@ Ext.define('Ext.layout.overflow.Scroller', {
                 }, repeat));
 
                 me.repeaters.push(repeater);
-            } else {
+            }
+            else {
                 tool.on({
                     click: clickFn,
                     scope: me
@@ -438,22 +440,23 @@ Ext.define('Ext.layout.overflow.Scroller', {
 
             if (isNaN(increment)) {
                 me.scrollToItemOffset(offset, increment === 'page');
-            } else {
+            }
+            else {
                 dx = !isVertical ? increment : 0;
                 dy = isVertical ? increment : 0;
                 scrollable.scrollBy(dx * offset, dy * offset, animate);
             }
         },
 
-        onBackwardClick: function () {
+        onBackwardClick: function() {
             this.doMoveFromClick(-1);
         },
 
-        onForwardClick: function () {
+        onForwardClick: function() {
             this.doMoveFromClick(1);
         },
 
-        onMouseWheel: function (e) {
+        onMouseWheel: function(e) {
             var me = this,
                 scrollable = me.getContainer().getScrollable(),
                 isVertical = me.getVertical(),
@@ -464,7 +467,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
             scrollable.scrollBy(dx, dy);
         },
 
-        syncMouseWheel: function () {
+        syncMouseWheel: function() {
             var me = this,
                 target = me.getContainer().getScrollerTarget(),
                 fn = me.getMouseWheel() && !me.getVertical() ? 'on' : 'un';
@@ -472,7 +475,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
             target[fn]('wheel', 'onMouseWheel', me);
         },
 
-        syncContainerScrollable: function () {
+        syncContainerScrollable: function() {
             var me = this,
                 isVertical = me.getVertical(),
                 container = me.getContainer();
@@ -484,7 +487,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
             });
         },
 
-        sync: function () {
+        sync: function() {
             var me = this,
                 container = me.getContainer(),
                 target = container.getScrollerTarget(),
@@ -493,7 +496,7 @@ Ext.define('Ext.layout.overflow.Scroller', {
                 targetSize = target.dom[orientMap.scrollSize],
                 forwardTool = me.getForwardTool(),
                 backwardTool = me.getBackwardTool(),
-                scrollbarSize = Ext.getScrollbarSize()[orientMap.crossSize],
+                scrollbarSize = Ext.scrollbar.size()[orientMap.crossSize],
                 hasOverflow = targetSize > elementSize,
                 posProp = orientMap.posProp,
                 scrollable, maxPos, pos;
@@ -505,10 +508,11 @@ Ext.define('Ext.layout.overflow.Scroller', {
                 scrollable = container.getScrollable();
                 maxPos = scrollable.getMaxPosition()[posProp];
                 pos = scrollable.getPosition()[posProp];
-                
+
                 forwardTool.setDisabled(pos + target.getPadding(orientMap.endPad) >= maxPos);
                 backwardTool.setDisabled(pos <= target.getPadding(orientMap.startPad));
-            } else {
+            }
+            else {
                 forwardTool.hide();
                 backwardTool.hide();
             }

@@ -3,6 +3,7 @@ topSuite("Ext.layout.mixed",
 function() {
     it("mixed test 1 - no failure", function() {
         var vp;
+
         expect(function() {
             vp = new Ext.container.Viewport({
                 renderTo: Ext.getBody(),
@@ -76,6 +77,7 @@ function() {
                 }]
             });
         }).not.toThrow();
+
         vp.destroy();
     });
 });

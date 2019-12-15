@@ -2,7 +2,7 @@
  * @private
  */
 Ext.define('Ext.grid.locking.RowSynchronizer', {
-    constructor: function (view, rowEl) {
+    constructor: function(view, rowEl) {
         var me = this,
             rowTpl;
 
@@ -19,7 +19,7 @@ Ext.define('Ext.grid.locking.RowSynchronizer', {
         }
     },
 
-    add: function (name, selector) {
+    add: function(name, selector) {
         var el = Ext.fly(this.rowEl).down(selector, true);
 
         if (el) {
@@ -29,7 +29,7 @@ Ext.define('Ext.grid.locking.RowSynchronizer', {
         }
     },
 
-    finish: function (other) {
+    finish: function(other) {
         var me = this,
             els = me.els,
             otherEls = other.els,
@@ -49,7 +49,8 @@ Ext.define('Ext.grid.locking.RowSynchronizer', {
             if (delta > 0) {
                 growth += delta;
                 Ext.fly(els[name].el).setHeight(otherHeight);
-            } else {
+            }
+            else {
                 otherGrowth -= delta;
             }
         }
@@ -69,12 +70,12 @@ Ext.define('Ext.grid.locking.RowSynchronizer', {
         }
     },
 
-    measure: function () {
+    measure: function() {
         var me = this,
             els = me.els,
             grid = me.view.ownerGrid,
             name;
-        
+
         me.rowHeight = grid.getElementHeight(me.rowEl);
 
         for (name in els) {
@@ -82,7 +83,7 @@ Ext.define('Ext.grid.locking.RowSynchronizer', {
         }
     },
 
-    reset: function () {
+    reset: function() {
         var els = this.els,
             name;
 

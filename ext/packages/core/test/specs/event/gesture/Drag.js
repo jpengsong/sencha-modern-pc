@@ -1,5 +1,3 @@
-/* global Ext, expect, jasmine */
-
 topSuite("Ext.event.gesture.Drag", function() {
     var helper = Ext.testHelper,
         recognizer = Ext.event.gesture.Drag.instance,
@@ -187,24 +185,25 @@ topSuite("Ext.event.gesture.Drag", function() {
 
     it("should not fire dragstart when touchstart is stopped and the sequence tap in, tap out, tap in is followed", function() {
         var touchStart = jasmine.createSpy();
+
         targetEl.on('touchstart', touchStart.andCallFake(function(e) {
             e.stopPropagation();
         }));
 
-        start({id: 1, x: 100, y: 101});
-        end({id: 1, x: 100, y: 100});
+        start({ id: 1, x: 100, y: 101 });
+        end({ id: 1, x: 100, y: 100 });
 
         expect(touchStart.callCount).toBe(1);
         expect(dragstartHandler).not.toHaveBeenCalled();
 
-        start({id: 2, x: 400, y: 400}, Ext.getBody());
-        end({id: 2, x: 400, y: 400}, Ext.getBody());
+        start({ id: 2, x: 400, y: 400 }, Ext.getBody());
+        end({ id: 2, x: 400, y: 400 }, Ext.getBody());
 
         expect(touchStart.callCount).toBe(1);
         expect(dragstartHandler).not.toHaveBeenCalled();
 
-        start({id: 3, x: 100, y: 101});
-        end({id: 3, x: 100, y: 100});
+        start({ id: 3, x: 100, y: 101 });
+        end({ id: 3, x: 100, y: 100 });
 
         expect(touchStart.callCount).toBe(2);
         expect(dragstartHandler).not.toHaveBeenCalled();
@@ -457,7 +456,7 @@ topSuite("Ext.event.gesture.Drag", function() {
                 e.startDrag();
             });
 
-            helper.touchStart(targetEl, {id: 1, x: 10, y: 15});
+            helper.touchStart(targetEl, { id: 1, x: 10, y: 15 });
 
             waitsForEvent(targetEl, 'longpress', 'longpress to fire', 5000);
 
@@ -471,7 +470,7 @@ topSuite("Ext.event.gesture.Drag", function() {
                 expect(Ext.event.gesture.Rotate.instance.isActive).toBe(false);
                 expect(Ext.event.gesture.Swipe.instance.isActive).toBe(false);
                 expect(Ext.event.gesture.Tap.instance.isActive).toBe(false);
-                helper.touchEnd(targetEl, {id: 1, x: 10, y: 15});
+                helper.touchEnd(targetEl, { id: 1, x: 10, y: 15 });
             });
         });
     });
@@ -483,7 +482,8 @@ topSuite("Ext.event.gesture.Drag", function() {
             function removeTarget() {
                 if (useRemoveChild) {
                     parent.dom.removeChild(target.dom);
-                } else {
+                }
+                else {
                     parent.dom.innerHTML = '';
                 }
             }
@@ -502,7 +502,8 @@ topSuite("Ext.event.gesture.Drag", function() {
                     // with touch events, the element remains the target of current touches
                     // even after the element is removed from the dom
                     firingTarget = target;
-                } else {
+                }
+                else {
                     // with mouse and pointer events, once the element is removed from the dom
                     // we get a new target.  Assume the worst - we removed the element AND
                     // moved the mouse or pointer off of the parent element which has the

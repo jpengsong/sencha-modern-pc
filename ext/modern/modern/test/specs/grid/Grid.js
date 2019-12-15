@@ -1,29 +1,30 @@
-/* global Ext, jasmine, expect */
+/* global Ext, jasmine, expect, topSuite */
+/* eslint-disable one-var, vars-on-top, max-len */
 
-topSuite("Ext.grid.Grid",
-    [
-        'Ext.data.ArrayStore', 'Ext.layout.Fit', 'Ext.grid.plugin.ColumnResizing',
-        'Ext.MessageBox', 'Ext.grid.SummaryRow', 'Ext.app.ViewModel'],
-function() {
-
+topSuite("Ext.grid.Grid", [
+    'Ext.data.ArrayStore', 'Ext.layout.Fit', 'Ext.grid.plugin.ColumnResizing',
+    'Ext.MessageBox', 'Ext.grid.SummaryRow', 'Ext.app.ViewModel'
+], function() {
     var Model = Ext.define(null, {
         extend: 'Ext.data.Model',
         fields: ['group', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9']
     });
 
-    var grid, headerContainer, store, storeCount, columns, colMap, navigationModel, selectable, tool;
+    var grid, headerContainer, store, storeCount, columns, colMap, navigationModel,
+        selectable, tool;
 
     function findCell(rowIdx, cellIdx) {
         var row = grid.mapToItem(store.getAt(rowIdx));
+
         return row.cells[cellIdx].element.dom;
     }
 
     function spyOnEvent(object, eventName, fn) {
-        var obj = {
-            fn: fn || Ext.emptyFn
-        },
-        spy = spyOn(obj, "fn");
+        var obj = { fn: fn || Ext.emptyFn },
+            spy = spyOn(obj, "fn");
+
         object.addListener(eventName, obj.fn);
+
         return spy;
     }
 
@@ -35,7 +36,8 @@ function() {
             if (typeof rows !== 'number') {
                 data = rows;
             }
-        } else if (rows !== 0) {
+        }
+        else if (rows !== 0) {
             rows = 20;
         }
 
@@ -143,6 +145,7 @@ function() {
             store: store,
             columns: colOptions
         }, gridOptions));
+
         headerContainer = grid.getHeaderContainer();
         columns = grid.getVisibleColumns();
         navigationModel = grid.getNavigationModel();
@@ -152,6 +155,7 @@ function() {
 
     function setColMap() {
         colMap = {};
+
         grid.query('column').forEach(function(col) {
             colMap[col.getItemId()] = col;
         });
@@ -160,6 +164,7 @@ function() {
     // Force any flex sizes to be published internally
     function refreshColSizes() {
         var cols = grid.query('column');
+
         Ext.event.publisher.ElementSize.instance.syncRefresh(cols);
     }
 
@@ -170,11 +175,11 @@ function() {
             fromMy = colBox.y + colBox.height / 2;
 
         // Mousedown on the header to drag
-        Ext.testHelper.touchStart(el, {x: fromMx, y: fromMy});
+        Ext.testHelper.touchStart(el, { x: fromMx, y: fromMy });
 
         // Move to resize
-        Ext.testHelper.touchMove(el, {x: fromMx + by, y: fromMy});
-        Ext.testHelper.touchEnd(el, {x: fromMx + by, y: fromMy});
+        Ext.testHelper.touchMove(el, { x: fromMx + by, y: fromMy });
+        Ext.testHelper.touchEnd(el, { x: fromMx + by, y: fromMy });
     }
 
     // In this method we don't test for exact sizing, rather
@@ -192,6 +197,7 @@ function() {
         if (doRefreshColSizes !== false) {
             refreshColSizes();
         }
+
         for (i = 0; i < len; ++i) {
             col = columns[i];
             cols.push(col);
@@ -203,6 +209,7 @@ function() {
 
             cols.forEach(function(col, idx) {
                 var w = row.getCellByColumn(col).element.measure('w');
+
                 expect(w).toBeApprox(colWidths[idx]);
             });
         });
@@ -214,7 +221,8 @@ function() {
         if (doRefreshColSizes !== false) {
             refreshColSizes();
         }
-        store.each(function(rec) {
+
+        grid.store.each(function(rec) {
             var row = grid.getItem(rec);
 
             // Skip group headers/footers
@@ -222,11 +230,12 @@ function() {
                 cells.push(row.getCellByColumn(col));
             }
         });
+
         return cells;
     }
 
-    describe('pre-created columns', function () {
-        it('should be able to create a grid with top-level columns', function () {
+    describe('pre-created columns', function() {
+        it('should be able to create a grid with top-level columns', function() {
             grid = Ext.create({
                 xtype: 'grid',
 
@@ -247,7 +256,7 @@ function() {
             });
         });
 
-        it('should be able to create a grid with nested columns', function () {
+        it('should be able to create a grid with nested columns', function() {
             grid = Ext.create({
                 xtype: 'grid',
 
@@ -425,8 +434,8 @@ function() {
                         hideHeaders: true
                     });
                     expectSizes();
-                    grid.addColumn({width: 100});
-                    grid.addColumn({flex: 1});
+                    grid.addColumn({ width: 100 });
+                    grid.addColumn({ flex: 1 });
                     expectSizes();
                 });
 
@@ -507,6 +516,7 @@ function() {
         describe("align", function() {
             function expectAlignCls(col, cls) {
                 var cells = getCells(col);
+
                 cells.forEach(function(cell) {
                     expect(cell.element).toHaveCls(cls);
                 });
@@ -644,9 +654,73 @@ function() {
         });
 
         describe("adding columns", function() {
+            it("should be able to add to an empty grid", function() {
+                makeGrid(null, null, null, {
+                    preventColumns: true
+                });
+                grid.addColumn({
+                    dataIndex: 'f1'
+                });
+                setColMap();
+
+                var header = grid.getHeaderContainer();
+
+                expect(header.isAncestor(colMap.colf1));
+                expect(header.getItems().getCount()).toBe(1);
+                expectRowHtml(0, ['f11']);
+            });
+
+            it("should append to existing items", function() {
+                makeGrid();
+                grid.addColumn({
+                    dataIndex: 'f6',
+                    itemId: 'colf6'
+                });
+                setColMap();
+
+                var header = grid.getHeaderContainer();
+
+                expect(header.isAncestor(colMap.colf6));
+                expect(colMap.colf6.previousSibling()).toBe(colMap.colf5);
+                expectRowHtml(0, ['f11', 'f21', 'f31', 'f41', 'f51', 'f61']);
+            });
+
+            it("should return a single column when passing an object", function() {
+                makeGrid();
+                var ret = grid.addColumn({
+                    itemId: 'colf6'
+                });
+
+                expect(ret.getItemId()).toEqual('colf6');
+            });
+
+            it("should return an array when passing an array", function() {
+                var ret;
+
+                makeGrid();
+
+                ret = grid.addColumn([{
+                    itemId: 'colf6'
+                }, {
+                    itemId: 'colf7'
+                }]);
+
+                expect(Ext.isArray(ret)).toBe(true);
+                expect(ret[0].getItemId()).toEqual('colf6');
+                expect(ret[1].getItemId()).toEqual('colf7');
+
+                ret = grid.addColumn([{
+                    itemId: 'colf9'
+                }]);
+
+                expect(Ext.isArray(ret)).toBe(true);
+                expect(ret[0].getItemId()).toEqual('colf9');
+            });
+
             describe("events", function() {
                 it("should not fire events during construction", function() {
                     var spy = jasmine.createSpy();
+
                     makeGrid(null, null, {
                         listeners: {
                             columnadd: spy
@@ -688,40 +762,243 @@ function() {
         });
 
         describe("inserting columns", function() {
-            describe("events", function() {
-                it("should fire after construction before painting", function() {
-                    var spy = jasmine.createSpy(),
-                        col;
-
-                    makeGrid(null, null);
-                    grid.on('columnadd', spy);
-                    col = grid.insertColumn(0, {
-                        dataIndex: 'f9'
+            describe("insertColumnBefore", function() {
+                describe("new columns", function() {
+                    it("should be able to insert at the start", function() {
+                        makeGrid();
+                        grid.insertColumnBefore({
+                            itemId: 'colf6',
+                            dataIndex: 'f6'
+                        }, colMap.colf1);
+                        setColMap();
+                        expect(grid.getHeaderContainer().isAncestor(colMap.colf6)).toBe(true);
+                        expect(colMap.colf6.previousSibling()).toBeNull();
+                        expectRowHtml(0, ['f61', 'f11', 'f21', 'f31', 'f41', 'f51']);
                     });
-                    expect(spy.callCount).toBe(1);
-                    expect(spy.mostRecentCall.args[0]).toBe(grid);
-                    expect(spy.mostRecentCall.args[1]).toBe(col);
-                    expect(spy.mostRecentCall.args[2]).toBe(0);
+
+                    it("should be able to insert in the middle", function() {
+                        makeGrid();
+                        grid.insertColumnBefore({
+                            itemId: 'colf6',
+                            dataIndex: 'f6'
+                        }, colMap.colf3);
+                        setColMap();
+                        expect(grid.getHeaderContainer().isAncestor(colMap.colf6)).toBe(true);
+                        expect(colMap.colf6.previousSibling()).toBe(colMap.colf2);
+                        expectRowHtml(0, ['f11', 'f21', 'f61', 'f31', 'f41', 'f51']);
+                    });
+
+                    it("should be able to insert at the end", function() {
+                        makeGrid();
+                        grid.insertColumnBefore({
+                            itemId: 'colf6',
+                            dataIndex: 'f6'
+                        }, null);
+                        setColMap();
+                        expect(grid.getHeaderContainer().isAncestor(colMap.colf6)).toBe(true);
+                        expect(colMap.colf6.previousSibling()).toBe(colMap.colf5);
+                        expectRowHtml(0, ['f11', 'f21', 'f31', 'f41', 'f51', 'f61']);
+                    });
+
+                    it("should return the column", function() {
+                        makeGrid();
+                        var ret = grid.insertColumnBefore({
+                            itemId: 'colf6',
+                            dataIndex: 'f6'
+                        }, null);
+
+                        expect(ret.getItemId()).toBe('colf6');
+                    });
                 });
 
-                it("should fire after construction after painting", function() {
-                    var spy = jasmine.createSpy(),
-                        col;
-
-                    makeGrid(null, null);
-                    grid.on('columnadd', spy);
-                    col = grid.insertColumn(0, {
-                        dataIndex: 'f9'
+                describe("existing columns", function() {
+                    it("should be able to insert at the start", function() {
+                        makeGrid();
+                        grid.insertColumnBefore(colMap.colf5, colMap.colf1);
+                        setColMap();
+                        expect(grid.getHeaderContainer().isAncestor(colMap.colf5)).toBe(true);
+                        expect(colMap.colf5.previousSibling()).toBeNull();
+                        expectRowHtml(0, ['f51', 'f11', 'f21', 'f31', 'f41']);
                     });
-                    expect(spy.callCount).toBe(1);
-                    expect(spy.mostRecentCall.args[0]).toBe(grid);
-                    expect(spy.mostRecentCall.args[1]).toBe(col);
-                    expect(spy.mostRecentCall.args[2]).toBe(0);
+
+                    it("should be able to insert in the middle", function() {
+                        makeGrid();
+                        grid.insertColumnBefore(colMap.colf1, colMap.colf3);
+                        setColMap();
+                        expect(grid.getHeaderContainer().isAncestor(colMap.colf1)).toBe(true);
+                        expect(colMap.colf1.previousSibling()).toBe(colMap.colf2);
+                        expectRowHtml(0, ['f21', 'f11', 'f31', 'f41', 'f51']);
+                    });
+
+                    it("should be able to insert at the end", function() {
+                        makeGrid();
+                        grid.insertColumnBefore(colMap.colf1, null);
+                        setColMap();
+                        expect(grid.getHeaderContainer().isAncestor(colMap.colf1)).toBe(true);
+                        expect(colMap.colf1.previousSibling()).toBe(colMap.colf5);
+                        expectRowHtml(0, ['f21', 'f31', 'f41', 'f51', 'f11']);
+                    });
+
+                    it("should return the column", function() {
+                        makeGrid();
+                        var ret = grid.insertColumnBefore(colMap.colf1, null);
+
+                        expect(ret).toBe(colMap.colf1);
+                    });
+                });
+            });
+
+            describe("insertColumn", function() {
+                describe("new columns", function() {
+                    it("should be able to insert at the start", function() {
+                        makeGrid();
+                        grid.insertColumn(0, {
+                            itemId: 'colf6',
+                            dataIndex: 'f6'
+                        });
+                        setColMap();
+                        expect(grid.getHeaderContainer().isAncestor(colMap.colf6)).toBe(true);
+                        expect(colMap.colf6.previousSibling()).toBeNull();
+                        expectRowHtml(0, ['f61', 'f11', 'f21', 'f31', 'f41', 'f51']);
+                    });
+
+                    it("should be able to insert in the middle", function() {
+                        makeGrid();
+                        grid.insertColumn(2, {
+                            itemId: 'colf6',
+                            dataIndex: 'f6'
+                        });
+                        setColMap();
+                        expect(grid.getHeaderContainer().isAncestor(colMap.colf6)).toBe(true);
+                        expect(colMap.colf6.previousSibling()).toBe(colMap.colf2);
+                        expectRowHtml(0, ['f11', 'f21', 'f61', 'f31', 'f41', 'f51']);
+                    });
+
+                    it("should be able to insert at the end", function() {
+                        makeGrid();
+                        grid.insertColumn(100, {
+                            itemId: 'colf6',
+                            dataIndex: 'f6'
+                        });
+                        setColMap();
+                        expect(grid.getHeaderContainer().isAncestor(colMap.colf6)).toBe(true);
+                        expect(colMap.colf6.previousSibling()).toBe(colMap.colf5);
+                        expectRowHtml(0, ['f11', 'f21', 'f31', 'f41', 'f51', 'f61']);
+                    });
+
+                    it("should return the column", function() {
+                        makeGrid();
+                        var ret = grid.insertColumn(0, {
+                            itemId: 'colf6',
+                            dataIndex: 'f6'
+                        });
+
+                        expect(ret.getItemId()).toBe('colf6');
+                    });
+                });
+
+                describe("existing instance", function() {
+                    it("should be able to insert at the start", function() {
+                        makeGrid();
+                        grid.insertColumn(0, colMap.colf5);
+                        setColMap();
+                        expect(grid.getHeaderContainer().isAncestor(colMap.colf5)).toBe(true);
+                        expect(colMap.colf5.previousSibling()).toBeNull();
+                        expectRowHtml(0, ['f51', 'f11', 'f21', 'f31', 'f41']);
+                    });
+
+                    it("should be able to insert in the middle", function() {
+                        makeGrid();
+                        grid.insertColumn(2, colMap.colf5);
+                        setColMap();
+                        expect(grid.getHeaderContainer().isAncestor(colMap.colf5)).toBe(true);
+                        expect(colMap.colf5.previousSibling()).toBe(colMap.colf2);
+                        expectRowHtml(0, ['f11', 'f21', 'f51', 'f31', 'f41']);
+                    });
+
+                    it("should be able to insert at the end", function() {
+                        makeGrid();
+                        grid.insertColumn(100, colMap.colf1);
+                        setColMap();
+                        expect(grid.getHeaderContainer().isAncestor(colMap.colf1)).toBe(true);
+                        expect(colMap.colf1.previousSibling()).toBe(colMap.colf5);
+                        expectRowHtml(0, ['f21', 'f31', 'f41', 'f51', 'f11']);
+                    });
+
+                    it("should return the column", function() {
+                        makeGrid();
+                        var ret = grid.insertColumn(0, colMap.colf5);
+
+                        expect(ret).toBe(colMap.colf5);
+                    });
+                });
+
+                describe("events", function() {
+                    it("should fire after construction before painting", function() {
+                        var spy = jasmine.createSpy(),
+                            col;
+
+                        makeGrid(null, null);
+                        grid.on('columnadd', spy);
+                        col = grid.insertColumn(0, {
+                            dataIndex: 'f9'
+                        });
+                        expect(spy.callCount).toBe(1);
+                        expect(spy.mostRecentCall.args[0]).toBe(grid);
+                        expect(spy.mostRecentCall.args[1]).toBe(col);
+                        expect(spy.mostRecentCall.args[2]).toBe(0);
+                    });
+
+                    it("should fire after construction after painting", function() {
+                        var spy = jasmine.createSpy(),
+                            col;
+
+                        makeGrid(null, null);
+                        grid.on('columnadd', spy);
+                        col = grid.insertColumn(0, {
+                            dataIndex: 'f9'
+                        });
+                        expect(spy.callCount).toBe(1);
+                        expect(spy.mostRecentCall.args[0]).toBe(grid);
+                        expect(spy.mostRecentCall.args[1]).toBe(col);
+                        expect(spy.mostRecentCall.args[2]).toBe(0);
+                    });
                 });
             });
         });
 
         describe("removing columns", function() {
+            it("should remove from the start", function() {
+                makeGrid();
+                grid.removeColumn(colMap.colf1);
+                expect(grid.getHeaderContainer().items.getCount()).toBe(4);
+                expect(colMap.colf2.previousSibling()).toBeNull();
+                expectRowHtml(0, ['f21', 'f31', 'f41', 'f51']);
+            });
+
+            it("should remove from the middle", function() {
+                makeGrid();
+                grid.removeColumn(colMap.colf3);
+                expect(grid.getHeaderContainer().items.getCount()).toBe(4);
+                expect(colMap.colf4.previousSibling()).toBe(colMap.colf2);
+                expectRowHtml(0, ['f11', 'f21', 'f41', 'f51']);
+            });
+
+            it("should remove from the end", function() {
+                makeGrid();
+                grid.removeColumn(colMap.colf5);
+                expect(grid.getHeaderContainer().items.getCount()).toBe(4);
+                expect(colMap.colf4.nextSibling()).toBeNull();
+                expectRowHtml(0, ['f11', 'f21', 'f31', 'f41']);
+            });
+
+            it("should return the removed column", function() {
+                makeGrid();
+                var ret = grid.removeColumn(colMap.colf5);
+
+                expect(ret).toBe(colMap.colf5);
+            });
+
             describe("events", function() {
                 it("should fire after construction before painting", function() {
                     var spy = jasmine.createSpy(),
@@ -765,6 +1042,7 @@ function() {
             describe("flat columns", function() {
                 function expectSpy(col, from, to) {
                     var args = spy.mostRecentCall.args;
+
                     expect(args[0]).toBe(grid);
                     expect(args[1]).toBe(col);
                     expect(args[2]).toBe(from);
@@ -868,12 +1146,14 @@ function() {
                     keys.forEach(function(key) {
                         if (key.indexOf('_') > -1) {
                             var parts = key.split('_');
+
                             cols.push({
                                 text: key,
                                 itemId: 'col' + key,
                                 columns: [makeCol(parts[0]), makeCol(parts[1])]
                             });
-                        } else {
+                        }
+ else {
                             cols.push(makeCol(key));
                         }
                     });
@@ -889,6 +1169,7 @@ function() {
                 describe("moving single column", function() {
                     function expectSpy(col, from, to) {
                         var args = spy.mostRecentCall.args;
+
                         expect(args[0]).toBe(grid);
                         expect(args[1]).toBe(col);
                         expect(args[2]).toBe(from);
@@ -982,12 +1263,14 @@ function() {
 
                         calls.forEach(function(call, idx) {
                             var args = spy.calls[idx].args;
+
                             expect(args[0]).toBe(grid);
                             expect(args[1]).toBe(call[0]);
                             expect(args[2]).toBe(call[1]);
                             expect(args[3]).toBe(call[2]);
                         });
                     }
+
                     beforeEach(function() {
                         makeNestedGrid(['f1_f2', 'f3', 'f4_f5', 'f6', 'f7_f8']);
                     });
@@ -1236,6 +1519,7 @@ function() {
                         describe("events", function() {
                             it("should not fire events", function() {
                                 var spy = jasmine.createSpy();
+
                                 makeGrid([{
                                     flex: 1
                                 }, {
@@ -1590,7 +1874,7 @@ function() {
                                 }]);
                                 expectSizes();
                                 colMap.colf2.hide();
-                                getCells(colMap.colf2).forEach(function (cell) {
+                                getCells(colMap.colf2).forEach(function(cell) {
                                     expect(cell.getHidden()).toBe(true);
                                     expect(cell.element.isVisible()).toBe(false);
                                     expect(cell.getComputedWidth()).toBe(0);
@@ -1636,7 +1920,7 @@ function() {
                                     colMap.colf2.show();
 
                                     // Colf2's cells must still match its width
-                                    getCells(colMap.colf2, false).forEach(function (cell) {
+                                    getCells(colMap.colf2, false).forEach(function(cell) {
                                         expect(cell.getWidth()).toBe(colMap.colf2.getWidth());
                                     });
                                 });
@@ -1794,6 +2078,7 @@ function() {
                                 colMap.colf2.show();
                                 expectSizes();
                                 var w = colMap.colf2.getComputedWidth();
+
                                 getCells(colMap.colf2).forEach(function(cell) {
                                     expect(cell.getHidden()).toBe(false);
                                     expect(cell.element.isVisible()).toBe(true);
@@ -1874,6 +2159,7 @@ function() {
                                 colMap.colf1.show();
                                 expectSizes();
                                 var w = colMap.colf1.getComputedWidth();
+
                                 getCells(colMap.colf1).forEach(function(cell) {
                                     expect(cell.getHidden()).toBe(false);
                                     expect(cell.element.isVisible()).toBe(true);
@@ -1946,6 +2232,7 @@ function() {
                             describe("events", function() {
                                 it("should fire an event for the resized column with fixed widths", function() {
                                     var spy = jasmine.createSpy();
+
                                     makeGrid([{
                                         width: 200
                                     }, {
@@ -1964,6 +2251,7 @@ function() {
 
                                 it("should fire an event for the resized column and affected flex columns", function() {
                                     var spy = jasmine.createSpy();
+
                                     makeGrid([{
                                         flex: 1,
                                         itemId: 'colf1'
@@ -1988,8 +2276,11 @@ function() {
 
                                         // Don't be picky about order of columnresize events:
                                         var colf1Width = colMap.colf1.getComputedWidth();
+
                                         var colf2Width = colMap.colf2.getComputedWidth();
+
                                         var pos = spy.calls[0].args[1] === colMap.colf1;
+
                                         pos = pos ? 0 : 1;
 
                                         expect(spy.calls[pos].args[0]).toBe(grid);
@@ -2023,6 +2314,7 @@ function() {
                             describe("events", function() {
                                 it("should not fire events with only fixed widths", function() {
                                     var spy = jasmine.createSpy();
+
                                     makeGrid([{
                                         width: 200
                                     }, {
@@ -2040,6 +2332,7 @@ function() {
 
                                 it("should not fire an event if changing the flex causes the width to stay the same", function() {
                                     var spy = jasmine.createSpy();
+
                                     makeGrid([{
                                         flex: 1,
                                         itemId: 'colf1'
@@ -2053,6 +2346,7 @@ function() {
 
                                 it("should fire an event for the resized column and affected flex columns", function() {
                                     var spy = jasmine.createSpy();
+
                                     makeGrid([{
                                         flex: 1,
                                         itemId: 'colf1'
@@ -2063,6 +2357,7 @@ function() {
                                     expectSizes();
                                     grid.on('columnresize', spy);
                                     colMap.colf1.setFlex(3);
+                                    refreshColSizes();
 
                                     waitsFor(function() {
                                         return spy.callCount === 2;
@@ -2075,8 +2370,11 @@ function() {
 
                                         // Don't be picky about order of columnresize events:
                                         var colf1Width = colMap.colf1.getComputedWidth();
+
                                         var colf2Width = colMap.colf2.getComputedWidth();
+
                                         var pos = spy.calls[0].args[1] === colMap.colf1;
+
                                         pos = pos ? 0 : 1;
 
                                         expect(spy.calls[pos].args[0]).toBe(grid);
@@ -2110,6 +2408,7 @@ function() {
                             describe("events", function() {
                                 it("should fire events for the changed column with fixed widths", function() {
                                     var spy = jasmine.createSpy();
+
                                     makeGrid([{
                                         width: 100,
                                         itemId: 'colf1'
@@ -2122,6 +2421,7 @@ function() {
                                     colMap.colf1.setFlex(1);
                                     colMap.colf1.el.dom.getBoundingClientRect();
                                     colMap.colf2.el.dom.getBoundingClientRect();
+                                    refreshColSizes();
 
                                     waitsFor(function() {
                                         return spy.callCount >= 1;
@@ -2138,6 +2438,7 @@ function() {
 
                                 it("should not fire an event if the width does not change", function() {
                                     var spy = jasmine.createSpy();
+
                                     makeGrid([{
                                         width: 300,
                                         itemId: 'colf1'
@@ -2159,6 +2460,7 @@ function() {
 
                                 it("should fire events for other affected flex columns", function() {
                                     var spy = jasmine.createSpy();
+
                                     makeGrid([{
                                         width: 200,
                                         itemId: 'colf1'
@@ -2175,13 +2477,16 @@ function() {
                                         return spy.callCount >= 2;
                                     });
 
-                                    runs(function () {
+                                    runs(function() {
                                         expect(spy.callCount).toBe(2);
 
                                         // Don't be picky about order of columnresize events:
                                         var colf1Width = colMap.colf1.getComputedWidth();
+
                                         var colf2Width = colMap.colf2.getComputedWidth();
+
                                         var pos = spy.calls[0].args[1] === colMap.colf1;
+
                                         pos = pos ? 0 : 1;
 
                                         expect(spy.calls[pos].args[0]).toBe(grid);
@@ -2217,6 +2522,7 @@ function() {
                             describe("events", function() {
                                 it("should fire events for the changed column with fixed widths", function() {
                                     var spy = jasmine.createSpy();
+
                                     makeGrid([{
                                         flex: 1,
                                         itemId: 'colf1'
@@ -2246,6 +2552,7 @@ function() {
 
                                 it("should not fire an event if the width does not change", function() {
                                     var spy = jasmine.createSpy();
+
                                     makeGrid([{
                                         flex: 1,
                                         itemId: 'colf1'
@@ -2256,6 +2563,7 @@ function() {
                                     grid.on('columnresize', spy);
                                     colMap.colf1.setWidth(300);
                                     colMap.colf1.setFlex(null);
+                                    refreshColSizes();
 
                                     // We are expecting nothing to happen
                                     waits(100);
@@ -2268,6 +2576,7 @@ function() {
 
                                 it("should fire events for affected flex columns", function() {
                                     var spy = jasmine.createSpy();
+
                                     makeGrid([{
                                         flex: 1,
                                         itemId: 'colf1'
@@ -2281,18 +2590,22 @@ function() {
                                     grid.on('columnresize', spy);
                                     colMap.colf1.setWidth(400);
                                     colMap.colf1.setFlex(null);
+                                    refreshColSizes();
 
                                     waitsFor(function() {
                                         return spy.callCount >= 2;
                                     });
 
-                                    runs(function () {
+                                    runs(function() {
                                         expect(spy.callCount).toBe(2);
 
                                         // Don't be picky about order of columnresize events:
                                         var colf1Width = colMap.colf1.getComputedWidth();
+
                                         var colf2Width = colMap.colf2.getComputedWidth();
+
                                         var pos = spy.calls[0].args[1] === colMap.colf1;
+
                                         pos = pos ? 0 : 1;
 
                                         expect(spy.calls[pos].args[0]).toBe(grid);
@@ -2337,6 +2650,7 @@ function() {
             describe("events", function() {
                 it("should not fire events during construction", function() {
                     var spy = jasmine.createSpy();
+
                     makeGrid(colDefaults, null, {
                         listeners: {
                             columnshow: spy
@@ -2398,6 +2712,7 @@ function() {
             describe("events", function() {
                 it("should not fire events during construction", function() {
                     var spy = jasmine.createSpy();
+
                     makeGrid(colDefaults, null, {
                         listeners: {
                             columnhide: spy
@@ -2434,54 +2749,56 @@ function() {
             });
         });
     });
-    
-    describe('selection', function () {
-        describe('row/record', function () {
-            beforeEach(function () {
+
+    describe('selection', function() {
+        describe('row/record', function() {
+            beforeEach(function() {
                 makeGrid(null, 200);
             });
-            
-            it('should add the selected cls to row elements', function () {
+
+            it('should add the selected cls to row elements', function() {
                 var sm = grid.getSelectable(),
                     scroller = grid.getScrollable(),
                     row = grid.getItemAt(0),
                     rec = row.getRecord(),
                     cls = 'x-selected',
                     cell;
-                
+
                 function expectCells() {
                     // cells should not be selected
                     for (cell in row.cells) {
                         expect(cell).not.toHaveCls(cls);
                     }
                 }
-                
+
                 sm.selectRows(rec);
                 expect(row).toHaveCls(cls);
                 expectCells();
-                
+
                 // scroll until the first row is recycled with a new record
-                jasmine.waitsForScroll(scroller, function (scroller, x, y) {
+                jasmine.waitsForScroll(scroller, function(scroller, x, y) {
                     // If the row records don't match, then it was removed from the buffer
                     if (row.getRecord() !== rec) {
                         return true;
                     }
+
                     scroller.scrollBy(0, 50);
                 }, 'grid to recycle row', 5000);
-                runs(function () {
+                runs(function() {
                     // new record is rendered so it should not be selected
                     expect(row).not.toHaveCls(cls);
                 });
-                
+
                 // scroll back to the top
-                jasmine.waitsForScroll(scroller, function (scroller, x, y) {
+                jasmine.waitsForScroll(scroller, function(scroller, x, y) {
                     // If the row records don't match, then it was removed from the buffer
                     if (row.getRecord() === rec) {
                         return true;
                     }
+
                     scroller.scrollBy(0, -50);
                 }, 'grid to recycle row', 5000);
-                runs(function () {
+                runs(function() {
                     // original record is rendered so it should be selected
                     expect(row).toHaveCls(cls);
                     expectCells();
@@ -2530,7 +2847,7 @@ function() {
             menu.hide();
         });
 
-        it('should hide "group by this field" if there is no dataIndex on that column', function () {
+        it('should hide "group by this field" if there is no dataIndex on that column', function() {
             makeGrid([{
                 itemId: 'colf1'
             }], null, null, {
@@ -2549,11 +2866,11 @@ function() {
             menu.hide();
         });
 
-        it('should NOT hide "group by this field" if there is no dataIndex on that column but a grouper', function () {
+        it('should NOT hide "group by this field" if there is no dataIndex on that column but a grouper', function() {
             makeGrid([{
                 itemId: 'colf1',
                 grouper: function() {
-                    return 'test'
+                    return 'test';
                 }
             }], null, null, {
                 preventColumns: true
@@ -2570,12 +2887,29 @@ function() {
             expect(groupByThis.getHidden()).toBeFalsy();
             menu.hide();
         });
+
+        it('should "auto Size the column with respect to content"', function() {
+            makeGrid([{
+                itemId: 'colf1'
+            }]);
+
+            var beforeWidth = colMap.colf1.element.getWidth();
+
+            colMap.colf1.autoSize();
+            expect(colMap.colf1.element.getWidth()).not.toBe(beforeWidth);
+
+            colMap.colf1.getCells()[1].setValue('test auto size column');
+
+            colMap.colf1.autoSize();
+            expect(colMap.colf1.element.getWidth()).toBeGreaterThan(beforeWidth);
+        });
     });
 
     describe("destroy", function() {
         describe("events", function() {
             it("should not fire column remove events", function() {
                 var spy = jasmine.createSpy();
+
                 makeGrid();
                 grid.on('columnremove', spy);
                 grid.destroy();
@@ -2587,6 +2921,7 @@ function() {
             describe("before rendering", function() {
                 it("should destroy all created components", function() {
                     var count = Ext.ComponentManager.getCount();
+
                     makeGrid();
                     grid.destroy();
                     expect(Ext.ComponentManager.getCount()).toBe(count);
@@ -2596,6 +2931,7 @@ function() {
             describe("after painting", function() {
                 it("should destroy all created components", function() {
                     var count = Ext.ComponentManager.getCount();
+
                     makeGrid();
                     grid.render(Ext.getBody());
                     grid.destroy();
@@ -2606,6 +2942,7 @@ function() {
             describe("after refreshing", function() {
                 it("should destroy all created components", function() {
                     var count = Ext.ComponentManager.getCount();
+
                     makeGrid();
                     grid.destroy();
                     expect(Ext.ComponentManager.getCount()).toBe(count);
@@ -2651,10 +2988,12 @@ function() {
                             { name: 'Marge', email: 'marge@simpsons.com', phone: '555-222-1254' }
                         ]
                     }, storeCfg));
-                } else {
+                }
+ else {
                     store = storeCfg;
                 }
-            } else {
+            }
+ else {
                 store = null;
             }
 
@@ -2694,7 +3033,7 @@ function() {
                         ]
                     }]
                 });
-                
+
                 runs(function() {
                     // HeaderContainer has no immediate child columns
                     expect(grid.getHeaderContainer().query('>column[isLeafHeader]').length).toBe(0);
@@ -2760,21 +3099,25 @@ function() {
                 expect(location).toBeNull();
                 expect(grid.el.contains(document.activeElement)).toBe(false);
                 expect(grid.el.query('.' + grid.focusedCls).length).toBe(0);
-            } else {
+            }
+ else {
                 if (element) {
                     expectedLocation = new Ext.grid.Location(grid, element);
-                } else {
+                }
+ else {
                     if (Ext.isArray(record)) {
                         column = record[0];
                         record = record[1];
                     }
+
                     expectedLocation = new Ext.grid.Location(grid, {
                         record: record,
                         column: column
                     });
                 }
+
                 expect(location.equals(expectedLocation)).toBe(true);
-                expect(document.activeElement).toBe(location.getFocusEl(true));
+                expect(document.activeElement).toBe(location.getFocusEl('dom'));
                 expect(location.getFocusEl()).toHaveCls(grid.focusedCls);
             }
         }
@@ -2803,6 +3146,15 @@ function() {
 
         it('should be able to access the cell', function() {
             expect(location.get()).toBe(grid.down('gridcell'));
+        });
+
+        it("should update the Location if the current record is removed", function() {
+            expect(location.record).toBe(store.getAt(0));
+            store.remove(store.getAt(0));
+
+            expect(location.recordIndex).toBe(0);
+            expect(location.columnIndex).toBe(0);
+            expect(navigationModel.getLocation().record).toBe(store.getAt(0));
         });
 
         describe('navigation', function() {
@@ -2843,7 +3195,7 @@ function() {
             describe('from top/right', function() {
                 beforeEach(function() {
                     // Last position
-                    location = location.clone({record: 0, column: columns.length - 1});
+                    location = location.clone({ record: 0, column: columns.length - 1 });
                 });
 
                 it('should move to prev from top/right', function() {
@@ -2862,7 +3214,7 @@ function() {
             describe('from bottom/right', function() {
                 beforeEach(function() {
                     // Last position
-                    location = location.clone({record: storeCount - 1, column: columns.length - 1});
+                    location = location.clone({ record: storeCount - 1, column: columns.length - 1 });
                 });
 
                 it('should move to prev from bottom/right', function() {
@@ -2888,7 +3240,7 @@ function() {
             describe('from bottom/left', function() {
                 beforeEach(function() {
                     // Last position
-                    location = location.clone({record: storeCount - 1, column: 0});
+                    location = location.clone({ record: storeCount - 1, column: 0 });
                 });
 
                 it('should move to next from bottom/left', function() {
@@ -2921,7 +3273,7 @@ function() {
             describe('moveDown', function() {
                 beforeEach(function() {
                     // Last position
-                    location = location.clone({record: storeCount - 1, column: columns.length - 1});
+                    location = location.clone({ record: storeCount - 1, column: columns.length - 1 });
                 });
 
                 it('should not move down from bottom/right', function() {
@@ -2982,7 +3334,7 @@ function() {
 
                     jasmine.fireKeyEvent(document.activeElement, 'keydown', Ext.event.Event.SPACE);
 
-                    //\\ TODO: https://github.com/extjs/SDK/pull/20576 will enable autofocus
+                    // \\ TODO: https://github.com/extjs/SDK/pull/20576 will enable autofocus
                     Ext.Msg.down('#ok').getFocusEl().focus();
                 });
 
@@ -2999,14 +3351,15 @@ function() {
                     // Location must be null
                     expectLocation();
 
-                    // Click the OK button
-                    Ext.testHelper.tap(Ext.Msg.down('#ok').getFocusEl());
+                    // Hit the OK button
+                    jasmine.fireKeyEvent(Ext.Msg.down('#ok').getFocusEl(), 'keydown', Ext.event.Event.SPACE);
                 });
 
-                // Wait for the animation
-                waitsFor(function() {
-                    return !Ext.Msg.activeAnimation;
-                });
+                    // Cleanup for modal
+                    runs(function() {
+                        Ext.Msg.hide();
+                        Ext.Msg.hideModalMask();
+                    });
 
                 // Automatic focus reversion must send focus back into the grid
                 waitsForSpy(focusEnterSpy);
@@ -3024,7 +3377,9 @@ function() {
 
                 // Wait for navigation into next row to occur
                 waitsFor(function() {
-                    return navigationModel.getLocation().recordIndex === 1;
+                    var location = navigationModel.getLocation();
+
+                    return location.recordIndex === 1 && location.columnIndex === 0;
                 });
 
                 runs(function() {
@@ -3033,10 +3388,17 @@ function() {
                     expectLocation(1, 0, tool.getFocusEl());
                     expect(tool.isTool).toBe(true);
                     expect(tool.hasFocus).toBe(true);
-
                     // SHIT+TAB should move back
                     jasmine.fireKeyEvent(document.activeElement, 'keydown', Ext.event.Event.TAB, true);
+                });
 
+                waitsFor(function() {
+                    var location = navigationModel.getLocation();
+
+                    return location.recordIndex === 0 && location.columnIndex === 0;
+                });
+
+                runs(function() {
                     // expectlocation will create an ActionLocation to match the passed position
                     tool = Ext.Component.from(navigationModel.getLocation().getFocusEl());
                     expectLocation(0, 0, tool.getFocusEl());
@@ -3065,21 +3427,25 @@ function() {
                 expect(location).toBeNull();
                 expect(grid.el.contains(document.activeElement)).toBe(false);
                 expect(grid.el.query('.' + grid.focusedCls).length).toBe(0);
-            } else {
+            }
+ else {
                 if (element) {
                     expectedLocation = new Ext.grid.Location(grid, element);
-                } else {
+                }
+ else {
                     if (Ext.isArray(record)) {
                         column = record[0];
                         record = record[1];
                     }
+
                     expectedLocation = new Ext.grid.Location(grid, {
                         record: record,
                         column: column
                     });
                 }
+
                 expect(location.equals(expectedLocation)).toBe(true);
-                expect(document.activeElement).toBe(location.getFocusEl(true));
+                expect(document.activeElement).toBe(location.getFocusEl('dom'));
                 expect(location.getFocusEl()).toHaveCls(grid.focusedCls);
             }
         }
@@ -3179,7 +3545,7 @@ function() {
             describe('from top/right', function() {
                 beforeEach(function() {
                     // Last position
-                    location = location.clone({record: 0, column: columns.length - 1});
+                    location = location.clone({ record: 0, column: columns.length - 1 });
                 });
 
                 it('should move to prev from top/right', function() {
@@ -3198,7 +3564,7 @@ function() {
             describe('from bottom/right', function() {
                 beforeEach(function() {
                     // Last position
-                    location = location.clone({record: storeCount - 1, column: columns.length - 1});
+                    location = location.clone({ record: storeCount - 1, column: columns.length - 1 });
                 });
 
                 it('should move to prev from bottom/right', function() {
@@ -3224,7 +3590,7 @@ function() {
             describe('from bottom/left', function() {
                 beforeEach(function() {
                     // Last position
-                    location = location.clone({record: storeCount - 1, column: 0});
+                    location = location.clone({ record: storeCount - 1, column: 0 });
                 });
 
                 it('should move to next from bottom/left', function() {
@@ -3257,7 +3623,7 @@ function() {
             describe('moveDown', function() {
                 beforeEach(function() {
                     // Last position
-                    location = location.clone({record: storeCount - 1, column: columns.length - 1});
+                    location = location.clone({ record: storeCount - 1, column: columns.length - 1 });
                 });
 
                 it('should not move down from bottom/right', function() {
@@ -3318,7 +3684,7 @@ function() {
 
                     jasmine.fireKeyEvent(document.activeElement, 'keydown', Ext.event.Event.SPACE);
 
-                    //\\ TODO: https://github.com/extjs/SDK/pull/20576 will enable autofocus
+                    // \\ TODO: https://github.com/extjs/SDK/pull/20576 will enable autofocus
                     Ext.Msg.down('#ok').getFocusEl().focus();
                 });
 
@@ -3339,10 +3705,11 @@ function() {
                     Ext.testHelper.tap(Ext.Msg.down('#ok').getFocusEl());
                 });
 
-                // Wait for the animation
-                waitsFor(function() {
-                    return !Ext.Msg.activeAnimation;
-                });
+                    // Cleanup for modal
+                    runs(function() {
+                        Ext.Msg.hide();
+                        Ext.Msg.hideModalMask();
+                    });
 
                 // Automatic focus reversion must send focus back into the grid
                 waitsForSpy(focusEnterSpy);
@@ -3360,7 +3727,9 @@ function() {
 
                 // Wait for navigation into next row to occur
                 waitsFor(function() {
-                    return navigationModel.getLocation().recordIndex === 1;
+                    var location = navigationModel.getLocation();
+
+                    return location.recordIndex === 1 && location.columnIndex === 0;
                 });
 
                 runs(function() {
@@ -3372,7 +3741,15 @@ function() {
 
                     // SHIT+TAB should move back
                     jasmine.fireKeyEvent(document.activeElement, 'keydown', Ext.event.Event.TAB, true);
+                });
 
+                waitsFor(function() {
+                    var location = navigationModel.getLocation();
+
+                    return location.recordIndex === 0 && location.columnIndex === 0;
+                });
+
+                runs(function() {
                     // expectlocation will create an ActionLocation to match the passed position
                     tool = Ext.Component.from(navigationModel.getLocation().getFocusEl());
                     expectLocation(0, 0, tool.getFocusEl());
@@ -3424,13 +3801,13 @@ function() {
 
     describe('column sorting', function() {
         describe("column's own sorter", function() {
-            beforeEach(function () {
+            beforeEach(function() {
                 makeGrid(null, null, {
                     renderTo: document.body
                 });
             });
 
-            it('should sort ascending, then descending, then remove sorter on subsequent header clicks', function () {
+            it('should sort ascending, then descending, then remove sorter on subsequent header clicks', function() {
                 // First click sorts ASC
                 Ext.testHelper.tap(colMap.colf1.el);
                 expect(store.getSorters().getAt(0).getProperty()).toBe(colMap.colf1.getDataIndex());
@@ -3473,7 +3850,7 @@ function() {
             });
 
             if (!Ext.is.Mac && Ext.isSafari) {
-                it('should change sort on check of column header sort items', function () {
+                it('should change sort on check of column header sort items', function() {
 
                     // Starting conditions. No sorters.
                     Ext.testHelper.tap(colMap.colf1.triggerElement);
@@ -3748,6 +4125,7 @@ function() {
             it("Grid should stay grouped when it is re-initialized with the grouped store", function() {
                 var colf1 = colMap.colf1,
                     cells = getCells(colf1);
+
                 colf1.onGroupByThis();
                 grid = Ext.destroy(grid);
                 expect(grid).toBeNull();
@@ -3788,9 +4166,10 @@ function() {
         });
 
         describe("events", function() {
-            it("should fire events when sorted", function () {
+            it("should fire events when sorted", function() {
                 var spy = jasmine.createSpy(),
                     col, args;
+
                 makeGrid([{
                     dataIndex: 'f1',
                     text: 'F1',
@@ -3867,7 +4246,7 @@ function() {
 
             var cell = getCells(colMap.col1)[0];
 
-            waitsFor(function () {
+            waitsFor(function() {
                 return cell.getValue() != null;
             });
 
@@ -3879,12 +4258,11 @@ function() {
                 grid.setStore(null);
             });
 
-
-            waitsFor(function () {
+            waitsFor(function() {
                 return cell.updateValue.callCount > 0;
             });
 
-            runs(function () {
+            runs(function() {
                 // Store was nullified, causing the row to be moved to the cache before
                 // the binding had a chance to update.  Cell value config updater will be
                 // called by the binding system but it should skip updating the dom.
@@ -3918,6 +4296,38 @@ function() {
 
             // And no error
             expect(errorSpy).not.toHaveBeenCalled();
+        });
+    });
+
+    describe("AutoSize Column", function() {
+        function columnAutoSize() {
+            grid.getColumns().forEach(function(column) {
+                column.autoSize();
+            });
+        }
+
+        it("should size the column to default width", function() {
+            makeGrid(null, [{
+                field1: '<div style="width: 125px;>a</div>'
+            }, {
+                field1: '<div style="width: 450px;>b</div>'
+            }, {
+                field1: '<div style="width: 375px;>c</div>'
+            }]);
+            expect(grid.getColumns()[0].getWidth()).toBe(100);
+        });
+
+        it("should autosize the column based on data", function() {
+            makeGrid(null, [{
+                field1: '<div style="width: 125px;>a</div>'
+            }, {
+                field1: '<div style="width: 450px;>b</div>'
+            }, {
+                field1: '<div style="width: 375px;>c</div>'
+            }]);
+            grid.getColumns()[1].getCells()[0].setValue('Test Column auto size width');
+            columnAutoSize();
+            expect(grid.getColumns()[1].getWidth()).toBeGreaterThan(100);
         });
     });
 });

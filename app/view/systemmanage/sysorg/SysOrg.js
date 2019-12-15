@@ -3,84 +3,190 @@ Ext.define("App.view.systemmanage.sysorg.SysOrg", {
     xtype: "sysorg",
     viewModel: "sysorg",
     controller: "sysorg",
-    initComponent: function () {
+    initialize: function () {
         var me = this;
         me.initTreePanel();
-        me.initPagePanel();
+        me.initQueryPanel();
+        me.initGridPanel();
         me.callParent();
     },
 
     initTreePanel: function () {
         var me, treePanel; me = this;
-        treePanel = Ext.create('Ext.tree.Panel', {
-            reference: "tree",
-            bodyBorder:false,
-            rootVisible: false,
-            bind: {
-                store: '{treestore}'
+        treePanel = {
+            xtype: "container",
+            layout: {
+                type: "vbox"
             },
-            columns: [{
-                xtype: 'treecolumn',
-                flex: 1,
-                dataIndex: 'OrgName',
-                renderer: 'treeNavNodeRenderer'
-            }],
-            style: { "border-right": "1px solid #d1d1d1" },
-            plugins: {
-                requestdata: {
-                    autoLoad: true,
-                    params: function () {
-                        return { SysOrgId: "00000000-0000-0000-0000-000000000000" };
-                    },
-                    root: {
-                        expanded: true,
-                        children: []
-                    }
-                }
-            },
-            dockedItems: [
+            width:300,
+            items: [
                 {
-                    xtype: 'textfield',
-                    bodyBorder:false,
-                    reference: 'navtreeFilter',
-                    dock: 'top',
-                    emptyText: '搜索...',
-                    triggers: {
-                        clear: {
-                            cls: 'x-form-clear-trigger',
-                            handler: 'onFilterClearTriggerClick',
-                            hidden: true,
-                            scope: 'controller'
-                        },
-                        search: {
-                            cls: 'x-form-search-trigger',
-                            weight: 1,
-                            handler: 'onFilterSearchTriggerClick'
+                    xtype: 'searchfield',
+                    ui: 'solo',
+                    listeners: {
+                        buffer: 500,
+                        change:"onSearchTreeChange"
+                    }
+                },
+                {
+                    xtype: 'tree',
+                    reference:"tree",
+                    flex:1,
+                    bind:{
+                        store:"{treestore}"
+                    },
+                    hideHeaders: true,
+                    rootVisible:false,
+                    plugins: {
+                        requestdata: {
+                            autoLoad: true,
+                            params:{
+                                 SysOrgId: "00000000-0000-0000-0000-000000000000"
+                            },
+                            root: {
+                                expanded: true,
+                                children: []
+                            }
                         }
                     },
+                    columns: [{
+                        xtype: 'treecolumn',
+                        flex: 1,
+                        cell: { encodeHtml: false },
+                        dataIndex:"OrgName",
+                        renderer:'treeNodeRenderer'
+                    }],
                     listeners: {
-                        change: 'onFilterFieldChange',
-                        buffer: 300
+                        select: "onTreeSelect",
+                        load:"loadTree"
                     }
                 }
-            ],
-            listeners: {
-                select: "onTreeSelect",
-                load: function (store, records, successful, operation, node, eOpts) {
-                    if (successful && records.length > 0) {
-                        treePanel.getSelectionModel().select(records[0]);
-                    }
-                }
-            }
-        });
+            ]
+        };
         me.addTree("treePanel", treePanel, 250);
     },
 
-    initPagePanel: function () {
-        var me = this,pagePanel;
-        pagePanel = Ext.create("App.view.systemmanage.sysorg.SysOrgPage", {
-            reference: "page"
-        });
-        me.addPage("pagePanel", pagePanel);
+    initQueryPanel: function () {
+        var me, querypanel; me = this;
+        querypanel = {
+            xtype: "panel",
+            layout: {
+                type: "hbox"
+            },
+            bodyStyle: "padding:15px 15px",
+            items: [
+                {
+                    xtype: "container",
+                    reference: "search",
+                    flex: 1,
+                    defaults: {
+                        labelAlign: "left",
+                        border: true,
+                        width: 250,
+                        labelWidth: 70,
+                        margin: "5 5",
+                        clearable:false,
+                        style: {
+                            "float": "left"
+                        }
+                    },
+                    items: [
+                        {
+                            xtype: 'textfield',
+                            name: 'OrgName',
+                            type: "String",
+                            label: '机构名称'
+                        }
+                    ]
+                },
+                {
+                    xtype: "container",
+                    layout: {
+                        type: "hbox",
+                        align: "center",
+                        pack: "center"
+                    },
+                    defaults: {
+                        margin: "5 5",
+                    },
+                    items: [
+                        {
+                            xtype: "button",
+                            iconCls: "x-far fa-search",
+                            ui: "action",
+                            text: "查询",
+                            handler: "onSearch"
+                        },
+                        {
+                            xtype: "button",
+                            ui: "action",
+                            iconCls: "x-far fa-reply",
+                            text: "重置",
+                            handler: "onReset"
+                        }
+                    ]
+                }
+            ]
+        };
+        me.addQuery("query", querypanel);
+    },
+
+    initGridPanel: function() {
+        var me, gridpanel; me = this;
+        gridpanel = {
+            xtype: "grid",
+            reference: "grid",
+            items: [
+                {
+                    xtype: 'toolbar',
+                    layout: "hbox",
+                    docked: 'top',
+                    defaults: {
+                        ui: "action",
+                        margin: "0 10 0 0",
+                        height:30
+                    },
+                    items: [
+                        {
+                            text: '新增',
+                            iconCls: "x-far fa-plus",
+                            handler: "onAdd"
+                        },
+                        {
+                            text: '编辑',
+                            iconCls: "x-far fa-edit",
+                            handler: "onEdit"
+                        },
+                        {
+                            text: '删除',
+                            iconCls: "x-far fa-trash",
+                            handler: "onDelete"
+                        }
+                    ]
+                }
+            ],
+            columnLines: true,
+            selectable: {
+                checkbox: true
+            },
+            selType: 'checkboxmodel',
+            reference: "grid",
+            bind: {
+                store: '{gridstore}'
+            },
+            columns: [
+                { text: '机构名称', dataIndex: 'OrgName', width: 200 },
+                { text: '机构代码', dataIndex: 'OrgCode', width: 200 },
+                { text: '排序', dataIndex: 'Sort', width: 70 },
+                { text: '描述', dataIndex: 'Description', flex: 1 }
+            ],
+            plugins: {
+                pagination: {},
+                requestdata: {
+                    autoLoad: false
+                }
+            }
+        };
+        me.addGrid("grid", gridpanel);
     }
 })

@@ -34,8 +34,11 @@ Ext.define('Ext.field.Picker', {
         },
 
         /**
-         * A configuration object, containing an {@link cfg#xtype} property which specifies the widget to
-         * create if `{@link #cfg!picker}: 'floated'` (or if it's '`auto'` and the app is *not* on a phone)
+         * @cfg {Object} floatedPicker
+         * A configuration object, containing an {@link cfg#xtype} property which specifies
+         * the widget to create if `{@link #cfg!picker}: 'floated'` (or if it's '`auto'` and
+         * the app is *not* on a phone).
+         *
          * Replaces `defaultTabletPicker`
          * @since 6.5.0
          */
@@ -45,8 +48,11 @@ Ext.define('Ext.field.Picker', {
         },
 
         /**
-         * A configuration object, containing an {@link cfg#xtype} property which specifies the widget to
-         * create if `{@link #cfg!picker}: 'edge'` (or if it's '`auto'` and the app is on a phone)
+         * @cfg {Object} edgePicker
+         * A configuration object, containing an {@link cfg#xtype} property which specifies
+         * the widget to create if `{@link #cfg!picker}: 'edge'` (or if it's '`auto'` and the
+         * app is on a phone).
+         *
          * Replaces `defaultPhonePicker`
          * @since 6.5.0
          */
@@ -60,15 +66,16 @@ Ext.define('Ext.field.Picker', {
         /**
          * @cfg {Boolean} [matchFieldWidth=true]
          * *Only valid when the `{@link #cfg!picker}: 'floated'` is used.
-         * Whether the {@link #cfg!floatedPicker}'s width should be explicitly set to match the width of the input element.
+         * Whether the {@link #cfg!floatedPicker}'s width should be explicitly set to match
+         * the width of the input element.
          */
         matchFieldWidth: true,
 
         /**
          * @cfg {String} [floatedPickerAlign=tl-bl?]
          * *Only valud when the {@link #cfg!floatedPicker} is used.
-         * The {@link Ext.Component#method!showBy} alignment string to use when showing the floated picker
-         * by the input field.
+         * The {@link Ext.Component#method!showBy} alignment string to use when showing the
+         * floated picker by the input field.
          */
         floatedPickerAlign: 'tl-bl?',
 
@@ -144,7 +151,7 @@ Ext.define('Ext.field.Picker', {
     /**
      * @private
      */
-    initialize: function () {
+    initialize: function() {
         var me = this;
 
         me.callParent();
@@ -153,16 +160,16 @@ Ext.define('Ext.field.Picker', {
         me.inputElement.on('click', 'onInputElementClick', me);
     },
 
-    onFocus: function (e) {
-        this.callParent([e]);
+    onFocusEnter: function(info) {
+        this.callParent([info]);
 
-        if (Ext.isTouchMode()) {
+        if (Ext.isTouchMode() && info.event.toElement === this.inputElement.dom) {
             this.getFocusTrap().focus();
             this.expand();
         }
     },
 
-    onFocusMove: function (info) {
+    onFocusMove: function(info) {
         var me = this,
             focusTrap;
 
@@ -176,7 +183,8 @@ Ext.define('Ext.field.Picker', {
                 if (me.getEditable()) {
                     // virtual keyboard is about to display. collapse the picker
                     me.collapse();
-                } else {
+                }
+                else {
                     // No keyboard can be displayed, so ensure the picker
                     // is always visible
                     focusTrap.focus();
@@ -186,7 +194,7 @@ Ext.define('Ext.field.Picker', {
         }
     },
 
-    onFocusLeave: function (e) {
+    onFocusLeave: function(e) {
         this.callParent([e]);
 
         // Callparent first; collapse listener needs to read correct containsFocus state
@@ -196,7 +204,7 @@ Ext.define('Ext.field.Picker', {
     /**
      * @private
      */
-    onEsc: function (e) {
+    onEsc: function(e) {
         if (Ext.isIE) {
             // Stop the esc key from "restoring" the previous value in IE
             // For example, type "foo". Highlight all the text, hit backspace.
@@ -211,7 +219,7 @@ Ext.define('Ext.field.Picker', {
         }
     },
 
-    onDownArrow: function (e) {
+    onDownArrow: function(e) {
         var me = this;
 
         if ((e.time - me.lastDownArrow) > 150) {
@@ -263,7 +271,7 @@ Ext.define('Ext.field.Picker', {
         }
     },
 
-    applyPicker: function (picker) {
+    applyPicker: function(picker) {
         var me = this,
             pickerListeners = {
                 show: 'onPickerShow',
@@ -287,7 +295,7 @@ Ext.define('Ext.field.Picker', {
 
         if (type) {
             if (type === 'auto') {
-                type = Ext.platformTags.phone ? 'edge' : 'floated';
+                type = me.getAutoPickerType();
             }
 
             if (type === 'edge') {
@@ -306,11 +314,12 @@ Ext.define('Ext.field.Picker', {
 
         if (picker.isWidget) {
             picker.ownerField = me;
-        } else {
+        }
+        else {
             picker = Ext.apply({
                 ownerField: me
             }, picker);
-            
+
             // Allow mutation of the picker configuration
             me.fireEvent('beforepickercreate', me, picker);
 
@@ -324,10 +333,33 @@ Ext.define('Ext.field.Picker', {
         me.fireEvent('pickercreate', me, picker);
 
         picker.on(pickerListeners);
+
         return picker;
     },
 
-    updatePicker: function (picker) {
+    getAutoPickerType: function() {
+        return Ext.platformTags.phone ? 'edge' : 'floated';
+    },
+
+    getRefItems: function(deep) {
+        var me = this,
+            result = me.callParent([deep]),
+            picker = me.getConfig('picker', false, true);
+
+        // Return our picker.
+        if (picker) {
+            result.push(picker);
+
+            // And, if deep, the picker's refItems
+            if (deep) {
+                Ext.Array.push(result, picker.getRefItems(deep));
+            }
+        }
+
+        return result;
+    },
+
+    updatePicker: function(picker) {
         var value = this.getValue();
 
         if (picker && picker.setValue && value != null) {
@@ -337,45 +369,72 @@ Ext.define('Ext.field.Picker', {
         }
     },
 
-    applyFocusTrap: function (focusTrap) {
+    applyFocusTrap: function(focusTrap) {
         var result = this.el.appendChild(Ext.dom.Element.create(focusTrap));
 
         // Flag to indicate that it should not be considered for programmatic focus.
         // For example Grid Location actionable navigation ignores elements
         // with this property set when searching for actionable elements.
         result.$isFocusTrap = true;
+
         return result;
     },
 
-    onResize: function () {
+    onResize: function() {
         // See if the picker has been created
-        var picker = this.getConfig('picker', false, true);
+        var me = this,
+            picker = me.getConfig('picker', false, true),
+            GlobalEvents = Ext.GlobalEvents,
+            scrollableAncestor;
 
-        if (picker && picker.isVisible()) {
-            this.realignFloatedPicker();
+        if (picker && me.pickerType === 'floated' && picker.isVisible()) {
+
+            // Ensure we are completely visible, so that the
+            // realigned picker aligns on a visible edge.
+            scrollableAncestor = me.up('[scrollable]');
+
+            if (scrollableAncestor) {
+                scrollableAncestor = scrollableAncestor.getScrollable();
+                GlobalEvents.suspendEvent('scroll');
+                scrollableAncestor.ensureVisible(me.el);
+            }
+
+            me.realignFloatedPicker();
+
+            if (scrollableAncestor) {
+                // Defer the resumption of scroll event, otherwse it will fire
+                // asynchronously from the above scroll and cause field collpse.
+                Ext.defer(GlobalEvents.resumeEvent, 100, GlobalEvents, ['scroll']);
+            }
         }
     },
 
     /**
      * @private
      */
-    realignFloatedPicker: function (picker) {
+    realignFloatedPicker: function(picker) {
         var me = this;
 
-        picker = me.getConfig('picker', false, true);
+        picker = picker || me.getConfig('picker', false, true);
 
         if (picker && picker.isVisible()) {
             if (me.getMatchFieldWidth()) {
                 picker.setWidth(me[me.alignTarget].getWidth());
             }
+
             picker.realign(me[me.alignTarget], me.getFloatedPickerAlign(), {
                 minHeight: 100
             });
-            me.setPickerLocation();
+
+            // If some keyboard gesture caused this, then there is an active location
+            // which we don't want to disturb.
+            if (!Ext.keyboardMode) {
+                me.setPickerLocation();
+            }
         }
     },
 
-    onInputElementClick: function (e) {
+    onInputElementClick: function(e) {
         var me = this;
 
         if (e.pointerType === 'mouse' && (!me.getEditable() && !me.getReadOnly())) {
@@ -383,24 +442,33 @@ Ext.define('Ext.field.Picker', {
         }
     },
 
-    onExpandTap: function () {
+    onExpandTap: function() {
         if (this.expanded) {
-            this.collapse();
-        } else {
+            // Check the expended time to check that we are not being called in the immediate
+            // aftermath of an expand. The reason being that expandTrigger does focusOnTap
+            // and Picker fields expand on focus if the focus happened via touch.
+            // But then, when the expandTrigger calls its handler, we get here immediately
+            // and do a collapse.
+            if (Ext.now() - this.expanded > 100) {
+                this.collapse();
+            }
+        }
+        else {
             this.expand();
         }
 
         return false;
     },
 
-    expand: function () {
+    expand: function() {
         if (!this.expanded && !this.getDisabled()) {
             this.showPicker();
         }
     },
 
-    collapse: function () {
-        var picker;
+    collapse: function() {
+        var picker,
+            eXt = Ext;  // hide from Cmd
 
         if (this.expanded) {
             picker = this.getPicker();
@@ -409,8 +477,9 @@ Ext.define('Ext.field.Picker', {
             // edge swipe menu for that side. It must only be shown by the trigger (or
             // touch-tapping the unfocused field)
             if (this.pickerType === 'edge') {
-                Ext['Viewport'].removeMenu(picker.getSide(), true);
-            } else {
+                eXt.Viewport.removeMenu(picker.getSide(), true);
+            }
+            else {
                 picker.hide();
             }
         }
@@ -420,17 +489,16 @@ Ext.define('Ext.field.Picker', {
      * @private
      * Runs on touchstart of doc to check to see if we should collapse the picker.
      */
-    collapseIf: function (e) {
+    collapseIf: function(e) {
         var me = this;
 
         // If what was mousedowned on is outside of this Field, then collapse.
         if (!me.destroyed && (!e.within(me.bodyElement, false, true) && !me.owns(e.target))) {
-
             // If they have clicked on a focusable, we will let the default browser behaviour
             // take its course.
             // If they clicked on non-focusable content, then do not blur the input field, but
             // allow automatic focus reversion to jump safely back into the field.
-            // TODO: wtf?
+            // TODO:
             // if (!Ext.fly(e.target).isFocusable()) {
             //     // Don't blur the input field
             //     e.preventDefault();
@@ -439,11 +507,10 @@ Ext.define('Ext.field.Picker', {
         }
     },
 
-    showPicker: function () {
+    showPicker: function() {
         var me = this,
             alignTarget = me[me.alignTarget],
-            picker = me.getPicker(),
-            value;
+            picker = me.getPicker();
 
         // TODO: what if virtual keyboard is present
 
@@ -451,6 +518,7 @@ Ext.define('Ext.field.Picker', {
             if (me.getMatchFieldWidth()) {
                 picker.setWidth(alignTarget.getWidth());
             }
+
             picker.showBy(alignTarget, me.getFloatedPickerAlign(), {
                 minHeight: 100
             });
@@ -467,13 +535,14 @@ Ext.define('Ext.field.Picker', {
                 delegated: false,
                 destroyable: true
             });
-        } else {
-            picker.show();
+        }
+        else {
             me.setShowPickerValue(picker);
+            picker.show();
         }
     },
 
-    updatePickerValue: function (picker, value) {
+    updatePickerValue: function(picker, value) {
         var slot = picker.getSlots()[0],
             name = slot.name || slot.getName(),
             pickerValue = {};
@@ -483,10 +552,15 @@ Ext.define('Ext.field.Picker', {
         picker.setValue(pickerValue);
     },
 
-    onPickerShow: function () {
+    onPickerShow: function() {
         var me = this;
 
-        me.expanded = true;
+        me.expanded = Ext.now();
+
+        // If there's an edge picker encroaching, then ensure this field is still visible.
+        if (me.pickerType === 'edge') {
+            me.el.dom.scrollIntoView();
+        }
 
         // If there's an edge picker encroaching, then ensure this field is still visible.
         if (me.pickerType === 'edge') {
@@ -507,7 +581,7 @@ Ext.define('Ext.field.Picker', {
         me.fireEvent('expand', me);
     },
 
-    onPickerHide: function () {
+    onPickerHide: function() {
         var me = this;
 
         me.expanded = false;
@@ -515,12 +589,20 @@ Ext.define('Ext.field.Picker', {
         me.fireEvent('collapse', me);
     },
 
-    doDestroy: function () {
+    doDestroy: function() {
         this.destroyMembers('picker', 'hideEventListeners', 'touchListeners', 'focusTrap');
         this.callParent();
     },
 
     privates: {
+        isFocusing: function(info) {
+            return info.event.toElement === this.getFocusTrap().dom || this.callParent([info]);
+        },
+
+        isBlurring: function(info) {
+            return info.event.fromElement === this.getFocusTrap().dom || this.callParent([info]);
+        },
+
         onGlobalHide: function(cmp) {
             // hide picker if ancestor is hidden
             if (this === cmp || cmp.isAncestor(this)) {
@@ -528,7 +610,7 @@ Ext.define('Ext.field.Picker', {
             }
         },
 
-        onGlobalScroll: function (scroller, x, y) {
+        onGlobalScroll: function(scroller, x, y) {
             var me = this,
                 scrollingEl = scroller.getElement();
 
@@ -548,10 +630,11 @@ Ext.define('Ext.field.Picker', {
             }
         },
 
-        revertFocusTo: function (target) {
+        revertFocusTo: function(target) {
             if (Ext.isTouchMode()) {
                 this.getFocusTrap().focus();
-            } else {
+            }
+            else {
                 target.focus();
             }
         },

@@ -262,7 +262,8 @@ Ext.define('Ext.dataview.NestedList', {
 
         /**
          * @cfg {Boolean} variableHeights
-         * This configuration allows you optimize the picker by not having it read the DOM heights of list items.
+         * This configuration allows you optimize the picker by not having it read the DOM 
+         * heights of list items.
          */
         variableHeights: false,
 
@@ -286,9 +287,10 @@ Ext.define('Ext.dataview.NestedList', {
     /**
      * @private
      * @property {String} [listMode=title]
-     * This hold the current list mode, values could be: `title`, `node`, `deep`. `title` when the list is at the top level,
-     * `node` for first level and `deep` for any level lower than that.
-     * This will be used by the `updateTitle` method in order to change the appropriate component's text value.
+     * This hold the current list mode, values could be: `title`, `node`, `deep`. `title` when the 
+     * list is at the top level, `node` for first level and `deep` for any level lower than that.
+     * This will be used by the `updateTitle` method in order to change the appropriate component's 
+     * text value.
      */
     listMode: 'title',
 
@@ -353,7 +355,8 @@ Ext.define('Ext.dataview.NestedList', {
      * @param {Ext.dataview.List} list The Ext.dataview.List that is currently active.
      * @param {HTMLElement} node The node to be selected.
      * @param {Array} selections Array of currently selected nodes.
-     * @deprecated 2.0.0 Please listen to the {@link #selectionchange} event with an order of `before` instead.
+     * @deprecated 2.0.0 Please listen to the {@link #selectionchange} event with an order of 
+     * `before` instead.
      */
 
     /**
@@ -389,8 +392,8 @@ Ext.define('Ext.dataview.NestedList', {
      * Fires before a request is made for a new data object.
      * @param {Ext.dataview.NestedList} this
      * @param {Ext.data.Store} store The store instance.
-     * @param {Ext.data.Operation} operation The Ext.data.Operation object that will be passed to the Proxy to
-     * load the Store.
+     * @param {Ext.data.Operation} operation The Ext.data.Operation object that will be passed 
+     * to the Proxy to load the Store.
      */
 
     /**
@@ -402,15 +405,17 @@ Ext.define('Ext.dataview.NestedList', {
      * @param {Boolean} successful `true` if the operation was successful.
      * @param {Ext.data.Operation} operation The associated operation.
      */
-    constructor: function (config) {
+    constructor: function(config) {
         if (Ext.isObject(config)) {
             if (config.getTitleTextTpl) {
                 this.getTitleTextTpl = config.getTitleTextTpl;
             }
+
             if (config.getItemTextTpl) {
                 this.getItemTextTpl = config.getItemTextTpl;
             }
         }
+
         this.callParent([config]);
     },
 
@@ -421,20 +426,22 @@ Ext.define('Ext.dataview.NestedList', {
 
         if (node === rootNode) {
             me.listMode = 'title';
-        } else if (node.parentNode === rootNode) {
+        }
+        else if (node.parentNode === rootNode) {
             me.listMode = 'node';
-        } else {
+        }
+        else {
             me.listMode = 'deep';
         }
     },
 
-    onChildInteraction: function () {
+    onChildInteraction: function() {
         if (this.isGoingTo) {
             return false;
         }
     },
 
-    applyDetailContainer: function (config) {
+    applyDetailContainer: function(config) {
         if (!config) {
             config = this;
         }
@@ -442,39 +449,19 @@ Ext.define('Ext.dataview.NestedList', {
         return config;
     },
 
-    updateDetailContainer: function (newContainer, oldContainer) {
+    updateDetailContainer: function(newContainer, oldContainer) {
         if (newContainer) {
             newContainer.on('beforeactiveitemchange', 'onBeforeDetailContainerChange', this);
             newContainer.on('activeitemchange', 'onDetailContainerChange', this);
         }
     },
 
-    onBeforeDetailContainerChange: function () {
+    onBeforeDetailContainerChange: function() {
         this.isGoingTo = true;
     },
 
-    onDetailContainerChange: function () {
+    onDetailContainerChange: function() {
         this.isGoingTo = false;
-    },
-    
-    updateLayout: function(layout, oldLayout) {
-        this.callParent([layout, oldLayout]);
-        
-        if (oldLayout) {
-            oldLayout.un({
-                beforeactiveitemchange: 'beforeLayoutActiveItemChange',
-                activeitemchange: 'onLayoutActiveItemChange',
-                scope: this
-            });
-        }
-        
-        if (layout) {
-            layout.on({
-                beforeactiveitemchange: 'beforeLayoutActiveItemChange',
-                activeitemchange: 'onLayoutActiveItemChange',
-                scope: this
-            });
-        }
     },
 
     /**
@@ -484,7 +471,7 @@ Ext.define('Ext.dataview.NestedList', {
      *
      * @private
      */
-    onChildTap: function (list, location) {
+    onChildTap: function(list, location) {
         var me = this,
             hasListeners = me.hasListeners,
             record = location.record;
@@ -499,8 +486,16 @@ Ext.define('Ext.dataview.NestedList', {
         }
 
         if (hasListeners.itemtap) {
-            me.fireEvent('itemtap', me, list, location.viewIndex, location.child, record, location.event);
+            me.fireEvent('itemtap',
+                         me,
+                         list,
+                         location.viewIndex,
+                         location.child,
+                         record,
+                         location.event
+            );
         }
+
         if (record.isLeaf()) {
             if (hasListeners.leafchildtap) {
                 location.list = list;
@@ -508,20 +503,35 @@ Ext.define('Ext.dataview.NestedList', {
             }
 
             if (hasListeners.leafitemtap) {
-                me.fireEvent('leafitemtap', me, list, location.viewIndex, location.child, record, location.event);
+                me.fireEvent('leafitemtap',
+                             me,
+                             list,
+                             location.viewIndex,
+                             location.child,
+                             record,
+                             location.event
+                );
             }
+
             me.goToLeaf(record);
-        } else {
+        }
+        else {
             this.goToNode(record);
         }
     },
 
-    onBeforeSelect: function () {
-        this.fireEvent.apply(this, [].concat('beforeselect', this, Array.prototype.slice.call(arguments)));
+    onBeforeSelect: function() {
+        this.fireEvent.apply(this, [].concat('beforeselect',
+                                             this,
+                                             Array.prototype.slice.call(arguments))
+        );
     },
 
-    onContainerTap: function () {
-        this.fireEvent.apply(this, [].concat('containertap', this, Array.prototype.slice.call(arguments)));
+    onContainerTap: function() {
+        this.fireEvent.apply(this, [].concat('containertap',
+                                             this,
+                                             Array.prototype.slice.call(arguments))
+        );
     },
 
     onSelect: function() {
@@ -538,11 +548,11 @@ Ext.define('Ext.dataview.NestedList', {
         this.onSelectionChange(args);
     },
 
-    onSelectionChange: function (args) {
+    onSelectionChange: function(args) {
         this.fireEvent.apply(this, [].concat('selectionchange', this, args));
     },
 
-    onChildDoubleTap: function (list, location) {
+    onChildDoubleTap: function(list, location) {
         var me = this,
             hasListeners = me.hasListeners;
 
@@ -552,11 +562,18 @@ Ext.define('Ext.dataview.NestedList', {
         }
 
         if (hasListeners.itemdoubletap) {
-            me.fireEvent('itemdoubletap', me, list, location.viewIndex, location.child, location.record, location.event);
+            me.fireEvent('itemdoubletap',
+                         me,
+                         list,
+                         location.viewIndex,
+                         location.child,
+                         location.record,
+                         location.event
+            );
         }
     },
 
-    onStoreBeforeLoad: function () {
+    onStoreBeforeLoad: function() {
         var loadingText = this.getLoadingText();
 
         if (loadingText) {
@@ -566,10 +583,13 @@ Ext.define('Ext.dataview.NestedList', {
             });
         }
 
-        this.fireEvent.apply(this, [].concat('beforeload', this, Array.prototype.slice.call(arguments)));
+        this.fireEvent.apply(this, [].concat('beforeload',
+                                             this,
+                                             Array.prototype.slice.call(arguments))
+        );
     },
 
-    onStoreLoad: function (store, records, successful, operation, parentNode) {
+    onStoreLoad: function(store, records, successful, operation, parentNode) {
         this.setMasked(false);
         this.fireEvent.apply(this, [].concat('load', this, Array.prototype.slice.call(arguments)));
 
@@ -581,17 +601,27 @@ Ext.define('Ext.dataview.NestedList', {
     /**
      * Called when the backButton has been tapped.
      */
-    onBackTap: function () {
+    onBackTap: function() {
         var me = this,
             node = me.getLastNode(),
             detailCard = me.getDetailCard(),
-            detailCardActive = detailCard && me.getActiveItem() == detailCard,
+            detailCardActive = detailCard && me.getActiveItem() === detailCard,
+            layout = me.getLayout(),
+            animation = layout ? layout.getAnimation() : null,
             lastActiveList = me.getLastActiveList();
 
-        this.fireAction('back', [this, node, lastActiveList, detailCardActive], 'doBack', null, null, 'after');
+        if (!animation || !(animation && animation.isAnimating)) {
+            this.fireAction('back',
+                            [this, node, lastActiveList, detailCardActive],
+                            'doBack',
+                            null,
+                            null,
+                            'after'
+            );
+        }
     },
 
-    doBack: function (me, node, lastActiveList, detailCardActive) {
+    doBack: function(me, node, lastActiveList, detailCardActive) {
         var layout = me.getLayout(),
             animation = layout ? layout.getAnimation() : null;
 
@@ -599,15 +629,17 @@ Ext.define('Ext.dataview.NestedList', {
             if (animation) {
                 animation.setReverse(true);
             }
+
             me.setActiveItem(lastActiveList);
             me.setLastNode(node.parentNode);
             me.syncToolbar();
-        } else {
+        }
+        else {
             me.goToNode(node.parentNode);
         }
     },
 
-    updateData: function (data) {
+    updateData: function(data) {
         if (!this.getStore()) {
             this.setStore(new Ext.data.TreeStore({
                 root: data
@@ -615,19 +647,20 @@ Ext.define('Ext.dataview.NestedList', {
         }
     },
 
-    applyStore: function (store) {
+    applyStore: function(store) {
         if (store) {
             if (Ext.isString(store)) {
                 // store id
                 store = Ext.data.StoreManager.get(store);
-            } else {
+            }
+            else {
                 // store instance or store config
                 if (!(store instanceof Ext.data.TreeStore)) {
                     store = Ext.factory(store, Ext.data.TreeStore, null);
                 }
             }
 
-            // <debug>
+            //<debug>
             if (!store) {
                 Ext.Logger.warn("The specified Store cannot be found", this);
             }
@@ -643,7 +676,7 @@ Ext.define('Ext.dataview.NestedList', {
         beforeload: 'onStoreBeforeLoad'
     },
 
-    updateStore: function (newStore, oldStore) {
+    updateStore: function(newStore, oldStore) {
         var me = this,
             listeners = this.storeListeners;
 
@@ -653,6 +686,7 @@ Ext.define('Ext.dataview.NestedList', {
             if (oldStore.autoDestroy) {
                 oldStore.destroy();
             }
+
             oldStore.un(listeners);
         }
 
@@ -662,38 +696,45 @@ Ext.define('Ext.dataview.NestedList', {
         }
     },
 
-    onStoreRootChange: function (store, node) {
+    onStoreRootChange: function(store, node) {
         this.goToNode(node);
     },
 
-    applyDetailCard: function (detailCard, oldDetailCard) {
-        return Ext.factory(detailCard, Ext.Component, detailCard === null ? oldDetailCard : undefined);
+    applyDetailCard: function(detailCard, oldDetailCard) {
+        return Ext.factory(detailCard,
+                           Ext.Component,
+                           detailCard === null ? oldDetailCard : undefined
+        );
     },
 
-    applyBackButton: function (config) {
+    applyBackButton: function(config) {
         var toolbar = this.getToolbar();
 
         return !toolbar ? false : Ext.factory(config, Ext.Button, this.getBackButton());
     },
 
-    updateBackButton: function (newButton, oldButton) {
-        if (newButton) {
-            var me = this;
+    updateBackButton: function(newButton, oldButton) {
+        var me = this;
 
+        if (newButton) {
             newButton.on('tap', me.onBackTap, me);
             newButton.setText(me.getBackText());
 
             if (me.$backButtonContainer) {
                 me.$backButtonContainer.insert(0, newButton);
-            } else {
+            }
+            else {
                 me.getToolbar().insert(0, newButton);
             }
-        } else if (oldButton) {
+        }
+        else if (oldButton) {
             oldButton.destroy();
         }
     },
 
-    applyToolbar: function (config) {
+    applyToolbar: function(config) {
+        var containerConfig;
+
         if (config && config.splitNavigation) {
             Ext.apply(config, {
                 docked: 'top',
@@ -701,7 +742,9 @@ Ext.define('Ext.dataview.NestedList', {
                 ui: 'light'
             });
 
-            var containerConfig = (config.splitNavigation === true) ? {} : config.splitNavigation;
+            containerConfig = (config.splitNavigation === true)
+                ? {}
+                : config.splitNavigation;
 
             this.$backButtonContainer = this.add(Ext.apply({
                 xtype: 'toolbar',
@@ -714,35 +757,40 @@ Ext.define('Ext.dataview.NestedList', {
         return Ext.factory(config, Ext.TitleBar, this.getToolbar());
     },
 
-    updateToolbar: function (newToolbar, oldToolbar) {
+    updateToolbar: function(newToolbar, oldToolbar) {
         var me = this;
+
         if (newToolbar) {
             newToolbar.setTitle(me.getTitle());
+
             if (!newToolbar.getParent()) {
                 me.add(newToolbar);
             }
-        } else if (oldToolbar) {
+        }
+        else if (oldToolbar) {
             oldToolbar.destroy();
         }
     },
 
-    updateUseToolbar: function (newUseToolbar, oldUseToolbar) {
+    updateUseToolbar: function(newUseToolbar, oldUseToolbar) {
         if (!newUseToolbar) {
             this.setToolbar(false);
         }
     },
 
-    updateTitle: function (newTitle) {
+    updateTitle: function(newTitle) {
         var me = this,
             backButton = me.getBackButton();
 
         if (me.getUpdateTitleText()) {
             if (me.listMode === 'title') {
                 me.setToolbarTitle(newTitle);
-            } else if (backButton && me.getUseTitleAsBackText() && me.listMode === 'node') {
+            }
+            else if (backButton && me.getUseTitleAsBackText() && me.listMode === 'node') {
                 backButton.setText(newTitle);
             }
-        } else {
+        }
+        else {
             me.setToolbarTitle(newTitle);
         }
     },
@@ -754,7 +802,7 @@ Ext.define('Ext.dataview.NestedList', {
      * @param {Ext.data.Record} node
      * @return {String}
      */
-    getItemTextTpl: function (node) {
+    getItemTextTpl: function(node) {
         return '{' + this.getDisplayField() + '}';
     },
 
@@ -764,24 +812,29 @@ Ext.define('Ext.dataview.NestedList', {
      * @param {Ext.data.Record} node
      * @return {String}
      */
-    getTitleTextTpl: function (node) {
+    getTitleTextTpl: function(node) {
         return '{' + this.getDisplayField() + '}';
     },
 
     /**
      * @private
      */
-    renderTitleText: function (node, forBackButton) {
+    renderTitleText: function(node, forBackButton) {
+        var initialTitle;
+
         if (!node.titleTpl) {
             node.titleTpl = Ext.create('Ext.XTemplate', this.getTitleTextTpl(node));
         }
 
         if (node.isRoot()) {
-            var initialTitle = this.getTitle();
-            return (forBackButton && initialTitle === '') ? this.getInitialConfig('backText') : initialTitle;
+            initialTitle = this.getTitle();
+
+            return (forBackButton && initialTitle === '')
+                ? this.getInitialConfig('backText')
+                : initialTitle;
         }
 
-        return  node.titleTpl.applyTemplate(node.data);
+        return node.titleTpl.applyTemplate(node.data);
     },
 
     /**
@@ -789,28 +842,30 @@ Ext.define('Ext.dataview.NestedList', {
      * internal {@link #store}.
      * @param {Ext.data.NodeInterface} node The specified node to navigate to.
      */
-    goToNode: function (node) {
+    goToNode: function(node) {
+        var me = this,
+            activeItem, detailCard, detailCardActive, reverse, firstList,
+            secondList, layout, animation, list;
+
         if (!node) {
             return;
         }
 
-        var me = this,
-            activeItem = me.getActiveItem(),
-            detailCard = me.getDetailCard(),
-            detailCardActive = detailCard && me.getActiveItem() == detailCard,
-            reverse = me.goToNodeReverseAnimation(node),
-            firstList = me.firstList,
-            secondList = me.secondList,
-            layout = me.getLayout(),
-            animation = layout ? layout.getAnimation() : null,
-            list;
+        activeItem = me.getActiveItem();
+        detailCard = me.getDetailCard();
+        detailCardActive = detailCard && me.getActiveItem() === detailCard;
+        reverse = me.goToNodeReverseAnimation(node);
+        firstList = me.firstList;
+        secondList = me.secondList;
+        layout = me.getLayout();
+        animation = layout ? layout.getAnimation() : null;
 
-        //if the node is a leaf, throw an error
+        // if the node is a leaf, throw an error
         if (node.isLeaf()) {
             throw new Error('goToNode: passed a node which is a leaf.');
         }
 
-        //if we are currently at the passed node, do nothing.
+        // if we are currently at the passed node, do nothing.
         if (node === me.getLastNode() && !detailCardActive) {
             return;
         }
@@ -819,38 +874,41 @@ Ext.define('Ext.dataview.NestedList', {
             if (animation) {
                 animation.setReverse(true);
             }
+
             list = me.getLastActiveList();
             list.getStore().setNode(node);
             node.expand();
             me.setActiveItem(list);
-        } else {
+        }
+        else {
             if (animation) {
                 animation.setReverse(reverse);
             }
 
             if (firstList && secondList) {
-                //firstList and secondList have both been created
+                // firstList and secondList have both been created
                 activeItem = me.getActiveItem();
 
                 me.setLastActiveList(activeItem);
-                list = (activeItem == firstList) ? secondList : firstList;
+                list = (activeItem === firstList) ? secondList : firstList;
 
                 list.getStore().setNode(node);
                 node.expand();
 
                 me.setActiveItem(list);
+
                 if (me.getClearSelectionOnListChange()) {
                     list.deselectAll();
                 }
             }
             else if (firstList) {
-                //only firstList has been created
+                // only firstList has been created
                 me.setLastActiveList(me.getActiveItem());
                 me.setActiveItem(me.getList(node));
                 me.secondList = me.getActiveItem();
             }
             else {
-                //no lists have been created
+                // no lists have been created
                 me.setActiveItem(me.getList(node));
                 me.firstList = me.getActiveItem();
             }
@@ -863,38 +921,43 @@ Ext.define('Ext.dataview.NestedList', {
         me.syncToolbar();
     },
 
-
     /**
      * The leaf you want to navigate to. You should pass a node instance.
      * @param {Ext.data.NodeInterface} node The specified node to navigate to.
      */
-    goToLeaf: function (node) {
+    goToLeaf: function(node) {
+        var me = this,
+            card, container, sharedContainer, layout, animation, activeItem;
+
         if (!node.isLeaf()) {
             throw new Error('goToLeaf: passed a node which is not a leaf.');
         }
 
-        var me = this,
-            card = me.getDetailCard(),
-            container = me.getDetailContainer(),
-            sharedContainer = container === me,
-            layout = me.getLayout(),
-            animation = layout ? layout.getAnimation() : false,
-            activeItem;
+        card = me.getDetailCard();
+        container = me.getDetailContainer();
+        sharedContainer = container === me;
+        layout = me.getLayout();
+        animation = layout ? layout.getAnimation() : false;
 
         if (card) {
             if (container.getItems().indexOf(card) === -1) {
                 container.add(card);
             }
+
             if (sharedContainer) {
                 activeItem = me.getActiveItem();
+
                 if (activeItem instanceof Ext.dataview.List) {
                     me.setLastActiveList(activeItem);
                 }
+
                 me.setLastNode(node);
             }
+
             if (animation) {
                 animation.setReverse(false);
             }
+
             container.setActiveItem(card);
             me.syncToolbar();
         }
@@ -902,31 +965,33 @@ Ext.define('Ext.dataview.NestedList', {
 
     /**
      * @private
-     * Method which updates the {@link #backButton} and {@link #toolbar} with the latest information from
-     * the current node.
+     * Method which updates the {@link #backButton} and {@link #toolbar} with 
+     * the latest information from the current node.
      */
-    syncToolbar: function (forceDetail) {
+    syncToolbar: function(forceDetail) {
         var me = this,
             detailCard = me.getDetailCard(),
             node = me.getLastNode(),
-            detailActive = forceDetail || (detailCard && (me.getActiveItem() == detailCard)),
+            detailActive = forceDetail || (detailCard && (me.getActiveItem() === detailCard)),
             parentNode = (detailActive) ? node : node.parentNode,
             backButton = me.getBackButton(),
-            toolbar = me.getToolbar();
+            toolbar = me.getToolbar(),
+            splitNavigation;
 
         if (!toolbar) {
             return;
         }
 
-        //show/hide the backButton, and update the backButton text, if one exists
+        // show/hide the backButton, and update the backButton text, if one exists
         if (backButton) {
-            var splitNavigation = toolbar.getInitialConfig('splitNavigation');
+            splitNavigation = toolbar.getInitialConfig('splitNavigation');
 
             if (splitNavigation) {
                 me.$backButtonContainer[parentNode ? 'show' : 'hide']();
             }
 
             backButton[parentNode ? 'show' : 'hide']();
+
             if (parentNode && me.getUseTitleAsBackText()) {
                 backButton.setText(me.renderTitleText(node.parentNode, true));
             }
@@ -937,7 +1002,7 @@ Ext.define('Ext.dataview.NestedList', {
         }
     },
 
-    updateBackText: function (newText) {
+    updateBackText: function(newText) {
         var btn = this.getBackButton();
 
         if (btn) {
@@ -947,10 +1012,11 @@ Ext.define('Ext.dataview.NestedList', {
 
     /**
      * @private
-     * Returns `true` if the passed node should have a reverse animation from the previous current node.
+     * Returns `true` if the passed node should have a reverse animation from the 
+     * previous current node.
      * @param {Ext.data.NodeInterface} node
      */
-    goToNodeReverseAnimation: function (node) {
+    goToNodeReverseAnimation: function(node) {
         var lastNode = this.getLastNode();
 
         if (!lastNode) {
@@ -959,29 +1025,13 @@ Ext.define('Ext.dataview.NestedList', {
 
         return (!lastNode.contains(node) && lastNode.isAncestor(node)) ? true : false;
     },
-    
-    beforeLayoutActiveItemChange: function() {
-        var backButton = this.getBackButton();
-        
-        if (backButton) {
-            backButton.disable();
-        }
-    },
-    
-    onLayoutActiveItemChange: function() {
-        var backButton = this.getBackButton();
-        
-        if (backButton) {
-            backButton.enable();
-        }
-    },
 
     /**
      * @private
      * Returns the list config for a specified node.
      * @param {HTMLElement} node The node for the list config.
      */
-    getList: function (node) {
+    getList: function(node) {
         var me = this,
             treeStore = new Ext.data.NodeStore({
                 recursive: false,
@@ -989,7 +1039,8 @@ Ext.define('Ext.dataview.NestedList', {
                 rootVisible: false,
                 model: me.getStore().getModel(),
                 proxy: 'memory'
-            }), list;
+            }),
+            list;
 
         node.expand();
 
@@ -1020,7 +1071,9 @@ Ext.define('Ext.dataview.NestedList', {
                     priority: 1000
                 }
             },
-            itemTpl: '<span<tpl if="leaf == true"> class="x-list-item-leaf"</tpl>>' + me.getItemTextTpl(node) + '</span>'
+            itemTpl: '<span<tpl if="leaf == true"> class="x-list-item-leaf"</tpl>>' +
+                      me.getItemTextTpl(node) +
+                      '</span>'
         }, me.getListConfig()));
 
         me.relayEvents(list, ['activate']);

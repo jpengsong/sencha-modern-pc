@@ -1,39 +1,55 @@
-//******************************************************全局 UI主题******************************************************
 
-//********************************进度条 UI********************************
+@include button-ui(
+    $ui:"success",
+    $color: #fff,
+    $icon-color : #fff,
+    $background-color:#47a447
+);
 
-.x-progress-success {
-    background-color: #ededed;
-    border-width: 0;
-    border-color: #28a745;
-    border-style: solid;
-    line-height: 24px;
-    .x-progress-bar-success {
-        background-image: none;
-        background-color: #28a745;
-        .x-progress-text{
-            color: white
-        }
-    }
-    .x-progress-text{
-        color: white
-    }
-}
+@include button-ui(
+    $ui:"warning",
+    $color: #fff,
+    $icon-color : #fff,
+    $background-color:#f0ad4e
+);
 
-.x-progress-danger {
-    background-color: #ededed;
-    border-width: 0;
-    border-color: #dc3545;
-    border-style: solid;
-    line-height: 24px;
-    .x-progress-bar-danger {
-        background-image: none;
-        background-color: #dc3545;
-        .x-progress-text{
-            color: white
-        }
-    }
-    .x-progress-text-back{
-        color: white
-    }
-}
+@include button-ui(
+    $ui:"danger",
+    $color: #fff,
+    $icon-color : #fff,
+    $background-color:#d9534f
+);
+
+@include button-ui(
+    $ui:"success-small",
+    $icon-size :12px,
+    $font-size : 10px,
+    $padding:5px 5px,
+    $color: #fff,
+    $icon-color : #fff,
+    $background-color:#47a447
+);
+
+@include button-ui(
+    $ui:"danger-small",
+    $icon-size :12px,
+    $font-size : 10px,
+    $padding:5px 5px,
+    $color: #fff,
+    $icon-color : #fff,
+    $background-color:#d9534f
+);
+
+@include progress-ui(
+    $ui:"success",
+    $bar-background-color : #47a447,
+    $background-color:#aeccae,
+    $front-color :$color
+);
+
+@include progress-ui(
+    $ui:"danger",
+    $bar-background-color:#d9534f,
+    $background-color:#e2bab8,
+    $front-color :$color
+)

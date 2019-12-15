@@ -1,8 +1,3 @@
-// Used for feature detection of CSS Variables
-:root {
-    --x-supports-variables: true;
-}
-
 .#{$prefix}root {
     -webkit-text-size-adjust: none;
 

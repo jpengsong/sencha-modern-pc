@@ -38,6 +38,21 @@ Ext.define('App.ux.utility.UserInfo', {
         /**
          * 业务代码
          */
-        BizCodes:[]
+        BizCodes:[],
+
+        /**
+         * 菜单位置
+        */
+       MenuLocation:null,
+
+       /**
+        * 暗黑
+       */
+      DarkMode:null,
+
+      /**
+       * 配色
+      */
+      Theme:null
     }
 });

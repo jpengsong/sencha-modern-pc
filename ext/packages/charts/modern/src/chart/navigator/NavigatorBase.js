@@ -4,7 +4,7 @@
 Ext.define('Ext.chart.navigator.NavigatorBase', {
     extend: 'Ext.chart.CartesianChart',
 
-    initialize: function () {
+    initialize: function() {
         var me = this;
 
         me.callParent();

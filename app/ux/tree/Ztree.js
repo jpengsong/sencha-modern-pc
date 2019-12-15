@@ -1,6 +1,15 @@
-﻿Ext.define("App.ux.tree.Ztree", {
+﻿/**
+ *  Ztree 使用例子如下：
+ *  {
+ *      xtype:"ztree",
+ *      valueField:"id",
+ *      displayField:"name",
+ *      parentField:"parebtId"
+ *  }
+*/
+Ext.define("App.ux.tree.Ztree", {
     extend: "Ext.container.Container",
-    alias: "widget.ztree",
+    xtype: "ztree",
     ztreeId: "zTree",
     isCheck: true,
     valueField: null,

@@ -36,7 +36,7 @@ Ext.define('App.data.systemmanage.SysRole', {
                     var queryItems = [];
                     for (var key in condition.QueryItems) {
                         if (key == "RoleName") {
-                            queryItems.push({ key: key, Value: condition.QueryItems[key], Method: config.QueryMethod.Equal, Type: "" });
+                            queryItems.push({ key: key, Value: condition.QueryItems[key], Method: config.QueryMethod.Like, Type: "" });
                         }
                     }
                     condition.QueryItems = queryItems;
@@ -130,7 +130,6 @@ Ext.define('App.data.systemmanage.SysRole', {
                     SysMenuRole = App.SimulateDB.Get("SysMenuRole"),
                     list = [];
 
-
                 for (var i = 0; i < SysMenuRole.length; i++) {
                     if (SysMenuRole[i].RoleId == data.SysRoleId) {
                         ids.push(SysMenuRole[i].MenuId);
@@ -189,7 +188,7 @@ Ext.define('App.data.systemmanage.SysRole', {
             type: 'json',
             url: "/api/SystemManage/SysRole/AddSysMenuRole",
             getData: function (ctx) {
-                var data = me.RequestData(ctx).Data,
+                var data = me.RequestData(ctx).Data.split(","),
                     SysMenuRole = App.SimulateDB.Get("SysMenuRole");
                 if (!Ext.isEmpty(data.RoleId)) {
                     for (var i = 0; i < SysMenuRole.length; i++) {

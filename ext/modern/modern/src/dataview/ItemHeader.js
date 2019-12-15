@@ -15,9 +15,13 @@ Ext.define('Ext.dataview.ItemHeader', {
 
     config: {
         /**
-         * @cfg {Ext.util.Group} group
-         * The {@link Ext.util.Collection collection} of {@link Ext.data.Model records}
-         * in the group.
+         * @cfg {Ext.dataview.ListGroup} group
+         * The `ListGroup` instance for the this group.
+         *
+         * NOTE: Prior to version 7.0, this was the {@link Ext.data.Group collection}
+         * of {@link Ext.data.Model records} in the group. Instead of `getGroup()` now
+         * returning the collection of records, use `getGroup().data`.
+         *
          * @readonly
          * @since 6.5.0
          */
@@ -64,7 +68,7 @@ Ext.define('Ext.dataview.ItemHeader', {
         uiCls: 'body-el'
     }],
 
-    setGroup: function (group) {
+    setGroup: function(group) {
         var me = this,
             was = me._group;
 
@@ -76,11 +80,17 @@ Ext.define('Ext.dataview.ItemHeader', {
         return me;
     },
 
-    updateGroup: function (group) {
+    updateGroup: function(group, oldGroup) {
         var me = this,
             data, grouper, html, list, tpl;
 
+        if (oldGroup && group !== oldGroup && oldGroup.getHeader() === me) {
+            oldGroup.setHeader(null);
+        }
+
         if (group) {
+            group.setHeader(me);
+
             list = me.parent;
             grouper = list.getStore().getGrouper();
 
@@ -97,17 +107,17 @@ Ext.define('Ext.dataview.ItemHeader', {
         me.setHtml(html || '\xa0');
     },
 
-    getScrollerTarget: function () {
+    getScrollerTarget: function() {
         return this.el;
     },
 
-    doDestroy: function () {
+    doDestroy: function() {
         this.mixins.toolable.doDestroy.call(this);
         this.callParent();
     },
 
     privates: {
-        augmentToolHandler: function (tool, args) {
+        augmentToolHandler: function(tool, args) {
             // args = [ itemHeader, tool, ev ]   ==>   [ list, info ]
             var info = args[1] = {
                 event: args.pop(),
@@ -119,19 +129,20 @@ Ext.define('Ext.dataview.ItemHeader', {
             args[0] = info.list = this.parent;
         },
 
-        getGroupHeaderTplData: function (skipHtml) {
+        getGroupHeaderTplData: function(skipHtml) {
             var group = this.getGroup(),
                 list = this.parent,
-                data = group && {
-                    name: group.getGroupKey(),
+                collection = group && group.data,
+                data = collection && {
+                    name: collection.getGroupKey(),
                     group: group,
                     groupField: list.getStore().getGrouper().getProperty(),
-                    children: group.items,
-                    count: group.length
+                    children: collection.items,
+                    count: collection.length
                 };
 
             if (data) {
-                data.value = group.items[0].data[data.groupField];
+                data.value = collection.items[0].data[data.groupField];
             }
 
             if (!skipHtml) {
@@ -144,11 +155,15 @@ Ext.define('Ext.dataview.ItemHeader', {
             return data;
         },
 
-        getList: function () {
+        getList: function() {
             return this.parent; // backward compat
         },
 
-        updateContentWidth: function (width) {
+        onToggleCollapse: function() {
+            this.getGroup().toggleCollapsed();
+        },
+
+        updateContentWidth: function(width) {
             var el = this._toolDockWrap || this.bodyElement;
 
             if (el) {

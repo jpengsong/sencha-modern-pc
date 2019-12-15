@@ -1,3 +1,11 @@
+/**
+ * This class handles navigation inside a list that is linked to an input field. The keyboard
+ * events are taken from the input field, and the list is never focused. Focus remains in
+ * the input field.
+ *
+ * @private
+ * @since 6.5.0
+ */
 Ext.define('Ext.dataview.BoundListNavigationModel', {
     extend: 'Ext.dataview.NavigationModel',
     alias: 'navmodel.boundlist',
@@ -13,16 +21,17 @@ Ext.define('Ext.dataview.BoundListNavigationModel', {
 
     privates: {
         getKeyNavCfg: function(view) {
-            if (this.keyboard !== false) {
+            var me = this,
+                eventEl;
+
+            if (me.keyboard !== false) {
                 // Drive the KeyNav off the BoundList's ownerField's focusEl if possible.
                 // If there's no ownerField, try the view's focusEl. If that is not focusable
                 // then we are not keyboard navigable.
-                var eventEl = (view.ownerField || view).getFocusEl();
+                eventEl = (view.ownerField || view).getFocusEl();
 
                 // If we are not linked
                 if (eventEl) {
-                    var me = this;
-
                     return {
                         target: eventEl,
                         eventName: 'keydown',
@@ -46,7 +55,7 @@ Ext.define('Ext.dataview.BoundListNavigationModel', {
                             handler: me.onSelectAllKeyPress
                         },
                         // This object has to get its key processing in first.
-                        // Specifically, before any Editor's key hyandling.
+                        // Specifically, before any Editor's key handling.
                         priority: 1001,
                         scope: me
                     };
@@ -59,6 +68,7 @@ Ext.define('Ext.dataview.BoundListNavigationModel', {
 
             result.childtouchstart = 'onChildTouchStart';
             result.childTap = 'onChildTap';
+
             return result;
         },
 
@@ -75,6 +85,7 @@ Ext.define('Ext.dataview.BoundListNavigationModel', {
             if (target && ownerField) {
                 ownerField.inputElement.dom.setAttribute('aria-activedescendant', target.id);
             }
+
             this.callParent([location, options]);
         },
 
@@ -89,7 +100,8 @@ Ext.define('Ext.dataview.BoundListNavigationModel', {
         },
 
         onChildTap: function(view, location) {
-            var e = location.event,
+            var me = this,
+                e = location.event,
                 newLocation;
 
             if (!view.destroyed) {
@@ -103,15 +115,17 @@ Ext.define('Ext.dataview.BoundListNavigationModel', {
                 // element because it's the location's sourceElement that is scrolled into
                 // view (for example input fields and other focusables take priority)
                 // but we want the whole list item to be the measured, scrolled element.
-                newLocation = this.createLocation(location.item);
+                newLocation = me.createLocation(location.item);
 
-                // We're already here. For example SelectField setting the location on downarrow expand
-                if (this.location && this.location.equals(newLocation)) {
-                    this.onNavigate(e);
-                } else {
+                // We're already here. For example SelectField setting the location on
+                // downarrow expand
+                if (me.location && me.location.equals(newLocation)) {
+                    me.onNavigate(e);
+                }
+                else {
                     // Because there is going to be no focus event, we must explicitly
                     // set the position here and select it.
-                    this.setLocation(newLocation, {
+                    me.setLocation(newLocation, {
                         event: location.event,
                         animation: true
                     });
@@ -139,6 +153,7 @@ Ext.define('Ext.dataview.BoundListNavigationModel', {
                 e.preventDefault();
                 this.onNavigate(e);
             }
+
             // Allow to propagate to field
             return true;
         },
@@ -192,17 +207,21 @@ Ext.define('Ext.dataview.BoundListNavigationModel', {
 
             // Handle the case where the highlighted item is already selected
             // In this case, the change event won't fire, so just collapse
-            if (selectable.isSelected(this.location.record) && field.collapse) {
+            if (!(field.getMultiSelect && field.getMultiSelect()) &&
+                selectable.isSelected(this.location.record) && field.collapse) {
                 field.collapse();
-            } else {
+            }
+            else {
                 this.selectHighlighted(e);
             }
 
-            // Stop propagation of the ENTER keydown event so that any Editor which owns the field
-            // does not completeEdit, but we also need to still fire the specialkey event for ENTER,
-            // so lets add fromBoundList to the event, and this will be handled by CellEditor#onSpecialKey.
+            // Stop propagation of the ENTER keydown event so that any Editor which owns the
+            // field does not completeEdit, but we also need to still fire the specialkey
+            // event for ENTER, so lets add fromBoundList to the event, and this will be
+            // handled by CellEditor#onSpecialKey.
             e.fromBoundList = true;
             field.fireEvent('specialkey', field, e);
+
             return false;
         },
 
@@ -218,7 +237,7 @@ Ext.define('Ext.dataview.BoundListNavigationModel', {
             // The ENTER key is handled above.
             if (doNavigate) {
                 this.callParent([event]);
-                
+
                 if (field && field.maybeCollapse) {
                     field.maybeCollapse(event);
                 }
@@ -237,18 +256,19 @@ Ext.define('Ext.dataview.BoundListNavigationModel', {
                 location = me.location,
                 highlightedRec, index;
 
-            // If all options have been filtered out, then do NOT add most recently highlighted.
-            if (view.getViewItems().length) {
+            // If there is no currently highlighted item or all options have been filtered out,
+            // then do NOT add select the currently highlighted item.
+            if (location && view.getViewItems().length) {
                 highlightedRec = location.record;
-                if (highlightedRec) {
 
+                if (highlightedRec) {
                     // Select if not already selected.
                     // If already selected, selecting with no CTRL flag will deselect the record.
                     if (e.getKey() === e.ENTER || !selectable.isSelected(highlightedRec)) {
                         selectable.selectWithEvent(highlightedRec, e);
 
-                        // If the result of that selection is that the record is removed or filtered out,
-                        // jump to the next one.
+                        // If the result of that selection is that the record is removed or
+                        // filtered out, jump to the next one.
                         if (!view.getStore().contains(highlightedRec)) {
                             index = Math.min(location.recordIndex, store.getCount() - 1);
                             me.setLocation(store.getAt(index));

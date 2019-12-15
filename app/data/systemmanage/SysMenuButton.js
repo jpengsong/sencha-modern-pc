@@ -96,7 +96,7 @@ Ext.define('App.data.systemmanage.SysMenuButton', {
             delay: 0,
             url: "/api/SystemManage/SysMenuButton/DeleteSysMenuButton",
             getData: function (ctx) {
-                var data = me.RequestData(ctx).Data;
+                var data = me.RequestData(ctx).Data.split(",");
                 for (var i = 0; i < data.length; i++) {
                     for (var j = 0; j < me.dataSource.length; j++) {
                         if (me.dataSource[j].SysMenuButtonId == data[i]) {

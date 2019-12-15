@@ -1,5 +1,6 @@
 /**
- * The {@link Ext.Spacer} component is generally used to put space between items in {@link Ext.Toolbar} components.
+ * The {@link Ext.Spacer} component is generally used to put space between items in
+ * {@link Ext.Toolbar} components.
  * ## Examples
  *
  * By default the {@link #flex} configuration is set to 1:
@@ -28,7 +29,8 @@
  *         ]
  *     });
  *
- * Alternatively you can just set the {@link #width} configuration which will get the {@link Ext.Spacer} a fixed width:
+ * Alternatively you can just set the {@link #width} configuration which will get the
+ * {@link Ext.Spacer} a fixed width:
  *
  *     @example
  *     Ext.create('Ext.Container', {
@@ -114,7 +116,7 @@
  */
 Ext.define('Ext.Spacer', {
     extend: 'Ext.Component',
-    alias : 'widget.spacer',
+    xtype: 'spacer',
 
     config: {
         /**

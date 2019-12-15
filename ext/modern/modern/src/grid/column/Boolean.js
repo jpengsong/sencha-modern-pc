@@ -1,6 +1,7 @@
 /**
- * A Column definition class which renders boolean data fields.  See the {@link Ext.grid.column.Column#xtype xtype}
- * config option of {@link Ext.grid.column.Column} for more details.
+ * A Column definition class which renders boolean data fields.  
+ * See the {@link Ext.grid.column.Column#xtype xtype} config option of 
+ * {@link Ext.grid.column.Column} for more details.
  *
  *     @example
  *     Ext.create('Ext.data.Store', {

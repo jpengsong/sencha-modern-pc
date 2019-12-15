@@ -1,41 +1,9 @@
 
-//******************************************************全局主题变量******************************************************
-$button-small-border-width :0px;
-$button-medium-border-width :0px;
-$panel-body-border-width :0px;
 
-
-//****************响应样式**************
-.x-responsivecolumn-large {
-    > .large-100 {
-        @include responsivecolumn-item(100%);
-    }
-
-    > .large-50 {
-        @include responsivecolumn-item(50%);
-    }
-    
-    > .large-25 {
-        @include responsivecolumn-item(25%);
-    }
-}
-
-.x-responsivecolumn-medium {
-    > .medium-100 {
-        @include responsivecolumn-item(100%);
-    }
-
-    > .medium-50 {
-        @include responsivecolumn-item(50%);
-    }
-}
-
-.x-responsivecolumn-small {
-    > .small-100 {
-        @include responsivecolumn-item(100%);
-    }
-
-    > .small-50 {
-        @include responsivecolumn-item(50%);
-    }
-}
+/***********textfield样式变量************/
+//$field-label-color:#000;
+// $textfield-focused-input-border-color :RGB(226,226,226);
+// $textfield-input-border-color:RGB(226,226,226);
+// $textfield-input-border-width :1px;
+// $textfield-input-border-style :solid;
+// $textfield-focused-input-underline-width :0px;

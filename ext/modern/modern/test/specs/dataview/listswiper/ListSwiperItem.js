@@ -12,12 +12,14 @@ xtopSuite("Ext.dataview.listswiper.Item", [
 
         views[view.getId()] = view;
         view.refresh();
+
         return view;
     }
 
     afterEach(function() {
         Ext.Object.getValues(views).forEach(function(view) {
             var id = view.getId();
+
             delete views[id];
             view.destroy();
         });

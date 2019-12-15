@@ -86,4 +86,8 @@
     @if $panel-light-ui {
         @include panel-ui(map-merge((ui: light), $panel-light-ui)...);
     }
+
+    @if $panel-accordion-ui {
+        @include panel-ui(map-merge((ui: accordion), $panel-accordion-ui)...);
+    }
 }

@@ -79,7 +79,8 @@ Ext.define('Ext.field.trigger.Trigger', {
                     scope: me
                 }
             }, repeat));
-        } else {
+        }
+        else {
             me.element.on({
                 click: 'onClick',
                 mousedown: 'onMouseDown',
@@ -93,7 +94,7 @@ Ext.define('Ext.field.trigger.Trigger', {
         this.callParent();
     },
 
-     onClickRepeaterClick: function(clickRepeater, e) {
+    onClickRepeaterClick: function(clickRepeater, e) {
         this.onClick(e);
     },
 
@@ -113,10 +114,15 @@ Ext.define('Ext.field.trigger.Trigger', {
                     focusEl = field.getFocusTrap ? field.getFocusTrap() : field.getFocusEl();
 
                     if (focusEl.dom !== document.activeElement) {
-                        focusEl.focus();
+                        if (me.isExpandTrigger) {
+                            field.focusingFromExpandTrigger = true;
+                        }
+
+                        field.focus();
                     }
                 }
             }
+
             if (handler) {
                 Ext.callback(handler, me.getScope(), [field, me, e], null, field);
             }
@@ -124,8 +130,10 @@ Ext.define('Ext.field.trigger.Trigger', {
     },
 
     onMouseDown: function(e) {
+        var field;
+
         if (e.pointerType === 'mouse') {
-            var field = this.getFocusOnTap() && this.getField();
+            field = this.getFocusOnTap() && this.getField();
 
             // Focus the field on mousedown. Touch events do it on tap.
             if (field) {

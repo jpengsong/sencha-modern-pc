@@ -29,7 +29,8 @@ Ext.define('Ext.menu.CheckItem', {
 
     /**
      * @property {Boolean} isMenuCheckItem
-     * `true` in this class to identify an object as an instantiated Menu CheckItem, or subclass thereof.
+     * `true` in this class to identify an object as an instantiated Menu CheckItem, 
+     * or subclass thereof.
      */
     isMenuCheckItem: true,
 
@@ -63,7 +64,8 @@ Ext.define('Ext.menu.CheckItem', {
 
         /**
          * @cfg {Boolean} checkChangeDisabled
-         * True to prevent the checked item from being toggled. Any submenu will still be accessible.
+         * True to prevent the checked item from being toggled. Any submenu will still be 
+         * accessible.
          */
         checkChangeDisabled: false,
 
@@ -76,7 +78,7 @@ Ext.define('Ext.menu.CheckItem', {
 
         showCheckbox: null
     },
-    
+
     /**
      * @cfg [publishes='checked']
      * @inheritdoc Ext.mixin.Bindable#cfg-publishes
@@ -128,15 +130,10 @@ Ext.define('Ext.menu.CheckItem', {
 
     element: {
         reference: 'element',
+        tabindex: Ext.is.iOS ? -1 : null,
         cls: Ext.baseCSSPrefix + 'unselectable ' +
             // The checkbox always occupies the "left" icon space
-            Ext.baseCSSPrefix + 'has-left-icon',
-        onmousedown: 'return Ext.doEv(this, event);'
-    },
-
-    eventHandlers: {
-        change: 'onCheckboxChange',
-        mousedown: 'onCheckboxMousedown'
+            Ext.baseCSSPrefix + 'has-left-icon'
     },
 
     focusEl: 'checkboxElement',
@@ -154,15 +151,29 @@ Ext.define('Ext.menu.CheckItem', {
             tag: 'input',
             type: 'checkbox',
             reference: 'checkboxElement',
-            cls: Ext.baseCSSPrefix + 'checkbox-el',
-            onchange: 'return Ext.doEv(this, event);'
+            cls: Ext.baseCSSPrefix + 'checkbox-el'
         });
 
         return template;
     },
 
-    initialize: function () {
-        this.callParent();
+    initialize: function() {
+        var me = this;
+
+        me.callParent();
+
+        me.element.on({
+            mousedown: 'onCheckboxMousedown',
+            translate: false,
+            scope: me
+        });
+
+        me.checkboxElement.on({
+            change: 'onCheckboxChange',
+            delegated: false,
+            scope: me
+        });
+
         this.syncCheckboxCls();
     },
 
@@ -193,13 +204,15 @@ Ext.define('Ext.menu.CheckItem', {
         if (suppressEvents) {
             me.isConfiguring = true;
         }
+
         me.callParent([checked]);
+
         if (suppressEvents) {
             me.isConfiguring = isConfiguring;
         }
     },
 
-    updateChecked: function (checked) {
+    updateChecked: function(checked) {
         this.checkboxElement.dom.checked = checked;
 
         // We do not get an event on programmatic check change
@@ -207,15 +220,15 @@ Ext.define('Ext.menu.CheckItem', {
         this.onCheckChange();
     },
 
-    updateCheckChangeDisabled: function (checkChangeDisabled) {
+    updateCheckChangeDisabled: function(checkChangeDisabled) {
         this.checkboxElement.dom.readOnly = checkChangeDisabled;
     },
 
-    updateValue: function (value) {
+    updateValue: function(value) {
         this.checkboxElement.dom.value = value;
     },
 
-    updateText: function (text) {
+    updateText: function(text) {
         var me = this,
             ariaDom = me.ariaEl.dom;
 
@@ -231,11 +244,11 @@ Ext.define('Ext.menu.CheckItem', {
         }
     },
 
-    applyShowCheckbox: function (showCheckbox) {
+    applyShowCheckbox: function(showCheckbox) {
         return !!showCheckbox;
     },
 
-    updateShowCheckbox: function (showCheckbox) {
+    updateShowCheckbox: function(showCheckbox) {
         this.checkboxElement.setDisplayed(showCheckbox);
     },
 
@@ -255,7 +268,7 @@ Ext.define('Ext.menu.CheckItem', {
         }
     },
 
-    updateIconAlign: function (iconAlign, oldIconAlign) {
+    updateIconAlign: function(iconAlign, oldIconAlign) {
         this.callParent([iconAlign, oldIconAlign]);
 
         if (!this.isConfiguring) {
@@ -264,14 +277,14 @@ Ext.define('Ext.menu.CheckItem', {
     },
 
     privates: {
-        onSpace: function (e) {
+        onSpace: function(e) {
             // Disabled menuitems are still focusable, but must not react
             if (this.getDisabled()) {
                 e.preventDefault();
             }
         },
 
-        onClick: function (e) {
+        onClick: function(e) {
             var me = this,
                 arrowElement = me.arrowElement,
                 result, parentResult, region;
@@ -285,8 +298,11 @@ Ext.define('Ext.menu.CheckItem', {
             // change event.
             if (e.pointerType !== 'mouse') {
                 region = me.bodyElement.getRegion();
+
                 if (me.getMenu()) {
-                    region.setWidth(region.getWidth() - arrowElement.getWidth() - arrowElement.getMargin('lr'));
+                    region.setWidth(
+                        region.getWidth() - arrowElement.getWidth() - arrowElement.getMargin('lr')
+                    );
                 }
 
                 // When interacting with a menucheckitem via a touch screen the submenu
@@ -295,7 +311,8 @@ Ext.define('Ext.menu.CheckItem', {
                 if (region.contains(e.getPoint())) {
                     // clicked on the icon or text - veto menu show
                     result = false;
-                } else {
+                }
+                else {
                     // clicked on the arrow - allow the menu to be shown, but preventDefault
                     // to stop the checkbox from being toggled
                     e.preventDefault();
@@ -309,8 +326,8 @@ Ext.define('Ext.menu.CheckItem', {
         },
 
         onCheckboxMousedown: function(e) {
-            // Prevent focus movement away from the checkboxElement on mousedown outside of the checkboxElement.
-            // The mouseover will have focused it.
+            // Prevent focus movement away from the checkboxElement on mousedown outside of 
+            // the checkboxElement. The mouseover will have focused it.
             // Also, checkboxes are not focusable by default on Apple Operating Systems.
             // See http://www.weba11y.com/blog/2014/07/07/keyboard-navigation-in-mac-browsers/
             // So to prevent focus flying to body on mousedown, we prevent default.
@@ -327,8 +344,10 @@ Ext.define('Ext.menu.CheckItem', {
 
             if (me.getCheckChangeDisabled()) {
                 checkboxElement.checked = meChecked;
+
                 return false;
             }
+
             if (isChecked === meChecked || me.getDisabled()) {
                 return;
             }
@@ -338,20 +357,21 @@ Ext.define('Ext.menu.CheckItem', {
             // rejected above.
             if (me.fireEvent('beforecheckchange', me, isChecked) === false) {
                 checkboxElement.checked = !isChecked;
-            } else {
+            }
+            else {
                 // Sync widget state in response to the checkbox changing state.
                 me.setChecked(isChecked);
             }
         },
 
-        onCheckChange: function () {
+        onCheckChange: function() {
             var me = this,
                 checked = me.checkboxElement.dom.checked,
                 el = me.el,
                 ariaDom = me.ariaEl.dom;
 
             el.toggleCls(me.checkedCls, !!checked);
-            
+
             if (ariaDom) {
                 ariaDom.setAttribute('aria-checked', me.getMenu() ? 'mixed' : checked);
             }
@@ -365,7 +385,7 @@ Ext.define('Ext.menu.CheckItem', {
             }
         },
 
-        syncHasIconCls: function () {
+        syncHasIconCls: function() {
             var me = this;
 
             me.toggleCls(me.hasRightIconCls, me.hasIcon());
@@ -381,7 +401,8 @@ Ext.define('Ext.menu.CheckItem', {
             if (me.hasIcon() && (me.getIconAlign() === 'left')) {
                 checkboxIconElement = rightIconElement;
                 oldCheckboxIconElement = leftIconElement;
-            } else {
+            }
+            else {
                 checkboxIconElement = leftIconElement;
                 oldCheckboxIconElement = rightIconElement;
             }
