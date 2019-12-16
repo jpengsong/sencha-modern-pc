@@ -1,5 +1,5 @@
 $app-name:  dynamic( 'App' );
-$image-search-path: 'E:/ExtJS/前端/sencha-modern-pc/build/development/App/./material/resources';
+$image-search-path: 'E:/ExtJS/前端/sencha-modern-pc/build/development/App/./App/resources';
 $theme-name:  dynamic( 'theme-material' );
 $include-app-ajax: dynamic(true);;
 $include-app-application: dynamic(true);;
@@ -10,7 +10,6 @@ $include-app-responsecode: dynamic(true);;
 $include-app-simulatedb: dynamic(true);;
 $include-app-treenode: dynamic(true);;
 $include-app-userinfo: dynamic(true);;
-$include-app-chart-echart: dynamic(true);;
 $include-app-data-simulated: dynamic(true);;
 $include-app-data-authentication-authentication: dynamic(true);;
 $include-app-data-systemmanage-sysmenu: dynamic(true);;
@@ -44,6 +43,7 @@ $include-app-store-systemmanage-sysuser-orgtreestore: dynamic(true);;
 $include-app-store-systemmanage-sysuser-userrole: dynamic(true);;
 $include-app-ux-app-model: dynamic(true);;
 $include-app-ux-app-viewcontroller: dynamic(true);;
+$include-app-ux-chart-echart: dynamic(true);;
 $include-app-ux-combox-comboxtree: dynamic(true);;
 $include-app-ux-page-dialog: dynamic(true);;
 $include-app-ux-page-page: dynamic(true);;
@@ -1015,7 +1015,7 @@ $include-override-field-passwordfield: dynamic(true);;
 $include-override-loadmask-loadmask: dynamic(true);;
 $include-override-selection-rows: dynamic(true);;
 $include-override-simlet-jsonsimlet: dynamic(true);;
-$output-paths: ("path": "../.././material/resources", "images": "../.././material/resources/images", "shared": "../.././resources", "toolkit": "../../modern/resources", "base": "../../.");
+$output-paths: ("path": "../.././App/resources", "images": "../.././App/resources/images", "shared": "../.././resources", "toolkit": "../../modern/resources", "base": "../../.");
 
 /* ======================== ETC ======================== */
 

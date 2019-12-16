@@ -1,9 +1,8 @@
 Ext.define("App.view.main.widget.Toolbar", {
     extend: "Ext.Toolbar",
     xtype:"main-toolbar",
-    ui:"main-toolbar",
-    shadow :false,
-    height: 65,
+    padding:"0px 0px",
+    height: 60,
     layout: {
         type: "hbox",
         align: "stretch"
@@ -23,12 +22,18 @@ Ext.define("App.view.main.widget.Toolbar", {
             reference: "toolbar",
             padding: "0 0",
             flex: 1,
-            style: { "box-shadow": "0px 0px 0px 0.1px black" },
+            bind:{
+                ui:"{mainToolbar_UI}"
+            },
+            style: { 
+                "box-shadow": "0px 0px 0px 0.1px black" 
+            },
             defaults: {
                 margin: '0 15',
-                ui:"main-toolbar-button"
+                bind:{
+                    ui:"{mainToolbarButton_UI}"
+                }
             },
-            ui: "main-toolbar",
             items: [
                 {
                     iconCls: "x-far fa-bars",

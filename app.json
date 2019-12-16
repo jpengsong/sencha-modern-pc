@@ -49,14 +49,14 @@
     ],
 
     "builds": {
-        "material": {
+        "App": {
             "toolkit": "modern",
-            "material" : {
+             "material" : {
                 "toolbar": {
                     "color": "#1976d2",
                     "dynamic": true
                 }
-            },
+              },
             "theme": "theme-material"
         }
     },
@@ -229,7 +229,7 @@
             "includeInBundle": false
         },
         {
-            "path": "resources/echarts/echarts.min.js",
+            "path": "resources/echarts/echarts.js",
             "includeInBundle": false
         },
         {

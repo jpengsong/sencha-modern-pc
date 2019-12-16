@@ -8,7 +8,7 @@
  *   height: 400
  * },
 */
-Ext.define("App.chart.EChart", {
+Ext.define("App.ux.chart.EChart", {
     xtype: "echart",
     extend: "Ext.Panel",
     config: {

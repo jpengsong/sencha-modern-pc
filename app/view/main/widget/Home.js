@@ -107,7 +107,7 @@ Ext.define("App.view.main.widget.Home", {
                         { text: '人数', dataIndex: 'number', flex: 1, align: "center", sortable: false }
                     ]
                 }
-            ],
+            ]
         }
     ],
     listeners: {
@@ -151,12 +151,6 @@ Ext.define("App.view.main.widget.Home", {
                 },
                 legend: {
                     data: ['访问量', '下载量', '平均访问量']
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
                 },
                 toolbox: {
                     feature: {

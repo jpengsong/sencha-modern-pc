@@ -1,14 +1,4 @@
 //******************************************************Toolbar样式******************************************************
-
-/*
-    头部 toolbar
-*/
-@include toolbar-ui  (
-    $ui:"main-toolbar",
-    $padding:0px 0px,
-    $padding-big:0px 0px
-);
-
 /*
     头部 logo
 */
@@ -22,10 +12,17 @@
 };
 
 /*
+    头部 toolbar
+*/
+.x-toolbar-main-toolbar-dark{
+    background-color: var(--base-color) !important;
+}
+
+/*
     头部 按钮颜色
 */
 @include button-ui(
-    $ui:"main-toolbar-button",
+    $ui:"main-toolbar-button-default",
     $color:var(--highlight-color),
     $hovered-color :var(--highlight-color),
     $pressed-color :var(--highlight-color),
@@ -40,6 +37,24 @@
     $focused-hovered-background-color:transparent
 );
 
+/*
+    头部 按钮颜色
+*/
+@include button-ui(
+    $ui:"main-toolbar-button-dark",
+    $color:var(--base-foreground-color),
+    $hovered-color :var(--base-foreground-color),
+    $pressed-color :var(--base-foreground-color),
+    $icon-color:var(--base-foreground-color),
+    $hovered-icon-color var(--base-foreground-color),
+    $pressed-icon-color :var(--base-foreground-color),
+    $background-color :transparent,
+    $hovered-background-color:transparent,
+    $pressed-background-color:transparent,
+    $pressed-hovered-background-color :transparent,
+    $focused-background-color : transparent,
+    $focused-hovered-background-color:transparent
+);
 
 //********************************************************Navigation-Menu样式*******************************************************
 .x-container-main-menu {
@@ -169,7 +184,8 @@
     .x-tab .x-icon-el{
         width: 25px;
     }
-    .x-button .x-body-el{
-        margin-left:-15px;
-    }
+}
+
+.x-tab-main-tabbar-tab.x-has-text .x-inner-el {
+    padding: 0px 25px 0px 12px;
 }

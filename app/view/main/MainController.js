@@ -178,11 +178,13 @@ Ext.define("App.view.main.MainController", {
 
     //更改菜单位置
     onMenuLocationSelect: function (obj, newValue, eOpts) {
-        var me = this, refs = me.getReferences(), value = refs.menulocation.getValue();
+        var me = this, refs = me.getReferences(),viewModel=me.getViewModel(), value = refs.menulocation.getValue();
         App.UserInfo.MenuLocation = value;
         refs.navigationTreeList.setHidden(value == "left" ? false : true);
         refs.navigationMenuList.setHidden(value == "top" ? false : true);
         refs.micro.setHidden(value == "left" ? false : true);
+        viewModel.set("mainToolbar_UI",value == "left" ? "default" :"main-toolbar-dark");
+        viewModel.set("mainToolbarButton_UI",value == "left" ? "main-toolbar-button-default" :"main-toolbar-button-dark");
     },
 
     //主题配色
@@ -203,12 +205,7 @@ Ext.define("App.view.main.MainController", {
             'darkMode': refs.darkMode.getValue(),
             'base': refs.theme.getValue()
         });
-        var all = Ext.ComponentManager.getAll();
-        for (var i = 0; i < all.length; i++) {
-            if (all[i].xtype == "echart") {
-                all[i].refreshTheme();
-            };
-        }
+        me.darkComponentChange();
     },
 
     //页签切换

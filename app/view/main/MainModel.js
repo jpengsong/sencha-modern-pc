@@ -9,6 +9,10 @@ Ext.define("App.view.main.MainModel", {
         plist: {
             type: "main.plist"
         }
-        
+    },
+
+    data:{
+        mainToolbar_UI:"default",
+        mainToolbarButton_UI:"main-toolbar-button-default",
     }
 })
