@@ -26,3 +26,19 @@
 |23|重写|loadmask|overrides/loadmask/LoadMask|遮罩层组件，需要样式配合|
 |24|重写|row|overrides/selection/Row|列表在有分页情况下，修复在全选后不能取消全选|
 |25|重写|jsonsimlet|overrides/simlet/JsonSimlet|返回前台模拟数据|
+
+### V1.1 更新日期 2020-xx-xx
+##### 待更新内容
+1. 升级-Ext7.0至Ext7.1
+2. 新增-froala-editor编辑器 去掉水印 上传文件回调
+3. 新增-Grid导出文件
+4. 新增-下拉Grid
+5. 新增-下拉多选框
+6. 新增-图片UI上传插件
+7. 新增-Grid合并单元格
+8. 新增-日期选择年月
+9. 新增-日历插件示例
+10. 修复-分页插件属性配置
+11. 修复-登录路由默认跳转首页(tab.dashboard)
+12. 修复-TreeList反复折叠点击错误
+13. 修复-打开窗口后,地址栏后退,无法关闭
