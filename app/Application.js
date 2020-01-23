@@ -8,7 +8,8 @@ Ext.define('App.Application', {
     name: 'App',
     requires: [
         'Ext.list.Tree',
-        'Ext.layout.*'
+        'Ext.layout.*',
+        'Ext.froala.Editor'
     ],
     launch: function () {
         var me =this;

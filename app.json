@@ -6,19 +6,11 @@
     "toolkit": "modern",
     "theme": "theme-material",
 
-    /**
-     * The list of required packages (with optional versions; default is "latest").
-     *
-     * For example,
-     *
-     *      "requires": [
-     *          "charts"
-     *      ]
-     */
-     "requires": [
+    "requires": [
         "font-awesome",
         "ux",
-        "locale"
+        "locale",
+        "froala-editor"
     ],
     "locale": "zh_CN",
 

@@ -538,6 +538,9 @@ $include-ext-form-textarea: dynamic(true);;
 $include-ext-form-toggle: dynamic(true);;
 $include-ext-form-url: dynamic(true);;
 $include-ext-form-field-combobox: dynamic(true);;
+$include-ext-froala-editor: dynamic(true);;
+$include-ext-froala-editorfield: dynamic(true);;
+$include-ext-froala-mixin: dynamic(true);;
 $include-ext-fx-animation: dynamic(true);;
 $include-ext-fx-runner: dynamic(true);;
 $include-ext-fx-state: dynamic(true);;
@@ -1015,6 +1018,7 @@ $include-override-field-passwordfield: dynamic(true);;
 $include-override-loadmask-loadmask: dynamic(true);;
 $include-override-selection-rows: dynamic(true);;
 $include-override-simlet-jsonsimlet: dynamic(true);;
+$include-override-tree-treelist: dynamic(true);;
 $output-paths: ("path": "../.././App/resources", "images": "../.././App/resources/images", "shared": "../.././resources", "toolkit": "../../modern/resources", "base": "../../.");
 
 /* ======================== ETC ======================== */
@@ -1067,6 +1071,14 @@ $current-resource-root: $theme-material-resource-root;
 $relative-image-path-for-uis: $theme-material-resource-path;
 @import '../../../../../ext/modern/theme-material/sass/etc/all';
 
+/* including package froala-editor */
+$froala-editor-resource-root: 'froala-editor' !default;
+$froala-editor-resource-path: 'froala-editor/images' !default;
+$current-package: 'froala-editor';
+$current-resource-root: $froala-editor-resource-root;
+$relative-image-path-for-uis: $froala-editor-resource-path;
+@import '../../../../../ext/packages/froala-editor/sass/etc/all';
+
 /* including package App */
 $App-resource-root: '' !default;
 $App-resource-path: 'images' !default;
@@ -1087,6 +1099,7 @@ $relative-image-path-for-uis: $core-resource-path;
 @import '../../../../../ext/packages/core/sass/var/dom/Element';
 @import '../../../../../ext/packages/core/sass/var/Component';
 @import '../../../../../ext/packages/core/sass/var/list/TreeItem';
+@import '../../../../../ext/packages/core/sass/var/froala/Editor';
 
 /* including package theme-base */
 $theme-base-resource-root: '' !default;
@@ -1205,6 +1218,7 @@ $relative-image-path-for-uis: $theme-neptune-resource-path;
 @import '../../../../../ext/modern/theme-neptune/sass/var/tab/Tab';
 @import '../../../../../ext/modern/theme-neptune/sass/var/tab/Bar';
 @import '../../../../../ext/modern/theme-neptune/sass/var/grid/cell/Tree';
+@import '../../../../../ext/modern/theme-neptune/sass/var/froala/Editor';
 
 /* including package theme-material */
 $theme-material-resource-root: '' !default;
@@ -1284,6 +1298,7 @@ $relative-image-path-for-uis: $theme-material-resource-path;
 @import '../../../../../ext/modern/theme-material/sass/var/tab/Tab';
 @import '../../../../../ext/modern/theme-material/sass/var/tab/Bar';
 @import '../../../../../ext/modern/theme-material/sass/var/grid/cell/Tree';
+@import '../../../../../ext/modern/theme-material/sass/var/froala/Editor';
 
 /* including package ux */
 $ux-resource-root: 'ux' !default;
@@ -1301,6 +1316,14 @@ $current-package: 'ux';
 $current-resource-root: $ux-resource-root;
 $relative-image-path-for-uis: $ux-resource-path;
 @import '../../../../../ext/packages/ux/modern/sass/var/gauge/Gauge';
+
+/* including package froala-editor */
+$froala-editor-resource-root: 'froala-editor' !default;
+$froala-editor-resource-path: 'froala-editor/images' !default;
+$current-package: 'froala-editor';
+$current-resource-root: $froala-editor-resource-root;
+$relative-image-path-for-uis: $froala-editor-resource-path;
+@import '../../../../../ext/packages/froala-editor/sass/var/froala/Editor';
 
 /* including package App */
 $App-resource-root: '' !default;
@@ -1599,6 +1622,14 @@ $relative-image-path-for-uis: $ux-resource-path;
 @import '../../../../../ext/packages/ux/modern/sass/src/colorpick/Selector';
 @import '../../../../../ext/packages/ux/modern/sass/src/colorpick/Button';
 @import '../../../../../ext/packages/ux/modern/sass/src/colorpick/Field';
+
+/* including package froala-editor */
+$froala-editor-resource-root: 'froala-editor' !default;
+$froala-editor-resource-path: 'froala-editor/images' !default;
+$current-package: 'froala-editor';
+$current-resource-root: $froala-editor-resource-root;
+$relative-image-path-for-uis: $froala-editor-resource-path;
+@import '../../../../../ext/packages/froala-editor/sass/src/froala/Editor';
 
 /* including package App */
 $App-resource-root: '' !default;

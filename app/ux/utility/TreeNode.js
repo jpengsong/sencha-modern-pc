@@ -30,7 +30,7 @@ Ext.define('App.ux.utility.TreeNode', {
                                 list: list,
                                 children: []
                             };
-                        Ext.apply(options, list[i]);
+                        Object.assign(options, list[i]);
                         rootNode.push(options);
                         me.bindNode(options);
                     }
@@ -59,7 +59,7 @@ Ext.define('App.ux.utility.TreeNode', {
                         list: list,
                         children: []
                     };
-                    Ext.apply(node, list[i]);
+                    Object.assign(node, list[i]);
                     options.children.push(node);
                     options.leaf = false;
                     me.bindNode(node);
