@@ -2,8 +2,8 @@
 `1：comboxTree` - 下拉树
 `2：echart` - 百度图表
 `2：echart` - 百度图表
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+    | 水果        | 价格    |  数量  |
+    | --------   | -----:   | :----: |
+    | 香蕉        | $1      |   5    |
+    | 苹果        | $1      |   6    |
+    | 草莓        | $1      |   7    |
